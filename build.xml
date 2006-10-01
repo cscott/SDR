@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="sdr" basedir="." default="none">
+
+<description>
+Square Dance Revolution build file.
+</description>
+
+    <!-- set the classpath and properties -->
+    <property name="top_dir"		value="."/>
+    <property name="api_dir"            value="${top_dir}/api"/>
+    <property name="lib_dir"            value="${top_dir}/lib"/>
+    <property name="src_dir"            value="${top_dir}/src"/>
+    <property name="classes_dir"	value="${top_dir}/classes"/>
+    <property name="resources_dir"	value="${top_dir}/resources"/>
+
+    <path id="classpath.path">
+        <pathelement path="${classes_dir}"/>
+	<fileset dir="lib">
+	    <include name="*.jar" />
+	</fileset>
+    </path>
+    <property name="java.api"
+	      value="http://java.sun.com/j2se/1.5.0/docs/api" />
+
+    <!-- define some variables for the script -->
+    <target name="init">
+    </target>
+
+    <target name="none">
+            <echo>Type 'ant -projecthelp' for possible targets.</echo>
+    </target>
+
+    <!-- delete generated files -->
+    <target name="clean" depends="init"
+            description="Removes the generated class files and javadoc">
+	<delete dir="${classes_dir}" />
+	<delete dir="${api_dir}" />
+	<delete file="${top_dir}/${ant.project.name}.jar" />
+    </target>
+
+    <!-- compile the source code -->
+    <target name="compile" depends="init"
+            description="Compiles the code in ${src_dir} to ${classes_dir}">
+	    <mkdir dir="${classes_dir}" />
+	    <javac srcdir="${src_dir}"
+		   destdir="${classes_dir}"
+		   excludes="CVS"
+		   deprecation="on" source="1.5" debug="true">
+                   <compilerarg value="-Xlint:unchecked"/>
+		   <classpath refid="classpath.path" />
+	    </javac>
+    </target>
+
+    <!-- run the javadoc tool on the source code -->
+    <target name="javadoc" depends="init"
+            description="Generates javadoc in ${api_dir}">
+	<mkdir dir="${api_dir}" />
+	<javadoc sourcepath="${src_dir}"
+		 packagenames="net.cscott.*"
+		 destdir="${api_dir}"
+		 windowtitle="${ant.project.name}">
+		<classpath refid="classpath.path" />
+		<link href="${java.api}" />
+	</javadoc>
+    </target>
+
+    <!-- export the project as a jar -->
+    <target name="jar" depends="compile"
+            description="Exports the project as a jar">
+	<jar destfile="${top_dir}/${ant.project.name}.jar"
+             update="true" manifest="${top_dir}/${ant.project.name}.Manifest"> 
+		<fileset dir="${classes_dir}" />
+		<fileset dir="${resources_dir}" />
+	</jar>
+    </target>
+
+    <!-- most ant scripts have a build target -->
+    <target name="build" depends="jar" description="Alias for jar target"/>
+
+    <!-- ********************************************************** -->
+    <!-- *                                                        * -->
+    <!-- * Runs the sphinx recognition demo.                      * -->
+    <!-- *                                                        * -->
+    <!-- ********************************************************** -->
+    <target name="run"
+	    description="Runs the sphinx speech recognition demo."
+	    depends="jar">
+	    <java jar="${top_dir}/${ant.project.name}.jar"
+	          fork="true"
+		  maxmemory="256m">
+                  <!--<sysproperty key="frontend" value="epFrontEnd"/>-->
+		  <classpath refid="classpath.path"/>
+	    </java>
+    </target>
+
+</project>

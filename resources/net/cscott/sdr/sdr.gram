@@ -1,0 +1,55 @@
+#JSGF V1.0;
+
+/**
+ * JSGF Grammar for SDR - 4 person Mainstream
+ */
+
+grammar sdr;
+
+public <call> =
+	forward and back |
+	[<people>] dosado [to a wave] | 
+	[<people>|double] pass thru |
+	half sashay |
+	[<people>] roll away |
+	[<people>] u turn back |
+	two <people> chain |
+	chain down the line |
+	lead (left | right) |
+	right and left thru |
+	star thru |
+	bend the line |
+	[left] square thru (one | two | three | four)
+		[hands [(around | round)]] |
+	california twirl |
+	[reverse] wheel around |
+	box the gnat |
+	step to a wave |
+	balance |
+	pass the ocean |
+	step thru | extend |
+	[left] swing thru |
+	<people> [cross] run |
+	[<people>|partner|couples] trade |
+	zoom |
+	[reverse] flutter wheel |
+	veer [left|right] |
+	[left] touch (one|a) quarter |
+	[split | box] circulate |
+	[left] turn thru |
+	[left] spin the top |
+	cast off three quarters |
+	walk and dodge | <people> walk <people> dodge |
+	slide thru |
+	<people> [cross] fold |
+	dixie style to (a wave | an ocean wave) |
+	[left] tag the line [face (left|right)] |
+	half tag |
+	[left] scoot back |
+	[single|couples] hinge |
+	recycle;
+	
+<people> = <boys> | <girls> | <all>;
+<boys> = boys | men ;
+<girls> = girls | ladies ;
+<all> = all | every (one|body) ;
