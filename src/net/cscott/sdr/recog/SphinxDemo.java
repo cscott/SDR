@@ -10,7 +10,7 @@
  *
  */
 
-package net.cscott.sdr;
+package net.cscott.sdr.recog;
 
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.recognizer.Recognizer;

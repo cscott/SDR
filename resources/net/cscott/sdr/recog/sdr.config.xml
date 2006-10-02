@@ -99,7 +99,7 @@
     <component name="jsgfGrammar" type="edu.cmu.sphinx.jsapi.JSGFGrammar">
         <property name="dictionary" value="dictionary"/>
         <property name="grammarLocation" 
-             value="resource:/net.cscott.sdr.SphinxDemo!/net/cscott/sdr/"/>
+             value="resource:/net.cscott.sdr.recog.SphinxDemo!/net/cscott/sdr/recog/"/>
         <property name="grammarName" value="sdr"/>
 	<property name="logMath" value="logMath"/>
     </component>
@@ -112,7 +112,7 @@
     <component name="dictionary" 
         type="edu.cmu.sphinx.linguist.dictionary.FastDictionary">
         <property name="dictionaryPath"
-	 value="resource:/net.cscott.sdr.SphinxDemo!/net/cscott/sdr/cmudict.0.6d"/>
+	 value="resource:/net.cscott.sdr.recog.SphinxDemo!/net/cscott/sdr/recog/cmudict.0.6d"/>
         <property name="fillerPath" 
 	 value="resource:/edu.cmu.sphinx.model.acoustic.WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.Model!/edu/cmu/sphinx/model/acoustic/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz/dict/fillerdict"/>
         <property name="addSilEndingPronunciation" value="false"/>

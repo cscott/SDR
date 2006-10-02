@@ -50,6 +50,6 @@ public <call> =
 	recycle;
 	
 <people> = <boys> | <girls> | <all>;
-<boys> = boys | men ;
-<girls> = girls | ladies ;
-<all> = all | every (one|body) ;
+<boys> = boys | men {boys};
+<girls> = girls | ladies {girls};
+<all> = all | every (one|body) {all};

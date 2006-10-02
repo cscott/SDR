@@ -44,7 +44,7 @@ Square Dance Revolution build file.
 	    <mkdir dir="${classes_dir}" />
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
-		   excludes="CVS"
+		   excludes="CVS net/cscott/sdr/calls/**"
 		   deprecation="on" source="1.5" debug="true">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
