@@ -1,4 +1,7 @@
-sphinx-dist
 classes
 sdr.jar
 api
+sphinx-dist
+jme-dist
+research
+properties.cfg
