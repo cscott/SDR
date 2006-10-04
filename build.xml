@@ -16,7 +16,8 @@ Square Dance Revolution build file.
     <path id="classpath.path">
         <pathelement path="${classes_dir}"/>
 	<fileset dir="lib">
-	    <include name="*.jar" />
+	    <include name="sphinx/*.jar" />
+	    <include name="jme/*.jar" />
 	</fileset>
     </path>
     <property name="java.api"
@@ -88,6 +89,7 @@ Square Dance Revolution build file.
 	    <java jar="${top_dir}/${ant.project.name}.jar"
 	          fork="true"
 		  maxmemory="256m">
+		  <sysproperty key="java.library.path" value="lib/jme"/>
                   <!--<sysproperty key="frontend" value="epFrontEnd"/>-->
 		  <classpath refid="classpath.path"/>
 	    </java>
