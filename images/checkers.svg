@@ -14,8 +14,8 @@
    sodipodi:version="0.32"
    inkscape:version="0.44.1"
    version="1.0"
-   sodipodi:docbase="/home/cananian/Projects/SDR"
-   sodipodi:docname="floor-pattern.svg"
+   sodipodi:docbase="/home/cananian/Projects/SDR/images"
+   sodipodi:docname="checkers.svg"
    inkscape:export-filename="/home/cananian/Projects/SDR/floor-pattern2.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -45,11 +45,11 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.63043028"
-     inkscape:cx="319.61426"
+     inkscape:zoom="0.53555556"
+     inkscape:cx="450"
      inkscape:cy="450"
      inkscape:document-units="in"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer1"
      width="10in"
      height="10in"
      units="in"
@@ -59,8 +59,8 @@
      gridspacingy="0.2in"
      grid_units="in"
      inkscape:grid-points="true"
-     inkscape:window-width="1022"
-     inkscape:window-height="692"
+     inkscape:window-width="1012"
+     inkscape:window-height="687"
      inkscape:window-x="0"
      inkscape:window-y="26" />
   <metadata
@@ -74,6 +74,16 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Border"
+     style="display:inline">
+    <path
+       style="fill:#df0000;fill-opacity:0.66480446;fill-rule:evenodd;stroke:none;stroke-width:4.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:inline"
+       d="M 0 0 L 0 900 L 900 900 L 900 0 L 0 0 z M 36 36 L 864 36 L 864 864 L 36 864 L 36 36 z "
+       id="rect1948" />
+  </g>
   <g
      inkscape:groupmode="layer"
      id="layer3"
@@ -342,7 +352,8 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Checkers"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <g
        id="g13214">
       <rect
