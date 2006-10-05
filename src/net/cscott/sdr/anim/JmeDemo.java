@@ -3,6 +3,8 @@ package net.cscott.sdr.anim;
 import com.jme.app.SimpleGame;
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
+import com.jme.input.KeyBindingManager;
+import com.jme.input.KeyInput;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -26,7 +28,7 @@ public class JmeDemo extends SimpleGame {
   private Node[] checker = new Node[8];
   private final static Vector3f camCaller = new Vector3f(0, -8.5f, 9.4f);
   private final static Vector3f camStartup = new Vector3f(8,20,50);
-  private final static Vector3f camOverhead = new Vector3f(0, 0, 10);
+  private final static Vector3f camCeiling = new Vector3f(0, -.1f, 11);
   private Vector3f camTarget = camCaller;
 
   /**
@@ -43,7 +45,15 @@ public class JmeDemo extends SimpleGame {
   }
 
   protected void simpleUpdate() {
-    // move cam towards target
+    // check for camera movement commands.
+    if (KeyBindingManager.getKeyBindingManager().isValidCommand
+	("camCaller",true))
+      camTarget = camCaller;
+    if (KeyBindingManager.getKeyBindingManager().isValidCommand
+	("camCeiling",true))
+      camTarget = camCeiling;
+    
+    // move cam towards target /////////////
 
     // move towards desired cam location
     Vector3f pos = cam.getLocation();
@@ -184,5 +194,14 @@ public class JmeDemo extends SimpleGame {
       qq.updateModelBound();
       checker[i].attachChild(qq);
     }
+
+    // key bindings.
+
+    // Assign F5 to the command "caller camera"
+    KeyBindingManager.getKeyBindingManager().set
+      ("camCaller", KeyInput.KEY_F5);
+    // Assign F6 to the command "ceiling camera"
+    KeyBindingManager.getKeyBindingManager().set
+      ("camCeiling", KeyInput.KEY_F6);
   }
 }
