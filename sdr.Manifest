@@ -1,4 +1,4 @@
-Main-Class: net.cscott.sdr.sound.MidiDemo
-Main-Class-A: net.cscott.sdr.anim.JmeDemo
+Main-Class-A: net.cscott.sdr.sound.MidiDemo
+Main-Class: net.cscott.sdr.anim.JmeDemo
 Main-Class-B: net.cscott.sdr.recog.SphinxDemo
 Class-Path: lib/sphinx/sphinx4.jar lib/sphinx/jsapi.jar lib/sphinx/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar lib/jme/lwjgl.jar lib/jme/jogg-0.0.5.jar lib/jme/jorbis-0.0.12.jar lib/jme/jme.jar lib/jme/jme-awt.jar lib/jme/jme-editors.jar lib/jme/jme-effects.jar lib/jme/jme-font.jar lib/jme/jme-gamestates.jar lib/jme/jme-model.jar lib/jme/jme-scene.jar lib/jme/jme-sound.jar lib/jme/jme-terrain.jar lib/jme/jinput.jar
