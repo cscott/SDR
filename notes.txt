@@ -1,0 +1,19 @@
+List of targets for each person.
+
+A target is:
+  time, x, y, rot.
+
+Always animate w/ beat: either "keep time" (in place) or an
+ appropriate amount of "press ahead", "sashay left", "sashay right",
+   or "press back", depending on motion vector/facing direction.
+
+              motion vec
+facing dir | /
+           |/__ <- sashay component.
+           ^
+           press ahead/back component.
+
+Should use an independent timer to run camera homing, so that it not
+dependent on song timing.  Current values are okay for 96<FPS<170.
+
+Should use frame-rate limited display.
