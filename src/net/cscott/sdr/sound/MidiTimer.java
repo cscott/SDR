@@ -18,7 +18,7 @@ public class MidiTimer extends com.jme.util.Timer {
 	    sequencer.getTempoInMPQ() / sequencer.getTempoFactor();
 	// now divide this by the number of ticks per quarter note
 	Sequence seq = sequencer.getSequence();
-	assert seq.getDivisionType() == seq.PPQ :
+	assert seq.getDivisionType() == Sequence.PPQ :
 	    "Don't know how to deal with non-PPQ midi files";
 	float MPT = MPQ / seq.getResolution(); // uS per tick
 	// the answer we want is the reciprocal

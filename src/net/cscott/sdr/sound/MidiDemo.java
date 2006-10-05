@@ -35,19 +35,19 @@ package net.cscott.sdr.sound;
  * means that a midi tick is 1/768s, which is more than adequate resolution
  * for (say) 15-30fps animation. */
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.MetaEventListener;
 import javax.sound.midi.MetaMessage;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
+import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Soundbank;
 import javax.sound.midi.Synthesizer;
-import javax.sound.midi.Receiver;
 import javax.sound.midi.Transmitter;
 
 
@@ -124,9 +124,9 @@ public class MidiDemo
 	// print out some info about timing resolution.
 	System.out.println("Division type: "+sequence.getDivisionType());
 	System.out.println("Resolution: "+sequence.getResolution());
-	assert sequence.getDivisionType()==sequence.PPQ :
+	assert sequence.getDivisionType()==Sequence.PPQ :
 	    "don't know how to sync non-PPQ tracks";
-	int ticksPerBeat = sequence.getResolution();
+	@SuppressWarnings("unused") int ticksPerBeat = sequence.getResolution();
 
 	/* Now, we need a Sequencer to play the sequence.  Here, we
 	 * simply request the default sequencer without an implicitly
@@ -211,7 +211,7 @@ public class MidiDemo
 	for (int i=0; i<16; i++) {
 	    javax.sound.midi.ShortMessage notesOff =
 		new javax.sound.midi.ShortMessage();
-	    notesOff.setMessage(notesOff.CONTROL_CHANGE+i,123,0);
+	    notesOff.setMessage(ShortMessage.CONTROL_CHANGE+i,123,0);
 	    for (javax.sound.midi.Track t : sequence.getTracks()) {
 		long end = (t.ticks()<=0)?0L:(t.ticks()-1);
 		t.add(new javax.sound.midi.MidiEvent(notesOff, end));
@@ -226,11 +226,6 @@ public class MidiDemo
 		Thread.sleep(1000);
 	    } catch (InterruptedException ie) { /* ignore */ }
 	}
-    }
-
-    private static void out(String strMessage)
-    {
-	System.out.println(strMessage);
     }
 }
 

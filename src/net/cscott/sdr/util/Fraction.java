@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.cscott.asdic;//org.apache.commons.lang.math;
+package net.cscott.sdr.util;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -49,7 +49,7 @@ import java.math.BigInteger;
  * @author Tim O'Brien
  * @author Pete Gieser
  * @since 2.0
- * @version $Id: Fraction.java,v 1.1 2006-10-02 02:37:25 cananian Exp $
+ * @version $Id: Fraction.java,v 1.2 2006-10-05 20:55:26 cananian Exp $
  */
 public class Fraction extends Number implements Serializable, Comparable {
 
@@ -1105,7 +1105,8 @@ public class Fraction extends Number implements Serializable, Comparable {
     /** Backwards-compatible extension of Fraction.  Makes it appear that
      *  fractions are stored unsimplified. */
     private static class BadFraction extends Fraction {
-        /** The unreduced denominator to use for this backwards-compatible
+		private static final long serialVersionUID = 4001349100163830901L;
+		/** The unreduced denominator to use for this backwards-compatible
          *  fraction. */
         final int badDenom;
         /**
