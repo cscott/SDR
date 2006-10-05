@@ -111,7 +111,7 @@ public class MidiDemo
 	/* Use high-quality soundbank. */
 	Soundbank soundbank = MidiSystem.getSoundbank
 	    (MidiDemo.class.getClassLoader().getResource
-	     ("net/cscott/sdr/audio/soundbank-deluxe.gm"));
+	     ("net/cscott/sdr/sound/soundbank-deluxe.gm"));
 	soundbank=null;
 
 	/* We read in the MIDI file to a Sequence object.  This object
@@ -119,7 +119,7 @@ public class MidiDemo
 	 */
 	Sequence sequence = MidiSystem.getSequence
 	    (MidiDemo.class.getClassLoader().getResource
-	     ("net/cscott/sdr/audio/saturday-night.midi"));
+	     ("net/cscott/sdr/sound/saturday-night.midi"));
 
 	// print out some info about timing resolution.
 	System.out.println("Division type: "+sequence.getDivisionType());
@@ -201,6 +201,15 @@ public class MidiDemo
 	/* Now, we can start over.
 	 */
 	sequencer.start();
+
+	/* check timer */
+	MidiTimer mt = new MidiTimer(sequencer);
+	while(true) {
+	    System.out.println(mt.getTime());
+	    try {
+		Thread.sleep(1000);
+	    } catch (InterruptedException ie) { /* ignore */ }
+	}
     }
 
 
