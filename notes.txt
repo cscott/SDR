@@ -13,7 +13,72 @@ facing dir | /
            ^
            press ahead/back component.
 
+Also need 'turn left' and 'turn right' movements.  All movements
+should be two part (left foot, then right foot), but 1 beat = 1 step
+(ie, half the cycle).  "Scoot back", for example, is 3 beats: 1 step
+straight ahead, 1 turning step for trade, 1 step straight back.
+So always interpolating between three keyframes, one for "x", one for
+"y", and one for rotation.  (Writing animation for rotation will be
+tricky: best start with spine rotating smoothly, then move all bones,
+and then reset the rotation on the spine.)
+
 Should use an independent timer to run camera homing, so that it not
 dependent on song timing.  Current values are okay for 96<FPS<170.
+** Rather than fixed rate pan/tilt, write an acceleration profile
+which will return to 'home' in 1 beat.  Record distance from target
+of 'last user override' (ie, change of view or manual pan/tilt).
+Based on current distance, apply /\ acceleration (increase velocity
+unless we're at midpoint, else decrease.)  Need some math to figure
+out what the delta V should be, based on actual dist/total dist.
 
-Should use frame-rate limited display.
+Should use frame-rate limited display: 15fps?  30fps?
+
+Also, use relative vertex animation for: head turns, smiles, hand
+movements.  These are cycles, but we subtract the frame vertices from
+the start vertices to get a displacement, and then apply the
+displacement over whatever else is going on.  Also 'dropping'
+something, and sound effects (claps, etc).
+
+If the dancers are left stopped without a command, they should
+initiate a 1-2 beat (randomize start/end points?) head turn in the
+caller's direction (limited by neck mobility) -- also eye turn?
+
+Dancers should also look towards their partners if their partner is
+'near enough'.
+
+
+The checkers can have a walking animation, too, tilting up & down and
+'walking' across the table.  Maybe include global translation/rotation
+matrix in keyframining?
+---------
+
+More points for sequences near 'optimal length' (ie, not too long or
+short).
+
+Points for consistent flow (flow meter increases, reset to zero on bad
+flow).
+
+Points for continuous calling (same deal, or maybe a bonus for a
+continuous resolved sequence.)
+
+Dancers may 'drop' objects: points for getting the dancer who dropped
+the item to the place where it (randomly) ends up within a certain
+time period.
+
+Difficulty level: tempo, dancer appearance (arky/identical),
+'turkeys'.
+
+Bonus for recovering after a turkey.
+
+Maybe caller movement as well to receive bonuses.
+
+----
+splice 'miditimers' together to allow switching tunes?
+ each time measurement is a rational number; pass this rational number
+ between timers atomically to ensure monoticity.  main timer is just a
+ switch.
+
+Support sampled sound (wav/mp3) via "beat maps" -- a list of
+ (beat number, micro-second location) pairs which are smoothly
+ interpolated to reconstruct beat number from the playback us
+ location.
