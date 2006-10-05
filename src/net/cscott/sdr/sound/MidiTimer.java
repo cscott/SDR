@@ -29,7 +29,9 @@ public class MidiTimer extends com.jme.util.Timer {
     }
     private long lastTime = 0;
     private long offset = 0;
-    public long getTime() {
+    private long loopEnd = 0;
+    private boolean first = true;
+    public synchronized long getTime() {
 	// check for roll-over.
 	if (first) { loopEnd = getLoopEnd(); first=false; }
 	long now = sequencer.getTickPosition() + offset;
@@ -49,9 +51,7 @@ public class MidiTimer extends com.jme.util.Timer {
     }
     private long lastFrame = 0;
     private long frameTime = 768/30; // 30 fps initially
-    private long loopEnd = 0;
-    private boolean first = true;
-    public void update() {
+    public synchronized void update() {
 	long thisFrame = getTime();
 	this.frameTime = thisFrame - lastFrame;
 	this.lastFrame = thisFrame;
