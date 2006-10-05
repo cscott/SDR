@@ -82,3 +82,16 @@ Support sampled sound (wav/mp3) via "beat maps" -- a list of
  (beat number, micro-second location) pairs which are smoothly
  interpolated to reconstruct beat number from the playback us
  location.
+--
+To switch songs: turn on the loop; when we receive the 'music end'
+ signal switch to new song?
+
+From FAQ: http://www.jsresources.org/faq_midi.html#note_event_notification
+ Add Meta events at switch points (at measure or phrase boundaries).
+ When we get one of these events, stop the sequencers and start the
+ next. See http://www.jsresources.org/faq_midi.html#schedule_events
+ for ideas on dealing with lead-in: to wit, chain two switches. Switch
+ to a silent track with 3 of the 4 beats and then a META event, which
+ will trigger the switch to the 1 beat pickup.
+ See also http://www.ii.uib.no/~espenr/midistreaming/ w/ regard to
+ swapping sequencers for gapless playback.
