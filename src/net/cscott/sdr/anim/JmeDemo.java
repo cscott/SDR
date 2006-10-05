@@ -24,6 +24,10 @@ import java.net.URL;
 public class JmeDemo extends SimpleGame {
 
   private Node[] checker = new Node[8];
+  private final static Vector3f camCaller = new Vector3f(0, -8.5f, 9.4f);
+  private final static Vector3f camStartup = new Vector3f(8,20,50);
+  private final static Vector3f camOverhead = new Vector3f(0, 0, 10);
+  private Vector3f camTarget = camCaller;
 
   /**
    * Entry point for the test,
@@ -39,16 +43,30 @@ public class JmeDemo extends SimpleGame {
   }
 
   protected void simpleUpdate() {
-      /*
-    if (tpf < 1) {
-      angle = angle + (tpf * 1);
-      if (angle > 360) {
-        angle = 0;
-      }
-    }
-    rotQuat.fromAngleAxis(angle, axis);
-    s.setLocalRotation(rotQuat);
-      */
+    // move cam towards target
+
+    // move towards desired cam location
+    Vector3f pos = cam.getLocation();
+    float dist = pos.subtract(camTarget).length();
+    /* travel .1unit/frame, or else remaining distance if smaller */
+    float DIST_PER_FRAME = .1f;
+    float amt = (dist>DIST_PER_FRAME)?(DIST_PER_FRAME/dist):1f;
+    pos.interpolate(camTarget, amt);
+    cam.setLocation(pos);
+
+    // slew direction towards 0,0,0 with upvector 0,0,1
+    Vector3f newDirection = Vector3f.ZERO.subtract(pos).normalizeLocal();
+    Vector3f oldDirection = cam.getDirection();
+    float angle = oldDirection.angleBetween(newDirection);
+    float RAD_PER_FRAME=.01f;
+    amt = (angle>RAD_PER_FRAME)?(RAD_PER_FRAME/angle):1f;
+    oldDirection.interpolate(newDirection, amt);
+    Vector3f direction = oldDirection;
+
+    Vector3f worldUp = Vector3f.UNIT_Z; // world up vector
+    Vector3f left = new Vector3f(worldUp).crossLocal(direction).normalizeLocal();
+    Vector3f up = new Vector3f(direction).crossLocal(left).normalizeLocal();
+    cam.setAxes(left, up, direction);
   }
 
   /**
@@ -57,7 +75,7 @@ public class JmeDemo extends SimpleGame {
    */
   protected void simpleInitGame() {
     display.setTitle("SDR - jME demo");
-    cam.setLocation(new Vector3f(0, -8.5f, 9.4f));
+    cam.setLocation(camStartup);
     cam.lookAt(new Vector3f(0,0,0), new Vector3f(0,0,1));
 
     // create floor.
