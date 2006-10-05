@@ -202,6 +202,22 @@ public class MidiDemo
 	 */
 	sequencer.start();
 
+	/* WORKAROUND for BUG in jdk 1.6 (at least): loop control has an
+	 * off-by-one error and doesn't play the (usually note off) messages
+	 * in the last tick of the song; it just jumps to tick 0 and plays
+	 * the note-on messages there.  Workaround this by manually kludging
+	 * in ALL_NOTE_OFF messages on all channels one tick before the end
+	 * of the song.  Sigh. */
+	for (int i=0; i<16; i++) {
+	    javax.sound.midi.ShortMessage notesOff =
+		new javax.sound.midi.ShortMessage();
+	    notesOff.setMessage(notesOff.CONTROL_CHANGE+i,123,0);
+	    for (javax.sound.midi.Track t : sequence.getTracks()) {
+		long end = (t.ticks()<=0)?0L:(t.ticks()-1);
+		t.add(new javax.sound.midi.MidiEvent(notesOff, end));
+	    }
+	}
+
 	/* check timer */
 	MidiTimer mt = new MidiTimer(sequencer);
 	while(true) {
@@ -211,8 +227,6 @@ public class MidiDemo
 	    } catch (InterruptedException ie) { /* ignore */ }
 	}
     }
-
-
 
     private static void out(String strMessage)
     {
