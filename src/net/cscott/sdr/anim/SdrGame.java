@@ -1,24 +1,38 @@
 package net.cscott.sdr.anim;
 
 import java.util.logging.Level;
-import com.jme.app.*;
+
+import com.jme.app.FixedFramerateGame;
 import com.jme.image.Texture;
-import com.jme.input.*;
+import com.jme.input.FirstPersonHandler;
+import com.jme.input.InputHandler;
+import com.jme.input.KeyBindingManager;
+import com.jme.input.KeyInput;
+import com.jme.input.MouseInput;
 import com.jme.input.joystick.JoystickInput;
 import com.jme.light.PointLight;
-import com.jme.math.*;
-import com.jme.renderer.*;
-import com.jme.scene.*;
-import com.jme.scene.state.*;
-import com.jme.system.*;
-import com.jme.util.*;
+import com.jme.math.Vector3f;
+import com.jme.renderer.Camera;
+import com.jme.renderer.ColorRGBA;
+import com.jme.renderer.Renderer;
+import com.jme.scene.Node;
+import com.jme.scene.state.LightState;
+import com.jme.scene.state.WireframeState;
+import com.jme.scene.state.ZBufferState;
+import com.jme.system.DisplaySystem;
+import com.jme.system.JmeException;
+import com.jme.util.GameTaskQueue;
+import com.jme.util.GameTaskQueueManager;
+import com.jme.util.LoggingSystem;
+import com.jme.util.TextureManager;
+import com.jme.util.Timer;
 import com.jme.util.geom.Debugger;
 
 /** <code>SdrGame</code> is a fixed-framerate base game class.  It sets up
  * the <code>BaseGame</code> in a manner similar to <code>SimpleGame</code>,
  * but defers the really application-specific stuff to subclasses.
  * @author C. Scott Ananian
- * @version $Id: SdrGame.java,v 1.1 2006-10-05 19:06:02 cananian Exp $
+ * @version $Id: SdrGame.java,v 1.2 2006-10-05 21:04:29 cananian Exp $
  */
 public abstract class SdrGame extends FixedFramerateGame {
     /** Our camera. */
@@ -154,8 +168,9 @@ public abstract class SdrGame extends FixedFramerateGame {
         cam.setParallelProjection( false );
         Vector3f loc = new Vector3f( 0.0f, 0.0f, 25.0f );
         Vector3f left = Vector3f.UNIT_X.negate();
-        Vector3f up = Vector3f.UNIT_Y;
+        Vector3f up = new Vector3f(Vector3f.UNIT_Y);
 	Vector3f dir = Vector3f.UNIT_Z.negate();
+	
         /** Move our camera to a correct place and orientation. */
         cam.setFrame( loc, left, up, dir );
         /** Signal that we've changed our camera's location/frustum. */

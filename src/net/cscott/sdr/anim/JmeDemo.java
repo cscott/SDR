@@ -1,6 +1,6 @@
 package net.cscott.sdr.anim;
 
-import com.jme.app.SimpleGame;
+import com.jme.app.*;
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.input.KeyBindingManager;
@@ -84,6 +84,7 @@ public class JmeDemo extends SdrGame {
    * @see SdrGame#initGame()
    */
   protected void sdrInitGame() {
+    setFrameRate(20); // limit frame rate: save our CPU for speech
     display.setTitle("SDR - jME demo");
     cam.setLocation(camStartup);
     cam.lookAt(new Vector3f(0,0,0), new Vector3f(0,0,1));
@@ -126,7 +127,7 @@ public class JmeDemo extends SdrGame {
     for (int i=0; i<8; i++) {
       checker[i] = new Node("checker"+i);
       checker[i].setLocalTranslation(new Vector3f(chx[i],chy[i],0));
-      //checker[i].setLocalRotation(new Quaternion(new float[] {0,0,(float)((i/2)*Math.PI/2) }));
+      checker[i].setLocalRotation(new Quaternion(new float[] {0,0,(float)((i/2)*Math.PI/2) }));
       checker[i].updateModelBound();
       checker[i].setTextureCombineMode(TextureState.COMBINE_FIRST);
       rootNode.attachChild(checker[i]);
