@@ -39,7 +39,7 @@ public class JmeDemo extends SimpleGame {
     LoggingSystem.getLogger().setLevel(java.util.logging.Level.OFF);
     JmeDemo app = new JmeDemo();
     URL url = JmeDemo.class.getClassLoader().getResource
-	("net/cscott/sdr/splash.png");
+	("net/cscott/sdr/anim/splash.png");
     app.setDialogBehaviour(FIRSTRUN_OR_NOCONFIGFILE_SHOW_PROPS_DIALOG, url);
     app.start();
   }
@@ -100,7 +100,7 @@ public class JmeDemo extends SimpleGame {
     ts.setTexture
 	(TextureManager.loadTexture
 	 (JmeDemo.class.getClassLoader().getResource
-	  ("net/cscott/sdr/floor.png"),
+	  ("net/cscott/sdr/anim/floor.png"),
 	  Texture.MM_LINEAR_LINEAR,
 	  Texture.FM_LINEAR));
     q.setRenderState(ts);
@@ -157,7 +157,7 @@ public class JmeDemo extends SimpleGame {
     arrowTS.setEnabled(true);
     arrowTS.setTexture(TextureManager.loadTexture
 		       (JmeDemo.class.getClassLoader().getResource
-			("net/cscott/sdr/arrow.png"),
+			("net/cscott/sdr/anim/arrow.png"),
 			Texture.MM_LINEAR_LINEAR,
 			Texture.FM_LINEAR));
     TextureState[] numTS = new TextureState[4];
@@ -166,7 +166,7 @@ public class JmeDemo extends SimpleGame {
       numTS[i].setEnabled(true);
       numTS[i].setTexture(TextureManager.loadTexture
 			  (JmeDemo.class.getClassLoader().getResource
-			   ("net/cscott/sdr/"+(i+1)+".png"),
+			   ("net/cscott/sdr/anim/"+(i+1)+".png"),
 			   Texture.MM_LINEAR_LINEAR,
 			   Texture.FM_LINEAR));
     }
