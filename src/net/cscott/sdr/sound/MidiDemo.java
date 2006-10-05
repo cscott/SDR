@@ -31,6 +31,10 @@ package net.cscott.sdr.sound;
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* for our test files, tempo is 120bpm, and resolution is 384 PPQ.  This
+ * means that a midi tick is 1/768s, which is more than adequate resolution
+ * for (say) 15-30fps animation. */
+
 import java.io.File;
 import java.io.IOException;
 
@@ -104,29 +108,25 @@ public class MidiDemo
 	final Sequencer sequencer;
 	final Synthesizer synthesizer;
 
-	/* We check if there is no command-line argument at all or the
-	 * first one is '-h'.  If so, we display the usage message and
-	 * exit.
-	 */
-	if (args.length == 0 || args[0].equals("-h"))
-	    {
-		printUsageAndExit();
-	    }
-
-	String	strFilename = args[0];
-	File	midiFile = new File(strFilename);
-
-	Soundbank soundbank = null;
-	if (args.length>1) {
-	    String sbFilename = args[1];
-	    File sbFile = new File(sbFilename);
-	    soundbank = MidiSystem.getSoundbank(sbFile);
-	}
+	/* Use high-quality soundbank. */
+	Soundbank soundbank = MidiSystem.getSoundbank
+	    (MidiDemo.class.getClassLoader().getResource
+	     ("net/cscott/sdr/audio/soundbank-deluxe.gm"));
+	soundbank=null;
 
 	/* We read in the MIDI file to a Sequence object.  This object
 	 * is set at the Sequencer later.
 	 */
-	Sequence sequence = MidiSystem.getSequence(midiFile);
+	Sequence sequence = MidiSystem.getSequence
+	    (MidiDemo.class.getClassLoader().getResource
+	     ("net/cscott/sdr/audio/saturday-night.midi"));
+
+	// print out some info about timing resolution.
+	System.out.println("Division type: "+sequence.getDivisionType());
+	System.out.println("Resolution: "+sequence.getResolution());
+	assert sequence.getDivisionType()==sequence.PPQ :
+	    "don't know how to sync non-PPQ tracks";
+	int ticksPerBeat = sequence.getResolution();
 
 	/* Now, we need a Sequencer to play the sequence.  Here, we
 	 * simply request the default sequencer without an implicitly
@@ -145,6 +145,10 @@ public class MidiDemo
 	 * created above.
 	 */
 	sequencer.setSequence(sequence);
+	System.out.println("Initial tempo: "+sequencer.getTempoInMPQ()+" MPQ");
+	// Mississippi Sawyer is *half note*=120; Java doesn't seem to grok
+	// this.  Something like the following is needed for these cases:
+	// sequencer.setTempoFactor(2f);
 
 	/* We try to get the default synthesizer, open() it and chain
 	 * it to the sequencer with a Transmitter-Receiver pair.
@@ -197,15 +201,6 @@ public class MidiDemo
 	/* Now, we can start over.
 	 */
 	sequencer.start();
-    }
-
-
-
-    private static void printUsageAndExit()
-    {
-	out("MidiDemo: usage:");
-	out("\tjava MidiDemo <midifile>");
-	System.exit(1);
     }
 
 
