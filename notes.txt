@@ -72,6 +72,14 @@ Bonus for recovering after a turkey.
 
 Maybe caller movement as well to receive bonuses.
 
+Meters: instantaneous 'flow', 'sequence length', 'originality'.
+Score is the integral of the instantaneous values.
+Originality is scored via histogram: sort calls by frequency, and
+display bar.  More points for 'flat' graph (no calls over- or
+under-used), and per-call score is positive if call frequency is below
+average or negative is call frequency is above average.
+
+
 ----
 splice 'miditimers' together to allow switching tunes?
  each time measurement is a rational number; pass this rational number
