@@ -32,7 +32,7 @@ import com.jme.util.geom.Debugger;
  * the <code>BaseGame</code> in a manner similar to <code>SimpleGame</code>,
  * but defers the really application-specific stuff to subclasses.
  * @author C. Scott Ananian
- * @version $Id: SdrBaseGame.java,v 1.1 2006-10-06 01:58:45 cananian Exp $
+ * @version $Id: SdrBaseGame.java,v 1.2 2006-10-06 19:05:17 cananian Exp $
  */
 public abstract class SdrBaseGame extends FixedFramerateGame {
     /** Our camera. */
@@ -58,45 +58,45 @@ public abstract class SdrBaseGame extends FixedFramerateGame {
      * @param interpolation unused
      */
     protected final void update( float interpolation /*unused*/ ) {
-	/* Update/calculate framerate. */
-	timer.update();
-	float tpf = timer.getTimePerFrame();
-	/* Check for key/mouse updates. */
-	input.update( tpf );
-	/* Execute anything on the update queue. */
-	GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
-	    .execute();
-	/* --- Here we could deal with some standard input commands --- */
-	if (KeyBindingManager.getKeyBindingManager()
-	    .isValidCommand("toggle_wire", false)) {
-	    wireState.setEnabled(!wireState.isEnabled());
-	    rootNode.updateRenderState();
-	}
-	if (KeyBindingManager.getKeyBindingManager()
-	    .isValidCommand("toggle_lights", false)) {
-	    lightState.setEnabled(!lightState.isEnabled());
-	    rootNode.updateRenderState();
-	}
-	if (KeyBindingManager.getKeyBindingManager()
-	    .isValidCommand("toggle_bounds", false)) {
-	    showBounds = !showBounds;
-	}
-	if (KeyBindingManager.getKeyBindingManager()
-	    .isValidCommand("toggle_depth", false )) {
+        /* Update/calculate framerate. */
+        timer.update();
+        float tpf = timer.getTimePerFrame();
+        /* Check for key/mouse updates. */
+        input.update( tpf );
+        /* Execute anything on the update queue. */
+        GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
+            .execute();
+        /* --- Here we could deal with some standard input commands --- */
+        if (KeyBindingManager.getKeyBindingManager()
+            .isValidCommand("toggle_wire", false)) {
+            wireState.setEnabled(!wireState.isEnabled());
+            rootNode.updateRenderState();
+        }
+        if (KeyBindingManager.getKeyBindingManager()
+            .isValidCommand("toggle_lights", false)) {
+            lightState.setEnabled(!lightState.isEnabled());
+            rootNode.updateRenderState();
+        }
+        if (KeyBindingManager.getKeyBindingManager()
+            .isValidCommand("toggle_bounds", false)) {
+            showBounds = !showBounds;
+        }
+        if (KeyBindingManager.getKeyBindingManager()
+            .isValidCommand("toggle_depth", false )) {
             showDepth = !showDepth;
         }
         if (KeyBindingManager.getKeyBindingManager()
-	    .isValidCommand("toggle_normals", false )) {
+            .isValidCommand("toggle_normals", false )) {
             showNormals = !showNormals;
         }
-	if (KeyBindingManager.getKeyBindingManager()
-	    .isValidCommand( "exit", false ) ) {
+        if (KeyBindingManager.getKeyBindingManager()
+            .isValidCommand( "exit", false ) ) {
             finish();
         }
-	/* Call subclass update. */
-	sdrUpdate();
-	/* Update controllers/render states/transforms/bounds for rootNode. */
-	rootNode.updateGeometricState(tpf, true);
+        /* Call subclass update. */
+        sdrUpdate();
+        /* Update controllers/render states/transforms/bounds for rootNode. */
+        rootNode.updateGeometricState(tpf, true);
     }
     /** Defined in subclasses for custom updating. */
     protected void sdrUpdate() { }
@@ -105,52 +105,52 @@ public abstract class SdrBaseGame extends FixedFramerateGame {
      * @param interpolation unused in this implementation.
      */
     protected final void render( float interpolation ) {
-	Renderer r = display.getRenderer();
-	/* Clears tracking info for # tri/vertices (do we care?) */
-	r.clearStatistics();
-	/* Clears the previously rendered frame. */
-	r.clearBuffers();
-	/* Execute anything on the render queue. */
-	GameTaskQueueManager.getManager().getQueue(GameTaskQueue.RENDER)
-	    .execute();
-	/* Draw the rootnode & all its children. */
-	r.draw(rootNode);
-	/* Call derived sdrRender() in children. */
-	sdrRender();
-	/* Show debugging information, if we feel like it. */
-	doDebug(r);
+        Renderer r = display.getRenderer();
+        /* Clears tracking info for # tri/vertices (do we care?) */
+        r.clearStatistics();
+        /* Clears the previously rendered frame. */
+        r.clearBuffers();
+        /* Execute anything on the render queue. */
+        GameTaskQueueManager.getManager().getQueue(GameTaskQueue.RENDER)
+            .execute();
+        /* Draw the rootnode & all its children. */
+        r.draw(rootNode);
+        /* Call derived sdrRender() in children. */
+        sdrRender();
+        /* Show debugging information, if we feel like it. */
+        doDebug(r);
     }
     /** Defined in subclasses for custom rendering. */
     protected void sdrRender() { }
 
     protected void doDebug(Renderer r) {
-	if (showBounds)
-	    Debugger.drawBounds( rootNode, r, true );
-	if (showNormals)
-	    Debugger.drawNormals( rootNode, r );
-	if (showDepth) {
-	    r.renderQueue();
-	    Debugger.drawBuffer(Texture.RTT_SOURCE_DEPTH,
-				Debugger.NORTHEAST, r);
-	}
+        if (showBounds)
+            Debugger.drawBounds( rootNode, r, true );
+        if (showNormals)
+            Debugger.drawNormals( rootNode, r );
+        if (showDepth) {
+            r.renderQueue();
+            Debugger.drawBuffer(Texture.RTT_SOURCE_DEPTH,
+                                Debugger.NORTHEAST, r);
+        }
     }
 
     /** Creates display, sets up camera, and binds keys. */
     protected void initSystem() {
-	LoggingSystem.getLogger().log( Level.INFO, getVersion());
+        LoggingSystem.getLogger().log( Level.INFO, getVersion());
         try {
             /** Get a DisplaySystem according to startup prefs. */
             display = DisplaySystem.getDisplaySystem(properties.getRenderer());
             LoggingSystem.getLogger().log
-		( Level.INFO, "Running on: "+display.getAdapter()+"\n"+
-		  "Driver version: "+display.getDriverVersion());
+                ( Level.INFO, "Running on: "+display.getAdapter()+"\n"+
+                  "Driver version: "+display.getDriverVersion());
             /** Create a window with the startup box's information. */
             display.createWindow(properties.getWidth(), properties.getHeight(),
-				 properties.getDepth(), properties.getFreq(),
-				 properties.getFullscreen() );
-	    /** Create an appropriate camera */
+                                 properties.getDepth(), properties.getFreq(),
+                                 properties.getFullscreen() );
+            /** Create an appropriate camera */
             cam = display.getRenderer().createCamera
-		( display.getWidth(), display.getHeight() );
+                ( display.getWidth(), display.getHeight() );
         } catch ( JmeException e ) {
             /**
              * If the displaysystem can't be initialized correctly, exit
@@ -163,14 +163,14 @@ public abstract class SdrBaseGame extends FixedFramerateGame {
         display.getRenderer().setBackgroundColor( ColorRGBA.black );
 
         /** Set up how our camera sees. */
-	cam.setFrustumPerspective( 45.0f, (float) display.getWidth()
-				   / (float) display.getHeight(), 1, 1000 );
+        cam.setFrustumPerspective( 45.0f, (float) display.getWidth()
+                                   / (float) display.getHeight(), 1, 1000 );
         cam.setParallelProjection( false );
         Vector3f loc = new Vector3f( 0.0f, 0.0f, 25.0f );
         Vector3f left = Vector3f.UNIT_X.negate();
         Vector3f up = new Vector3f(Vector3f.UNIT_Y);
-	Vector3f dir = Vector3f.UNIT_Z.negate();
-	
+        Vector3f dir = Vector3f.UNIT_Z.negate();
+        
         /** Move our camera to a correct place and orientation. */
         cam.setFrame( loc, left, up, dir );
         /** Signal that we've changed our camera's location/frustum. */
@@ -180,7 +180,7 @@ public abstract class SdrBaseGame extends FixedFramerateGame {
 
         /** Create a basic input controller. */
         FirstPersonHandler firstPersonHandler = new FirstPersonHandler
-	    ( cam, 50, 1 );
+            ( cam, 50, 1 );
         input = firstPersonHandler;
 
         /** Get a high resolution timer for FPS updates. */
@@ -194,23 +194,23 @@ public abstract class SdrBaseGame extends FixedFramerateGame {
          */
         display.getRenderer().enableStatistics( true );
 
-	/* for debugging */
+        /* for debugging */
         /** Assign key T to action "toggle_wire". */
         KeyBindingManager.getKeyBindingManager().set( "toggle_wire",
-                KeyInput.KEY_T );
+                                                      KeyInput.KEY_T );
         /** Assign key L to action "toggle_lights". */
         KeyBindingManager.getKeyBindingManager().set( "toggle_lights",
-                KeyInput.KEY_L );
+                                                      KeyInput.KEY_L );
         /** Assign key B to action "toggle_bounds". */
         KeyBindingManager.getKeyBindingManager().set( "toggle_bounds",
-                KeyInput.KEY_B );
+                                                      KeyInput.KEY_B );
         /** Assign key N to action "toggle_normals". */
         KeyBindingManager.getKeyBindingManager().set( "toggle_normals",
-                KeyInput.KEY_N );
+                                                      KeyInput.KEY_N );
         KeyBindingManager.getKeyBindingManager().set( "exit",
-                KeyInput.KEY_ESCAPE );
+                                                      KeyInput.KEY_ESCAPE );
         KeyBindingManager.getKeyBindingManager().set( "toggle_depth",
-                KeyInput.KEY_F3 );
+                                                      KeyInput.KEY_F3 );
     }
 
     /**
