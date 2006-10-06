@@ -43,6 +43,10 @@ public class MidiTimer extends com.jme.util.Timer {
 	lastTime = now;
 	return now;
     }
+    public synchronized float getBeatTime() {
+    	// a quarter note is a beat, so this is getTime()/seq.getResolution()
+    	return (float)getTime()/sequencer.getSequence().getResolution();
+    }
     public float getTimePerFrame() {
 	return frameTime / getResolutionFloat();
     }
