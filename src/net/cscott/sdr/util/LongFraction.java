@@ -49,11 +49,12 @@ import java.math.BigInteger;
  * @author Tim O'Brien
  * @author Pete Gieser
  * @since 2.0
- * @version $Id: LongFraction.java,v 1.1 2006-10-06 01:57:34 cananian Exp $
+ * @version $Id: LongFraction.java,v 1.2 2006-10-06 18:13:57 cananian Exp $
  */
 public class LongFraction extends Number implements Serializable, Comparable {
+	private static final long serialVersionUID = 3007100710917765882L;
 
-    /** Ensure serialization is backwards-compatible by
+	/** Ensure serialization is backwards-compatible by
      * reconstructing fractions as they are read in.
      * @return a current representation of the deserialized
      *         <code>Fraction</code>
