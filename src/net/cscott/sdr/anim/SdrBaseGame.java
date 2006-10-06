@@ -4,7 +4,6 @@ import java.util.logging.Level;
 
 import com.jme.app.FixedFramerateGame;
 import com.jme.image.Texture;
-import com.jme.input.FirstPersonHandler;
 import com.jme.input.InputHandler;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
@@ -32,7 +31,7 @@ import com.jme.util.geom.Debugger;
  * the <code>BaseGame</code> in a manner similar to <code>SimpleGame</code>,
  * but defers the really application-specific stuff to subclasses.
  * @author C. Scott Ananian
- * @version $Id: SdrBaseGame.java,v 1.2 2006-10-06 19:05:17 cananian Exp $
+ * @version $Id: SdrBaseGame.java,v 1.3 2006-10-06 21:29:08 cananian Exp $
  */
 public abstract class SdrBaseGame extends FixedFramerateGame {
     /** Our camera. */
@@ -179,8 +178,11 @@ public abstract class SdrBaseGame extends FixedFramerateGame {
         display.getRenderer().setCamera( cam );
 
         /** Create a basic input controller. */
-        FirstPersonHandler firstPersonHandler = new FirstPersonHandler
-            ( cam, 50, 1 );
+        SdrFirstPersonHandler firstPersonHandler = new SdrFirstPersonHandler
+            ( cam, 50, 1 ) {
+            @Override
+            public void onAction() { onCamera(); }
+        };
         input = firstPersonHandler;
 
         /** Get a high resolution timer for FPS updates. */
@@ -212,6 +214,8 @@ public abstract class SdrBaseGame extends FixedFramerateGame {
         KeyBindingManager.getKeyBindingManager().set( "toggle_depth",
                                                       KeyInput.KEY_F3 );
     }
+    /** This method is called whenever the camera is moved. */
+    public void onCamera() { }
 
     /**
      * Creates rootNode, lighting, and other basic render

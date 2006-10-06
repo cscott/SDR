@@ -4,6 +4,7 @@ import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
+import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -26,15 +27,17 @@ public class SdrGame extends SdrBaseGame {
     private final static Vector3f camStartup = new Vector3f(8,20,50);
     private final static Vector3f camCeiling = new Vector3f(0, -.1f, 11);
     private Vector3f camTarget = camCaller;
+    private Vector3f oldCamDirection=new Vector3f();
+    private Vector3f oldCamLocation=new Vector3f();
+    private float oldCamTime = 0;
+    private static final float SLEW_TIME = 2.0f; /* seconds */
 
-    /**
-     * Entry point for the test,
-     * @param args
-     */
-    public static void main(String[] args) {
-        SdrGame app = new SdrGame();
-        app.start();
+    public void onCamera() {
+        oldCamDirection.set(cam.getDirection());
+        oldCamLocation.set(cam.getLocation());
+        oldCamTime = timer.getTimeInSeconds();
     }
+
     public SdrGame() {
         LoggingSystem.getLogger().setLevel(java.util.logging.Level.OFF);
         URL url = SdrGame.class.getClassLoader().getResource      
@@ -46,31 +49,35 @@ public class SdrGame extends SdrBaseGame {
     protected void sdrUpdate() {
         // check for camera movement commands.
         if (KeyBindingManager.getKeyBindingManager().isValidCommand
-            ("camCaller",true))
+            ("camCaller",true)) {
             camTarget = camCaller;
+            onCamera();
+        }
         if (KeyBindingManager.getKeyBindingManager().isValidCommand
-            ("camCeiling",true))
+            ("camCeiling",true)) {
             camTarget = camCeiling;
+            onCamera();
+        }
     
         // move cam towards target /////////////
 
+        // allow more time for the move if the target is far away.
+        float dist = oldCamLocation.distance(camTarget);
+        float slew = SLEW_TIME*Math.min(4,Math.max(Math.abs(dist/5), 1));
         // move towards desired cam location
-        Vector3f pos = cam.getLocation();
-        float dist = pos.subtract(camTarget).length();
-        /* travel .1unit/frame, or else remaining distance if smaller */
-        float DIST_PER_FRAME = .1f;
-        float amt = (dist>DIST_PER_FRAME)?(DIST_PER_FRAME/dist):1f;
-        pos.interpolate(camTarget, amt);
-        cam.setLocation(pos);
+        float interp = Math.min((timer.getTimeInSeconds()-oldCamTime)/slew, 1);
+        // now apply acceleration factor.
+        interp = (interp<.5f)?(2*interp*interp):(interp*(4-2*interp)-1);
+        
+        Vector3f location = new Vector3f(oldCamLocation);
+        location.interpolate(camTarget,interp);
+        cam.setLocation(location);
 
-        // slew direction towards 0,0,0 with upvector 0,0,1
-        Vector3f newDirection = Vector3f.ZERO.subtract(pos).normalizeLocal();
-        Vector3f oldDirection = cam.getDirection();
-        float angle = oldDirection.angleBetween(newDirection);
-        float RAD_PER_FRAME=.01f;
-        amt = (angle>RAD_PER_FRAME)?(RAD_PER_FRAME/angle):1f;
-        oldDirection.interpolate(newDirection, amt);
-        Vector3f direction = oldDirection;
+        // target direction is from current location towards 0,0,0
+        // with upvector 0,0,1 (maybe should slew from current location?)
+        Vector3f targetDirection = Vector3f.ZERO.subtract(location).normalizeLocal();
+        Vector3f direction = new Vector3f(cam.getDirection());
+        direction.interpolate(targetDirection, interp);
 
         Vector3f worldUp = Vector3f.UNIT_Z; // world up vector
         Vector3f left = new Vector3f(worldUp).crossLocal(direction)
@@ -89,6 +96,7 @@ public class SdrGame extends SdrBaseGame {
         display.setTitle("SDR - jME demo");
         cam.setLocation(camStartup);
         cam.lookAt(new Vector3f(0,0,0), new Vector3f(0,0,1));
+        onCamera(); // initialize camera tracking.
 
         // create floor.
         Quad q = new Quad("floor", 10, 10);
