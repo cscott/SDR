@@ -1,6 +1,5 @@
 package net.cscott.sdr.anim;
 
-import com.jme.app.*;
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.input.KeyBindingManager;
@@ -9,12 +8,9 @@ import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
-import com.jme.scene.SharedNode;
-import com.jme.scene.Spatial;
 import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Cylinder;
 import com.jme.scene.shape.Quad;
-import com.jme.scene.shape.Sphere;
 import com.jme.scene.state.AlphaState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.TextureState;
@@ -23,7 +19,7 @@ import com.jme.util.TextureManager;
 
 import java.net.URL;
 
-public class JmeDemo extends SdrGame {
+public class JmeDemo extends SdrBaseGame {
 
   private Node[] checker = new Node[8];
   private final static Vector3f camCaller = new Vector3f(0, -8.5f, 9.4f);
@@ -81,7 +77,7 @@ public class JmeDemo extends SdrGame {
 
   /**
    * builds the trimesh.
-   * @see SdrGame#initGame()
+   * @see SdrBaseGame#initGame()
    */
   protected void sdrInitGame() {
     setFrameRate(20); // limit frame rate: save our CPU for speech

@@ -1,287 +1,204 @@
 package net.cscott.sdr.anim;
 
-import java.util.logging.Level;
-
-import com.jme.app.FixedFramerateGame;
+import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
-import com.jme.input.FirstPersonHandler;
-import com.jme.input.InputHandler;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
-import com.jme.input.MouseInput;
-import com.jme.input.joystick.JoystickInput;
-import com.jme.light.PointLight;
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
-import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
-import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
-import com.jme.scene.state.LightState;
-import com.jme.scene.state.WireframeState;
-import com.jme.scene.state.ZBufferState;
-import com.jme.system.DisplaySystem;
-import com.jme.system.JmeException;
-import com.jme.util.GameTaskQueue;
-import com.jme.util.GameTaskQueueManager;
+import com.jme.scene.shape.Box;
+import com.jme.scene.shape.Cylinder;
+import com.jme.scene.shape.Quad;
+import com.jme.scene.state.AlphaState;
+import com.jme.scene.state.MaterialState;
+import com.jme.scene.state.TextureState;
 import com.jme.util.LoggingSystem;
 import com.jme.util.TextureManager;
-import com.jme.util.Timer;
-import com.jme.util.geom.Debugger;
 
-/** <code>SdrGame</code> is a fixed-framerate base game class.  It sets up
- * the <code>BaseGame</code> in a manner similar to <code>SimpleGame</code>,
- * but defers the really application-specific stuff to subclasses.
- * @author C. Scott Ananian
- * @version $Id: SdrGame.java,v 1.2 2006-10-05 21:04:29 cananian Exp $
- */
-public abstract class SdrGame extends FixedFramerateGame {
-    /** Our camera. */
-    protected Camera cam;
-    /** Root node of our scene graph. */
-    protected Node rootNode;
-    /** Handles mouse/keyboard. */
-    protected InputHandler input;
-    /** High resolution timer for tempo-independent animation. */
-    protected Timer timer;
-    /** True if the renderer should display the depth buffer. */
-    protected boolean showDepth = false;
-    /** True if the renderer should display bounds. */
-    protected boolean showBounds = false;
-    /** True if the rnederer should display normals. */
-    protected boolean showNormals = false;
-    /** A wirestate to turn on and off for the rootNode. */
-    protected WireframeState wireState;
-    /** A lightstate to turn on and off for the rootNode. */
-    protected LightState lightState;
+import java.net.URL;
+
+public class SdrGame extends SdrBaseGame {
+
+  private Node[] checker = new Node[8];
+  private final static Vector3f camCaller = new Vector3f(0, -8.5f, 9.4f);
+  private final static Vector3f camStartup = new Vector3f(8,20,50);
+  private final static Vector3f camCeiling = new Vector3f(0, -.1f, 11);
+  private Vector3f camTarget = camCaller;
+
+  /**
+   * Entry point for the test,
+   * @param args
+   */
+  public static void main(String[] args) {
+    LoggingSystem.getLogger().setLevel(java.util.logging.Level.OFF);
+    SdrGame app = new SdrGame();
+    URL url = SdrGame.class.getClassLoader().getResource
+	("net/cscott/sdr/anim/splash.png");
+    app.setDialogBehaviour(FIRSTRUN_OR_NOCONFIGFILE_SHOW_PROPS_DIALOG, url);
+    app.start();
+  }
+
+  protected void sdrUpdate() {
+    // check for camera movement commands.
+    if (KeyBindingManager.getKeyBindingManager().isValidCommand
+	("camCaller",true))
+      camTarget = camCaller;
+    if (KeyBindingManager.getKeyBindingManager().isValidCommand
+	("camCeiling",true))
+      camTarget = camCeiling;
+    
+    // move cam towards target /////////////
+
+    // move towards desired cam location
+    Vector3f pos = cam.getLocation();
+    float dist = pos.subtract(camTarget).length();
+    /* travel .1unit/frame, or else remaining distance if smaller */
+    float DIST_PER_FRAME = .1f;
+    float amt = (dist>DIST_PER_FRAME)?(DIST_PER_FRAME/dist):1f;
+    pos.interpolate(camTarget, amt);
+    cam.setLocation(pos);
+
+    // slew direction towards 0,0,0 with upvector 0,0,1
+    Vector3f newDirection = Vector3f.ZERO.subtract(pos).normalizeLocal();
+    Vector3f oldDirection = cam.getDirection();
+    float angle = oldDirection.angleBetween(newDirection);
+    float RAD_PER_FRAME=.01f;
+    amt = (angle>RAD_PER_FRAME)?(RAD_PER_FRAME/angle):1f;
+    oldDirection.interpolate(newDirection, amt);
+    Vector3f direction = oldDirection;
+
+    Vector3f worldUp = Vector3f.UNIT_Z; // world up vector
+    Vector3f left = new Vector3f(worldUp).crossLocal(direction).normalizeLocal();
+    Vector3f up = new Vector3f(direction).crossLocal(left).normalizeLocal();
+    cam.setAxes(left, up, direction);
+  }
+
+  /**
+   * builds the trimesh.
+   * @see SdrBaseGame#initGame()
+   */
+  protected void sdrInitGame() {
+    setFrameRate(20); // limit frame rate: save our CPU for speech
+    display.setTitle("SDR - jME demo");
+    cam.setLocation(camStartup);
+    cam.lookAt(new Vector3f(0,0,0), new Vector3f(0,0,1));
+
+    // create floor.
+    Quad q = new Quad("floor", 10, 10);
+    q.setLocalTranslation(q.getCenter().negate());
+    q.setModelBound(new BoundingBox());
+    q.updateModelBound();
+    rootNode.attachChild(q);
+
+    TextureState ts = display.getRenderer().createTextureState();
+    ts.setEnabled(true);
+    ts.setTexture
+	(TextureManager.loadTexture
+	 (SdrGame.class.getClassLoader().getResource
+	  ("net/cscott/sdr/anim/floor.png"),
+	  Texture.MM_LINEAR_LINEAR,
+	  Texture.FM_LINEAR));
+    q.setRenderState(ts);
+    MaterialState ms = display.getRenderer().createMaterialState();
+    ms.setAmbient(new ColorRGBA(1,1,1,1));
+    q.setRenderState(ms);
+
+    // create materials for the couples
+    MaterialState[] mats = new MaterialState[4];
+    ColorRGBA[] colors = new ColorRGBA[] {
+	new ColorRGBA(1,10/255f,18/255f,1),
+	new ColorRGBA(0,135/255f,250/255f,1),
+	new ColorRGBA(240/255f,1,69/255f,1),
+	new ColorRGBA(151/255f,1,84/255f,1),
+    };
+    for (int i=0; i<mats.length; i++) {
+	mats[i] = display.getRenderer().createMaterialState();
+	mats[i].setAmbient(colors[i]);
+    }
+    // create nodes for the couples.
+    int[] chx = new int[] { -1, 1, 3, 3, 1, -1, -3, -3 };
+    int[] chy = new int[] { -3, -3, -1, 1, 3, 3, 1, -1 };
+    for (int i=0; i<8; i++) {
+      checker[i] = new Node("checker"+i);
+      checker[i].setLocalTranslation(new Vector3f(chx[i],chy[i],0));
+      checker[i].setLocalRotation(new Quaternion(new float[] {0,0,(float)((i/2)*Math.PI/2) }));
+      checker[i].updateModelBound();
+      checker[i].setTextureCombineMode(TextureState.COMBINE_FIRST);
+      rootNode.attachChild(checker[i]);
+    }
       
-    /** Updates the timer, input, and update queue.  Checks 'quit' key.
-     * @param interpolation unused
-     */
-    protected final void update( float interpolation /*unused*/ ) {
-	/* Update/calculate framerate. */
-	timer.update();
-	float tpf = timer.getTimePerFrame();
-	/* Check for key/mouse updates. */
-	input.update( tpf );
-	/* Execute anything on the update queue. */
-	GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
-	    .execute();
-	/* --- Here we could deal with some standard input commands --- */
-	if (KeyBindingManager.getKeyBindingManager()
-	    .isValidCommand("toggle_wire", false)) {
-	    wireState.setEnabled(!wireState.isEnabled());
-	    rootNode.updateRenderState();
-	}
-	if (KeyBindingManager.getKeyBindingManager()
-	    .isValidCommand("toggle_lights", false)) {
-	    lightState.setEnabled(!lightState.isEnabled());
-	    rootNode.updateRenderState();
-	}
-	if (KeyBindingManager.getKeyBindingManager()
-	    .isValidCommand("toggle_bounds", false)) {
-	    showBounds = !showBounds;
-	}
-	if (KeyBindingManager.getKeyBindingManager()
-	    .isValidCommand("toggle_depth", false )) {
-            showDepth = !showDepth;
-        }
-        if (KeyBindingManager.getKeyBindingManager()
-	    .isValidCommand("toggle_normals", false )) {
-            showNormals = !showNormals;
-        }
-	if (KeyBindingManager.getKeyBindingManager()
-	    .isValidCommand( "exit", false ) ) {
-            finish();
-        }
-	/* Call subclass update. */
-	sdrUpdate();
-	/* Update controllers/render states/transforms/bounds for rootNode. */
-	rootNode.updateGeometricState(tpf, true);
+    // now create boys.
+    for (int i=0; i<checker.length/2; i++) {
+	Box b = new Box("boy"+i,
+			new Vector3f(-0.7f, -0.7f, 0f),
+			new Vector3f(0.7f, 0.7f, 0.26f));
+	b.setLocalTranslation(new Vector3f(0,0,.01f));
+	b.setModelBound(new BoundingBox());
+	b.updateModelBound();
+	b.setRenderState(mats[i]);
+	checker[i*2].attachChild(b);
     }
-    /** Defined in subclasses for custom updating. */
-    protected void sdrUpdate() { }
-
-    /** This is called for every frame in BaseGame.start(), after update().
-     * @param interpolation unused in this implementation.
-     */
-    protected final void render( float interpolation ) {
-	Renderer r = display.getRenderer();
-	/* Clears tracking info for # tri/vertices (do we care?) */
-	r.clearStatistics();
-	/* Clears the previously rendered frame. */
-	r.clearBuffers();
-	/* Execute anything on the render queue. */
-	GameTaskQueueManager.getManager().getQueue(GameTaskQueue.RENDER)
-	    .execute();
-	/* Draw the rootnode & all its children. */
-	r.draw(rootNode);
-	/* Call derived sdrRender() in children. */
-	sdrRender();
-	/* Show debugging information, if we feel like it. */
-	doDebug(r);
+    // and girls
+    for (int i=0; i<checker.length/2; i++) {
+	Cylinder c = new Cylinder("girl"+i, 16, 16, 0.7f, 0.26f, true);
+	c.setLocalTranslation(new Vector3f(0,0,0.14f));
+	c.setModelBound(new BoundingBox());
+	c.updateModelBound();
+	c.setRenderState(mats[i]);
+	checker[i*2+1].attachChild(c);
     }
-    /** Defined in subclasses for custom rendering. */
-    protected void sdrRender() { }
-
-    protected void doDebug(Renderer r) {
-	if (showBounds)
-	    Debugger.drawBounds( rootNode, r, true );
-	if (showNormals)
-	    Debugger.drawNormals( rootNode, r );
-	if (showDepth) {
-	    r.renderQueue();
-	    Debugger.drawBuffer(Texture.RTT_SOURCE_DEPTH,
-				Debugger.NORTHEAST, r);
-	}
+    // and label them.
+    TextureState arrowTS = display.getRenderer().createTextureState();
+    arrowTS.setEnabled(true);
+    arrowTS.setTexture(TextureManager.loadTexture
+		       (SdrGame.class.getClassLoader().getResource
+			("net/cscott/sdr/anim/arrow.png"),
+			Texture.MM_LINEAR_LINEAR,
+			Texture.FM_LINEAR));
+    TextureState[] numTS = new TextureState[4];
+    for (int i=0; i<numTS.length; i++) {
+      numTS[i] = display.getRenderer().createTextureState();
+      numTS[i].setEnabled(true);
+      numTS[i].setTexture(TextureManager.loadTexture
+			  (SdrGame.class.getClassLoader().getResource
+			   ("net/cscott/sdr/anim/"+(i+1)+".png"),
+			   Texture.MM_LINEAR_LINEAR,
+			   Texture.FM_LINEAR));
+    }
+    AlphaState as = display.getRenderer().createAlphaState();
+    as.setBlendEnabled(true);
+    as.setSrcFunction(AlphaState.SB_SRC_ALPHA);
+    as.setDstFunction(AlphaState.SB_ONE_MINUS_SRC_ALPHA);
+    as.setTestEnabled(true);
+    as.setTestFunction(AlphaState.TF_GREATER);
+    
+    for (int i=0; i<8; i++) {
+      boolean isBoy = (0==(i%2));
+      // arrow
+      Quad qq = new Quad("arrow"+i, 1.3f, 1.3f);
+      qq.setLocalTranslation(new Vector3f(0,isBoy?0f:.1f,.3f));
+      qq.setRenderState(arrowTS);
+      qq.setRenderState(as);
+      qq.updateModelBound();
+      checker[i].attachChild(qq);
+      // number
+      qq = new Quad("num"+i, .4f, .4f);
+      qq.setLocalTranslation(new Vector3f(0,0,.32f));
+      qq.setRenderState(numTS[i/2]);
+      qq.setRenderState(as);
+      qq.updateModelBound();
+      checker[i].attachChild(qq);
     }
 
-    /** Creates display, sets up camera, and binds keys. */
-    protected void initSystem() {
-	LoggingSystem.getLogger().log( Level.INFO, getVersion());
-        try {
-            /** Get a DisplaySystem according to startup prefs. */
-            display = DisplaySystem.getDisplaySystem(properties.getRenderer());
-            LoggingSystem.getLogger().log
-		( Level.INFO, "Running on: "+display.getAdapter()+"\n"+
-		  "Driver version: "+display.getDriverVersion());
-            /** Create a window with the startup box's information. */
-            display.createWindow(properties.getWidth(), properties.getHeight(),
-				 properties.getDepth(), properties.getFreq(),
-				 properties.getFullscreen() );
-	    /** Create an appropriate camera */
-            cam = display.getRenderer().createCamera
-		( display.getWidth(), display.getHeight() );
-        } catch ( JmeException e ) {
-            /**
-             * If the displaysystem can't be initialized correctly, exit
-             * instantly.
-             */
-            e.printStackTrace();
-            System.exit( 1 );
-        }
-        /** Set a black background. */
-        display.getRenderer().setBackgroundColor( ColorRGBA.black );
+    // key bindings.
 
-        /** Set up how our camera sees. */
-	cam.setFrustumPerspective( 45.0f, (float) display.getWidth()
-				   / (float) display.getHeight(), 1, 1000 );
-        cam.setParallelProjection( false );
-        Vector3f loc = new Vector3f( 0.0f, 0.0f, 25.0f );
-        Vector3f left = Vector3f.UNIT_X.negate();
-        Vector3f up = new Vector3f(Vector3f.UNIT_Y);
-	Vector3f dir = Vector3f.UNIT_Z.negate();
-	
-        /** Move our camera to a correct place and orientation. */
-        cam.setFrame( loc, left, up, dir );
-        /** Signal that we've changed our camera's location/frustum. */
-        cam.update();
-        /** Assign the camera to this renderer. */
-        display.getRenderer().setCamera( cam );
-
-        /** Create a basic input controller. */
-        FirstPersonHandler firstPersonHandler = new FirstPersonHandler
-	    ( cam, 50, 1 );
-        input = firstPersonHandler;
-
-        /** Get a high resolution timer for FPS updates. */
-        timer = Timer.getTimer();
-
-        /** Sets the title of our display. */
-        display.setTitle( "SdrGame" );
-        /**
-         * Signal to the renderer that it should keep track of rendering
-         * information.
-         */
-        display.getRenderer().enableStatistics( true );
-
-	/* for debugging */
-        /** Assign key T to action "toggle_wire". */
-        KeyBindingManager.getKeyBindingManager().set( "toggle_wire",
-                KeyInput.KEY_T );
-        /** Assign key L to action "toggle_lights". */
-        KeyBindingManager.getKeyBindingManager().set( "toggle_lights",
-                KeyInput.KEY_L );
-        /** Assign key B to action "toggle_bounds". */
-        KeyBindingManager.getKeyBindingManager().set( "toggle_bounds",
-                KeyInput.KEY_B );
-        /** Assign key N to action "toggle_normals". */
-        KeyBindingManager.getKeyBindingManager().set( "toggle_normals",
-                KeyInput.KEY_N );
-        KeyBindingManager.getKeyBindingManager().set( "exit",
-                KeyInput.KEY_ESCAPE );
-        KeyBindingManager.getKeyBindingManager().set( "toggle_depth",
-                KeyInput.KEY_F3 );
-    }
-
-    /**
-     * Creates rootNode, lighting, and other basic render
-     * states. Called in BaseGame.start() after initSystem().
-     */
-    protected void initGame() {
-        /** Create rootNode */
-        rootNode = new Node( "rootNode" );
-
-        /** Create a wirestate to toggle on and off. Starts disabled
-         * with default width of 1 pixel. */
-        wireState = display.getRenderer().createWireframeState();
-        wireState.setEnabled( false );
-        rootNode.setRenderState( wireState );
-
-        /** Create a ZBuffer to display pixels closest to the camera
-         * above farther ones. */
-        ZBufferState buf = display.getRenderer().createZBufferState();
-        buf.setEnabled( true );
-        buf.setFunction( ZBufferState.CF_LEQUAL );
-        rootNode.setRenderState( buf );
-
-        // ---- LIGHTS
-        /** Set up a basic, default light. */
-        PointLight light = new PointLight();
-        light.setDiffuse( new ColorRGBA( 0.75f, 0.75f, 0.75f, 0.75f ) );
-        light.setAmbient( new ColorRGBA( 0.5f, 0.5f, 0.5f, 1.0f ) );
-        light.setLocation( new Vector3f( 100, 100, 100 ) );
-        light.setEnabled( true );
-
-        /** Attach the light to a lightState and the lightState to rootNode. */
-        lightState = display.getRenderer().createLightState();
-        lightState.setEnabled( true );
-        lightState.attach( light );
-        rootNode.setRenderState( lightState );
-
-        /** Let derived classes initialize. */
-        sdrInitGame();
-
-        timer.reset();
-
-        /** Update geometric and rendering information for the rootNode. */
-        rootNode.updateGeometricState( 0.0f, true );
-        rootNode.updateRenderState();
-    }
-
-    /**
-     * Called near end of initGame(). Must be defined by derived classes.
-     */
-    protected abstract void sdrInitGame();
-
-    /** Unused. */
-    protected void reinit() {
-        //do nothing
-    }
-
-    /** Cleans up the keyboard. */
-    protected void cleanup() {
-        LoggingSystem.getLogger().log( Level.INFO, "Cleaning up resources." );
-
-        TextureManager.doTextureCleanup();
-        KeyInput.destroyIfInitalized();
-        MouseInput.destroyIfInitalized();
-        JoystickInput.destroyIfInitalized();
-    }
-
-    /** Calls the quit of BaseGame to clean up the display and then
-     * closes the JVM. */
-    protected void quit() {
-        super.quit();
-        System.exit( 0 );
-    }
+    // Assign F5 to the command "caller camera"
+    KeyBindingManager.getKeyBindingManager().set
+      ("camCaller", KeyInput.KEY_F5);
+    // Assign F6 to the command "ceiling camera"
+    KeyBindingManager.getKeyBindingManager().set
+      ("camCeiling", KeyInput.KEY_F6);
+  }
 }
