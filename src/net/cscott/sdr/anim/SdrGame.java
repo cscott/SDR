@@ -32,14 +32,16 @@ public class SdrGame extends SdrBaseGame {
    * @param args
    */
   public static void main(String[] args) {
-    LoggingSystem.getLogger().setLevel(java.util.logging.Level.OFF);
     SdrGame app = new SdrGame();
-    URL url = SdrGame.class.getClassLoader().getResource
-	("net/cscott/sdr/anim/splash.png");
-    app.setDialogBehaviour(FIRSTRUN_OR_NOCONFIGFILE_SHOW_PROPS_DIALOG, url);
     app.start();
   }
-
+  public SdrGame() {
+	  LoggingSystem.getLogger().setLevel(java.util.logging.Level.OFF);
+	  URL url = SdrGame.class.getClassLoader().getResource	  
+			("net/cscott/sdr/anim/splash.png");
+	  this.setDialogBehaviour(FIRSTRUN_OR_NOCONFIGFILE_SHOW_PROPS_DIALOG, url);
+  }
+  
   protected void sdrUpdate() {
     // check for camera movement commands.
     if (KeyBindingManager.getKeyBindingManager().isValidCommand
