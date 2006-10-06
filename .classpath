@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="net/cscott/sdr/calls/" path="src" kind="src"/>
+	<classpathentry path="src" kind="src"/>
 	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
 	<classpathentry path="lib/sphinx/jsapi.jar" kind="lib"/>
 	<classpathentry path="lib/sphinx/sphinx4.jar" kind="lib"/>
@@ -31,5 +31,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry path="resources" kind="lib"/>
+	<classpathentry path="lib/commons-lang.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>

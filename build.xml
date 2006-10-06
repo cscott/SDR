@@ -16,6 +16,7 @@ Square Dance Revolution build file.
     <path id="classpath.path">
         <pathelement path="${classes_dir}"/>
 	<fileset dir="lib">
+	    <include name="*.jar" />
 	    <include name="sphinx/*.jar" />
 	    <include name="jme/*.jar" />
 	</fileset>
