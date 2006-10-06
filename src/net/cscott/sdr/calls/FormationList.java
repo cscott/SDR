@@ -1,6 +1,8 @@
 package net.cscott.sdr.calls;
 
 import net.cscott.sdr.calls.Formation.DancerInfo;
+import net.cscott.sdr.util.Fraction;
+
 import java.util.*;
 
 /** A list of common formations, specified with phantoms.

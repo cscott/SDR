@@ -43,21 +43,21 @@ public class Formation {
 	    .toString();
     }
     public static final Formation SQUARED_SET = new Formation
-	(new DancerInfo(COUPLE_1_BEAU,
+	(new DancerInfo(COUPLE_1_BOY,
 			Position.getGrid(-1,-3,Rotation.ZERO)),
-	 new DancerInfo(COUPLE_1_BELLE,
+	 new DancerInfo(COUPLE_1_GIRL,
 			Position.getGrid(+1,-3,Rotation.ZERO)),
-	 new DancerInfo(COUPLE_2_BEAU,
+	 new DancerInfo(COUPLE_2_BOY,
 			Position.getGrid(+3,-1,Rotation.THREE_QUARTERS)),
-	 new DancerInfo(COUPLE_2_BELLE,
+	 new DancerInfo(COUPLE_2_GIRL,
 			Position.getGrid(+3,+1,Rotation.THREE_QUARTERS)),
-	 new DancerInfo(COUPLE_3_BEAU,
+	 new DancerInfo(COUPLE_3_BOY,
 			Position.getGrid(+1,+3,Rotation.ONE_HALF)),
-	 new DancerInfo(COUPLE_3_BELLE,
+	 new DancerInfo(COUPLE_3_GIRL,
 			Position.getGrid(-1,+3,Rotation.ONE_HALF)),
-	 new DancerInfo(COUPLE_4_BEAU,
+	 new DancerInfo(COUPLE_4_BOY,
 			Position.getGrid(-3,+1,Rotation.ONE_QUARTER)),
-	 new DancerInfo(COUPLE_4_BELLE,
+	 new DancerInfo(COUPLE_4_GIRL,
 			Position.getGrid(-3,-1,Rotation.ONE_QUARTER))
 	 );
 

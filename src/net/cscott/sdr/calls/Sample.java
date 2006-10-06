@@ -1,5 +1,10 @@
 package net.cscott.sdr.calls;
 
+import java.util.Map;
+import java.util.Set;
+
+import net.cscott.sdr.util.Fraction;
+
 public class Sample {
 
     /* 'calls' are functions from formation->formation.

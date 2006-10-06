@@ -3,8 +3,8 @@ package net.cscott.sdr.calls;
 /** An object representing one of the eight real dancers.
  */
 public enum StandardDancer implements Dancer {
-    COUPLE_1_BEAU, COUPLE_1_BELLE, COUPLE_2_BEAU, COUPLE_2_BELLE,
-	COUPLE_3_BEAU, COUPLE_3_BELLE, COUPLE_4_BEAU, COUPLE_4_BELLE;
+    COUPLE_1_BOY, COUPLE_1_GIRL, COUPLE_2_BOY, COUPLE_2_GIRL,
+	COUPLE_3_BOY, COUPLE_3_GIRL, COUPLE_4_BOY, COUPLE_4_GIRL;
     
     /** Returns a couple number, from 1-4. */
     public int coupleNumber() { return 1+(ordinal()/2); }
