@@ -12,7 +12,7 @@ public <call> =
 	[<people>|double] pass thru |
 	half sashay |
 	[<people>] roll away |
-	[<people>] u turn back |
+	[<people>|<wave_select>] u turn back |
 	two <people> chain |
 	chain down the line |
 	lead (left | right) |
@@ -29,8 +29,8 @@ public <call> =
 	pass the ocean |
 	step thru | extend |
 	[left] swing thru |
-	<people> [cross] run |
-	[<people>|partner|couples] trade |
+	(<people>|<wave_select>) [cross] run |
+	[<people>|partner|couples|<wave_select>] trade |
 	zoom |
 	[reverse] flutter wheel |
 	veer [left|right] |
@@ -38,18 +38,19 @@ public <call> =
 	[split | box] circulate |
 	[left] turn thru |
 	[left] spin the top |
-	cast off three quarters |
+	[centers] cast off three quarters |
 	walk and dodge | <people> walk <people> dodge |
 	slide thru |
-	<people> [cross] fold |
+	(<people>|<wave_select>) [cross] fold |
 	dixie style to (a wave | an ocean wave) |
 	[left] tag the line [face (left|right)] |
 	half tag |
 	[left] scoot back |
-	[single|couples] hinge |
+	[single|couples|centers] hinge |
 	recycle;
 	
 <people> = <boys> | <girls> | <all>;
 <boys> = boys | men {boys};
 <girls> = girls | ladies {girls};
 <all> = all | every (one|body) {all};
+<wave_select> = centers | ends;
