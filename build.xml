@@ -10,7 +10,7 @@ Square Dance Revolution build file.
     <property name="api_dir"            value="${top_dir}/api"/>
     <property name="lib_dir"            value="${top_dir}/lib"/>
     <property name="src_dir"            value="${top_dir}/src"/>
-    <property name="classes_dir"	value="${top_dir}/classes"/>
+    <property name="classes_dir"	value="${top_dir}/bin"/>
     <property name="resources_dir"	value="${top_dir}/resources"/>
 
     <path id="classpath.path">
