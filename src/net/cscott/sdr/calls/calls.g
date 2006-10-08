@@ -9,6 +9,7 @@ header {
 class CallFileParser extends Parser;
 options {
   defaultErrorHandler = true;      // Don't generate parser error handlers
+  k=2;
 }
 
 
@@ -48,8 +49,8 @@ options {
     }
 
     // otherwise, if this is a java file, parse it!
-    else if ((f.getName().length()>5) &&
-             f.getName().substring(f.getName().length()-3).equals(".xl")) {
+    else if ((f.getName().length()>6) &&
+             f.getName().substring(f.getName().length()-6).equals(".calls")) {
       System.err.println("-------------------------------------------");
       System.err.println(f.getAbsolutePath());
       parseFile(new FileInputStream(f));
@@ -61,12 +62,19 @@ options {
     try {
       // Create a scanner that reads from the input stream passed to us
       CallFileLexer lexer = new CallFileLexer(s);
-
+	if (false) {
       // Create a parser that reads from the scanner
       CallFileParser parser = new CallFileParser(lexer);
 
       // start parsing at the compilationUnit rule
       parser.calllist();
+	}else {
+		Token t;
+		do {
+		t = lexer.nextToken();
+		System.out.println(t+" "+t.getType());
+		} while(t.getType()!=Token.EOF_TYPE);
+	}
     }
     catch (Exception e) {
       System.err.println("parser exception: "+e);
@@ -81,11 +89,11 @@ options {
 
 calllist
     : ( def )*
-      // end-of-file
+      EOF // end-of-file
     ;
 
 def
-    : DEF words
+    : DEF COLON words
       ( pieces )+
     ;
 
@@ -99,8 +107,8 @@ pieces
 
 /// restrictions/timing
 res
-    : IN NUMBER (options {greedy=true;} : pieces)+
-    | CONDITION body (options {greedy=true;} : pieces)+
+    : IN COLON number (options {greedy=true;} : pieces)+
+    | CONDITION COLON body (options {greedy=true;} : pieces)+
     ;
 
 
@@ -109,16 +117,16 @@ opt
     : (options {greedy=true;} : one_opt)+
     ;
 protected one_opt
-    : FROM body (options {greedy=true;} : pieces)+
+    : FROM COLON body (options {greedy=true;} : pieces)+
     ;
 
 seq
     : (options {greedy=true;} : one_seq)+ 
     ;
 protected one_seq
-	: PRIM prim_body
-	| CALL body
-	| PART pieces
+	: PRIM COLON prim_body
+	| CALL COLON body
+	| PART COLON pieces
 	;
 
 par
@@ -126,22 +134,26 @@ par
     ;
 
 protected one_par
-    : SELECT body (options {greedy=true;} : pieces)+
+    : SELECT COLON body (options {greedy=true;} : pieces)+
 	;
 
 body
 	: words (COMMA words)*
 	;
 words
-	: (word word)+
+	: (word word)+ // proper fractions show up as two words
 	;
 word
 	: IDENT
-	| NUMBER
+	| INTEGER (SLASH INTEGER)? // simple number
 	| LPAREN body RPAREN
 	;
 prim_body
-	: NUMBER COMMA NUMBER COMMA IDENT
+	: number COMMA number COMMA IDENT
+	;
+number
+	: (INTEGER)? INTEGER SLASH INTEGER
+	| INTEGER
 	;
 
 // @@endparser
@@ -159,86 +171,84 @@ options {
   k=2;                   // two characters of lookahead
 }
 
+{
+	private boolean afterIndent=false;//have we seen the line-initial ws yet?
+	// set tabs to 8, just round column up to next tab + 1
+	public void tab() {
+     	int t = 8;
+        int c = getColumn();
+        int nc = (((c-1)/t)+1)*t+1;
+        setColumn( nc );
+	}
+	public boolean done = false;
+	public void uponEOF()
+        throws TokenStreamException, CharStreamException
+    {
+        done=true;
+    }
+}
+
 // @@startrules
 
-// Single-line comments
 COMMENT
+  // Single-line comments
   : "//" (~('\n'|'\r'))*
     { $setType(Token.SKIP); }
+  // Block comments
+  | "/*" (options {greedy=false;} : STUFF_INCL_NEWLINES)* "*/"
+    { $setType(Token.SKIP); }
   ;
-
+protected STUFF_INCL_NEWLINES
+	: WSNL | ~('\n'|'\r');
 
 // Literals
-protected DIGIT
-  : '0'..'9'
-  ;
 
-INTLIT 
-  : (DIGIT)+
+INTEGER 
+  : ('-'|'+')? ('0'..'9')+
   ;
   
-CHARLIT
-  : '\''! . '\''!
-  ;
-
-// string literals
-STRING_LITERAL
-  : '"'!
-    ( '"' '"'!
-    | ~('"'|'\n'|'\r')
-    )*
-    ( '"'!
-    | // nothing -- write error message
-    )
-   ;
-
 // Whitespace -- ignored
 WS
-  : ( ' '
-    | '\t'
-    | '\f'
-
-    // handle newlines
-    | ( "\r\n"  // DOS/Windows
-      | '\r'    // Macintosh
+  : {getColumn()!=1}? // not start-of-line whitespace
+  ( ' ' | '\t' )
+    { $setType(Token.SKIP); }
+    ;
+WSNL
+  : // handle newlines
+      ( "\r" ("\n")?  // DOS/Windows / Macintosh
       | '\n'    // Unix
       )
       // increment the line count in the scanner
-      { newline(); }
-    )
-    { $setType(Token.SKIP); }
+      { newline(); this.afterIndent=false;
+      	$setType(Token.SKIP); }
   ;
+// whitespace at start of line used for INDENT processing
+INITIAL_WS
+	: {getColumn()==1 && !this.afterIndent}? // at start of line.
+	( ' ' | '\t' )*
+    { this.afterIndent=true; }
+    ;
 
-
-// an identifier.  Note that testLiterals is set to true!  This means
-// that after we match the rule, we look in the literals table to see
-// if it's a literal or really an identifer
 IDENT
-  options {testLiterals=true;}
   : ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9')*
+    { if (this.afterIndent) {
+    	if ($getText.equals("def")) $setType(DEF);
+    	else if ($getText.equals("from")) $setType(FROM);
+    	else if ($getText.equals("in")) $setType(IN);
+    	else if ($getText.equals("select")) $setType(SELECT);
+    	else if ($getText.equals("condition")) $setType(CONDITION);
+    	else if ($getText.equals("call")) $setType(CALL);
+    	else if ($getText.equals("part")) $setType(PART);
+      }
+    }
   ;
   
 // Operators
-DOT        : '.'   ;
-BECOMES    : ":="  ;
-COLON      : ':'   ;
-SEMI       : ';'   ;
 COMMA      : ','   ;
-EQUALS     : '='   ;
-LBRACKET   : '['   ;
-RBRACKET   : ']'   ;
-DOTDOT     : ".."  ;
+COLON      : ':'   ;
 LPAREN     : '('   ;
 RPAREN     : ')'   ;
-NOT_EQUALS : "/="  ;
-LT         : '<'   ;
-LTE        : "<="  ;
-GT         : '>'   ;
-GTE        : ">="  ;
-PLUS       : '+'   ;
-MINUS      : '-'   ;
-TIMES      : '*'   ;
-DIV        : '/'   ;
+SLASH      : '/'   ;
 // @@endrules
 
 // @@endscanner
