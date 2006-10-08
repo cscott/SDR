@@ -38,5 +38,10 @@
 	</classpathentry>
 	<classpathentry path="lib/commons-lang.jar" kind="lib"/>
 	<classpathentry sourcepath="ANTLR_HOME/antlrsrc.zip" path="ANTLR_HOME/antlr.jar" kind="var"/>
+	<classpathentry sourcepath="/home/cananian/Projects/JUtil/jutil-source.jar" path="lib/jutil.jar" kind="lib">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/home/cananian/Projects/JUtil/doc/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry path="bin" kind="output"/>
 </classpath>
