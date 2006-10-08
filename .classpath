@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/*~" path="src" kind="src"/>
+	<classpathentry excluding="**/*~|net/cscott/sdr/calls/Sample.java|net/cscott/sdr/calls/SelectorList.java" path="src" kind="src"/>
 	<classpathentry excluding="**/*~" path="resources" kind="src"/>
 	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
 	<classpathentry path="lib/sphinx/jsapi.jar" kind="lib">
@@ -37,5 +37,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry path="lib/commons-lang.jar" kind="lib"/>
+	<classpathentry sourcepath="ANTLR_HOME/antlrsrc.zip" path="ANTLR_HOME/antlr.jar" kind="var"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>
