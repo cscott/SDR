@@ -1,0 +1,148 @@
+// prim is <over,forward>; always dancer relative
+def: trade
+  from: COUPLE
+    in: 6
+    select: BEAU
+      prim: 1, 3, right
+      prim: -3,1, right
+    select: BELLE
+      prim: -1, 1, left
+      prim: -1, 1, left
+  from: MINIWAVE
+    in: 4
+    prim: 1,1,right
+    prim: 1,1,right
+  from: GENERAL LINE, TWO SELECTED
+    in: 4
+    condition: not(SELECTED ARE TBONED)
+    call: ignore the others (trade) /* this is a concept application */
+
+def: forward and back
+  in: 4
+  part:
+    from: FACING COUPLES
+      prim: 0, 1,none
+      prim: 0,-1,none
+
+def: dosado
+  in: 6
+  from: FACING DANCERS
+    prim: -1, 1,none
+    prim:  1, 1,none
+    prim:  1,-1,none
+    prim: -1,-1,none
+
+def: dosado to a wave
+  in: 6
+  part:
+    call: 3/4 (dosado)
+
+def: pass thru
+  in: 2
+  from: FACING DANCERS
+    call: 1/2 (dosado) // untraditional =)
+
+def: double pass thru
+  call: centers (pass thru), pass thru
+
+def: half sashay
+  in: 4
+  from: COUPLE
+    select: BEAU
+      prim: 1, -1, none
+      prim: 1,  1, none
+    select: BELLE
+      prim: -1, 1, none
+      prim: -1,-1, none
+
+def: roll away
+  in: 4
+  from: COUPLE
+    select: BEAU
+      part:
+        prim: 1/2, 0, none
+        prim: 1/2, 0, none
+      part:
+        prim: 1/2, 0, none
+        prim: 1/2, 0, none
+    select: BELLE
+      part:
+        prim: -1/2, 1, left
+        prim:  1, 1/2, left
+      part:
+        prim:  1/2,  1, left
+        prim:  1, -1/2, left
+
+def: u turn back
+  in: 2
+  select: BEAU
+    prim: 0, 0, right
+    prim: 0, 0, right
+  select: BELLE
+    prim: 0, 0, left
+    prim: 0, 0, left
+  // XXX: should catch if any selected dancer is neither beau nor belle
+  // XXX: and in that case we turn toward the center?
+  /*
+  select: ALL
+    call: twice (quarter in) // is this right?
+  */
+
+// maybe alias 'two boys chain', etc?
+def: two ladies chain // need breathing
+  in: 6
+  part:
+    from: FACING COUPLES
+      select: BELLE
+        part: // for timing purposes
+          prim: -1, 1/2, none
+          prim: -1, 1/2, none // pull by
+          prim: 1,  1/2, right
+        part: // courtesy turn
+          prim: -1,1,left
+          prim: -1,1,left
+          prim: -1,1,left
+      select: BEAU
+        part:
+          prim: 1, -1/2
+        part:
+          prim: 1,-1,left
+          prim: 1,-1,left
+          prim: 1,-1,left
+
+/*
+	chain down the line |
+	lead (left | right) |
+	right and left thru |
+	star thru |
+	bend the line |
+	[left] square thru (one | two | three | four)
+		[hands [(around | round)]] |
+	california twirl |
+	[reverse] wheel around |
+	box the gnat |
+	step to a wave |
+	balance |
+	pass the ocean |
+	step thru | extend |
+	[left] swing thru |
+	(<people>|<wave_select>) [cross] run |
+	[<people>|partner|couples|<wave_select>] trade |
+	zoom |
+	[reverse] flutter wheel |
+	veer [left|right] |
+	[left] touch (one|a) quarter |
+	[split | box] circulate | = do yr part trailers press ahead/zoom/pass tjru, leaders trade
+	[left] turn thru |
+	[left] spin the top | = center&end trade, centers cast 3/4, ends cntr rotate 1/4
+	[centers] cast off three quarters |
+	walk and dodge | <people> walk <people> dodge |
+	slide thru |
+	(<people>|<wave_select>) [cross] fold |
+	dixie style to (a wave | an ocean wave) |
+	[left] tag the line [face (left|right)] |
+	half tag |
+	[left] scoot back |
+	[single|couples|centers] hinge |
+	recycle;
+*/
