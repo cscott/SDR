@@ -103,3 +103,25 @@ From FAQ: http://www.jsresources.org/faq_midi.html#note_event_notification
  will trigger the switch to the 1 beat pickup.
  See also http://www.ii.uib.no/~espenr/midistreaming/ w/ regard to
  swapping sequencers for gapless playback.
+---------
+photos of barn.
+---------
+resolve:
+ search both backwards and forwards.
+ initially discard rotation information ('at home' getout vs not)
+  and search from both ends (from the start & from the goal)
+  discard actual call info after each deepen; just preserve the set of
+  formations reachable.  Then when showing results, we can re-do the
+  partial search from begin formation to end formation to show
+  options.  If we want an at-home getout, we can search w/in the
+  results, not discarding rotation info this time.  This reduces the
+  search space, since the forward-dancing stage doesn't have to
+  separately consider states which are identical except for rotation.
+  (Alternately, search state is tuple of 'dancer-independent'
+  formation and a set of possible dancer orderings (since there are
+  only 24 possible symmetric orderings).
+ user UI should allow you to select 'at home getouts', 'promenade
+ 1/4', 'promenade 1/2', 'promenade 3/4', etc. for singers.
+
+
+
