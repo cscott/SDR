@@ -85,7 +85,7 @@ Square Dance Revolution build file.
     <!-- *                                                        * -->
     <!-- ********************************************************** -->
     <target name="run"
-	    description="Runs the sphinx speech recognition demo."
+	    description="Runs the application."
 	    depends="jar">
 	    <java jar="${top_dir}/${ant.project.name}.jar"
 	          fork="true"
