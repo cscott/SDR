@@ -4,6 +4,7 @@ header {
 	import java.util.ArrayList;
 	import java.util.List;
 	import antlr.CommonToken;
+	import antlr.BaseAST;
 }
 // @@parser
 //-----------------------------------------------------------------------------
@@ -11,10 +12,17 @@ header {
 //-----------------------------------------------------------------------------
 class CallFileParser extends Parser;
 options {
-  defaultErrorHandler = true;      // Don't generate parser error handlers
   k=2;
+  buildAST=true;
 }
-
+tokens {
+	CALLLIST;
+	BODY;
+	ITEM;
+	SEQ;
+	PAR;
+	OPT;
+}
 
 // Define some methods and variables to use in the generated parser.
 {
@@ -72,6 +80,13 @@ options {
 
       // start parsing at the calllist rule
       parser.calllist();
+      System.out.println(parser.getAST().toStringList());
+/*
+	  Writer w = new OutputStreamWriter(System.out);
+      ((BaseAST)parser.getAST()).xmlSerialize(w);
+      w.write("\n");
+      w.flush();
+*/
 	}else {
 		Token t;
 		do {
@@ -157,15 +172,16 @@ options {
 
 calllist
     : ( def )*
-      EOF // end-of-file
+      EOF! // end-of-file
+	{ #calllist = #([CALLLIST], #calllist); }
     ;
 
 def
-    : DEF COLON words pieces
+    : DEF^ COLON! words pieces
     ;
 
 pieces
-    : INDENT pieces DEDENT
+    :! INDENT p:pieces DEDENT { #pieces = #p; }
     | opt
     | seq
     | par
@@ -174,49 +190,54 @@ pieces
 
 /// restrictions/timing
 res
-    : IN COLON number pieces
-    | CONDITION COLON body pieces
+    : IN^ COLON! number pieces
+    | CONDITION^ COLON! body pieces
     ;
 
 
 // options (exactly one of the list must be selected)
 opt
     : (options {greedy=true;} : one_opt)+
+	{ #opt = #([OPT, "opt"], #opt); }
     ;
 protected one_opt
-    : FROM COLON body pieces
+    : FROM^ COLON! body pieces
     ;
 
 seq
     : (options {greedy=true;} : one_seq)+ 
+	{ #seq = #([SEQ, "seq"], #seq); }
     ;
 protected one_seq
-	: PRIM COLON prim_body
-	| CALL COLON body
-	| PART COLON pieces
+	: PRIM^ COLON! prim_body
+	| CALL^ COLON! body
+	| PART^ COLON! pieces
 	;
 
 par
     : (options {greedy=true;} : one_par)+
+	{ #par = #([PAR, "par"], #par); }
     ;
 
 protected one_par
-    : SELECT COLON body pieces
+    : SELECT^ COLON! body pieces
 	;
 
 body
-	: words (COMMA words)*
+	: words (COMMA! words)*
+    { #body = #([BODY], #body); }
 	;
 words
 	: (word)+ // proper fractions show up as two words
+	{ #words = #([ITEM], #words); }
 	;
 word
 	: IDENT
 	| INTEGER (SLASH INTEGER)? // simple number
-	| LPAREN body RPAREN
+	| LPAREN! body RPAREN!
 	;
 prim_body
-	: number COMMA number COMMA IDENT
+	: number COMMA! number COMMA! IDENT
 	;
 number
 	: (INTEGER)? INTEGER SLASH INTEGER
