@@ -2,6 +2,19 @@ package net.cscott.sdr.calls;
 
 /** A list of calls. */
 public class CallList {
+    /*
+    public static final PathAndTiming trade(Formation f) {
+	return f.options
+	    (Formation.IS_COUPLE, couplesTrade(f),
+	     Formation.IS_MINIWAVE, miniwaveTrade(f),
+	     AND(Formation.IS_GENERAL_LINE,
+		 Formation.TWO_SELECTED,
+		 Formation.SELECTED_SAME_FACING), lineTrade(f));
+    }
+    public static final PathAndTiming
+	     f.foreach(COUPLE, new Call() 
+	TRADE = 
+
 
     public static final Call TRADE =
 
@@ -26,4 +39,5 @@ public class CallList {
 		      (new Primitive(1,1,QTR_RIGHT),
 		       null)),
 		     null));
+*/
 }
