@@ -1,6 +1,9 @@
 header {
 	package net.cscott.sdr.calls;
 	import java.io.*;
+	import java.util.ArrayList;
+	import java.util.List;
+	import antlr.CommonToken;
 }
 // @@parser
 //-----------------------------------------------------------------------------
@@ -62,17 +65,18 @@ options {
     try {
       // Create a scanner that reads from the input stream passed to us
       CallFileLexer lexer = new CallFileLexer(s);
-	if (false) {
+      IndentProcessor ip = new IndentProcessor(lexer);
+	if (true) {
       // Create a parser that reads from the scanner
-      CallFileParser parser = new CallFileParser(lexer);
+      CallFileParser parser = new CallFileParser(ip);
 
-      // start parsing at the compilationUnit rule
+      // start parsing at the calllist rule
       parser.calllist();
 	}else {
 		Token t;
 		do {
-		t = lexer.nextToken();
-		System.out.println(t+" "+t.getType());
+		t = (false)?lexer.nextToken():ip.nextToken();
+		System.out.println(t);
 		} while(t.getType()!=Token.EOF_TYPE);
 	}
     }
@@ -80,6 +84,70 @@ options {
       System.err.println("parser exception: "+e);
       e.printStackTrace();   // so we can get stack trace		
     }
+  }
+  // Inner class: a token stream filter to implement
+  // INDENT/DEDENT processing.
+  static class IndentProcessor
+	implements TokenStream {
+  	protected TokenStream input;
+	private final List<Token> pushBack = new ArrayList<Token>();
+  	private final List<Integer> stack = new ArrayList<Integer>();
+
+  	/** Stream to read tokens from */
+  	public IndentProcessor(TokenStream in) {
+    	input = in;
+    	pushTab(1);
+  	}
+  	private Token pullToken() throws TokenStreamException {
+  		if (pushBack.isEmpty()) return input.nextToken();
+  		else return pushBack.remove(pushBack.size()-1);
+  	}
+  	private void pushToken(Token t) { pushBack.add(t); }
+
+  	private void pushTab(int i) { stack.add(i); }
+  	private int peekTab() { return stack.get(stack.size()-1); }
+  	private int popTab() { return stack.remove(stack.size()-1); }
+
+  	/** This makes us a stream */
+  	public Token nextToken() throws TokenStreamException {
+  		Token t = pullToken();
+  		if (t.getType()==INITIAL_WS) {
+  			Token tt = t;
+  			// replace this with the appropriate INDENT/DEDENT
+  			// token.
+			t = pullToken(); // use the column of next.
+			if (t.getType()==INITIAL_WS) {
+				// discard original token: it was an empty line
+				pushToken(t); // try this one again
+				return nextToken(); // by tail-recursing
+			}
+			int column = t.getColumn();
+			if (column < peekTab()) {
+				pushToken(t); pushToken(tt);
+				popTab();
+				return buildToken(t, DEDENT);
+			}
+			if (column > peekTab()) {
+				pushToken(t); pushToken(tt);
+				pushTab(column);
+				return buildToken(t, INDENT);
+			}
+  		}
+  		if (t.getType()==Token.EOF_TYPE && peekTab()>1) {
+  			// make sure we emit all necessary dedents
+			pushToken(t);
+			popTab();
+			return buildToken(t, DEDENT);
+  		}
+    	return t; // "short circuit"
+  	}
+  	private Token buildToken(Token source, int type) {
+		Token t = new CommonToken
+		  (type, (type==INDENT)?"<indent>":(type==DEDENT)?"<dedent>":"<unk>");
+		t.setColumn(source.getColumn());
+		t.setLine(source.getLine());
+		return t; 
+  	}
   }
 }
 
@@ -93,8 +161,7 @@ calllist
     ;
 
 def
-    : DEF COLON words
-      ( pieces )+
+    : DEF COLON words pieces
     ;
 
 pieces
@@ -107,8 +174,8 @@ pieces
 
 /// restrictions/timing
 res
-    : IN COLON number (options {greedy=true;} : pieces)+
-    | CONDITION COLON body (options {greedy=true;} : pieces)+
+    : IN COLON number pieces
+    | CONDITION COLON body pieces
     ;
 
 
@@ -117,7 +184,7 @@ opt
     : (options {greedy=true;} : one_opt)+
     ;
 protected one_opt
-    : FROM COLON body (options {greedy=true;} : pieces)+
+    : FROM COLON body pieces
     ;
 
 seq
@@ -134,14 +201,14 @@ par
     ;
 
 protected one_par
-    : SELECT COLON body (options {greedy=true;} : pieces)+
+    : SELECT COLON body pieces
 	;
 
 body
 	: words (COMMA words)*
 	;
 words
-	: (word word)+ // proper fractions show up as two words
+	: (word)+ // proper fractions show up as two words
 	;
 word
 	: IDENT
@@ -215,7 +282,7 @@ WS
     ;
 WSNL
   : // handle newlines
-      ( "\r" ("\n")?  // DOS/Windows / Macintosh
+      ( '\r' (options {greedy=true;} :'\n')? // DOS/Windows / Macintosh
       | '\n'    // Unix
       )
       // increment the line count in the scanner
@@ -230,7 +297,8 @@ INITIAL_WS
     ;
 
 IDENT
-  : ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9')*
+  : {this.afterIndent||getColumn()!=1}?
+    ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9')*
     { if (this.afterIndent) {
     	if ($getText.equals("def")) $setType(DEF);
     	else if ($getText.equals("from")) $setType(FROM);
@@ -239,6 +307,7 @@ IDENT
     	else if ($getText.equals("condition")) $setType(CONDITION);
     	else if ($getText.equals("call")) $setType(CALL);
     	else if ($getText.equals("part")) $setType(PART);
+    	else if ($getText.equals("prim")) $setType(PRIM);
       }
     }
   ;

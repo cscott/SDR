@@ -104,7 +104,7 @@ def: two ladies chain // need breathing
           prim: -1,1,left
       select: BEAU
         part:
-          prim: 1, -1/2
+          prim: 1, -1/2, left
         part:
           prim: 1,-1,left
           prim: 1,-1,left
