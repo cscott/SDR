@@ -27,11 +27,19 @@ public class Position {
 	this.x = x; this.y = y; this.facing = facing;
     }
     /** Move the given distance in the facing direction. */
-    public Position stepForward(Fraction distance) {
+    public Position forwardStep(Fraction distance) {
 	assert facing!=null : "rotation unspecified!";
 	Fraction dx = facing.toX().multiply(distance);
 	Fraction dy = facing.toY().multiply(distance);
 	return new Position(x.add(dx), y.add(dy), facing);
+    }
+    /** Move the given distance perpendicular to the facing direction. */
+    public Position sideStep(Fraction distance) {
+        assert facing!=null : "rotation unspecified!";
+        Rotation f = facing.add(Fraction.ONE_HALF);
+        Fraction dx = f.toX().multiply(distance);
+        Fraction dy = f.toY().multiply(distance);
+        return new Position(x.add(dx), y.add(dy), facing);
     }
     /** Rotate the given amount from the current position. */
     public Position rotate(Fraction amount) {
