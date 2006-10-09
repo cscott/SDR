@@ -21,6 +21,10 @@ public class Rotation implements Comparable<Rotation> {
     Rotation add(Fraction f) {
 	return new Rotation(this.amount.add(f));
     }
+    /** Negate this rotation (mirror image). */
+    Rotation negate() {
+        return new Rotation(this.amount.negate());
+    }
     /** Normalize rotation to the range 0-1. */
     public Rotation normalize() {
 	Fraction dir = Fraction.valueOf
@@ -45,25 +49,54 @@ public class Rotation implements Comparable<Rotation> {
     /** Returns a human-readable description of the rotation.  The output
      *  is a valid input to <code>Rotation.valueOf(String)</code>. */
     public String toString() {
-	for (int i=0; i<eighths.length; i++)
-	    if (this.equals(eighths[i]))
-		return eighthNames[i];
 	return this.amount.toProperString();
+    }
+    /** Returns a human-readable description of the rotation.  The output
+     *  is a valid input to <code>Rotation.fromAbsoluteString(String)</code>. */
+    public String toAbsoluteString() {
+        for (int i=0; i<eighths.length; i++)
+            if (this.equals(eighths[i]))
+                return eighthNames[i];
+        return toString();
+    }
+    /** Returns a human-readable description of the rotation.  The output
+     *  is a valid input to <code>Rotation.fromAbsoluteString(String)</code>. */
+    public String toRelativeString() {
+        if (Rotation.ONE_QUARTER.equals(this)) return "right";
+        if (Rotation.ZERO.equals(this)) return "none";
+        if (Rotation.mONE_QUARTER.equals(this)) return "left";
+        return toString();
     }
     /** Converts a string (one of n/s/e/w, ne/nw/se/sw) to the
      * appropriate rotation object. 'n' is facing the caller.
      * The string 'o' can be given; it represents 'Rotation unspecified'
      * and <code>null</code> will be returned. */
-    public static Rotation valueOf(String s) {
+    public static Rotation fromAbsoluteString(String s) {
 	for (int i=0; i<eighthNames.length; i++)
 	    if (eighthNames[i].equalsIgnoreCase(s))
 		return eighths[i];
 	if (s.equalsIgnoreCase("o")) return null; // unspecified rotation
 	return new Rotation(Fraction.valueOf(s));
     }
+    /** Returns a Rotation corresponding to one of the strings "right", "left",
+     * or "none".
+     * @param s
+     * @return Rotation.ZERO if s is "none", Rotation.ONE_QUARTER if s is
+     *  "right", or Rotation.mONE_QUARTER if s is "left".
+     * @throws IllegalArgumentException if s is not one of "right", "left", 
+     *  "none", or a number.
+     */
+    public static Rotation fromRelativeString(String s) {
+        s = s.intern();
+        if (s=="right") return Rotation.ONE_QUARTER;
+        if (s=="none") return Rotation.ZERO;
+        if (s=="left") return Rotation.mONE_QUARTER;
+        return new Rotation(Fraction.valueOf(s));
+    }
     /** Common rotations. */
     public static final Rotation
-	ZERO = new Rotation(0,8),
+        mONE_QUARTER = new Rotation(-1,4),
+        ZERO = new Rotation(0,8),
 	ONE_EIGHTH = new Rotation(1,8),
 	ONE_QUARTER = new Rotation(2,8),
 	THREE_EIGHTHS = new Rotation(3,8),

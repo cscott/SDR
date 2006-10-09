@@ -154,7 +154,7 @@ public abstract class FormationList {
 	    L1: for (int x=0; x<sa[y].length(); x++) {
 		if (sa[y].charAt(x)==' ') continue;
 		Rotation r = (sa[y].charAt(x)=='o') ? null:
-		    Rotation.valueOf(sa[y].substring(x,x+1));
+		    Rotation.fromAbsoluteString(sa[y].substring(x,x+1));
 		ptl.add(new PositionAndTag(new Position(Fraction.valueOf(x,1).add(xoff),
 				    Fraction.valueOf(y,1).add(yoff).negate(),
 				    r),Collections.<Identifier>emptySet()/*XXX*/));

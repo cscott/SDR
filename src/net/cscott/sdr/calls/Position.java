@@ -64,7 +64,7 @@ public class Position {
      *  For convenience, the direction is specified as a string
      *  valid for <code>Rotation.valueOf(String)</code>. */
     public static Position getGrid(int x, int y, String direction) {
-	return getGrid(x,y,Rotation.valueOf(direction));
+	return getGrid(x,y,Rotation.fromAbsoluteString(direction));
     }
 
     // utility functions.
