@@ -1,5 +1,6 @@
+CallApply.java
 CallFileLexer.java
 CallFileParser.java
-CallFileParserTokenTypes.java
-CallFileParserTokenTypes.txt
+*TokenTypes.java
+*TokenTypes.txt
 *.smap
