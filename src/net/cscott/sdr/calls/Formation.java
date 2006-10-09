@@ -22,7 +22,7 @@ import net.cscott.jutil.*;
  * */
 public class Formation {
     public enum Identifier {
-        BEAU, BELLE, LEADER, TRAILER;
+        BEAU, BELLE, LEADER, TRAILER, POINT, CENTER, VERY_CENTER, END, OUTSIDE4;
     };
     private final Map<Dancer,Position> location;
     private final Map<Dancer,Set<Identifier>> tags;
@@ -115,10 +115,10 @@ public class Formation {
 	    this.tags = tags; this.isSelected = s;
 	}
 	DancerInfo(Dancer d, Position p, Identifier... tags) {
-            this(d,p,setOf(tags),true);
+            this(d,p,mkTags(tags),true);
         }
     }
-    private static Set<Identifier> setOf(Identifier... tags) {
+    static Set<Identifier> mkTags(Identifier... tags) {
         if (tags.length==0) return EnumSet.noneOf(Identifier.class);
         else return EnumSet.of(tags[0], tags);
     }

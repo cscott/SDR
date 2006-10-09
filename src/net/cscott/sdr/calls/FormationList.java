@@ -1,6 +1,8 @@
 package net.cscott.sdr.calls;
 
 import net.cscott.sdr.calls.Formation.DancerInfo;
+import net.cscott.sdr.calls.Formation.Identifier;
+import static net.cscott.sdr.calls.Formation.Identifier.*;
 import net.cscott.sdr.util.Fraction;
 
 import java.util.*;
@@ -40,26 +42,26 @@ public abstract class FormationList {
 	create("nn","nn","ss","ss");
     public static final Formation DIAMONDS = // only one version of these
 	create(// centers
-	       Position.getGrid(0,+3,"e"),
-	       Position.getGrid(0,+1,"w"),
-	       Position.getGrid(0,-1,"e"),
-	       Position.getGrid(0,-3,"w"),
+	       d(0,+3,"e", CENTER, BEAU),
+	       d(0,+1,"w", CENTER, VERY_CENTER, BEAU),
+	       d(0,-1,"e", CENTER, VERY_CENTER, BEAU),
+	       d(0,-3,"w", CENTER, BEAU),
 	       // points
-	       Position.getGrid(-3,+2,"n"),
-	       Position.getGrid(-3,-2,"n"),
-	       Position.getGrid(+3,+2,"s"),
-	       Position.getGrid(+3,-2,"s"));
+	       d(-3,+2,"n", POINT, END),
+	       d(-3,-2,"n", POINT, END),
+	       d(+3,+2,"s", POINT, END),
+	       d(+3,-2,"s", POINT, END));
     public static final Formation GENERAL_DIAMONDS = // too permissive?
 	create(// centers
-	       Position.getGrid(0,+3,"-"),
-	       Position.getGrid(0,+1,"-"),
-	       Position.getGrid(0,-1,"-"),
-	       Position.getGrid(0,-3,"-"),
+	       d(0,+3,"-", CENTER),
+	       d(0,+1,"-", CENTER, VERY_CENTER),
+	       d(0,-1,"-", CENTER, VERY_CENTER),
+	       d(0,-3,"-", CENTER),
 	       // points
-	       Position.getGrid(-3,+2,"|"),
-	       Position.getGrid(-3,-2,"|"),
-	       Position.getGrid(+3,+2,"|"),
-	       Position.getGrid(+3,-2,"|"));
+	       d(-3,+2,"|", END),
+	       d(-3,-2,"|", END),
+	       d(+3,+2,"|", END),
+	       d(+3,-2,"|", END));
     public static final Formation DOUBLE_PASS_THRU =
 	create("ss","ss","nn","nn");
     public static final Formation GENERAL_TAG =
@@ -73,23 +75,23 @@ public abstract class FormationList {
     public static final Formation EIGHT_CHAIN_THRU =
 	create("ss","nn","ss","nn");
     public static final Formation THAR =
-	create(Position.getGrid(0,-1,"w"),
-	       Position.getGrid(0,-3,"e"),
-	       Position.getGrid(+1,0,"s"),
-	       Position.getGrid(+3,0,"n"),
-	       Position.getGrid(0,+1,"e"),
-	       Position.getGrid(0,+3,"w"),
-	       Position.getGrid(-1,0,"n"),
-	       Position.getGrid(-3,0,"s"));
+	create(d(0,-1,"w", BEAU, CENTER),
+	       d(0,-3,"e", BEAU, END, OUTSIDE4),
+	       d(+1,0,"s", BEAU, CENTER),
+	       d(+3,0,"n", BEAU, END, OUTSIDE4),
+	       d(0,+1,"e", BEAU, CENTER),
+	       d(0,+3,"w", BEAU, END, OUTSIDE4),
+	       d(-1,0,"n", BEAU, CENTER),
+	       d(-3,0,"s", BEAU, END, OUTSIDE4));
     public static final Formation WRONG_WAY_THAR =
-	create(Position.getGrid(0,-1,"e"),
-	       Position.getGrid(0,-3,"w"),
-	       Position.getGrid(+1,0,"n"),
-	       Position.getGrid(+3,0,"s"),
-	       Position.getGrid(0,+1,"w"),
-	       Position.getGrid(0,+3,"e"),
-	       Position.getGrid(-1,0,"s"),
-	       Position.getGrid(-3,0,"n"));
+	create(d(0,-1,"e", BEAU, CENTER),
+	       d(0,-3,"w", BEAU, END, OUTSIDE4),
+	       d(+1,0,"n", BEAU, CENTER),
+	       d(+3,0,"s", BEAU, END, OUTSIDE4),
+	       d(0,+1,"w", BEAU, CENTER),
+	       d(0,+3,"e", BEAU, END, OUTSIDE4),
+	       d(-1,0,"s", BEAU, CENTER),
+	       d(-3,0,"n", BEAU, END, OUTSIDE4));
     public static final Formation TIDAL_WAVE =
 	create("e","w","e","w","e","w","e","w");
     public static final Formation TIDAL_TWO_FACED_LINE =
@@ -99,36 +101,48 @@ public abstract class FormationList {
     public static final Formation TRADE_BY =
 	create("nn","ss","nn","ss");
     public static final Formation PROMENADE =
-	create(Position.getGrid(0,-1,"e"),
-	       Position.getGrid(0,-3,"e"),
-	       Position.getGrid(+1,0,"n"),
-	       Position.getGrid(+3,0,"n"),
-	       Position.getGrid(0,+1,"w"),
-	       Position.getGrid(0,+3,"w"),
-	       Position.getGrid(-1,0,"s"),
-	       Position.getGrid(-3,0,"s"));
+	create(d(0,-1,"e", BEAU),
+	       d(0,-3,"e", BELLE),
+	       d(+1,0,"n", BEAU),
+	       d(+3,0,"n", BELLE),
+	       d(0,+1,"w", BEAU),
+	       d(0,+3,"w", BELLE),
+	       d(-1,0,"s", BEAU),
+	       d(-3,0,"s", BELLE));
     public static final Formation WRONG_WAY_PROMENADE =
-	create(Position.getGrid(0,-1,"w"),
-	       Position.getGrid(0,-3,"w"),
-	       Position.getGrid(+1,0,"s"),
-	       Position.getGrid(+3,0,"s"),
-	       Position.getGrid(0,+1,"e"),
-	       Position.getGrid(0,+3,"e"),
-	       Position.getGrid(-1,0,"n"),
-	       Position.getGrid(-3,0,"n"));
+	create(d(0,-1,"w",BELLE),
+	       d(0,-3,"w",BEAU),
+	       d(+1,0,"s",BELLE),
+	       d(+3,0,"s",BEAU),
+	       d(0,+1,"e",BELLE),
+	       d(0,+3,"e",BEAU),
+	       d(-1,0,"n",BELLE),
+	       d(-3,0,"n",BEAU));
 
-    private static Formation create(Position... pl) {
-	assert pl.length==8;
-	List<DancerInfo> dil = new ArrayList<DancerInfo>(pl.length);
-	for (Position p: pl)
-	    dil.add(new DancerInfo(new PhantomDancer(), p, true));
+    private static class PositionAndTag {
+        public final Position position;
+        public final Set<Identifier> tags;
+        PositionAndTag(Position position, Set<Identifier> tags) {
+            this.position = position; this.tags = tags;
+        }
+    }
+    private static PositionAndTag d(int x, int y, String facing,
+                                    Identifier... tags) {
+        return new PositionAndTag(Position.getGrid(x,y,facing),
+                Formation.mkTags(tags));
+    }
+    private static Formation create(PositionAndTag... ptl) {
+	List<DancerInfo> dil = new ArrayList<DancerInfo>(ptl.length);
+	for (PositionAndTag pt: ptl)
+	    dil.add(new DancerInfo(new PhantomDancer(), pt.position, pt.tags, true));
 	Formation f = new Formation(dil.toArray(new DancerInfo[dil.size()]));
 	_formations.add(f);// add to our static list.
 	return f;
     }
     // first string is 'top' of diagram (closest to caller)
+    @Deprecated // doesn't include tag information
     private static Formation create(String... sa) {
-	List<Position> pl = new ArrayList<Position>(8);
+	List<PositionAndTag> ptl = new ArrayList<PositionAndTag>(8);
 	// check validity
 	assert sa.length>0;
 	for (int i=0; i<sa.length-1; i++)
@@ -141,11 +155,11 @@ public abstract class FormationList {
 		if (sa[y].charAt(x)==' ') continue;
 		Rotation r = (sa[y].charAt(x)=='o') ? null:
 		    Rotation.valueOf(sa[y].substring(x,x+1));
-		pl.add(new Position(Fraction.valueOf(x,1).add(xoff),
+		ptl.add(new PositionAndTag(new Position(Fraction.valueOf(x,1).add(xoff),
 				    Fraction.valueOf(y,1).add(yoff).negate(),
-				    r));
+				    r),Collections.<Identifier>emptySet()/*XXX*/));
 	    }
-	return create(pl.toArray(new Position[pl.size()]));
+	return create(ptl.toArray(new PositionAndTag[ptl.size()]));
     }
 
     /** Self-test: spit out all formations to System.out. */
