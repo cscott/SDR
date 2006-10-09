@@ -1,8 +1,9 @@
 package net.cscott.sdr.calls;
 
 import net.cscott.sdr.calls.Formation.DancerInfo;
-import net.cscott.sdr.calls.Formation.Identifier;
-import static net.cscott.sdr.calls.Formation.Identifier.*;
+import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
+import net.cscott.sdr.calls.TaggedFormation.Tag;
+import static net.cscott.sdr.calls.TaggedFormation.Tag.*;
 import net.cscott.sdr.util.Fraction;
 
 import java.util.*;
@@ -121,21 +122,21 @@ public abstract class FormationList {
 
     private static class PositionAndTag {
         public final Position position;
-        public final Set<Identifier> tags;
-        PositionAndTag(Position position, Set<Identifier> tags) {
+        public final Set<Tag> tags;
+        PositionAndTag(Position position, Set<Tag> tags) {
             this.position = position; this.tags = tags;
         }
     }
     private static PositionAndTag d(int x, int y, String facing,
-                                    Identifier... tags) {
+                                    Tag... tags) {
         return new PositionAndTag(Position.getGrid(x,y,facing),
-                Formation.mkTags(tags));
+                TaggedFormation.mkTags(tags));
     }
-    private static Formation create(PositionAndTag... ptl) {
-	List<DancerInfo> dil = new ArrayList<DancerInfo>(ptl.length);
+    private static TaggedFormation create(PositionAndTag... ptl) {
+	List<TaggedDancerInfo> dil = new ArrayList<TaggedDancerInfo>(ptl.length);
 	for (PositionAndTag pt: ptl)
-	    dil.add(new DancerInfo(new PhantomDancer(), pt.position, pt.tags, true));
-	Formation f = new Formation(dil.toArray(new DancerInfo[dil.size()]));
+	    dil.add(new TaggedDancerInfo(new PhantomDancer(), pt.position, pt.tags, true));
+	TaggedFormation f = new TaggedFormation(dil.toArray(new TaggedDancerInfo[dil.size()]));
 	_formations.add(f);// add to our static list.
 	return f;
     }
@@ -157,7 +158,7 @@ public abstract class FormationList {
 		    Rotation.fromAbsoluteString(sa[y].substring(x,x+1));
 		ptl.add(new PositionAndTag(new Position(Fraction.valueOf(x,1).add(xoff),
 				    Fraction.valueOf(y,1).add(yoff).negate(),
-				    r),Collections.<Identifier>emptySet()/*XXX*/));
+				    r),Collections.<Tag>emptySet()/*XXX*/));
 	    }
 	return create(ptl.toArray(new PositionAndTag[ptl.size()]));
     }

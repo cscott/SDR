@@ -1,6 +1,5 @@
 package net.cscott.sdr.calls;
 
-import java.util.Iterator;
 
 /** A selector takes a formation and pulls out all instances of a selected
  *  sub-formation, numbering the dancers in each in a canonical order.
@@ -15,6 +14,19 @@ public abstract class Selector {
      *  subformation may be as large as the original formation -- or even
      *  larger, if phantoms are generated; it may also be as small as a
      *  single dancer.)  If the given formation can't be selected from
-     *  the current dancer configuration, returns 'null'. */
-    public abstract Iterator<Formation> apply(Formation f);
+     *  the current dancer configuration, throws NoMatchException. */
+    public abstract FormationMatch match(Formation f)
+        throws NoMatchException;
+
+    public static Selector valueOf(String s) {
+        // Look for this selector in the SelectorList
+        try {
+            return (Selector) SelectorList.class.getField
+                (s.toUpperCase().replace(' ','_')).get(null);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException("Bad selector name: "+s);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Can't access selector "+s+": "+e);
+        }
+    }
 }
