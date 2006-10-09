@@ -83,11 +83,22 @@ tokens {
       // start parsing at the calllist rule
       parser.calllist();
       System.out.println(parser.getAST().toStringList());
-
-	  if (true) { // fancy gui
+	  if (false) { // fancy gui
 	  	ASTFrame frame = new ASTFrame("Call AST", parser.getAST());
   		frame.setVisible(true);
 	  }
+      
+      // now build a proper AST.
+      CallBuilder builder = new CallBuilder();
+      builder.calllist(parser.getAST());
+	  for (String callName : builder.getMap().keySet()) {
+		System.out.println(callName+": "+builder.getMap().get(callName).toStringList());
+		/*
+	  	ASTFrame frame = new ASTFrame(callName, builder.getMap().get(callName));
+  		frame.setVisible(true);
+	 	*/
+	  }
+
 	}else {
 		Token t;
 		do {
@@ -174,7 +185,7 @@ tokens {
 calllist
     : ( def )*
       EOF! // end-of-file
-	{ #calllist = #([CALLLIST], #calllist); }
+	{ #calllist = #([CALLLIST, "call list"], #calllist); }
     ;
 
 def
@@ -226,11 +237,11 @@ protected one_par
 
 body
 	: words (COMMA! words)*
-    { #body = #([BODY], #body); }
+    { #body = #([BODY, "body"], #body); }
 	;
 words
 	: (word)+
-	{ #words = #([ITEM], #words); }
+	{ #words = #([ITEM, "item"], #words); }
 	;
 word
 	: IDENT
