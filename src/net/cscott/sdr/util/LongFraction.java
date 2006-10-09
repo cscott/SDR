@@ -49,7 +49,7 @@ import java.math.BigInteger;
  * @author Tim O'Brien
  * @author Pete Gieser
  * @since 2.0
- * @version $Id: LongFraction.java,v 1.2 2006-10-06 18:13:57 cananian Exp $
+ * @version $Id: LongFraction.java,v 1.3 2006-10-09 19:48:24 cananian Exp $
  */
 public class LongFraction extends Number implements Serializable, Comparable {
 	private static final long serialVersionUID = 3007100710917765882L;
@@ -1074,7 +1074,7 @@ public class LongFraction extends Number implements Serializable, Comparable {
                 toProperString = "0";
             } else if (numerator == denominator) {
                 toProperString = "1";
-            } else if ((numerator>0?-numerator:numerator) < -denominator) {
+            } else if ((numerator>0?-numerator:numerator) <= -denominator) {
                 // note that we do the magnitude comparison test above with
                 // NEGATIVE (not positive) numbers, since negative numbers
                 // have a larger range.  otherwise numerator==Long.MIN_VALUE
