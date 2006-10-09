@@ -3,8 +3,9 @@ header {
 	import java.io.*;
 	import java.util.ArrayList;
 	import java.util.List;
-	import antlr.CommonToken;
+	import antlr.debug.misc.ASTFrame;
 	import antlr.BaseAST;
+	import antlr.CommonToken;
 }
 // @@parser
 //-----------------------------------------------------------------------------
@@ -22,6 +23,7 @@ tokens {
 	SEQ;
 	PAR;
 	OPT;
+	NUMBER;
 }
 
 // Define some methods and variables to use in the generated parser.
@@ -81,12 +83,11 @@ tokens {
       // start parsing at the calllist rule
       parser.calllist();
       System.out.println(parser.getAST().toStringList());
-/*
-	  Writer w = new OutputStreamWriter(System.out);
-      ((BaseAST)parser.getAST()).xmlSerialize(w);
-      w.write("\n");
-      w.flush();
-*/
+
+	  if (true) { // fancy gui
+	  	ASTFrame frame = new ASTFrame("Call AST", parser.getAST());
+  		frame.setVisible(true);
+	  }
 	}else {
 		Token t;
 		do {
@@ -228,20 +229,25 @@ body
     { #body = #([BODY], #body); }
 	;
 words
-	: (word)+ // proper fractions show up as two words
+	: (word)+
 	{ #words = #([ITEM], #words); }
 	;
 word
 	: IDENT
-	| INTEGER (SLASH INTEGER)? // simple number
+	| number
 	| LPAREN! body RPAREN!
 	;
 prim_body
 	: number COMMA! number COMMA! IDENT
 	;
 number
-	: (INTEGER)? INTEGER SLASH INTEGER
-	| INTEGER
+	: ( (INTEGER)? INTEGER SLASH INTEGER ) =>
+	  (p:INTEGER)? n:INTEGER SLASH d:INTEGER
+	{ AST ast = astFactory.create(NUMBER, (p==null?"":(p.getText()+" "))+n.getText()+"/"+d.getText());
+	  #number = #(ast); }
+	| i:INTEGER
+	{ AST ast = astFactory.create(NUMBER, i.getText());
+	  #number = #(ast); }
 	;
 
 // @@endparser
