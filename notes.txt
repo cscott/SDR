@@ -123,5 +123,11 @@ resolve:
  user UI should allow you to select 'at home getouts', 'promenade
  1/4', 'promenade 1/2', 'promenade 3/4', etc. for singers.
 
+----
+IN should be applied both bottom-up and top-down.  'Inherent' length
+is propagated bottom up (where prim and part = 1, and IN resets to its
+spec), and then outermost INs are applied top-down, with available
+beats according proportionally to 'inherent' length.
 
-
+call application should reduce to a tree of nothing but IN PRIM and
+SELECT.  Otherwise keep tree as high as possible for concept application.
