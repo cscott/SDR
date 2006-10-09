@@ -89,14 +89,12 @@ tokens {
 	  }
       
       // now build a proper AST.
-      CallBuilder builder = new CallBuilder();
+      CallFileBuilder builder = new CallFileBuilder();
       builder.calllist(parser.getAST());
 	  for (String callName : builder.getMap().keySet()) {
 		System.out.println(callName+": "+builder.getMap().get(callName).toStringList());
-		/*
-	  	ASTFrame frame = new ASTFrame(callName, builder.getMap().get(callName));
-  		frame.setVisible(true);
-	 	*/
+	  	//ASTFrame frame = new ASTFrame(callName, builder.getMap().get(callName));
+  		//frame.setVisible(true);
 	  }
 
 	}else {
