@@ -40,6 +40,16 @@ public class Formation {
     public Position location(Dancer d) {
 	return location.get(d);
     }
+    public boolean isTagged(Dancer d, Identifier tag) {
+        return tags.get(d).contains(tag);
+    }
+    public Set<Dancer> tagged(Identifier tag) {
+        Set<Dancer> s = new HashSet<Dancer>();
+        for(Dancer d : tags.keySet())
+            if (tags.get(d).contains(tag))
+                s.add(d);
+        return s;
+    }
     // utility functions.
     public boolean equals(Object o) {
 	if (!(o instanceof Formation)) return false;
