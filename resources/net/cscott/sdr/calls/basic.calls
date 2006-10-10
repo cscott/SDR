@@ -12,8 +12,9 @@ def: trade
     in: 4
     prim: 1,1,right
     prim: 1,1,right
-  from: GENERAL LINE, TWO SELECTED
+  from: GENERAL LINE
     in: 4
+    condition: TWO SELECTED
     condition: not(SELECTED ARE TBONED)
     call: ignore the others (trade) /* this is a concept application */
 
