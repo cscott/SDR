@@ -1,6 +1,6 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.CallFileParserTokenTypes.FROM;
+import static net.cscott.sdr.calls.ast.TokenTypes.FROM;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import antlr.CommonAST;
 /** <code>OptCall</code> bundles a formation condition with a
  * <code>Comp</code>.
  * @author C. Scott Ananian
- * @version $Id: OptCall.java,v 1.2 2006-10-09 21:41:49 cananian Exp $
+ * @version $Id: OptCall.java,v 1.3 2006-10-10 18:57:30 cananian Exp $
  */
 public class OptCall extends CommonAST {
     Selector[] selector;

@@ -1,7 +1,8 @@
 // Build a 'proper' Call AST from the parse tree
 header {
-package net.cscott.sdr.calls;
+package net.cscott.sdr.calls.transform;
 
+import net.cscott.sdr.calls.Rotation;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.util.*;
 import java.util.*;
@@ -12,7 +13,7 @@ class CallFileBuilder extends TreeParser;
 options { importVocab = CallFileParser; }
 {
 	private final Map<String,Comp> callMap = new HashMap<String,Comp>();
-	Map<String,Comp> getMap() { return callMap; } // XXX for debugging.
+	public Map<String,Comp> getMap() { return callMap; } // XXX for debugging.
 }
     
 // @@startrules
@@ -26,28 +27,28 @@ def
 	{assert !callMap.containsKey(n) : "duplicate call: "+n; callMap.put(n, c);}
 	;
 	
-pieces returns [Comp r] { r = null; }
+pieces returns [Comp r=null;]
 	: r=opt
 	| r=seq
 	| r=par
 	| r=res ;
 	
-opt returns [Opt o]
-{ OptCall oc; List<OptCall> l = new ArrayList<OptCall>(); o = null; }
+opt returns [Opt o=null;]
+{ OptCall oc; List<OptCall> l = new ArrayList<OptCall>(); }
 	: #(OPT (oc=one_opt {l.add(oc);})+)
 	{ o = new Opt(l.toArray(new OptCall[l.size()])); }
 	;
-one_opt returns [OptCall oc] {List<String> f; Comp co; oc=null; }
+one_opt returns [OptCall oc=null;] {List<String> f; Comp co; }
 	: #(FROM f=simple_body co=pieces)
 	{ oc = new OptCall(f, co); }
 	;
-seq returns [Seq s]
-{ SeqCall sc; List<SeqCall> l = new ArrayList<SeqCall>(); s=null; }
+seq returns [Seq s=null;]
+{ SeqCall sc; List<SeqCall> l = new ArrayList<SeqCall>(); }
 	: #(SEQ (sc=one_seq {l.add(sc);})+)
 	{ s = new Seq(l.toArray(new SeqCall[l.size()])); }
 	;
-one_seq returns [SeqCall r]
-{ Fraction x, y; Comp d; r=null; }
+one_seq returns [SeqCall r=null;]
+{ Fraction x, y; Comp d; }
 	: #(PRIM x=number y=number dir:IDENT)
 	{ r = new Prim(x, y, Rotation.fromRelativeString(dir.getText()), Fraction.ONE); }
 	| #(CALL body)
@@ -56,36 +57,34 @@ one_seq returns [SeqCall r]
 	{ r = new Part(d); }
 	;
 
-par returns [Par p] { ParCall pc; List<ParCall> l=new ArrayList<ParCall>(); p=null;}
+par returns [Par p=null;] {ParCall pc;List<ParCall> l=new ArrayList<ParCall>();}
     : #(PAR (pc=one_par {l.add(pc);})+)
 	{ p = new Par(l.toArray(new ParCall[l.size()])); }
     ;
 
-one_par returns [ParCall pc]
-{ List<String> sl; Comp d; pc=null; }
+one_par returns [ParCall pc=null;]
+{ List<String> sl; Comp d; }
     : #(SELECT sl=simple_body d=pieces)
 	{ pc = new ParCall(sl, d); }
 	;
 // restrictions/timing
-res returns [Comp d]
-{ Fraction f; d=null; }
-    : #(IN f=number d=pieces)
-	{ d = new In(f, d); }
-    | #(CONDITION body d=pieces)
-	{ d = new If("XXX", d); }
+res returns [Comp c=null;] { Fraction f; }
+    : #(IN f=number c=pieces)
+	{ c = new In(f, c); }
+    | #(CONDITION body c=pieces)
+	{ c = new If("XXX", c); }
     ;
 	
-simple_words returns [String r]
+simple_words returns [String r="";]
 {
   StringBuilder sb = new StringBuilder();
   String s;
-  r = "";
 }
 	: #(ITEM s=simple_word {sb.append(s);}
 	        (s=simple_word {sb.append(' ');sb.append(s);})* )
       { r = sb.toString(); }
 	;
-simple_word returns [String r] { Fraction n; r = ""; }
+simple_word returns [String r="";] { Fraction n; }
 	: i:IDENT { r = i.getText(); }
 	| n=number { r = n.toString(); }
 	;
@@ -102,12 +101,12 @@ word
 	| number
 	| body
 	;
-body returns [AST ast] {ast=null;}
+body returns [AST ast=null;]
 	: #(BODY (words)+)
 	{ ast=#body; }
 	;
 
-number returns [Fraction r] { r = null; }
+number returns [Fraction r=null;]
 	: n:NUMBER
 	{ r = Fraction.valueOf(n.getText()); }
 	;

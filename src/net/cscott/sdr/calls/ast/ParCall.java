@@ -1,6 +1,6 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.CallFileParserTokenTypes.SELECT;
+import static net.cscott.sdr.calls.ast.TokenTypes.SELECT;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -15,7 +15,7 @@ import antlr.CommonAST;
  * the child to dancers which match the given
  * <code>TaggedFormation.Tag</code>s.
  * @author C. Scott Ananian
- * @version $Id: ParCall.java,v 1.3 2006-10-10 18:03:36 cananian Exp $
+ * @version $Id: ParCall.java,v 1.4 2006-10-10 18:57:30 cananian Exp $
  */
 public class ParCall extends CommonAST {
     public final Set<Tag> tags;

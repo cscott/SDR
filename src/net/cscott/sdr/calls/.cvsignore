@@ -1,7 +1,3 @@
-CallApply.java
-CallFileBuilder.java
-CallFileLexer.java
-CallFileParser.java
 *TokenTypes.java
 *TokenTypes.txt
 *.smap

@@ -1,7 +1,9 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.CallFileParserTokenTypes.PRIM;
+import static net.cscott.sdr.calls.ast.TokenTypes.PRIM;
+import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Rotation;
+import net.cscott.sdr.calls.Warp;
 import net.cscott.sdr.util.Fraction;
 
 /**
@@ -9,7 +11,7 @@ import net.cscott.sdr.util.Fraction;
  * forward and to the side, while rotating a certain amount, performed
  * in a certain number of beats.  PRIM is a leaf node in a our AST.
  * @author C. Scott Ananian
- * @version $Id: Prim.java,v 1.2 2006-10-10 18:03:15 cananian Exp $
+ * @version $Id: Prim.java,v 1.3 2006-10-10 18:57:30 cananian Exp $
  */
 public class Prim extends SeqCall {
     public final Fraction x, y;
@@ -30,5 +32,23 @@ public class Prim extends SeqCall {
     public Prim scale(Fraction f) {
         if (Fraction.ONE.equals(f)) return this;
         return new Prim(x, y, rot, time.multiply(f));
+    }
+    /** Apply a given Warp to this Prim: the given 'from' must be the
+     * unwarped absolute position from which this prim begins, since
+     * Warps are absolute while Prim coordinates are relative.
+     * @param from  unwarped absolute position at which this Prim begins
+     * @param w  the warp to apply
+     * @param time  the warp-relative time (0-1)
+     * @return a new Prim, which will, when started from w.warp(from,time)
+     *   end up a w.warp(to, time), where 'to' is where the prim would have
+     *   ended if started from 'from'.
+     */
+    public Prim warp(Position from, Warp w, Fraction time) {
+        Position to = from.forwardStep(y).sideStep(x).rotate(rot.amount);
+        Position wFrom = w.warp(from, time);
+        Position wTo = w.warp(to, time);
+        // XXX: extract x and y from wFrom and wTo
+        Rotation nRot = wTo.facing.subtract(wFrom.facing.amount);
+        return null; //XXX
     }
 }

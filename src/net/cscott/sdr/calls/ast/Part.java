@@ -1,6 +1,6 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.CallFileParserTokenTypes.PART;
+import static net.cscott.sdr.calls.ast.TokenTypes.PART;
 /**
  * <code>Part</code> denotes an indivisible part of a call.  Calls can not be
  * fractionalized below a <code>Part</code>.  It also denotes timing:
@@ -8,7 +8,7 @@ import static net.cscott.sdr.calls.CallFileParserTokenTypes.PART;
  * <code>In</code>. <code>Part</code> has exactly one child, which is a
  * <code>CallPiece</code>.
  * @author C. Scott Ananian
- * @version $Id: Part.java,v 1.1 2006-10-09 19:57:12 cananian Exp $
+ * @version $Id: Part.java,v 1.2 2006-10-10 18:57:30 cananian Exp $
  */
 public class Part extends SeqCall {
     public final Comp child;
