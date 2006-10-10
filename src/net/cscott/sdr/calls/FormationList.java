@@ -25,6 +25,7 @@ public abstract class FormationList {
     // 'create' should really be the constructor for a formation subclass.
     // things like 'three and one' lines really want another programming
     // "check formation" method which can be overridden??
+/*
     public static final Formation SQUARE =
 	create(" ss ","e  w","e  w"," nn ");
     public static final Formation FACING_LINES =
@@ -119,6 +120,12 @@ public abstract class FormationList {
 	       d(0,+3,"e",BEAU),
 	       d(-1,0,"n",BELLE),
 	       d(-3,0,"n",BEAU));
+*/
+    // 4-person formations
+    // 2-person formations
+    public static final TaggedFormation COUPLE =
+        create(d(-1,0,"n",BEAU),
+               d(+1,0,"n",BELLE));
 
     private static class PositionAndTag {
         public final Position position;
