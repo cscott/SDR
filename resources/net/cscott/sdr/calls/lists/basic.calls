@@ -1,3 +1,5 @@
+program: basic
+
 // prim is <over,forward>; always dancer relative
 def: trade
   from: COUPLE

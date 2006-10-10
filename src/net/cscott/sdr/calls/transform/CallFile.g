@@ -31,10 +31,14 @@ tokens {
 // @@startrules
 
 calllist
-    : ( def )*
+    : ( program )*
       EOF! // end-of-file
 	{ #calllist = #([CALLLIST, "call list"], #calllist); }
     ;
+
+program
+	: PROGRAM^ COLON! IDENT ( def )*
+	;
 
 def
     : DEF^ COLON! words pieces
@@ -259,6 +263,7 @@ IDENT
     	else if ($getText.equals("call")) $setType(CALL);
     	else if ($getText.equals("part")) $setType(PART);
     	else if ($getText.equals("prim")) $setType(PRIM);
+    	else if ($getText.equals("program")) $setType(PROGRAM);
       }
     }
   ;
