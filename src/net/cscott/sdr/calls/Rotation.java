@@ -18,11 +18,11 @@ public class Rotation implements Comparable<Rotation> {
 	this.amount = amount;
     }
     /** Add the given amount to this rotation direction. */
-    Rotation add(Fraction f) {
+    public Rotation add(Fraction f) {
 	return new Rotation(this.amount.add(f));
     }
     /** Negate this rotation (mirror image). */
-    Rotation negate() {
+    public Rotation negate() {
         return new Rotation(this.amount.negate());
     }
     /** Normalize rotation to the range 0-1. */
