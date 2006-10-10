@@ -47,6 +47,10 @@ public class Position {
 	if (amount.equals(Fraction.ZERO)) return this;
 	return new Position(x, y, facing.add(amount));
     }
+    /** Normalize the rotation of the given position. */
+    public Position normalize() {
+        return new Position(x, y, facing.normalize());
+    }
 
     // positions in the standard 4x4 grid.
     /** Returns a position corresponding to the standard square
@@ -77,10 +81,13 @@ public class Position {
 	    .append(facing, p.facing)
 	    .isEquals();
     }
+    private transient int hashCode = 0;
     public int hashCode() {
-	return new HashCodeBuilder()
-	    .append(x).append(y).append(facing)
-	    .toHashCode();
+        if (hashCode==0)
+            hashCode = new HashCodeBuilder()
+            .append(x).append(y).append(facing)
+            .toHashCode();
+        return hashCode;
     }
     public String toString() {
 	return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
