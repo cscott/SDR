@@ -9,7 +9,7 @@ import net.cscott.sdr.util.Fraction;
  * forward and to the side, while rotating a certain amount, performed
  * in a certain number of beats.  PRIM is a leaf node in a our AST.
  * @author C. Scott Ananian
- * @version $Id: Prim.java,v 1.1 2006-10-09 19:57:12 cananian Exp $
+ * @version $Id: Prim.java,v 1.2 2006-10-10 18:03:15 cananian Exp $
  */
 public class Prim extends SeqCall {
     public final Fraction x, y;
@@ -22,5 +22,13 @@ public class Prim extends SeqCall {
     public String toString() {
         return "("+super.toString()+" "+x.toProperString()+" "+y.toProperString()+
             " "+rot.toRelativeString()+" "+time.toProperString()+")";
+    }
+    
+    // Factory methods
+    /** Create a new Prim, identical to this one except that the time
+     * is scaled by the given fraction. */
+    public Prim scale(Fraction f) {
+        if (Fraction.ONE.equals(f)) return this;
+        return new Prim(x, y, rot, time.multiply(f));
     }
 }
