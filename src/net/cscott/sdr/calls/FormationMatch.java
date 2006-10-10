@@ -15,12 +15,19 @@ import java.util.*;
  * which will initially stretch the boxes.
  */
 public class FormationMatch {
-    public final List<TaggedFormation> taggedFormations;
-    public final Warp warp;
+    public final List<TaggedFormationAndWarp> matches;
 
-    public FormationMatch() {
-        this.warp = Warp.NONE;
-        this.taggedFormations = null;
-        // XXX TODO
+    public FormationMatch(List<TaggedFormationAndWarp> l) {
+        this.matches = Collections.unmodifiableList
+        (Arrays.asList
+                (l.toArray(new TaggedFormationAndWarp[l.size()])));
+    }
+
+    public static class TaggedFormationAndWarp {
+        public final TaggedFormation tf;
+        public final Warp w;
+        public TaggedFormationAndWarp(TaggedFormation tf, Warp w) {
+            this.tf = tf; this.w = w;
+        }
     }
 }

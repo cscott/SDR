@@ -2,12 +2,13 @@ package net.cscott.sdr.calls;
 
 import java.util.*;
 
+import net.cscott.sdr.calls.FormationMatch.TaggedFormationAndWarp;
 import net.cscott.sdr.util.Fraction;
 
 public abstract class GeneralFormationMatcher {
-    static enum MatchType { EXACT, GENERAL, TBONED }
+    public static enum MatchType { EXACT, GENERAL, TBONED }
     // currying, oh, my
-    public Selector makeSelector(final TaggedFormation goal) {
+    public static Selector makeSelector(final TaggedFormation goal) {
         return new Selector() {
             public FormationMatch match(Formation f) throws NoMatchException {
                 return doMatch(f, goal);
@@ -71,7 +72,26 @@ public abstract class GeneralFormationMatcher {
                 }
         assert found;
         // Create a FormationMatch object.
-        return null;
+        List<TaggedFormationAndWarp> ltfw =
+            new ArrayList<TaggedFormationAndWarp>(max);
+        while (bestMatch!=0) {
+            int dn0 = Long.numberOfTrailingZeros(bestMatch);
+            bestMatch &= ~(1L<<dn0); // clear that bit.
+            // XXX: NEED TO STORE THE ROTATION INFO
+            Position inP = mi.inputPositions.get(dn0); 
+            Position goP = mi.goalPositions.get(0);
+            Warp warp = Warp.rotateAndMove(goP, inP);
+            Map<Dancer,Dancer> map = new HashMap<Dancer,Dancer>();
+            for (int g=0; g<mi.goalPositions.size(); g++) {
+                goP = mi.goalPositions.get(g);
+                inP = warp.warp(goP, Fraction.ZERO);
+                int i = mi.inputPositionMap.get(zeroRotation(inP));
+                map.put(goalDancers.get(g), inputDancers.get(i));
+            }
+            TaggedFormation tf = new TaggedFormation(goal, map);
+            ltfw.add(new TaggedFormationAndWarp(tf, warp));
+        }
+        return new FormationMatch(ltfw);
     }
     private static class MatchInfo {
         final List<Long> matches = new ArrayList<Long>();
@@ -110,11 +130,11 @@ public abstract class GeneralFormationMatcher {
         // be assigned.
         Position pIn = mi.inputPositions.get(dancerNum);
         Position pGoal = mi.goalPositions.get(0).rotate(extraRot);
-        Position warp = computeWarp(pGoal, pIn);
+        Warp warp = Warp.rotateAndMove(pGoal, pIn);
         int gNum = 0;
         for (Position gp : mi.goalPositions) {
             // compute warped position.
-            gp = warp(gp, warp);
+            gp = warp.warp(gp, Fraction.ZERO);
             Position key = zeroRotation(gp);
             if (!mi.inputPositionMap.containsKey(key))
                 return false; // no input dancer at this goal position.
@@ -146,19 +166,6 @@ public abstract class GeneralFormationMatcher {
         mi.not0 = not0;
         return true; // this is a valid match.
     }
-    private static Position computeWarp(Position input, Position goal) {
-        Fraction rot = goal.facing.amount.subtract(input.facing.amount);
-        Position nIn = rotateCWAroundOrigin(input,rot);
-        Position p = new Position
-            (goal.x.subtract(nIn.x), goal.y.subtract(nIn.y),
-                    Rotation.ZERO.add(rot));
-        assert goal.equals(warp(input,p));
-        return p;
-    }
-    private static Position warp(Position p, Position warp) {
-        p = rotateCWAroundOrigin(p, warp.facing.amount);
-        return new Position(p.x.add(warp.x), p.y.add(warp.y), p.facing);
-    }
         
     private static void tryOne(MatchInfo mi, int dancerNum, long currentAssignment,
             long inFormation, long not0) {
@@ -182,16 +189,15 @@ public abstract class GeneralFormationMatcher {
     private static Position zeroRotation(Position p) {
         return new Position(p.x, p.y, Rotation.ZERO);
     }
-    private static Position rotateCWAroundOrigin(Position p, Fraction amt) {
-        return new Position(p.y, p.x.negate(),
-                p.facing.add(amt));
-    }
     private static Set<Position> rotated(Position p) {
         Set<Position> s = new HashSet<Position>(4);
         for (int i=0; i<4; i++) {
-            p = rotateCWAroundOrigin(p, Fraction.ONE_QUARTER).normalize();
+            p = ONE_QUARTER_AROUND_ORIGIN.warp(p, Fraction.ZERO);
             s.add(p);
         }
         return s;
     }
+    private static final Warp ONE_QUARTER_AROUND_ORIGIN = Warp.rotateAndMove
+           (Position.getGrid(0,0,Rotation.ZERO),
+            Position.getGrid(0,0,Rotation.ONE_QUARTER));
 }
