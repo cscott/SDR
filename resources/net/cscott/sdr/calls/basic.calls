@@ -8,15 +8,21 @@ def: trade
     select: BELLE
       prim: -1, 1, left
       prim: -1, 1, left
-  from: MINIWAVE
+  from: RH MINIWAVE
     in: 4
     prim: 1,1,right
     prim: 1,1,right
+  from: LH MINIWAVE
+    in: 4
+    prim: -1,1,left
+    prim: -1,1,left
+  /*
   from: GENERAL LINE
     in: 4
     condition: TWO SELECTED
     condition: not(SELECTED ARE TBONED)
-    call: ignore the others (trade) /* this is a concept application */
+    call: ignore the others (trade) // this is a concept application
+  */
 
 def: forward and back
   in: 4

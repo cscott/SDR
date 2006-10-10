@@ -122,10 +122,27 @@ public abstract class FormationList {
 	       d(-3,0,"n",BEAU));
 */
     // 4-person formations
+    public static final TaggedFormation FACING_COUPLES =
+        create(d(-1,-1,"n",BEAU,TRAILER),
+               d(+1,-1,"n",BELLE,TRAILER),
+               d(+1,+1,"s",BEAU,TRAILER),
+               d(-1,+1,"s",BELLE,TRAILER));
     // 2-person formations
     public static final TaggedFormation COUPLE =
         create(d(-1,0,"n",BEAU),
                d(+1,0,"n",BELLE));
+    public static final TaggedFormation RH_MINIWAVE =
+        create(d(-1,0,"n",BEAU),
+               d(+1,0,"s",BEAU));
+    public static final TaggedFormation LH_MINIWAVE =
+        create(d(-1,0,"s",BELLE),
+               d(+1,0,"n",BELLE));
+    public static final TaggedFormation FACING_DANCERS =
+        create(d(0,-1,"n",TRAILER),
+               d(0,+1,"s",TRAILER));
+    public static final TaggedFormation TANDEM =
+        create(d(0,-1,"n",TRAILER),
+               d(0,+1,"n",LEADER));
 
     private static class PositionAndTag {
         public final Position position;
