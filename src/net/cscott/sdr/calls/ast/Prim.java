@@ -1,6 +1,12 @@
 package net.cscott.sdr.calls.ast;
 
 import static net.cscott.sdr.calls.ast.TokenTypes.PRIM;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import antlr.collections.AST;
+
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Rotation;
 import net.cscott.sdr.calls.Warp;
@@ -11,7 +17,7 @@ import net.cscott.sdr.util.Fraction;
  * forward and to the side, while rotating a certain amount, performed
  * in a certain number of beats.  PRIM is a leaf node in a our AST.
  * @author C. Scott Ananian
- * @version $Id: Prim.java,v 1.3 2006-10-10 18:57:30 cananian Exp $
+ * @version $Id: Prim.java,v 1.4 2006-10-10 19:31:03 cananian Exp $
  */
 public class Prim extends SeqCall {
     public final Fraction x, y;
@@ -21,10 +27,38 @@ public class Prim extends SeqCall {
         super(PRIM);
         this.x = x; this.y = y; this.rot = rot; this.time = time;
     }
+    // enforce leaf-ness
+    @Override
+    public void addChild(AST c) { throw new RuntimeException("leaf"); }
+    @Override
+    public void setFirstChild(AST c) { throw new RuntimeException("leaf"); }
+   
+    // utility methods
+    @Override
     public String toString() {
         return "("+super.toString()+" "+x.toProperString()+" "+y.toProperString()+
             " "+rot.toRelativeString()+" "+time.toProperString()+")";
     }
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Prim)) return false;
+        Prim p = (Prim) o;
+        return new EqualsBuilder()
+            .append(x, p.x)
+            .append(y, p.y)
+            .append(rot, p.rot)
+            .append(time, p.time)
+            .isEquals();
+    }
+    @Override
+    public int hashCode() {
+        if (hashCode==0)
+            hashCode = new HashCodeBuilder()
+            .append(x).append(y).append(rot).append(time)
+            .toHashCode();
+        return hashCode;
+    }
+    private transient int hashCode = 0;
     
     // Factory methods
     /** Create a new Prim, identical to this one except that the time
@@ -47,8 +81,21 @@ public class Prim extends SeqCall {
         Position to = from.forwardStep(y).sideStep(x).rotate(rot.amount);
         Position wFrom = w.warp(from, time);
         Position wTo = w.warp(to, time);
-        // XXX: extract x and y from wFrom and wTo
+        // wTo - wFrom
+        Fraction wX = wTo.x.subtract(wFrom.x);
+        Fraction wY = wTo.y.subtract(wFrom.y);
+        // get x,y components of the warped 'from' facing dir vector.
+        Fraction rX = wFrom.facing.toX(); // x, y components of facing dir vector
+        Fraction rY = wFrom.facing.toY();
+        // now (rX,rY) is a 'forward step' (ie, y) and (rY,-rX) is a 'side step' (x)
+        // use dot product to project (wTo-wFrom) onto these vectors.
+        Fraction nX = wX.multiply(rY).subtract(wY.multiply(rX));
+        Fraction nY = wX.multiply(rX).add(wY.multiply(rY));
+        // in comparison, deriving the new rotation direction is easy
         Rotation nRot = wTo.facing.subtract(wFrom.facing.amount);
-        return null; //XXX
+        // okay, make the result!
+        Prim p = new Prim(nX,nY,nRot,this.time);
+        // return old object if results were identical
+        return (this.equals(p)) ? this : p;
     }
 }
