@@ -15,7 +15,7 @@ import antlr.CommonAST;
  * the child to dancers which match the given
  * <code>TaggedFormation.Tag</code>s.
  * @author C. Scott Ananian
- * @version $Id: ParCall.java,v 1.2 2006-10-10 15:38:39 cananian Exp $
+ * @version $Id: ParCall.java,v 1.3 2006-10-10 18:03:36 cananian Exp $
  */
 public class ParCall extends CommonAST {
     public final Set<Tag> tags;
@@ -23,7 +23,7 @@ public class ParCall extends CommonAST {
     public ParCall(List<String> tags, Comp child) {
         this(parseTags(tags), child);
     }
-    public ParCall(EnumSet<Tag> tags, Comp child) {
+    public ParCall(Set<Tag> tags, Comp child) {
         super();
         initialize(SELECT, "Select");
         addChild(child);
