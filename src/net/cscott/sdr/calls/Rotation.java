@@ -21,6 +21,10 @@ public class Rotation implements Comparable<Rotation> {
     public Rotation add(Fraction f) {
 	return new Rotation(this.amount.add(f));
     }
+    /** Subtract the given amount from this rotation direction. */
+    public Rotation subtract(Fraction f) {
+        return new Rotation(this.amount.subtract(f));
+    }
     /** Negate this rotation (mirror image). */
     public Rotation negate() {
         return new Rotation(this.amount.negate());
