@@ -42,16 +42,19 @@ public class Rotation implements Comparable<Rotation> {
 	return this.amount.compareTo(r.amount);
     }
     /** Rotations are equal if their normalized values are equal. */
+    @Override
     public boolean equals(Object o) {
 	if (!(o instanceof Rotation)) return false;
 	return normalize().amount.equals(((Rotation)o).normalize().amount);
     }
     /** Hashcode of the normalized value. */
+    @Override
     public int hashCode() {
 	return normalize().amount.hashCode();
     }
     /** Returns a human-readable description of the rotation.  The output
      *  is a valid input to <code>Rotation.valueOf(String)</code>. */
+    @Override
     public String toString() {
 	return this.amount.toProperString();
     }

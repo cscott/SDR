@@ -72,6 +72,7 @@ public class Position {
     }
 
     // utility functions.
+    @Override
     public boolean equals(Object o) {
 	if (!(o instanceof Position)) return false;
 	Position p = (Position) o;
@@ -81,7 +82,7 @@ public class Position {
 	    .append(facing, p.facing)
 	    .isEquals();
     }
-    private transient int hashCode = 0;
+    @Override
     public int hashCode() {
         if (hashCode==0)
             hashCode = new HashCodeBuilder()
@@ -89,6 +90,8 @@ public class Position {
             .toHashCode();
         return hashCode;
     }
+    private transient int hashCode = 0;
+    @Override
     public String toString() {
 	return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
 	    .append("x", x.toProperString())
