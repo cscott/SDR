@@ -1,4 +1,4 @@
-package net.cscott.sdr.calls;
+package net.cscott.sdr.calls.lists;
 
 /** A list of calls. */
 public class CallList {
