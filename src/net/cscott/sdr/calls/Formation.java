@@ -92,6 +92,17 @@ public class Formation {
                 Position.getGrid(-1,+1,Rotation.ONE_HALF))
         );
 
+    public Formation(Formation f, Map<Dancer,Dancer> map) {
+        Map<Dancer,Position> m = new HashMap<Dancer,Position>();
+        Set<Dancer> s = new HashSet<Dancer>();
+        for (Map.Entry<Dancer,Position> me : f.location.entrySet())
+            m.put(map.get(me.getKey()), me.getValue());
+        for (Dancer d : f.selected)
+            s.add(map.get(d));
+        this.location = Collections.unmodifiableMap(m);
+        this.selected = Collections.unmodifiableSet(s);
+    }
+    
     Formation(DancerInfo... dis) {
 	Map<Dancer,Position> m = new HashMap<Dancer,Position>();
 	Set<Dancer> s = new HashSet<Dancer>();

@@ -54,6 +54,14 @@ public class TaggedFormation extends Formation {
             .toString();
     }
 
+    public TaggedFormation(TaggedFormation tf, Map<Dancer,Dancer> map) {
+        super(tf, map);
+        Map<Dancer,Set<Tag>> t = new HashMap<Dancer,Set<Tag>>();
+        for (Map.Entry<Dancer,Set<Tag>> me : tf.tags.entrySet())
+            t.put(map.get(me.getKey()), me.getValue());
+        this.tags = Collections.unmodifiableMap(t);
+    }
+    
     TaggedFormation(TaggedDancerInfo... dis) {
         super((Formation.DancerInfo[])dis);
         Map<Dancer,Set<Tag>> t = new HashMap<Dancer,Set<Tag>>();
