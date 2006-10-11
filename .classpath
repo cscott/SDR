@@ -8,7 +8,11 @@
 			<attribute name="javadoc_location" value="http://java.sun.com/products/java-media/speech/forDevelopers/jsapi-doc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry path="lib/sphinx/sphinx4.jar" kind="lib"/>
+	<classpathentry path="lib/sphinx/sphinx4.jar" kind="lib">
+		<attributes>
+			<attribute name="javadoc_location" value="http://cmusphinx.sourceforge.net/sphinx4/javadoc/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry path="lib/sphinx/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar" kind="lib"/>
 	<classpathentry path="lib/jme/jinput.jar" kind="lib"/>
 	<classpathentry sourcepath="jme-dist/jme/src" path="lib/jme/jme.jar" kind="lib">
@@ -48,7 +52,7 @@
 	</classpathentry>
 	<classpathentry sourcepath="/home/cananian/Projects/JUtil/jutil-source.jar" path="lib/jutil.jar" kind="lib">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/home/cananian/Projects/JUtil/doc/"/>
+			<attribute name="javadoc_location" value="http://cscott.net/Projects/JUtil/jutil-latest/doc/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry path="bin" kind="output"/>
