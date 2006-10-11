@@ -2,9 +2,8 @@
 header {
 package net.cscott.sdr.calls.transform;
 
-import net.cscott.sdr.calls.Rotation;
+import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.ast.*;
-import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.util.*;
 import java.util.*;
 }
@@ -16,7 +15,7 @@ options { importVocab = CallFileParser; defaultErrorHandler=false; }
 	private final Set<String> names = new HashSet<String>();
 	private final List<Call> db = new ArrayList<Call>();
 	public List<Call> getList() { return Collections.unmodifiableList(db); }
-	String currentProgram = null;
+	Program currentProgram = null;
 }
     
 // @@startrules
@@ -25,7 +24,7 @@ calllist
 	;
 
 program
-	: #(PROGRAM id:IDENT { currentProgram=id.getText(); } (def)* )
+	: #(PROGRAM id:IDENT { currentProgram=Program.valueOf(id.getText().toUpperCase()); } (def)* )
 	;
 
 def

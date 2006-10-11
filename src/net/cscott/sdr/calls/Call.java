@@ -11,7 +11,7 @@ import net.cscott.sdr.calls.ast.Comp;
  * arguments (numbers, selectors, or other calls) to result in a
  * <code>Comp</code> AST tree.
  * @author C. Scott Ananian
- * @version $Id: Call.java,v 1.2 2006-10-11 03:33:26 cananian Exp $
+ * @version $Id: Call.java,v 1.3 2006-10-11 14:48:55 cananian Exp $
  */
 public abstract class Call {
     /** The name of this call, in our internal jargon.  This is not
@@ -20,7 +20,7 @@ public abstract class Call {
      * representation regular and unambigous. */
     public abstract String getName();
     /** The program to which this particular call or concept belongs. */
-    public abstract String getProgram();
+    public abstract Program getProgram();
     /** Evaluates this call with the arguments given in the <code>Apply</code>
      * node, returning a <code>Comp</code>.  Note that the first child of the
      * <code>Apply</code> should be a CALLNAME leaf which matches the
@@ -30,7 +30,7 @@ public abstract class Call {
     
     @Override
     public final String toString() {
-        return getName()+"["+getProgram()+"]";
+        return getName()+"["+getProgram().toString().toLowerCase()+"]";
     }
     @Override
     public final int hashCode() { return getName().hashCode(); }
@@ -42,13 +42,13 @@ public abstract class Call {
     }
 
     /** Create a Call object for a 'simple call' which takes no arguments. */
-    public static Call makeSimpleCall(final String name, final String program,
+    public static Call makeSimpleCall(final String name, final Program program,
                                       final Comp def) {
         return new Call() {
             @Override
             public String getName() { return name; }
             @Override
-            public String getProgram() { return program; }
+            public Program getProgram() { return program; }
             @Override
             public Comp apply(Apply ast) {
                 assert ast.getFirstChild().getText().equals(name);

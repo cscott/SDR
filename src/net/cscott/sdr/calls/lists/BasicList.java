@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.cscott.sdr.calls.Call;
+import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.Warp;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
@@ -17,7 +18,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.2 2006-10-11 05:28:10 cananian Exp $
+ * @version $Id: BasicList.java,v 1.3 2006-10-11 14:48:59 cananian Exp $
  */
 public class BasicList {
     // hide constructor.
@@ -29,7 +30,7 @@ public class BasicList {
         @Override
         public final String getName() { return name; }
         @Override
-        public final String getProgram() { return "basic"; }
+        public final Program getProgram() { return Program.BASIC; }
     }
     
     public static final Call SQUARE_THRU = new BasicCall("square thru") {
