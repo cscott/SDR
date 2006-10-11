@@ -11,7 +11,7 @@ import net.cscott.sdr.calls.ast.Comp;
  * arguments (numbers, selectors, or other calls) to result in a
  * <code>Comp</code> AST tree.
  * @author C. Scott Ananian
- * @version $Id: Call.java,v 1.3 2006-10-11 14:48:55 cananian Exp $
+ * @version $Id: Call.java,v 1.4 2006-10-11 18:50:03 cananian Exp $
  */
 public abstract class Call {
     /** The name of this call, in our internal jargon.  This is not
@@ -21,10 +21,10 @@ public abstract class Call {
     public abstract String getName();
     /** The program to which this particular call or concept belongs. */
     public abstract Program getProgram();
-    /** Evaluates this call with the arguments given in the <code>Apply</code>
-     * node, returning a <code>Comp</code>.  Note that the first child of the
-     * <code>Apply</code> should be a CALLNAME leaf which matches the
-     * result of <code>this.getName()</code>.
+    /** Evaluates this call with the arguments given in the {@link Apply}
+     * node, returning a {@link Comp}.  Note that the
+     * {@link Apply#callName callName} field of {@code ast} should
+     * match @{link Call#getName(String) this.getName()}.
      */
     public abstract Comp apply(Apply ast);
     
