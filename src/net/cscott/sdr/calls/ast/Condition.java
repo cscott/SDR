@@ -4,14 +4,15 @@ import static net.cscott.sdr.calls.ast.TokenTypes.CONDITION;
 
 import java.util.*;
 
+import net.cscott.sdr.calls.*;
 import net.cscott.sdr.util.Fraction;
 
-/** <code>Condition</code> represents an invocation of condition query, with
- * zero or more arguments.  The arguments can be text strings, numbers, or
+/** <code>Condition</code> represents an invocation of a {@link Predicate}
+ * with zero or more arguments.  The arguments can be text strings, numbers, or
  * sub-conditions; see the {@link Apply} class for the basic idea.
  * String and number arguments are stored as zero-argument conditions.
  * @author C. Scott Ananian
- * @version $Id: Condition.java,v 1.1 2006-10-11 18:27:32 cananian Exp $
+ * @version $Id: Condition.java,v 1.2 2006-10-11 18:50:38 cananian Exp $
  */
 public class Condition extends SeqCall {
     public final String condition;
