@@ -53,6 +53,7 @@ def: pass thru
 
 def: double pass thru
   in: 4
+  condition: and(PROGRAM AT LEAST(basic), true) // for testing only
   call: centers (pass thru), pass thru
 
 def: pull by

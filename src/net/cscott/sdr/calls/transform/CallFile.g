@@ -39,7 +39,7 @@ program
 	;
 
 def
-    : DEF^ COLON! words pieces
+    : DEF^ COLON! simple_words pieces
     ;
 
 pieces
@@ -53,7 +53,8 @@ pieces
 /// restrictions/timing
 res
     : IN^ COLON! number pieces
-    | CONDITION^ COLON! body pieces
+    |! CONDITION COLON c:cond_body p:pieces
+	{ #res = #([IF, "if"], c, p); }
     ;
 
 
@@ -85,19 +86,6 @@ protected one_par
     : SELECT^ COLON! simple_body pieces
 	;
 
-body
-	: words (COMMA! words)*
-    { #body = #([BODY, "body"], #body); }
-	;
-words
-	: (word)+
-	{ #words = #([ITEM, "item"], #words); }
-	;
-word
-	: IDENT
-	| number
-	| LPAREN! body RPAREN!
-	;
 simple_word
 	: IDENT
 	| number
@@ -125,6 +113,13 @@ call_body_seq!
 	: c1:call_body (COMMA! c2:call_body)*
 	{ #call_body_seq = (#c2==null) ? #c1 :
 		#([APPLY,"apply"], #([ITEM,"item"],[IDENT,"and"]), c1, c2); }
+	;
+cond_body!
+	: w:simple_words ( LPAREN! a:cond_args RPAREN! )?
+	{ #cond_body = #([CONDITION, "cond"], w, a); }
+	;
+cond_args
+	: cond_body (COMMA! cond_body)*
 	;
 prim_body
 	: number COMMA! number COMMA! IDENT
@@ -279,7 +274,7 @@ INITIAL_WS
 
 IDENT
   : {this.afterIndent||getColumn()!=1}?
-    ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9')*
+    ('_'|'a'..'z'|'A'..'Z') ('_'|'a'..'z'|'A'..'Z'|'0'..'9')*
     { if (this.afterIndent) {
     	if ($getText.equals("def")) $setType(DEF);
     	else if ($getText.equals("from")) $setType(FROM);

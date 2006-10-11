@@ -76,11 +76,11 @@ one_par returns [ParCall pc=null]
 	{ pc = new ParCall(sl, d); }
 	;
 // restrictions/timing
-res returns [Comp c] { Fraction f; }
+res returns [Comp c] { Fraction f; Condition cd; }
     : #(IN f=number c=pieces)
 	{ c = new In(f, c); }
-    | #(CONDITION body c=pieces)
-	{ c = new If("XXX", c); }
+    | #(IF cd=cond_body c=pieces)
+	{ c = new If(cd, c); }
     ;
 	
 simple_words returns [String r=null]
@@ -101,7 +101,7 @@ simple_body returns [List<String> l] { String s; l = new ArrayList<String>(); }
 	: #(BODY (s=simple_words {l.add(s);} )+)
 	;
 
-call_body! returns [Apply ast=null] {String s; List<Apply> args; Fraction n;}
+call_body returns [Apply ast=null] {String s; List<Apply> args; Fraction n;}
 	// shorthand: 3/4 (foo) = fractional(3/4, foo)
 	: ( #(APPLY #(ITEM number) (.)* ) ) =>
 	  #(APPLY #(ITEM n=number) args=call_args )
@@ -114,18 +114,12 @@ call_body! returns [Apply ast=null] {String s; List<Apply> args; Fraction n;}
 call_args returns [List<Apply> l] { l = new ArrayList<Apply>(); Apply c; }
 	: (c=call_body {l.add(c);} )*
 	;
-
-words
-	: #(ITEM (word)+ )
+cond_body returns [Condition c=null] { String s; List<Condition> args; }
+	: #(CONDITION s=simple_words args=cond_args )
+	{ c = new Condition(s, args); }
 	;
-word
-	: IDENT
-	| number
-	| body
-	;
-body returns [AST ast=null]
-	: #(BODY (words)+)
-	{ ast=#body; }
+cond_args returns [List<Condition> l] { l = new ArrayList<Condition>(); Condition c; }
+	: (c=cond_body {l.add(c);} )*
 	;
 
 number returns [Fraction r=null]
