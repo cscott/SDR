@@ -52,7 +52,11 @@ def: pass thru
     call: 1/2 (dosado) // untraditional =)
 
 def: double pass thru
+  in: 4
   call: centers (pass thru), pass thru
+
+def: pull by
+  call: pass thru // at least until i implement hand holds
 
 def: half sashay
   in: 4
