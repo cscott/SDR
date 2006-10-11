@@ -24,6 +24,8 @@ tokens {
 	PAR;
 	OPT;
 	NUMBER;
+	APPLY;
+	CALLNAME;
 }
 
 // the following tag is used to find the start of the rules section for
@@ -65,7 +67,7 @@ opt
 	{ #opt = #([OPT, "opt"], #opt); }
     ;
 protected one_opt
-    : FROM^ COLON! body pieces
+    : FROM^ COLON! simple_body pieces
     ;
 
 seq
@@ -74,7 +76,7 @@ seq
     ;
 protected one_seq
 	: PRIM^ COLON! prim_body
-	| CALL^ COLON! body
+	| CALL^ COLON! call_body_seq
 	| PART^ COLON! pieces
 	;
 
@@ -84,7 +86,7 @@ par
     ;
 
 protected one_par
-    : SELECT^ COLON! body pieces
+    : SELECT^ COLON! simple_body pieces
 	;
 
 body
@@ -99,6 +101,34 @@ word
 	: IDENT
 	| number
 	| LPAREN! body RPAREN!
+	;
+simple_word
+	: IDENT
+	| number
+	;
+simple_words
+	: (simple_word)+
+	{ #simple_words = #([ITEM, "item"], #simple_words); }
+	;
+simple_body
+	: simple_words (COMMA! simple_words)*
+	{ #simple_body = #([BODY, "simple body"], #simple_body); }
+	;
+call_body!
+	: w:simple_words ( LPAREN! a:call_args RPAREN! )?
+	{ #call_body = #([APPLY, "apply"], w, a); }
+	;
+call_args
+	: call_arg (COMMA! call_arg)*
+	;
+call_arg
+	: call_body
+	| LPAREN! call_body_seq RPAREN!
+	;
+call_body_seq!
+	: c1:call_body (COMMA! c2:call_body)*
+	{ #call_body_seq = (#c2==null) ? #c1 :
+		#([APPLY,"apply"], #([ITEM,"item"],[IDENT,"and"]), c1, c2); }
 	;
 prim_body
 	: number COMMA! number COMMA! IDENT
