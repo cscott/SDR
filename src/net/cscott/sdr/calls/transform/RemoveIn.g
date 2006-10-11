@@ -12,7 +12,7 @@ import java.util.*;
 /** Propage 'inherent' time bottom-up: where prim and part = 1, and IN resets
  * to its spec, whatever that is. */
 class RemoveIn extends TreeParser;
-options { importVocab = CallFileParser; defaultErrorHandler=false; }
+options { importVocab = Ast; defaultErrorHandler=false; }
 {
 	private BeatCounter bc;
 	RemoveIn(BeatCounter bc) { this(); setBeatCounter(bc); }

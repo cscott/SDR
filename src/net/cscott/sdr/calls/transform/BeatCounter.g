@@ -12,7 +12,7 @@ import java.util.*;
 /** Propage 'inherent' time bottom-up: where prim and part = 1, and IN resets
  * to its spec, whatever that is. */
 class BeatCounter extends TreeParser;
-options { importVocab = CallFileParser; }
+options { importVocab = Ast; defaultErrorHandler = false; }
 {
 	public final Map<AST,Fraction> inherent = new HashMap<AST,Fraction>();
 	// shorthand for registering the timing of an AST node
@@ -25,7 +25,7 @@ options { importVocab = CallFileParser; }
 }
     
 // @@startrules
-pieces returns [Fraction f=null;] // call definitions start with pieces
+pieces returns [Fraction f] // call definitions start with pieces
 	: f=seq { r(#pieces, f); }
 	| f=par { r(#pieces, f); }
 	| f=res { r(#pieces, f); }
@@ -41,11 +41,11 @@ one_seq returns [Fraction f=Fraction.ONE; /* default timing */]
 par returns [Fraction f=Fraction.ZERO;] { Fraction p; }
     : #(PAR (p=one_par {f=max(f,p);})+) { r(#par, f); }
     ;
-one_par returns [Fraction f=null;]
+one_par returns [Fraction f]
     : #(SELECT f=pieces) { r(#one_par, f); }
 	;
 // restrictions/timing
-res returns [Fraction f=null;]
+res returns [Fraction f]
     : #(IN pieces) { f = ((In)#res).count; r(#res, f); }// ignore pieces length
     ;
 		
