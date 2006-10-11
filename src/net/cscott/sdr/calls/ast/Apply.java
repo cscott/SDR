@@ -17,7 +17,7 @@ import net.cscott.sdr.util.Fraction;
  * #(APPLY CALLNAME("and") #(APPLY CALLNAME("slip")) #(APPLY CALLNAME("slide")))
  * </pre>
  * @author C. Scott Ananian
- * @version $Id: Apply.java,v 1.1 2006-10-11 01:44:26 cananian Exp $
+ * @version $Id: Apply.java,v 1.2 2006-10-11 04:27:34 cananian Exp $
  */
 public class Apply extends SeqCall {
     public final String callName;
@@ -31,16 +31,16 @@ public class Apply extends SeqCall {
         return super.toString()+"["+callName+"]";
     }
 
-    protected Apply getArg(int n) {
+    public Apply getArg(int n) {
         Apply a = (Apply) getFirstChild();
         for (int i=0; i<n; i++)
             a = (Apply) a.getNextSibling();
         return a;
     }
-    protected Fraction getNumberArg(int n) {
+    public Fraction getNumberArg(int n) {
         return Fraction.valueOf(getArg(n).callName);
     }
-    protected String getStringArg(int n) {
+    public String getStringArg(int n) {
         return getArg(n).callName;
     }
     // XXX getSelectorArg, etc?
