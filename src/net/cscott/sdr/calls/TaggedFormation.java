@@ -19,7 +19,12 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * */
 public class TaggedFormation extends Formation {
     public enum Tag {
-        BEAU, BELLE, LEADER, TRAILER, POINT, CENTER, VERY_CENTER, END, OUTSIDE4;
+        // "primitive" dancer tags
+        DANCER1, DANCER2, DANCER3, DANCER4,
+        DANCER5, DANCER6, DANCER7, DANCER8,
+        // more interesting tags.
+        BEAU, BELLE, LEADER, TRAILER,
+        POINT, CENTER, VERY_CENTER, END, OUTSIDE4;
     };
     private final Map<Dancer,Set<Tag>> tags;
 
