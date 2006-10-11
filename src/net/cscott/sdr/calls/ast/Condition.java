@@ -12,20 +12,23 @@ import net.cscott.sdr.util.Fraction;
  * sub-conditions; see the {@link Apply} class for the basic idea.
  * String and number arguments are stored as zero-argument conditions.
  * @author C. Scott Ananian
- * @version $Id: Condition.java,v 1.2 2006-10-11 18:50:38 cananian Exp $
+ * @version $Id: Condition.java,v 1.3 2006-10-11 19:06:57 cananian Exp $
  */
 public class Condition extends SeqCall {
-    public final String condition;
-    public Condition(String condition, List<Condition> args) {
+    public final String predicate;
+    public Condition(String predicate, List<Condition> args) {
         super(CONDITION);
-        this.condition = condition;
+        this.predicate = predicate;
         for (Condition c : args)
             addChild(c);
     }
     public String toString() {
-        return super.toString()+"["+condition+"]";
+        return super.toString()+"["+predicate+"]";
     }
-
+    public Predicate getPredicate() {
+        return Predicate.lookup(predicate);
+    }
+    
     public Condition getArg(int n) {
         Condition c = (Condition) getFirstChild();
         for (int i=0; i<n; i++)
@@ -33,10 +36,10 @@ public class Condition extends SeqCall {
         return c;
     }
     public Fraction getNumberArg(int n) {
-        return Fraction.valueOf(getArg(n).condition);
+        return Fraction.valueOf(getArg(n).predicate);
     }
     public String getStringArg(int n) {
-        return getArg(n).condition;
+        return getArg(n).predicate;
     }
     // XXX getSelectorArg, etc?
     
