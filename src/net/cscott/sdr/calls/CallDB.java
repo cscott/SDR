@@ -1,9 +1,12 @@
 package net.cscott.sdr.calls;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.cscott.sdr.calls.lists.BasicList;
 import net.cscott.sdr.calls.transform.CallFileLoader;
 
 /** CallDB holds all the calls and concepts we know about.
@@ -27,8 +30,23 @@ public class CallDB {
         // okay, first load the call definition lists.
         CallFileLoader.load(resource("basic"), db);
         // now load complex calls and concepts.
+        loadFromClass(BasicList.class);
     }
     private static URL resource(String name) {
         return CallDB.class.getClassLoader().getResource("net/cscott/sdr/calls/lists/"+name+".calls");
+    }
+    private void loadFromClass(Class c) {
+        // iterate through all fields in class, and add fields of type 'Call'
+        for (Field f : c.getFields()) {
+            if (Call.class.isAssignableFrom(f.getType()) &&
+                    Modifier.isStatic(f.getModifiers())) {
+                try {
+                    Call call = (Call) f.get(null);
+                    db.put(call.getName(), call);
+                } catch (IllegalAccessException e) {
+                    assert false : e;
+                }
+            }
+        }
     }
 }
