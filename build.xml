@@ -21,8 +21,6 @@ Square Dance Revolution build file.
 	    <include name="jme/*.jar" />
 	</fileset>
     </path>
-    <property name="java.api"
-	      value="http://java.sun.com/j2se/1.5.0/docs/api" />
 
     <!-- define some variables for the script -->
     <target name="init">
@@ -43,6 +41,18 @@ Square Dance Revolution build file.
     <!-- compile the source code -->
     <target name="compile" depends="init"
             description="Compiles the code in ${src_dir} to ${classes_dir}">
+    <antlr target="src/net/cscott/sdr/calls/transform/CallFile.g">
+		<classpath refid="classpath.path" />
+    </antlr>
+    <antlr target="src/net/cscott/sdr/calls/transform/CallFileBuilder.g">
+		<classpath refid="classpath.path" />
+    </antlr>
+    <antlr target="src/net/cscott/sdr/calls/transform/BeatCounter.g">
+		<classpath refid="classpath.path" />
+    </antlr>
+    <antlr target="src/net/cscott/sdr/calls/transform/RemoveIn.g">
+		<classpath refid="classpath.path" />
+    </antlr>
 	    <mkdir dir="${classes_dir}" />
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
@@ -60,9 +70,17 @@ Square Dance Revolution build file.
 	<javadoc sourcepath="${src_dir}"
 		 packagenames="net.cscott.*"
 		 destdir="${api_dir}"
+		 doctitle="Square Dance Revolution!"
+		 source="1.5"
 		 windowtitle="${ant.project.name}">
 		<classpath refid="classpath.path" />
-		<link href="${java.api}" />
+            <link href="http://jakarta.apache.org/commons/lang/api-release/"/>
+            <link href="http://cmusphinx.sourceforge.net/sphinx4/javadoc/"/>
+            <link href="http://www.jmonkeyengine.com/doc/"/>
+            <link href="http://cscott.net/Projects/JUtil/jutil-latest/doc/"/>
+            <link href="http://java.sun.com/products/java-media/speech/forDevelopers/jsapi-doc/"/>
+            <link href="http://java.sun.com/javase/6/docs/api"/>
+            <link href="http://www.antlr.org/javadoc/"/>
 	</javadoc>
     </target>
 
