@@ -15,17 +15,13 @@ class CallFileParser extends Parser;
 options {
   k=2;
   buildAST=true;
+  importVocab = Ast;
 }
 tokens {
 	CALLLIST;
 	BODY;
 	ITEM;
-	SEQ;
-	PAR;
-	OPT;
 	NUMBER;
-	APPLY;
-	WARP;
 }
 
 // the following tag is used to find the start of the rules section for
