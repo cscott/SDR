@@ -102,10 +102,12 @@ simple_body returns [List<String> l] { String s; l = new ArrayList<String>(); }
 	;
 
 call_body! returns [Apply ast=null] {String s; List<Apply> args; Fraction n;}
-	: ( #(APPLY #(ITEM number) call_args) ) =>
+	// shorthand: 3/4 (foo) = fractional(3/4, foo)
+	: ( #(APPLY #(ITEM number) (.)* ) ) =>
 	  #(APPLY #(ITEM n=number) args=call_args )
 	{   args.add(0, Apply.makeApply(n.toString()));
 		ast = new Apply("fractional", args); }
+	// standard rule
 	| #(APPLY s=simple_words args=call_args )
 	{ ast = new Apply(s, args); }
 	;
