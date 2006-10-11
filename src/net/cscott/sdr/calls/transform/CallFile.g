@@ -25,7 +25,7 @@ tokens {
 	OPT;
 	NUMBER;
 	APPLY;
-	CALLNAME;
+	WARP;
 }
 
 // the following tag is used to find the start of the rules section for
