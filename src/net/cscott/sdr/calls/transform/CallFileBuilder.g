@@ -4,6 +4,7 @@ package net.cscott.sdr.calls.transform;
 
 import net.cscott.sdr.calls.Rotation;
 import net.cscott.sdr.calls.ast.*;
+import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.util.*;
 import java.util.*;
 }
@@ -12,9 +13,9 @@ import java.util.*;
 class CallFileBuilder extends TreeParser;
 options { importVocab = CallFileParser; defaultErrorHandler=false; }
 {
-	private final Map<String,Comp> callMap = new HashMap<String,Comp>();
-	private final Map<String,String> programMap = new HashMap<String,String>();
-	public Map<String,Comp> getMap() { return callMap; } // XXX for debugging.
+	private final Set<String> names = new HashSet<String>();
+	private final List<Call> db = new ArrayList<Call>();
+	public List<Call> getList() { return Collections.unmodifiableList(db); }
 	String currentProgram = null;
 }
     
@@ -29,10 +30,10 @@ program
 
 def
 { String n; Comp c; }
-	: #(DEF n=simple_words {System.err.println(n);} c=pieces)
-	{ assert !callMap.containsKey(n) : "duplicate call: "+n;
-	  callMap.put(n, c);
-	  programMap.put(n, currentProgram);
+	: #(DEF n=simple_words c=pieces)
+	{ assert !names.contains(n) : "duplicate call: "+n;
+      names.add(n);
+      db.add(Call.makeSimpleCall(n, currentProgram, c));
 	}
 	;
 	

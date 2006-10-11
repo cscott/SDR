@@ -72,8 +72,8 @@ public abstract class TestParser {
         // now build a proper AST.
         CallFileBuilder builder = new CallFileBuilder();
         builder.calllist(parser.getAST());
-          for (String callName : builder.getMap().keySet()) {
-                System.out.println(callName+": "+builder.getMap().get(callName).toStringList());
+          for (Call call : builder.getList()) {
+                System.out.println(call.getName()+": "+call.apply(null).toStringList());
                 //ASTFrame frame = new ASTFrame(callName, builder.getMap().get(callName));
                 //frame.setVisible(true);
           }
