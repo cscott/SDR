@@ -131,3 +131,52 @@ beats according proportionally to 'inherent' length.
 
 call application should reduce to a tree of nothing but IN PRIM and
 SELECT.  Otherwise keep tree as high as possible for concept application.
+
+------
+Multiple formation option (advanced rounds)
+Keep a List<Formation> around.  If there are several possible calls in the
+"top-N" recognition options list, flip a coin (based on their
+respective probabilities) to chose which one each square does.
+Probably need selectors like "back square" to make this more fun,
+although maybe "those who can" is enough.  Squares ignore calls they
+can't do (and glare at the caller) until they hear a 'forward and
+back', at which point they make lines.
+------
+All call predicates take a 'DanceState' as well as the Formation or
+whatever else they are operating on.  The DanceState contains info
+like the current program (which should be an enumeration).
+------
+counter rotate (for example) is:
+  from: MINI_WAVE
+    condition: PROGRAM AT LEAST(a2) // is this right?
+    call: _counter rotate
+  from: COUPLE
+    condition: PROGRAM AT LEAST(c1) // or whatever
+    call: _counter rotate
+When using counter rotate to define other calls, use _counter rotate
+or counter rotate, depending on whether the use is program-sensitive
+or not.
+------
+Use call grammar to do a typing interface as well: do the
+selected-text-while-typing thing to display the possible lookahead.
+Space accepts the current lookahead.
+------
+For animation of complicated sequences, treat dancers as connected to
+their desired locations with a spring.  Sense collisions and stretch
+the spring as necessary (ie, don't walk through people).  Should
+probably treat dancers as circles so they don't get stuck on each
+other.  Each path has a "shoulder direction" which says which way they
+attempt to go around obstacles.
+-----
+Roll direction is 'rot' component of last PRIM. (Not counting
+'standing still' PRIMS, which are 0,0,none, or sound effects, which
+have timing 0).
+-----
+Breathing is hard: create a bounding box around formation, and attach
+springs to smush it toward the center?  Then a timing-sensitive warp
+to apply the breathing.
+----
+Eventually: sound effects.  Special type of prim with timing 0?
+Same for actions? (sound effects are triggered at prim location,
+while actions are centered at prim location).
+----
