@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.cscott.sdr.calls.lists.BasicList;
+import net.cscott.sdr.calls.lists.MainstreamList;
 import net.cscott.sdr.calls.transform.CallFileLoader;
 
 /** CallDB holds all the calls and concepts we know about.
@@ -31,6 +32,7 @@ public class CallDB {
         CallFileLoader.load(resource("basic"), db);
         // now load complex calls and concepts.
         loadFromClass(BasicList.class);
+        loadFromClass(MainstreamList.class);
     }
     private static URL resource(String name) {
         return CallDB.class.getClassLoader().getResource("net/cscott/sdr/calls/lists/"+name+".calls");
