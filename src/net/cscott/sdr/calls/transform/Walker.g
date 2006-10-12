@@ -9,7 +9,7 @@ import java.util.*;
 /** <code>Walker</code> walks a Call AST, doing nothing; it is intended
  * for use as a base class for derived ast walkers. */
 class Walker extends TreeParser;
-options { importVocab = CallFileParser; }
+options { importVocab = Ast; }
     
 // @@startrules
 pieces // call definitions start with pieces
