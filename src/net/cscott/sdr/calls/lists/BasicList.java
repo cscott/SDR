@@ -19,7 +19,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.4 2006-10-12 13:29:29 cananian Exp $
+ * @version $Id: BasicList.java,v 1.5 2006-10-12 13:45:00 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -104,7 +104,7 @@ public abstract class BasicList {
             // easy case: do the whole repetitions of the
             // call.
             for (int i=0; i<whole; i++)
-                l.add(new Part(new Seq(a)));
+                l.add(new Part(true, new Seq(a)));
             // now add the fraction, if there is one.
             // note this does not get wrapped in a PART:
             // we can't further fractionalize (say)
