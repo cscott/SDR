@@ -180,3 +180,23 @@ Eventually: sound effects.  Special type of prim with timing 0?
 Same for actions? (sound effects are triggered at prim location,
 while actions are centered at prim location).
 ----
+fractionalization can only occur in a Seq of Parts, not between
+prim calls, or in mixed lists.  the 'and' concept creates a
+divisible part for each call.  IPART is an 'indivisible part'
+----
+add 'mod' to Rotation to yield general direction. rotations are
+consistent if: they're exactly equal.  Effective modulus is always
+1/N for some N -- reduce fraction to lowest terms, then use denom.
+for example, a modulus of 2/3 is equivalent to 1/3, since the
+sequence goes 2/3, 4/3 == 1/3 mod 1, 6/3 == 0 mod 1.
+For rotations with differing modulus, check that d1 % d2 = 0,
+where d1 is the larger denom and d2 is the smaller.
+----
+to do:
+create plain-text parser (into APPLY trees)
+define 'elaborate'
+build dancerpath from simplified tree (PRIM/WARP/SELECT with numbered dancers)
+animate dancer paths
+  define fractiona
+  split IPATH from PATH (indivisible path)
+  generalize rotation
