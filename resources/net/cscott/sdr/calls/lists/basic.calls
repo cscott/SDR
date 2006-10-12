@@ -73,17 +73,17 @@ def: roll away
   in: 4
   from: COUPLE
     select: BEAU
-      part:
+      ipart:
         prim: 1/2, 0, none
         prim: 1/2, 0, none
-      part:
+      ipart:
         prim: 1/2, 0, none
         prim: 1/2, 0, none
     select: BELLE
-      part:
+      ipart:
         prim: -1/2, 1, left
         prim:  1, 1/2, left
-      part:
+      ipart:
         prim:  1/2,  1, left
         prim:  1, -1/2, left
 
@@ -105,7 +105,7 @@ def: u turn back
 // maybe alias 'two boys chain', etc?
 def: two ladies chain // need breathing
   in: 6
-  part:
+  ipart:
     from: FACING COUPLES
       select: BELLE
         part: // for timing purposes

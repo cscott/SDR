@@ -35,10 +35,6 @@ options { importVocab = Ast; defaultErrorHandler=false; }
 		if (compare(old, l)) return old;
 		return new Seq(l.toArray(new SeqCall[l.size()]));
 	}
-	private Part build(Part old, Comp c) {
-		if (compare(old, c)) return old;
-		return new Part(c);
-	}
 	private Par build(Par old, List<ParCall> l) {
 		if (compare(old, l)) return old;
 		return new Par(l.toArray(new ParCall[l.size()]));
@@ -90,7 +86,7 @@ one_seq[Fraction scale] returns [SeqCall sc] { Comp c; }
 		  Fraction f = old.multiply(scale);
 		}
 		c=pieces[f])
-		{ sc = build(part, c); }
+		{ sc = part.build(part.isDivisible, c); }
 	;
 // pass timing straight down Par: this will cause all sections of the
 // par to finish at the same time; revisit this (make it more like Seq

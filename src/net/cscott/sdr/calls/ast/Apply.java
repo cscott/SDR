@@ -24,14 +24,14 @@ import net.cscott.sdr.util.Fraction;
  * proper types); for example "twice (trade and roll)" is:
  * 
  * <pre>
- *  #(APPLY["fractional"] #(APPLY["2"]) #(APPLY["roll"] #(APPLY["trade"])))
+ *  #(APPLY["_fractional"] #(APPLY["2"]) #(APPLY["roll"] #(APPLY["trade"])))
  * </pre>
  * 
  * Convenience methods are provided to convert numerical or string arguments
  * when implementing {@link Call#apply(Apply)}.
  * 
  * @author C. Scott Ananian
- * @version $Id: Apply.java,v 1.3 2006-10-11 17:57:36 cananian Exp $
+ * @version $Id: Apply.java,v 1.4 2006-10-12 13:29:29 cananian Exp $
  */
 public class Apply extends SeqCall {
     public final String callName;

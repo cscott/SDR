@@ -9,7 +9,7 @@ header {
 }
 // @@parser
 //-----------------------------------------------------------------------------
-// Define a Parser, calling it XLRecognizer
+// Define a Parser, calling it CallFileParser
 //-----------------------------------------------------------------------------
 class CallFileParser extends Parser;
 options {
@@ -22,6 +22,7 @@ tokens {
 	BODY;
 	ITEM;
 	NUMBER;
+	IPART;
 }
 
 // the following tag is used to find the start of the rules section for
@@ -75,6 +76,7 @@ protected one_seq
 	: PRIM^ COLON! prim_body
 	| CALL^ COLON! call_body_seq
 	| PART^ COLON! pieces
+	| IPART^ COLON! pieces
 	;
 
 par
@@ -283,6 +285,7 @@ IDENT
     	else if ($getText.equals("condition")) $setType(CONDITION);
     	else if ($getText.equals("call")) $setType(CALL);
     	else if ($getText.equals("part")) $setType(PART);
+    	else if ($getText.equals("ipart")) $setType(IPART);
     	else if ($getText.equals("prim")) $setType(PRIM);
     	else if ($getText.equals("program")) $setType(PROGRAM);
       }

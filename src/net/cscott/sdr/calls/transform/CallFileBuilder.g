@@ -62,7 +62,9 @@ one_seq returns [SeqCall r=null]
 	{ r = new Prim(x, y, Rotation.fromRelativeString(dir.getText()), Fraction.ONE); }
 	| #(CALL r=call_body)
 	| #(PART d=pieces)
-	{ r = new Part(d); }
+	{ r = new Part(true, d); /* divisible part */}
+	| #(IPART d=pieces)
+	{ r = new Part(false, d); /* indivisible part */}
 	;
 
 par returns [Par p=null] {ParCall pc;List<ParCall> l=new ArrayList<ParCall>();}
@@ -106,7 +108,7 @@ call_body returns [Apply ast=null] {String s; List<Apply> args; Fraction n;}
 	: ( #(APPLY #(ITEM number) (.)* ) ) =>
 	  #(APPLY #(ITEM n=number) args=call_args )
 	{   args.add(0, Apply.makeApply(n.toString()));
-		ast = new Apply("fractional", args); }
+		ast = new Apply("_fractional", args); }
 	// standard rule
 	| #(APPLY s=simple_words args=call_args )
 	{ ast = new Apply(s, args); }
