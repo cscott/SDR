@@ -29,32 +29,6 @@ options { importVocab = Ast; defaultErrorHandler=false; }
 			throw new RuntimeException(re); // shouldn't happen!
 		}
 	}
-
-	// helper methods, to reuse old tree if unmodified.
-	private Seq build(Seq old, List<SeqCall> l) {
-		if (compare(old, l)) return old;
-		return new Seq(l.toArray(new SeqCall[l.size()]));
-	}
-	private Par build(Par old, List<ParCall> l) {
-		if (compare(old, l)) return old;
-		return new Par(l.toArray(new ParCall[l.size()]));
-	}
-	private ParCall build(ParCall old, Comp c) {
-		if (compare(old, c)) return old;
-		return new ParCall(old.tags, c);
-	}
-	private <T extends AST> boolean compare(AST ast, T child) {
-		return compare(ast, Collections.singletonList(child));
-	}
-	private <T extends AST> boolean compare(AST ast, List<T> l) {
-		if (ast.getNumberOfChildren() != l.size()) return false;
-		AST child = ast.getFirstChild();
-		for (T t: l) {
-			if (t != child) return false; // reference equality
-			child = child.getNextSibling();
-		}
-		return true;
-	}			
 }
     
 // @@startrules
@@ -70,7 +44,7 @@ seq[Fraction f] returns [Seq s]
 		  Fraction old = bc.getBeats(#seq);
 		  Fraction scale = f.divide(old);   }
 		(sc=one_seq[scale] {l.add(sc);})+)
-		{ s = build((Seq)#seq, l); }
+		{ s = ((Seq)#seq).build(l); }
 	;
 one_seq[Fraction scale] returns [SeqCall sc] { Comp c; }
 	: PRIM
@@ -94,11 +68,13 @@ one_seq[Fraction scale] returns [SeqCall sc] { Comp c; }
 par[Fraction f] returns [Par p]
 { ParCall pc; List<ParCall> l=new ArrayList<ParCall>(); }
     : #(PAR (pc=one_par[f] {l.add(pc);})+)
-	{ p = build((Par)#par, l); }
+	{ p = ((Par)#par).build(l); }
     ;
 one_par[Fraction f] returns [ParCall pc] { Comp c; }
     : #(SELECT c=pieces[f])
-	{ pc = build((ParCall)#one_par, c); }
+	{ pc = (ParCall)#one_par;
+	  pc = pc.build(pc.tags, c);
+	}
 	;
 // restrictions/timing
 res[Fraction f] returns [Comp c]
