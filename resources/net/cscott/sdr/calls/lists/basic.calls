@@ -336,11 +336,16 @@ def: turn thru
   in: 4 // from mini-wave; 6 from facing?
   from: FACING DANCERS
   call: touch 1/2, extend
+
 def: touch
   in: 2
   call: step to a wave
 def: left touch
   call: mirror(touch)
+/*
+def: touch[n]
+  call: fractional([n], _touch 4/4)
+*/
 def: _touch 4/4
   in: 8
   ipart:

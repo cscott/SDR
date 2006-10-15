@@ -9,6 +9,7 @@ import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.Warp;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
+import net.cscott.sdr.calls.ast.In;
 import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
@@ -19,7 +20,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.7 2006-10-15 14:24:20 cananian Exp $
+ * @version $Id: BasicList.java,v 1.8 2006-10-15 19:06:09 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -62,6 +63,19 @@ public abstract class BasicList {
                                 Apply.makeApply("square thru",
                                         n.subtract(Fraction.ONE)))))));
             }
+    };
+    public static final Call TOUCH = new BasicCall("_touch") {
+        @Override
+        public Comp apply(Apply ast) {
+            assert ast.callName.equals(getName());
+            assert ast.getNumberOfChildren()==1;
+            Fraction n = ast.getNumberArg(0);
+            return new Seq
+                     (Apply.makeApply
+                      ("_fractional",
+                       Apply.makeApply(n.toString()),
+                       Apply.makeApply("_touch 4/4")));
+        }
     };
     // simple combining concept.
     public static final Call AND = new BasicCall("and") {
