@@ -22,7 +22,7 @@ public abstract class Selector {
         // Look for this selector in the SelectorList
         try {
             return (Selector) SelectorList.class.getField
-                (s.toUpperCase().replace(' ','_')).get(null);
+                (s.toUpperCase().replace(' ','_').replace('-','_')).get(null);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Bad selector name: "+s);
         } catch (IllegalAccessException e) {
