@@ -49,7 +49,7 @@ import java.math.BigInteger;
  * @author Tim O'Brien
  * @author Pete Gieser
  * @since 2.0
- * @version $Id: Fraction.java,v 1.3 2006-10-09 19:48:24 cananian Exp $
+ * @version $Id: Fraction.java,v 1.4 2006-10-15 19:03:04 cananian Exp $
  */
 public class Fraction extends Number implements Serializable, Comparable {
 
@@ -157,9 +157,6 @@ public class Fraction extends Number implements Serializable, Comparable {
     private Fraction(int numerator, int denominator) {
         this(numerator, denominator, true/*use no-check constructor*/);
         /* Now do checks. */
-        /* COMMONS DOESN'T USE ASSERTS (yet).
-           For debugging you might want to uncomment these and
-           others like it in this source. */
         assert denominator > 0 :
            "denominator must be greater than zero";
         assert numerator==0 ? denominator==1 :
@@ -242,6 +239,14 @@ public class Fraction extends Number implements Serializable, Comparable {
         numerator /= gcd;
         denominator /= gcd;
         return new Fraction(numerator, denominator);
+    }
+    /**
+     * <p>Creates a <code>Fraction</code> instance from a <code>int</code> value.</p>
+     * @param value  the integer value to convert
+     * @return a new fraction instance that is equal to the value
+     */
+    public static Fraction valueOf(int value) {
+        return new Fraction(value,1);
     }
 
     /**
