@@ -19,7 +19,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.5 2006-10-12 13:45:00 cananian Exp $
+ * @version $Id: BasicList.java,v 1.6 2006-10-15 03:05:25 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -98,7 +98,7 @@ public abstract class BasicList {
             Fraction n = ast.getNumberArg(0);
             Apply a = ast.getArg(1);
             if (n.compareTo(Fraction.ZERO) <= 0)
-                throw new BadCallException();
+                throw new BadCallException("0 fractions are not legal");
             int whole = n.getProperWhole();
             List<SeqCall> l = new ArrayList<SeqCall>(whole+1);
             // easy case: do the whole repetitions of the
@@ -113,7 +113,7 @@ public abstract class BasicList {
                     n.getDenominator());
             if (!Fraction.ZERO.equals(n)) {
                 // XXX implement me
-                throw new BadCallException();
+                throw new BadCallException("unimplemented fractional");
             }
             return new Seq(l.toArray(new SeqCall[l.size()]));
         }
