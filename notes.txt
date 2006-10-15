@@ -200,3 +200,11 @@ animate dancer paths
   define fractiona
   split IPATH from PATH (indivisible path)
   generalize rotation
+----
+expand call list to allow simple arguments -- probably not recursion
+or conditionals, but certainly parameter substitution.  Tricky:
+typing.  Make node in parse tree for 'expr', then CallBuilder will
+be responsible for building the function.  Use helper AST class:
+'ASTExpr' with subclasses for AST and Expr.  Attaching an AST to an
+AST yields another AST; attaching an Expr to an Expr or an AST yields
+and Expr. -- refactor 'build' method.
