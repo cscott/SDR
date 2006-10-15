@@ -96,7 +96,7 @@ simple_words returns [String r=null]
 	;
 simple_word returns [String r=null] { Fraction n; }
 	: i:IDENT { r = i.getText(); }
-	| n=number { r = n.toString(); }
+	| n=number { r = n.toProperString(); }
 	;
 
 simple_body returns [List<String> l] { String s; l = new ArrayList<String>(); }
