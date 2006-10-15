@@ -25,6 +25,8 @@ def: trade
     condition: not(SELECTED ARE TBONED)
     call: ignore the others (trade) // this is a concept application
   */
+def: couples trade
+  call: as couples(trade)
 
 def: forward and back
   in: 4
@@ -54,6 +56,7 @@ def: pass thru
 def: double pass thru
   in: 4
   condition: and(PROGRAM AT LEAST(basic), true) // for testing only
+  //call: tandem(pass thru) // nicer def?
   call: centers (pass thru), pass thru
 
 def: pull by
@@ -124,39 +127,382 @@ def: two ladies chain // need breathing
           prim: 1,-1,left
           prim: 1,-1,left
 
+def: _courtesy turn 1/2
+  call: 1/2(wheel around) // modulo hand hold
+def: _courtesy turn 3/4
+  call: 3/4(wheel around) // modulo hand hold
+def: right arm turn 1/2
+  from: RH MINIWAVE
+  call: trade // modulo hand hold
+def: chain down the line
+  from: RH TWO-FACED LINE
+  call: centers(right arm turn 1/2, _courtesy turn 3/4)
+def: two ladies chain
+  from: FACING COUPLES
+  call: 1/4(wheel around), chain down the line
+def: flutter wheel
+  from: FACING COUPLES
+  call: 1/4(wheel around), centers(right arm turn 1/2), 2(split counter rotate)
+def: reverse flutter wheel
+  call: mirror(flutter wheel)
+def: lead right
+  call: as couples(_single lead right)
+def: lead left
+  call: left(lead right)
+def: _single lead right
+  from: FACING DANCERS
+  prim: 1, 1, right
+def: right and left thru
+  from: FACING COUPLE
+  call: right pull by, _courtesy turn 1/2
+def: left and right thru
+  call: left(right and left thru)
+def: star thru
+  from: FACING DANCERS
+  condition: not(or(ALL(BOYS), ALL(GIRLS)))
+  call: slide thru // modulo styling
+def: slide thru
+  from: FACING DANCERS
+  ipart:
+    part:
+      call: pull by
+    part:
+      select: BOY
+        call: quarter right
+      select: GIRL
+        call: quarter left
+def: quarter right
+  prim: 0,0,right
+def: quarter left
+  prim: 0,0,left // or call: left(quarter right)
+def: bend the line
+  call: as couples(_single bend)
+def: _single bend
+  from: COUPLE
+    select: BEAU
+      call: quarter right
+    select: BELLE
+      call: quarter left
+  from: RH MINIWAVE
+    call: quarter right
+  from: LH MINIWAVE
+    call: quarter left // or call: left(_single bend)
+def: california twirl
+  from: COUPLE
+    select: BEAU
+      condition: ALL(BOY) // boys must be beaus
+      prim: 1, 3, right // copied from partner trade
+      prim: -3,1, right
+    select: BELLE
+      condition: ALL(GIRL) // girls must be belles
+      prim: -1, 1, left // copied from partner trade
+      prim: -1, 1, left
+def: wheel around
+  call: 4(_quarter wheel)
+def: _quarter wheel
+  from: COUPLE
+    select: BEAU
+      prim: 1, -1, left
+    select: BELLE
+      prim: -1, 1, left
+def: reverse wheel around
+  call: mirror(wheel around) // or left?
+def: box the gnat
+  from: FACING DANCERS
+    condition: not(or(ALL(BOYS), ALL(GIRLS)))
+    call: _and roll(touch 1/4) // modulo styling
+def: step to a wave
+  from: FACING DANCERS
+    call: _extend // the general case
+def: step thru
+  from: RH MINIWAVE, LH MINIWAVE
+    call: _extend // the general case
+def: balance
+  prim: 0, 1/2, none
+  prim: 0,-1/2, none // modulo styling -- and breathing?
+def: pass the ocean
+  call: pass thru, quarter in, _extend
+def: extend
+  // XXX level/formation restrictions
+  call: _extend
+def: _extend // the general case
+  from: SINGLE DPT
+    call: centers(extend)
+  from: LH BOX
+    call: mirror(_extend)
+  from: RH BOX
+    select: LEADER
+      prim: 1,1, none
+    select: TRAILER
+      prim: 0,1, none
+  from: LH MINIWAVE
+    call: mirror(_extend)
+  from: RH MINIWAVE
+    prim: 1,1, none
+  from: FACING DANCERS
+    prim: -1,1,none
+def: swing thru
+  from: RH WAVE
+    call: right arm turn 1/2, centers(left(right arm turn 1/2))
+  from: LH WAVE
+    call: centers(right arm turn 1/2), left(right arm turn 1/2)
 /*
-	chain down the line |
-	lead (left | right) |
-	right and left thru |
-	star thru |
-	bend the line |
-	[left] square thru (one | two | three | four)
-		[hands [(around | round)]] |
-	california twirl |
-	[reverse] wheel around |
-	box the gnat |
-	step to a wave |
-	balance |
-	pass the ocean |
-	step thru | extend |
-	[left] swing thru |
-	(<people>|<wave_select>) [cross] run |
-	[<people>|partner|couples|<wave_select>] trade |
-	zoom |
-	[reverse] flutter wheel |
-	veer [left|right] |
-	[left] touch (one|a) quarter |
-	[split | box] circulate | = do yr part trailers press ahead/zoom/pass tjru, leaders trade
-	[left] turn thru |
-	[left] spin the top | = center&end trade, centers cast 3/4, ends cntr rotate 1/4
-	[centers] cast off three quarters |
-	walk and dodge | <people> walk <people> dodge |
-	slide thru |
-	(<people>|<wave_select>) [cross] fold |
-	dixie style to (a wave | an ocean wave) |
-	[left] tag the line [face (left|right)] |
-	half tag |
-	[left] scoot back |
-	[single|couples|centers] hinge |
-	recycle;
+def: split counter rotate
+  from: GENERAL LINE
+    select: CENTER
+      from: COUPLE, RH MINIWAVE, LH MINIWAVE
+        select: BEAU
+          prim: 1,1,right
+        select: BELLE
+          prim: -1,1,left
+    select: END
+    // XXX!
+
+// NOTE THAT 'leads run' = 'IN YOUR BOX, leads run'
+// NOTE THAT 'boys run' = 'IN YOUR COUPLES, boys run'
+def: run[sel]
+  from: GENERAL LINE, GENERAL BOX, COUPLE, RH MINIWAVE, LH MINIWAVE
+    select: [sel]
+      select: BEAU
+        prim: 1,1,right
+        prim: 1,1,right
+      select: BELLE
+        prim: -1,1,left
+        prim: -1,1,left
+    select: ALL // ie, others
+      select: BEAU
+        prim: 1,0,none
+        prim: 1,0,none
+      select: BELLE
+        prim: -1,0,none
+        prim: -1,0,none
+def: cross run[sel]
+  select: [sel]
+    select: RIGHT OF CENTER // xxx?
+      prim: -2, 1, left
+      prim: -1, 2, left
+    select: LEFT OF CENTER
+      prim: 2,1,right
+      prim: 1,2,right
+  select: ALL // ie, others (same as run)
+    select: BEAU
+      prim: 1,0,none
+      prim: 1,0,none
+    select: BELLE
+      prim: -1,0,none
+      prim: -1,0,none
+*/
+
+def: zoom      
+  from: GENERAL BOX
+    select: BEAU
+      call: mirror(_right single zoom)
+    select: BELLE
+      call: _right single zoom
+def: _right single zoom
+  from: TANDEM
+    select: LEADER
+      ipart:
+        prim: 1,1,right
+        prim: 2,1,right
+      ipart:
+        prim: 1,2,right
+        prim: 1,1,right
+    select: TRAILER
+      ipart:
+        prim: 0,1,none
+      ipart:
+        prim: 0,1,none
+def: veer left
+  call: as couples(_single veer left)
+def: veer right
+  call: mirror(veer left)
+def: _single veer left
+  from: FACING DANCERS, LH MINIWAVE
+  call: _extend
+  
+def: turn thru
+  from: FACING DANCERS
+  call: touch 1/2, extend
+def: touch
+  call: step to a wave
+def: left touch
+  call: mirror(touch)
+/*
+def: touch[n]
+  call: touch, cast[n]
+def: cast[n]
+  call: [n] (_cast 4/4)
+*/
+def: _cast 4/4
+  from: LH 3 AND 1, LH SPLIT 3 AND 1
+    call: mirror(_cast 4/4)
+  from: RH 3 AND 1, RH SPLIT 3 AND 1
+     call: _beau cast 4/4
+  from: LH MINIWAVE
+    call: mirror(_cast 4/4)
+  from: RH MINIWAVE
+    prim: 1,1,right
+    prim: 1,1,right
+    prim: 1,1,right
+    prim: 1,1,right
+def: _beau cast 4/4 // ie, cast around beau
+  from: RH MINIWAVE, LH MINIWAVE
+    call: _cast 4/4 // subpart of a 3-and-1 line; not a special pushy cast
+  from: COUPLE
+    select: BEAU // pivot
+      prim: 0,0,left
+      prim: 0,0,left
+      prim: 0,0,left
+      prim: 0,0,left
+    select: BELLE // pusher
+      prim: -2,2,left
+      prim: -2,2,left
+      prim: -2,2,left
+      prim: -2,2,left
+def: circulate // all-8
+  from: PARALLEL GENERAL LINES
+    call: concentric(box circulate)
+  from: GENERAL COLUMNS
+    select: NUMBER 1
+      call: _lead circ
+    select: ALL // others
+      call: _trail circ
+def: _lead circ // leaders part of a box/column circulate
+  select: BELLE
+    prim: -1,1,left
+    prim: -1,1,left
+  select: BEAU
+    prim: 1,1,right
+    prim: 1,1,right
+def: _trail circ // trailers part of a box/column circulate
+  prim: 0,1,none
+  prim: 0,1,none
+def: box circulate
+  from: GENERAL BOX
+    select: LEADER
+      call: _lead circ
+    select: TRAILER
+      call: _trail circ
+def: spin the top
+  from: RH WAVE, LH WAVE // any hand
+    call: swing, fan the top
+def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
+  from: RH WAVE
+    select: CENTER
+      call: cast off 3/4
+    select: END
+      //call: counter rotate 1/4   // we'll use a primitive for simplicity
+      prim: 3,3,right
+  from: LH WAVE
+    call: mirror(fan the top)
+def: walk and dodge
+  call: walk others dodge(TRAILER)
+/*
+def: walk others dodge[sel]
+  from: GENERAL BOX
+    select: [sel]
+      prim: 0,1,none
+      prim: 0,1,none
+    select: ALL // others
+      select: BEAU
+        prim: 1,0,none
+        prim: 1,0,none
+      select: BELLE
+        prim: -1,0,none
+        prim: -1,0,none
+*/
+def: hinge
+  call: 1/2(trade)
+def: couples hinge
+  call: as couples(hinge)
+def: REAL recycle // xxx
+  ipart:
+    call: fold(centers), breathe
+  ipart:
+    call: counter rotate 1/4
+  ipart:
+    call: roll
+def: recycle // xxx cheat definition, for the present
+  ipart: // this definition isn't valid for fractionalization
+    call: hinge, box circulate, quarter in
+def: scoot back
+  from: LH BOX
+    call: mirror(scoot back)
+  from: RH BOX
+    select: TRAILER
+      ipart:
+        prim: 0,1,none
+        prim: 1,1,right
+      ipart:
+        prim: 1,1,right
+        prim: 0,1,none
+    select: LEADER
+      ipart:
+        prim: 1,1,right
+      ipart:
+        prim: 1,1,right
+/*
+def: tag[atc, n]
+  ipart:
+    call: [atc], _fractional(4*n, extend)
+// or else: n=0->atc; else fractional(n, part(atc,extend), part(extend), part(extend), part(extend))
+def: _atc_tag
+  from: GENERAL LINE
+    select: CENTER
+      select: BEAU
+        prim: 0,0,left
+      select: BELLE
+        prim: 0,0,right
+    select: END
+      select: BEAU
+        prim: 0,0,right
+      select: BELLE
+        prim: 0,0,left
+        
+def: tag the line
+  call: tag(_atc tag, 1)
+  
+def: dixie style
+  from: FACING COUPLES
+  ipart: // "girls right pull by"
+    select: BEAU
+      prim: 1,-1,none
+      prim: 0,-1,none
+    select: BELLE
+      prim: -2,1,none
+      prim: 1,1,none
+  ipart:
+    call: mirror(touch 1/4)
+
+def: face right
+  prim: 0,0,right
+def: face left
+  prim: 0,0,left
+def: quarter right
+  prim: 0,0,right
+def: quarter left
+  prim: 0,0,left
+
+/*
+def: fold[sel]
+  select: [sel]
+    select: BEAU
+      prim: 1,3,right
+      prim: 1,1,right
+    select: BELLE
+      prim: -1,3,left
+      prim: -1,1,left
+  select: ALL // others
+    prim: 0,0,none
+def: cross fold[sel]
+  select: [sel]
+    select: RIGHT OF CENTER
+      prim: -2,3,left
+      prim: -1,2,left
+    select: LEFT OF CENTER
+      prim: 2,3,right
+      prim: 1,2,right
+  select: ALL // others
+    prim: 0,0,none
 */
