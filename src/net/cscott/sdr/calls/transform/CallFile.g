@@ -153,6 +153,7 @@ options {
 
 {
 	private boolean afterIndent=false;//have we seen the line-initial ws yet?
+	private boolean beforeColon=true; //have we seen a colon on this line?
 	// set tabs to 8, just round column up to next tab + 1
 	public void tab() {
      	int t = 8;
@@ -264,7 +265,7 @@ WSNL
       | '\n'    // Unix
       )
       // increment the line count in the scanner
-      { newline(); this.afterIndent=false;
+      { newline(); this.afterIndent=false; this.beforeColon=true;
       	$setType(Token.SKIP); }
   ;
 // whitespace at start of line used for INDENT processing
@@ -276,8 +277,8 @@ INITIAL_WS
 
 IDENT
   : {this.afterIndent||getColumn()!=1}?
-    ('_'|'a'..'z'|'A'..'Z') ('_'|'a'..'z'|'A'..'Z'|'0'..'9')*
-    { if (this.afterIndent) {
+    ('_'|'a'..'z'|'A'..'Z') ('_'|'a'..'z'|'A'..'Z'|'0'..'9'|'-')*
+    { if (this.afterIndent && this.beforeColon) {
     	if ($getText.equals("def")) $setType(DEF);
     	else if ($getText.equals("from")) $setType(FROM);
     	else if ($getText.equals("in")) $setType(IN);
@@ -294,7 +295,7 @@ IDENT
   
 // Operators
 COMMA      : ','   ;
-COLON      : ':'   ;
+COLON      : ':' { this.beforeColon=false; }  ;
 LPAREN     : '('   ;
 RPAREN     : ')'   ;
 SLASH      : '/'   ;
