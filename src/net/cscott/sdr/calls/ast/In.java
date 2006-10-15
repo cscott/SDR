@@ -11,7 +11,7 @@ import net.cscott.sdr.util.*;
 /** <code>In</code> alters the timing of its child such that it
  * executes in exactly <code>count</code> beats.
  * @author C. Scott Ananian
- * @version $Id: In.java,v 1.3 2006-10-15 03:15:04 cananian Exp $
+ * @version $Id: In.java,v 1.4 2006-10-15 19:05:31 cananian Exp $
  */
 public class In extends Comp {
     public final Fraction count;
@@ -22,6 +22,9 @@ public class In extends Comp {
         this.count = count;
         this.child = child;
         addChild(child);
+    }
+    public In(int i, Seq seq) {
+        this(Fraction.valueOf(i), seq);
     }
     @Override
     public String toString() {
