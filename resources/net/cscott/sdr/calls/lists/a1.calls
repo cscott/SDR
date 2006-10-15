@@ -1,0 +1,8 @@
+program: a1
+
+def: quarter right
+  in: 2
+  prim: 0,0,right
+def: quarter left
+  in: 2
+  prim: 0,0,left // or call: left(quarter right)

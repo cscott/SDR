@@ -11,7 +11,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>MainstreamList</code> class contains complex call
  * and concept definitions which are on the 'mainstream' program.
  * @author C. Scott Ananian
- * @version $Id: MainstreamList.java,v 1.1 2006-10-12 13:27:38 cananian Exp $
+ * @version $Id: MainstreamList.java,v 1.2 2006-10-15 14:24:20 cananian Exp $
  */
 public abstract class MainstreamList {
     // hide constructor.
@@ -29,17 +29,17 @@ public abstract class MainstreamList {
     // cast 3/4 is mainstream -- what level is "cast 1/4"
     // and/or "cast 1/2"?  We'll follow SD in calling these
     // mainstream as well.
-    public static final Call _CAST = new MSCall("_cast") {
+    public static final Call CAST = new MSCall("cast") {
         @Override
         public Comp apply(Apply ast) {
             assert ast.callName.equals(getName());
             assert ast.getNumberOfChildren()==1;
-            Fraction n = ast.getNumberArg(0).divide(Fraction.ONE_QUARTER);
+            Fraction n = ast.getNumberArg(0);
             return new Seq
                      (Apply.makeApply
                       ("_fractional",
                        Apply.makeApply(n.toString()),
-                       Apply.makeApply("cast 1/4")));
+                       Apply.makeApply("_cast 4/4")));
         }
     };
 }

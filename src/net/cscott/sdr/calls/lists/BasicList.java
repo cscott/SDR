@@ -19,7 +19,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.6 2006-10-15 03:05:25 cananian Exp $
+ * @version $Id: BasicList.java,v 1.7 2006-10-15 14:24:20 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -48,19 +48,19 @@ public abstract class BasicList {
                 // square thru 1 is right pull by
                 if (Fraction.ONE.compareTo(n) >= 1)
                     return new Seq(new Part
-                                   (false, new Seq
+                                   (false, new In(2, new Seq
                                     (Apply.makeApply
                                      ("_fractional",
                                       Apply.makeApply(n.toString()),
-                                      Apply.makeApply("pull by")))));
+                                      Apply.makeApply("pull by"))))));
                 // square thru N is right pull by, quarter in,
                 // left square thru (N-1) (even if N is fractional)
-                return new Seq(new Part(false, new Seq(
+                return new Seq(new Part(false, new In(2, new Seq(
                         Apply.makeApply("pull by"),
                         Apply.makeApply("quarter in"),
                         Apply.makeApply("left",
                                 Apply.makeApply("square thru",
-                                        n.subtract(Fraction.ONE))))));
+                                        n.subtract(Fraction.ONE)))))));
             }
     };
     // simple combining concept.

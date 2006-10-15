@@ -1,0 +1,12 @@
+program: plus
+
+def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
+  in: 4
+  from: RH WAVE
+    select: CENTER
+      call: cast off 3/4
+    select: END
+      //call: counter rotate 1/4   // we'll use a primitive for simplicity
+      prim: 3,3,right
+  from: LH WAVE
+    call: mirror(fan the top)

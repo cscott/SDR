@@ -1,0 +1,15 @@
+program: a2
+
+/*
+def: split counter rotate
+  in: 4
+  from: GENERAL LINE
+    select: CENTER
+      from: COUPLE, RH MINIWAVE, LH MINIWAVE
+        select: BEAU
+          prim: 1,1,right
+        select: BELLE
+          prim: -1,1,left
+    select: END
+    // XXX!
+*/

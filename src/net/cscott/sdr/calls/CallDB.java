@@ -30,6 +30,10 @@ public class CallDB {
     private CallDB() {
         // okay, first load the call definition lists.
         CallFileLoader.load(resource("basic"), db);
+        CallFileLoader.load(resource("mainstream"), db);
+        CallFileLoader.load(resource("plus"), db);
+        CallFileLoader.load(resource("a1"), db);
+        CallFileLoader.load(resource("a2"), db);
         // now load complex calls and concepts.
         loadFromClass(BasicList.class);
         loadFromClass(MainstreamList.class);
