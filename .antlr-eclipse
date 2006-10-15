@@ -32,6 +32,22 @@
     <property name='output' value='' />
     <property name='diagnosticOutput' value='false' />
   </resource>
+  <resource name='src/net/cscott/sdr/calls/transform/Fractional.g'>
+    <property name='traceParser' value='false' />
+    <property name='docbookOutput' value='false' />
+    <property name='noTrace' value='true' />
+    <property name='normalOuput' value='true' />
+    <property name='installSmap' value='true' />
+    <property name='trace' value='false' />
+    <property name='traceTreeParser' value='false' />
+    <property name='htmlOutput' value='false' />
+    <property name='cleanWarnings' value='false' />
+    <property name='debug' value='false' />
+    <property name='superGrammars' value='/SDR/src/net/cscott/sdr/calls/transform/Transformer.g' />
+    <property name='traceLexer' value='false' />
+    <property name='output' value='' />
+    <property name='diagnosticOutput' value='false' />
+  </resource>
   <resource name='**ANTLR-ECLIPSE-PLUGIN**'>
     <property name='pluginVersion' value='2.7.6' />
   </resource>
