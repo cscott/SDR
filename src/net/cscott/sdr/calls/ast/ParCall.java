@@ -15,7 +15,7 @@ import antlr.CommonAST;
  * the child to dancers which match the given
  * <code>TaggedFormation.Tag</code>s.
  * @author C. Scott Ananian
- * @version $Id: ParCall.java,v 1.5 2006-10-12 13:45:40 cananian Exp $
+ * @version $Id: ParCall.java,v 1.6 2006-10-15 03:06:35 cananian Exp $
  */
 public class ParCall extends CommonAST {
     public final Set<Tag> tags;
@@ -32,6 +32,7 @@ public class ParCall extends CommonAST {
     private static EnumSet<Tag> parseTags(List<String> tagNames) {
         EnumSet<Tag> sels = EnumSet.noneOf(Tag.class);
         for (String s: tagNames) {
+            s=s.toUpperCase().replace(' ','_').replace('-','_');
             if (s.equals("NONE"))
                 continue;
             else if (s.equals("ALL"))
