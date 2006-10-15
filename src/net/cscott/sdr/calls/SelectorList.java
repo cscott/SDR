@@ -25,6 +25,29 @@ public abstract class SelectorList {
     public static final Selector FACING_COUPLES =
         GeneralFormationMatcher.makeSelector(FormationList.FACING_COUPLES);
 
+    // unimplemented selectors
+    private static final Selector _STUB_ = new Selector() {
+        @Override
+        public FormationMatch match(Formation f) throws NoMatchException {
+            assert false : "unimplemented";
+            throw new RuntimeException("unimplemented");
+        }
+    };
+    public static final Selector RH_TWO_FACED_LINE = _STUB_;
+    public static final Selector LH_TWO_FACED_LINE = _STUB_;
+    public static final Selector FACING_COUPLE = _STUB_;
+    public static final Selector SINGLE_DPT = _STUB_;
+    public static final Selector LH_BOX = _STUB_;
+    public static final Selector RH_BOX = _STUB_;
+    public static final Selector RH_WAVE = _STUB_;
+    public static final Selector LH_WAVE = _STUB_;
+    public static final Selector GENERAL_BOX = _STUB_;
+    public static final Selector LH_3_AND_1 = _STUB_;
+    public static final Selector LH_SPLIT_3_AND_1 = _STUB_;
+    public static final Selector RH_3_AND_1 = _STUB_;
+    public static final Selector RH_SPLIT_3_AND_1 = _STUB_;
+    public static final Selector PARALLEL_GENERAL_LINES = _STUB_;
+    public static final Selector GENERAL_COLUMNS = _STUB_;
     
     public static void main(String[] args) throws Exception {
         // test 
