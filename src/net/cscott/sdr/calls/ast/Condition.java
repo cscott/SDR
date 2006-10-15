@@ -4,6 +4,8 @@ import static net.cscott.sdr.calls.ast.TokenTypes.CONDITION;
 
 import java.util.*;
 
+import antlr.collections.AST;
+
 import net.cscott.sdr.calls.*;
 import net.cscott.sdr.util.Fraction;
 
@@ -12,7 +14,7 @@ import net.cscott.sdr.util.Fraction;
  * sub-conditions; see the {@link Apply} class for the basic idea.
  * String and number arguments are stored as zero-argument conditions.
  * @author C. Scott Ananian
- * @version $Id: Condition.java,v 1.3 2006-10-11 19:06:57 cananian Exp $
+ * @version $Id: Condition.java,v 1.4 2006-10-15 03:15:04 cananian Exp $
  */
 public class Condition extends SeqCall {
     public final String predicate;
@@ -53,5 +55,20 @@ public class Condition extends SeqCall {
     }
     public static Condition makeCondition(String condition, Condition... subConditions) {
         return new Condition(condition, Arrays.asList(subConditions));
+    }
+    /** Factory: creates new Condition only if it would differ from this. */
+    public Condition build(String predicate, List<Condition> children) {
+        if (predicate==this.predicate && compare(children))
+            return this;
+        return new Condition(predicate, children);
+    }
+    private boolean compare(List<Condition> l) {
+        if (getNumberOfChildren() != l.size()) return false;
+        AST child = this.getFirstChild();
+        for (Condition t: l) {
+                if (t != child) return false; // reference equality
+                child = child.getNextSibling();
+        }
+        return true;
     }
 }

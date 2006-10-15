@@ -4,6 +4,8 @@ import static net.cscott.sdr.calls.ast.TokenTypes.APPLY;
 
 import java.util.*;
 
+import antlr.collections.AST;
+
 import net.cscott.sdr.calls.*;
 import net.cscott.sdr.util.Fraction;
 
@@ -31,7 +33,7 @@ import net.cscott.sdr.util.Fraction;
  * when implementing {@link Call#apply(Apply)}.
  * 
  * @author C. Scott Ananian
- * @version $Id: Apply.java,v 1.4 2006-10-12 13:29:29 cananian Exp $
+ * @version $Id: Apply.java,v 1.5 2006-10-15 03:15:04 cananian Exp $
  */
 public class Apply extends SeqCall {
     public final String callName;
@@ -76,5 +78,20 @@ public class Apply extends SeqCall {
 
     public static Apply makeApply(String conceptName, Apply... subCalls) {
         return new Apply(conceptName, Arrays.asList(subCalls));
+    }
+    /** Factory: creates new Apply only if it would differ from this. */
+    public Apply build(String callName, List<Apply> children) {
+        if (callName==this.callName && compare(children))
+            return this;
+        return new Apply(callName, children);
+    }
+    private boolean compare(List<Apply> l) {
+        if (getNumberOfChildren() != l.size()) return false;
+        AST child = this.getFirstChild();
+        for (Apply t: l) {
+                if (t != child) return false; // reference equality
+                child = child.getNextSibling();
+        }
+        return true;
     }
 }
