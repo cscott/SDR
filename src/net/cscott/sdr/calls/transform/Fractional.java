@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.ast.*;
+import static net.cscott.sdr.calls.ast.TokenTypes.PART;
 import net.cscott.sdr.util.Fraction;
 
 public class Fractional extends TransformVisitor<Fraction> {
@@ -49,6 +50,11 @@ public class Fractional extends TransformVisitor<Fraction> {
         }
         assert f.compareTo(Fraction.ZERO) == 0;
         if (l.isEmpty()) throw new BadCallException("Nothing left in Seq");
+        // OPTIMIZATION: SEQ(PART(c)) = c
+        if (l.size()==1 && l.get(0).type==PART) {
+            Part p = (Part) l.get(0);
+            if (p.isDivisible) return p.child;
+        }
         return s.build(l);
     }
 }

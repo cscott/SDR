@@ -1,5 +1,7 @@
 package net.cscott.sdr.calls.lists;
 
+import static net.cscott.sdr.calls.transform.AstTokenTypes.PART;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.9 2006-10-17 16:29:06 cananian Exp $
+ * @version $Id: BasicList.java,v 1.10 2006-10-17 16:42:33 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -125,7 +127,13 @@ public abstract class BasicList {
                     isDivisible=false;
             }
             Comp result = new Seq(l);
-            if (!isDivisible)
+            // OPTIMIZATION: SEQ(PART(c)) = c
+            if (l.size()==1 && l.get(0).type==PART) {
+                Part p = (Part) l.get(0);
+                if (p.isDivisible)
+                    result = p.child;
+            } else if (!isDivisible)
+                // we don't support subdivision of "swing thru 2 1/2"
                 result = new Seq(new Part(isDivisible, result));
             return result;
         }
