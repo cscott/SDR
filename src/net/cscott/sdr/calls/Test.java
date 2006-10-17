@@ -2,6 +2,7 @@ package net.cscott.sdr.calls;
 
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
+import net.cscott.sdr.calls.transform.RemoveIn;
 import net.cscott.sdr.util.Fraction;
 
 public class Test {
@@ -23,5 +24,7 @@ public class Test {
         System.out.println(a);
         def = a.expand();
         System.out.println(def);
+        //def = RemoveIn.removeIn(def);
+        //System.out.println(def);
     }
 }

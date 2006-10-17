@@ -37,7 +37,7 @@ import net.cscott.sdr.util.Fraction;
  * when implementing {@link Call#apply(Apply)}.
  * 
  * @author C. Scott Ananian
- * @version $Id: Apply.java,v 1.7 2006-10-17 16:29:05 cananian Exp $
+ * @version $Id: Apply.java,v 1.8 2006-10-17 16:55:22 cananian Exp $
  */
 public class Apply extends SeqCall {
     public final String callName;
@@ -98,8 +98,10 @@ public class Apply extends SeqCall {
         return makeApply(callName, arg);
     }
     public static Apply makeApply(String callName, Fraction number, String s) {
+        return makeApply(callName, number, makeApply(s));
+    }
+    public static Apply makeApply(String callName, Fraction number, Apply arg2) {
         Apply arg1 = makeApply(number.toString()); // sigh
-        Apply arg2 = makeApply(s);
         return makeApply(callName, arg1, arg2);
     }
 
