@@ -34,7 +34,7 @@ public abstract class GeneralFormationMatcher {
         // (note that we ignore unselected dancers in formation f)
         // (note that 'dancer #1' is really 'dancer #0' below)
         if (goal.dancers().size() > input.dancers().size())
-            throw new NoMatchException(); // goal is too large
+            throw new NoMatchException("goal is too large"); // goal is too large
 
         // First, identify the symmetry.
         // Assumes center of goal formation is 0,0
@@ -49,13 +49,13 @@ public abstract class GeneralFormationMatcher {
         // now try setting each dancer in 'f' to d0 in the goal formation.
         assert input.dancers().size() <= 64 : "formation is too large for a long";
 
-        // XXX Construct MatchInfo
+        // Construct MatchInfo
         List<Dancer> inputDancers=new ArrayList<Dancer>(input.dancers());
         MatchInfo mi = new MatchInfo(input, goal, inputDancers, goalDancers, eq0);
         // Do the match
         tryOne(mi, 0, 0, 0, 0);
         if (mi.matches.isEmpty())
-            throw new NoMatchException();
+            throw new NoMatchException("no matches");
         // Filter out the max
         int max = 0;
         for (Long match: mi.matches)
@@ -66,7 +66,7 @@ public abstract class GeneralFormationMatcher {
         for (Long match: mi.matches)
             if (Long.bitCount(match)==max)
                 if (found) // ambiguous match.
-                    throw new NoMatchException();
+                    throw new NoMatchException("ambiguous");
                 else {
                     bestMatch = match;
                     found = true;
@@ -102,6 +102,7 @@ public abstract class GeneralFormationMatcher {
         final long eq0; // goal dancers who are equivalent to dancer #0
         final int numInput;
         final MatchType type = MatchType.EXACT; //XXX
+        final long sel; // input dancers who are selected
         // these next two are used to pass info into validate & back
         long inFormation = 0; // input dancers who are already assigned to a formation
         long not0 = 0; // input dancers who shouldn't be assigned as dancer #0, due to symmetry
@@ -120,6 +121,13 @@ public abstract class GeneralFormationMatcher {
                 this.goalPositions.add(p);
             }
             this.eq0 = eq0;
+            long sel = 0; i=0;
+            for (Dancer d : inputDancers) {
+                if (f.isSelected(d))
+                    sel |= (1L<<i);
+                i++;
+            }
+            this.sel = sel;
         }
     }
     private static boolean validate(MatchInfo mi, int dancerNum, Fraction extraRot) {
@@ -140,8 +148,10 @@ public abstract class GeneralFormationMatcher {
             if (!mi.inputPositionMap.containsKey(key))
                 return false; // no input dancer at this goal position.
             // okay, there is an input dancer: is his facing direction
-            // consistent?
+            // consistent? & is he selected?
             int iNum = mi.inputPositionMap.get(key);
+            if (0==(mi.sel & (1L<<iNum)))
+                return false; // this dancer isn't selected.
             if (0!=(inFormation & (1L<<iNum)))
                 return false; // this dancer is already in some match
             Position ip = mi.inputPositions.get(iNum);

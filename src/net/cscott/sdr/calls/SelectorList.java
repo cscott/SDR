@@ -7,7 +7,7 @@ public abstract class SelectorList {
     // 0-person selectors
     public static final Selector NONE = new Selector() {
         public FormationMatch match(Formation f) throws NoMatchException {
-            throw new NoMatchException();
+            throw new NoMatchException("NONE selector used");
         }
     };
     // 2-person selectors
