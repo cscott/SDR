@@ -14,14 +14,16 @@ import net.cscott.sdr.calls.transform.ValueVisitor;
  * at least one selector.  Each person executes the piece corresponding to
  * the first selector which matches them, in parallel.
  * @author C. Scott Ananian
- * @version $Id: Par.java,v 1.5 2006-10-17 16:29:05 cananian Exp $
+ * @version $Id: Par.java,v 1.6 2006-10-17 19:58:21 cananian Exp $
  */
 public class Par extends Comp {
     public final List<ParCall> children;
     public Par(ParCall... children) {
+        this(Arrays.asList(children.clone()));
+    }
+    public Par(List<ParCall> children) {
         super(PAR);
-        this.children = Collections.unmodifiableList
-        (Arrays.asList(children.clone()));
+        this.children = Collections.unmodifiableList(children);
     }
     @Override
     public <T> Comp accept(TransformVisitor<T> v, T t) {
