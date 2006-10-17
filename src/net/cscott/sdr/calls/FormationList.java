@@ -123,25 +123,31 @@ public abstract class FormationList {
 */
     // 4-person formations
     public static final TaggedFormation FACING_COUPLES =
-        create(d(-1,-1,"n",BEAU,TRAILER),
+        create("FACING COUPLES",
+               d(-1,-1,"n",BEAU,TRAILER),
                d(+1,-1,"n",BELLE,TRAILER),
                d(+1,+1,"s",BEAU,TRAILER),
                d(-1,+1,"s",BELLE,TRAILER));
     // 2-person formations
     public static final TaggedFormation COUPLE =
-        create(d(-1,0,"n",BEAU),
+        create("COUPLE",
+               d(-1,0,"n",BEAU),
                d(+1,0,"n",BELLE));
     public static final TaggedFormation RH_MINIWAVE =
-        create(d(-1,0,"n",BEAU),
+        create("RH MINIWAVE",
+               d(-1,0,"n",BEAU),
                d(+1,0,"s",BEAU));
     public static final TaggedFormation LH_MINIWAVE =
-        create(d(-1,0,"s",BELLE),
+        create("LH MINIWAVE",
+               d(-1,0,"s",BELLE),
                d(+1,0,"n",BELLE));
     public static final TaggedFormation FACING_DANCERS =
-        create(d(0,-1,"n",TRAILER),
+        create("FACING DANCERS",
+               d(0,-1,"n",TRAILER),
                d(0,+1,"s",TRAILER));
     public static final TaggedFormation TANDEM =
-        create(d(0,-1,"n",TRAILER),
+        create("TANDEM",
+               d(0,-1,"n",TRAILER),
                d(0,+1,"n",LEADER));
 
     private static class PositionAndTag {
@@ -156,11 +162,13 @@ public abstract class FormationList {
         return new PositionAndTag(Position.getGrid(x,y,facing),
                 TaggedFormation.mkTags(tags));
     }
-    private static TaggedFormation create(PositionAndTag... ptl) {
+    private static TaggedFormation create(final String name, PositionAndTag... ptl) {
 	List<TaggedDancerInfo> dil = new ArrayList<TaggedDancerInfo>(ptl.length);
 	for (PositionAndTag pt: ptl)
 	    dil.add(new TaggedDancerInfo(new PhantomDancer(), pt.position, pt.tags, true));
-	TaggedFormation f = new TaggedFormation(dil.toArray(new TaggedDancerInfo[dil.size()]));
+	TaggedFormation f = new TaggedFormation(dil.toArray(new TaggedDancerInfo[dil.size()])) {
+	    public String toString() { return (name==null)?super.toString():name; }
+        };
 	_formations.add(f);// add to our static list.
 	return f;
     }
@@ -184,7 +192,7 @@ public abstract class FormationList {
 				    Fraction.valueOf(y,1).add(yoff).negate(),
 				    r),Collections.<Tag>emptySet()/*XXX*/));
 	    }
-	return create(ptl.toArray(new PositionAndTag[ptl.size()]));
+	return create(null, ptl.toArray(new PositionAndTag[ptl.size()]));
     }
 
     /** Self-test: spit out all formations to System.out. */
