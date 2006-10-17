@@ -13,6 +13,7 @@ public abstract class GeneralFormationMatcher {
             public FormationMatch match(Formation f) throws NoMatchException {
                 return doMatch(f, goal);
             }
+            public String toString() { return goal.toString(); }
         };
     }
 
