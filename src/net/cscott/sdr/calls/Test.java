@@ -2,6 +2,7 @@ package net.cscott.sdr.calls;
 
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
+import net.cscott.sdr.calls.transform.Elaborate;
 import net.cscott.sdr.calls.transform.RemoveIn;
 import net.cscott.sdr.util.Fraction;
 
@@ -23,6 +24,9 @@ public class Test {
         a = Apply.makeApply("_fractional", Apply.makeApply("1/2"), a);
         System.out.println(a);
         def = a.expand();
+        System.out.println(def);
+        DanceState ds = new DanceState(Program.MAINSTREAM);
+        def = Elaborate.elaborate(ds, Formation.FOUR_SQUARE, def, false);
         System.out.println(def);
         //def = RemoveIn.removeIn(def);
         //System.out.println(def);
