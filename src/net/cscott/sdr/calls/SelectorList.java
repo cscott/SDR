@@ -48,15 +48,4 @@ public abstract class SelectorList {
     public static final Selector RH_SPLIT_3_AND_1 = _STUB_;
     public static final Selector PARALLEL_GENERAL_LINES = _STUB_;
     public static final Selector GENERAL_COLUMNS = _STUB_;
-    
-    public static void main(String[] args) throws Exception {
-        // test 
-        Formation f = Formation.SQUARED_SET;
-        FormationMatch fm = COUPLE.match(f);
-        System.out.println(fm.matches.size()+" couples");
-        for (TaggedFormationAndWarp fw : fm.matches) {
-            System.out.println(fw.tf);
-            System.out.println(fw.w);
-        }
-    }
 }
