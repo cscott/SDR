@@ -53,7 +53,7 @@ public abstract class GeneralFormationMatcher {
         List<Dancer> inputDancers=new ArrayList<Dancer>(input.dancers());
         MatchInfo mi = new MatchInfo(input, goal, inputDancers, goalDancers, eq0);
         // Do the match
-        tryOne(mi, 0, 0, 0, 0);
+        tryOne(mi, 0, 0, 0);
         if (mi.matches.isEmpty())
             throw new NoMatchException("no matches");
         // Filter out the max
@@ -99,13 +99,12 @@ public abstract class GeneralFormationMatcher {
         final Map<Position,Integer> inputPositionMap = new HashMap<Position,Integer>();
         final List<Position> inputPositions = new ArrayList<Position>();
         final List<Position> goalPositions = new ArrayList<Position>();
-        final long eq0; // goal dancers who are equivalent to dancer #0
+        final long eq0; // goal dancers who are symmetric to goal dancer #0
         final int numInput;
         final MatchType type = MatchType.EXACT; //XXX
         final long sel; // input dancers who are selected
-        // these next two are used to pass info into validate & back
+        // these next one is used to pass info into validate & back
         long inFormation = 0; // input dancers who are already assigned to a formation
-        long not0 = 0; // input dancers who shouldn't be assigned as dancer #0, due to symmetry
         MatchInfo(Formation f, TaggedFormation goal,
                   List<Dancer> inputDancers, List<Dancer> goalDancers,
                   long eq0) {
@@ -132,7 +131,6 @@ public abstract class GeneralFormationMatcher {
     }
     private static boolean validate(MatchInfo mi, int dancerNum, Fraction extraRot) {
         long inFormation = mi.inFormation;
-        long not0 = mi.not0;
         long eq0 = mi.eq0;
         // find some Dancer in the input formation to correspond to each
         // Dancer in the goal formation.  Each such dancer must not already
@@ -147,13 +145,21 @@ public abstract class GeneralFormationMatcher {
             Position key = zeroRotation(gp);
             if (!mi.inputPositionMap.containsKey(key))
                 return false; // no input dancer at this goal position.
-            // okay, there is an input dancer: is his facing direction
-            // consistent? & is he selected?
+            // okay, there is an input dancer:
             int iNum = mi.inputPositionMap.get(key);
+            // if this dancer selected?
             if (0==(mi.sel & (1L<<iNum)))
                 return false; // this dancer isn't selected.
+            // is he free to be assigned to this formation?
             if (0!=(inFormation & (1L<<iNum)))
                 return false; // this dancer is already in some match
+            // check for symmetry: if this goal position is 'eq0' (ie,
+            // symmetric with the 0 dancer's position), then this dancer #
+            // must be >= the 0 dancer's input # (ie, dancerNum)
+            if (0!=(eq0 & (1L<<gNum)))
+                    if (iNum < dancerNum)
+                        return false; // symmetric to some other canonical formation
+            // is his facing direction consistent?
             Position ip = mi.inputPositions.get(iNum);
             assert ip.x.equals(gp.x) && ip.y.equals(gp.y);
             Rotation gr = gp.facing.normalize();
@@ -166,35 +172,34 @@ public abstract class GeneralFormationMatcher {
                     gr.add(Fraction.ONE_HALF).normalize().equals(ir)) {
                 /* okay */
             } else return false; // rotations aren't correct.
-            // update 'in formation' and 'not0'
+            // update 'in formation' and 'gNum'
             inFormation |= (1L<<iNum);
-            if (0!=(eq0 & (1L<<gNum)))
-                not0 |= (1L<<iNum);
             gNum++;
         }
-        // return updates to inFormation and dontSet
+        // return updates to inFormation
         mi.inFormation = inFormation;
-        mi.not0 = not0;
         return true; // this is a valid match.
     }
         
-    private static void tryOne(MatchInfo mi, int dancerNum, long currentAssignment,
-            long inFormation, long not0) {
+    private static void tryOne(MatchInfo mi, int dancerNum,
+            long currentAssignment, long inFormation) {
         if (dancerNum >= mi.numInput) {
             // we've got a complete assignment; save it.
-            if (currentAssignment!=0)
+            if (currentAssignment!=0) {
                 mi.matches.add(currentAssignment);
+            }
             return;
         }
         // try NOT assigning this dancer
-        tryOne(mi, dancerNum+1, currentAssignment, inFormation, not0);
-        // okay, try to assign the next dancer, if not in dontSet
-        currentAssignment |= (1L<<dancerNum);
-        mi.inFormation = inFormation; mi.not0 = not0;
-        if (!validate(mi,dancerNum,Fraction.ZERO)) return;
+        tryOne(mi, dancerNum+1, currentAssignment, inFormation);
+        // okay, try to assign the next dancer
+        long newAssignment = currentAssignment | (1L<<dancerNum);
+        mi.inFormation = inFormation;
+        if (validate(mi,dancerNum,Fraction.ZERO)) {
+            inFormation = mi.inFormation;
+            tryOne(mi, dancerNum+1, newAssignment, inFormation);
+        }
         // XXX try with rotations of 1/2 (if GENERAL) and 1/4,3/4 (in TBONED)
-        inFormation = mi.inFormation; not0 = mi.not0;
-        tryOne(mi, dancerNum+1, currentAssignment, inFormation, not0);
     }
     
     private static Position zeroRotation(Position p) {
