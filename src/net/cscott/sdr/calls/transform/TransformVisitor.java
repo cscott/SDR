@@ -1,5 +1,7 @@
 package net.cscott.sdr.calls.transform;
 
+import static net.cscott.sdr.calls.transform.AstTokenTypes.PART;
+
 import java.util.*;
 
 import net.cscott.sdr.calls.BadCallException;
@@ -9,7 +11,7 @@ import net.cscott.sdr.calls.ast.*;
  * {@link TransformVisitor} is a superclass to eliminate
  * common code when writing tree transformations.
  * @author C. Scott Ananian
- * @version $Id: TransformVisitor.java,v 1.2 2006-10-17 16:29:06 cananian Exp $
+ * @version $Id: TransformVisitor.java,v 1.3 2006-10-17 19:53:59 cananian Exp $
  */
 public abstract class TransformVisitor<T> {
     public SeqCall visit(Apply apply, T t) {
@@ -85,6 +87,11 @@ public abstract class TransformVisitor<T> {
             // if any call in a Seq is bad, then the whole
             // thing is bad.
             l.add(sc.accept(this, t));
+        }
+        // OPTIMIZATION: SEQ(PART(c)) = c
+        if (l.size()==1 && l.get(0).type==PART) {
+            Part p = (Part) l.get(0);
+            if (p.isDivisible) return p.child;
         }
         return s.build(l);
     }
