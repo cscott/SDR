@@ -47,7 +47,7 @@ public class Position {
 	if (amount.equals(Fraction.ZERO)) return this;
 	return new Position(x, y, facing.add(amount));
     }
-    /** Normalize the rotation of the given position. */
+    /** Normalize (restrict to 0-1) the rotation of the given position. */
     public Position normalize() {
         return new Position(x, y, facing.normalize());
     }
