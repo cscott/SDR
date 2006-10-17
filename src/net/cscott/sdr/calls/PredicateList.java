@@ -9,14 +9,14 @@ public abstract class PredicateList {
     public final static Predicate TRUE = new _Predicate("true") {
         @Override
         public boolean evaluate(DanceState ds, Formation f, Condition c) {
-            assert c.getNumberOfChildren()==0;
+            assert c.args.isEmpty();
             return true;
         }        
     };
     public final static Predicate FALSE = new _Predicate("false") {
         @Override
         public boolean evaluate(DanceState ds, Formation f, Condition c) {
-            assert c.getNumberOfChildren()==0;
+            assert c.args.isEmpty();
             return false;
         }
     };
@@ -24,7 +24,7 @@ public abstract class PredicateList {
     public final static Predicate NOT = new _Predicate("not") {
         @Override
         public boolean evaluate(DanceState ds, Formation f, Condition c) {
-            assert c.getNumberOfChildren()==1;
+            assert c.args.size()==1;
             Condition arg = c.getArg(0);
             return !arg.getPredicate().evaluate(ds,f,arg);
         }
@@ -33,10 +33,9 @@ public abstract class PredicateList {
     public final static Predicate AND = new _Predicate("and") {
         @Override
         public boolean evaluate(DanceState ds, Formation f, Condition c) {
-            assert c.getNumberOfChildren()>0;
+            assert c.args.size()>0;
             boolean result = true;
-            for (int i=0; i<c.getNumberOfChildren(); i++) {
-                Condition cc = c.getArg(i);
+            for (Condition cc : c.args) {
                 result = cc.getPredicate().evaluate(ds, f, cc);
                 if (!result) break; // short-circuit operator.
             }
@@ -46,10 +45,9 @@ public abstract class PredicateList {
     public final static Predicate OR = new _Predicate("or") {
         @Override
         public boolean evaluate(DanceState ds, Formation f, Condition c) {
-            assert c.getNumberOfChildren()>0;
+            assert c.args.size()>0;
             boolean result = false;
-            for (int i=0; i<c.getNumberOfChildren(); i++) {
-                Condition cc = c.getArg(i);
+            for (Condition cc : c.args) {
                 result = cc.getPredicate().evaluate(ds, f, cc);
                 if (result) break; // short-circuit operator.
             }
@@ -60,7 +58,7 @@ public abstract class PredicateList {
     public final static Predicate PROGRAM_AT_LEAST = new _Predicate("program at least") {
         @Override
         public boolean evaluate(DanceState ds, Formation f, Condition c) {
-            assert c.getNumberOfChildren()==1;
+            assert c.args.size()==1;
             Program p = Program.valueOf(c.getStringArg(0).toUpperCase());
             return ds.program.includes(p);
         }

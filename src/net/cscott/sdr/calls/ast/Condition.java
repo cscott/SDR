@@ -1,14 +1,14 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.ast.TokenTypes.CONDITION;
+import static net.cscott.sdr.calls.transform.AstTokenTypes.CONDITION;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import antlr.CommonAST;
-import antlr.collections.AST;
-
-import net.cscott.sdr.calls.*;
+import net.cscott.sdr.calls.Predicate;
 import net.cscott.sdr.calls.transform.TransformVisitor;
+import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
 
 /** <code>Condition</code> represents an invocation of a {@link Predicate}
@@ -16,33 +16,42 @@ import net.cscott.sdr.util.Fraction;
  * sub-conditions; see the {@link Apply} class for the basic idea.
  * String and number arguments are stored as zero-argument conditions.
  * @author C. Scott Ananian
- * @version $Id: Condition.java,v 1.5 2006-10-17 01:53:57 cananian Exp $
+ * @version $Id: Condition.java,v 1.6 2006-10-17 16:29:05 cananian Exp $
  */
-public class Condition extends CommonAST {
+public class Condition extends AstNode {
     public final String predicate;
+    public final List<Condition> args;
     public Condition(String predicate, List<Condition> args) {
-        super();
-        initialize(CONDITION, this.getClass().getName().replaceAll("[^.]+[.]",""));
+        super(CONDITION);
         this.predicate = predicate;
-        for (Condition c : args)
-            addChild(c);
+        this.args = Collections.unmodifiableList
+        (Arrays.asList(args.toArray(new Condition[args.size()])));
     }
     public <T> Condition accept(TransformVisitor<T> v, T t) {
         return v.visit(this, t);
     }
-    public String toString() {
-        return super.toString()+"["+predicate+"]";
+    @Override
+    public <RESULT,CLOSURE>
+    RESULT accept(ValueVisitor<RESULT,CLOSURE> v, CLOSURE cl) {
+        return v.visit(this, cl);
+    }
+    @Override
+    public String argsToString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(predicate);
+        sb.append(' ');
+        for (Condition a : args) {
+            sb.append(a.toString());
+            sb.append(' ');
+        }
+        return sb.toString();
     }
     public Predicate getPredicate() {
         return Predicate.lookup(predicate);
     }
     
-    public Condition getArg(int n) {
-        Condition c = (Condition) getFirstChild();
-        for (int i=0; i<n; i++)
-            c = (Condition) c.getNextSibling();
-        return c;
-    }
+    public Condition getArg(int n) { return args.get(n); }
+
     public Fraction getNumberArg(int n) {
         return Fraction.valueOf(getArg(n).predicate);
     }
@@ -63,18 +72,9 @@ public class Condition extends CommonAST {
         return new Condition(condition, Arrays.asList(subConditions));
     }
     /** Factory: creates new Condition only if it would differ from this. */
-    public Condition build(String predicate, List<Condition> children) {
-        if (predicate==this.predicate && compare(children))
+    public Condition build(String predicate, List<Condition> args) {
+        if (this.predicate.equals(predicate) && this.args.equals(args))
             return this;
-        return new Condition(predicate, children);
-    }
-    private boolean compare(List<Condition> l) {
-        if (getNumberOfChildren() != l.size()) return false;
-        AST child = this.getFirstChild();
-        for (Condition t: l) {
-                if (t != child) return false; // reference equality
-                child = child.getNextSibling();
-        }
-        return true;
+        return new Condition(predicate, args);
     }
 }

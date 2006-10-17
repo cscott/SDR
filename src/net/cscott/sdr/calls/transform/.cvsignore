@@ -1,11 +1,6 @@
-BeatCounter.java
 CallFileBuilder.java
 CallFileLexer.java
 CallFileParser.java
-Fractional.java
-RemoveIn.java
-Transformer.java
-Walker.java
 expanded*.g
 *TokenTypes.java
 *TokenTypes.txt

@@ -1,47 +1,48 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.ast.TokenTypes.PRIM;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import antlr.collections.AST;
-
+import static net.cscott.sdr.calls.transform.AstTokenTypes.PRIM;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Rotation;
 import net.cscott.sdr.calls.Warp;
 import net.cscott.sdr.calls.transform.TransformVisitor;
+import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * A Prim represents a primitive action: a certain distance travelled
  * forward and to the side, while rotating a certain amount, performed
  * in a certain number of beats.  PRIM is a leaf node in a our AST.
  * @author C. Scott Ananian
- * @version $Id: Prim.java,v 1.6 2006-10-17 01:53:57 cananian Exp $
+ * @version $Id: Prim.java,v 1.7 2006-10-17 16:29:05 cananian Exp $
  */
 public class Prim extends SeqCall {
     public final Fraction x, y;
     public final Rotation rot;
     public final Fraction time;
+    public final boolean passRight;
     public Prim(Fraction x, Fraction y, Rotation rot, Fraction time) {
         super(PRIM);
         this.x = x; this.y = y; this.rot = rot; this.time = time;
+        this.passRight = true;
     }
-    // enforce leaf-ness
-    @Override
-    public void addChild(AST c) { throw new RuntimeException("leaf"); }
-    @Override
-    public void setFirstChild(AST c) { throw new RuntimeException("leaf"); }
     // support visitor
+    @Override
     public <T> SeqCall accept(TransformVisitor<T> v, T t) {
         return v.visit(this, t);
     }
+    @Override
+    public <RESULT,CLOSURE>
+    RESULT accept(ValueVisitor<RESULT,CLOSURE> v, CLOSURE cl) {
+        return v.visit(this, cl);
+    }
     // utility methods
     @Override
-    public String toString() {
-        return "("+super.toString()+" "+x.toProperString()+" "+y.toProperString()+
-            " "+rot.toRelativeString()+" "+time.toProperString()+")";
+    public String argsToString() {
+        return x.toProperString()+" "+y.toProperString()+
+            " "+rot.toRelativeString()+" "+time.toProperString();
     }
     @Override
     public boolean equals(Object o) {

@@ -1,9 +1,5 @@
 package net.cscott.sdr.calls;
 
-import java.lang.reflect.Field;
-
-import net.cscott.sdr.calls.ast.Apply;
-import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Condition;
 
 /** A {@link Predicate} is a boolean test on the current formation and dance
@@ -14,7 +10,7 @@ import net.cscott.sdr.calls.ast.Condition;
  * {@link Condition} object in the call tree represents the unevaluated
  * arguments of a {@code Predicate} application.
  * @author C. Scott Ananian
- * @version $Id: Predicate.java,v 1.2 2006-10-11 19:06:55 cananian Exp $
+ * @version $Id: Predicate.java,v 1.3 2006-10-17 16:29:01 cananian Exp $
  */
 public abstract class Predicate {
     /** The name of this predicate, in our internal jargon.  This is meant to

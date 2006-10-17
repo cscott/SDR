@@ -14,13 +14,14 @@ import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.calls.ast.Warped;
+import net.cscott.sdr.calls.transform.Fractional;
 import net.cscott.sdr.util.Fraction;
 
 /** 
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.8 2006-10-15 19:06:09 cananian Exp $
+ * @version $Id: BasicList.java,v 1.9 2006-10-17 16:29:06 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -39,7 +40,7 @@ public abstract class BasicList {
             @Override
             public Comp apply(Apply ast) {
                 assert ast.callName.equals(getName());
-                assert ast.getNumberOfChildren()==1;
+                assert ast.args.size()==1;
                 // one parameter: a count
                 Fraction n = ast.getNumberArg(0);
                 // validate.
@@ -51,9 +52,7 @@ public abstract class BasicList {
                     return new Seq(new Part
                                    (false, new In(2, new Seq
                                     (Apply.makeApply
-                                     ("_fractional",
-                                      Apply.makeApply(n.toString()),
-                                      Apply.makeApply("pull by"))))));
+                                     ("_fractional", n, "pull by")))));
                 // square thru N is right pull by, quarter in,
                 // left square thru (N-1) (even if N is fractional)
                 return new Seq(new Part(false, new In(2, new Seq(
@@ -68,13 +67,11 @@ public abstract class BasicList {
         @Override
         public Comp apply(Apply ast) {
             assert ast.callName.equals(getName());
-            assert ast.getNumberOfChildren()==1;
+            assert ast.args.size()==1;
             Fraction n = ast.getNumberArg(0);
             return new Seq
                      (Apply.makeApply
-                      ("_fractional",
-                       Apply.makeApply(n.toString()),
-                       Apply.makeApply("_touch 4/4")));
+                      ("_fractional", n, "_touch 4/4"));
         }
     };
     // simple combining concept.
@@ -82,14 +79,9 @@ public abstract class BasicList {
         @Override
         public Comp apply(Apply ast) {
             assert ast.callName.equals(getName());
-            assert ast.getNumberOfChildren()>=1;
-            List<SeqCall> l = new ArrayList<SeqCall>(ast.getNumberOfChildren());
-            Apply a = (Apply) ast.getFirstChild();
-            while (a!=null) {
-                l.add(a);
-                a = (Apply) a.getNextSibling();
-            }
-            return new Seq(l.toArray(new SeqCall[l.size()]));
+            assert ast.args.size()>=1;
+            List<SeqCall> l = new ArrayList<SeqCall>(ast.args);
+            return new Seq(l);
         }
     };
     // this is not completely accurate?
@@ -97,7 +89,7 @@ public abstract class BasicList {
         @Override
         public Comp apply(Apply ast) {
             assert ast.callName.equals(getName());
-            assert ast.getNumberOfChildren()==1;
+            assert ast.args.size()==1;
             Apply a = ast.getArg(0);
             Warp warp = Warp.MIRROR;
             return new Warped(warp, new Seq(a));
@@ -105,10 +97,12 @@ public abstract class BasicList {
     };
     // complex concept -- not sure correct program here?
     public static final Call _FRACTIONAL = new BasicCall("_fractional") {
+        private Fractional fv = new Fractional(); // visitor singleton
         @Override
         public Comp apply(Apply ast) {
+            boolean isDivisible = true;
             assert ast.callName.equals(getName());
-            assert ast.getNumberOfChildren()==2;
+            assert ast.args.size()==2;
             Fraction n = ast.getNumberArg(0);
             Apply a = ast.getArg(1);
             if (n.compareTo(Fraction.ZERO) <= 0)
@@ -126,10 +120,14 @@ public abstract class BasicList {
             n=Fraction.valueOf(n.getProperNumerator(),
                     n.getDenominator());
             if (!Fraction.ZERO.equals(n)) {
-                // XXX implement me
-                throw new BadCallException("unimplemented fractional");
+                l.add(fv.visit(a, n));
+                if (whole!=0)
+                    isDivisible=false;
             }
-            return new Seq(l.toArray(new SeqCall[l.size()]));
+            Comp result = new Seq(l);
+            if (!isDivisible)
+                result = new Seq(new Part(isDivisible, result));
+            return result;
         }
     };
 }

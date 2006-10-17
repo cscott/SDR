@@ -11,7 +11,7 @@ import net.cscott.sdr.calls.ast.Comp;
  * arguments (numbers, selectors, or other calls) to result in a
  * <code>Comp</code> AST tree.
  * @author C. Scott Ananian
- * @version $Id: Call.java,v 1.4 2006-10-11 18:50:03 cananian Exp $
+ * @version $Id: Call.java,v 1.5 2006-10-17 16:29:01 cananian Exp $
  */
 public abstract class Call {
     /** The name of this call, in our internal jargon.  This is not
@@ -51,7 +51,7 @@ public abstract class Call {
             public Program getProgram() { return program; }
             @Override
             public Comp apply(Apply ast) {
-                assert ast.getFirstChild().getText().equals(name);
+                assert ast.args.get(0).callName.equals(name);
                 return def;
             }
         };

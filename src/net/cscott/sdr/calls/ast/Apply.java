@@ -1,13 +1,16 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.ast.TokenTypes.APPLY;
+import static net.cscott.sdr.calls.transform.AstTokenTypes.APPLY;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import antlr.collections.AST;
-
-import net.cscott.sdr.calls.*;
+import net.cscott.sdr.calls.BadCallException;
+import net.cscott.sdr.calls.Call;
+import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.transform.TransformVisitor;
+import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
 
 /**
@@ -34,31 +37,46 @@ import net.cscott.sdr.util.Fraction;
  * when implementing {@link Call#apply(Apply)}.
  * 
  * @author C. Scott Ananian
- * @version $Id: Apply.java,v 1.6 2006-10-17 01:53:57 cananian Exp $
+ * @version $Id: Apply.java,v 1.7 2006-10-17 16:29:05 cananian Exp $
  */
 public class Apply extends SeqCall {
     public final String callName;
+    public final List<Apply> args;
 
     public Apply(String callName, List<Apply> args) {
         super(APPLY);
         this.callName = callName;
-        for (Apply a : args)
-            addChild(a);
+        this.args = Collections.unmodifiableList
+        (Arrays.asList(args.toArray(new Apply[args.size()])));
     }
 
+    @Override
     public <T> SeqCall accept(TransformVisitor<T> v, T t) {
         return v.visit(this, t);
     }
-    public String toString() {
-        return super.toString() + "[" + callName + "]";
+    @Override
+    public <RESULT,CLOSURE>
+    RESULT accept(ValueVisitor<RESULT,CLOSURE> v, CLOSURE cl) {
+        return v.visit(this, cl);
+    }
+    @Override
+    public String argsToString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(callName);
+        sb.append(' ');
+        for (Apply a : args) {
+            sb.append(a.toString());
+            sb.append(' ');
+        }
+        return sb.toString();
     }
 
-    public Apply getArg(int n) {
-        Apply a = (Apply) getFirstChild();
-        for (int i = 0; i < n; i++)
-            a = (Apply) a.getNextSibling();
-        return a;
+    public Comp expand() throws BadCallException {
+        Call c = CallDB.INSTANCE.lookup(callName);
+        return c.apply(this);
     }
+    
+    public Apply getArg(int n) { return args.get(n); }
 
     public Fraction getNumberArg(int n) {
         return Fraction.valueOf(getArg(n).callName);
@@ -79,23 +97,19 @@ public class Apply extends SeqCall {
         Apply arg = makeApply(number.toString()); // sigh
         return makeApply(callName, arg);
     }
+    public static Apply makeApply(String callName, Fraction number, String s) {
+        Apply arg1 = makeApply(number.toString()); // sigh
+        Apply arg2 = makeApply(s);
+        return makeApply(callName, arg1, arg2);
+    }
 
     public static Apply makeApply(String conceptName, Apply... subCalls) {
         return new Apply(conceptName, Arrays.asList(subCalls));
     }
     /** Factory: creates new Apply only if it would differ from this. */
-    public Apply build(String callName, List<Apply> children) {
-        if (callName==this.callName && compare(children))
+    public Apply build(String callName, List<Apply> args) {
+        if (this.callName.equals(callName) && this.args.equals(args))
             return this;
-        return new Apply(callName, children);
-    }
-    private boolean compare(List<Apply> l) {
-        if (getNumberOfChildren() != l.size()) return false;
-        AST child = this.getFirstChild();
-        for (Apply t: l) {
-                if (t != child) return false; // reference equality
-                child = child.getNextSibling();
-        }
-        return true;
+        return new Apply(callName, args);
     }
 }

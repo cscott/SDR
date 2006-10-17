@@ -73,7 +73,7 @@ public abstract class TestParser {
         CallFileBuilder builder = new CallFileBuilder();
         builder.calllist(parser.getAST());
           for (Call call : builder.getList()) {
-                System.out.println(call.getName()+": "+call.apply(null).toStringList());
+                System.out.println(call.getName()+": "+call.apply(null).toString());
                 //ASTFrame frame = new ASTFrame(callName, builder.getMap().get(callName));
                 //frame.setVisible(true);
           }

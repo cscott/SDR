@@ -1,45 +1,49 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.ast.TokenTypes.OPT;
+import static net.cscott.sdr.calls.transform.AstTokenTypes.OPT;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import antlr.collections.AST;
-
-import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.transform.TransformVisitor;
+import net.cscott.sdr.calls.transform.ValueVisitor;
 /**
  * <code>Opt</code> is a list of call options.  Each option has
  * an associated formation.  This first option whose formation is matchable
  * against the current formation is used to perform the call; the rest are
  * ignored.
  * @author C. Scott Ananian
- * @version $Id: Opt.java,v 1.4 2006-10-17 01:53:57 cananian Exp $
+ * @version $Id: Opt.java,v 1.5 2006-10-17 16:29:05 cananian Exp $
  */
 public class Opt extends Comp {
-    private final OptCall[] children;
+    public final List<OptCall> children;
     public Opt(OptCall... children) {
         super(OPT);
-        this.children = children;
-        for (OptCall oc : children)
-            addChild(oc);
+        this.children = Collections.unmodifiableList
+        (Arrays.asList(children.clone()));
     }
+    @Override
     public <T> Comp accept(TransformVisitor<T> v, T t) {
         return v.visit(this, t);
     }
+    @Override
+    public <RESULT,CLOSURE>
+    RESULT accept(ValueVisitor<RESULT,CLOSURE> v, CLOSURE cl) {
+        return v.visit(this, cl);
+    }
     /** Factory: creates new Opt only if it would differ from this. */
     public Opt build(List<OptCall> children) {
-        if (compare(children)) return this;
+        if (this.children.equals(children)) return this;
         return new Opt(children.toArray(new OptCall[children.size()]));
     }
-    private boolean compare(List<OptCall> l) {
-        if (getNumberOfChildren() != l.size()) return false;
-        AST child = this.getFirstChild();
-        for (OptCall t: l) {
-                if (t != child) return false; // reference equality
-                child = child.getNextSibling();
+    @Override
+    public String argsToString() {
+        StringBuilder sb = new StringBuilder();
+        for (OptCall oc : this.children) {
+            sb.append(oc.toString());
+            sb.append(' ');
         }
-        return true;
+        return sb.toString();
     }
 }

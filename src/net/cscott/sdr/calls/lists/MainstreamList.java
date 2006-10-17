@@ -11,7 +11,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>MainstreamList</code> class contains complex call
  * and concept definitions which are on the 'mainstream' program.
  * @author C. Scott Ananian
- * @version $Id: MainstreamList.java,v 1.2 2006-10-15 14:24:20 cananian Exp $
+ * @version $Id: MainstreamList.java,v 1.3 2006-10-17 16:29:06 cananian Exp $
  */
 public abstract class MainstreamList {
     // hide constructor.
@@ -33,13 +33,11 @@ public abstract class MainstreamList {
         @Override
         public Comp apply(Apply ast) {
             assert ast.callName.equals(getName());
-            assert ast.getNumberOfChildren()==1;
+            assert ast.args.size()==1;
             Fraction n = ast.getNumberArg(0);
             return new Seq
                      (Apply.makeApply
-                      ("_fractional",
-                       Apply.makeApply(n.toString()),
-                       Apply.makeApply("_cast 4/4")));
+                      ("_fractional", n, "_cast 4/4"));
         }
     };
 }

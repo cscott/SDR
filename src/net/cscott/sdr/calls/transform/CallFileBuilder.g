@@ -32,7 +32,7 @@ def
 	: #(DEF n=simple_words c=pieces)
 	{ assert !names.contains(n) : "duplicate call: "+n;
       names.add(n);
-      db.add(Call.makeSimpleCall(n, currentProgram, c));
+      db.add(Call.makeSimpleCall(n.intern(), currentProgram, c));
 	}
 	;
 	
@@ -107,18 +107,18 @@ call_body returns [Apply ast=null] {String s; List<Apply> args; Fraction n;}
 	// shorthand: 3/4 (foo) = fractional(3/4, foo)
 	: ( #(APPLY #(ITEM number) (.)* ) ) =>
 	  #(APPLY #(ITEM n=number) args=call_args )
-	{   args.add(0, Apply.makeApply(n.toString()));
+	{   args.add(0, Apply.makeApply(n.toString().intern()));
 		ast = new Apply("_fractional", args); }
 	// standard rule
 	| #(APPLY s=simple_words args=call_args )
-	{ ast = new Apply(s, args); }
+	{ ast = new Apply(s.intern(), args); }
 	;
 call_args returns [List<Apply> l] { l = new ArrayList<Apply>(); Apply c; }
 	: (c=call_body {l.add(c);} )*
 	;
 cond_body returns [Condition c=null] { String s; List<Condition> args; }
 	: #(CONDITION s=simple_words args=cond_args )
-	{ c = new Condition(s, args); }
+	{ c = new Condition(s.intern(), args); }
 	;
 cond_args returns [List<Condition> l] { l = new ArrayList<Condition>(); Condition c; }
 	: (c=cond_body {l.add(c);} )*
