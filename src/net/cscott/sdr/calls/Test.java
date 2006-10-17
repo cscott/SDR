@@ -26,9 +26,11 @@ public class Test {
         def = a.expand();
         System.out.println(def);
         DanceState ds = new DanceState(Program.MAINSTREAM);
-        def = Elaborate.elaborate(ds, Formation.FOUR_SQUARE, def, false);
+        //def = Elaborate.elaborate(ds, Formation.FOUR_SQUARE, def, false);
         System.out.println(def);
-        //def = RemoveIn.removeIn(def);
-        //System.out.println(def);
+        def = Elaborate.elaborate(ds, Formation.FOUR_SQUARE, def, true);
+        System.out.println(def);
+        def = RemoveIn.removeIn(def);
+        System.out.println(def);
     }
 }
