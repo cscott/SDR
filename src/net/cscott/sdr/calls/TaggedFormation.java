@@ -20,25 +20,45 @@ import org.apache.commons.lang.builder.ToStringStyle;
 public class TaggedFormation extends Formation {
     public enum Tag {
         // "primitive" dancer tags
+        // the Dancer object (not the Formation) is
+        // responsible for identifying these.
         DANCER_1, DANCER_2, DANCER_3, DANCER_4,
         DANCER_5, DANCER_6, DANCER_7, DANCER_8,
-        BOY, GIRL,
+        COUPLE_1, COUPLE_2, COUPLE_3, COUPLE_4,
+        BOY, GIRL, HEAD, SIDE,
         // more interesting tags.
         BEAU, BELLE, LEADER, TRAILER,
         POINT, CENTER, VERY_CENTER, END, OUTSIDE4,
         NUMBER_1, NUMBER_2, NUMBER_3, NUMBER_4;
+        public boolean isPrimitive() {
+            return ordinal() <= SIDE.ordinal();
+        }
     };
     private final Map<Dancer,Set<Tag>> tags;
+    protected TaggedFormation(Map<Dancer,Position> location,
+            Set<Dancer> selected, Map<Dancer,Set<Tag>> tags) {
+        super(location,selected);
+        this.tags = tags;
+    }
 
     public boolean isTagged(Dancer d, Tag tag) {
+        if (tag.isPrimitive()) return d.matchesTag(tag);
         return tags.get(d).contains(tag);
     }
     public Set<Dancer> tagged(Tag tag) {
-        Set<Dancer> s = new HashSet<Dancer>();
-        for(Dancer d : tags.keySet())
-            if (tags.get(d).contains(tag))
+        Set<Dancer> dancers = dancers();
+        Set<Dancer> s = new HashSet<Dancer>(dancers.size());
+        for(Dancer d : dancers)
+            if (isTagged(d, tag))
                 s.add(d);
         return s;
+    }
+    @Override
+    public TaggedFormation select(Set<Dancer> s) {
+        Set<Dancer> nSel = new HashSet<Dancer>(s);
+        nSel.retainAll(dancers());
+        return new TaggedFormation
+        (location, Collections.unmodifiableSet(nSel), tags);
     }
     // utility functions.
     public boolean equals(Object o) {

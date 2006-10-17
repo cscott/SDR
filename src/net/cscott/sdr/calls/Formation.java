@@ -26,8 +26,12 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * such as 'BEAU', 'BELLE', 'LEADER', 'TRAILER', etc.
  * */
 public class Formation {
-    private final Map<Dancer,Position> location;
-    private final Set<Dancer> selected;
+    protected final Map<Dancer,Position> location;
+    protected final Set<Dancer> selected;
+    protected Formation(Map<Dancer,Position> location, Set<Dancer> selected) {
+        this.location = location;
+        this.selected = selected;
+    }
 
     public boolean isSelected(Dancer d) {
 	return selected.contains(d);
@@ -40,6 +44,14 @@ public class Formation {
     }
     public Position location(Dancer d) {
 	return location.get(d);
+    }
+    /** Build a new formation with only the given dancers
+     * selected.
+     */
+    public Formation select(Set<Dancer> s) {
+        Set<Dancer> nSel = new HashSet<Dancer>(s);
+        nSel.retainAll(dancers());
+        return new Formation(location, Collections.unmodifiableSet(nSel));
     }
     // utility functions.
     public boolean equals(Object o) {
