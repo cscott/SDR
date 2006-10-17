@@ -8,7 +8,7 @@ import net.cscott.sdr.util.*;
 
 import java.util.*;
 
-/** Propage 'inherent' time bottom-up: where prim and part = 1, and IN resets
+/** Propagate 'inherent' time bottom-up: where prim and part = 1, and IN resets
  * to its spec, whatever that is. */
 class BeatCounter extends ValueVisitor<Fraction,Void> {
     public BeatCounter(Comp c) {
@@ -54,7 +54,7 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     }
     @Override
     public Fraction visit(OptCall oc, Void v) {
-        return r(oc, oc.accept(this,v));
+        return r(oc, oc.child.accept(this,v));
     }
     @Override
     public Fraction visit(Par p, Void v) {
