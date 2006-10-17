@@ -4,6 +4,8 @@ import static net.cscott.sdr.calls.ast.TokenTypes.PAR;
 
 import java.util.List;
 
+import net.cscott.sdr.calls.transform.TransformVisitor;
+
 import antlr.collections.AST;
 /**
  * <code>Par</code> is a list of call pieces.  Each piece has
@@ -11,7 +13,7 @@ import antlr.collections.AST;
  * at least one selector.  Each person executes the piece corresponding to
  * the first selector which matches them, in parallel.
  * @author C. Scott Ananian
- * @version $Id: Par.java,v 1.3 2006-10-12 13:45:40 cananian Exp $
+ * @version $Id: Par.java,v 1.4 2006-10-17 01:53:57 cananian Exp $
  */
 public class Par extends Comp {
     private final ParCall[] children;
@@ -20,6 +22,9 @@ public class Par extends Comp {
         this.children = children;
         for (ParCall pc : children)
             addChild(pc);
+    }
+    public <T> Comp accept(TransformVisitor<T> v, T t) {
+        return v.visit(this, t);
     }
     /** Factory: creates new Par only if it would differ from this. */
     public Par build(List<ParCall> children) {

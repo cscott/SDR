@@ -8,13 +8,14 @@ import java.util.List;
 import antlr.collections.AST;
 
 import net.cscott.sdr.calls.Selector;
+import net.cscott.sdr.calls.transform.TransformVisitor;
 /**
  * <code>Opt</code> is a list of call options.  Each option has
  * an associated formation.  This first option whose formation is matchable
  * against the current formation is used to perform the call; the rest are
  * ignored.
  * @author C. Scott Ananian
- * @version $Id: Opt.java,v 1.3 2006-10-15 03:15:05 cananian Exp $
+ * @version $Id: Opt.java,v 1.4 2006-10-17 01:53:57 cananian Exp $
  */
 public class Opt extends Comp {
     private final OptCall[] children;
@@ -23,6 +24,9 @@ public class Opt extends Comp {
         this.children = children;
         for (OptCall oc : children)
             addChild(oc);
+    }
+    public <T> Comp accept(TransformVisitor<T> v, T t) {
+        return v.visit(this, t);
     }
     /** Factory: creates new Opt only if it would differ from this. */
     public Opt build(List<OptCall> children) {

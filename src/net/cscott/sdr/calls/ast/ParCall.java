@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.cscott.sdr.calls.TaggedFormation.Tag;
+import net.cscott.sdr.calls.transform.TransformVisitor;
 import antlr.CommonAST;
 
 /** <code>ParCall</code> bundles a selector with a
@@ -15,7 +16,7 @@ import antlr.CommonAST;
  * the child to dancers which match the given
  * <code>TaggedFormation.Tag</code>s.
  * @author C. Scott Ananian
- * @version $Id: ParCall.java,v 1.6 2006-10-15 03:06:35 cananian Exp $
+ * @version $Id: ParCall.java,v 1.7 2006-10-17 01:53:57 cananian Exp $
  */
 public class ParCall extends CommonAST {
     public final Set<Tag> tags;
@@ -41,6 +42,9 @@ public class ParCall extends CommonAST {
                 sels.add(Tag.valueOf(s));
         }
         return sels;
+    }
+    public <T> ParCall accept(TransformVisitor<T> v, T t) {
+        return v.visit(this, t);
     }
     /** Factory: creates new ParCall only if it would differ from this. */
     public ParCall build(Set<Tag> tags, Comp child) {

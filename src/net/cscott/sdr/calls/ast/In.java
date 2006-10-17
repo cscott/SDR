@@ -6,12 +6,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.cscott.sdr.calls.Selector;
+import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.util.*;
 
 /** <code>In</code> alters the timing of its child such that it
  * executes in exactly <code>count</code> beats.
  * @author C. Scott Ananian
- * @version $Id: In.java,v 1.4 2006-10-15 19:05:31 cananian Exp $
+ * @version $Id: In.java,v 1.5 2006-10-17 01:53:57 cananian Exp $
  */
 public class In extends Comp {
     public final Fraction count;
@@ -25,6 +26,9 @@ public class In extends Comp {
     }
     public In(int i, Seq seq) {
         this(Fraction.valueOf(i), seq);
+    }
+    public <T> Comp accept(TransformVisitor<T> v, T t) {
+        return v.visit(this, t);
     }
     @Override
     public String toString() {

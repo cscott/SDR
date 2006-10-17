@@ -7,6 +7,7 @@ import java.util.*;
 import antlr.collections.AST;
 
 import net.cscott.sdr.calls.*;
+import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.util.Fraction;
 
 /**
@@ -33,7 +34,7 @@ import net.cscott.sdr.util.Fraction;
  * when implementing {@link Call#apply(Apply)}.
  * 
  * @author C. Scott Ananian
- * @version $Id: Apply.java,v 1.5 2006-10-15 03:15:04 cananian Exp $
+ * @version $Id: Apply.java,v 1.6 2006-10-17 01:53:57 cananian Exp $
  */
 public class Apply extends SeqCall {
     public final String callName;
@@ -45,6 +46,9 @@ public class Apply extends SeqCall {
             addChild(a);
     }
 
+    public <T> SeqCall accept(TransformVisitor<T> v, T t) {
+        return v.visit(this, t);
+    }
     public String toString() {
         return super.toString() + "[" + callName + "]";
     }

@@ -4,9 +4,11 @@ import static net.cscott.sdr.calls.ast.TokenTypes.CONDITION;
 
 import java.util.*;
 
+import antlr.CommonAST;
 import antlr.collections.AST;
 
 import net.cscott.sdr.calls.*;
+import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.util.Fraction;
 
 /** <code>Condition</code> represents an invocation of a {@link Predicate}
@@ -14,15 +16,19 @@ import net.cscott.sdr.util.Fraction;
  * sub-conditions; see the {@link Apply} class for the basic idea.
  * String and number arguments are stored as zero-argument conditions.
  * @author C. Scott Ananian
- * @version $Id: Condition.java,v 1.4 2006-10-15 03:15:04 cananian Exp $
+ * @version $Id: Condition.java,v 1.5 2006-10-17 01:53:57 cananian Exp $
  */
-public class Condition extends SeqCall {
+public class Condition extends CommonAST {
     public final String predicate;
     public Condition(String predicate, List<Condition> args) {
-        super(CONDITION);
+        super();
+        initialize(CONDITION, this.getClass().getName().replaceAll("[^.]+[.]",""));
         this.predicate = predicate;
         for (Condition c : args)
             addChild(c);
+    }
+    public <T> Condition accept(TransformVisitor<T> v, T t) {
+        return v.visit(this, t);
     }
     public String toString() {
         return super.toString()+"["+predicate+"]";

@@ -11,13 +11,14 @@ import java.util.Set;
 
 import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
+import net.cscott.sdr.calls.transform.TransformVisitor;
 
 import antlr.CommonAST;
 
 /** <code>OptCall</code> bundles a formation condition with a
  * <code>Comp</code>.
  * @author C. Scott Ananian
- * @version $Id: OptCall.java,v 1.4 2006-10-15 03:15:05 cananian Exp $
+ * @version $Id: OptCall.java,v 1.5 2006-10-17 01:53:57 cananian Exp $
  */
 public class OptCall extends CommonAST {
     private Selector[] selectors;
@@ -29,6 +30,9 @@ public class OptCall extends CommonAST {
         initialize(FROM, "From");
         addChild(child);
         this.selectors = selectors.clone();
+    }
+    public <T> OptCall accept(TransformVisitor<T> v, T t) {
+        return v.visit(this, t);
     }
     public List<Selector> getSelectors() {
         return Collections.unmodifiableList(Arrays.asList(selectors));

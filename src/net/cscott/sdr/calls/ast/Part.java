@@ -1,6 +1,7 @@
 package net.cscott.sdr.calls.ast;
 
 import static net.cscott.sdr.calls.ast.TokenTypes.PART;
+import net.cscott.sdr.calls.transform.TransformVisitor;
 /**
  * {@link Part} denotes an fractional part of a call.  Iff
  * {@link Part#isDivisible} is false, calls can not be
@@ -9,7 +10,7 @@ import static net.cscott.sdr.calls.ast.TokenTypes.PART;
  * {@link In}. <code>Part</code> has exactly one child, which is a
  * {@link Comp}.
  * @author C. Scott Ananian
- * @version $Id: Part.java,v 1.3 2006-10-12 13:29:29 cananian Exp $
+ * @version $Id: Part.java,v 1.4 2006-10-17 01:53:57 cananian Exp $
  */
 public class Part extends SeqCall {
     public final boolean isDivisible;
@@ -19,6 +20,9 @@ public class Part extends SeqCall {
         this.child = child;
         this.isDivisible = isDivisible;
         addChild(child);
+    }
+    public <T> SeqCall accept(TransformVisitor<T> v, T t) {
+        return v.visit(this, t);
     }
     
     /** Factory: creates new Part only if it would differ from this. */

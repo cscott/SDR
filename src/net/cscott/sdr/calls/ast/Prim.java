@@ -10,6 +10,7 @@ import antlr.collections.AST;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Rotation;
 import net.cscott.sdr.calls.Warp;
+import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.util.Fraction;
 
 /**
@@ -17,7 +18,7 @@ import net.cscott.sdr.util.Fraction;
  * forward and to the side, while rotating a certain amount, performed
  * in a certain number of beats.  PRIM is a leaf node in a our AST.
  * @author C. Scott Ananian
- * @version $Id: Prim.java,v 1.5 2006-10-15 03:15:05 cananian Exp $
+ * @version $Id: Prim.java,v 1.6 2006-10-17 01:53:57 cananian Exp $
  */
 public class Prim extends SeqCall {
     public final Fraction x, y;
@@ -32,7 +33,10 @@ public class Prim extends SeqCall {
     public void addChild(AST c) { throw new RuntimeException("leaf"); }
     @Override
     public void setFirstChild(AST c) { throw new RuntimeException("leaf"); }
-   
+    // support visitor
+    public <T> SeqCall accept(TransformVisitor<T> v, T t) {
+        return v.visit(this, t);
+    }
     // utility methods
     @Override
     public String toString() {
