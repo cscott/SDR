@@ -13,7 +13,7 @@ import net.cscott.sdr.util.Fraction;
  * {@link Par}s.  It inserts {@link Warp} elements as needed.
  * The result is a 'simplified tree'.
  * @author C. Scott Ananian
- * @version $Id: Elaborate.java,v 1.2 2006-10-18 02:00:26 cananian Exp $
+ * @version $Id: Elaborate.java,v 1.3 2006-10-18 21:14:44 cananian Exp $
  */
 public class Elaborate extends TransformVisitor<Formation> {
     /** Static dance state (like program, etc). */
@@ -89,10 +89,13 @@ public class Elaborate extends TransformVisitor<Formation> {
         List<ParCall> l = new ArrayList<ParCall>(fm.matches.size());
         for (TaggedFormationAndWarp tfw : fm.matches) {
             Comp c = oc.child.accept(this, tfw.tf);
-            if (!doFully)
+            if (!doFully) {
                 c = new Opt(oc.build(oc.selectors, c));
-            if (tfw.w!=Warp.NONE)
-                c = new Warped(tfw.w, c);
+            } else { // xxx broken
+                // at the moment, only warp at the very end
+                if (tfw.w!=Warp.NONE)
+                    c = new Warped(tfw.w, c);
+            }
             l.add(new ParCall(selectedTags(tfw.tf), c));
             dancers += tfw.tf.dancers().size();
         }
@@ -100,7 +103,7 @@ public class Elaborate extends TransformVisitor<Formation> {
         // add a call for them to do nothing.
         if (dancers < f.dancers().size())
             l.add(new ParCall(Collections.singleton(Tag.ALL),
-                    new Seq(new Prim(Fraction.ZERO,Fraction.ZERO,Rotation.ZERO,Fraction.ONE))));
+                    new Seq(Prim.STAND_STILL)));
         return l;
     }
         

@@ -16,6 +16,9 @@ options { importVocab = CallFileParser; defaultErrorHandler=false; }
 	private final List<Call> db = new ArrayList<Call>();
 	public List<Call> getList() { return Collections.unmodifiableList(db); }
 	Program currentProgram = null;
+	// quick helper
+	public <T> T ifNull(T t, T otherwise) { return (t==null)?otherwise:t; }
+	public Prim.Direction d(Prim.Direction d) { return ifNull(d, Prim.Direction.ASIS); }
 }
     
 // @@startrules
@@ -56,15 +59,27 @@ seq returns [Seq s=null]
 	: #(SEQ (sc=one_seq {l.add(sc);})+)
 	{ s = new Seq(l.toArray(new SeqCall[l.size()])); }
 	;
-one_seq returns [SeqCall r=null]
-{ Fraction x, y; Comp d; }
-	: #(PRIM x=number y=number dir:IDENT)
-	{ r = new Prim(x, y, Rotation.fromRelativeString(dir.getText()), Fraction.ONE); }
-	| #(CALL r=call_body)
+one_seq returns [SeqCall sc=null]
+{ Fraction x, y; Comp d;
+  Prim.Direction dx=null, dy=null, dr=null; Rotation r=null;
+}
+	: #(PRIM (dx=direction)? x=number (dy=direction)? y=number (dr=direction | r=rotation) )
+	{ sc=new Prim(d(dx), x, d(dy), y, d(dr), ifNull(r,Rotation.ONE_QUARTER)); }
+	| #(CALL sc=call_body)
 	| #(PART d=pieces)
-	{ r = new Part(true, d); /* divisible part */}
+	{ sc = new Part(true, d); /* divisible part */}
 	| #(IPART d=pieces)
-	{ r = new Part(false, d); /* indivisible part */}
+	{ sc = new Part(false, d); /* indivisible part */}
+	;
+
+direction returns [Prim.Direction d=null]
+	: IN { d=Prim.Direction.IN; }
+	| OUT { d=Prim.Direction.OUT; }
+	;
+rotation returns [Rotation r=null]
+	: RIGHT { r = Rotation.ONE_QUARTER; }
+	| LEFT { r = Rotation.mONE_QUARTER; }
+	| NONE { r = Rotation.ZERO; }
 	;
 
 par returns [Par p=null] {ParCall pc;List<ParCall> l=new ArrayList<ParCall>();}

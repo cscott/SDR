@@ -15,10 +15,11 @@ public interface AstTokenTypes {
         int IF = 7;
         int IN = 8;
         int OPT = 9;
-        int PAR = 10;
-        int PART = 11;
-        int PRIM = 12;
-        int SELECT = 13;
-        int SEQ = 14;
-        int WARP = 15;
+        int OUT = 10;
+        int PAR = 11;
+        int PART = 12;
+        int PRIM = 13;
+        int SELECT = 14;
+        int SEQ = 15;
+        int WARP = 16;
 }

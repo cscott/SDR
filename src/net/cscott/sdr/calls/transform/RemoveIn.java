@@ -34,7 +34,7 @@ public class RemoveIn extends TransformVisitor<Fraction> {
     @Override
     public Prim visit(Prim p, Fraction scale) {
         /* apply scaling factor to prim */
-        return p.scale(scale); // will return same obj if scale==1
+        return p.scaleTime(scale); // will return same obj if scale==1
     }
     // note: parameter is scaling factor
     @Override

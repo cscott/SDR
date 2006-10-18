@@ -11,7 +11,7 @@ import net.cscott.sdr.calls.ast.*;
  * {@link TransformVisitor} is a superclass to eliminate
  * common code when writing tree transformations.
  * @author C. Scott Ananian
- * @version $Id: TransformVisitor.java,v 1.3 2006-10-17 19:53:59 cananian Exp $
+ * @version $Id: TransformVisitor.java,v 1.4 2006-10-18 21:14:44 cananian Exp $
  */
 public abstract class TransformVisitor<T> {
     public SeqCall visit(Apply apply, T t) {
@@ -78,7 +78,7 @@ public abstract class TransformVisitor<T> {
         return p.build(p.isDivisible, p.child.accept(this, t));
     }
     public SeqCall visit(Prim p, T t) {
-        return p.build(p.x, p.y, p.rot, p.time);
+        return p; // leaf
     }
     public Comp visit(Seq s, T t) {
         List<SeqCall> l = new ArrayList<SeqCall>(s.children.size());

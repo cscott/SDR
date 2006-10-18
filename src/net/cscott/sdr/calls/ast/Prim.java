@@ -16,18 +16,29 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * forward and to the side, while rotating a certain amount, performed
  * in a certain number of beats.  PRIM is a leaf node in a our AST.
  * @author C. Scott Ananian
- * @version $Id: Prim.java,v 1.7 2006-10-17 16:29:05 cananian Exp $
+ * @version $Id: Prim.java,v 1.8 2006-10-18 21:14:40 cananian Exp $
  */
 public class Prim extends SeqCall {
+    public static enum Direction { ASIS, IN, OUT; }
     public final Fraction x, y;
     public final Rotation rot;
+    public final Direction dirX, dirY, dirRot;
     public final Fraction time;
     public final boolean passRight;
-    public Prim(Fraction x, Fraction y, Rotation rot, Fraction time) {
+    public Prim(Direction dirX, Fraction x, Direction dirY, Fraction y,
+            Direction dirRot, Rotation rot) {
+        this(dirX, x, dirY, y, dirRot, rot, Fraction.ONE, true);
+    }
+    public Prim(Direction dirX, Fraction x, Direction dirY, Fraction y,
+            Direction dirRot, Rotation rot, Fraction time, boolean passRight) {
         super(PRIM);
         this.x = x; this.y = y; this.rot = rot; this.time = time;
-        this.passRight = true;
+        this.dirX = dirX; this.dirY = dirY; this.dirRot = dirRot;
+        this.passRight = passRight;
     }
+    public static final Prim STAND_STILL =
+        new Prim(Direction.ASIS,Fraction.ZERO, Direction.ASIS,Fraction.ZERO,
+                Direction.ASIS,Rotation.ZERO);
     // support visitor
     @Override
     public <T> SeqCall accept(TransformVisitor<T> v, T t) {
@@ -49,10 +60,14 @@ public class Prim extends SeqCall {
         if (!(o instanceof Prim)) return false;
         Prim p = (Prim) o;
         return new EqualsBuilder()
+            .append(dirX, p.dirX)
             .append(x, p.x)
+            .append(dirY, p.dirY)
             .append(y, p.y)
+            .append(dirRot, p.dirRot)
             .append(rot, p.rot)
             .append(time, p.time)
+            .append(passRight, p.passRight)
             .isEquals();
     }
     @Override
@@ -60,6 +75,7 @@ public class Prim extends SeqCall {
         if (hashCode==0)
             hashCode = new HashCodeBuilder()
             .append(x).append(y).append(rot).append(time)
+            .append(dirX).append(dirY).append(dirRot).append(passRight)
             .toHashCode();
         return hashCode;
     }
@@ -68,9 +84,10 @@ public class Prim extends SeqCall {
     // Factory methods
     /** Create a new Prim, identical to this one except that the time
      * is scaled by the given fraction. */
-    public Prim scale(Fraction f) {
+    public Prim scaleTime(Fraction f) {
         if (Fraction.ONE.equals(f)) return this;
-        return new Prim(x, y, rot, time.multiply(f));
+        return new Prim(dirX, x, dirY, y, dirRot, rot,
+                time.multiply(f), passRight);
     }
     /** Apply a given Warp to this Prim: the given 'from' must be the
      * unwarped absolute position from which this prim begins, since
@@ -82,7 +99,9 @@ public class Prim extends SeqCall {
      *   end up a w.warp(to, time), where 'to' is where the prim would have
      *   ended if started from 'from'.
      */
+    @Deprecated // passRight and dirX/Y/Rot don't work correctly.
     public Prim warp(Position from, Warp w, Fraction time) {
+        assert dirX == Direction.ASIS && dirY == Direction.ASIS && dirRot == Direction.ASIS;
         Position to = from.forwardStep(y).sideStep(x).rotate(rot.amount);
         Position wFrom = w.warp(from, time);
         Position wTo = w.warp(to, time);
@@ -99,13 +118,14 @@ public class Prim extends SeqCall {
         // in comparison, deriving the new rotation direction is easy
         Rotation nRot = wTo.facing.subtract(wFrom.facing.amount);
         // okay, make the result!
-        Prim p = new Prim(nX,nY,nRot,this.time);
+        Prim p = new Prim(dirX, nX, dirY, nY, dirRot, nRot, this.time, passRight);
         // return old object if results were identical
         return (this.equals(p)) ? this : p;
     }
     /** Factory: creates new Prim only if it would differ from this. */
-    public Prim build(Fraction x, Fraction y, Rotation rot, Fraction time) {
-        Prim p = new Prim(x,y,rot,time);
+    public Prim build(Direction dirX, Fraction x, Direction dirY, Fraction y,
+            Direction dirRot, Rotation rot, Fraction time, boolean passRight) {
+        Prim p = new Prim(dirX, x, dirY, y, dirRot, rot, time, passRight);
         if (this.equals(p)) return this;
         return p;
     }

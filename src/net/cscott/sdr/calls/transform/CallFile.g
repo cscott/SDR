@@ -23,6 +23,10 @@ tokens {
 	ITEM;
 	NUMBER;
 	IPART;
+	OUT;
+	RIGHT;
+	LEFT;
+	NONE;
 }
 
 // the following tag is used to find the start of the rules section for
@@ -124,7 +128,10 @@ cond_args
 	: cond_body (COMMA! cond_body)*
 	;
 prim_body
-	: number COMMA! number COMMA! IDENT
+	: in_out_num COMMA! in_out_num COMMA! (IN | OUT | RIGHT | LEFT | NONE)
+	;
+in_out_num
+	: (IN | OUT)? number
 	;
 number
 	: ( (INTEGER)? INTEGER SLASH INTEGER ) =>
@@ -154,6 +161,7 @@ options {
 {
 	private boolean afterIndent=false;//have we seen the line-initial ws yet?
 	private boolean beforeColon=true; //have we seen a colon on this line?
+	private boolean afterPrim=false; // is this a 'prim' operation?
 	// set tabs to 8, just round column up to next tab + 1
 	public void tab() {
      	int t = 8;
@@ -265,7 +273,8 @@ WSNL
       | '\n'    // Unix
       )
       // increment the line count in the scanner
-      { newline(); this.afterIndent=false; this.beforeColon=true;
+      { newline();
+		this.afterIndent=false; this.beforeColon=true; this.afterPrim=false;
       	$setType(Token.SKIP); }
   ;
 // whitespace at start of line used for INDENT processing
@@ -278,18 +287,25 @@ INITIAL_WS
 IDENT
   : {this.afterIndent||getColumn()!=1}?
     ('_'|'a'..'z'|'A'..'Z') ('_'|'a'..'z'|'A'..'Z'|'0'..'9'|'-')*
-    { if (this.afterIndent && this.beforeColon) {
-    	if ($getText.equals("def")) $setType(DEF);
-    	else if ($getText.equals("from")) $setType(FROM);
-    	else if ($getText.equals("in")) $setType(IN);
-    	else if ($getText.equals("select")) $setType(SELECT);
-    	else if ($getText.equals("condition")) $setType(CONDITION);
-    	else if ($getText.equals("call")) $setType(CALL);
-    	else if ($getText.equals("part")) $setType(PART);
-    	else if ($getText.equals("ipart")) $setType(IPART);
-    	else if ($getText.equals("prim")) $setType(PRIM);
-    	else if ($getText.equals("program")) $setType(PROGRAM);
-      }
+    { String id = ($getText).intern();
+   	  if (this.afterIndent && this.beforeColon) {
+    	if (id=="def") $setType(DEF);
+    	else if (id=="from") $setType(FROM);
+    	else if (id=="in") $setType(IN);
+    	else if (id=="select") $setType(SELECT);
+    	else if (id=="condition") $setType(CONDITION);
+    	else if (id=="call") $setType(CALL);
+    	else if (id=="part") $setType(PART);
+    	else if (id=="ipart") $setType(IPART);
+    	else if (id=="prim") { $setType(PRIM); afterPrim=true; }
+    	else if (id=="program") $setType(PROGRAM);
+      } else if (this.afterPrim) {
+      	if (id=="in") $setType(IN);
+      	else if (id=="out") $setType(OUT);
+      	else if (id=="left") $setType(LEFT);
+      	else if (id=="right") $setType(RIGHT);
+      	else if (id=="none") $setType(NONE);
+   	  }
     }
   ;
   
