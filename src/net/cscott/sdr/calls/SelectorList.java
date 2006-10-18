@@ -32,6 +32,8 @@ public abstract class SelectorList {
             assert false : "unimplemented";
             throw new RuntimeException("unimplemented");
         }
+        @Override
+        public String toString() { return "*STUB*"; }
     };
     public static final Selector RH_TWO_FACED_LINE = _STUB_;
     public static final Selector LH_TWO_FACED_LINE = _STUB_;
