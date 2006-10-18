@@ -10,14 +10,10 @@ def: trade
     select: BELLE
       prim: -1, 1, left
       prim: -1, 1, left
-  from: RH MINIWAVE
+  from: RH MINIWAVE, LH MINIWAVE
     in: 4
-    prim: 1,1,right
-    prim: 1,1,right
-  from: LH MINIWAVE
-    in: 4
-    prim: -1,1,left
-    prim: -1,1,left
+    prim: in 1,1,in
+    prim: in 1,1,in
   /*
   from: GENERAL LINE
     in: 4
@@ -92,14 +88,11 @@ def: roll away
 
 def: u turn back
   in: 2
-  select: BEAU
-    prim: 0, 0, right
-    prim: 0, 0, right
-  select: BELLE
-    prim: 0, 0, left
-    prim: 0, 0, left
-  // XXX: should catch if any selected dancer is neither beau nor belle
-  // XXX: and in that case we turn toward the center?
+  from: COUPLE, RH MINIWAVE, LH MINIWAVE
+    prim: 0, 0, in
+    prim: 0, 0, in
+  // XXX: we can u-turn back from other formations, too: turn toward
+  // the center in that case?
   /*
   select: ALL
     call: twice (quarter in) // is this right?
@@ -185,15 +178,8 @@ def: bend the line
   in: 4
   call: as couples(_single bend)
 def: _single bend
-  from: COUPLE
-    select: BEAU
-      call: quarter right
-    select: BELLE
-      call: quarter left
-  from: RH MINIWAVE
-    call: quarter right
-  from: LH MINIWAVE
-    call: quarter left // or call: left(_single bend)
+  from: COUPLE, RH MINIWAVE, LH MINIWAVE
+    call: quarter in
 def: california twirl
   in: 4
   from: COUPLE
@@ -373,12 +359,8 @@ def: circulate // all-8
     select: ALL // others
       call: _trail circ
 def: _lead circ // leaders part of a box/column circulate
-  select: BELLE
-    prim: -1,1,left
-    prim: -1,1,left
-  select: BEAU
-    prim: 1,1,right
-    prim: 1,1,right
+  prim: in 1, 1, in
+  prim: in 1, 1, in
 def: _trail circ // trailers part of a box/column circulate
   prim: 0,1,none
   prim: 0,1,none
@@ -433,21 +415,20 @@ def: recycle // xxx cheat definition, for the present
     call: hinge, box circulate, quarter in
 def: scoot back
   in: 6
-  from: LH BOX
-    call: mirror(scoot back)
-  from: RH BOX
+  from: RH BOX, LH BOX
     select: TRAILER
       ipart:
         prim: 0,1,none
-        prim: 1,1,right
+        prim: in 1,1,in
       ipart:
-        prim: 1,1,right
+        prim: in 1,1,in
         prim: 0,1,none
     select: LEADER
       ipart:
-        prim: 1,1,right
+        prim: in 1,1,in
       ipart:
-        prim: 1,1,right
+        prim: in 1,1,in
+  // XXX: scoot back from quarter tag
 /*
 def: tag[atc, n]
   ipart:
@@ -456,16 +437,7 @@ def: tag[atc, n]
 def: _atc_tag
   in: 2
   from: GENERAL LINE
-    select: CENTER
-      select: BEAU
-        prim: 0,0,left
-      select: BELLE
-        prim: 0,0,right
-    select: END
-      select: BEAU
-        prim: 0,0,right
-      select: BELLE
-        prim: 0,0,left
+    prim: 0, 0, in
         
 def: tag the line
   in: 6 // xxx ?

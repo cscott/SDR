@@ -8,13 +8,11 @@ def: _cast 4/4
     call: mirror(_cast 4/4)
   from: RH 3 AND 1, RH SPLIT 3 AND 1
      call: _beau cast 4/4
-  from: LH MINIWAVE
-    call: mirror(_cast 4/4)
-  from: RH MINIWAVE
-    prim: 1,1,right
-    prim: 1,1,right
-    prim: 1,1,right
-    prim: 1,1,right
+  from: RH MINIWAVE, LH MINIWAVE
+    prim: in 1,1,in
+    prim: in 1,1,in
+    prim: in 1,1,in
+    prim: in 1,1,in
 def: _beau cast 4/4 // ie, cast around beau
   from: RH MINIWAVE, LH MINIWAVE
     call: _cast 4/4 // subpart of a 3-and-1 line; not a special pushy cast

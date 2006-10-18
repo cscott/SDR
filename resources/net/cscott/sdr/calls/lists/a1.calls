@@ -6,3 +6,9 @@ def: quarter right
 def: quarter left
   in: 2
   prim: 0,0,left // or call: left(quarter right)
+def: quarter in
+  in: 2
+  prim: 0,0,in
+def: quarter out
+  in: 2
+  prim: 0,0,out
