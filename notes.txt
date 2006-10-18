@@ -208,3 +208,91 @@ be responsible for building the function.  Use helper AST class:
 'ASTExpr' with subclasses for AST and Expr.  Attaching an AST to an
 AST yields another AST; attaching an Expr to an Expr or an AST yields
 and Expr. -- refactor 'build' method.
+---------
+No?  Just new Ast node for 'Ref', a leaf with a string value (the ref
+identifier).
+
+makeParameterizedCall(String name, Program level, Ast tree, String argNames...) 
+
+Will do a tree walk, replacing Refs with the appropriate subtree
+(correspondence given by argNames in the def and the string in the Ref node).
+---------
+
+Primitives coordinates can tell 'in' and 'out' modifiers, which
+multiply by +1 or -1 depending on vector to current formation center.
+This way we don't need separate rules for (say) circulate from RH and
+LH boxes; they both move "+2in" in the sashay direction. (Directions
+are 'sashay, ahead', aka x,y.
+
+---------
+
+Formation warps are independent stretches of x,y axes.
+
+First: taking a canonical formation and stretching to accomodate solid
+dancers:
+  First we write down the x (y) axis coordinates of *shared* boundary
+  edges.  The x (y) boundary edges around a dancer at x,y are at x+1,
+  x-1 (y+1, y-1). We throw out any boundary edges which are not shared
+  by at least two dancers: expansion of the formation is not
+  constrained by these.
+
+  Then, for each formation, we identify the x (y) coordinates which
+  bound the formation.  These are the points in the "shared
+  coordinate" list which are <= and >= our boundary edges in this
+  axis.  (Note that, because only the shared coordinates are in the
+  list, there may not be an exact match for our edge.)  We ensure that
+  the edges are large enough to accomodate the desired x (y) size of
+  this dancer by adjusting the 'output' list for these bounds; any
+  points lying between the bounds are stretched proportionally.
+  If needed, we then recenter the output list.
+
+For example, if the X 'shared coordinate' list was: -2,0,2
+and we had a three dancer formation with bounds -1,1 which needed to be
+at least 6 units wide, then we might stretch the output list from
+-2,0,2 to -2,1,4 before recentering at -3,0,3.  Note that we've
+adjusted the mappings for -2 and 2, even though our bounds are -1 and
+1.
+
+When actually placing the new dancers in the square, we don't
+individually warp their points: we just identify the bounds in the
+shared list (-2,2) as before, map these (-3,3) and drop our formation
+undistorted between these boundaries.
+
+Note that, if one boundary is above/below the limits of the shared
+edge list, we just assume it's big enough (don't need to adjust output
+mapping) and drop the formation into place based on the position of
+the known boundary and the natural size of the formation.  If both
+boundaries are unknown, then assume no warp?  (This won't work for
+properly restoring offset formations -- parallelogram/offset are a
+separate mechanism.)
+
+Second: taking a given formation and shrinking it given blocks of
+solid dancers (similar to the above):
+
+  First we write down the x (y) axis coordinates of *shared* boundary
+  edges.  The x (y) boundary edges around a dancer at x,y are at
+  x+(w/2), x-(w/2) (y+(h/2), y-(h/2)), where w (h) is the width
+  (height) of the solid dancer. We throw out any boundary edges which
+  are not shared by at least two dancers: contraction of the formation
+  is not constrained by these.
+
+  We then renumber these shared edges so that there are exactly 2
+  units between each pair of points.  We linearly interpolate using
+  this correspondence to warp the center point of the solid dancer to
+  create a new canonical dancer; the mapping ensures that dancers
+  created this way will not overlap (well, there may be some edge cases).
+-----------
+FormationMatch should include both the formations matched, as well as
+a 'meta formation' showing the arrangement of these.  Then, we apply
+the calls in the subformations, and put the results together according
+to the meta formation.
+
+Each formation should also have a max size associated with it?  This
+way we can give it extra space in the middle?  Think about 'lock it
+twice' from parallel ocean waves.  Need to make sure we stretch in the
+middle to accomodate the tidal wave.
+
+(Maybe the reassembly should happen at each intermediate point?)
+
+We generate a warp function which disassembles & then reassembles the formations.
+----------
