@@ -15,7 +15,7 @@ public class PhantomDancer implements Dancer {
     /** Phantoms are not girls. */
     public boolean isGirl() { return false; }
     /** Phantoms aren't couple 1, dancer 2, boy/girl etc. */
-    public boolean matchesTag(Tag tag) { return false; }
+    public boolean matchesTag(Tag tag) { return tag==Tag.ALL; }
     /** Phantoms can't be primitively-selected. */
     public Tag primitiveTag() { return null; }
 

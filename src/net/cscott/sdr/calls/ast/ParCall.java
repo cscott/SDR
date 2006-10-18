@@ -16,7 +16,7 @@ import net.cscott.sdr.calls.transform.ValueVisitor;
  * the child to dancers which match the given
  * <code>TaggedFormation.Tag</code>s.
  * @author C. Scott Ananian
- * @version $Id: ParCall.java,v 1.8 2006-10-17 16:29:05 cananian Exp $
+ * @version $Id: ParCall.java,v 1.9 2006-10-18 01:57:20 cananian Exp $
  */
 public class ParCall extends AstNode {
     public final Set<Tag> tags;
@@ -36,8 +36,6 @@ public class ParCall extends AstNode {
             s=s.toUpperCase().replace(' ','_').replace('-','_');
             if (s.equals("NONE"))
                 continue;
-            else if (s.equals("ALL"))
-                sels = EnumSet.allOf(Tag.class);
             else
                 sels.add(Tag.valueOf(s));
         }

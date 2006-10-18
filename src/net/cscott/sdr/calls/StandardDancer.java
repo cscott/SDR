@@ -32,6 +32,7 @@ public enum StandardDancer implements Dancer {
         case DANCER_6: return ordinal()==6;
         case DANCER_7: return ordinal()==7;
         case DANCER_8: return ordinal()==8;
+        case ALL: return true; // all matches everyone.
         default:
             assert !tag.isPrimitive();
             return false;
