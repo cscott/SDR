@@ -20,11 +20,11 @@ import net.cscott.sdr.util.Fraction;
  * "ast tree generation functions", while optimizing the case where the
  * function generates a constant.
  * @author C. Scott Ananian
- * @version $Id: BuilderHelper.java,v 1.2 2006-10-19 20:17:56 cananian Exp $
+ * @version $Id: BuilderHelper.java,v 1.3 2006-10-19 23:00:02 cananian Exp $
  */
 abstract class BuilderHelper {
     // 'B' is pronounced as 'Builder'.  So a B<Prim> builds Prim objects.
-    static abstract class B<T extends AstNode> {
+    static abstract class B<T> {
         public abstract T build(List<Apply> args);
         /** 
          * Returns true if the build operation will succeed given a zero-length
@@ -32,7 +32,7 @@ abstract class BuilderHelper {
          */
         public boolean isConstant() { return false; } // always safe
     }
-    static <T extends AstNode> B<T> mkConstant(final T t) {
+    static <T> B<T> mkConstant(final T t) {
         return new B<T>() {
             @Override
             public T build(List<Apply> args) { return t; }
@@ -40,18 +40,18 @@ abstract class BuilderHelper {
             public boolean isConstant() { return true; }
         };
     }
-    static <T extends AstNode> boolean isConstant(List<? extends B<? extends T>> l) {
+    static <T> boolean isConstant(List<? extends B<? extends T>> l) {
         for (B<? extends T> b : l)
             if (!b.isConstant()) return false;
         return true;
     }
-    static <T extends AstNode> List<T> reduce(List<? extends B<? extends T>> l, List<Apply> args) {
+    static <T> List<T> reduce(List<? extends B<? extends T>> l, List<Apply> args) {
         List<T> ll = new ArrayList<T>(l.size());
         for (B<? extends T> b : l)
             ll.add(b.build(args));
         return ll;
     }
-    static <T extends AstNode> B<T> optimize(B<T> b, boolean isConstant) {
+    static <T> B<T> optimize(B<T> b, boolean isConstant) {
         return (isConstant) ? mkConstant(b.build(null)) : b;
     }
     static B<Apply> mkApply(final String callName, final List<B<Apply>> args) {
@@ -103,12 +103,12 @@ abstract class BuilderHelper {
             }
         }, isConstant(children));
     }
-    static B<ParCall> mkParCall(final Set<Tag> tags, final B<? extends Comp> child) {
+    static B<ParCall> mkParCall(final List<B<String>> tags, final B<? extends Comp> child) {
         return optimize(new B<ParCall>() {
             public ParCall build(List<Apply> fargs) {
-                return new ParCall(tags, child.build(fargs));
+                return new ParCall(ParCall.parseTags(reduce(tags,fargs)), child.build(fargs));
             }
-        }, child.isConstant());
+        }, child.isConstant() && isConstant(tags));
     }
     static B<Part> mkPart(final boolean isDivisible, final B<? extends Comp> child) {
         return optimize(new B<Part>() {

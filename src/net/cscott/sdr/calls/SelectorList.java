@@ -43,6 +43,7 @@ public abstract class SelectorList {
     public static final Selector RH_BOX = _STUB_;
     public static final Selector RH_WAVE = _STUB_;
     public static final Selector LH_WAVE = _STUB_;
+    public static final Selector GENERAL_LINE = _STUB_;
     public static final Selector GENERAL_BOX = _STUB_;
     public static final Selector LH_3_AND_1 = _STUB_;
     public static final Selector LH_SPLIT_3_AND_1 = _STUB_;
@@ -50,4 +51,5 @@ public abstract class SelectorList {
     public static final Selector RH_SPLIT_3_AND_1 = _STUB_;
     public static final Selector PARALLEL_GENERAL_LINES = _STUB_;
     public static final Selector GENERAL_COLUMNS = _STUB_;
+    public static final Selector FACING_TANDEMS = _STUB_;
 }

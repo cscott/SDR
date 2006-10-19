@@ -90,7 +90,7 @@ par
     ;
 
 protected one_par
-    : SELECT^ COLON! simple_body pieces
+    : SELECT^ COLON! simple_ref_body pieces
 	;
 
 simple_word
@@ -104,6 +104,10 @@ simple_words
 simple_body
 	: simple_words (COMMA! simple_words)*
 	{ #simple_body = #([BODY, "simple body"], #simple_body); }
+	;
+simple_ref_body
+	: words_or_ref (COMMA! words_or_ref)*
+	{ #simple_ref_body = #([BODY, "simple ref body"], #simple_ref_body); }
 	;
 words_or_ref
 	: simple_words

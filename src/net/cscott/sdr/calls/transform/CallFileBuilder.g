@@ -106,9 +106,9 @@ par returns [B<Par> p=null] {B<ParCall> pc;List<B<ParCall>> l=new ArrayList<B<Pa
     ;
 
 one_par returns [B<ParCall> pc=null]
-{ List<String> sl; B<? extends Comp> d; }
-    : #(SELECT sl=simple_body d=pieces)
-	{ pc = mkParCall(ParCall.parseTags(sl), d); }
+{ List<B<String>> sl; B<? extends Comp> d; }
+    : #(SELECT sl=simple_ref_body d=pieces)
+	{ pc = mkParCall(sl, d); }
 	;
 // restrictions/timing
 res returns [B<? extends Comp> c] { Fraction f; B<Condition> cd; }
@@ -135,6 +135,24 @@ simple_word returns [String r=null] { Fraction n; }
 simple_body returns [List<String> l] { String s; l = new ArrayList<String>(); }
 	: #(BODY (s=simple_words {l.add(s);} )+)
 	;
+
+words_or_ref returns [B<String> b=null] { String s; int r; }
+	: s=simple_words
+	{ b = mkConstant(s); }
+	| r=ref
+	{ final int param = r;
+	  b = new B<String>() {
+	  	public String build(List<Apply> args) {
+	  	  assert args.get(param).args.isEmpty();
+          return args.get(param).callName;
+	  	}
+	  };
+	}
+	;
+
+simple_ref_body returns [List<B<String>> l] { B<String> s; l = new ArrayList<B<String>>(); }
+    : #(BODY (s=words_or_ref {l.add(s);} )+)
+    ;
 
 call_body returns [B<Apply> ast=null] {String s; List<B<Apply>> args; Fraction n; int r; }
 	// shorthand: 3/4 (foo) = fractional(3/4, foo)

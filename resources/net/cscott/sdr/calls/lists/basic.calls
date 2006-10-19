@@ -1,6 +1,9 @@
 program: basic
 
 // prim is <over,forward>; always dancer relative
+def: nothing
+ prim: 0,0,none
+
 def: trade
   from: COUPLE
     in: 6
@@ -94,8 +97,10 @@ def: u turn back
   // XXX: we can u-turn back from other formations, too: turn toward
   // the center in that case?
   /*
-  select: ALL
-    call: twice (quarter in) // is this right?
+  from: ALL FORMATIONS
+    call: quarter in, roll // is this right? fails for dancers on centerline.
+  from: SINGLE DANCER
+    call: quarter right, roll // if all else fails.
   */
 
 def: _courtesy turn 1/2
@@ -227,13 +232,17 @@ def: swing thru
     call: right arm turn 1/2, centers(left(right arm turn 1/2))
   from: LH WAVE
     call: centers(right arm turn 1/2), left(right arm turn 1/2)
-/*
 
 // NOTE THAT 'leads run' = 'IN YOUR BOX, leads run'
 // NOTE THAT 'boys run' = 'IN YOUR COUPLES, boys run'
-def: run[sel]
+// ie, we need to select a formation to get dancers tagged first.
+def: run(sel)
   in: 4
+  // XXX: this definition doesn't currently apply to T-boned formations.
   from: GENERAL LINE, GENERAL BOX, COUPLE, RH MINIWAVE, LH MINIWAVE
+    // we can't use in/out in primitives here because (1) centers of waves
+    // run out, while ends of waves run in, and (2) the "run-around" dancer
+    // stands on the centerline of the formation at one point.
     select: [sel]
       select: BEAU
         prim: 1,1,right
@@ -248,23 +257,21 @@ def: run[sel]
       select: BELLE
         prim: -1,0,none
         prim: -1,0,none
-def: cross run[sel]
+
+def: cross run(sel)
   in: 6
-  select: [sel]
-    select: RIGHT OF CENTER // xxx?
-      prim: -2, 1, left
-      prim: -1, 2, left
-    select: LEFT OF CENTER
-      prim: 2,1,right
-      prim: 1,2,right
-  select: ALL // ie, others (same as run)
-    select: BEAU
-      prim: 1,0,none
-      prim: 1,0,none
-    select: BELLE
-      prim: -1,0,none
-      prim: -1,0,none
-*/
+  // XXX: from other formations (t-bones, etc)
+  from: GENERAL LINE
+    select: [sel]
+      prim: in 2, 1, in
+      prim: in 1, 2, in
+    select: ALL // ie, others (same as run)
+      select: BEAU
+        prim: 1,0,none
+        prim: 1,0,none
+      select: BELLE
+        prim: -1,0,none
+        prim: -1,0,none
 
 def: zoom
   in: 4
@@ -340,11 +347,12 @@ def: spin the top
 def: walk and dodge
   in: 4
   call: walk others dodge(TRAILER)
-/*
-def: walk others dodge[sel]
+
+def: walk others dodge(sel)
   in: 4
   from: GENERAL BOX
     select: [sel]
+      condition: SELECTED ARE(TRAILER)
       prim: 0,1,none
       prim: 0,1,none
     select: ALL // others
@@ -354,7 +362,7 @@ def: walk others dodge[sel]
       select: BELLE
         prim: -1,0,none
         prim: -1,0,none
-*/
+
 def: hinge
   in: 2
   call: 1/2(trade)
@@ -389,11 +397,19 @@ def: scoot back
       ipart:
         prim: in 1,1,in
   // XXX: scoot back from quarter tag
-/*
-def: tag[atc, n]
+
+def: tag(atc, n)
   ipart:
-    call: [atc], _fractional(4*n, extend)
+    call: [atc], _finish_tag([n])
+def: _finish_tag(n)
+  from: FACING_TANDEMS
+    condition: EQUAL([n], 0)
+    call: nothing
+  from: FACING_TANDEMS
+    condition: GREATER([n], 0)
+    call: _fractional(_multiply_num(4,[n]), extend)
 // or else: n=0->atc; else fractional(n, part(atc,extend), part(extend), part(extend), part(extend))
+
 def: _atc_tag
   in: 2
   from: GENERAL LINE
@@ -423,8 +439,7 @@ def: face left
   in: 2
   prim: 0,0,left
 
-/*
-def: fold[sel]
+def: fold(sel)
   in: 2
   select: [sel]
     select: BEAU
@@ -435,18 +450,15 @@ def: fold[sel]
       prim: -1,1,left
   select: ALL // others
     prim: 0,0,none
-def: cross fold[sel]
+
+def: cross fold(sel)
   in: 4
-  select: [sel]
-    select: RIGHT OF CENTER
-      prim: -2,3,left
-      prim: -1,2,left
-    select: LEFT OF CENTER
-      prim: 2,3,right
-      prim: 1,2,right
-  select: ALL // others
-    prim: 0,0,none
-*/
+  from: GENERAL LINE
+    select: [sel]
+      prim: in 2, 3, in
+      prim: in 1, 2, in
+    select: ALL // others
+      prim: 0,0,none
 
 def: square thru(n)
   from: FACING COUPLES

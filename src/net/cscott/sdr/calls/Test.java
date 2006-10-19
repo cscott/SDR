@@ -20,6 +20,9 @@ public class Test {
         Apply a = Apply.makeApply("_touch", Fraction.valueOf("3/4"));
         def = a.expand();
         System.out.println(def);
+        a = Apply.makeApply("run", Apply.makeApply("boy"));
+        def = a.expand();
+        System.out.println(def);
         System.out.println("-----");
         a = Apply.makeApply("_fractional", Apply.makeApply("1/2"), a);
         System.out.println(a);
