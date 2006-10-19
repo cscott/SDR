@@ -447,3 +447,14 @@ def: cross fold[sel]
   select: ALL // others
     prim: 0,0,none
 */
+
+def: square thru(n)
+  from: FACING COUPLES
+    condition: and(greater([n],0),not(greater([n],1)))
+    in: 2
+    call: _fractional([n], pull by)
+  from: FACING COUPLES
+    condition: greater([n], 0)
+    in: 2
+    ipart: // actually, square thru N probably has N distinct parts.
+      call: pull by, quarter in, left(square thru(_subtract_num(n,1)))

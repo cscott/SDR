@@ -37,7 +37,7 @@ import net.cscott.sdr.util.Fraction;
  * when implementing {@link Call#apply(Apply)}.
  * 
  * @author C. Scott Ananian
- * @version $Id: Apply.java,v 1.8 2006-10-17 16:55:22 cananian Exp $
+ * @version $Id: Apply.java,v 1.9 2006-10-19 21:00:09 cananian Exp $
  */
 public class Apply extends SeqCall {
     public final String callName;
@@ -79,7 +79,13 @@ public class Apply extends SeqCall {
     public Apply getArg(int n) { return args.get(n); }
 
     public Fraction getNumberArg(int n) {
-        return Fraction.valueOf(getArg(n).callName);
+        // special feature: support arithmetic evaluation by calling
+        // 'expand' on this arg, if it isn't already a simple string.
+        Apply a = getArg(n);
+        if (!a.args.isEmpty()) // typecasts show that this is kludgey...
+            a = (Apply) ((Seq)a.expand()).children.get(0); // do arithmetic!
+        assert a.args.isEmpty();
+        return Fraction.valueOf(a.callName);
     }
 
     public String getStringArg(int n) {

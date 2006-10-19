@@ -107,8 +107,11 @@ simple_body
 	;
 words_or_ref
 	: simple_words
-	|! LBRACK i:IDENT RBRACK
-	{ #words_or_ref = #([REF, i.getText()]); }
+	| ref
+	;
+ref!
+	: LBRACK i:IDENT RBRACK
+	{ #ref = #([REF, i.getText()]); }
 	;
 call_body!
 	: w:words_or_ref ( LPAREN! a:call_args RPAREN! )?
@@ -127,7 +130,7 @@ call_body_seq!
 		#([APPLY,"apply"], #([ITEM,"item"],[IDENT,"and"]), c1, c2); }
 	;
 cond_body!
-	: w:simple_words ( LPAREN! a:cond_args RPAREN! )?
+	: w:words_or_ref ( LPAREN! a:cond_args RPAREN! )?
 	{ #cond_body = #([CONDITION, "cond"], w, a); }
 	;
 cond_args

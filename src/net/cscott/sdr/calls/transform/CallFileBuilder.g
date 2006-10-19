@@ -177,8 +177,22 @@ ref returns [int v=0]
 call_args returns [List<B<Apply>> l] { l = new ArrayList<B<Apply>>(); B<Apply> c; }
 	: (c=call_body {l.add(c);} )*
 	;
-cond_body returns [B<Condition> c=null] { String s; List<B<Condition>> args; }
-	: #(CONDITION s=simple_words args=cond_args )
+cond_body returns [B<Condition> c=null] { String s; List<B<Condition>> args; int r; }
+	// parameter reference
+	: ( #(CONDITION REF (.)* ) ) => 
+	  #(CONDITION r=ref args=cond_args )
+	{ final int param = r;
+	  final List<B<Condition>> cond_args = args;
+	  // use the given parameter as a string.
+	  c = new B<Condition>() {
+	    	public Condition build(List<Apply> args) {
+				assert args.get(param).args.isEmpty();
+	    		String predicate = args.get(param).callName;
+	    		return new Condition(predicate, reduce(cond_args, args));
+	    	}
+	  };
+	}
+	| #(CONDITION s=simple_words args=cond_args )
 	{ c = mkCondition(s.intern(), args); }
 	;
 cond_args returns [List<B<Condition>> l] { l = new ArrayList<B<Condition>>(); B<Condition> c; }

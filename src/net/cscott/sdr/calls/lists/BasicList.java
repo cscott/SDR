@@ -23,7 +23,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.11 2006-10-19 20:17:56 cananian Exp $
+ * @version $Id: BasicList.java,v 1.12 2006-10-19 21:00:09 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -38,35 +38,6 @@ public abstract class BasicList {
         public final Program getProgram() { return Program.BASIC; }
     }
     
-    public static final Call SQUARE_THRU = new BasicCall("square thru") {
-            @Override
-            public Comp apply(Apply ast) {
-                assert ast.callName.equals(getName());
-                assert ast.args.size()==1;
-                // one parameter: a count
-                Fraction n = ast.getNumberArg(0);
-                // validate.
-                if (Fraction.ZERO.compareTo(n) >= 0)
-                    throw new BadCallException
-                        ("Can't square thru zero or fewer times");
-                // square thru 1 is right pull by
-                if (Fraction.ONE.compareTo(n) >= 1)
-                    return new Seq(new Part
-                                   (false, new In(2, new Seq
-                                    (Apply.makeApply
-                                     ("_fractional", n, "pull by")))));
-                // square thru N is right pull by, quarter in,
-                // left square thru (N-1) (even if N is fractional)
-                return new Seq(new Part(false, new In(2, new Seq(
-                        Apply.makeApply("pull by"),
-                        Apply.makeApply("quarter in"),
-                        Apply.makeApply("left",
-                                Apply.makeApply("square thru",
-                                        n.subtract(Fraction.ONE)))))));
-            }
-            @Override
-            public int getMinNumberOfArguments() { return 1; }
-    };
     // simple combining concept.
     public static final Call AND = new BasicCall("and") {
         @Override
@@ -78,6 +49,52 @@ public abstract class BasicList {
         }
         @Override
         public int getMinNumberOfArguments() { return 1; }
+    };
+    // kludges for simple arithmetic.
+    private static abstract class MathCall extends BasicCall {
+        MathCall(String name) { super(name); }
+        abstract Fraction getIdentity();
+        abstract Fraction doOp(Fraction f1, Fraction f2);
+        @Override
+        public final Comp apply(Apply ast) {
+            Fraction result = getIdentity();
+            assert ast.args.size()>=1;
+            for (int i=0; i<ast.args.size(); i++)
+                result = doOp(result, ast.getNumberArg(i));
+            // here's the kludge
+            return new Seq(Apply.makeApply(result.toProperString()));
+        }
+        @Override
+        public int getMinNumberOfArguments() { return 1; }
+    }
+    public static final Call _ADD_NUM = new MathCall("_add_num") {
+        @Override
+        Fraction getIdentity() { return Fraction.ZERO; }
+        @Override
+        Fraction doOp(Fraction f1, Fraction f2) { return f1.add(f2); }
+    };
+    public static final Call _SUBTRACT_NUM = new MathCall("_subtract_num") {
+        @Override
+        Fraction getIdentity() { return Fraction.ZERO; }
+        @Override
+        Fraction doOp(Fraction f1, Fraction f2) { return f1.subtract(f2); }
+    };
+    public static final Call _MULTIPLY_NUM = new MathCall("_multiply_num") {
+        @Override
+        Fraction getIdentity() { return Fraction.ONE; }
+        @Override
+        Fraction doOp(Fraction f1, Fraction f2) { return f1.multiply(f2); }
+    };
+    public static final Call _DIVIDE_NUM = new BasicCall("_divide_num") {
+        @Override
+        public final Comp apply(Apply ast) {
+            assert ast.args.size()==2;
+            Fraction result = ast.getNumberArg(0).divide(ast.getNumberArg(1));
+            // here's the kludge
+            return new Seq(Apply.makeApply(result.toProperString()));
+        }
+        @Override
+        public int getMinNumberOfArguments() { return 2; }
     };
     // this is not completely accurate?
     public static final Call LEFT = new BasicCall("left") {

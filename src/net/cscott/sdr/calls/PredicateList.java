@@ -1,6 +1,7 @@
 package net.cscott.sdr.calls;
 
 import net.cscott.sdr.calls.ast.Condition;
+import net.cscott.sdr.util.Fraction;
 
 /** This class contains all the predicates known to the system. */
 public abstract class PredicateList {
@@ -27,6 +28,25 @@ public abstract class PredicateList {
             assert c.args.size()==1;
             Condition arg = c.getArg(0);
             return !arg.getPredicate().evaluate(ds,f,arg);
+        }
+    };
+    // binary numerical operators
+    public final static Predicate EQUAL = new _Predicate("equal") {
+        @Override
+        public boolean evaluate(DanceState ds, Formation f, Condition c) {
+            assert c.args.size()==2;
+            Fraction f1 = Fraction.valueOf(c.getArg(0).predicate);
+            Fraction f2 = Fraction.valueOf(c.getArg(1).predicate);
+            return f1.equals(f2);
+        }
+    };
+    public final static Predicate GREATER = new _Predicate("greater") {
+        @Override
+        public boolean evaluate(DanceState ds, Formation f, Condition c) {
+            assert c.args.size()==2;
+            Fraction f1 = Fraction.valueOf(c.getArg(0).predicate);
+            Fraction f2 = Fraction.valueOf(c.getArg(1).predicate);
+            return f1.compareTo(f2) > 0;
         }
     };
     // n-ary operators.
