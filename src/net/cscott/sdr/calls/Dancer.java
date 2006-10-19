@@ -10,7 +10,7 @@ public interface Dancer {
     public boolean isSide();
     public boolean isBoy();
     public boolean isGirl();
-    /** Certain dancer {@Tag}s are inherent to a dancer,
+    /** Certain dancer {@link Tag}s are inherent to a dancer,
      *  for example 'DANCER_1', 'COUPLE_2', 'BOY' etc.
      *  This method identifies if one of these tags
      *  is appropriate for the current {@link Dancer}.
