@@ -47,12 +47,6 @@ Square Dance Revolution build file.
     <antlr target="src/net/cscott/sdr/calls/transform/CallFileBuilder.g">
 		<classpath refid="classpath.path" />
     </antlr>
-    <antlr target="src/net/cscott/sdr/calls/transform/BeatCounter.g">
-		<classpath refid="classpath.path" />
-    </antlr>
-    <antlr target="src/net/cscott/sdr/calls/transform/RemoveIn.g">
-		<classpath refid="classpath.path" />
-    </antlr>
 	    <mkdir dir="${classes_dir}" />
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
