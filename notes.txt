@@ -296,3 +296,14 @@ middle to accomodate the tidal wave.
 
 We generate a warp function which disassembles & then reassembles the formations.
 ----------
+elaborate should week out inapplicable formations, but not do any
+irreversible rewriting.
+
+The formation reconstruction which 'from' does is not currently
+encapsulatable in a 'Warp' node.
+---------
+
+Handle collisions at the same time we do formation reconstruction: if
+two dancers are on the same spot, replace them with a RH MINIWAVE
+at that location.
+---------
