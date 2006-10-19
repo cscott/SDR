@@ -14,7 +14,7 @@ import net.cscott.sdr.calls.transform.ValueVisitor;
  * against the current formation is used to perform the call; the rest are
  * ignored.
  * @author C. Scott Ananian
- * @version $Id: Opt.java,v 1.5 2006-10-17 16:29:05 cananian Exp $
+ * @version $Id: Opt.java,v 1.6 2006-10-19 18:44:50 cananian Exp $
  */
 public class Opt extends Comp {
     public final List<OptCall> children;
@@ -22,6 +22,9 @@ public class Opt extends Comp {
         super(OPT);
         this.children = Collections.unmodifiableList
         (Arrays.asList(children.clone()));
+    }
+    public Opt(List<OptCall> children) {
+        this(children.toArray(new OptCall[children.size()]));
     }
     @Override
     public <T> Comp accept(TransformVisitor<T> v, T t) {

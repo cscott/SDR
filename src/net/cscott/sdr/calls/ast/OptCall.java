@@ -14,18 +14,21 @@ import net.cscott.sdr.calls.transform.ValueVisitor;
 /** <code>OptCall</code> bundles a formation condition with a
  * <code>Comp</code>.
  * @author C. Scott Ananian
- * @version $Id: OptCall.java,v 1.6 2006-10-17 16:29:05 cananian Exp $
+ * @version $Id: OptCall.java,v 1.7 2006-10-19 18:44:50 cananian Exp $
  */
 public class OptCall extends AstNode {
     public final List<Selector> selectors;
     public final Comp child;
-    public OptCall(List<String> formations, Comp child) {
-        this(parseFormations(formations), child);
+    // use 'parseFormations' if you want to create an OptCall from a list of
+    // strings.
+    public OptCall(List<Selector> selectors, Comp child) {
+        this(selectors.toArray(new Selector[selectors.size()]), child);
     }
-    public OptCall(Selector[] selectors, Comp child) {
+    // does not make a copy of selectors.
+    private OptCall(Selector[] selectors, Comp child) {
         super(FROM, "From");
         this.selectors = Collections.unmodifiableList
-        (Arrays.asList(selectors.clone()));
+        (Arrays.asList(selectors));
         this.child = child;
     }
     @Override
@@ -38,11 +41,11 @@ public class OptCall extends AstNode {
         return v.visit(this, cl);
     }
     
-    private static Selector[] parseFormations(List<String> formations) {
+    public static List<Selector> parseFormations(List<String> formations) {
         List<Selector> sels = new ArrayList<Selector>(formations.size());
         for (String s: formations)
             sels.add(Selector.valueOf(s));
-        return sels.toArray(new Selector[sels.size()]);
+        return sels;
     }
     /** Factory: creates new OptCall only if it would differ from this. */
     public OptCall build(List<Selector> selectors, Comp child) {

@@ -16,21 +16,19 @@ import net.cscott.sdr.calls.transform.ValueVisitor;
  * the child to dancers which match the given
  * <code>TaggedFormation.Tag</code>s.
  * @author C. Scott Ananian
- * @version $Id: ParCall.java,v 1.9 2006-10-18 01:57:20 cananian Exp $
+ * @version $Id: ParCall.java,v 1.10 2006-10-19 18:44:50 cananian Exp $
  */
 public class ParCall extends AstNode {
     public final Set<Tag> tags;
     public final Comp child;
 
-    public ParCall(List<String> tags, Comp child) {
-        this(parseTags(tags), child);
-    }
+    // use parseTags if you want to make a ParCall from a list of strings.
     public ParCall(Set<Tag> tags, Comp child) {
         super(SELECT, "Select");
         this.tags = Collections.unmodifiableSet(EnumSet.copyOf(tags));
         this.child = child;
     }
-    private static EnumSet<Tag> parseTags(List<String> tagNames) {
+    public static Set<Tag> parseTags(List<String> tagNames) {
         EnumSet<Tag> sels = EnumSet.noneOf(Tag.class);
         for (String s: tagNames) {
             s=s.toUpperCase().replace(' ','_').replace('-','_');
