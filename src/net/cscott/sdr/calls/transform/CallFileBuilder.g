@@ -2,6 +2,7 @@
 header {
 package net.cscott.sdr.calls.transform;
 
+import static net.cscott.sdr.calls.transform.BuilderHelper.*;
 import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.util.*;
@@ -31,45 +32,46 @@ program
 	;
 
 def
-{ String n; Comp c; }
+{ String n; B<? extends Comp> c; }
 	: #(DEF n=simple_words c=pieces)
 	{ assert !names.contains(n) : "duplicate call: "+n;
       names.add(n);
-      db.add(Call.makeSimpleCall(n.intern(), currentProgram, c));
+      Call call = makeCall(n.intern(), currentProgram, c);
+	  db.add(call);
 	}
 	;
 	
-pieces returns [Comp r]
+pieces returns [B<? extends Comp> r]
 	: r=opt
 	| r=seq
 	| r=par
 	| r=res ;
 	
-opt returns [Opt o=null]
-{ OptCall oc; List<OptCall> l = new ArrayList<OptCall>(); }
+opt returns [B<Opt> o=null]
+{ B<OptCall> oc; List<B<OptCall>> l = new ArrayList<B<OptCall>>(); }
 	: #(OPT (oc=one_opt {l.add(oc);})+)
-	{ o = new Opt(l.toArray(new OptCall[l.size()])); }
+	{ o = mkOpt(l); }
 	;
-one_opt returns [OptCall oc=null] {List<String> f; Comp co; }
+one_opt returns [B<OptCall> oc=null] {List<String> f; B<? extends Comp> co; }
 	: #(FROM f=simple_body co=pieces)
-	{ oc = new OptCall(f, co); }
+	{ oc = mkOptCall(OptCall.parseFormations(f), co); }
 	;
-seq returns [Seq s=null]
-{ SeqCall sc; List<SeqCall> l = new ArrayList<SeqCall>(); }
+seq returns [B<Seq> s=null]
+{ B<? extends SeqCall> sc; List<B<? extends SeqCall>> l = new ArrayList<B<? extends SeqCall>>(); }
 	: #(SEQ (sc=one_seq {l.add(sc);})+)
-	{ s = new Seq(l.toArray(new SeqCall[l.size()])); }
+	{ s = mkSeq(l); }
 	;
-one_seq returns [SeqCall sc=null]
-{ Fraction x, y; Comp d;
+one_seq returns [B<? extends SeqCall> sc=null]
+{ Fraction x, y; B<? extends Comp> d;
   Prim.Direction dx=null, dy=null, dr=null; Rotation r=null;
 }
 	: #(PRIM (dx=direction)? x=number (dy=direction)? y=number (dr=direction | r=rotation) )
-	{ sc=new Prim(d(dx), x, d(dy), y, d(dr), ifNull(r,Rotation.ONE_QUARTER)); }
+	{ sc=mkPrim(d(dx), x, d(dy), y, d(dr), ifNull(r,Rotation.ONE_QUARTER)); }
 	| #(CALL sc=call_body)
 	| #(PART d=pieces)
-	{ sc = new Part(true, d); /* divisible part */}
+	{ sc = mkPart(true, d); /* divisible part */}
 	| #(IPART d=pieces)
-	{ sc = new Part(false, d); /* indivisible part */}
+	{ sc = mkPart(false, d); /* indivisible part */}
 	;
 
 direction returns [Prim.Direction d=null]
@@ -82,22 +84,22 @@ rotation returns [Rotation r=null]
 	| NONE { r = Rotation.ZERO; }
 	;
 
-par returns [Par p=null] {ParCall pc;List<ParCall> l=new ArrayList<ParCall>();}
+par returns [B<Par> p=null] {B<ParCall> pc;List<B<ParCall>> l=new ArrayList<B<ParCall>>();}
     : #(PAR (pc=one_par {l.add(pc);})+)
-	{ p = new Par(l.toArray(new ParCall[l.size()])); }
+	{ p = mkPar(l); }
     ;
 
-one_par returns [ParCall pc=null]
-{ List<String> sl; Comp d; }
+one_par returns [B<ParCall> pc=null]
+{ List<String> sl; B<? extends Comp> d; }
     : #(SELECT sl=simple_body d=pieces)
-	{ pc = new ParCall(sl, d); }
+	{ pc = mkParCall(ParCall.parseTags(sl), d); }
 	;
 // restrictions/timing
-res returns [Comp c] { Fraction f; Condition cd; }
+res returns [B<? extends Comp> c] { Fraction f; B<Condition> cd; }
     : #(IN f=number c=pieces)
-	{ c = new In(f, c); }
+	{ c = mkIn(f, c); }
     | #(IF cd=cond_body c=pieces)
-	{ c = new If(cd, c); }
+	{ c = mkIf(cd, c); }
     ;
 	
 simple_words returns [String r=null]
@@ -118,24 +120,24 @@ simple_body returns [List<String> l] { String s; l = new ArrayList<String>(); }
 	: #(BODY (s=simple_words {l.add(s);} )+)
 	;
 
-call_body returns [Apply ast=null] {String s; List<Apply> args; Fraction n;}
+call_body returns [B<Apply> ast=null] {String s; List<B<Apply>> args; Fraction n;}
 	// shorthand: 3/4 (foo) = fractional(3/4, foo)
 	: ( #(APPLY #(ITEM number) (.)* ) ) =>
 	  #(APPLY #(ITEM n=number) args=call_args )
-	{   args.add(0, Apply.makeApply(n.toString().intern()));
-		ast = new Apply("_fractional", args); }
+	{   args.add(0, mkConstant(Apply.makeApply(n.toString().intern())));
+		ast = mkApply("_fractional", args); }
 	// standard rule
 	| #(APPLY s=simple_words args=call_args )
-	{ ast = new Apply(s.intern(), args); }
+	{ ast = mkApply(s.intern(), args); }
 	;
-call_args returns [List<Apply> l] { l = new ArrayList<Apply>(); Apply c; }
+call_args returns [List<B<Apply>> l] { l = new ArrayList<B<Apply>>(); B<Apply> c; }
 	: (c=call_body {l.add(c);} )*
 	;
-cond_body returns [Condition c=null] { String s; List<Condition> args; }
+cond_body returns [B<Condition> c=null] { String s; List<B<Condition>> args; }
 	: #(CONDITION s=simple_words args=cond_args )
-	{ c = new Condition(s.intern(), args); }
+	{ c = mkCondition(s.intern(), args); }
 	;
-cond_args returns [List<Condition> l] { l = new ArrayList<Condition>(); Condition c; }
+cond_args returns [List<B<Condition>> l] { l = new ArrayList<B<Condition>>(); B<Condition> c; }
 	: (c=cond_body {l.add(c);} )*
 	;
 
