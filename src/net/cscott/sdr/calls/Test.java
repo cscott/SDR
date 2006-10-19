@@ -17,7 +17,7 @@ public class Test {
         System.out.println(sqthr);
         def = sqthr.apply(Apply.makeApply("square thru", Fraction.valueOf("3 1/2")));
         System.out.println(def);
-        Apply a = Apply.makeApply("pass thru");
+        Apply a = Apply.makeApply("_touch", Fraction.valueOf("3/4"));
         def = a.expand();
         System.out.println(def);
         System.out.println("-----");

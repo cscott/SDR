@@ -20,7 +20,7 @@ import net.cscott.sdr.util.Fraction;
  * "ast tree generation functions", while optimizing the case where the
  * function generates a constant.
  * @author C. Scott Ananian
- * @version $Id: BuilderHelper.java,v 1.1 2006-10-19 18:46:58 cananian Exp $
+ * @version $Id: BuilderHelper.java,v 1.2 2006-10-19 20:17:56 cananian Exp $
  */
 abstract class BuilderHelper {
     // 'B' is pronounced as 'Builder'.  So a B<Prim> builds Prim objects.
@@ -137,7 +137,7 @@ abstract class BuilderHelper {
         }, child.isConstant());
     }
     //////////////
-    static Call makeCall(final String name, final Program program, final B<? extends Comp> b) {
+    static Call makeCall(final String name, final Program program, final B<? extends Comp> b, final int minNumberOfArguments) {
         if (b.isConstant())
             return Call.makeSimpleCall(name,program,b.build(null));
         return new Call() {
@@ -147,8 +147,13 @@ abstract class BuilderHelper {
             public Program getProgram() { return program; }
             @Override
             public Comp apply(Apply ast) { 
-                assert ast.args.get(0).callName.equals(name);
+                assert ast.callName.equals(name);
+                assert ast.args.size() == minNumberOfArguments; // in this case, must be exact match.
                 return b.build(ast.args);
+            }
+            @Override
+            public int getMinNumberOfArguments() {
+                return minNumberOfArguments;
             }
         };
     }

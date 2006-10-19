@@ -23,7 +23,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.10 2006-10-17 16:42:33 cananian Exp $
+ * @version $Id: BasicList.java,v 1.11 2006-10-19 20:17:56 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -64,17 +64,8 @@ public abstract class BasicList {
                                 Apply.makeApply("square thru",
                                         n.subtract(Fraction.ONE)))))));
             }
-    };
-    public static final Call TOUCH = new BasicCall("_touch") {
-        @Override
-        public Comp apply(Apply ast) {
-            assert ast.callName.equals(getName());
-            assert ast.args.size()==1;
-            Fraction n = ast.getNumberArg(0);
-            return new Seq
-                     (Apply.makeApply
-                      ("_fractional", n, "_touch 4/4"));
-        }
+            @Override
+            public int getMinNumberOfArguments() { return 1; }
     };
     // simple combining concept.
     public static final Call AND = new BasicCall("and") {
@@ -85,6 +76,8 @@ public abstract class BasicList {
             List<SeqCall> l = new ArrayList<SeqCall>(ast.args);
             return new Seq(l);
         }
+        @Override
+        public int getMinNumberOfArguments() { return 1; }
     };
     // this is not completely accurate?
     public static final Call LEFT = new BasicCall("left") {
@@ -96,6 +89,8 @@ public abstract class BasicList {
             Warp warp = Warp.MIRROR;
             return new Warped(warp, new Seq(a));
         }
+        @Override
+        public int getMinNumberOfArguments() { return 1; }
     };
     // complex concept -- not sure correct program here?
     public static final Call _FRACTIONAL = new BasicCall("_fractional") {
@@ -137,5 +132,7 @@ public abstract class BasicList {
                 result = new Seq(new Part(isDivisible, result));
             return result;
         }
+        @Override
+        public int getMinNumberOfArguments() { return 2; }
     };
 }

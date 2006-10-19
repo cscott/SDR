@@ -2,6 +2,11 @@ program: mainstream
 
 def: cast 3/4
   call: 3/4(_cast 4/4)
+// cast 3/4 is mainstream -- what level is "cast 1/4"
+// and/or "cast 1/2"?  We'll follow SD in calling these
+// mainstream as well.
+def: cast(n)
+  call: _fractional([n], _cast 4/4)
 def: _cast 4/4
   in: 8
   from: LH 3 AND 1, LH SPLIT 3 AND 1

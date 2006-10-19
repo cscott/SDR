@@ -11,7 +11,7 @@ import net.cscott.sdr.calls.ast.Comp;
  * arguments (numbers, selectors, or other calls) to result in a
  * <code>Comp</code> AST tree.
  * @author C. Scott Ananian
- * @version $Id: Call.java,v 1.5 2006-10-17 16:29:01 cananian Exp $
+ * @version $Id: Call.java,v 1.6 2006-10-19 20:17:55 cananian Exp $
  */
 public abstract class Call {
     /** The name of this call, in our internal jargon.  This is not
@@ -24,9 +24,19 @@ public abstract class Call {
     /** Evaluates this call with the arguments given in the {@link Apply}
      * node, returning a {@link Comp}.  Note that the
      * {@link Apply#callName callName} field of {@code ast} should
-     * match @{link Call#getName(String) this.getName()}.
+     * match {@link Call#getName() this.getName()}, and the
+     * length of the list in the {@link Apply#args args} field should 
+     * be at least
+     * {@link Call#getMinNumberOfArguments() this.getMinNumberOfArguments()}.
      */
     public abstract Comp apply(Apply ast);
+    /**
+     * Return the number of arguments which should, at minimum, be given to this
+     * {@link Call}.  Usually this is the exact number of arguments required,
+     * but some combining calls (like 'and') can take an arbitrary number of
+     * arguments.
+     */
+    public abstract int getMinNumberOfArguments();
     
     @Override
     public final String toString() {
@@ -51,9 +61,12 @@ public abstract class Call {
             public Program getProgram() { return program; }
             @Override
             public Comp apply(Apply ast) {
-                assert ast.args.get(0).callName.equals(name);
+                assert ast.callName.equals(name);
+                assert ast.args.isEmpty();
                 return def;
             }
+            @Override
+            public int getMinNumberOfArguments() { return 0; }
         };
     }
 }

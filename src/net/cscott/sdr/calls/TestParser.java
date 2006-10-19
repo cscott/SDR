@@ -5,6 +5,7 @@ import java.io.*;
 import antlr.Token;
 import antlr.debug.misc.ASTFrame;
 
+import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.transform.*;
 
 public abstract class TestParser {
@@ -73,9 +74,8 @@ public abstract class TestParser {
         CallFileBuilder builder = new CallFileBuilder();
         builder.calllist(parser.getAST());
           for (Call call : builder.getList()) {
-                System.out.println(call.getName()+": "+call.apply(null).toString());
-                //ASTFrame frame = new ASTFrame(callName, builder.getMap().get(callName));
-                //frame.setVisible(true);
+              if (call.getMinNumberOfArguments()==0)
+                System.out.println(call.getName()+": "+call.apply(Apply.makeApply(call.getName())).toString());
           }
 
         }else {

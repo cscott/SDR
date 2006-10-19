@@ -98,28 +98,6 @@ def: u turn back
     call: twice (quarter in) // is this right?
   */
 
-// maybe alias 'two boys chain', etc?
-def: two ladies chain // need breathing
-  in: 6
-  ipart:
-    from: FACING COUPLES
-      select: BELLE
-        part: // for timing purposes
-          prim: -1, 1/2, none
-          prim: -1, 1/2, none // pull by
-          prim: 1,  1/2, right
-        part: // courtesy turn
-          prim: -1,1,left
-          prim: -1,1,left
-          prim: -1,1,left
-      select: BEAU
-        part:
-          prim: 1, -1/2, left
-        part:
-          prim: 1,-1,left
-          prim: 1,-1,left
-          prim: 1,-1,left
-
 def: _courtesy turn 1/2
   in: 4
   call: 1/2(wheel around) // modulo hand hold
@@ -134,7 +112,7 @@ def: chain down the line
   in: 8
   from: RH TWO-FACED LINE
   call: centers(right arm turn 1/2, _courtesy turn 3/4)
-def: two ladies chain
+def: two ladies chain // maybe alias 'two boys chain', etc?
   in: 8
   from: FACING COUPLES
   call: 1/4(wheel around), chain down the line
@@ -328,27 +306,9 @@ def: touch
   call: step to a wave
 def: left touch
   call: mirror(touch)
-/*
-def: touch[n]
-  call: fractional([n], _touch 4/4)
-*/
-def: _touch 4/4
-  in: 8
-  ipart:
-   call: step to a wave, cast 1/4
-  ipart:
-   call: cast 1/4
-  ipart:
-   call: cast 1/4
-  ipart:
-   call: cast 1/4
+def: _touch(n) // XXX: touch 3/4 is definitely mainstream, not basic
+  call: touch, cast([n])
 
-/*
-def: touch[n]
-  call: touch, cast[n]
-def: cast[n]
-  call: [n] (_cast 4/4)
-*/
 def: circulate // all-8
   in: 4
   from: PARALLEL GENERAL LINES

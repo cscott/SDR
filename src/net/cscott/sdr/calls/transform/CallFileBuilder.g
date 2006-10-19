@@ -20,6 +20,10 @@ options { importVocab = CallFileParser; defaultErrorHandler=false; }
 	// quick helper
 	public <T> T ifNull(T t, T otherwise) { return (t==null)?otherwise:t; }
 	public Prim.Direction d(Prim.Direction d) { return ifNull(d, Prim.Direction.ASIS); }
+	private Map<String,Integer> scope = new HashMap<String,Integer>();
+	private void semex(AST a, String s) throws SemanticException {
+		throw new SemanticException(s, "<unknown>", a.getLine(), a.getColumn());
+	}
 }
     
 // @@startrules
@@ -32,12 +36,24 @@ program
 	;
 
 def
-{ String n; B<? extends Comp> c; }
-	: #(DEF n=simple_words c=pieces)
-	{ assert !names.contains(n) : "duplicate call: "+n;
+{ String n=null; B<? extends Comp> c; B<Apply> cb; Apply a=null; }
+	: #(d:DEF cb=call_body
+	{ if (!cb.isConstant()) semex(d, "Bad call definition");
+	  a = cb.build(null);
+	  n = a.callName;
+	  // if there are arguments, add them to our scope.
+	  int i=0;
+	  for (Apply arg : a.args) {
+	    if (arg.args.size()!=0) semex(d, "Arguments can't have arguments");
+	    scope.put(arg.callName, i++);
+	  }
+	}
+	   c=pieces)
+	{ if (names.contains(n)) semex(d, "duplicate call: "+n);
       names.add(n);
-      Call call = makeCall(n.intern(), currentProgram, c);
+      Call call = makeCall(n.intern(), currentProgram, c, a.args.size());
 	  db.add(call);
+	  scope.clear();
 	}
 	;
 	
@@ -120,15 +136,43 @@ simple_body returns [List<String> l] { String s; l = new ArrayList<String>(); }
 	: #(BODY (s=simple_words {l.add(s);} )+)
 	;
 
-call_body returns [B<Apply> ast=null] {String s; List<B<Apply>> args; Fraction n;}
+call_body returns [B<Apply> ast=null] {String s; List<B<Apply>> args; Fraction n; int r; }
 	// shorthand: 3/4 (foo) = fractional(3/4, foo)
 	: ( #(APPLY #(ITEM number) (.)* ) ) =>
 	  #(APPLY #(ITEM n=number) args=call_args )
 	{   args.add(0, mkConstant(Apply.makeApply(n.toString().intern())));
 		ast = mkApply("_fractional", args); }
+	// parameter reference
+	| ( #(APPLY REF (.)* ) ) => 
+	  #(APPLY r=ref args=call_args )
+	{ final int param = r;
+	  final List<B<Apply>> call_args = args;
+	  if (call_args.isEmpty()) {
+	  	// if no args, then substitute given Apply node wholesale.
+	    ast = new B<Apply>() {
+	    	public Apply build(List<Apply> args) {
+	    		return args.get(param);
+	    	}
+	    };
+	  } else {
+	  	// otherwise, just use the given parameter as a string.
+	    ast = new B<Apply>() {
+	    	public Apply build(List<Apply> args) {
+				assert args.get(param).args.isEmpty();
+	    		String callName = args.get(param).callName;
+	    		return new Apply(callName, reduce(call_args, args));
+	    	}
+	    };
+	  }
+	}
 	// standard rule
 	| #(APPLY s=simple_words args=call_args )
 	{ ast = mkApply(s.intern(), args); }
+	;
+ref returns [int v=0]
+	: r:REF
+	{ if (!scope.containsKey(r.getText())) semex(r, "No argument named "+r.getText());
+	  v=scope.get(r.getText()); }
 	;
 call_args returns [List<B<Apply>> l] { l = new ArrayList<B<Apply>>(); B<Apply> c; }
 	: (c=call_body {l.add(c);} )*

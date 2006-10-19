@@ -27,6 +27,7 @@ tokens {
 	RIGHT;
 	LEFT;
 	NONE;
+	REF;
 }
 
 // the following tag is used to find the start of the rules section for
@@ -44,7 +45,7 @@ program
 	;
 
 def
-    : DEF^ COLON! simple_words pieces
+    : DEF^ COLON! call_body pieces
     ;
 
 pieces
@@ -104,8 +105,13 @@ simple_body
 	: simple_words (COMMA! simple_words)*
 	{ #simple_body = #([BODY, "simple body"], #simple_body); }
 	;
+words_or_ref
+	: simple_words
+	|! LBRACK i:IDENT RBRACK
+	{ #words_or_ref = #([REF, i.getText()]); }
+	;
 call_body!
-	: w:simple_words ( LPAREN! a:call_args RPAREN! )?
+	: w:words_or_ref ( LPAREN! a:call_args RPAREN! )?
 	{ #call_body = #([APPLY, "apply"], w, a); }
 	;
 call_args
@@ -314,6 +320,8 @@ COMMA      : ','   ;
 COLON      : ':' { this.beforeColon=false; }  ;
 LPAREN     : '('   ;
 RPAREN     : ')'   ;
+LBRACK     : '['   ;
+RBRACK     : ']'   ;
 SLASH      : '/'   ;
 // @@endrules
 
