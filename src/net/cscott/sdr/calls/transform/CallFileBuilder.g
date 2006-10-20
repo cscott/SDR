@@ -48,13 +48,19 @@ def
 	    scope.put(arg.callName, i++);
 	  }
 	}
-	   c=pieces)
+	   (optional)? (spoken)? c=pieces)
 	{ if (names.contains(n)) semex(d, "duplicate call: "+n);
       names.add(n);
       Call call = makeCall(n.intern(), currentProgram, c, a.args.size());
 	  db.add(call);
 	  scope.clear();
 	}
+	;
+optional
+	: #(OPTIONAL (IDENT)+ )
+	;
+spoken
+	: #(SPOKEN (number)? grm_rule )
 	;
 	
 pieces returns [B<? extends Comp> r]
@@ -222,6 +228,16 @@ number returns [Fraction r=null]
 	{ r = Fraction.valueOf(n.getText()); }
 	;
 	
+grm_rule
+	: #(VBAR (grm_rule)+ )
+	| #(ADJ (grm_rule)+ )
+	| #(PLUS grm_rule )
+	| #(STAR grm_rule )
+	| #(QUESTION grm_rule )
+	| IDENT
+	| #(REF IDENT (IDENT)? )
+	;
+
 // @@endrules
 
 // @@endparser

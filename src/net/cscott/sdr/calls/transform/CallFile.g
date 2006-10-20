@@ -28,6 +28,7 @@ tokens {
 	LEFT;
 	NONE;
 	REF;
+	ADJ;
 }
 
 // the following tag is used to find the start of the rules section for
@@ -45,8 +46,20 @@ program
 	;
 
 def
-    : DEF^ COLON! call_body pieces
+    : DEF^ COLON! call_body INDENT! (os)? pieces DEDENT!
     ;
+os	: optional (spoken)?
+	| s:spoken (o:optional)? { #os = #(o,s); }
+	;
+optional
+	: OPTIONAL^ COLON! IDENT ( COMMA! IDENT )*
+	;
+spoken
+	: SPOKEN^ COLON! (priority)? grm_rule
+	;
+priority
+	: LBRACK! number RBRACK!
+	;
 
 pieces
     :! INDENT p:pieces DEDENT { #pieces = #p; }
@@ -147,14 +160,47 @@ in_out_num
 	: (IN | OUT)? number
 	;
 number
-	: ( (INTEGER)? INTEGER SLASH INTEGER ) =>
-	  (p:INTEGER)? n:INTEGER SLASH d:INTEGER
-	{ AST ast = astFactory.create(NUMBER, (p==null?"":(p.getText()+" "))+n.getText()+"/"+d.getText());
+	{ String s; }
+	: ( opt_sign (INTEGER)? INTEGER SLASH INTEGER ) =>
+	  s=opt_sign (p:INTEGER)? n:INTEGER SLASH d:INTEGER
+	{ AST ast = astFactory.create(NUMBER, s+(p==null?"":(p.getText()+" "))+n.getText()+"/"+d.getText());
 	  #number = #(ast); }
-	| i:INTEGER
-	{ AST ast = astFactory.create(NUMBER, i.getText());
+	| s=opt_sign i:INTEGER
+	{ AST ast = astFactory.create(NUMBER, s+i.getText());
 	  #number = #(ast); }
 	;
+opt_sign returns [String s=""]
+	: MINUS {s="-";}
+	| PLUS {s="+";}
+	| /* nothing */;
+
+// Rule Grammar forms, from highest to lowest precedence
+// <bar> <foo=bar>
+// x? x+ x*
+// x x x
+// x | y
+// ( x )
+
+grm_rule
+	: grm_term ( VBAR! g:grm_term )*
+	{ if (#g!=null) #grm_rule = #([VBAR,"|"], #grm_rule); }
+	;
+grm_term
+	: grm_factor ( g:grm_factor )*
+	{ if (#g!=null) #grm_term = #([ADJ,"adj"], #grm_term); }
+	;
+grm_factor!
+	: e:grm_exp (m:grm_mult)?
+	{ #grm_factor= (#m==null) ? #e : #(m,e); }
+	;
+grm_exp
+	: LPAREN! grm_rule RPAREN!
+	| IDENT
+	|! LANGLE ( id:IDENT EQUALS )? r:IDENT RANGLE
+	{ #grm_exp = #([REF,"ref"], r, id); } 
+	;
+grm_mult
+	: PLUS | QUESTION | STAR ;
 
 // @@endparser
 // @@endrules
@@ -271,7 +317,7 @@ protected STUFF_INCL_NEWLINES
 // Literals
 
 INTEGER 
-  : ('-'|'+')? ('0'..'9')+
+  : ('0'..'9')+
   ;
   
 // Whitespace -- ignored
@@ -300,7 +346,7 @@ INITIAL_WS
 IDENT
   : {this.afterIndent||getColumn()!=1}?
     ('_'|'a'..'z'|'A'..'Z') ('_'|'a'..'z'|'A'..'Z'|'0'..'9'|'-')*
-    { String id = ($getText).intern();
+    { String id = ($getText).toLowerCase().intern();
    	  if (this.afterIndent && this.beforeColon) {
     	if (id=="def") $setType(DEF);
     	else if (id=="from") $setType(FROM);
@@ -312,6 +358,8 @@ IDENT
     	else if (id=="ipart") $setType(IPART);
     	else if (id=="prim") { $setType(PRIM); afterPrim=true; }
     	else if (id=="program") $setType(PROGRAM);
+    	else if (id=="optional") $setType(OPTIONAL);
+    	else if (id=="spoken") $setType(SPOKEN);
       } else if (this.afterPrim) {
       	if (id=="in") $setType(IN);
       	else if (id=="out") $setType(OUT);
@@ -330,6 +378,14 @@ RPAREN     : ')'   ;
 LBRACK     : '['   ;
 RBRACK     : ']'   ;
 SLASH      : '/'   ;
+QUESTION   : '?'   ;
+LANGLE     : '<'   ;
+RANGLE     : '>'   ;
+EQUALS     : '='   ;
+VBAR       : '|'   ;
+PLUS       : '+'   ;
+MINUS      : '-'   ;
+STAR       : '*'   ;
 // @@endrules
 
 // @@endscanner

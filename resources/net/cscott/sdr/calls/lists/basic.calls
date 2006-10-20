@@ -35,6 +35,7 @@ def: forward and back
       prim: 0,-1,none
 
 def: dosado
+  optional: LEFT
   in: 6
   from: FACING DANCERS
     prim: -1, 1,none
@@ -42,12 +43,15 @@ def: dosado
     prim:  1,-1,none
     prim: -1,-1,none
 
+/*
 def: dosado to a wave
   in: 6
   part:
     call: 3/4 (dosado)
+*/ // ambiguous =(
 
 def: pass thru
+  optional: LEFT
   in: 2
   from: FACING DANCERS
     call: 1/2 (dosado) // untraditional =)
@@ -55,13 +59,14 @@ def: pass thru
 def: double pass thru
   in: 4
   condition: and(PROGRAM AT LEAST(basic), true) // for testing only
-  //call: tandem(pass thru) // nicer def?
-  call: centers (pass thru), pass thru
+  call: tandem(pass thru)
 
 def: pull by
+  optional: LEFT
   call: pass thru // at least until i implement hand holds
 
 def: half sashay
+  optional: REVERSE
   in: 4
   from: COUPLE
     select: BEAU
@@ -71,7 +76,14 @@ def: half sashay
       prim: -1, 1, none
       prim: -1,-1, none
 
+def: _roll away(sel)
+  optional: REVERSE
+  spoken: <sel=anyone> roll away
+  condition: ARE(sel,BELLE)
+  call: roll away // ignore the selector
+
 def: roll away
+  optional: REVERSE
   in: 4
   from: COUPLE
     select: BEAU
@@ -89,6 +101,12 @@ def: roll away
         prim:  1/2,  1, left
         prim:  1, -1/2, left
 
+def: _u turn back(sel)
+  spoken: <sel=anyone> u turn back
+  // get the turn direction correct if the selected
+  // are parts of couples
+  call: do your part([sel], u turn back) 
+
 def: u turn back
   in: 2
   from: COUPLE, RH MINIWAVE, LH MINIWAVE
@@ -103,30 +121,36 @@ def: u turn back
     call: quarter right, roll // if all else fails.
   */
 
-def: _courtesy turn 1/2
-  in: 4
-  call: 1/2(wheel around) // modulo hand hold
-def: _courtesy turn 3/4
-  in: 6
-  call: 3/4(wheel around) // modulo hand hold
-def: right arm turn 1/2
+def: courtesy turn(n)
+  spoken: courtesy turn <n=number>
+  call: _fractional(n, _courtesy turn 4/4)
+
+def: _courtesy turn 4/4
+  in: 8
+  call: wheel around // modulo hand hold
+
+def: _right arm turn 1/2
   in: 4
   from: RH MINIWAVE
   call: trade // modulo hand hold
 def: chain down the line
   in: 8
   from: RH TWO-FACED LINE
-  call: centers(right arm turn 1/2, _courtesy turn 3/4)
-def: two ladies chain // maybe alias 'two boys chain', etc?
+  call: centers(right arm turn 1/2, courtesy turn(3/4))
+
+def: two ladies chain(sel)
+  spoken: two <sel=genders> chain // 'two ladies chain'
   in: 8
   from: FACING COUPLES
+  condition: ARE(sel, BELLE)
   call: 1/4(wheel around), chain down the line
+
 def: flutter wheel
+  optional: REVERSE
   in: 8
   from: FACING COUPLES
   call: 1/4(wheel around), centers(right arm turn 1/2), 2(split counter rotate)
-def: reverse flutter wheel
-  call: mirror(flutter wheel)
+
 def: lead right
   in: 4
   call: as couples(_single lead right)
@@ -138,7 +162,7 @@ def: _single lead right
 def: right and left thru
   in: 6
   from: FACING COUPLE
-  call: right pull by, _courtesy turn 1/2
+  call: right pull by, courtesy turn(1/2)
 def: left and right thru
   call: left(right and left thru)
 def: star thru
@@ -175,6 +199,7 @@ def: california twirl
       prim: -1, 1, left // copied from partner trade
       prim: -1, 1, left
 def: wheel around
+  optional: REVERSE
   in: 4
   call: 4(_quarter wheel)
 def: _quarter wheel
@@ -183,21 +208,23 @@ def: _quarter wheel
       prim: 1, -1, left
     select: BELLE
       prim: -1, 1, left
-def: reverse wheel around
-  call: mirror(wheel around) // or left?
+
 def: box the gnat
   in: 4
   from: FACING DANCERS
     condition: not(or(ALL(BOYS), ALL(GIRLS)))
     call: _and roll(touch 1/4) // modulo styling
+
 def: step to a wave
   in: 2 // not official
   from: FACING DANCERS
     call: _extend // the general case
+
 def: step thru
   in: 2 // not official
   from: RH MINIWAVE, LH MINIWAVE
     call: _extend // the general case
+
 def: balance
   in: 4
   prim: 0, 1/2, none
@@ -206,6 +233,7 @@ def: pass the ocean
   in: 4
   call: pass thru, quarter in, _extend
 def: extend
+  optional: LEFT
   in: 2
   // XXX level/formation restrictions
   // XXX at basic/mainstream, extend is from 1/4 tag only
@@ -227,6 +255,7 @@ def: _extend // the general case
   from: FACING DANCERS
     prim: -1,1,none
 def: swing thru
+  optional: LEFT
   in: 6
   from: RH WAVE
     call: right arm turn 1/2, centers(left(right arm turn 1/2))
@@ -237,6 +266,7 @@ def: swing thru
 // NOTE THAT 'boys run' = 'IN YOUR COUPLES, boys run'
 // ie, we need to select a formation to get dancers tagged first.
 def: run(sel)
+  spoken: <sel=anyone> run
   in: 4
   // XXX: this definition doesn't currently apply to T-boned formations.
   from: GENERAL LINE, GENERAL BOX, COUPLE, RH MINIWAVE, LH MINIWAVE
@@ -259,6 +289,7 @@ def: run(sel)
         prim: -1,0,none
 
 def: cross run(sel)
+  spoken: <sel=anyone> cross run
   in: 6
   // XXX: from other formations (t-bones, etc)
   from: GENERAL LINE
@@ -280,6 +311,7 @@ def: zoom
       call: mirror(_right single zoom)
     select: BELLE
       call: _right single zoom
+
 def: _right single zoom
   from: TANDEM
     select: LEADER
@@ -294,6 +326,7 @@ def: _right single zoom
         prim: 0,1,none
       ipart:
         prim: 0,1,none
+
 def: veer left
   in: 2
   call: as couples(_single veer left)
@@ -304,33 +337,41 @@ def: _single veer left
   call: _extend
   
 def: turn thru
+  optional: LEFT
   in: 4 // from mini-wave; 6 from facing?
   from: FACING DANCERS
   call: touch 1/2, extend
 
 def: touch
+  optional: LEFT
   in: 2
   call: step to a wave
-def: left touch
-  call: mirror(touch)
+
 def: _touch(n) // XXX: touch 3/4 is definitely mainstream, not basic
+  spoken: touch <n=number>
   call: touch, cast([n])
 
 def: circulate // all-8
+  spoken: (all eight)? circulate
   in: 4
   from: PARALLEL GENERAL LINES
     call: concentric(box circulate)
+  from: GENERAL COLUMNS
+    call: column circulate
+def: column circulate
   from: GENERAL COLUMNS
     select: NUMBER 1
       call: _lead circ
     select: ALL // others
       call: _trail circ
+
 def: _lead circ // leaders part of a box/column circulate
   prim: in 1, 1, in
   prim: in 1, 1, in
 def: _trail circ // trailers part of a box/column circulate
   prim: 0,1,none
   prim: 0,1,none
+
 def: box circulate
   in: 4 // not official
   from: GENERAL BOX
@@ -338,17 +379,22 @@ def: box circulate
       call: _lead circ
     select: TRAILER
       call: _trail circ
+
 def: couples circulate
   call: as couples(box circulate)
+
 def: spin the top
+  optional: LEFT
   in: 8 // from wave
   from: RH WAVE, LH WAVE // any hand
     call: swing, fan the top
+
 def: walk and dodge
   in: 4
   call: walk others dodge(TRAILER)
 
 def: walk others dodge(sel)
+  spoken: <sel=anyone> walk (others|<anyone>) dodge
   in: 4
   from: GENERAL BOX
     select: [sel]
@@ -364,12 +410,15 @@ def: walk others dodge(sel)
         prim: -1,0,none
 
 def: hinge
+  optional: LEFT
   in: 2
   call: 1/2(trade)
 def: couples hinge
   in: 3
   call: as couples(hinge)
-def: REAL recycle // xxx
+def: couples left hinge
+  call: left(couples hinge)
+def: _REAL recycle // xxx
   in: 4
   ipart:
     call: fold(centers), breathe
@@ -382,6 +431,7 @@ def: recycle // xxx cheat definition, for the present
   ipart: // this definition isn't valid for fractionalization
     call: hinge, box circulate, quarter in
 def: scoot back
+  optional: LEFT
   in: 6
   from: RH BOX, LH BOX
     select: TRAILER
@@ -398,7 +448,7 @@ def: scoot back
         prim: in 1,1,in
   // XXX: scoot back from quarter tag
 
-def: tag(atc, n)
+def: _tag(atc, n)
   ipart:
     call: [atc], _finish_tag([n])
 def: _finish_tag(n)
@@ -416,10 +466,18 @@ def: _atc_tag
     prim: 0, 0, in
         
 def: tag the line
+  optional: LEFT
+  spoken: tag the line (all the way (through)?)?
   in: 6 // xxx ?
-  call: tag(_atc tag, 1)
+  call: _tag(_atc tag, 1)
+def: _tag the line(n)
+  optional: LEFT
+  spoken: tag the line <n=number>
+  condition: GREATER(1, n)
+  call: _tag(_atc tag, n)
   
 def: dixie style
+  spoken: dixie style (to a wave)?
   in: 6
   from: FACING COUPLES
   ipart: // "girls right pull by"
@@ -440,6 +498,7 @@ def: face left
   prim: 0,0,left
 
 def: fold(sel)
+  spoken: <sel=anyone> fold
   in: 2
   select: [sel]
     select: BEAU
@@ -452,6 +511,7 @@ def: fold(sel)
     prim: 0,0,none
 
 def: cross fold(sel)
+  spoken: <sel=anyone> cross fold
   in: 4
   from: GENERAL LINE
     select: [sel]
@@ -461,6 +521,8 @@ def: cross fold(sel)
       prim: 0,0,none
 
 def: square thru(n)
+  optional: LEFT
+  spoken: square thru <n=number> (hands (around|round)?)?
   from: FACING COUPLES
     condition: and(greater([n],0),not(greater([n],1)))
     in: 2
