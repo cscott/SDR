@@ -170,12 +170,8 @@ attempt to go around obstacles.
 -----
 Roll direction is 'rot' component of last PRIM. (Not counting
 'standing still' PRIMS, which are 0,0,none, or sound effects, which
-have timing 0).
+have timing 0).  Sweep direction is 'sashay' component of last PRIM.
 -----
-Breathing is hard: create a bounding box around formation, and attach
-springs to smush it toward the center?  Then a timing-sensitive warp
-to apply the breathing.
-----
 Eventually: sound effects.  Special type of prim with timing 0?
 Same for actions? (sound effects are triggered at prim location,
 while actions are centered at prim location).
@@ -183,6 +179,7 @@ while actions are centered at prim location).
 fractionalization can only occur in a Seq of Parts, not between
 prim calls, or in mixed lists.  the 'and' concept creates a
 divisible part for each call.  IPART is an 'indivisible part'
+(XXX: we don't currently check homogenity of a Seq)
 ----
 add 'mod' to Rotation to yield general direction. rotations are
 consistent if: they're exactly equal.  Effective modulus is always
@@ -194,29 +191,11 @@ where d1 is the larger denom and d2 is the smaller.
 ----
 to do:
 create plain-text parser (into APPLY trees)
-define 'elaborate'
+add formation changes during Seqs to elaborate.
 build dancerpath from simplified tree (PRIM/WARP/SELECT with numbered dancers)
 animate dancer paths
-  define fractiona
-  split IPATH from PATH (indivisible path)
   generalize rotation
 ----
-expand call list to allow simple arguments -- probably not recursion
-or conditionals, but certainly parameter substitution.  Tricky:
-typing.  Make node in parse tree for 'expr', then CallBuilder will
-be responsible for building the function.  Use helper AST class:
-'ASTExpr' with subclasses for AST and Expr.  Attaching an AST to an
-AST yields another AST; attaching an Expr to an Expr or an AST yields
-and Expr. -- refactor 'build' method.
----------
-No?  Just new Ast node for 'Ref', a leaf with a string value (the ref
-identifier).
-
-makeParameterizedCall(String name, Program level, Ast tree, String argNames...) 
-
-Will do a tree walk, replacing Refs with the appropriate subtree
-(correspondence given by argNames in the def and the string in the Ref node).
----------
 
 Primitives coordinates can tell 'in' and 'out' modifiers, which
 multiply by +1 or -1 depending on vector to current formation center.
@@ -294,10 +273,11 @@ middle to accomodate the tidal wave.
 
 (Maybe the reassembly should happen at each intermediate point?)
 
-We generate a warp function which disassembles & then reassembles the formations.
+We generate a warp function which disassembles & then reassembles the
+formations.
 ----------
-elaborate should week out inapplicable formations, but not do any
-irreversible rewriting.
+elaborate should weed out inapplicable formations/evaluate conds, but
+not do any irreversible rewriting.
 
 The formation reconstruction which 'from' does is not currently
 encapsulatable in a 'Warp' node.
