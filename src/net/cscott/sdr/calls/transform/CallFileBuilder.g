@@ -7,6 +7,7 @@ import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
+import net.cscott.sdr.calls.grm.SimplifyGrm;
 import net.cscott.sdr.util.*;
 import java.util.*;
 }
@@ -67,7 +68,8 @@ def
 	  if (g==null && !n.startsWith("_"))
 	    g = Grm.mkGrm(n.split("\\s+"));
 	  if (g!=null)
-	    rule = new Rule(ruleName, g, prec==null ? Fraction.ZERO : prec);
+	    rule = new Rule(ruleName, SimplifyGrm.simplify(g),
+						prec==null ? Fraction.ZERO : prec);
 
       Call call = makeCall(n, currentProgram, c, a.args.size(), rule);
 	  db.add(call);
