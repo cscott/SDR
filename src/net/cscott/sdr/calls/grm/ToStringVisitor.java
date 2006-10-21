@@ -11,8 +11,8 @@ import net.cscott.sdr.calls.grm.Grm.Terminal;
 class ToStringVisitor extends GrmVisitor<String> {
     protected String paren(Grm g1, Grm g2) {
         if (g1.precedence() >= g2.precedence())
-            return "("+g2.toString()+")";
-        return g2.toString();
+            return "("+g2.accept(this)+")";
+        return g2.accept(this);
     }
 
     @Override
