@@ -3,7 +3,6 @@ package net.cscott.sdr.calls.grm;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import net.cscott.sdr.calls.ast.Apply;
@@ -18,15 +17,15 @@ import net.cscott.sdr.calls.ast.Apply;
  * left recursion and to disambiguate using precedence levels.
  * 
  * @author C. Scott Ananian
- * @version $Id: Grm.java,v 1.1 2006-10-21 00:11:53 cananian Exp $
+ * @version $Id: Grm.java,v 1.2 2006-10-21 15:47:46 cananian Exp $
  */
 public abstract class Grm {
     public abstract int precedence();
-    protected String paren(Grm g) {
-        if (precedence() >= g.precedence())
-            return "("+g.toString()+")";
-        return g.toString();
+    public abstract <T> T accept(GrmVisitor<T> v);
+    public final String toString() {
+        return accept(new ToStringVisitor());
     }
+    
     /** Alternation: a|b. */
     public static class Alt extends Grm {
         public final List<Grm> alternates;
@@ -35,14 +34,9 @@ public abstract class Grm {
             (Arrays.asList(alternates.toArray(new Grm[alternates.size()])));
         }
         public int precedence() { return 0; }
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            for (Iterator<Grm> it = alternates.iterator();
-                it.hasNext(); ) {
-                sb.append(paren(it.next()));
-                if (it.hasNext()) sb.append('|');
-            }
-            return sb.toString();
+        @Override
+        public <T> T accept(GrmVisitor<T> v) {
+            return v.visit(this);
         }
     }
     /** Concatanation: a b. */
@@ -53,14 +47,9 @@ public abstract class Grm {
             (Arrays.asList(sequence.toArray(new Grm[sequence.size()])));
         }
         public int precedence() { return 1; }
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            for (Iterator<Grm> it = sequence.iterator();
-                it.hasNext(); ) {
-                sb.append(paren(it.next()));
-                if (it.hasNext()) sb.append(' ');
-            }
-            return sb.toString();
+        @Override
+        public <T> T accept(GrmVisitor<T> v) {
+            return v.visit(this);
         }
     }
     /** Multiplicity marker: a*, a+, or a?. */
@@ -77,8 +66,9 @@ public abstract class Grm {
             this.operand=operand; this.type=type;
         }
         public int precedence() { return 2; }
-        public String toString() {
-            return paren(operand)+type;
+        @Override
+        public <T> T accept(GrmVisitor<T> v) {
+            return v.visit(this);
         }
     }
     /** A nonterminal reference to an external rule. */
@@ -91,12 +81,9 @@ public abstract class Grm {
             this.ruleName=ruleName; this.param=param;
         }
         public int precedence() { return 3; }
-        public String toString() {
-            StringBuilder sb = new StringBuilder("<");
-            if (param>=0) { sb.append(param); sb.append('='); }
-            sb.append(ruleName);
-            sb.append('>');
-            return sb.toString();
+        @Override
+        public <T> T accept(GrmVisitor<T> v) {
+            return v.visit(this);
         }
     }
     /** A grammar terminal: a string literal to match. */
@@ -106,7 +93,10 @@ public abstract class Grm {
             this.literal=literal;
         }
         public int precedence() { return 3; }
-        public String toString() { return literal; }
+        @Override
+        public <T> T accept(GrmVisitor<T> v) {
+            return v.visit(this);
+        }
     }
 
     public static Grm mkGrm(String... terminals) {
