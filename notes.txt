@@ -287,3 +287,37 @@ Handle collisions at the same time we do formation reconstruction: if
 two dancers are on the same spot, replace them with a RH MINIWAVE
 at that location.
 ---------
+
+anything: LEFT leftable_anything // tight
+	| REVERSE reversable_anything // tight
+	| MIRROR anything // low
+	| leftable_anything
+	| reversable_anything
+	| anything AND anything
+	| anything AND ROLL
+	;
+	
+leftable_anything
+	: SQUARE THRU number
+	;
+
+//TANDEM (anything AND ROLL)
+
+anything0: MIRROR anything1
+	| anything1
+	;
+anything1: anything1 AND anything2
+	| anything2
+	;
+anything2: anything2 AND ROLL
+	| anything3
+anything3: LEFT leftable_anything
+	| REVERSE reversable_anything
+	| anything4
+	;
+anything4
+	: leftable_anything
+	| reversable_anything
+	| DOSADO
+	| LPAREN anything0 RPAREN
+	;
