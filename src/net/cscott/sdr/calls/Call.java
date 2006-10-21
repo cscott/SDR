@@ -2,6 +2,7 @@ package net.cscott.sdr.calls;
 
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
+import net.cscott.sdr.calls.grm.Rule;
 
 /** The <code>Call</code> class includes 'simple calls' (like HINGE) which
  * take no arguments, 'complex calls' (like SQUARE THRU) which take a
@@ -11,7 +12,7 @@ import net.cscott.sdr.calls.ast.Comp;
  * arguments (numbers, selectors, or other calls) to result in a
  * <code>Comp</code> AST tree.
  * @author C. Scott Ananian
- * @version $Id: Call.java,v 1.6 2006-10-19 20:17:55 cananian Exp $
+ * @version $Id: Call.java,v 1.7 2006-10-21 00:54:31 cananian Exp $
  */
 public abstract class Call {
     /** The name of this call, in our internal jargon.  This is not
@@ -37,6 +38,11 @@ public abstract class Call {
      * arguments.
      */
     public abstract int getMinNumberOfArguments();
+    /**
+     * Returns the grammar rule applicable to this call, or
+     * {@code null}, if there is none (ie, this is an internal call).
+     */
+    public abstract Rule getRule();
     
     @Override
     public final String toString() {
@@ -53,7 +59,7 @@ public abstract class Call {
 
     /** Create a Call object for a 'simple call' which takes no arguments. */
     public static Call makeSimpleCall(final String name, final Program program,
-                                      final Comp def) {
+                                      final Comp def, final Rule rule) {
         return new Call() {
             @Override
             public String getName() { return name; }
@@ -67,6 +73,8 @@ public abstract class Call {
             }
             @Override
             public int getMinNumberOfArguments() { return 0; }
+            @Override
+            public Rule getRule() { return rule; }
         };
     }
 }

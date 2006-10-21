@@ -17,9 +17,7 @@ options { importVocab = CallFileParser; defaultErrorHandler=false; }
 {
 	private final Set<String> names = new HashSet<String>();
 	private final List<Call> db = new ArrayList<Call>();
-	private final List<Rule> rules = new ArrayList<Rule>();
 	public List<Call> getList() { return Collections.unmodifiableList(db); }
-	public List<Rule> getRules() { return Collections.unmodifiableList(rules); }
 	Program currentProgram = null;
 	// quick helper
 	public <T> T ifNull(T t, T otherwise) { return (t==null)?otherwise:t; }
@@ -41,7 +39,7 @@ program
 
 def
 { String n=null; B<? extends Comp> c; B<Apply> cb; Apply a=null; 
-  List<String> optional = new ArrayList<String>(); Fraction prec=null;
+  Set<String> optional = new HashSet<String>(); Fraction prec=null;
   Grm g=null;
 }
 	: #(d:DEF cb=call_body
@@ -55,18 +53,25 @@ def
 	    scope.put(arg.callName, i++);
 	  }
 	}
-       ( #(OPTIONAL (id:IDENT {optional.add(id.getText());})+ ) )?
+       ( #(OPTIONAL (id:IDENT {optional.add(id.getText().toUpperCase());})+ ) )?
        ( #(SPOKEN (prec=number)? g=grm_rule ) )?
 	   c=pieces)
 	{ if (names.contains(n)) semex(d, "duplicate call: "+n);
       n = n.intern();
       names.add(n);
-      Call call = makeCall(n, currentProgram, c, a.args.size());
-	  db.add(call);
+
+	  String ruleName = optional.contains("LEFT") ? "leftable_anything" :
+	  	optional.contains("REVERSE") ? "reversable_anything" :
+	  	"anything";
+	  Rule rule = null;
 	  if (g==null && !n.startsWith("_"))
 	    g = Grm.mkGrm(n.split("\\s+"));
 	  if (g!=null)
-	    rules.add(new Rule(n, g, prec==null ? Fraction.ZERO : prec, call));
+	    rule = new Rule(ruleName, g, prec==null ? Fraction.ZERO : prec);
+
+      Call call = makeCall(n, currentProgram, c, a.args.size(), rule);
+	  db.add(call);
+
 	  scope.clear();
 	}
 	;

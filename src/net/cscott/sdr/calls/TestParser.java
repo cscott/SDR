@@ -77,11 +77,9 @@ public abstract class TestParser {
           for (Call call : builder.getList()) {
               if (call.getMinNumberOfArguments()==0)
                 System.out.println(call.getName()+": "+call.apply(Apply.makeApply(call.getName())).toString());
+              if (call.getRule()!=null)
+                  System.out.println(call.getRule());
           }
-          for (Rule rule : builder.getRules()) {
-              System.out.println(rule);
-          }
-
         }else {
                 Token t;
                 do {

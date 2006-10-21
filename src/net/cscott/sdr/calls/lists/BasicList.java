@@ -16,6 +16,7 @@ import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.calls.ast.Warped;
+import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.transform.Fractional;
 import net.cscott.sdr.util.Fraction;
 
@@ -23,7 +24,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.12 2006-10-19 21:00:09 cananian Exp $
+ * @version $Id: BasicList.java,v 1.13 2006-10-21 00:54:34 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -36,6 +37,8 @@ public abstract class BasicList {
         public final String getName() { return name; }
         @Override
         public final Program getProgram() { return Program.BASIC; }
+        @Override
+        public Rule getRule() { return null; }
     }
     
     // simple combining concept.
@@ -49,6 +52,10 @@ public abstract class BasicList {
         }
         @Override
         public int getMinNumberOfArguments() { return 1; }
+        @Override
+        public Rule getRule() {
+            return null;// XXX WRITE ME
+        }
     };
     // kludges for simple arithmetic.
     private static abstract class MathCall extends BasicCall {
@@ -108,6 +115,7 @@ public abstract class BasicList {
         }
         @Override
         public int getMinNumberOfArguments() { return 1; }
+        // XXX rule is <anything>=LEFT <leftable_anything>
     };
     // complex concept -- not sure correct program here?
     public static final Call _FRACTIONAL = new BasicCall("_fractional") {
@@ -151,5 +159,7 @@ public abstract class BasicList {
         }
         @Override
         public int getMinNumberOfArguments() { return 2; }
+        // XXX: rule: anything = <anything> <cardinal>
+        // XXX:       anything = <number> <anything>
     };
 }

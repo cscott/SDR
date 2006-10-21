@@ -9,16 +9,14 @@ public class Rule {
     public final String lhs;
     public final Grm rhs;
     public final Fraction prec; // precedence level
-    public final Call call; // action for this rule.
     
-    public Rule(String lhs, Grm rhs, Fraction prec, Call call) {
+    public Rule(String lhs, Grm rhs, Fraction prec) {
         this.lhs = lhs;
         this.rhs = rhs;
         this.prec = prec;
-        this.call = call;
     }
     
     public String toString() {
-        return lhs+" -> "+rhs+" // prec "+prec.toProperString()+", yields '"+call.getName()+"'";
+        return lhs+" -> "+rhs+" // prec "+prec.toProperString();
     }
 }

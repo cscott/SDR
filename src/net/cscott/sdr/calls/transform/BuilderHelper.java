@@ -13,6 +13,7 @@ import net.cscott.sdr.calls.Warp;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.calls.ast.Prim.Direction;
+import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.util.Fraction;
 /** 
  * The {@link BuilderHelper} class helps with the generation of paramterized
@@ -20,7 +21,7 @@ import net.cscott.sdr.util.Fraction;
  * "ast tree generation functions", while optimizing the case where the
  * function generates a constant.
  * @author C. Scott Ananian
- * @version $Id: BuilderHelper.java,v 1.3 2006-10-19 23:00:02 cananian Exp $
+ * @version $Id: BuilderHelper.java,v 1.4 2006-10-21 00:54:34 cananian Exp $
  */
 abstract class BuilderHelper {
     // 'B' is pronounced as 'Builder'.  So a B<Prim> builds Prim objects.
@@ -137,9 +138,11 @@ abstract class BuilderHelper {
         }, child.isConstant());
     }
     //////////////
-    static Call makeCall(final String name, final Program program, final B<? extends Comp> b, final int minNumberOfArguments) {
+    static Call makeCall(final String name, final Program program,
+            final B<? extends Comp> b, final int minNumberOfArguments,
+            final Rule rule) {
         if (b.isConstant())
-            return Call.makeSimpleCall(name,program,b.build(null));
+            return Call.makeSimpleCall(name,program,b.build(null), rule);
         return new Call() {
             @Override
             public String getName() { return name; }
@@ -155,6 +158,8 @@ abstract class BuilderHelper {
             public int getMinNumberOfArguments() {
                 return minNumberOfArguments;
             }
+            @Override
+            public Rule getRule() { return rule; }
         };
     }
 }
