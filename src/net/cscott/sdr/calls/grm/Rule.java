@@ -17,6 +17,6 @@ public class Rule {
     }
     
     public String toString() {
-        return lhs+" -> "+rhs+" // prec "+prec.toProperString();
+        return lhs+" -> "+rhs+(prec==null?"":" // prec "+prec.toProperString());
     }
 }
