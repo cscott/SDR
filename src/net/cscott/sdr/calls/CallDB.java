@@ -3,7 +3,10 @@ package net.cscott.sdr.calls;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.cscott.sdr.calls.lists.BasicList;
@@ -27,6 +30,9 @@ public class CallDB {
             throw new IllegalArgumentException("Unknown call: "+name);
         return db.get(name);
     }
+    public final Collection<Call> allCalls = 
+        Collections.unmodifiableCollection(db.values());
+
     private CallDB() {
         // okay, first load the call definition lists.
         CallFileLoader.load(resource("basic"), db);
