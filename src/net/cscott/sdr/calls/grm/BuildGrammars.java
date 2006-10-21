@@ -1,5 +1,6 @@
 package net.cscott.sdr.calls.grm;
 
+import java.io.PrintWriter;
 import java.util.*;
 
 import net.cscott.sdr.calls.Call;
@@ -45,16 +46,27 @@ public class BuildGrammars {
             if (!hasNontermRefs(ra.rule.rhs)) prec = highestPrec;
             ra.rule = rewriteForPrec(ra.rule, prec); 
         }
-        // XXX add level-bridging rules
-        // for (int i=0; i<highestPrec; i++)
-        // XXX add leftable/reversable rules
-        // TEST ME
-        for (RuleAndAction ra : rules)
-            System.out.println(ra);
+        // add level-bridging rules
+        for (int i=0; i<highestPrec; i++)
+            rules.add(new RuleAndAction(new Rule("anything_"+i,
+                    new Nonterminal("anything_"+(i+1),0),null),"r=a;"));
+        // add leftable/reversable rules
+        for (String s : new String[] { "leftable", "reversable" })
+            rules.add(new RuleAndAction(new Rule("anything_"+highestPrec,
+                    new Nonterminal(s+"_anything",0),null),"r=a;"));
+        // start rule.
+        rules.add(new RuleAndAction(new Rule("anything",
+                new Nonterminal("anything_0",0),null),"r=a;"));
         // XXX remove left recursion
-        // XXX make/invoke actions.
-        // XXX emit as ANTLR grammar
-        // XXX emit as JSSAPI grammar.
+        // TEST ME
+
+        // emit as ANTLR grammar
+        PrintWriter pw = new PrintWriter(System.out); // XXX to file.
+        EmitANTLR.emit(pw, rules);
+        pw.println("-------------");
+        // emit as JSAPI grammar.
+        EmitJSAPI.emit(pw, rules);
+        pw.flush();
     }
     
     private static List<RuleAndAction> mkAction(Call c) {
@@ -124,56 +136,6 @@ public class BuildGrammars {
                 return -1;
             }
         });
-    }
-    private static class NumberParams extends GrmVisitor<Void> {
-        public final Map<Integer,Integer> paramToOrder =
-            new HashMap<Integer,Integer>();
-        private int order = 0;
-        private boolean inMult=false;
-        public NumberParams(Grm g) { g.accept(this); }
-        @Override
-        public Void visit(Alt alt) {
-            int o = order;
-            for (Grm g : alt.alternates) {
-                order = o;
-                g.accept(this);
-            }
-            return null;
-        }
-        @Override
-        public Void visit(Concat concat) {
-            for (Grm g : concat.sequence)
-                g.accept(this);
-            return null;
-        }
-        @Override
-        public Void visit(Mult mult) {
-            boolean m = inMult;
-            if (mult.type!=Mult.Type.QUESTION)
-                inMult=true;
-            mult.operand.accept(this);
-            inMult=m;
-            return null;
-        }
-        @Override
-        public Void visit(Nonterminal nonterm) {
-            int o = order++;
-            if (nonterm.param>=0) {
-                assert !inMult : "named non-terminal can repeat";
-                // check that nonterm is not already present.
-                if (paramToOrder.containsKey(nonterm.param))
-                    assert o == paramToOrder.get(nonterm.param) :
-                        "nonterminal used with different ordering "+
-                        "in alternatives";
-                paramToOrder.put(nonterm.param, o);
-            }
-            return null;
-        }
-        @Override
-        public Void visit(Terminal term) {
-            // nothing to see here.
-            return null;
-        }
     }
     private static Rule rewriteForPrec(Rule r, int prec) {
         // rewrite LHS:
