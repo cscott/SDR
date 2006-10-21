@@ -5,6 +5,8 @@ package net.cscott.sdr.calls.transform;
 import static net.cscott.sdr.calls.transform.BuilderHelper.*;
 import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.ast.*;
+import net.cscott.sdr.calls.grm.Grm;
+import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.util.*;
 import java.util.*;
 }
@@ -15,7 +17,9 @@ options { importVocab = CallFileParser; defaultErrorHandler=false; }
 {
 	private final Set<String> names = new HashSet<String>();
 	private final List<Call> db = new ArrayList<Call>();
+	private final List<Rule> rules = new ArrayList<Rule>();
 	public List<Call> getList() { return Collections.unmodifiableList(db); }
+	public List<Rule> getRules() { return Collections.unmodifiableList(rules); }
 	Program currentProgram = null;
 	// quick helper
 	public <T> T ifNull(T t, T otherwise) { return (t==null)?otherwise:t; }
@@ -36,7 +40,10 @@ program
 	;
 
 def
-{ String n=null; B<? extends Comp> c; B<Apply> cb; Apply a=null; }
+{ String n=null; B<? extends Comp> c; B<Apply> cb; Apply a=null; 
+  List<String> optional = new ArrayList<String>(); Fraction prec=null;
+  Grm g=null;
+}
 	: #(d:DEF cb=call_body
 	{ if (!cb.isConstant()) semex(d, "Bad call definition");
 	  a = cb.build(null);
@@ -48,19 +55,20 @@ def
 	    scope.put(arg.callName, i++);
 	  }
 	}
-	   (optional)? (spoken)? c=pieces)
+       ( #(OPTIONAL (id:IDENT {optional.add(id.getText());})+ ) )?
+       ( #(SPOKEN (prec=number)? g=grm_rule ) )?
+	   c=pieces)
 	{ if (names.contains(n)) semex(d, "duplicate call: "+n);
+      n = n.intern();
       names.add(n);
-      Call call = makeCall(n.intern(), currentProgram, c, a.args.size());
+      Call call = makeCall(n, currentProgram, c, a.args.size());
 	  db.add(call);
+	  if (g==null && !n.startsWith("_"))
+	    g = Grm.mkGrm(n.split("\\s+"));
+	  if (g!=null)
+	    rules.add(new Rule(n, g, prec==null ? Fraction.ZERO : prec, call));
 	  scope.clear();
 	}
-	;
-optional
-	: #(OPTIONAL (IDENT)+ )
-	;
-spoken
-	: #(SPOKEN (number)? grm_rule )
 	;
 	
 pieces returns [B<? extends Comp> r]
@@ -228,14 +236,23 @@ number returns [Fraction r=null]
 	{ r = Fraction.valueOf(n.getText()); }
 	;
 	
-grm_rule
-	: #(VBAR (grm_rule)+ )
-	| #(ADJ (grm_rule)+ )
-	| #(PLUS grm_rule )
-	| #(STAR grm_rule )
-	| #(QUESTION grm_rule )
-	| IDENT
-	| #(REF IDENT (IDENT)? )
+grm_rule returns [Grm g=null] { List<Grm> l = new ArrayList<Grm>(); }
+	: #(VBAR (g=grm_rule {l.add(g);})+ )
+	{ g = new Grm.Alt(l); }
+	| #(ADJ (g=grm_rule {l.add(g);})+ )
+	{ g = new Grm.Concat(l); }
+	| #(PLUS g=grm_rule )
+	{ g = new Grm.Mult(g, Grm.Mult.Type.PLUS); }
+	| #(STAR g=grm_rule )
+	{ g = new Grm.Mult(g, Grm.Mult.Type.STAR); }
+	| #(QUESTION g=grm_rule )
+	{ g = new Grm.Mult(g, Grm.Mult.Type.QUESTION); }
+	| i:IDENT
+	{ g = new Grm.Terminal(i.getText()); }
+	| #(REF r:IDENT (p:IDENT)? )
+	{ if (p!=null && !scope.containsKey(p.getText()))
+        semex(p, "No argument named "+p.getText());
+	  g = new Grm.Nonterminal(r.getText(), p==null ? -1 : scope.get(p.getText())); }
 	;
 
 // @@endrules

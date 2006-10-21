@@ -6,6 +6,7 @@ import antlr.Token;
 import antlr.debug.misc.ASTFrame;
 
 import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.transform.*;
 
 public abstract class TestParser {
@@ -76,6 +77,9 @@ public abstract class TestParser {
           for (Call call : builder.getList()) {
               if (call.getMinNumberOfArguments()==0)
                 System.out.println(call.getName()+": "+call.apply(Apply.makeApply(call.getName())).toString());
+          }
+          for (Rule rule : builder.getRules()) {
+              System.out.println(rule);
           }
 
         }else {
