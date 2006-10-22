@@ -1,7 +1,12 @@
 package net.cscott.sdr.calls.grm;
 
-import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.CallDB;
@@ -61,12 +66,10 @@ public class BuildGrammars {
         // TEST ME
 
         // emit as ANTLR grammar
-        PrintWriter pw = new PrintWriter(System.out); // XXX to file.
-        EmitANTLR.emit(pw, rules);
-        pw.println("-------------");
+        System.out.println(EmitANTLR.emit("C4", rules));
+        System.out.println("-------------");
         // emit as JSAPI grammar.
-        EmitJSAPI.emit(pw, rules);
-        pw.flush();
+        System.out.println(EmitJSAPI.emit("C4", rules));
     }
     
     private static List<RuleAndAction> mkAction(Call c) {

@@ -1,41 +1,39 @@
 package net.cscott.sdr.calls.grm;
 
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import net.cscott.jutil.Factories;
-import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
 import net.cscott.sdr.calls.grm.Grm.Mult;
 import net.cscott.sdr.calls.grm.Grm.Nonterminal;
 
-public class EmitJSAPI extends ToStringVisitor {
+public class EmitJSAPI extends AbstractEmit {
     private EmitJSAPI() { }
-    public static void emit(PrintWriter pw, List<RuleAndAction> l) {
-        EmitJSAPI ea = new EmitJSAPI();
+    public static String emit(String parserName, List<RuleAndAction> l) {
+        EmitJSAPI ej = new EmitJSAPI();
         // collect all the rules with the same LHS
-        MultiMap<String,RuleAndAction> mm = 
-            new GenericMultiMap<String,RuleAndAction>
-            (Factories.<RuleAndAction>arrayListFactory());
-        for (RuleAndAction ra : l)
-            mm.add(ra.rule.lhs, ra);
+        MultiMap<String,RuleAndAction> mm = collectLHS(l);
+
         // now print them out.
+        // now emit the rules.
+        String NL = System.getProperty("line.separator");
+        StringBuilder sb = new StringBuilder();
         for (String lhs : sorted(mm.keySet())) {
             if (lhs.equals("anything"))
-                pw.print("public ");
-            pw.println("<"+lhs+"> =");
+                sb.append("public ");
+            sb.append("<"+lhs+"> ="+NL);
             boolean first = true;
             for (RuleAndAction ra : mm.getValues(lhs)) {
-                if (first) { pw.print("\t  "); first = false; }
-                else { pw.print("\t| "); }
-                pw.println(ra.rule.rhs.accept(ea));
+                if (first) { sb.append("\t  "); first = false; }
+                else { sb.append("\t| "); }
+                sb.append(ra.rule.rhs.accept(ej));
+                sb.append(NL);
             }
-            pw.println("\t;");
+            sb.append("\t;"+NL);
         }
+        // substitute the rules & the classname into the skeleton
+        String result = ej.subst("jsapi.skel", sb.toString(), parserName);
         // done.
+        return result;
     }
     @Override
     public String visit(Mult mult) {
@@ -50,11 +48,5 @@ public class EmitJSAPI extends ToStringVisitor {
     @Override
     public String visit(Nonterminal nt) {
         return "<"+nt.ruleName+">";
-    }
-
-    private static List<String> sorted(Collection<String> s) {
-        List<String> l = new ArrayList<String>(s);
-        Collections.sort(l);
-        return l;
     }
 }

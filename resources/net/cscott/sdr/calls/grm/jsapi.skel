@@ -1,0 +1,24 @@
+#JSGF V1.0;
+
+/**
+ * JSGF Grammar for SDR.
+ */
+
+grammar @CLASSNAME@;
+
+@RULES@
+	
+<people> = <boys> | <girls> | <all>;
+<boys> = boys | men {boys};
+<girls> = girls | ladies {girls};
+<all> = all | every (one|body) {all};
+<wave_select> = centers | ends;
+<anyone> = <people> | <wave_select> ;
+<number> = <digit> and <fraction>
+	| <digit>
+	| <fraction>
+	;
+<digit> = one | two | three | four | five | six | seven | eight | nine;
+<fraction> =
+	(a|one) (half|third|quarter) |
+	two thirds | three quarters ;
