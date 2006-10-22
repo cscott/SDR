@@ -25,7 +25,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.14 2006-10-22 16:18:50 cananian Exp $
+ * @version $Id: BasicList.java,v 1.15 2006-10-22 19:25:45 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -55,6 +55,7 @@ public abstract class BasicList {
         public int getMinNumberOfArguments() { return 1; }
         @Override
         public Rule getRule() {
+            if (true) return null; // we don't support left recursion yet
             // XXX would be nice if this could deal with a sequence of ANDs 
             Grm g = Grm.parse("<0=anything> and <1=anything>");
             return new Rule("anything", g, Fraction.ONE);
@@ -171,6 +172,7 @@ public abstract class BasicList {
         public int getMinNumberOfArguments() { return 2; }
         @Override
         public Rule getRule() {
+            if (true) return null; // we don't support left recursion yet
             Grm g = Grm.parse("<1=anything> <0=cardinal>|do <0=fraction> (of (a)?)? <1=anything>");
             return new Rule("anything", g, Fraction.valueOf(-1)); // bind loosely
         }
