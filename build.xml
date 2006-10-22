@@ -93,7 +93,7 @@ Square Dance Revolution build file.
 
     <!-- ********************************************************** -->
     <!-- *                                                        * -->
-    <!-- * Runs the sphinx recognition demo.                      * -->
+    <!-- * Runs the application.                                  * -->
     <!-- *                                                        * -->
     <!-- ********************************************************** -->
     <target name="run"
@@ -106,6 +106,33 @@ Square Dance Revolution build file.
                   <!--<sysproperty key="frontend" value="epFrontEnd"/>-->
 		  <classpath refid="classpath.path"/>
 	    </java>
+    </target>
+
+    <!-- ********* Build the natural-language grammars. ********* -->
+    <target name="build.grm"
+	    description="Build the natural-langauge grammars."
+	    depends="jar">
+	    <java classname="net.cscott.sdr.calls.grm.BuildGrammars"
+	          fork="true">
+                  <classpath>
+                    <fileset dir=".">
+                      <include name="sdr.jar"/>
+                    </fileset>
+		    <path refid="classpath.path"/>
+                  </classpath>
+	    </java>
+<!--
+java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bin org.antlr.Tool -o . src/net/cscott/sdr/calls/lists/C4Grammar.3g
+-->
+	    <java classname="org.antlr.Tool"
+	          fork="true">
+		  <classpath refid="classpath.path"/>
+		  <arg value="-o" />
+		  <arg path="." />
+		  <arg value="src/net/cscott/sdr/calls/lists/C4Grammar.3g" />
+	    </java>
+	    <move file="src/net/cscott/sdr/calls/lists/C4Parser.lexer.g"
+	        tofile="src/net/cscott/sdr/calls/lists/C4Parser.lexer.3g" />
     </target>
 
 </project>

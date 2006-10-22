@@ -9,7 +9,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
+
+import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.lists.BasicList;
+import net.cscott.sdr.calls.lists.C4Parser;
+import net.cscott.sdr.calls.lists.C4ParserLexer;
 import net.cscott.sdr.calls.lists.MainstreamList;
 import net.cscott.sdr.calls.transform.CallFileLoader;
 
@@ -59,6 +66,20 @@ public class CallDB {
                     assert false : e;
                 }
             }
+        }
+    }
+    ///////////////////////////////////////////////
+    /** Parse a natural-language string of calls. */
+    public Apply parse(Program program, String s) {
+        // XXX: bail for now, and just parse as C4 regardless.
+        C4ParserLexer lexer = new C4ParserLexer(new ANTLRStringStream(s));
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        tokens.discardOffChannelTokens(true);
+        C4Parser p = new C4Parser(tokens);
+        try {
+            return p.anything();
+        } catch (RecognitionException re) {
+            throw new BadCallException("Parsing error: "+re);
         }
     }
 }

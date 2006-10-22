@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/*~|net/cscott/sdr/calls/Sample.java" path="src" kind="src"/>
+	<classpathentry excluding="**/*.lexer.g|**/*~" path="src" kind="src"/>
 	<classpathentry excluding="**/*~" path="resources" kind="src"/>
 	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
 	<classpathentry path="lib/sphinx/jsapi.jar" kind="lib">
@@ -56,5 +56,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.jdt.source_3.1.1/src/org.junit_3.8.1/junitsrc.zip" path="JUNIT_HOME/junit.jar" kind="var"/>
+	<classpathentry path="lib/antlr-3.0b4.jar" kind="lib"/>
+	<classpathentry path="lib/stringtemplate-2.3b9.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>

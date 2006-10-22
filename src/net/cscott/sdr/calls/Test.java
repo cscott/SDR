@@ -8,9 +8,7 @@ import net.cscott.sdr.util.Fraction;
 
 public class Test {
     public static void main(String[] args) {
-        Call trade = CallDB.INSTANCE.lookup("double pass thru");
-        System.out.println(trade);
-        Comp def = trade.apply(null);
+        Comp def = CallDB.INSTANCE.parse(Program.BASIC, "double pass thru").expand();
         System.out.println(def);
         //
         Call sqthr = CallDB.INSTANCE.lookup("square thru");

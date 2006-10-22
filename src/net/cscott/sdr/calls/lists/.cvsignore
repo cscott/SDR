@@ -3,3 +3,5 @@
 *Parser.java
 *TokenTypes.java
 *TokenTypes.txt
+*.tokens
+*.lexer.3g
