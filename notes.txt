@@ -321,3 +321,5 @@ anything4
 	| DOSADO
 	| LPAREN anything0 RPAREN
 	;
+----------
+how to deal with "swing and mix"/"and(swing,mix)" ambiguity?

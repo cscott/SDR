@@ -52,6 +52,14 @@ fraction returns [Fraction f]
 	| "two" "thirds" { f=Fraction.valueOf("2/3"); }
 	| "three" "quarters" { f=Fraction.valueOf("3/4"); }
 	;
+cardinal returns [Apply a] {Fraction f=null;}
+	: f=a_cardinal { a=Apply.makeApply(f.toProperString()); }
+	;
+a_cardinal returns [Fraction f] { Fraction f2=null; }
+	: "once" ("and" f2=fraction)? { f=Fraction.valueOf(1); if (f2!=null) f=f.add(f2); }
+	| "twice" ("and" f2=fraction)? { f=Fraction.valueOf(2); if (f2!=null) f=f.add(f2); }
+	| f=a_number ("times"|"time")
+	;
 
 class @CLASSNAME@Lexer extends Lexer;
 options {

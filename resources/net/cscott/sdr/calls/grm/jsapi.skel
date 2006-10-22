@@ -22,3 +22,8 @@ grammar @CLASSNAME@;
 <fraction> =
 	(a|one) (half|third|quarter) |
 	two thirds | three quarters ;
+<cardinal> =
+	once [and <fraction>] |
+	twice [and <fraction>] |
+	<number> (times | time) ;
+	

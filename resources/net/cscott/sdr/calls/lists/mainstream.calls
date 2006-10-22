@@ -4,7 +4,7 @@ program: mainstream
 // and/or "cast 1/2"?  We'll follow SD in calling these
 // mainstream as well.
 def: cast(n)
-  spoken: cast <n=number>
+  spoken: [10] cast <n=number>
   call: _fractional([n], _cast 4/4)
 def: _cast 4/4
   in: 8

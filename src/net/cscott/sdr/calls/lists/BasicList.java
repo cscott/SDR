@@ -16,6 +16,7 @@ import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.calls.ast.Warped;
+import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.transform.Fractional;
 import net.cscott.sdr.util.Fraction;
@@ -24,7 +25,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.13 2006-10-21 00:54:34 cananian Exp $
+ * @version $Id: BasicList.java,v 1.14 2006-10-22 16:18:50 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -54,7 +55,9 @@ public abstract class BasicList {
         public int getMinNumberOfArguments() { return 1; }
         @Override
         public Rule getRule() {
-            return null;// XXX WRITE ME
+            // XXX would be nice if this could deal with a sequence of ANDs 
+            Grm g = Grm.parse("<0=anything> and <1=anything>");
+            return new Rule("anything", g, Fraction.ONE);
         }
     };
     // kludges for simple arithmetic.
@@ -103,7 +106,9 @@ public abstract class BasicList {
         @Override
         public int getMinNumberOfArguments() { return 2; }
     };
-    // this is not completely accurate?
+    // XXX: this is not completely accurate: LEFT means 'do each part LEFT'
+    // but collisions are still resolved to right hands. (opposed to MIRROR,
+    // where collisions are to left hands).
     public static final Call LEFT = new BasicCall("left") {
         @Override
         public Comp apply(Apply ast) {
@@ -115,7 +120,12 @@ public abstract class BasicList {
         }
         @Override
         public int getMinNumberOfArguments() { return 1; }
-        // XXX rule is <anything>=LEFT <leftable_anything>
+        @Override
+        public Rule getRule() {
+            // XXX would be nice if this could deal with a sequence of ANDs 
+            Grm g = Grm.parse("left <0=leftable_anything>");
+            return new Rule("anything", g, Fraction.valueOf(2)); // bind tight
+        }
     };
     // complex concept -- not sure correct program here?
     public static final Call _FRACTIONAL = new BasicCall("_fractional") {
@@ -159,7 +169,10 @@ public abstract class BasicList {
         }
         @Override
         public int getMinNumberOfArguments() { return 2; }
-        // XXX: rule: anything = <anything> <cardinal>
-        // XXX:       anything = <number> <anything>
+        @Override
+        public Rule getRule() {
+            Grm g = Grm.parse("<1=anything> <0=cardinal>|do <0=fraction> (of (a)?)? <1=anything>");
+            return new Rule("anything", g, Fraction.valueOf(-1)); // bind loosely
+        }
     };
 }
