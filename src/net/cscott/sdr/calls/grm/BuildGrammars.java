@@ -1,5 +1,7 @@
 package net.cscott.sdr.calls.grm;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,8 +26,13 @@ public class BuildGrammars {
     /**
      * @param args
      */
-    public static void main(String[] args) {
-        final Program program = Program.C4;
+    public static void main(String[] args) throws IOException {
+        for (Program p : Program.values())
+            if (p==Program.C4) // FOR DEBUGGING
+                build(p);
+        System.err.println("Done.");
+    }
+    public static void build(Program program) throws IOException {
         // collect all the grammar rules & make actions.
         List<RuleAndAction> rules = new ArrayList<RuleAndAction>();
         for (Call c : CallDB.INSTANCE.allCalls)
@@ -63,13 +70,14 @@ public class BuildGrammars {
         rules.add(new RuleAndAction(new Rule("anything",
                 new Nonterminal("anything_0",0),null),"r=a;"));
         // XXX remove left recursion
-        // TEST ME
 
         // emit as ANTLR grammar
-        System.out.println(EmitANTLR.emit("C4", rules));
-        System.out.println("-------------");
+        String programName = program.toTitleCase();
+        writeFile("src/net/cscott/sdr/calls/lists/"+programName+"Grammar.g",
+                  EmitANTLR.emit(programName, rules));
         // emit as JSAPI grammar.
-        System.out.println(EmitJSAPI.emit("C4", rules));
+        writeFile("resources/net/cscott/sdr/recog/"+programName+"Grammar.gram",
+                EmitJSAPI.emit(programName, rules));
     }
     
     private static List<RuleAndAction> mkAction(Call c) {
@@ -200,5 +208,12 @@ public class BuildGrammars {
             }
             
         });
+    }
+    public static void writeFile(String filename, String contents)
+    throws IOException {
+        System.err.println("Writing "+filename);
+        FileWriter fw = new FileWriter(filename);
+        fw.write(contents);
+        fw.close();
     }
 }
