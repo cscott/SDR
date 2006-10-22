@@ -71,10 +71,15 @@ public class BuildGrammars {
                 new Nonterminal("anything_0",0),null),"r=a;"));
         // XXX remove left recursion
 
-        // emit as ANTLR grammar
         String programName = program.toTitleCase();
+        /*
+        // emit as ANTLR v2 grammar
         writeFile("src/net/cscott/sdr/calls/lists/"+programName+"Grammar.g",
-                  EmitANTLR.emit(programName, rules));
+                EmitANTLR.emit(programName, rules));
+        */
+        // emit as ANTLR v3 grammar
+        writeFile("src/net/cscott/sdr/calls/lists/"+programName+"Grammar.3g",
+                EmitANTLRv3.emit(programName, rules));
         // emit as JSAPI grammar.
         writeFile("resources/net/cscott/sdr/recog/"+programName+"Grammar.gram",
                 EmitJSAPI.emit(programName, rules));
