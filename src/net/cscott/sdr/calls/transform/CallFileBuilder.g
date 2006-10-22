@@ -30,9 +30,15 @@ options { importVocab = CallFileParser; defaultErrorHandler=false; }
 }
     
 // @@startrules
+// start production for parsing call file.
 calllist
 	: #(CALLLIST (program)* )
 	;
+// start production for parsing grammar rules
+grammar_start returns [Grm g]
+	: g=grm_rule
+	;
+
 
 program
 	: #(PROGRAM id:IDENT { currentProgram=Program.valueOf(id.getText().toUpperCase()); } (def)* )
@@ -243,7 +249,7 @@ number returns [Fraction r=null]
 	{ r = Fraction.valueOf(n.getText()); }
 	;
 	
-grm_rule returns [Grm g=null] { List<Grm> l = new ArrayList<Grm>(); }
+grm_rule returns [Grm g=null] { List<Grm> l = new ArrayList<Grm>(); Integer p=null;}
 	: #(VBAR (g=grm_rule {l.add(g);})+ )
 	{ g = new Grm.Alt(l); }
 	| #(ADJ (g=grm_rule {l.add(g);})+ )
@@ -256,10 +262,15 @@ grm_rule returns [Grm g=null] { List<Grm> l = new ArrayList<Grm>(); }
 	{ g = new Grm.Mult(g, Grm.Mult.Type.QUESTION); }
 	| i:IDENT
 	{ g = new Grm.Terminal(i.getText()); }
-	| #(REF r:IDENT (p:IDENT)? )
-	{ if (p!=null && !scope.containsKey(p.getText()))
+	| #(REF r:IDENT (p=grm_ref_or_int)? )
+	{ g = new Grm.Nonterminal(r.getText(), p==null ? -1 : p); }
+	;
+grm_ref_or_int returns [Integer i=null]
+	: p:IDENT
+	{ if (!scope.containsKey(p.getText()))
         semex(p, "No argument named "+p.getText());
-	  g = new Grm.Nonterminal(r.getText(), p==null ? -1 : scope.get(p.getText())); }
+      i=scope.get(p.getText()); }
+	| n:INTEGER { i=Integer.valueOf(n.getText()); }
 	;
 
 // @@endrules

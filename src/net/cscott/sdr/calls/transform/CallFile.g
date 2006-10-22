@@ -35,11 +35,16 @@ tokens {
 //   automated chunk-grabbing when displaying the page
 // @@startrules
 
+// start production for call list.
 calllist
     : ( program )*
       EOF! // end-of-file
 	{ #calllist = #([CALLLIST, "call list"], #calllist); }
     ;
+// another start production for parsing grammar rules
+grammar_start
+	: grm_rule
+	;
 
 program
 	: PROGRAM^ COLON! IDENT ( def )*
@@ -196,9 +201,11 @@ grm_factor!
 grm_exp
 	: LPAREN! grm_rule RPAREN!
 	| IDENT
-	|! LANGLE ( id:IDENT EQUALS )? r:IDENT RANGLE
+	|! LANGLE ( id:ref_or_int EQUALS )? r:IDENT RANGLE
 	{ #grm_exp = #([REF,"ref"], r, id); } 
 	;
+ref_or_int
+	: IDENT | INTEGER ;
 grm_mult
 	: PLUS | QUESTION | STAR ;
 
@@ -233,6 +240,10 @@ options {
         throws TokenStreamException, CharStreamException
     {
         done=true;
+    }
+    // set the lexer state to begin parsing a grammar rule
+    public void setToRuleStart() {
+		afterIndent=true; beforeColon=false; afterPrim=false; done=false;
     }
 	/////////////////////////////////////////////////
   // Inner class: a token stream filter to implement

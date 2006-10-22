@@ -1,11 +1,15 @@
 package net.cscott.sdr.calls.grm;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.transform.CallFileBuilder;
+import net.cscott.sdr.calls.transform.CallFileLexer;
+import net.cscott.sdr.calls.transform.CallFileParser;
 
 /**
  * This class contains inner classes creating an AST for the 'natural language'
@@ -17,7 +21,7 @@ import net.cscott.sdr.calls.ast.Apply;
  * left recursion and to disambiguate using precedence levels.
  * 
  * @author C. Scott Ananian
- * @version $Id: Grm.java,v 1.2 2006-10-21 15:47:46 cananian Exp $
+ * @version $Id: Grm.java,v 1.3 2006-10-22 15:46:06 cananian Exp $
  */
 public abstract class Grm {
     public abstract int precedence();
@@ -99,10 +103,33 @@ public abstract class Grm {
         }
     }
 
+    // helper functions on Grm
+    /** Make a {@link Grm} which will recognize the given
+     * sequence of terminal symbols. */
     public static Grm mkGrm(String... terminals) {
         List<Grm> l = new ArrayList<Grm>(terminals.length);
         for (String s : terminals)
             l.add(new Terminal(s));
         return new Concat(l);
+    }
+    /** Parse a string representing a {@link Grm}.  Parameter
+     * references must be numerical. 
+     * @throws IllegalArgumentException if the rule is malformed. */
+    public static Grm parse(String rule) {
+        try {
+            // Create a scanner that reads from the input stream passed to us
+            CallFileLexer lexer = new CallFileLexer(new StringReader(rule));
+            // don't need an indent processor, but do need to setup lexer
+            lexer.setToRuleStart();
+            // Create a parser that reads from the scanner
+            CallFileParser parser = new CallFileParser(lexer);
+            // start parsing at the grammar_start rule
+            parser.grammar_start();
+            // now build a proper AST.
+            CallFileBuilder builder = new CallFileBuilder();
+            return builder.grammar_start(parser.getAST());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("bad grammar rule:"+e);
+        }
     }
 }
