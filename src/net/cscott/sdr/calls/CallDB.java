@@ -1,24 +1,25 @@
 package net.cscott.sdr.calls;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
 
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.lists.BasicList;
-import net.cscott.sdr.calls.lists.C4Parser;
-import net.cscott.sdr.calls.lists.C4ParserLexer;
 import net.cscott.sdr.calls.lists.MainstreamList;
 import net.cscott.sdr.calls.transform.CallFileLoader;
+
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.Lexer;
+import org.antlr.runtime.Parser;
+import org.antlr.runtime.TokenStream;
 
 /** CallDB holds all the calls and concepts we know about.
  * It is a singleton class; its static constructor loads
@@ -71,15 +72,23 @@ public class CallDB {
     ///////////////////////////////////////////////
     /** Parse a natural-language string of calls. */
     public Apply parse(Program program, String s) {
-        // XXX: bail for now, and just parse as C4 regardless.
-        C4ParserLexer lexer = new C4ParserLexer(new ANTLRStringStream(s));
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        tokens.discardOffChannelTokens(true);
-        C4Parser p = new C4Parser(tokens);
+        program = Program.C4; // xxx: force C4 for now.
+        String pkgName = "net.cscott.sdr.calls.lists.";
+        String parserName = program.toTitleCase()+"Parser";
+        String lexerName = parserName+"Lexer";
+
         try {
-            return p.anything();
-        } catch (RecognitionException re) {
-            throw new BadCallException("Parsing error: "+re);
+            Lexer lexer = (Lexer) Class.forName(pkgName+lexerName)
+                .getConstructor(CharStream.class).newInstance
+                (new ANTLRStringStream(s));
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            tokens.discardOffChannelTokens(true);
+            Parser parser = (Parser) Class.forName(pkgName+parserName)
+                .getConstructor(TokenStream.class).newInstance(tokens);
+            Method m = parser.getClass().getMethod("anything");
+            return (Apply) m.invoke(parser);
+        } catch (Exception e) {
+            throw new BadCallException("Parsing error: "+e);
         }
     }
 }
