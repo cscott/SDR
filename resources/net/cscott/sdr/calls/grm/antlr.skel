@@ -1,18 +1,22 @@
 header {
-	package net.cscott.sdr.calls.grm;
+	package net.cscott.sdr.calls.lists;
 	import net.cscott.sdr.calls.ast.*;
+	import net.cscott.sdr.util.*;
 }
 /** "Natural language" grammar for calls. */
 
 class @CLASSNAME@Parser extends Parser;
 options {
-	k=2;
+	k=6;
 }
 
 @RULES@
 	
-people returns [Apply a]
-	: a=boys | a=girls | a=all
+people returns [Apply a=null]
+	: a=genders | a=all
+	;
+genders returns [Apply a=null]
+	: a=boys | a=girls
 	;
 boys returns [Apply a] { a = Apply.makeApply("BOYS"); }
 	: "boys" | "men" ;
@@ -24,17 +28,17 @@ wave_select returns [Apply a=null]
 	: "centers" { a = Apply.makeApply("centers"); }
 	| "ends" { a = Apply.makeApply("ends"); }
 	;
-anyone returns [Apply a]
+anyone returns [Apply a=null]
 	: a=people | a=wave_select ;
 number returns [Apply a=null] { Fraction f; }
 	: f=a_number { a = Apply.makeApply(f.toProperString()); }
 	;
-a_number returns [Fraction f] {Fraction f1,f2;}
+a_number returns [Fraction f=null] {Fraction f1,f2;}
 	: f1=digit "and" f2=fraction { f=f1.add(f2); }
 	| f=digit
 	| f=fraction
 	;
-digit returns [Fraction f]
+digit returns [Fraction f=null]
 	: "one" { f=Fraction.valueOf(1); }
 	| "two" { f=Fraction.valueOf(2); }
 	| "three" { f=Fraction.valueOf(3); }
@@ -45,17 +49,17 @@ digit returns [Fraction f]
 	| "eight" { f=Fraction.valueOf(8); }
 	| "nine" { f=Fraction.valueOf(9); }
 	;
-fraction returns [Fraction f]
+fraction returns [Fraction f=null]
 	: ("a"|"one") "half" { f=Fraction.valueOf("1/2"); }
 	| ("a"|"one") "third" { f=Fraction.valueOf("1/3"); }
 	| ("a"|"one") "quarter" { f=Fraction.valueOf("1/4"); }
 	| "two" "thirds" { f=Fraction.valueOf("2/3"); }
 	| "three" "quarters" { f=Fraction.valueOf("3/4"); }
 	;
-cardinal returns [Apply a] {Fraction f=null;}
+cardinal returns [Apply a=null] {Fraction f=null;}
 	: f=a_cardinal { a=Apply.makeApply(f.toProperString()); }
 	;
-a_cardinal returns [Fraction f] { Fraction f2=null; }
+a_cardinal returns [Fraction f=null] { Fraction f2=null; }
 	: "once" ("and" f2=fraction)? { f=Fraction.valueOf(1); if (f2!=null) f=f.add(f2); }
 	| "twice" ("and" f2=fraction)? { f=Fraction.valueOf(2); if (f2!=null) f=f.add(f2); }
 	| f=a_number ("times"|"time")

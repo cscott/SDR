@@ -19,7 +19,9 @@ public class EmitANTLR extends AbstractEmit {
         String NL = System.getProperty("line.separator");
         StringBuilder sb = new StringBuilder();
         for (String lhs : sorted(mm.keySet())) {
-            sb.append(lhs+" returns [Apply r=null]"+NL);
+            sb.append(lhs+" returns [Apply r=null]");
+            sb.append(" { Apply a=null,b=null,c=null,d=null; }");
+            sb.append(NL);
             boolean first = true;
             for (RuleAndAction ra : mm.getValues(lhs)) {
                 if (first) { sb.append("\t: "); first = false; }

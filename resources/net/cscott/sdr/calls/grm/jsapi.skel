@@ -8,7 +8,8 @@ grammar @CLASSNAME@;
 
 @RULES@
 	
-<people> = <boys> | <girls> | <all>;
+<people> = <genders> | <all>;
+<genders> = <boys> | <girls> ;
 <boys> = boys | men {boys};
 <girls> = girls | ladies {girls};
 <all> = all | every (one|body) {all};
