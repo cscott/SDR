@@ -1,0 +1,5 @@
+*.smap
+*Lexer.java
+*Parser.java
+*TokenTypes.java
+*TokenTypes.txt
