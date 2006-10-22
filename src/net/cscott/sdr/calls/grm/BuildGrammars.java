@@ -81,7 +81,7 @@ public class BuildGrammars {
         writeFile("src/net/cscott/sdr/calls/lists/"+programName+"Grammar.3g",
                 EmitANTLRv3.emit(programName, rules));
         // emit as JSAPI grammar.
-        writeFile("resources/net/cscott/sdr/recog/"+programName+"Grammar.gram",
+        writeFile("resources/net/cscott/sdr/recog/"+programName+".gram",
                 EmitJSAPI.emit(programName, rules));
     }
     

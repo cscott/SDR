@@ -100,7 +100,7 @@
         <property name="dictionary" value="dictionary"/>
         <property name="grammarLocation" 
              value="resource:/net.cscott.sdr.recog.SphinxDemo!/net/cscott/sdr/recog/"/>
-        <property name="grammarName" value="sdr"/>
+        <property name="grammarName" value="C4"/>
 	<property name="logMath" value="logMath"/>
     </component>
     
