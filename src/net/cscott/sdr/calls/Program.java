@@ -15,4 +15,8 @@ public enum Program {
     public boolean includes(Program p) {
         return this.ordinal() >= p.ordinal();
     }
+    public String toTitleCase() {
+        return toString().toUpperCase().charAt(0)+
+            toString().toLowerCase().substring(1);
+    }
 }
