@@ -5,11 +5,11 @@ import org.apache.commons.lang.builder.*;
 
 /** Position objects represent the position and orientation of a dancer.
  *  The (0,0) coordinate represents the center of the square, and dancers
- *  are nominally at least one unit away from each other (although breathing
+ *  are nominally at least two units away from each other (although breathing
  *  may change this).  A zero rotation for 'facing direction' means
  *  "facing the caller".  Positive y is "towards the caller".  Positive
  *  x is "toward the caller's left/heads' right".  Dancer number one
- *  starts out at <code>(-1/2, -1 1/2)</code> facing <code>0</code>.
+ *  starts out at <code>(-1, -3)</code> facing <code>0</code>.
  *  Note that the <code>facing</code> field MAY be <code>null</code>
  *  to indicate "rotation unspecified" -- for example, for phantoms
  *  or when specifying "general lines".
@@ -60,7 +60,7 @@ public class Position {
      *  <code>Rotation</code>. */
     public static Position getGrid(int x, int y, Rotation r) {
 	return new Position
-	    (Fraction.valueOf(x,2), Fraction.valueOf(y,2), r);
+	    (Fraction.valueOf(x), Fraction.valueOf(y), r);
     }
     /** Returns a position corresponding to the standard square
      *  dance grid.  0,0 is the center of the set, and odd coordinates
