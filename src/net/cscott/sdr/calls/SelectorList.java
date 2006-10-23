@@ -28,6 +28,10 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.RH_WAVE);
     public static final Selector LH_WAVE =
         GeneralFormationMatcher.makeSelector(FormationList.LH_WAVE);
+    public static final Selector RH_DIAMOND =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_DIAMOND);
+    public static final Selector LH_DIAMOND =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_DIAMOND);
 
     // unimplemented selectors
     private static final Selector _STUB_ = new Selector() {
@@ -41,7 +45,6 @@ public abstract class SelectorList {
     };
     public static final Selector RH_TWO_FACED_LINE = _STUB_;
     public static final Selector LH_TWO_FACED_LINE = _STUB_;
-    public static final Selector FACING_COUPLE = _STUB_;
     public static final Selector SINGLE_DPT = _STUB_;
     public static final Selector LH_BOX = _STUB_;
     public static final Selector RH_BOX = _STUB_;

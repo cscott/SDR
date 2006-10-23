@@ -151,16 +151,28 @@ public abstract class FormationList {
                d(0,+1,"n",LEADER));
     public static final TaggedFormation RH_WAVE =
         create("RH WAVE",
-                d(-3,0,"n",BEAU,END),
-                d(-1,0,"s",BEAU,CENTER),
-                d(+1,0,"n",BEAU,CENTER),
-                d(+3,0,"s",BEAU,END));
+               d(-3,0,"n",BEAU,END),
+               d(-1,0,"s",BEAU,CENTER),
+               d(+1,0,"n",BEAU,CENTER),
+               d(+3,0,"s",BEAU,END));
     public static final TaggedFormation LH_WAVE =
         create("LH WAVE",
-                d(-3,0,"s",BELLE,END),
-                d(-1,0,"n",BELLE,CENTER),
-                d(+1,0,"s",BELLE,CENTER),
-                d(+3,0,"n",BELLE,END));
+               d(-3,0,"s",BELLE,END),
+               d(-1,0,"n",BELLE,CENTER),
+               d(+1,0,"s",BELLE,CENTER),
+               d(+3,0,"n",BELLE,END));
+    public static final TaggedFormation RH_DIAMOND =
+        create("RH DIAMOND",
+               d( 0, 3,"e",POINT),
+               d(-1, 0,"n",BEAU,CENTER),
+               d(+1, 0,"s",BEAU,CENTER),
+               d( 0,-3,"w",POINT));
+    public static final TaggedFormation LH_DIAMOND =
+        create("LH DIAMOND",
+               d( 0, 3,"w",POINT),
+               d(-1, 0,"s",BELLE,CENTER),
+               d(+1, 0,"n",BELLE,CENTER),
+               d( 0,-3,"e",POINT));
 
     private static class PositionAndTag {
         public final Position position;
