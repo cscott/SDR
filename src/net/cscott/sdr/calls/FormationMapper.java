@@ -2,7 +2,8 @@ package net.cscott.sdr.calls;
 
 import java.util.*;
 
-import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.*;
+import net.cscott.jutil.*;
 
 /** The {@link FormationMapper} class contains methods to disassemble
  * a square, given component formations (ie, get a diamond back from
@@ -10,7 +11,7 @@ import net.cscott.sdr.util.Fraction;
  * (given a diamond and the various tandems and couples, put them
  * together, breathing out).
  * @author C. Scott Ananian
- * @version $Id: FormationMapper.java,v 1.2 2006-10-23 16:54:45 cananian Exp $
+ * @version $Id: FormationMapper.java,v 1.3 2006-10-23 17:35:15 cananian Exp $
  */
 public class FormationMapper {
     /** This method is just for testing. */
@@ -26,9 +27,22 @@ public class FormationMapper {
             f = new Formation(f, mm);
             m.put(d,f);
         }
-        // okay, we've made out inputs: results should be tidal two-faced line
-        Formation f = insert(meta, m);
-        System.out.println(f);
+        // okay, we've made our inputs: results should be tidal two-faced line
+        System.out.println(insert(meta, m));
+        
+        // new formation.
+        m.clear();
+        meta = FormationList.RH_DIAMOND;
+        i=0;
+        for (Dancer d : meta.dancers()) {
+            Map<Dancer,Dancer> mm = new HashMap<Dancer,Dancer>();
+            Formation f = (i>=2 && i<=5) ? FormationList.TANDEM : FormationList.COUPLE;
+            for (Dancer dd : f.dancers())
+                mm.put(dd,StandardDancer.values()[i++]);
+            f = new Formation(f, mm);
+            m.put(d,f);
+        }
+        System.out.println(insert(meta, m));
     }
     
     
@@ -36,15 +50,22 @@ public class FormationMapper {
     public static Formation insert(Formation meta,
             Map<Dancer,Formation> components) {
         // find shared dancer boundaries
-        List<Fraction> xB = new ArrayList<Fraction>();
-        List<Fraction> yB = new ArrayList<Fraction>();
+        MultiMap<Fraction,Interval> xim= new GenericMultiMap<Fraction,Interval>
+                                      (Factories.<Interval>arrayListFactory());
+        MultiMap<Fraction,Interval> yim= new GenericMultiMap<Fraction,Interval>
+                                      (Factories.<Interval>arrayListFactory());
         for (Dancer d : meta.dancers()) {
-            xB.addAll(Arrays.asList(xBoundaries(meta.location(d))));
-            yB.addAll(Arrays.asList(yBoundaries(meta.location(d))));
+            Box b = meta.bounds(d);
+            xim.add(b.ll.x, new Interval(b.ll.y, b.ur.y));
+            xim.add(b.ur.x, new Interval(b.ll.y, b.ur.y));
+            yim.add(b.ll.y, new Interval(b.ll.x, b.ur.x));
+            yim.add(b.ur.y, new Interval(b.ll.x, b.ur.x));
         }
         // filter out boundaries which aren't shared.
-        // XXX: need to consider X and Y simultaneously.
-        xB=onlyShared(xB); yB=onlyShared(yB);
+        List<Fraction> xB = onlyShared(xim);
+        List<Fraction> yB = onlyShared(yim);
+        System.out.println("SHARED X: "+xB);
+        System.out.println("SHARED Y: "+yB);
         // for each dancer, find its boundaries & stretch to accomodate
         List<Fraction> nxB = new ArrayList<Fraction>
             (Collections.nCopies(xB.size(),Fraction.ZERO));
@@ -130,18 +151,31 @@ public class FormationMapper {
         
         return result;
     }
-    private static List<Fraction> onlyShared(List<Fraction> l) {
-        Map<Fraction,Integer> m = new HashMap<Fraction,Integer>();
-        for (Fraction f : l) {
-            if (!m.containsKey(f)) m.put(f, 0);
-            m.put(f, 1+m.get(f));
+    private static List<Fraction> onlyShared(MultiMap<Fraction,Interval> im) {
+        ArrayList<Fraction> result=new ArrayList<Fraction>(im.keySet().size());
+        NEXTF:
+        for (Fraction f : im.keySet()) {
+            List<Interval> intervals = (List<Interval>) im.getValues(f);
+            Collections.sort(intervals);
+            // intervals are now sorted by start; go through and attempt to
+            // find an interval which is shared.
+            NEXTI:
+            for (int i=0; i<intervals.size(); i++) {
+                for (int j=i+1; j<intervals.size(); j++) {
+                    Interval ii = intervals.get(i), ij = intervals.get(j);
+                    if (ij.start.compareTo(ii.end) < 0) {
+                        // we overlap (note that ii.start <= ij.start because
+                        // we've sorted intervals, and thus ii.start <= ij.end)
+                        // add this to our results list, and move on.
+                        result.add(f);
+                        continue NEXTF;
+                    } else continue NEXTI; // intervals are sorted.
+                }
+            }
         }
-        List<Fraction> r = new ArrayList<Fraction>(l.size());
-        for (Fraction f : m.keySet())
-            if (m.get(f) > 1)
-                r.add(f);
-        Collections.sort(r);
-        return r;
+        // okay, done.
+        Collections.sort(result);
+        return result;
     }
     private static Fraction[] xBoundaries(Position dancerPosition) {
         return new Fraction[] {
