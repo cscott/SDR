@@ -32,6 +32,10 @@ public class Formation {
         this.location = location;
         this.selected = selected;
     }
+    public Formation(Map<Dancer,Position> location) {
+        this.location = Collections.unmodifiableMap(new HashMap<Dancer,Position>(location));
+        this.selected = this.location.keySet();
+    }
 
     public boolean isSelected(Dancer d) {
 	return selected.contains(d);
