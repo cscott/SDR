@@ -24,6 +24,10 @@ public abstract class SelectorList {
     // 4-person selectors
     public static final Selector FACING_COUPLES =
         GeneralFormationMatcher.makeSelector(FormationList.FACING_COUPLES);
+    public static final Selector RH_WAVE =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_WAVE);
+    public static final Selector LH_WAVE =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_WAVE);
 
     // unimplemented selectors
     private static final Selector _STUB_ = new Selector() {
@@ -41,8 +45,6 @@ public abstract class SelectorList {
     public static final Selector SINGLE_DPT = _STUB_;
     public static final Selector LH_BOX = _STUB_;
     public static final Selector RH_BOX = _STUB_;
-    public static final Selector RH_WAVE = _STUB_;
-    public static final Selector LH_WAVE = _STUB_;
     public static final Selector GENERAL_LINE = _STUB_;
     public static final Selector GENERAL_BOX = _STUB_;
     public static final Selector LH_3_AND_1 = _STUB_;
