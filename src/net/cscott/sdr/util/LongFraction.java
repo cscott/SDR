@@ -19,11 +19,11 @@ import java.io.Serializable;
 import java.math.BigInteger;
 
 /**
- * <p><code>Fraction</code> is a <code>Number</code> which implements
+ * <p><code>LongFraction</code> is a <code>Number</code> which implements
  * exact arithmetic on fractions.  All computations which do not
  * overflow can be done without any accumulated rounding errors.</p>
  *
- * <p>The implementation of the <code>Fraction</code> class is based on
+ * <p>The implementation of the <code>LongFraction</code> class is based on
  * the algorithms described in Donald E. Knuth's <i>The Art of Computer
  * Programming, volume 2</i>, sections 4.5 through 4.5.2.  In particular,
  * fractions are represented as a pair of integers <code>(n/d)</code>
@@ -49,9 +49,9 @@ import java.math.BigInteger;
  * @author Tim O'Brien
  * @author Pete Gieser
  * @since 2.0
- * @version $Id: LongFraction.java,v 1.3 2006-10-09 19:48:24 cananian Exp $
+ * @version $Id: LongFraction.java,v 1.4 2006-10-23 16:49:41 cananian Exp $
  */
-public class LongFraction extends Number implements Serializable, Comparable {
+public class LongFraction extends Number implements Serializable, Comparable<LongFraction> {
 	private static final long serialVersionUID = 3007100710917765882L;
 
 	/** Ensure serialization is backwards-compatible by
@@ -1027,8 +1027,7 @@ public class LongFraction extends Number implements Serializable, Comparable {
      * @throws ClassCastException if the object is not a <code>Fraction</code>
      * @throws NullPointerException if the object is <code>null</code>
      */
-    public int compareTo(Object object) {
-        LongFraction other = (LongFraction) object;
+    public int compareTo(LongFraction other) {
         if (this==other) {
             return 0;
         }

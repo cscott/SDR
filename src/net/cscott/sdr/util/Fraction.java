@@ -49,9 +49,9 @@ import java.math.BigInteger;
  * @author Tim O'Brien
  * @author Pete Gieser
  * @since 2.0
- * @version $Id: Fraction.java,v 1.4 2006-10-15 19:03:04 cananian Exp $
+ * @version $Id: Fraction.java,v 1.5 2006-10-23 16:49:41 cananian Exp $
  */
-public class Fraction extends Number implements Serializable, Comparable {
+public class Fraction extends Number implements Serializable, Comparable<Fraction> {
 
     /** Serialization lock, Lang version 2.0 */
     private static final long serialVersionUID = 65382027393090L;
@@ -1031,8 +1031,7 @@ public class Fraction extends Number implements Serializable, Comparable {
      * @throws ClassCastException if the object is not a <code>Fraction</code>
      * @throws NullPointerException if the object is <code>null</code>
      */
-    public int compareTo(Object object) {
-        Fraction other = (Fraction) object;
+    public int compareTo(Fraction other) {
         if (this==other) {
             return 0;
         }
