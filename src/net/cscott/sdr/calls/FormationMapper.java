@@ -4,7 +4,16 @@ import java.util.*;
 
 import net.cscott.sdr.util.Fraction;
 
+/** The {@link FormationMapper} class contains methods to disassemble
+ * a square, given component formations (ie, get a diamond back from
+ * a siamese diamond, breathing in), and to reassemble a square given components
+ * (given a diamond and the various tandems and couples, put them
+ * together, breathing out).
+ * @author C. Scott Ananian
+ * @version $Id: FormationMapper.java,v 1.2 2006-10-23 16:54:45 cananian Exp $
+ */
 public class FormationMapper {
+    /** This method is just for testing. */
     public static void main(String[] args) {
         Map<Dancer,Formation> m = new HashMap<Dancer,Formation>();
         Formation meta = FormationList.RH_WAVE;
@@ -47,8 +56,6 @@ public class FormationMapper {
             expand(nxB, xB, xBoundaries(meta.location(d)), xSize(f));
             expand(nyB, yB, yBoundaries(meta.location(d)), ySize(f));
         }
-        // recenter.
-        recenter(nxB, xB); recenter(nyB, yB);
         // now reassemble a new formation.
         Map<Dancer,Position> nf = new HashMap<Dancer,Position>();
         for (Dancer d : meta.dancers()) {
@@ -64,7 +71,7 @@ public class FormationMapper {
                 nf.put(dd, p);
             }
         }
-        return new Formation(nf);
+        return new Formation(nf).recenter();
     }
     // XXX this isn't yet correct: need to place center based on mapping
     // of the two edges & the new size (since outside edges are allowed
@@ -78,32 +85,11 @@ public class FormationMapper {
     }
     private static Fraction xSize(Formation f) {
         // find the maximum & minimum of the dancer's xBoundaries
-        Fraction min=null, max=null;
-        for (Dancer d : f.dancers()) {
-            Fraction[] b = xBoundaries(f.location(d));
-            if (min==null || min.compareTo(b[0]) > 0) min = b[0];
-            if (max==null || max.compareTo(b[1]) < 0) max = b[1];
-        }
-        return max.subtract(min);
+        return f.bounds().width().add(Fraction.valueOf(2));
     }
     private static Fraction ySize(Formation f) {
-        // find the maximum & minimum of the dancer's xBoundaries
-        Fraction min=null, max=null;
-        for (Dancer d : f.dancers()) {
-            Fraction[] b = yBoundaries(f.location(d));
-            if (min==null || min.compareTo(b[0]) > 0) min = b[0];
-            if (max==null || max.compareTo(b[1]) < 0) max = b[1];
-        }
-        return max.subtract(min);
-    }
-    private static void recenter(List<Fraction> expansion, List<Fraction> bounds) {
-        int axis = Collections.binarySearch(bounds, Fraction.ZERO);
-        if (axis<0) axis=-axis-1; // this is the first element >= 0
-        Fraction offset = Fraction.ZERO;
-        for (int i=0; i<axis; i++)
-            offset = offset.add(expansion.get(i+1));
-        // subtract offset from index 0
-        expansion.set(0, offset.negate());
+        // find the maximum & minimum of the dancer's yBoundaries
+        return f.bounds().height().add(Fraction.valueOf(2));
     }
     private static void expand(List<Fraction> expansion, List<Fraction> bounds,
                                Fraction[] dancerBounds, Fraction newSize) {
@@ -116,7 +102,7 @@ public class FormationMapper {
             // add 'native' distance
             dist = dist.add(bounds.get(i+1).subtract(bounds.get(i)));
             // add in expansion to date.
-            dist = dist.add(expansion.get(i+1));
+            dist = dist.add(expansion.get(i));
         }
         if (dist.compareTo(newSize) >= 0) return; // no expansion needed
         // figure out how much expansion is needed...
@@ -124,7 +110,7 @@ public class FormationMapper {
             (Fraction.valueOf(boundIndex[1]-boundIndex[0]));
         // ... and add it into the expansion list
         for (int i=boundIndex[0]; i<boundIndex[1]; i++)
-            expansion.set(i+1, expansion.get(i+1).add(inc));
+            expansion.set(i, expansion.get(i).add(inc));
         // okay, we've done the necessary expansion, we're done!
         return;
     }
