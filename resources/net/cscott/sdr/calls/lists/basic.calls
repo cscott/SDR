@@ -161,7 +161,7 @@ def: _single lead right
   prim: 1, 1, right
 def: right and left thru
   in: 6
-  from: FACING COUPLE
+  from: FACING COUPLES
   call: right pull by, courtesy turn(1/2)
 def: left and right thru
   call: left(right and left thru)
