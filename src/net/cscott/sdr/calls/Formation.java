@@ -15,6 +15,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.cscott.sdr.util.Box;
+import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.Point;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -49,13 +53,40 @@ public class Formation {
     public Position location(Dancer d) {
 	return location.get(d);
     }
+    /** Return the bounds of this formation. */
+    public Box bounds() {
+        Fraction minx=null,miny=null,maxx=null,maxy=null;
+        for (Position p : location.values()) {
+            if (minx==null || minx.compareTo(p.x) > 0) minx = p.x;
+            if (maxx==null || maxx.compareTo(p.x) < 0) maxx = p.x;
+            if (miny==null || miny.compareTo(p.y) > 0) miny = p.y;
+            if (maxy==null || maxy.compareTo(p.y) < 0) maxy = p.y;
+        }
+        Point ll = new Point(
+                (minx==null) ? Fraction.ZERO : minx,
+                (miny==null) ? Fraction.ZERO : miny);
+        Point ur = new Point(
+                (maxx==null) ? Fraction.ZERO : maxx,
+                (maxy==null) ? Fraction.ZERO : maxy);
+        return new Box(ll, ur);
+    }
     /** Build a new formation with only the given dancers
-     * selected.
-     */
+     * selected. */
     public Formation select(Set<Dancer> s) {
         Set<Dancer> nSel = new HashSet<Dancer>(s);
         nSel.retainAll(dancers());
         return new Formation(location, Collections.unmodifiableSet(nSel));
+    }
+    /** Build a new formation, centered on 0,0 */
+    public Formation recenter() {
+        Box bounds = bounds();
+        Fraction ox = bounds.ll.x.add(bounds.ur.x).divide(Fraction.valueOf(2));
+        Fraction oy = bounds.ll.y.add(bounds.ur.y).divide(Fraction.valueOf(2));
+        Map<Dancer,Position> m = new HashMap<Dancer,Position>(location.size());
+        for (Map.Entry<Dancer,Position> me : location.entrySet())
+            m.put(me.getKey(), new Position(me.getValue().x.subtract(ox),
+                    me.getValue().y.subtract(oy), me.getValue().facing));
+        return new Formation(Collections.unmodifiableMap(m), selected);
     }
     // utility functions.
     public boolean equals(Object o) {
