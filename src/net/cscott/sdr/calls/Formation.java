@@ -70,6 +70,14 @@ public class Formation {
                 (maxy==null) ? Fraction.ZERO : maxy);
         return new Box(ll, ur);
     }
+    /** Return the bounds of the given dancer -- always its position
+     * plus or minus 1 unit on the x and y axes. */
+    public Box bounds(Dancer d) {
+        Position p = location(d);
+        return new Box
+              (new Point(p.x.subtract(Fraction.ONE),p.y.subtract(Fraction.ONE)),
+               new Point(p.x.add(Fraction.ONE),p.y.add(Fraction.ONE)));
+    }
     /** Build a new formation with only the given dancers
      * selected. */
     public Formation select(Set<Dancer> s) {
