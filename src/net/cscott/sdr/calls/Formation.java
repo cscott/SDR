@@ -96,6 +96,12 @@ public class Formation {
                     me.getValue().y.subtract(oy), me.getValue().facing));
         return new Formation(Collections.unmodifiableMap(m), selected);
     }
+    public boolean isCentered() {
+        Box bounds = bounds();
+        return
+        (bounds.ll.x.add(bounds.ur.x).compareTo(Fraction.ZERO) == 0) &&
+        (bounds.ll.y.add(bounds.ur.y).compareTo(Fraction.ZERO) == 0);
+    }
     // utility functions.
     public boolean equals(Object o) {
 	if (!(o instanceof Formation)) return false;
