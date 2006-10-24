@@ -209,57 +209,64 @@ Formation warps are independent stretches of x,y axes.
 
 First: taking a canonical formation and stretching to accomodate solid
 dancers:
-  First we write down the x (y) axis coordinates of *shared* boundary
+  First we write down the x (y) axis coordinates of "inner" boundary
   edges.  The x (y) boundary edges around a dancer at x,y are at x+1,
-  x-1 (y+1, y-1). We throw out any boundary edges which are not shared
-  by at least two dancers: expansion of the formation is not
-  constrained by these.
+  x-1 (y+1, y-1). We only use the boundary edge which is closest to
+  the origin; we assume we can safely expand to fill space in the
+  other direction (ie, the centers in a diamond can expand to fit
+  tandems in the typical tandem diamond formation).
 
   Then, for each formation, we identify the x (y) coordinates which
-  bound the formation.  These are the points in the "shared
-  coordinate" list which are <= and >= our boundary edges in this
-  axis.  (Note that, because only the shared coordinates are in the
+  bound the formation.  These are the points in the "inner boundary"
+  list which are <= and >= our boundary edges in this
+  axis.  (Note that, because only the inner boundary coordinates are in the
   list, there may not be an exact match for our edge.)  We ensure that
-  the edges are large enough to accomodate the desired x (y) size of
+  the bounds are large enough to accomodate the desired x (y) size of
   this dancer by adjusting the 'output' list for these bounds; any
   points lying between the bounds are stretched proportionally.
-  If needed, we then recenter the output list.
+  We work outward from the origin in both the positive and negative
+  direction, so no recentering will be needed.
 
-For example, if the X 'shared coordinate' list was: -2,0,2
-and we had a three dancer formation with bounds -1,1 which needed to be
-at least 6 units wide, then we might stretch the output list from
--2,0,2 to -2,1,4 before recentering at -3,0,3.  Note that we've
-adjusted the mappings for -2 and 2, even though our bounds are -1 and
-1.
+For example, if the X 'inner boundary' list was: -2,0,2 and we had a
+three dancer formation with bounds -1,1 which needed to be at least 6
+units wide, then we might stretch the output list from -2,0,2 to
+-3,0,3.  Note that we've adjusted the mappings for -2 and 2, even
+though our bounds are -1 and 1.  Note also that, since the original
+formation straddled the origin, that we had to stretch in both
+directions.  Usually only one 'inner boundary' edge is pushed out.
 
 When actually placing the new dancers in the square, we don't
-individually warp their points: we just identify the bounds in the
-shared list (-2,2) as before, map these (-3,3) and drop our formation
-undistorted between these boundaries.
-
-Note that, if one boundary is above/below the limits of the shared
-edge list, we just assume it's big enough (don't need to adjust output
-mapping) and drop the formation into place based on the position of
-the known boundary and the natural size of the formation.  If both
-boundaries are unknown, then assume no warp?  (This won't work for
-properly restoring offset formations -- parallelogram/offset are a
-separate mechanism.)
+individually warp their points: we just identify the inner bounds in the
+list (-2,2) as before, map these (-3,3) and drop our formation
+undistorted hanging off its inner boundary.
 
 Second: taking a given formation and shrinking it given blocks of
 solid dancers (similar to the above):
 
-  First we write down the x (y) axis coordinates of *shared* boundary
+  First we write down the x (y) axis coordinates of inner boundary
   edges.  The x (y) boundary edges around a dancer at x,y are at
   x+(w/2), x-(w/2) (y+(h/2), y-(h/2)), where w (h) is the width
-  (height) of the solid dancer. We throw out any boundary edges which
-  are not shared by at least two dancers: contraction of the formation
-  is not constrained by these.
+  (height) of the solid dancer.  The 'inner' edges are the ones closest
+  to the origin (one in X, one in Y).
 
   We then renumber these shared edges so that there are exactly 2
   units between each pair of points.  We linearly interpolate using
   this correspondence to warp the center point of the solid dancer to
   create a new canonical dancer; the mapping ensures that dancers
   created this way will not overlap (well, there may be some edge cases).
+
+Note that compressing a tandem diamond in this fashion will result in
+a 'short' diamond (points at (0,+/-2) instead of (0,+/-3).  We
+recognize this as an alternative diamond formation that can be
+breathed into the standard diamond.
+-----------
+Dancers are diamond shaped:
+  ^
+ <+>
+  v
+with a 2-unit diameter.  This explains how stars can exist, but
+aligned dancers can not be closer than 2 units apart.
+
 -----------
 FormationMatch should include both the formations matched, as well as
 a 'meta formation' showing the arrangement of these.  Then, we apply
@@ -323,3 +330,85 @@ anything4
 	;
 ----------
 how to deal with "swing and mix"/"and(swing,mix)" ambiguity?
+Answer: post-process parse tree to create "(apply swing-and-mix)" from
+"(apply and (apply swing) (apply mix))".
+-----------
+What about doing a "find all parses" with a truely ambiguous grammar?
+We could do the same thing we do with speech recognition: try each
+possible parse & discard any that don't work.
+-----------
+
+What about diamonds?  Two options:
+ a) insist that every formation is 'compact'  -- this will move the
+ points in from (0,+/-3) to (0,+/-2), and endangers the idea that
+ centers are centers and ends are ends of crossed waves.
+ b) Introduce some phantoms to hold space in the formation?  The
+ reason that siamese diamonds work as:
+     > >
+     ^ v
+     ^ v
+     < <
+  and the ends don't have to shift out is because there is still space
+  for the two 'center' phantoms:
+
+     > >
+      x
+      x
+     < <
+
+  so mark phantom positions in formations, and no real dancers need to
+  match these, but they still hold space?  careful that they don't
+  interfere with the expansion of the tandem in the center.
+ c) formations have 'struts'?  points are held out by length-two struts?
+
+ANSWER:
+ When expanding a formation, use the "inside" edges to push out on
+ only: never remove space from the formation.  This should make
+ inserting tandems into a standard 2x4 diamond yield (effectively) a
+ tandem 2x3 diamond.
+ Second: whenever we try to match a formation and fail, try also to
+ match "isomorphic" formations & insert a 'breath' operation if
+ necessary.  Make 'small diamonds' isomorphic to 'big diamonds', just
+ like 'quarter tag with ends facing right' is isomorphic to 'twin
+ diamonds'. (and in some cases, facing couples are isomorphic to waves
+ & vice versa).
+--------
+Formation elaboration does:
+ * simplifies formations known to be impossible, given input.
+ * evaluates conditions.
+ * inserts explicit 'breathing' nodes into the AST when:
+    diamond/quarter tag conversion needs to occur
+    short diamond/big diamond
+    facing waves/step to a wave (concept '_no touch' means delete the
+     initial '1/2 pass thru' so that pass thru from a wave becomes:
+       from: MINIWAVE
+       call: _no touch(pass thru)
+     swing thru from facing couples becomes:
+       from: FACING COUPLES
+       call: touch, swing thru
+    multiple formations exist -- ie, call is from 'diamonds' and we
+    have 'twin diamonds'.  This allows us to decouple the 'formation
+    reassembly' from elaboration.
+
+Formation evaluation results in a series of time-stamped formations.
+Tricky: how to combine parallel movements.  Do we interpolate (along
+a curved path if necessary), refuse to interpolate (or only
+interpolate linear actions), or something else? (some formations
+missing some dancers?  some formations have 'old' positions for
+dancers, used only for formation reassembly, not ultimately for dancer
+movement interpolation?)  Use octagon interpolation of curved
+movements?
+
+The following pythagorean triples form a 10-degree approximation to
+a circle (see pythagoras.html):
+ 105, 608, 617
+  51, 140, 149
+ 120, 209, 241
+  88, 105, 137
+ (and their transposes, switching a for b)
+We could do linear interpolation between these points to interpolate
+paths and facing directions using rational arithmetic -- or we could
+just do the exact floating point computation, and use the Fraction
+method which generates a rational from a double -- but will this result
+in overflow?  The benefit of the rational approximation is that we
+know that the denominators are < 1000, which gives us plenty of room.
