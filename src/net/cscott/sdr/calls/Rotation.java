@@ -13,17 +13,17 @@ public class Rotation {
     public final Fraction amount;
     /** The 'modulus' of the rotation: indicates the amount of uncertainty
      * in the direction.  The modulus cannot exceed 1. */
-    public final Fraction modulo;
+    public final Fraction modulus;
     
     /** Private constructor from a <code>Fraction</code> object. */
     protected Rotation(Fraction amount, Fraction modulo) {
-	this.amount = amount;  this.modulo = modulo;
-	assert this.modulo.compareTo(Fraction.ONE)==0 ?
+	this.amount = amount;  this.modulus = modulo;
+	assert this.modulus.compareTo(Fraction.ONE)==0 ?
             this instanceof ExactRotation : true;
-        assert this.modulo.compareTo(Fraction.ONE) <= 0;
-        assert this.modulo.compareTo(Fraction.ZERO) >= 0;
-        assert this.modulo.getNumerator()==0 || this.modulo.getNumerator()==1;
-        assert this.modulo.compareTo(Fraction.ZERO)==0 ?
+        assert this.modulus.compareTo(Fraction.ONE) <= 0;
+        assert this.modulus.compareTo(Fraction.ZERO) >= 0;
+        assert this.modulus.getNumerator()==0 || this.modulus.getNumerator()==1;
+        assert this.modulus.compareTo(Fraction.ZERO)==0 ?
                 this.amount.compareTo(Fraction.ZERO)==0 : false;
     }
     public static final Rotation create(Fraction amount, Fraction modulo) {
@@ -40,30 +40,30 @@ public class Rotation {
     }
     /** Add the given amount to this rotation direction. */
     public Rotation add(Fraction f) {
-	return create(this.amount.add(f), this.modulo);
+	return create(this.amount.add(f), this.modulus);
     }
     /** Subtract the given amount from this rotation direction. */
     public Rotation subtract(Fraction f) {
-        return create(this.amount.subtract(f), this.modulo);
+        return create(this.amount.subtract(f), this.modulus);
     }
     /** Negate this rotation (mirror image). */
     public Rotation negate() {
-        return create(this.amount.negate(), this.modulo);
+        return create(this.amount.negate(), this.modulus);
     }
-    /** Normalize rotation to the range 0-modulo. */
+    /** Normalize rotation to the range 0-modulus. */
     public Rotation normalize() {
-        if (this.modulo.compareTo(Fraction.ZERO)==0) return this;
+        if (this.modulus.compareTo(Fraction.ZERO)==0) return this;
         // make rotation positive.
         Fraction abs = this.amount;
         if (abs.compareTo(Fraction.ZERO) < 0)
             abs = abs.add(Fraction.valueOf(1-abs.getProperWhole()));
         assert abs.compareTo(Fraction.ZERO) >= 0;
         // now reduce by modulus.
-        Fraction f = abs.divide(this.modulo);
+        Fraction f = abs.divide(this.modulus);
         // just want the fractional part.
         f = Fraction.valueOf(f.getProperNumerator(), f.getDenominator())
-                    .multiply(this.modulo);
-        return create(f, this.modulo);
+                    .multiply(this.modulus);
+        return create(f, this.modulus);
     }
     /** Rotations are equal iff their (unnormalized) rotation amount and
      * modulus are exactly equal. */
@@ -71,12 +71,12 @@ public class Rotation {
     public boolean equals(Object o) {
 	if (!(o instanceof Rotation)) return false;
         Rotation r = (Rotation) o;
-        return this.amount.equals(r.amount) && this.modulo.equals(r.modulo);
+        return this.amount.equals(r.amount) && this.modulus.equals(r.modulus);
     }
-    /** Hashcode of the unnormalized amount & modulo. */
+    /** Hashcode of the unnormalized amount & modulus. */
     @Override
     public int hashCode() {
-	return 51 + this.amount.hashCode() + 7*this.modulo.hashCode();
+	return 51 + this.amount.hashCode() + 7*this.modulus.hashCode();
     }
     /** Returns true iff all the rotations possible with the given {@code r}
      * are included within the set of rotations possible with {@code this}.
@@ -84,40 +84,42 @@ public class Rotation {
      * west, but no intermediate directions) includes {@code 3/4 mod 1}
      * (ie, exactly west), but the reverse is not true: {@code 3/4 mod 1}
      * includes {@code 7/4 mod 1}, but does not include {@code 0 mod 1/4}.
+     * Formally, returns true iff the congruence class of {@code this} is
+     * a superset of the congruence class of {@code r}.
      */
     public boolean includes(Rotation r) {
         Rotation r1 = this.normalize(), r2 = r.normalize();
         // check for an exact match.
         if (r1.equals(r2)) return true; // exact match.
         // "all rotations" includes everything.
-        if (r1.modulo.equals(Fraction.ZERO)) return true;
+        if (r1.modulus.equals(Fraction.ZERO)) return true;
         // but nothing (other than "all rotations") includes "all rotations"
-        if (r2.modulo.equals(Fraction.ZERO)) return false;
+        if (r2.modulus.equals(Fraction.ZERO)) return false;
         // check that moduli are compatible: this.modulo < r.modulo, etc.
-        if (r2.modulo.divide(r1.modulo).getProperNumerator() != 0)
+        if (r2.modulus.divide(r1.modulus).getProperNumerator() != 0)
             return false; // incompatible moduli
-        assert r1.modulo.compareTo(r2.modulo) <= 0;
-        r2 = create(r2.amount, r1.modulo).normalize();
+        assert r1.modulus.compareTo(r2.modulus) <= 0;
+        r2 = create(r2.amount, r1.modulus).normalize();
         return r1.equals(r2);
     }
     /** Returns a human-readable description of the rotation.  The output
      *  is a valid input to <code>ExactRotation.valueOf(String)</code>. */
     @Override
     public String toString() {
-	return this.amount.toProperString()+" mod "+this.modulo;
+	return this.amount.toProperString()+" mod "+this.modulus;
     }
     /** Returns a human-readable description of the rotation, similar to the
      *  input to <code>ExactRotation.fromAbsoluteString(String)</code>. */
     public String toAbsoluteString() {
-        if (this.modulo.compareTo(Fraction.ZERO)==0) return "o";
-        else if (this.modulo.compareTo(Fraction.ONE_QUARTER)==0) {
+        if (this.modulus.compareTo(Fraction.ZERO)==0) return "o";
+        else if (this.modulus.compareTo(Fraction.ONE_QUARTER)==0) {
             if (this.amount.compareTo(Fraction.ZERO)==0) return "+";
             else if (this.amount.compareTo(Fraction.ONE_EIGHTH)==0) return "x";
         }
-        else if (this.modulo.compareTo(Fraction.ONE_HALF)==0) {
+        else if (this.modulus.compareTo(Fraction.ONE_HALF)==0) {
             if (this.amount.compareTo(Fraction.ZERO)==0) return "|";
             else if (this.amount.compareTo(Fraction.ONE_QUARTER)==0) return "-";
-        } else if (this.modulo.compareTo(Fraction.ONE)==0)
+        } else if (this.modulus.compareTo(Fraction.ONE)==0)
             assert false : "we should have invoked ExactRotation.toAbsoluteString()";
         return toString();
     }
