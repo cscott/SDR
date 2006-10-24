@@ -400,7 +400,7 @@ movement interpolation?)  Use octagon interpolation of curved
 movements?
 
 The following pythagorean triples form a 10-degree approximation to
-a circle (see pythagoras.html):
+a circle (see pythagoras.html, which has a 5-degree approximation as well):
  105, 608, 617
   51, 140, 149
  120, 209, 241
