@@ -3,173 +3,135 @@ package net.cscott.sdr.calls;
 import net.cscott.sdr.util.Fraction;
 
 /** Rotations are represented as fractions, where '0' is facing north,
- *  and '1/4' is facing east.  We use getProperNumerator() to find
- *  the (mod 1) rotation amount. */
-public class Rotation implements Comparable<Rotation> {
+ *  and '1/4' is facing east.  The also have a 'modulus', since they can
+ *  represent "general" directions.  For example, "1/4 modulo 1/2" means
+ *  facing east or west (but not north, south, or any other direction).
+ *  A rotation modulo 0 matches any direction.  A rotation modulo 1
+ *  indicates an 'exact' rotation; the modulus can not exceed 1. */
+public class Rotation {
     /** The amount of the rotation. */
     public final Fraction amount;
-    /** Create a rotation of n/d of a complete rotation, where positive
-     *  denotes clockwise rotation. */
-    private Rotation(int numerator, int denominator) {
-	this(Fraction.valueOf(numerator, denominator));
-    }
+    /** The 'modulus' of the rotation: indicates the amount of uncertainty
+     * in the direction.  The modulus cannot exceed 1. */
+    public final Fraction modulo;
+    
     /** Private constructor from a <code>Fraction</code> object. */
-    private Rotation(Fraction amount) {
-	this.amount = amount;
+    protected Rotation(Fraction amount, Fraction modulo) {
+	this.amount = amount;  this.modulo = modulo;
+	assert this.modulo.compareTo(Fraction.ONE)==0 ?
+            this instanceof ExactRotation : true;
+        assert this.modulo.compareTo(Fraction.ONE) <= 0;
+        assert this.modulo.compareTo(Fraction.ZERO) >= 0;
+        assert this.modulo.getNumerator()==0 || this.modulo.getNumerator()==1;
+        assert this.modulo.compareTo(Fraction.ZERO)==0 ?
+                this.amount.compareTo(Fraction.ZERO)==0 : false;
+    }
+    public static final Rotation create(Fraction amount, Fraction modulo) {
+        // Effective modulus is always 1/N for some N -- reduce fraction to
+        // lowest terms, then use denom.  For example, a modulus of 2/3 is
+        // equivalent to 1/3, since the sequence goes:
+        //            2/3, 4/3 == 1/3 mod 1, 6/3 == 0 mod 1.
+        if (modulo.compareTo(Fraction.ZERO)==0)
+            amount = Fraction.ZERO;
+        else
+            modulo = Fraction.valueOf(1, modulo.getDenominator());
+        return (modulo.compareTo(Fraction.ONE)==0) ?
+                new ExactRotation(amount) : new Rotation(amount, modulo);
     }
     /** Add the given amount to this rotation direction. */
     public Rotation add(Fraction f) {
-	return new Rotation(this.amount.add(f));
+	return create(this.amount.add(f), this.modulo);
     }
     /** Subtract the given amount from this rotation direction. */
     public Rotation subtract(Fraction f) {
-        return new Rotation(this.amount.subtract(f));
+        return create(this.amount.subtract(f), this.modulo);
     }
     /** Negate this rotation (mirror image). */
     public Rotation negate() {
-        return new Rotation(this.amount.negate());
+        return create(this.amount.negate(), this.modulo);
     }
-    /** Normalize rotation to the range 0-1. */
+    /** Normalize rotation to the range 0-modulo. */
     public Rotation normalize() {
-	Fraction dir = Fraction.valueOf
-	    (amount.getProperNumerator(), amount.getDenominator());
-	if (amount.compareTo(Fraction.ZERO) < 0)
-	    dir = Fraction.ONE.subtract(dir);
-	return new Rotation(dir);
+        if (this.modulo.compareTo(Fraction.ZERO)==0) return this;
+        // make rotation positive.
+        Fraction abs = this.amount;
+        if (abs.compareTo(Fraction.ZERO) < 0)
+            abs = abs.add(Fraction.valueOf(1-abs.getProperWhole()));
+        assert abs.compareTo(Fraction.ZERO) >= 0;
+        // now reduce by modulus.
+        Fraction f = abs.divide(this.modulo);
+        // just want the fractional part.
+        f = Fraction.valueOf(f.getProperNumerator(), f.getDenominator())
+                    .multiply(this.modulo);
+        return create(f, this.modulo);
     }
-    /** Compare unnormalized rotation amounts. */
-    public int compareTo(Rotation r) {
-	return this.amount.compareTo(r.amount);
-    }
-    /** Rotations are equal if their normalized values are equal. */
+    /** Rotations are equal iff their (unnormalized) rotation amount and
+     * modulus are exactly equal. */
     @Override
     public boolean equals(Object o) {
 	if (!(o instanceof Rotation)) return false;
-	return normalize().amount.equals(((Rotation)o).normalize().amount);
+        Rotation r = (Rotation) o;
+        return this.amount.equals(r.amount) && this.modulo.equals(r.modulo);
     }
-    /** Hashcode of the normalized value. */
+    /** Hashcode of the unnormalized amount & modulo. */
     @Override
     public int hashCode() {
-	return normalize().amount.hashCode();
+	return 51 + this.amount.hashCode() + 7*this.modulo.hashCode();
+    }
+    /** Returns true iff all the rotations possible with the given {@code r}
+     * are included within the set of rotations possible with {@code this}.
+     * For example, the Rotation {@code 0 mod 1/4} (ie, north, east, south, or
+     * west, but no intermediate directions) includes {@code 3/4 mod 1}
+     * (ie, exactly west), but the reverse is not true: {@code 3/4 mod 1}
+     * includes {@code 7/4 mod 1}, but does not include {@code 0 mod 1/4}.
+     */
+    public boolean includes(Rotation r) {
+        Rotation r1 = this.normalize(), r2 = r.normalize();
+        // check for an exact match.
+        if (r1.equals(r2)) return true; // exact match.
+        // "all rotations" includes everything.
+        if (r1.modulo.equals(Fraction.ZERO)) return true;
+        // but nothing (other than "all rotations") includes "all rotations"
+        if (r2.modulo.equals(Fraction.ZERO)) return false;
+        // check that moduli are compatible: this.modulo < r.modulo, etc.
+        if (r2.modulo.divide(r1.modulo).getProperNumerator() != 0)
+            return false; // incompatible moduli
+        assert r1.modulo.compareTo(r2.modulo) <= 0;
+        r2 = create(r2.amount, r1.modulo).normalize();
+        return r1.equals(r2);
     }
     /** Returns a human-readable description of the rotation.  The output
-     *  is a valid input to <code>Rotation.valueOf(String)</code>. */
+     *  is a valid input to <code>ExactRotation.valueOf(String)</code>. */
     @Override
     public String toString() {
-	return this.amount.toProperString();
+	return this.amount.toProperString()+" mod "+this.modulo;
     }
-    /** Returns a human-readable description of the rotation.  The output
-     *  is a valid input to <code>Rotation.fromAbsoluteString(String)</code>. */
+    /** Returns a human-readable description of the rotation, similar to the
+     *  input to <code>ExactRotation.fromAbsoluteString(String)</code>. */
     public String toAbsoluteString() {
-        for (int i=0; i<eighths.length; i++)
-            if (this.equals(eighths[i]))
-                return eighthNames[i];
-        return toString();
-    }
-    /** Returns a human-readable description of the rotation.  The output
-     *  is a valid input to <code>Rotation.fromAbsoluteString(String)</code>. */
-    public String toRelativeString() {
-        if (Rotation.ONE_QUARTER.equals(this)) return "right";
-        if (Rotation.ZERO.equals(this)) return "none";
-        if (Rotation.mONE_QUARTER.equals(this)) return "left";
+        if (this.modulo.compareTo(Fraction.ZERO)==0) return "o";
+        else if (this.modulo.compareTo(Fraction.ONE_QUARTER)==0) {
+            if (this.amount.compareTo(Fraction.ZERO)==0) return "+";
+            else if (this.amount.compareTo(Fraction.ONE_EIGHTH)==0) return "x";
+        }
+        else if (this.modulo.compareTo(Fraction.ONE_HALF)==0) {
+            if (this.amount.compareTo(Fraction.ZERO)==0) return "|";
+            else if (this.amount.compareTo(Fraction.ONE_QUARTER)==0) return "-";
+        } else if (this.modulo.compareTo(Fraction.ONE)==0)
+            assert false : "we should have invoked ExactRotation.toAbsoluteString()";
         return toString();
     }
     /** Converts a string (one of n/s/e/w, ne/nw/se/sw) to the
      * appropriate rotation object. 'n' is facing the caller.
-     * The string 'o' can be given; it represents 'Rotation unspecified'
-     * and <code>null</code> will be returned. */
+     * The string '-' means "east or west", and the string '|' means
+     * "north or south".  The string "+" means "north, south, east, or west".
+     * The string 'o' means "any rotation". */
     public static Rotation fromAbsoluteString(String s) {
-	for (int i=0; i<eighthNames.length; i++)
-	    if (eighthNames[i].equalsIgnoreCase(s))
-		return eighths[i];
-	if (s.equalsIgnoreCase("o")) return null; // unspecified rotation
-	return new Rotation(Fraction.valueOf(s));
-    }
-    /** Returns a Rotation corresponding to one of the strings "right", "left",
-     * or "none".
-     * @param s
-     * @return Rotation.ZERO if s is "none", Rotation.ONE_QUARTER if s is
-     *  "right", or Rotation.mONE_QUARTER if s is "left".
-     * @throws IllegalArgumentException if s is not one of "right", "left", 
-     *  "none", or a number.
-     */
-    public static Rotation fromRelativeString(String s) {
-        s = s.intern();
-        if (s=="right") return Rotation.ONE_QUARTER;
-        if (s=="none") return Rotation.ZERO;
-        if (s=="left") return Rotation.mONE_QUARTER;
-        return new Rotation(Fraction.valueOf(s));
-    }
-    /** Common rotations. */
-    public static final Rotation
-        mONE_QUARTER = new Rotation(-1,4),
-        ZERO = new Rotation(0,8),
-	ONE_EIGHTH = new Rotation(1,8),
-	ONE_QUARTER = new Rotation(2,8),
-	THREE_EIGHTHS = new Rotation(3,8),
-	ONE_HALF = new Rotation(4,8),
-	FIVE_EIGHTHS = new Rotation(5,8),
-	THREE_QUARTERS = new Rotation(6,8),
-	SEVEN_EIGHTHS = new Rotation(7,8),
-	ONE = new Rotation(8,8);
-    /** A list of rotations in 1/8 turn increments. */
-    private static Rotation[] eighths = new Rotation[]
-	{ ZERO, ONE_EIGHTH, ONE_QUARTER, THREE_EIGHTHS,
-	  ONE_HALF, FIVE_EIGHTHS, THREE_QUARTERS, SEVEN_EIGHTHS };
-    /** Names for the rotations in the <code>eighths</code> list. */
-    private static String[] eighthNames = new String[]
-	{ "n", "ne", "e", "se", "s", "sw", "w", "nw" };
-    
-    /** Return the X offset of a one-unit step in the rotation direction.
-     *  Zero indicates north (towards positive y).  Use a 'squared off'
-     *  circle to avoid irrational numbers. */
-    public Fraction toX() {
-	Fraction EIGHT = Fraction.valueOf(8,1);
-	Rotation r = normalize();
-	// 7/8 to 1/8 range from -1 to 1
-	// 1/8 to 3/8 x=1
-	// 3/8 to 5/8 range from 1 to -1
-	// 5/8 to 7/8 x=-1
-	if (r.compareTo(ONE_EIGHTH) < 0)
-	    return r.amount.multiply(EIGHT);
-	if (r.compareTo(THREE_EIGHTHS) < 0)
-	    return Fraction.ONE;
-	if (r.compareTo(FIVE_EIGHTHS) < 0)
-	    return Fraction.ONE_HALF.subtract(r.amount).multiply(EIGHT);
-	if (r.compareTo(SEVEN_EIGHTHS) < 0)
-	    return Fraction.ONE.negate();
-	else
-	    return r.amount.subtract(Fraction.ONE).multiply(EIGHT);
-    }
-    /** Return the Y offset of a one-unit step in the rotation direction.
-     *  Zero indicates north (towards positive y).  Use a 'squared off'
-     *  circle to avoid irrational numbers. */
-    public Fraction toY() {
-	Fraction EIGHT = Fraction.valueOf(8,1);
-	Rotation r = normalize();
-	// 7/8 to 1/8 y=1
-	// 1/8 to 3/8 range from 1 to -1
-	// 3/8 to 5/8 y=-1
-	// 5/8 to 7/8 range from -1 to 1
-	if (r.compareTo(ONE_EIGHTH) < 0)
-	    return Fraction.ONE;
-	if (r.compareTo(THREE_EIGHTHS) < 0)
-	    return Fraction.ONE_QUARTER.subtract(r.amount).multiply(EIGHT);
-	if (r.compareTo(FIVE_EIGHTHS) < 0)
-	    return Fraction.ONE.negate();
-	if (r.compareTo(SEVEN_EIGHTHS) < 0)
-	    return r.amount.subtract(Fraction.THREE_QUARTERS).multiply(EIGHT);
-	else
-	    return Fraction.ONE;
-    }
-    /** Return true if rotating from <code>from</code> to <code>to</code>
-     *  is a clockwise movement. */
-    static boolean isCW(Rotation from, Rotation to) {
-	return from.compareTo(to) < 0;
-    }
-    /** Return true if rotating from <code>from</code> to <code>to</code>
-     *  is a counter-clockwise movement. */
-    static boolean isCCW(Rotation from, Rotation to) {
-	return from.compareTo(to) > 0;
+        if (s.equals("|")) return create(Fraction.ZERO, Fraction.ONE_HALF);
+        if (s.equals("-")) return create(Fraction.ONE_QUARTER, Fraction.ONE_HALF);
+        if (s.equals("+")) return create(Fraction.ZERO, Fraction.ONE_QUARTER);
+        if (s.equals("x")) return create(Fraction.ONE_EIGHTH, Fraction.ONE_QUARTER);
+        if (s.equalsIgnoreCase("o")) return create(Fraction.ZERO,Fraction.ZERO);
+        return ExactRotation.fromAbsoluteString(s);
     }
 }

@@ -19,10 +19,10 @@ public class Position {
     public final Fraction x, y;
     /** Facing direction. Note that <code>null</code> IS a legal value,
      * which represents "rotation unspecified" (eg for phantoms). */
-    public final Rotation facing;
+    public final ExactRotation facing;
     /** Create a Position object. Note that <code>facing</code> may
      *  be <code>null</code> to indicate 'rotation unspecified'. */
-    public Position(Fraction x, Fraction y, Rotation facing) {
+    public Position(Fraction x, Fraction y, ExactRotation facing) {
 	assert x!=null; assert y!=null;
 	this.x = x; this.y = y; this.facing = facing;
     }
@@ -36,7 +36,7 @@ public class Position {
     /** Move the given distance perpendicular to the facing direction. */
     public Position sideStep(Fraction distance) {
         assert facing!=null : "rotation unspecified!";
-        Rotation f = facing.add(Fraction.ONE_HALF);
+        ExactRotation f = facing.add(Fraction.ONE_HALF);
         Fraction dx = f.toX().multiply(distance);
         Fraction dy = f.toY().multiply(distance);
         return new Position(x.add(dx), y.add(dy), facing);
@@ -57,8 +57,8 @@ public class Position {
      *  dance grid.  0,0 is the center of the set, and odd coordinates
      *  between -3 and 3 correspond to the standard 4x4 grid.
      *  Remember <code>null</code> IS a legal value for the
-     *  <code>Rotation</code>. */
-    public static Position getGrid(int x, int y, Rotation r) {
+     *  <code>ExactRotation</code>. */
+    public static Position getGrid(int x, int y, ExactRotation r) {
 	return new Position
 	    (Fraction.valueOf(x), Fraction.valueOf(y), r);
     }
@@ -66,9 +66,9 @@ public class Position {
      *  dance grid.  0,0 is the center of the set, and odd coordinates
      *  between -3 and 3 correspond to the standard 4x4 grid.
      *  For convenience, the direction is specified as a string
-     *  valid for <code>Rotation.valueOf(String)</code>. */
+     *  valid for <code>ExactRotation.valueOf(String)</code>. */
     public static Position getGrid(int x, int y, String direction) {
-	return getGrid(x,y,Rotation.fromAbsoluteString(direction));
+	return getGrid(x,y,ExactRotation.fromAbsoluteString(direction));
     }
 
     // utility functions.

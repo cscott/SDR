@@ -2,7 +2,7 @@ package net.cscott.sdr.calls.ast;
 
 import static net.cscott.sdr.calls.transform.AstTokenTypes.PRIM;
 import net.cscott.sdr.calls.Position;
-import net.cscott.sdr.calls.Rotation;
+import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Warp;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
@@ -16,21 +16,21 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * forward and to the side, while rotating a certain amount, performed
  * in a certain number of beats.  PRIM is a leaf node in a our AST.
  * @author C. Scott Ananian
- * @version $Id: Prim.java,v 1.8 2006-10-18 21:14:40 cananian Exp $
+ * @version $Id: Prim.java,v 1.9 2006-10-24 23:03:00 cananian Exp $
  */
 public class Prim extends SeqCall {
     public static enum Direction { ASIS, IN, OUT; }
     public final Fraction x, y;
-    public final Rotation rot;
+    public final ExactRotation rot;
     public final Direction dirX, dirY, dirRot;
     public final Fraction time;
     public final boolean passRight;
     public Prim(Direction dirX, Fraction x, Direction dirY, Fraction y,
-            Direction dirRot, Rotation rot) {
+            Direction dirRot, ExactRotation rot) {
         this(dirX, x, dirY, y, dirRot, rot, Fraction.ONE, true);
     }
     public Prim(Direction dirX, Fraction x, Direction dirY, Fraction y,
-            Direction dirRot, Rotation rot, Fraction time, boolean passRight) {
+            Direction dirRot, ExactRotation rot, Fraction time, boolean passRight) {
         super(PRIM);
         this.x = x; this.y = y; this.rot = rot; this.time = time;
         this.dirX = dirX; this.dirY = dirY; this.dirRot = dirRot;
@@ -38,7 +38,7 @@ public class Prim extends SeqCall {
     }
     public static final Prim STAND_STILL =
         new Prim(Direction.ASIS,Fraction.ZERO, Direction.ASIS,Fraction.ZERO,
-                Direction.ASIS,Rotation.ZERO);
+                Direction.ASIS,ExactRotation.ZERO);
     // support visitor
     @Override
     public <T> SeqCall accept(TransformVisitor<T> v, T t) {
@@ -116,7 +116,7 @@ public class Prim extends SeqCall {
         Fraction nX = wX.multiply(rY).subtract(wY.multiply(rX));
         Fraction nY = wX.multiply(rX).add(wY.multiply(rY));
         // in comparison, deriving the new rotation direction is easy
-        Rotation nRot = wTo.facing.subtract(wFrom.facing.amount);
+        ExactRotation nRot = wTo.facing.subtract(wFrom.facing.amount);
         // okay, make the result!
         Prim p = new Prim(dirX, nX, dirY, nY, dirRot, nRot, this.time, passRight);
         // return old object if results were identical
@@ -124,7 +124,7 @@ public class Prim extends SeqCall {
     }
     /** Factory: creates new Prim only if it would differ from this. */
     public Prim build(Direction dirX, Fraction x, Direction dirY, Fraction y,
-            Direction dirRot, Rotation rot, Fraction time, boolean passRight) {
+            Direction dirRot, ExactRotation rot, Fraction time, boolean passRight) {
         Prim p = new Prim(dirX, x, dirY, y, dirRot, rot, time, passRight);
         if (this.equals(p)) return this;
         return p;

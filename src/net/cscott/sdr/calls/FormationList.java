@@ -210,8 +210,8 @@ public abstract class FormationList {
 	for (int y=0; y<sa.length; y++)
 	    L1: for (int x=0; x<sa[y].length(); x++) {
 		if (sa[y].charAt(x)==' ') continue;
-		Rotation r = (sa[y].charAt(x)=='o') ? null:
-		    Rotation.fromAbsoluteString(sa[y].substring(x,x+1));
+		ExactRotation r = (sa[y].charAt(x)=='o') ? null:
+		    ExactRotation.fromAbsoluteString(sa[y].substring(x,x+1));
 		ptl.add(new PositionAndTag(new Position(Fraction.valueOf(x,1).add(xoff),
 				    Fraction.valueOf(y,1).add(yoff).negate(),
 				    r),Collections.<Tag>emptySet()/*XXX*/));

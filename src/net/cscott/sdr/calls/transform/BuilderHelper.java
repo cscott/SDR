@@ -7,7 +7,7 @@ import java.util.Set;
 
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.Program;
-import net.cscott.sdr.calls.Rotation;
+import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.Warp;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
@@ -21,7 +21,7 @@ import net.cscott.sdr.util.Fraction;
  * "ast tree generation functions", while optimizing the case where the
  * function generates a constant.
  * @author C. Scott Ananian
- * @version $Id: BuilderHelper.java,v 1.4 2006-10-21 00:54:34 cananian Exp $
+ * @version $Id: BuilderHelper.java,v 1.5 2006-10-24 23:03:01 cananian Exp $
  */
 abstract class BuilderHelper {
     // 'B' is pronounced as 'Builder'.  So a B<Prim> builds Prim objects.
@@ -120,7 +120,7 @@ abstract class BuilderHelper {
     }
     static B<Prim> mkPrim(final Direction dirX, final Fraction x,
             final Direction dirY, final Fraction y,
-            final Direction dirRot, final Rotation rot) {
+            final Direction dirRot, final ExactRotation rot) {
         return mkConstant(new Prim(dirX, x, dirY, y, dirRot, rot));
     }
     static B<Seq> mkSeq(final List<B<? extends SeqCall>> children) {

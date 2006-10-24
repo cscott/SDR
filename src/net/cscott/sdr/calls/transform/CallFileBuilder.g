@@ -106,10 +106,10 @@ seq returns [B<Seq> s=null]
 	;
 one_seq returns [B<? extends SeqCall> sc=null]
 { Fraction x, y; B<? extends Comp> d;
-  Prim.Direction dx=null, dy=null, dr=null; Rotation r=null;
+  Prim.Direction dx=null, dy=null, dr=null; ExactRotation r=null;
 }
 	: #(PRIM (dx=direction)? x=number (dy=direction)? y=number (dr=direction | r=rotation) )
-	{ sc=mkPrim(d(dx), x, d(dy), y, d(dr), ifNull(r,Rotation.ONE_QUARTER)); }
+	{ sc=mkPrim(d(dx), x, d(dy), y, d(dr), ifNull(r,ExactRotation.ONE_QUARTER)); }
 	| #(CALL sc=call_body)
 	| #(PART d=pieces)
 	{ sc = mkPart(true, d); /* divisible part */}
@@ -121,10 +121,10 @@ direction returns [Prim.Direction d=null]
 	: IN { d=Prim.Direction.IN; }
 	| OUT { d=Prim.Direction.OUT; }
 	;
-rotation returns [Rotation r=null]
-	: RIGHT { r = Rotation.ONE_QUARTER; }
-	| LEFT { r = Rotation.mONE_QUARTER; }
-	| NONE { r = Rotation.ZERO; }
+rotation returns [ExactRotation r=null]
+	: RIGHT { r = ExactRotation.ONE_QUARTER; }
+	| LEFT { r = ExactRotation.mONE_QUARTER; }
+	| NONE { r = ExactRotation.ZERO; }
 	;
 
 par returns [B<Par> p=null] {B<ParCall> pc;List<B<ParCall>> l=new ArrayList<B<ParCall>>();}

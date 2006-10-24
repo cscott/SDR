@@ -10,7 +10,7 @@ import net.cscott.sdr.util.Fraction;
  * box formation starts with boxes overlapping at time t=0, and
  * results in an undistorted setup at time t=1.
  * @author C. Scott Ananian
- * @version $Id: Warp.java,v 1.4 2006-10-18 01:59:17 cananian Exp $
+ * @version $Id: Warp.java,v 1.5 2006-10-24 23:03:00 cananian Exp $
  */
 public abstract class Warp {
     // XXX: not sure how best to implement this generally yet.
@@ -42,7 +42,7 @@ public abstract class Warp {
      */
     public static Warp rotateAndMove(Position from, Position to) {
         if (from.equals(to)) return NONE;
-        Rotation rot = to.facing.add(from.facing.amount.negate());
+        ExactRotation rot = to.facing.add(from.facing.amount.negate());
         Position nFrom = rotateCWAroundOrigin(from,rot);
         final Position warp = new Position
             (to.x.subtract(nFrom.x), to.y.subtract(nFrom.y),
@@ -57,7 +57,7 @@ public abstract class Warp {
         return w;
     }
     // helper method for rotateAndMove
-    private static Position rotateCWAroundOrigin(Position p, Rotation amt) {
+    private static Position rotateCWAroundOrigin(Position p, ExactRotation amt) {
         Fraction x = p.x.multiply(amt.toY()).add(p.y.multiply(amt.toX()));
         Fraction y = p.y.multiply(amt.toY()).subtract(p.x.multiply(amt.toX()));
         return new Position(x, y, p.facing.add(amt.amount));

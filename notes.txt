@@ -181,14 +181,6 @@ prim calls, or in mixed lists.  the 'and' concept creates a
 divisible part for each call.  IPART is an 'indivisible part'
 (XXX: we don't currently check homogenity of a Seq)
 ----
-add 'mod' to Rotation to yield general direction. rotations are
-consistent if: they're exactly equal.  Effective modulus is always
-1/N for some N -- reduce fraction to lowest terms, then use denom.
-for example, a modulus of 2/3 is equivalent to 1/3, since the
-sequence goes 2/3, 4/3 == 1/3 mod 1, 6/3 == 0 mod 1.
-For rotations with differing modulus, check that d1 % d2 = 0,
-where d1 is the larger denom and d2 is the smaller.
-----
 to do:
 create plain-text parser (into APPLY trees)
 add formation changes during Seqs to elaborate.
@@ -197,10 +189,10 @@ animate dancer paths
   generalize rotation
 ----
 
-Primitives coordinates can tell 'in' and 'out' modifiers, which
+Primitives coordinates can have 'in' and 'out' modifiers, which
 multiply by +1 or -1 depending on vector to current formation center.
 This way we don't need separate rules for (say) circulate from RH and
-LH boxes; they both move "+2in" in the sashay direction. (Directions
+LH boxes; they both move "in 2" in the sashay direction. (Directions
 are 'sashay, ahead', aka x,y.
 
 ---------

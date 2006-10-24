@@ -162,8 +162,8 @@ public abstract class GeneralFormationMatcher {
             // is his facing direction consistent?
             Position ip = mi.inputPositions.get(iNum);
             assert ip.x.equals(gp.x) && ip.y.equals(gp.y);
-            Rotation gr = gp.facing.normalize();
-            Rotation ir = ip.facing.normalize();
+            ExactRotation gr = gp.facing.normalize();
+            ExactRotation ir = ip.facing.normalize();
             if (mi.type == MatchType.TBONED) {
                 /* okay */
             } else if (gr.equals(ir)) {
@@ -203,7 +203,7 @@ public abstract class GeneralFormationMatcher {
     }
     
     private static Position zeroRotation(Position p) {
-        return new Position(p.x, p.y, Rotation.ZERO);
+        return new Position(p.x, p.y, ExactRotation.ZERO);
     }
     private static Set<Position> rotated(Position p) {
         Set<Position> s = new HashSet<Position>(4);
@@ -214,6 +214,6 @@ public abstract class GeneralFormationMatcher {
         return s;
     }
     private static final Warp ONE_QUARTER_AROUND_ORIGIN = Warp.rotateAndMove
-           (Position.getGrid(0,0,Rotation.ZERO),
-            Position.getGrid(0,0,Rotation.ONE_QUARTER));
+           (Position.getGrid(0,0,ExactRotation.ZERO),
+            Position.getGrid(0,0,ExactRotation.ONE_QUARTER));
 }
