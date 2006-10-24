@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Woah, dude &mdash; I know Pythagorean triples!</title>
+
+  <script type="application/x-javascript">
+var triples = new Array();
+function sortByFirst(a,b) {
+  return a[0]-b[0];
+}
+function compute() { compute2(); }
+function compute1() {
+  // generate some pythagorean triples.
+  for (var n=2; n<=20; n++) {
+    for (var m=1; m<n; m++) {
+      var a = n*n - m*m;
+      var b = 2*m*n;
+      var c = n*n + m*m;
+      triples.push(new Array(Math.asin(a/c)*180/Math.PI,a,b,c));
+      triples.push(new Array(Math.asin(b/c)*180/Math.PI,b,a,c));
+    }
+  }
+ triples.sort(sortByFirst);
+  for (var t in triples) {
+   document.writeln("<p>"+triples[t]+"</p>");
+  }
+}
+function compute2() {
+  //triples.push(new Array( 5,23,264,265));
+  triples.push(new Array(10,105,608,617));
+  //triples.push(new Array(15,69,260,269));
+  triples.push(new Array(20,51,140,149));
+  //triples.push(new Array(25,36,77,85));
+  triples.push(new Array(30,120,209,241));
+  //triples.push(new Array(35,228,325,397));
+  triples.push(new Array(40,88,105,137));
+  //triples.push(new Array(44.8,119,120,169));
+  //triples.push(new Array(45.2,120,119,169));
+  triples.push(new Array(50,105,88,137));
+  //triples.push(new Array(55,325,228,397));
+  triples.push(new Array(60,209,120,241));
+  //triples.push(new Array(65,77,36,85));
+  triples.push(new Array(70,140,51,149));
+  //triples.push(new Array(75,260,69,269));
+  triples.push(new Array(80,608,105,617));
+  //triples.push(new Array(85,264,23,265));
+}
+function draw() {
+ var canvas = document.getElementById("canvas");
+ var ctx = canvas.getContext("2d");
+
+ var radius = 300.;
+ ctx.beginPath();
+ ctx.moveTo(radius,0);
+ triples.sort(sortByFirst);
+ for (var t in triples) {
+   var a = triples[t][1];
+   var b = triples[t][2];
+   var c = triples[t][3];
+   ctx.lineTo(radius*b/c, radius*a/c);
+ }
+ ctx.lineTo(0,radius);
+ ctx.stroke();
+}
+  </script>
+</head>
+
+<body onload="draw()">
+<p>This is a rational approximation to a quarter circle:</p>
+<canvas id="canvas" width="300" height="300" ></canvas>
+<p>That's it!</p>
+<script>compute();</script>
+
+</body> </html>
