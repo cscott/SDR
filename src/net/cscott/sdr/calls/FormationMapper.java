@@ -11,7 +11,7 @@ import net.cscott.jutil.*;
  * (given a diamond and the various tandems and couples, put them
  * together, breathing out).
  * @author C. Scott Ananian
- * @version $Id: FormationMapper.java,v 1.3 2006-10-23 17:35:15 cananian Exp $
+ * @version $Id: FormationMapper.java,v 1.4 2006-10-24 23:04:20 cananian Exp $
  */
 public class FormationMapper {
     /** This method is just for testing. */
@@ -36,7 +36,7 @@ public class FormationMapper {
         i=0;
         for (Dancer d : meta.dancers()) {
             Map<Dancer,Dancer> mm = new HashMap<Dancer,Dancer>();
-            Formation f = (i>=2 && i<=5) ? FormationList.TANDEM : FormationList.COUPLE;
+            Formation f = FormationList.TANDEM;
             for (Dancer dd : f.dancers())
                 mm.put(dd,StandardDancer.values()[i++]);
             f = new Formation(f, mm);
@@ -47,34 +47,56 @@ public class FormationMapper {
     
     
     /** Insert formations into a meta-formation. */
-    public static Formation insert(Formation meta,
-            Map<Dancer,Formation> components) {
-        // find shared dancer boundaries
-        MultiMap<Fraction,Interval> xim= new GenericMultiMap<Fraction,Interval>
-                                      (Factories.<Interval>arrayListFactory());
-        MultiMap<Fraction,Interval> yim= new GenericMultiMap<Fraction,Interval>
-                                      (Factories.<Interval>arrayListFactory());
+    public static Formation insert(final Formation meta,
+            final Map<Dancer,Formation> components) {
+        // Find 'inner boundaries' of dancers.
+        Set<Fraction> xiB = new HashSet<Fraction>();
+        Set<Fraction> yiB = new HashSet<Fraction>();
         for (Dancer d : meta.dancers()) {
             Box b = meta.bounds(d);
-            xim.add(b.ll.x, new Interval(b.ll.y, b.ur.y));
-            xim.add(b.ur.x, new Interval(b.ll.y, b.ur.y));
-            yim.add(b.ll.y, new Interval(b.ll.x, b.ur.x));
-            yim.add(b.ur.y, new Interval(b.ll.x, b.ur.x));
+            if (b.ll.x.compareTo(Fraction.ZERO)>0)
+                xiB.add(b.ll.x);
+            if (b.ur.x.compareTo(Fraction.ZERO)<0)
+                xiB.add(b.ur.x);
+            if (b.ll.y.compareTo(Fraction.ZERO)>0)
+                yiB.add(b.ll.y);
+            if (b.ur.y.compareTo(Fraction.ZERO)<0)
+                yiB.add(b.ur.y);
         }
-        // filter out boundaries which aren't shared.
-        List<Fraction> xB = onlyShared(xim);
-        List<Fraction> yB = onlyShared(yim);
-        System.out.println("SHARED X: "+xB);
-        System.out.println("SHARED Y: "+yB);
+        xiB.add(Fraction.ZERO); yiB.add(Fraction.ZERO);
+        // sort boundaries.
+        List<Fraction> xB = new ArrayList<Fraction>(xiB);
+        List<Fraction> yB = new ArrayList<Fraction>(yiB);
+        Collections.sort(xB); Collections.sort(yB);
+        System.out.println("INNER X: "+xB);
+        System.out.println("INNER Y: "+yB);
         // for each dancer, find its boundaries & stretch to accomodate
+        // work from center out.
         List<Fraction> nxB = new ArrayList<Fraction>
             (Collections.nCopies(xB.size(),Fraction.ZERO));
         List<Fraction> nyB = new ArrayList<Fraction>
             (Collections.nCopies(yB.size(),Fraction.ZERO));
+        List<Dancer> dancers = new ArrayList<Dancer>(meta.dancers());
+        Collections.sort(dancers, new Comparator<Dancer>() { // sort by abs(x)
+            public int compare(Dancer d1, Dancer d2) {
+                Position p1 = meta.location(d1), p2 = meta.location(d2);
+                return p1.x.abs().compareTo(p2.x.abs());
+            }
+        });
         for (Dancer d : meta.dancers()) {
             Formation f = components.get(d);
             // XXX need to rotate formation appropriately before we get size.
             expand(nxB, xB, xBoundaries(meta.location(d)), xSize(f));
+        }
+        Collections.sort(dancers, new Comparator<Dancer>() { // sort by abs(y)
+            public int compare(Dancer d1, Dancer d2) {
+                Position p1 = meta.location(d1), p2 = meta.location(d2);
+                return p1.y.abs().compareTo(p2.y.abs());
+            }
+        });
+        for (Dancer d : meta.dancers()) {
+            Formation f = components.get(d);
+            // XXX need to rotate formation appropriately before we get size.
             expand(nyB, yB, yBoundaries(meta.location(d)), ySize(f));
         }
         // now reassemble a new formation.
@@ -92,7 +114,9 @@ public class FormationMapper {
                 nf.put(dd, p);
             }
         }
-        return new Formation(nf).recenter();
+        Formation result = new Formation(nf);
+        assert result.isCentered();
+        return result.recenter(); // belt & suspenders.
     }
     // XXX this isn't yet correct: need to place center based on mapping
     // of the two edges & the new size (since outside edges are allowed
