@@ -404,3 +404,7 @@ just do the exact floating point computation, and use the Fraction
 method which generates a rational from a double -- but will this result
 in overflow?  The benefit of the rational approximation is that we
 know that the denominators are < 1000, which gives us plenty of room.
+---------------
+Use the Sphinx RuleGrammar to parse our inputs, rather than having a
+separate ANTLRv3 grammar?  cons: Sphinx doesn't recognize ambiguity
+in the grammar.  pro: it (seems to have) no problem with left recursion.
