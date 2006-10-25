@@ -162,8 +162,8 @@ public abstract class GeneralFormationMatcher {
             // is his facing direction consistent?
             Position ip = mi.inputPositions.get(iNum);
             assert ip.x.equals(gp.x) && ip.y.equals(gp.y);
-            ExactRotation gr = gp.facing.normalize();
-            ExactRotation ir = ip.facing.normalize();
+            Rotation gr = gp.facing.normalize();
+            Rotation ir = ip.facing.normalize();
             if (mi.type == MatchType.TBONED) {
                 /* okay */
             } else if (gr.equals(ir)) {

@@ -17,26 +17,30 @@ import org.apache.commons.lang.builder.*;
 public class Position {
     /** Location. Always non-null. */
     public final Fraction x, y;
-    /** Facing direction. Note that <code>null</code> IS a legal value,
-     * which represents "rotation unspecified" (eg for phantoms). */
-    public final ExactRotation facing;
+    /** Facing direction. Note that {@code facing} should always be an
+     * {@link ExactRotation} for real (non-phantom) dancers. */
+    public final Rotation facing;
     /** Create a Position object. Note that <code>facing</code> may
      *  be <code>null</code> to indicate 'rotation unspecified'. */
-    public Position(Fraction x, Fraction y, ExactRotation facing) {
+    public Position(Fraction x, Fraction y, Rotation facing) {
 	assert x!=null; assert y!=null;
 	this.x = x; this.y = y; this.facing = facing;
     }
-    /** Move the given distance in the facing direction. */
+    /** Move the given distance in the facing direction.
+     * Requires that the {@code facing} direction be an
+     * {@link ExactRotation}. */
     public Position forwardStep(Fraction distance) {
 	assert facing!=null : "rotation unspecified!";
-	Fraction dx = facing.toX().multiply(distance);
-	Fraction dy = facing.toY().multiply(distance);
+	Fraction dx = ((ExactRotation)facing).toX().multiply(distance);
+	Fraction dy = ((ExactRotation)facing).toY().multiply(distance);
 	return new Position(x.add(dx), y.add(dy), facing);
     }
-    /** Move the given distance perpendicular to the facing direction. */
+    /** Move the given distance perpendicular to the facing direction.
+    * Requires that the {@code facing} direction be an
+    * {@link ExactRotation}. */
     public Position sideStep(Fraction distance) {
         assert facing!=null : "rotation unspecified!";
-        ExactRotation f = facing.add(Fraction.ONE_HALF);
+        ExactRotation f = (ExactRotation) facing.add(Fraction.ONE_HALF);
         Fraction dx = f.toX().multiply(distance);
         Fraction dy = f.toY().multiply(distance);
         return new Position(x.add(dx), y.add(dy), facing);
@@ -47,7 +51,7 @@ public class Position {
 	if (amount.equals(Fraction.ZERO)) return this;
 	return new Position(x, y, facing.add(amount));
     }
-    /** Normalize (restrict to 0-1) the rotation of the given position. */
+    /** Normalize (restrict to 0-modulus) the rotation of the given position. */
     public Position normalize() {
         return new Position(x, y, facing.normalize());
     }

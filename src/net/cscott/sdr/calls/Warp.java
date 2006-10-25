@@ -10,7 +10,7 @@ import net.cscott.sdr.util.Fraction;
  * box formation starts with boxes overlapping at time t=0, and
  * results in an undistorted setup at time t=1.
  * @author C. Scott Ananian
- * @version $Id: Warp.java,v 1.5 2006-10-24 23:03:00 cananian Exp $
+ * @version $Id: Warp.java,v 1.6 2006-10-25 20:39:36 cananian Exp $
  */
 public abstract class Warp {
     // XXX: not sure how best to implement this generally yet.
@@ -39,17 +39,22 @@ public abstract class Warp {
     
     /** Returns a <code>Warp</code> which will rotate and translate
      * points such that <code>from</code> is warped to <code>to</code>.
+     * Requires that both {@code from.facing} and {@code to.facing} are
+     * {@link ExactRotation}s.
      */
+    // XXX is this the right spec?  Should we allow general Rotations?
     public static Warp rotateAndMove(Position from, Position to) {
+        assert from.facing instanceof ExactRotation;
+        assert to.facing instanceof ExactRotation;
         if (from.equals(to)) return NONE;
-        ExactRotation rot = to.facing.add(from.facing.amount.negate());
+        ExactRotation rot = (ExactRotation) to.facing.add(from.facing.amount.negate());
         Position nFrom = rotateCWAroundOrigin(from,rot);
         final Position warp = new Position
             (to.x.subtract(nFrom.x), to.y.subtract(nFrom.y),
                     rot);
         Warp w = new Warp() {
             public Position warp(Position p, Fraction time) {
-                p = rotateCWAroundOrigin(p, warp.facing);
+                p = rotateCWAroundOrigin(p, (ExactRotation) warp.facing);
                 return new Position(p.x.add(warp.x), p.y.add(warp.y), p.facing);
             }
         };

@@ -1,6 +1,5 @@
 package net.cscott.sdr.calls;
 
-import net.cscott.sdr.calls.FormationMatch.TaggedFormationAndWarp;
 
 /** The selector list creates selectors for various formations. */
 public abstract class SelectorList {
