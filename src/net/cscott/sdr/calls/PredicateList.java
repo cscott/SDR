@@ -80,7 +80,7 @@ public abstract class PredicateList {
         public boolean evaluate(DanceState ds, Formation f, Condition c) {
             assert c.args.size()==1;
             Program p = Program.valueOf(c.getStringArg(0).toUpperCase());
-            return ds.program.includes(p);
+            return ds.getProgram().includes(p);
         }
     };
 
