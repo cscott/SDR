@@ -49,7 +49,7 @@ import java.math.BigInteger;
  * @author Tim O'Brien
  * @author Pete Gieser
  * @since 2.0
- * @version $Id: Fraction.java,v 1.6 2006-10-24 22:59:24 cananian Exp $
+ * @version $Id: Fraction.java,v 1.7 2006-10-25 20:50:53 cananian Exp $
  */
 public class Fraction extends Number implements Serializable, Comparable<Fraction> {
 
@@ -1042,7 +1042,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
     /**
      * <p>Compares this object to another based on size.</p>
      *
-     * @param object  the object to compare to
+     * @param other  the object to compare to
      * @return -1 if this is less, 0 if equal, +1 if greater
      * @throws ClassCastException if the object is not a <code>Fraction</code>
      * @throws NullPointerException if the object is <code>null</code>
