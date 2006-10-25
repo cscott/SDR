@@ -1,5 +1,6 @@
 package net.cscott.sdr.anim;
 
+import java.lang.reflect.Method;
 import java.util.logging.Level;
 
 import com.jme.app.FixedFramerateGame;
@@ -31,7 +32,7 @@ import com.jme.util.geom.Debugger;
  * the <code>BaseGame</code> in a manner similar to <code>SimpleGame</code>,
  * but defers the really application-specific stuff to subclasses.
  * @author C. Scott Ananian
- * @version $Id: SdrBaseGame.java,v 1.3 2006-10-06 21:29:08 cananian Exp $
+ * @version $Id: SdrBaseGame.java,v 1.4 2006-10-25 17:46:46 cananian Exp $
  */
 public abstract class SdrBaseGame extends FixedFramerateGame {
     /** Our camera. */
@@ -144,6 +145,7 @@ public abstract class SdrBaseGame extends FixedFramerateGame {
                 ( Level.INFO, "Running on: "+display.getAdapter()+"\n"+
                   "Driver version: "+display.getDriverVersion());
             /** Create a window with the startup box's information. */
+	    display.setTitle("SDR");
             display.createWindow(properties.getWidth(), properties.getHeight(),
                                  properties.getDepth(), properties.getFreq(),
                                  properties.getFullscreen() );
@@ -188,8 +190,6 @@ public abstract class SdrBaseGame extends FixedFramerateGame {
         /** Get a high resolution timer for FPS updates. */
         timer = Timer.getTimer();
 
-        /** Sets the title of our display. */
-        display.setTitle( "SdrBaseGame" );
         /**
          * Signal to the renderer that it should keep track of rendering
          * information.
@@ -213,6 +213,19 @@ public abstract class SdrBaseGame extends FixedFramerateGame {
                                                       KeyInput.KEY_ESCAPE );
         KeyBindingManager.getKeyBindingManager().set( "toggle_depth",
                                                       KeyInput.KEY_F3 );
+
+        /** Close the splash screen, if not already closed. */
+        try {
+            Class c = Class.forName("java.awt.SplashScreen");
+            Method m = c.getMethod("getSplashScreen");
+            Object o = m.invoke(null); // SplashScreen instance.
+            if (o!=null) {
+                m = c.getMethod("close");
+                m.invoke(o);  // SplashScreen.close().
+            }
+        } catch (Exception ce) {
+            /* ignore: must be running on pre-1.6 jdk */
+        }
     }
     /** This method is called whenever the camera is moved. */
     public void onCamera() { }
