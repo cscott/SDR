@@ -47,11 +47,11 @@ number returns [Apply a]
 	: f=a_number { a = Apply.makeApply(f.toProperString()); }
 	;
 a_number returns [Fraction f]
-	: f1=digit 'and' f2=fraction { f=f1.add(f2); }
-	| f1=digit {f=f1;}
-	| f1=fraction {f=f1;}
+	: f1=a_digit 'and' f2=a_fraction { f=f1.add(f2); }
+	| f1=a_digit {f=f1;}
+	| f1=a_fraction {f=f1;}
 	;
-digit returns [Fraction f]
+a_digit returns [Fraction f]
 	: 'one' { f=Fraction.valueOf(1); }
 	| 'two' { f=Fraction.valueOf(2); }
 	| 'three' { f=Fraction.valueOf(3); }
@@ -62,7 +62,10 @@ digit returns [Fraction f]
 	| 'eight' { f=Fraction.valueOf(8); }
 	| 'nine' { f=Fraction.valueOf(9); }
 	;
-fraction returns [Fraction f]
+fraction returns [Apply a]
+	: f=a_fraction { a = Apply.makeApply(f.toProperString()); }
+	;
+a_fraction returns [Fraction f]
 	: ('a'|'one') 'half' { f=Fraction.valueOf("1/2"); }
 	| ('a'|'one') 'third' { f=Fraction.valueOf("1/3"); }
 	| ('a'|'one') 'quarter' { f=Fraction.valueOf("1/4"); }
@@ -73,8 +76,8 @@ cardinal returns [Apply a]
 	: f=a_cardinal { a=Apply.makeApply(f.toProperString()); }
 	;
 a_cardinal returns [Fraction f]
-	: 'once' ('and' f2=fraction)? { f=Fraction.valueOf(1); if (f2!=null) f=f.add(f2); }
-	| 'twice' ('and' f2=fraction)? { f=Fraction.valueOf(2); if (f2!=null) f=f.add(f2); }
+	: 'once' ('and' f2=a_fraction)? { f=Fraction.valueOf(1); if (f2!=null) f=f.add(f2); }
+	| 'twice' ('and' f2=a_fraction)? { f=Fraction.valueOf(2); if (f2!=null) f=f.add(f2); }
 	| f1=a_number ('times'|'time') { f=f1; }
 	;
 

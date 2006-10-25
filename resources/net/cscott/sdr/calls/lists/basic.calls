@@ -122,7 +122,7 @@ def: u turn back
   */
 
 def: courtesy turn(n)
-  spoken: [10] courtesy turn <n=number>
+  spoken: [10] courtesy turn <n=fraction>
   call: _fractional(n, _courtesy turn 4/4)
 
 def: _courtesy turn 4/4
@@ -348,7 +348,7 @@ def: touch
   call: step to a wave
 
 def: _touch(n) // XXX: touch 3/4 is definitely mainstream, not basic
-  spoken: [10] touch <n=number>
+  spoken: [10] touch <n=fraction>
   call: touch, cast([n])
 
 def: circulate // all-8
@@ -472,7 +472,7 @@ def: tag the line
   call: _tag(_atc tag, 1)
 def: _tag the line(n)
   optional: LEFT
-  spoken: [10] tag the line <n=number>
+  spoken: [10] tag the line <n=fraction>
   condition: GREATER(1, n)
   call: _tag(_atc tag, n)
   
