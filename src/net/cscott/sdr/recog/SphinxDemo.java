@@ -77,6 +77,9 @@ public class SphinxDemo {
 		    Result result = recognizer.recognize();
 		    
 		    if (result != null) {
+                        // we can use result.getResults() to get N possible
+                        // results.  (See source code for
+                        // Result.getBestFinalResultNoFiller() for details).
 			String resultText = result.getBestFinalResultNoFiller();
 			System.out.println("You said: " + resultText + "\n");
 		    } else {
