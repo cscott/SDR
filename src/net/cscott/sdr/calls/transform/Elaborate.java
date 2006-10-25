@@ -6,14 +6,14 @@ import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.FormationMatch.TaggedFormationAndWarp;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.*;
-import net.cscott.sdr.util.Fraction;
+
 /**
  * The {@link Elaborate} class does formation evaluation to eliminate
  * {@link Opt} elements in the call tree and identify the dancers in
  * {@link Par}s.  It inserts {@link Warp} elements as needed.
  * The result is a 'simplified tree'.
  * @author C. Scott Ananian
- * @version $Id: Elaborate.java,v 1.3 2006-10-18 21:14:44 cananian Exp $
+ * @version $Id: Elaborate.java,v 1.4 2006-10-25 20:43:28 cananian Exp $
  */
 public class Elaborate extends TransformVisitor<Formation> {
     /** Static dance state (like program, etc). */

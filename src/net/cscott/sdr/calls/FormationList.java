@@ -1,12 +1,15 @@
 package net.cscott.sdr.calls;
 
-import net.cscott.sdr.calls.Formation.DancerInfo;
-import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
-import net.cscott.sdr.calls.TaggedFormation.Tag;
 import static net.cscott.sdr.calls.TaggedFormation.Tag.*;
-import net.cscott.sdr.util.Fraction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import net.cscott.sdr.calls.TaggedFormation.Tag;
+import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
+import net.cscott.sdr.util.Fraction;
 
 /** A list of common formations, specified with phantoms.
  */

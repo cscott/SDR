@@ -1,16 +1,13 @@
 package net.cscott.sdr.calls.transform;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.Warp;
-import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.calls.ast.Prim.Direction;
 import net.cscott.sdr.calls.grm.Rule;
@@ -21,7 +18,7 @@ import net.cscott.sdr.util.Fraction;
  * "ast tree generation functions", while optimizing the case where the
  * function generates a constant.
  * @author C. Scott Ananian
- * @version $Id: BuilderHelper.java,v 1.5 2006-10-24 23:03:01 cananian Exp $
+ * @version $Id: BuilderHelper.java,v 1.6 2006-10-25 20:43:28 cananian Exp $
  */
 abstract class BuilderHelper {
     // 'B' is pronounced as 'Builder'.  So a B<Prim> builds Prim objects.

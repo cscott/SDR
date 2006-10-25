@@ -6,7 +6,6 @@ import antlr.Token;
 import antlr.debug.misc.ASTFrame;
 
 import net.cscott.sdr.calls.ast.Apply;
-import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.transform.*;
 
 public abstract class TestParser {

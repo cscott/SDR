@@ -1,6 +1,5 @@
 package net.cscott.sdr.calls.grm;
 
-import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.util.Fraction;
 
 /** Grammar rule: a right-hand side, left-hand side,

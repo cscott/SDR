@@ -1,15 +1,12 @@
 package net.cscott.sdr.calls.transform;
 
-import java.util.*;
-
-import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.ast.*;
 
 /**
  * {@link ValueVisitor} is a superclass to eliminate
  * common code when writing tree transformations.
  * @author C. Scott Ananian
- * @version $Id: ValueVisitor.java,v 1.1 2006-10-17 16:29:06 cananian Exp $
+ * @version $Id: ValueVisitor.java,v 1.2 2006-10-25 20:43:28 cananian Exp $
  */
 public abstract class ValueVisitor<RESULT, CLOSURE> {
     public abstract RESULT visit(Apply apply, CLOSURE t);

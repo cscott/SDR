@@ -9,13 +9,7 @@ import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.Warp;
-import net.cscott.sdr.calls.ast.Apply;
-import net.cscott.sdr.calls.ast.Comp;
-import net.cscott.sdr.calls.ast.In;
-import net.cscott.sdr.calls.ast.Part;
-import net.cscott.sdr.calls.ast.Seq;
-import net.cscott.sdr.calls.ast.SeqCall;
-import net.cscott.sdr.calls.ast.Warped;
+import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.transform.Fractional;
@@ -25,7 +19,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.15 2006-10-22 19:25:45 cananian Exp $
+ * @version $Id: BasicList.java,v 1.16 2006-10-25 20:43:28 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
