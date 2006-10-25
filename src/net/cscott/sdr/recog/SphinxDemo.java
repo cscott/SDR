@@ -13,6 +13,7 @@
 package net.cscott.sdr.recog;
 
 import edu.cmu.sphinx.frontend.util.Microphone;
+import edu.cmu.sphinx.jsapi.JSGFGrammar;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.props.ConfigurationManager;
@@ -52,6 +53,11 @@ public class SphinxDemo {
 
             /* allocate the resource necessary for the recognizer */
             recognizer.allocate();
+            
+            /* get the JSGF grammar component */
+            JSGFGrammar jsgfGrammar =
+                (JSGFGrammar) cm.lookup("jsgfGrammar");
+            jsgfGrammar.dumpRandomSentences(100);
 
             /* the microphone will keep recording until the program exits */
 	    if (microphone.startRecording()) {
