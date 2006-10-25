@@ -11,16 +11,24 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
     }
     /** Add the given amount to this rotation direction. */
     @Override
-    public ExactRotation add(Fraction f) { return (ExactRotation) add(f); }
+    public ExactRotation add(Fraction f) {
+	return (ExactRotation) super.add(f);
+    }
     /** Subtract the given amount from this rotation direction. */
     @Override
-    public ExactRotation subtract(Fraction f) { return (ExactRotation) subtract(f); }
+    public ExactRotation subtract(Fraction f) {
+	return (ExactRotation) super.subtract(f);
+    }
     /** Negate this rotation (mirror image). */
     @Override
-    public ExactRotation negate() { return (ExactRotation) negate(); }
+    public ExactRotation negate() {
+	return (ExactRotation) super.negate();
+    }
     /** Normalize rotation to the range 0-1. */
     @Override
-    public ExactRotation normalize() { return (ExactRotation) normalize(); }
+    public ExactRotation normalize() {
+	return (ExactRotation) super.normalize();
+    }
     /** Compare unnormalized rotation amounts. */
     public int compareTo(ExactRotation r) {
 	return this.amount.compareTo(r.amount);
