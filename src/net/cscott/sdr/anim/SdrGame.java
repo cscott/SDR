@@ -92,7 +92,7 @@ public class SdrGame extends SdrBaseGame {
      */
     protected void sdrInitGame() {
         setFrameRate(20); // limit frame rate: save our CPU for speech
-        display.setTitle("SDR - jME demo");
+        display.setTitle(net.cscott.sdr.Version.PACKAGE_STRING);
         cam.setLocation(camStartup);
         cam.lookAt(new Vector3f(0,0,0), new Vector3f(0,0,1));
         onCamera(); // initialize camera tracking.
