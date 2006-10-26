@@ -20,7 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * ordered from most-likely to least-likely.  We'll try each possibility
  * and take the first one that works.
  * @author C. Scott Ananian
- * @version $Id: CommandInput.java,v 1.1 2006-10-25 22:55:18 cananian Exp $
+ * @version $Id: CommandInput.java,v 1.2 2006-10-26 17:33:53 cananian Exp $
  */
 public class CommandInput {
     /** Create a CommandInput object to synchronize communication between
@@ -48,13 +48,8 @@ public class CommandInput {
      * method.  Blocks until a possible command is available.
      * @return the next possible command.
      */
-    public PossibleCommand getNextCommand() {
-        while (true)
-            try {
-                return queue.take();
-            } catch (InterruptedException e) {
-                /* try again */
-            }
+    public PossibleCommand getNextCommand() throws InterruptedException {
+        return queue.take();
     }
     // helper methods.
     /** Create a PossibleCommand from a list of possibilities, ordered
@@ -77,10 +72,6 @@ public class CommandInput {
             public PossibleCommand next() {
                 return commandFromStrings(ds, l.subList(1,l.size()));
             }
-            @Override
-            public boolean hasNext() {
-                return next()!=null;
-            }
         };
         if (pc.get()==null) return pc.next();
         return pc;
@@ -98,10 +89,9 @@ public class CommandInput {
     implements Iterable<PossibleCommand> {
         /** Return the command possibility. */
         public abstract Apply get();
-        /** Return the next possible command. */
+        /** Return the next possible command, or null if there are no more. */
         public abstract PossibleCommand next();
-        /** Returns true if there are more command possibilities. */
-        public abstract boolean hasNext();
+
         public final Iterator<PossibleCommand> iterator() {
             return new PCIterator(this);
         };
@@ -110,9 +100,11 @@ public class CommandInput {
             private PossibleCommand pc;
             PCIterator(PossibleCommand pc) { this.pc = pc; }
             @Override
-            public boolean hasNext() { return pc.hasNext(); }
+            public boolean hasNext() { return pc!=null; }
             @Override
-            public PossibleCommand next() { pc=pc.next(); return pc; }
+            public PossibleCommand next() {
+                PossibleCommand npc=pc; pc=pc.next(); return npc;
+            }
         }
     }
 }
