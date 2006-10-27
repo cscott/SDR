@@ -65,18 +65,21 @@ public class Rotation {
                     .multiply(this.modulus);
         return create(f, this.modulus);
     }
-    /** Rotations are equal iff their (unnormalized) rotation amount and
+    /** Rotations are equal iff their normalized rotation amount and
      * modulus are exactly equal. */
     @Override
     public boolean equals(Object o) {
+        if (this==o) return true; // common case.
 	if (!(o instanceof Rotation)) return false;
         Rotation r = (Rotation) o;
-        return this.amount.equals(r.amount) && this.modulus.equals(r.modulus);
+        if (!this.modulus.equals(r.modulus)) return false;
+        return this.normalize().amount.equals(r.normalize().amount);
     }
-    /** Hashcode of the unnormalized amount & modulus. */
+    /** Hashcode of the normalized amount & modulus. */
     @Override
     public int hashCode() {
-	return 51 + this.amount.hashCode() + 7*this.modulus.hashCode();
+        Rotation r = this.normalize();
+	return 51 + r.amount.hashCode() + 7*r.modulus.hashCode();
     }
     /** Returns true iff all the rotations possible with the given {@code r}
      * are included within the set of rotations possible with {@code this}.
