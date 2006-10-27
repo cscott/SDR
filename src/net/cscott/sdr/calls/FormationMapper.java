@@ -3,7 +3,6 @@ package net.cscott.sdr.calls;
 import java.util.*;
 
 import net.cscott.sdr.util.*;
-import net.cscott.jutil.*;
 
 /** The {@link FormationMapper} class contains methods to disassemble
  * a square, given component formations (ie, get a diamond back from
@@ -11,7 +10,7 @@ import net.cscott.jutil.*;
  * (given a diamond and the various tandems and couples, put them
  * together, breathing out).
  * @author C. Scott Ananian
- * @version $Id: FormationMapper.java,v 1.6 2006-10-27 20:43:26 cananian Exp $
+ * @version $Id: FormationMapper.java,v 1.7 2006-10-27 21:31:39 cananian Exp $
  */
 public class FormationMapper {
     /** This method is just for testing. */
@@ -100,20 +99,16 @@ public class FormationMapper {
             expand(yExpand, yBound, b.ll.y, b.ur.y, f.bounds().height());
         }
         // now reassemble a new formation.
-        // XXX WARPED IS INCORRECT
         Map<Dancer,Position> nf = new HashMap<Dancer,Position>();
         for (Dancer d : meta.dancers()) {
-            Position center = meta.location(d);
             Formation f = sub.get(d);
-            // XXX need to rotate facing direction below
-            for (Dancer dd : f.dancers()) {
-                Position relative = f.location(dd);
-                Position p = new Position
-                    (warped(xExpand,xBound,center.x).add(relative.x),
-                     warped(yExpand,yBound,center.y).add(relative.y),
-                     relative.facing);
-                nf.put(dd, p);
-            }
+            // find the boundary this formation is going to hang off
+            Box b = meta.bounds(d);
+            Integer[] xb = findNearest(xBound, b.ll.x, b.ur.x);
+            Integer[] yb = findNearest(yBound, b.ll.y, b.ur.y);
+            place(nf, f, computeCenter(f.bounds(),
+                    warpPair(xExpand,xBound,xb[0],xb[1]),
+                    warpPair(yExpand,yBound,yb[0],yb[1])));
         }
         Formation result = new Formation(nf);
         assert result.isCentered();
@@ -135,15 +130,65 @@ public class FormationMapper {
             return xy1.compareTo(xy2);
         }
     }
-    // XXX this isn't yet correct: need to place center based on mapping
-    // of the two edges & the new size (since outside edges are allowed
-    // to expand without limit
-    private static Fraction warped(List<Fraction> expansion, List<Fraction> bounds, Fraction center) {
-        int index = Collections.binarySearch(bounds, center);
-        if (index<0) index = -index-1; // now index is first element >= center.
-        for (int i=0; i<index; i++)
-            center = center.add(expansion.get(i));
-        return center;
+    private static Fraction[] warpPair(List<Fraction> expansion, List<Fraction> boundary, Integer low, Integer high) {
+        return new Fraction[] {
+                low==null ? null : warp(expansion, boundary, boundary.get(low)),
+                high==null ? null : warp(expansion, boundary, boundary.get(high))
+        };
+    }
+    private static Point computeCenter(Box naturalBounds, Fraction[] x, Fraction[] y) {
+        // compute the desired center of the formation.  if both bounds are
+        // given, then the center is the mean.  Otherwise, align edge to the
+        // known bound. If no bounds are given, put on the centerline.
+        Fraction cx, cy;
+        if (x[0]==null && x[1]==null)
+            cx = Fraction.ZERO;
+        else if (x[0]==null)
+            cx = x[1].subtract(naturalBounds.width().divide(Fraction.TWO));
+        else if (x[1]==null)
+            cx = x[0].add(naturalBounds.width().divide(Fraction.TWO));
+        else
+            cx = x[0].add(x[1]).divide(Fraction.TWO);
+        if (y[0]==null && y[1]==null)
+            cy = Fraction.ZERO;
+        else if (y[0]==null)
+            cy = y[1].subtract(naturalBounds.height().divide(Fraction.TWO));
+        else if (y[1]==null)
+            cy = y[0].add(naturalBounds.height().divide(Fraction.TWO));
+        else
+            cy = y[0].add(y[1]).divide(Fraction.TWO);
+        return new Point(cx, cy);
+    }
+    private static void place(Map<Dancer,Position> nf, Formation f, Point center) {
+        for (Dancer d : f.dancers())
+            nf.put(d, offset(f.location(d), center));
+    }
+    private static Position offset(Position p, Point offset) {
+        return new Position(p.x.add(offset.x), p.y.add(offset.y), p.facing);
+    }
+    /** Compute the 'expanded' location of the given boundary value. */
+    private static Fraction warp(List<Fraction> expansion,
+                                 List<Fraction> boundary, Fraction val) {
+        if (val.compareTo(Fraction.ZERO) >= 0) {
+            Integer[] boundIndex = findNearest(boundary, Fraction.ZERO, val);
+            // this should be an exact match.
+            assert boundary.get(boundIndex[0]).compareTo(Fraction.ZERO)==0;
+            assert boundary.get(boundIndex[1]).compareTo(val)==0;
+            // okay, starting from zero, add up all the expansion.
+            // note that expansion[0] corresponds to boundary[0]-boundary[1], etc
+            for (int i=boundIndex[0]; i<boundIndex[1]; i++)
+                val = val.add(expansion.get(i));
+        } else {
+            Integer[] boundIndex = findNearest(boundary, val, Fraction.ZERO);
+            // this should be an exact match.
+            assert boundary.get(boundIndex[1]).compareTo(Fraction.ZERO)==0;
+            assert boundary.get(boundIndex[0]).compareTo(val)==0;
+            // okay, starting from zero, add up all the expansion.
+            // note that expansion[0] corresponds to boundary[0]-boundary[1], etc
+            for (int i=boundIndex[0]; i<boundIndex[1]; i++)
+                val = val.subtract(expansion.get(i));
+        }
+        return val; // done!
     }
     private static void expand(List<Fraction> expansion, List<Fraction> boundary,
                                Fraction dancerMin, Fraction dancerMax,
