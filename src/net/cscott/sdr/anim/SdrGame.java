@@ -7,6 +7,7 @@ import java.util.List;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Formation;
+import net.cscott.sdr.calls.FormationMapper;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.StandardDancer;
 import net.cscott.sdr.util.Fraction;
@@ -190,13 +191,26 @@ public class SdrGame extends SdrBaseGame {
             rootNode.attachChild(ad.node);
             ad.addPosition(Fraction.ZERO, f.location(d));
         }
-        // dancer[0] is COUPLE 3 GIRL, starting at (-1,3,1/2)
+        if (false) {
+        // dancer[5] is COUPLE 3 GIRL, starting at (-1,3,1/2)
         for (int i=0; i<40; i+=8) {
         dancers.get(5).addPosition(Fraction.valueOf(i+2), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), ExactRotation.THREE_QUARTERS));
         dancers.get(5).addPosition(Fraction.valueOf(i+4), new Position(Fraction.valueOf(-4), Fraction.valueOf(3), ExactRotation.ZERO));
         dancers.get(5).addPosition(Fraction.valueOf(i+6), new Position(Fraction.valueOf(-3), Fraction.valueOf(4), ExactRotation.ONE_QUARTER));
         dancers.get(5).addPosition(Fraction.valueOf(i+8), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), ExactRotation.ONE_HALF));
         }
+        } else {
+        // help debug FormationMapper
+        FormationMapper.main(null);
+        for (AnimDancer ad: dancers) {
+            ad.addPosition(Fraction.valueOf( 5), FormationMapper.test1.location(ad.dancer));
+            ad.addPosition(Fraction.valueOf(10), FormationMapper.test1.location(ad.dancer));
+            ad.addPosition(Fraction.valueOf(15), FormationMapper.test2.location(ad.dancer));
+            ad.addPosition(Fraction.valueOf(20), FormationMapper.test2.location(ad.dancer));
+            ad.addPosition(Fraction.valueOf(25), FormationMapper.test1.location(ad.dancer));
+        }
+        }
+            
         
         initialTime = timer.getTimeInSeconds();
         

@@ -10,9 +10,10 @@ import net.cscott.sdr.util.*;
  * (given a diamond and the various tandems and couples, put them
  * together, breathing out).
  * @author C. Scott Ananian
- * @version $Id: FormationMapper.java,v 1.7 2006-10-27 21:31:39 cananian Exp $
+ * @version $Id: FormationMapper.java,v 1.8 2006-10-27 21:41:18 cananian Exp $
  */
 public class FormationMapper {
+    public static Formation test1=null, test2=null;
     /** This method is just for testing. */
     public static void main(String[] args) {
         Map<Dancer,Formation> m = new HashMap<Dancer,Formation>();
@@ -27,7 +28,8 @@ public class FormationMapper {
             m.put(d,f);
         }
         // okay, we've made our inputs: results should be tidal two-faced line
-        System.out.println(insert(meta, m));
+        test1=insert(meta, m);
+        System.out.println(test1);
         
         // new formation.
         m.clear();
@@ -41,7 +43,8 @@ public class FormationMapper {
             f = new Formation(f, mm);
             m.put(d,f);
         }
-        System.out.println(insert(meta, m));
+        test2=insert(meta,m);
+        System.out.println(test2);
     }
     
     
