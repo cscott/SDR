@@ -15,8 +15,11 @@ import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
+import com.jme.math.FastMath;
+import com.jme.math.Matrix3f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.Skybox;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.TextureState;
@@ -25,6 +28,7 @@ import com.jme.util.TextureManager;
 
 public class SdrGame extends SdrBaseGame {
 
+    private Skybox skybox;
     private List<AnimDancer> dancers = new ArrayList<AnimDancer>(8);
     private final static Vector3f camCaller = new Vector3f(0, -8.5f, 9.4f);
     private final static Vector3f camStartup = new Vector3f(8,20,50);
@@ -77,7 +81,9 @@ public class SdrGame extends SdrBaseGame {
         Vector3f location = new Vector3f(oldCamLocation);
         location.interpolate(camTarget,interp);
         cam.setLocation(location);
-
+        // keep skybox with cam.
+        skybox.setLocalTranslation(location);
+            
         // target direction is from current location towards 0,0,0
         // with upvector 0,0,1 (maybe should slew from current location?)
         Vector3f targetDirection = Vector3f.ZERO.subtract(location).normalizeLocal();
@@ -107,6 +113,53 @@ public class SdrGame extends SdrBaseGame {
         cam.setLocation(camStartup);
         cam.lookAt(new Vector3f(0,0,0), new Vector3f(0,0,1));
         onCamera(); // initialize camera tracking.
+
+	// pretty sky box
+        skybox = new Skybox("skybox", 10, 10, 10);
+ 
+        Texture north = TextureManager.loadTexture(
+            SdrGame.class.getClassLoader().getResource(
+            "net/cscott/sdr/anim/north.jpg"),
+            Texture.MM_LINEAR,
+            Texture.FM_LINEAR);
+        Texture south = TextureManager.loadTexture(
+            SdrGame.class.getClassLoader().getResource(
+            "net/cscott/sdr/anim/south.jpg"),
+            Texture.MM_LINEAR,
+            Texture.FM_LINEAR);
+        Texture east = TextureManager.loadTexture(
+            SdrGame.class.getClassLoader().getResource(
+            "net/cscott/sdr/anim/east.jpg"),
+            Texture.MM_LINEAR,
+            Texture.FM_LINEAR);
+        Texture west = TextureManager.loadTexture(
+            SdrGame.class.getClassLoader().getResource(
+            "net/cscott/sdr/anim/west.jpg"),
+            Texture.MM_LINEAR,
+            Texture.FM_LINEAR);
+        Texture up = TextureManager.loadTexture(
+            SdrGame.class.getClassLoader().getResource(
+            "net/cscott/sdr/anim/top.jpg"),
+            Texture.MM_LINEAR,
+            Texture.FM_LINEAR);
+        Texture down = TextureManager.loadTexture(
+            SdrGame.class.getClassLoader().getResource(
+            "net/cscott/sdr/anim/bottom.jpg"),
+            Texture.MM_LINEAR,
+            Texture.FM_LINEAR);
+ 
+        skybox.setTexture(Skybox.NORTH, north); //up
+        skybox.setTexture(Skybox.WEST, west); //east
+        skybox.setTexture(Skybox.SOUTH, south);//down
+        skybox.setTexture(Skybox.EAST, east);//west
+        skybox.setTexture(Skybox.UP, up);//north
+        skybox.setTexture(Skybox.DOWN, down);
+        skybox.preloadTextures();
+	Matrix3f skyRot = new Matrix3f();
+        skyRot.fromAngleNormalAxis(FastMath.PI/2,new Vector3f(1,0,0));
+        skybox.setLocalRotation(skyRot);
+	
+        rootNode.attachChild(skybox);
 
         // create floor.
         Quad q = new Quad("floor", 10, 10);
