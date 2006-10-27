@@ -24,7 +24,7 @@ public class Rotation {
         assert this.modulus.compareTo(Fraction.ZERO) >= 0;
         assert this.modulus.getNumerator()==0 || this.modulus.getNumerator()==1;
         assert this.modulus.compareTo(Fraction.ZERO)==0 ?
-                this.amount.compareTo(Fraction.ZERO)==0 : false;
+                this.amount.compareTo(Fraction.ZERO)==0 : true;
     }
     public static final Rotation create(Fraction amount, Fraction modulo) {
         // Effective modulus is always 1/N for some N -- reduce fraction to
