@@ -5,19 +5,19 @@ import java.util.List;
 
 import net.cscott.sdr.calls.FormationMatch.TaggedFormationAndWarp;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
-import junit.framework.TestCase;
 import static net.cscott.sdr.calls.SelectorList.*;
 
-public class TestSelectors extends TestCase {
+import org.junit.Test;
+import static org.junit.Assert.*;
+import junit.framework.JUnit4TestAdapter;
 
-    public static void main(String[] args) {
-        junit.swingui.TestRunner.run(TestSelectors.class);
+public class TestSelectors {
+
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(TestSelectors.class);
     }
-
-    public TestSelectors(String arg0) {
-        super(arg0);
-    }
-
+    
+    @Test
     public void testCouplesInSquaredSet() {
         // test 
         Formation f = Formation.SQUARED_SET;
@@ -32,6 +32,7 @@ public class TestSelectors extends TestCase {
             }
         }
     }
+    @Test
     public void testCouplesInFourSquare() {
         // test 
         Formation f = Formation.FOUR_SQUARE;
@@ -46,6 +47,7 @@ public class TestSelectors extends TestCase {
             }
         }
     }
+    @Test
     public void testFacingDancersInFourSquare() {
         // test 
         Formation f = Formation.FOUR_SQUARE;
@@ -57,6 +59,7 @@ public class TestSelectors extends TestCase {
             assertEquals(l.get(0).isBoy(), l.get(1).isGirl());
         }
     }
+    @Test
     public void testFacingCouplesInFourSquare() {
         // test 
         Formation f = Formation.FOUR_SQUARE;
