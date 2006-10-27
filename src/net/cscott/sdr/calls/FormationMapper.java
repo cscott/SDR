@@ -11,7 +11,7 @@ import net.cscott.jutil.*;
  * (given a diamond and the various tandems and couples, put them
  * together, breathing out).
  * @author C. Scott Ananian
- * @version $Id: FormationMapper.java,v 1.5 2006-10-27 05:14:12 cananian Exp $
+ * @version $Id: FormationMapper.java,v 1.6 2006-10-27 20:43:26 cananian Exp $
  */
 public class FormationMapper {
     /** This method is just for testing. */
@@ -46,10 +46,17 @@ public class FormationMapper {
     }
     
     
-    /** Insert formations into a meta-formation. */
+    /** Insert formations into a meta-formation.  Note that
+     * rotations in the meta formation must be exact. */
     public static Formation insert(final Formation meta,
             final Map<Dancer,Formation> components) {
-        // Find 'inner boundaries' of dancers.
+        // Rotate components to match orientations of meta dancers.
+        Map<Dancer,Formation> sub =
+            new HashMap<Dancer,Formation>(components.size());
+        for (Dancer d : meta.dancers())
+            sub.put(d, components.get(d).rotate
+                    ((ExactRotation)meta.location(d).facing));
+        // Find 'inner boundaries' of meta dancers.
         Set<Fraction> xiB = new HashSet<Fraction>();
         Set<Fraction> yiB = new HashSet<Fraction>();
         for (Dancer d : meta.dancers()) {
@@ -65,53 +72,45 @@ public class FormationMapper {
         }
         xiB.add(Fraction.ZERO); yiB.add(Fraction.ZERO);
         // sort boundaries.
-        List<Fraction> xB = new ArrayList<Fraction>(xiB);
-        List<Fraction> yB = new ArrayList<Fraction>(yiB);
-        Collections.sort(xB); Collections.sort(yB);
-        System.out.println("INNER X: "+xB);
-        System.out.println("INNER Y: "+yB);
+        List<Fraction> xBound = new ArrayList<Fraction>(xiB);
+        List<Fraction> yBound = new ArrayList<Fraction>(yiB);
+        Collections.sort(xBound); Collections.sort(yBound);
         // for each dancer, find its boundaries & stretch to accomodate
         // work from center out.
-        List<Fraction> nxB = new ArrayList<Fraction>
-            (Collections.nCopies(xB.size(),Fraction.ZERO));
-        List<Fraction> nyB = new ArrayList<Fraction>
-            (Collections.nCopies(yB.size(),Fraction.ZERO));
+        // Note that expansion occurs *between* elements of the original
+        // boundary list, so it is 1 element shorter than the boundary list.
+        // expansion[0] is the expansion between boundary[0] and boundary[1].
+        List<Fraction> xExpand = new ArrayList<Fraction>
+            (Collections.nCopies(xBound.size()-1,Fraction.ZERO));
+        List<Fraction> yExpand = new ArrayList<Fraction>
+            (Collections.nCopies(yBound.size()-1,Fraction.ZERO));
         List<Dancer> dancers = new ArrayList<Dancer>(meta.dancers());
-        Collections.sort(dancers, new Comparator<Dancer>() { // sort by abs(x)
-            public int compare(Dancer d1, Dancer d2) {
-                Position p1 = meta.location(d1), p2 = meta.location(d2);
-                return p1.x.abs().compareTo(p2.x.abs());
-            }
-        });
+        // sort dancers by absolute x
+        Collections.sort(dancers, new DancerLocComparator(meta,true,true)); 
         for (Dancer d : meta.dancers()) {
-            Formation f = components.get(d);
-            // XXX need to rotate formation appropriately before we get size.
-            // XXX EXPANSION IS INCORRECT
-            expand(nxB, xB, xBoundaries(meta.location(d)), xSize(f));
+            Formation f = sub.get(d);
+            Box b = meta.bounds(d);
+            expand(xExpand, xBound, b.ll.x, b.ur.x, f.bounds().width());
         }
-        Collections.sort(dancers, new Comparator<Dancer>() { // sort by abs(y)
-            public int compare(Dancer d1, Dancer d2) {
-                Position p1 = meta.location(d1), p2 = meta.location(d2);
-                return p1.y.abs().compareTo(p2.y.abs());
-            }
-        });
+        // sort dancers by absolute y
+        Collections.sort(dancers, new DancerLocComparator(meta,false,true)); 
         for (Dancer d : meta.dancers()) {
-            Formation f = components.get(d);
-            // XXX need to rotate formation appropriately before we get size.
-            // XXX EXPANSION IS INCORRECT
-            expand(nyB, yB, yBoundaries(meta.location(d)), ySize(f));
+            Formation f = sub.get(d);
+            Box b = meta.bounds(d);
+            expand(yExpand, yBound, b.ll.y, b.ur.y, f.bounds().height());
         }
         // now reassemble a new formation.
+        // XXX WARPED IS INCORRECT
         Map<Dancer,Position> nf = new HashMap<Dancer,Position>();
         for (Dancer d : meta.dancers()) {
             Position center = meta.location(d);
-            Formation f = components.get(d);
-            // XXX need to rotate formation, then rotate facing direction below
+            Formation f = sub.get(d);
+            // XXX need to rotate facing direction below
             for (Dancer dd : f.dancers()) {
                 Position relative = f.location(dd);
                 Position p = new Position
-                    (warped(nxB,xB,center.x).add(relative.x),
-                     warped(nyB,yB,center.y).add(relative.y),
+                    (warped(xExpand,xBound,center.x).add(relative.x),
+                     warped(yExpand,yBound,center.y).add(relative.y),
                      relative.facing);
                 nf.put(dd, p);
             }
@@ -119,6 +118,22 @@ public class FormationMapper {
         Formation result = new Formation(nf);
         assert result.isCentered();
         return result.recenter(); // belt & suspenders.
+    }
+    private static class DancerLocComparator implements Comparator<Dancer> {
+        private final Formation f;
+        private final boolean isX;
+        private final boolean isAbs;
+        DancerLocComparator(Formation f, boolean isX, boolean isAbs) {
+            this.f = f; this.isX = isX; this.isAbs = isAbs;
+        }
+        public int compare(Dancer d1, Dancer d2) {
+            Position p1 = f.location(d1), p2 = f.location(d2);
+            Fraction xy1, xy2;
+            if (isX) { xy1=p1.x; xy2=p2.x; }
+            else { xy1=p1.y; xy2=p2.y; }
+            if (isAbs) { xy1=xy1.abs(); xy2=xy2.abs(); }
+            return xy1.compareTo(xy2);
+        }
     }
     // XXX this isn't yet correct: need to place center based on mapping
     // of the two edges & the new size (since outside edges are allowed
@@ -130,24 +145,22 @@ public class FormationMapper {
             center = center.add(expansion.get(i));
         return center;
     }
-    private static Fraction xSize(Formation f) {
-        // find the maximum & minimum of the dancer's xBoundaries
-        return f.bounds().width().add(Fraction.valueOf(2));
-    }
-    private static Fraction ySize(Formation f) {
-        // find the maximum & minimum of the dancer's yBoundaries
-        return f.bounds().height().add(Fraction.valueOf(2));
-    }
-    private static void expand(List<Fraction> expansion, List<Fraction> bounds,
-                               Fraction[] dancerBounds, Fraction newSize) {
-        Integer[] boundIndex = findNearest(bounds, dancerBounds);
-        // check distance between boundIndices -- is it big enough?
-        if (boundIndex[0]==null || boundIndex[1]==null) return; // no expansion
+    private static void expand(List<Fraction> expansion, List<Fraction> boundary,
+                               Fraction dancerMin, Fraction dancerMax,
+                               Fraction newSize) {
+        Integer[] boundIndex = findNearest(boundary, dancerMin, dancerMax);
+        // if either of the boundIndices is null, then the formation is
+        // unconstrained and we don't need to expand anything.
+        if (boundIndex[0]==null || boundIndex[1]==null) return;
+        // otherwise, let's compute the (expanded) distance between boundIndices
+        // is it big enough?
         assert boundIndex[0] < boundIndex[1];
+        assert boundary.get(boundIndex[0]).compareTo(dancerMin) <= 0;
+        assert boundary.get(boundIndex[1]).compareTo(dancerMax) >= 0;
         Fraction dist = Fraction.ZERO;
         for (int i=boundIndex[0]; i<boundIndex[1]; i++) {
             // add 'native' distance
-            dist = dist.add(bounds.get(i+1).subtract(bounds.get(i)));
+            dist = dist.add(boundary.get(i+1).subtract(boundary.get(i)));
             // add in expansion to date.
             dist = dist.add(expansion.get(i));
         }
@@ -161,59 +174,20 @@ public class FormationMapper {
         // okay, we've done the necessary expansion, we're done!
         return;
     }
-    private static Integer[] findNearest(List<Fraction> bounds, Fraction[] edges) {
-        assert edges.length==2;
+    private static Integer[] findNearest(List<Fraction> boundary, Fraction dancerMin, Fraction dancerMax) {
         Integer[] result = new Integer[2];
         
-        int bottom = Collections.binarySearch(bounds, edges[0]);
+        int bottom = Collections.binarySearch(boundary, dancerMin);
         if (bottom>=0) result[0]=bottom;
         else if (bottom==-1) result[0]=null; // past bottom shared edge.
         else result[0]=-bottom-2;
         
-        int top = Collections.binarySearch(bounds, edges[1]);
+        int top = Collections.binarySearch(boundary, dancerMax);
         if (top>=0) result[1]=top;
-        else if (top==(-bounds.size()-1)) result[1]=null; // past top shared edge.
+        else if (top==(-boundary.size()-1)) result[1]=null; // past top shared edge.
         else result[1]=-top-1;
         
         return result;
-    }
-    private static List<Fraction> onlyShared(MultiMap<Fraction,Interval> im) {
-        ArrayList<Fraction> result=new ArrayList<Fraction>(im.keySet().size());
-        NEXTF:
-        for (Fraction f : im.keySet()) {
-            List<Interval> intervals = (List<Interval>) im.getValues(f);
-            Collections.sort(intervals);
-            // intervals are now sorted by start; go through and attempt to
-            // find an interval which is shared.
-            NEXTI:
-            for (int i=0; i<intervals.size(); i++) {
-                for (int j=i+1; j<intervals.size(); j++) {
-                    Interval ii = intervals.get(i), ij = intervals.get(j);
-                    if (ij.start.compareTo(ii.end) < 0) {
-                        // we overlap (note that ii.start <= ij.start because
-                        // we've sorted intervals, and thus ii.start <= ij.end)
-                        // add this to our results list, and move on.
-                        result.add(f);
-                        continue NEXTF;
-                    } else continue NEXTI; // intervals are sorted.
-                }
-            }
-        }
-        // okay, done.
-        Collections.sort(result);
-        return result;
-    }
-    private static Fraction[] xBoundaries(Position dancerPosition) {
-        return new Fraction[] {
-                dancerPosition.x.subtract(Fraction.ONE),
-                dancerPosition.x.add(Fraction.ONE)
-        };
-    }
-    private static Fraction[] yBoundaries(Position dancerPosition) {
-        return new Fraction[] {
-                dancerPosition.y.subtract(Fraction.ONE),
-                dancerPosition.y.add(Fraction.ONE)
-        };
     }
     
     /** Create canonical formation by compressing components of a given
