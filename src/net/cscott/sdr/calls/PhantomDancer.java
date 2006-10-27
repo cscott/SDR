@@ -4,8 +4,10 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
 
 /** An object representing a phantom dancer. */
 public class PhantomDancer implements Dancer {
+    private static int counter = 0;
+    private final int id;
     /** You can create as many phantom dancers as you need. */
-    public PhantomDancer() { }
+    public PhantomDancer() { this.id = counter++; }
     /** Phantoms are not heads. */
     public boolean isHead() { return false; }
     /** Phantoms are not sides. */
@@ -21,4 +23,10 @@ public class PhantomDancer implements Dancer {
 
     /** Human-readable representation. */
     public String toString() { return "<phantom@"+Integer.toHexString(hashCode())+">"; }
+    /** Repeatable hashcode: return the id field of this phantom, which
+     * is incremented by one for each dancer. */
+    @Override
+    public int hashCode() { return id; }
+    @Override
+    public boolean equals(Object o) { return this==o; }
 }
