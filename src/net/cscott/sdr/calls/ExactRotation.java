@@ -98,7 +98,8 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
     
     /** Return the X offset of a one-unit step in the rotation direction.
      *  Zero indicates north (towards positive y).  Use a 'squared off'
-     *  circle to avoid irrational numbers. */
+     *  circle to avoid irrational numbers.  This is roughly equivalent to
+     *  sin(amount). */
     public Fraction toX() {
 	Fraction EIGHT = Fraction.valueOf(8,1);
 	ExactRotation r = normalize();
@@ -119,7 +120,8 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
     }
     /** Return the Y offset of a one-unit step in the rotation direction.
      *  Zero indicates north (towards positive y).  Use a 'squared off'
-     *  circle to avoid irrational numbers. */
+     *  circle to avoid irrational numbers. This is roughly equivalent to
+     *  cos(amt). */
     public Fraction toY() {
 	Fraction EIGHT = Fraction.valueOf(8,1);
 	ExactRotation r = normalize();
