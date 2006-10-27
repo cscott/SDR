@@ -11,7 +11,7 @@ import net.cscott.jutil.*;
  * (given a diamond and the various tandems and couples, put them
  * together, breathing out).
  * @author C. Scott Ananian
- * @version $Id: FormationMapper.java,v 1.4 2006-10-24 23:04:20 cananian Exp $
+ * @version $Id: FormationMapper.java,v 1.5 2006-10-27 05:14:12 cananian Exp $
  */
 public class FormationMapper {
     /** This method is just for testing. */
@@ -86,6 +86,7 @@ public class FormationMapper {
         for (Dancer d : meta.dancers()) {
             Formation f = components.get(d);
             // XXX need to rotate formation appropriately before we get size.
+            // XXX EXPANSION IS INCORRECT
             expand(nxB, xB, xBoundaries(meta.location(d)), xSize(f));
         }
         Collections.sort(dancers, new Comparator<Dancer>() { // sort by abs(y)
@@ -97,6 +98,7 @@ public class FormationMapper {
         for (Dancer d : meta.dancers()) {
             Formation f = components.get(d);
             // XXX need to rotate formation appropriately before we get size.
+            // XXX EXPANSION IS INCORRECT
             expand(nyB, yB, yBoundaries(meta.location(d)), ySize(f));
         }
         // now reassemble a new formation.
