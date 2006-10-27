@@ -41,4 +41,6 @@ public enum StandardDancer implements Dancer {
     public Tag primitiveTag() {
         return Tag.values()[ordinal()+Tag.DANCER_1.ordinal()];
     }
+    @Override
+    public String toString() { return this.name().replace('_',' '); }
 }
