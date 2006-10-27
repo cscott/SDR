@@ -20,7 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * ordered from most-likely to least-likely.  We'll try each possibility
  * and take the first one that works.
  * @author C. Scott Ananian
- * @version $Id: CommandInput.java,v 1.2 2006-10-26 17:33:53 cananian Exp $
+ * @version $Id: CommandInput.java,v 1.3 2006-10-27 15:37:22 cananian Exp $
  */
 public class CommandInput {
     /** Create a CommandInput object to synchronize communication between
@@ -80,7 +80,7 @@ public class CommandInput {
     /** A {@link PossibleCommand} is an {@link Apply} corresponding to
      * the most likely interpretation of the user's input.  If this
      * {@link Apply} is inapplicable to the given formation, we can
-     * use the {@link PossibleCommand#link link} method to get the
+     * use the {@link PossibleCommand#next() next()} method to get the
      * next-most-likely interpretation of the input, and try that
      * before giving up and complaining to the user.
      */
