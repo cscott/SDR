@@ -49,7 +49,7 @@ import java.math.BigInteger;
  * @author Tim O'Brien
  * @author Pete Gieser
  * @since 2.0
- * @version $Id: Fraction.java,v 1.7 2006-10-25 20:50:53 cananian Exp $
+ * @version $Id: Fraction.java,v 1.8 2006-10-27 21:29:46 cananian Exp $
  */
 public class Fraction extends Number implements Serializable, Comparable<Fraction> {
 
@@ -78,6 +78,10 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      * <code>Fraction</code> representation of 1.
      */
     public static final Fraction ONE = new Fraction(1, 1);
+    /**
+     * <code>Fraction</code> representation of 2.
+     */
+    public static final Fraction TWO = new Fraction(2, 1);
     /**
      * <code>Fraction</code> representation of 1/2.
      */

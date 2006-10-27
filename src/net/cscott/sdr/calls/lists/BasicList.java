@@ -19,7 +19,7 @@ import net.cscott.sdr.util.Fraction;
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.16 2006-10-25 20:43:28 cananian Exp $
+ * @version $Id: BasicList.java,v 1.17 2006-10-27 21:29:51 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -119,7 +119,7 @@ public abstract class BasicList {
         public Rule getRule() {
             // XXX would be nice if this could deal with a sequence of ANDs 
             Grm g = Grm.parse("left <0=leftable_anything>");
-            return new Rule("anything", g, Fraction.valueOf(2)); // bind tight
+            return new Rule("anything", g, Fraction.TWO); // bind tight
         }
     };
     // complex concept -- not sure correct program here?
