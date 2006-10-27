@@ -136,7 +136,7 @@ public abstract class GeneralFormationMatcher {
         // Dancer in the goal formation.  Each such dancer must not already
         // be assigned.
         Position pIn = mi.inputPositions.get(dancerNum);
-        Position pGoal = mi.goalPositions.get(0).rotate(extraRot);
+        Position pGoal = mi.goalPositions.get(0).turn(extraRot);
         Warp warp = Warp.rotateAndMove(pGoal, pIn);
         int gNum = 0;
         for (Position gp : mi.goalPositions) {

@@ -45,11 +45,21 @@ public class Position {
         Fraction dy = f.toY().multiply(distance);
         return new Position(x.add(dx), y.add(dy), facing);
     }
-    /** Rotate the given amount from the current position. */
-    public Position rotate(Fraction amount) {
+    /** Turn in place the given amount. */
+    public Position turn(Fraction amount) {
 	assert facing!=null : "rotation unspecified!";
 	if (amount.equals(Fraction.ZERO)) return this;
 	return new Position(x, y, facing.add(amount));
+    }
+    /** Rotate this position around the origin by the given amount. */
+    public Position rotateAroundOrigin(ExactRotation rot) {
+        // x' =  x*cos(rot) + y*sin(rot)
+        // y' = -x*sin(rot) + y*cos(rot)
+        // where sin(rot) = rot.toX() and cos(rot) = rot.toY()
+        Fraction cos = rot.toY(), sin = rot.toX();
+        Fraction nx = this.x.multiply(cos).add(this.y.multiply(sin));
+        Fraction ny = this.y.multiply(cos).subtract(this.x.multiply(sin));
+        return new Position(nx, ny, facing.add(rot.amount));
     }
     /** Normalize (restrict to 0-modulus) the rotation of the given position. */
     public Position normalize() {

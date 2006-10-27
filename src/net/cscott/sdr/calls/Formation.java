@@ -53,7 +53,11 @@ public class Formation {
     public Position location(Dancer d) {
 	return location.get(d);
     }
-    /** Return the bounds of this formation. */
+    /** Return the bounds of this formation, which is the bounding
+     * box around all the dancers' bounding boxes.  This means that
+     * the 1 unit border from {@link #bounds(Dancer)} applies here
+     * as well. If there are no dancers, returns a zero-width,
+     * zero-height box centered at the origin. */
     public Box bounds() {
         Fraction minx=null,miny=null,maxx=null,maxy=null;
         for (Position p : location.values()) {
@@ -62,12 +66,17 @@ public class Formation {
             if (miny==null || miny.compareTo(p.y) > 0) miny = p.y;
             if (maxy==null || maxy.compareTo(p.y) < 0) maxy = p.y;
         }
-        Point ll = new Point(
-                (minx==null) ? Fraction.ZERO : minx,
-                (miny==null) ? Fraction.ZERO : miny);
-        Point ur = new Point(
-                (maxx==null) ? Fraction.ZERO : maxx,
-                (maxy==null) ? Fraction.ZERO : maxy);
+        Point ll, ur;
+        if (minx==null) {
+            assert minx==null && miny==null && maxx==null && maxy==null;
+            ll = new Point(Fraction.ZERO, Fraction.ZERO);
+            ur = ll;
+        } else {
+            ll = new Point(minx.subtract(Fraction.ONE),
+                           miny.subtract(Fraction.ONE));
+            ur = new Point(maxx.add(Fraction.ONE),
+                           maxy.add(Fraction.ONE));
+        }
         return new Box(ll, ur);
     }
     /** Return the bounds of the given dancer -- always its position
@@ -94,6 +103,15 @@ public class Formation {
         for (Map.Entry<Dancer,Position> me : location.entrySet())
             m.put(me.getKey(), new Position(me.getValue().x.subtract(ox),
                     me.getValue().y.subtract(oy), me.getValue().facing));
+        return new Formation(Collections.unmodifiableMap(m), selected);
+    }
+    /** Build a new formation, like this one except rotated around 0,0.
+     * We rotate CW by the amount given in the {@code rotation} parameter;
+     * "north" corresponds to no rotation. */
+    public Formation rotate(ExactRotation rotation) {
+        Map<Dancer,Position> m = new HashMap<Dancer,Position>(location.size());
+        for (Map.Entry<Dancer,Position> me : location.entrySet())
+            m.put(me.getKey(), me.getValue().rotateAroundOrigin(rotation));
         return new Formation(Collections.unmodifiableMap(m), selected);
     }
     public boolean isCentered() {
