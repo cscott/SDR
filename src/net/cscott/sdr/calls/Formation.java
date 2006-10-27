@@ -10,8 +10,8 @@ import static net.cscott.sdr.calls.StandardDancer.COUPLE_4_BOY;
 import static net.cscott.sdr.calls.StandardDancer.COUPLE_4_GIRL;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,7 +37,7 @@ public class Formation {
         this.selected = selected;
     }
     public Formation(Map<Dancer,Position> location) {
-        this.location = Collections.unmodifiableMap(new HashMap<Dancer,Position>(location));
+        this.location = Collections.unmodifiableMap(new LinkedHashMap<Dancer,Position>(location));
         this.selected = this.location.keySet();
     }
 
@@ -90,16 +90,16 @@ public class Formation {
     /** Build a new formation with only the given dancers
      * selected. */
     public Formation select(Set<Dancer> s) {
-        Set<Dancer> nSel = new HashSet<Dancer>(s);
+        Set<Dancer> nSel = new LinkedHashSet<Dancer>(s);
         nSel.retainAll(dancers());
         return new Formation(location, Collections.unmodifiableSet(nSel));
     }
     /** Build a new formation, centered on 0,0 */
     public Formation recenter() {
         Box bounds = bounds();
-        Fraction ox = bounds.ll.x.add(bounds.ur.x).divide(Fraction.valueOf(2));
-        Fraction oy = bounds.ll.y.add(bounds.ur.y).divide(Fraction.valueOf(2));
-        Map<Dancer,Position> m = new HashMap<Dancer,Position>(location.size());
+        Fraction ox = bounds.ll.x.add(bounds.ur.x).divide(Fraction.TWO);
+        Fraction oy = bounds.ll.y.add(bounds.ur.y).divide(Fraction.TWO);
+        Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>(location.size());
         for (Map.Entry<Dancer,Position> me : location.entrySet())
             m.put(me.getKey(), new Position(me.getValue().x.subtract(ox),
                     me.getValue().y.subtract(oy), me.getValue().facing));
@@ -109,7 +109,7 @@ public class Formation {
      * We rotate CW by the amount given in the {@code rotation} parameter;
      * "north" corresponds to no rotation. */
     public Formation rotate(ExactRotation rotation) {
-        Map<Dancer,Position> m = new HashMap<Dancer,Position>(location.size());
+        Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>(location.size());
         for (Map.Entry<Dancer,Position> me : location.entrySet())
             m.put(me.getKey(), me.getValue().rotateAroundOrigin(rotation));
         return new Formation(Collections.unmodifiableMap(m), selected);
@@ -172,8 +172,8 @@ public class Formation {
         );
 
     public Formation(Formation f, Map<Dancer,Dancer> map) {
-        Map<Dancer,Position> m = new HashMap<Dancer,Position>();
-        Set<Dancer> s = new HashSet<Dancer>();
+        Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
+        Set<Dancer> s = new LinkedHashSet<Dancer>();
         for (Map.Entry<Dancer,Position> me : f.location.entrySet())
             m.put(map.get(me.getKey()), me.getValue());
         for (Dancer d : f.selected)
@@ -183,8 +183,8 @@ public class Formation {
     }
     
     Formation(DancerInfo... dis) {
-	Map<Dancer,Position> m = new HashMap<Dancer,Position>();
-	Set<Dancer> s = new HashSet<Dancer>();
+	Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
+	Set<Dancer> s = new LinkedHashSet<Dancer>();
 	for (DancerInfo di : dis) {
 	    m.put(di.dancer, di.position);
             if (di.isSelected)
