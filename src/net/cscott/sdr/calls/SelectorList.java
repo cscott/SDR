@@ -23,10 +23,10 @@ public abstract class SelectorList {
     // 4-person selectors
     public static final Selector FACING_COUPLES =
         GeneralFormationMatcher.makeSelector(FormationList.FACING_COUPLES);
-    public static final Selector RH_WAVE =
-        GeneralFormationMatcher.makeSelector(FormationList.RH_WAVE);
-    public static final Selector LH_WAVE =
-        GeneralFormationMatcher.makeSelector(FormationList.LH_WAVE);
+    public static final Selector RH_OCEAN_WAVE =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_OCEAN_WAVE);
+    public static final Selector LH_OCEA_WAVE =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_OCEAN_WAVE);
     public static final Selector RH_DIAMOND =
         GeneralFormationMatcher.makeSelector(FormationList.RH_DIAMOND);
     public static final Selector LH_DIAMOND =

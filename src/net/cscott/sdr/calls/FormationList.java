@@ -4,9 +4,16 @@ import static net.cscott.sdr.calls.TaggedFormation.Tag.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import net.cscott.jutil.Factories;
+import net.cscott.jutil.GenericMultiMap;
+import net.cscott.jutil.MultiMap;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.util.Fraction;
@@ -15,13 +22,7 @@ import net.cscott.sdr.util.Fraction;
  */
 // can use xxxx.yyyy() to associate phantoms with real dancers.
 public abstract class FormationList {
-    /** Our private mutable list of formations. */
-    private static final List<Formation> _formations =
-	new ArrayList<Formation>();
-    /** An immutable list of all the formations declared in this
-     *  <code>FormationList</code> class. */
-    public static final List<Formation> all =
-	Collections.unmodifiableList(_formations);
+
 
     // from http://www.penrod-sq-dancing.com/form2.html
     // see also http://www.penrod-sq-dancing.com/fars0.html
@@ -31,14 +32,8 @@ public abstract class FormationList {
 /*
     public static final Formation SQUARE =
 	create(" ss ","e  w","e  w"," nn ");
-    public static final Formation FACING_LINES =
-	create("ssss","nnnn");
     public static final Formation BACK_TO_BACK_LINES =
 	create("nnnn","ssss");
-    public static final Formation TWO_FACED_LINES =
-	create("ssnn","ssnn"); // also needs a mirror
-    public static final Formation GENERAL_LINES =
-	create("||||","||||");
     public static final Formation RIGHT_HAND_COLUMN =
 	create("ns","ns","ns","ns");
     public static final Formation LEFT_HAND_COLUMN =
@@ -124,46 +119,77 @@ public abstract class FormationList {
 	       d(-1,0,"n",BELLE),
 	       d(-3,0,"n",BEAU));
 */
-    // 4-person formations
-    public static final TaggedFormation FACING_COUPLES =
-        create("FACING COUPLES",
-               d(-1,-1,"n",BEAU,TRAILER),
-               d(+1,-1,"n",BELLE,TRAILER),
-               d(+1,+1,"s",BEAU,TRAILER),
-               d(-1,+1,"s",BELLE,TRAILER));
+    // labelled calls named as per the "Callerlab Approved Formations"
+    // from April 1980
+    
     // 2-person formations
-    public static final TaggedFormation COUPLE =
+    public static final TaggedFormation COUPLE = // callerlab #1
         create("COUPLE",
-               d(-1,0,"n",BEAU),
-               d(+1,0,"n",BELLE));
-    public static final TaggedFormation RH_MINIWAVE =
+                d(-1,0,"n",BEAU),
+                d(+1,0,"n",BELLE));
+    public static final TaggedFormation FACING_DANCERS = // callerlab #2
+        create("FACING DANCERS",
+                d(0,+1,"s",TRAILER),
+                d(0,-1,"n",TRAILER));
+    public static final TaggedFormation BACK_TO_BACK_DANCERS = // callerlab #3
+        create("BACK TO BACK DANCERS",
+                d(0,+1,"n",LEADER),
+                d(0,-1,"s",LEADER));
+    public static final TaggedFormation TANDEM =
+        create("TANDEM",
+               d(0,+1,"n",LEADER),
+               d(0,-1,"n",TRAILER));
+    public static final TaggedFormation RH_MINIWAVE = // callerlab #4
         create("RH MINIWAVE",
                d(-1,0,"n",BEAU),
                d(+1,0,"s",BEAU));
-    public static final TaggedFormation LH_MINIWAVE =
+    public static final TaggedFormation LH_MINIWAVE = // callerlab #5
         create("LH MINIWAVE",
                d(-1,0,"s",BELLE),
                d(+1,0,"n",BELLE));
-    public static final TaggedFormation FACING_DANCERS =
-        create("FACING DANCERS",
-               d(0,-1,"n",TRAILER),
-               d(0,+1,"s",TRAILER));
-    public static final TaggedFormation TANDEM =
-        create("TANDEM",
-               d(0,-1,"n",TRAILER),
-               d(0,+1,"n",LEADER));
-    public static final TaggedFormation RH_WAVE =
-        create("RH WAVE",
-               d(-3,0,"n",BEAU,END),
-               d(-1,0,"s",BEAU,CENTER),
-               d(+1,0,"n",BEAU,CENTER),
-               d(+3,0,"s",BEAU,END));
-    public static final TaggedFormation LH_WAVE =
-        create("LH WAVE",
-               d(-3,0,"s",BELLE,END),
-               d(-1,0,"n",BELLE,CENTER),
-               d(+1,0,"s",BELLE,CENTER),
-               d(+3,0,"n",BELLE,END));
+    // 4-person formations
+    public static final Formation GENERAL_LINE =
+        create("GENERAL LINE", f("||||"), t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
+    public static final TaggedFormation FACING_COUPLES = // callerlab #6
+        xofy("FACING COUPLES", FACING_DANCERS, COUPLE);
+    public static final TaggedFormation BACK_TO_BACK_COUPLES = // callerlab #7
+        xofy("BACK TO BACK COUPLES", BACK_TO_BACK_DANCERS, COUPLE);
+    public static final TaggedFormation RH_OCEAN_WAVE = // callerlab #8
+        xofy("RH OCEAN WAVE", COUPLE, RH_MINIWAVE); // XXX label centers/end
+    public static final TaggedFormation LH_OCEAN_WAVE = // callerlab #9
+        xofy("LH OCEAN WAVE", COUPLE, LH_MINIWAVE);
+    public static final TaggedFormation RH_BOX = // callerlab #10
+        xofy("RH BOX", RH_MINIWAVE, TANDEM);
+    public static final TaggedFormation LH_BOX = // callerlab #11
+        xofy("LH BOX", LH_MINIWAVE, TANDEM);
+    public static final TaggedFormation RH_TWO_FACED_LINE = // callerlab #12
+        xofy("RH TWO-FACED LINE", RH_MINIWAVE, COUPLE);
+    public static final TaggedFormation LH_TWO_FACED_LINE = // callerlab #13
+        xofy("LH_TWO_FACED_LINE", LH_MINIWAVE, COUPLE);
+    public static final TaggedFormation LH_SINGLE_PROMENADE =
+        create("LH SINGLE PROMENADE",
+                d( 0, 1, "w"),
+                d(-1, 0, "s"),
+                d( 0,-1, "e"),
+                d( 1, 0, "n")); // this is a star: is that correct?
+    public static final TaggedFormation RH_SINGLE_PROMENADE =
+        create("RH SINGLE PROMENADE",
+                d( 0, 1, "e"),
+                d(-1, 0, "n"),
+                d( 0,-1, "w"),
+                d( 1, 0, "s")); // this is a star: is that correct?
+    public static final TaggedFormation PROMENADE = // callerlab #18
+        xofy("PROMENADE", LH_SINGLE_PROMENADE, COUPLE);
+    public static final TaggedFormation WRONG_WAY_PROMENADE =
+        xofy("WRONG WAY PROMENADE", RH_SINGLE_PROMENADE, COUPLE);
+    public static final TaggedFormation THAR =
+        xofy("THAR", LH_SINGLE_PROMENADE, LH_MINIWAVE); // XXX CHECK ME
+    public static final TaggedFormation WRONG_WAY_THAR =
+        xofy("WRONG WAY THAR", LH_SINGLE_PROMENADE, RH_MINIWAVE); // XXX CHECK ME
+    public static final TaggedFormation FACING_LINES = // callerlab #22
+        xofy("FACING LINES", FACING_COUPLES, COUPLE);
+    
+
     public static final TaggedFormation RH_DIAMOND =
         create("RH DIAMOND",
                d( 0, 3,"e",POINT),
@@ -196,35 +222,90 @@ public abstract class FormationList {
 	TaggedFormation f = new TaggedFormation(dil.toArray(new TaggedDancerInfo[dil.size()])) {
 	    public String toString() { return (name==null)?super.toString():name; }
         };
-	_formations.add(f);// add to our static list.
 	return f;
     }
     // first string is 'top' of diagram (closest to caller)
-    @Deprecated // doesn't include tag information
-    private static Formation create(String... sa) {
-	List<PositionAndTag> ptl = new ArrayList<PositionAndTag>(8);
+    // dancers are numbered left to right, top to bottom. (reading order)
+    private static Formation create(String name, String[] sa, NumAndTags... tags) {
+        Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
 	// check validity
 	assert sa.length>0;
 	for (int i=0; i<sa.length-1; i++)
 	    assert sa[i].length()==sa[i+1].length();
 	// okay, create formation w/ phantoms.
-	Fraction yoff = Fraction.valueOf(1-sa.length,2);
-	Fraction xoff = Fraction.valueOf(1-sa[0].length(),2);
 	for (int y=0; y<sa.length; y++)
 	    L1: for (int x=0; x<sa[y].length(); x++) {
 		if (sa[y].charAt(x)==' ') continue;
-		ExactRotation r = (sa[y].charAt(x)=='o') ? null:
-		    ExactRotation.fromAbsoluteString(sa[y].substring(x,x+1));
-		ptl.add(new PositionAndTag(new Position(Fraction.valueOf(x,1).add(xoff),
-				    Fraction.valueOf(y,1).add(yoff).negate(),
-				    r),Collections.<Tag>emptySet()/*XXX*/));
+		Rotation r = 
+		    Rotation.fromAbsoluteString(sa[y].substring(x,x+1));
+		m.put(new PhantomDancer(), 
+		        new Position(Fraction.valueOf(x,1),
+		                Fraction.valueOf(y,1).negate(),
+		                r));
 	    }
-	return create(null, ptl.toArray(new PositionAndTag[ptl.size()]));
+	Formation f = new Formation(m);
+        return addTags(name, f, tags);
     }
+    // helper
+    private static String[] f(String... sa) { return sa; }
 
-    /** Self-test: spit out all formations to System.out. */
+    /** Formation composition: create a formation with an X of Ys. */
+    private static Formation _xofy(Formation x, Formation y) {
+        /* create an instance of 'y' for each dancer in 'x'. */
+        Map<Dancer,Formation> sub = new LinkedHashMap<Dancer,Formation>();
+        for (Dancer d: x.dancers()) {
+            Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
+            for (Dancer dd : y.dancers())
+                m.put(new PhantomDancer(), y.location(dd));
+            sub.put(d, new Formation(m));
+        }
+        return FormationMapper.insert(x,sub);
+    }
+    /** Helper function for the above to add dancer tags. The dancers
+     * are numbered left to right, top to bottom.  A null indicates
+     * "no additional tags".
+     */
+    private static TaggedFormation xofy(final String name, Formation x, Formation y, NumAndTags... tags){
+        return addTags(name, _xofy(x,y), tags);
+    }
+    private static TaggedFormation addTags(final String name, final Formation f, NumAndTags... tags) {
+        List<Dancer> dancers = new ArrayList<Dancer>(f.dancers());
+        // sort them left to right, top to bottom.
+        Collections.sort(dancers, new Comparator<Dancer>() {
+            public int compare(Dancer d1, Dancer d2) {
+                Position p1 = f.location(d1), p2 = f.location(d2);
+                // first, top to bottom.
+                int c = -p1.y.compareTo(p2.y);
+                if (c!=0) return c;
+                // then left to right
+                return p1.x.compareTo(p2.x);
+            }
+        });
+        MultiMap<Dancer,Tag> tm = new GenericMultiMap<Dancer,Tag>
+            (Factories.enumSetFactory(Tag.class));
+        // add explicitly specified tags.
+        for (NumAndTags nt : tags)
+            tm.addAll(dancers.get(nt.dancerNum), nt.tags);
+        // add implicit/automatic tags
+        Tagger.addAutomatic(f, tm);
+        return new TaggedFormation(f, tm) {
+            @Override
+            public String toString() { return true?super.toString():name; }
+        };
+    }
+    private static class NumAndTags {
+        public final int dancerNum;
+        public final Set<Tag> tags;
+        NumAndTags(int dancerNum, Set<Tag> tags)
+        { this.dancerNum=dancerNum; this.tags=tags; }
+    }
+    // helper function, for brevity
+    private static NumAndTags t(int dancerNum, Tag...  tags) {
+        EnumSet<Tag> t = (tags.length==0) ? EnumSet.noneOf(Tag.class) :
+            EnumSet.of(tags[0], tags);
+        return new NumAndTags(dancerNum, t);
+    }
     public static void main(String[] args) {
-	for (Formation f : all)
-	    System.out.println(f);
+        System.out.println(xofy("test formation", FACING_DANCERS, COUPLE));
     }
 }
