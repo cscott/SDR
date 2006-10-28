@@ -4,8 +4,11 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
+import net.cscott.jutil.*;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -34,20 +37,20 @@ public class TaggedFormation extends Formation {
             return ordinal() <= ALL.ordinal();
         }
     };
-    private final Map<Dancer,Set<Tag>> tags;
+    private final MultiMap<Dancer,Tag> tags;
     protected TaggedFormation(Map<Dancer,Position> location,
-            Set<Dancer> selected, Map<Dancer,Set<Tag>> tags) {
+            Set<Dancer> selected, MultiMap<Dancer,Tag> tags) {
         super(location,selected);
         this.tags = tags;
     }
 
     public boolean isTagged(Dancer d, Tag tag) {
         if (tag.isPrimitive()) return d.matchesTag(tag);
-        return tags.get(d).contains(tag);
+        return tags.contains(d,tag);
     }
     public Set<Dancer> tagged(Tag tag) {
         Set<Dancer> dancers = dancers();
-        Set<Dancer> s = new HashSet<Dancer>(dancers.size());
+        Set<Dancer> s = new LinkedHashSet<Dancer>(dancers.size());
         for(Dancer d : dancers)
             if (isTagged(d, tag))
                 s.add(d);
@@ -55,7 +58,7 @@ public class TaggedFormation extends Formation {
     }
     @Override
     public TaggedFormation select(Set<Dancer> s) {
-        Set<Dancer> nSel = new HashSet<Dancer>(s);
+        Set<Dancer> nSel = new LinkedHashSet<Dancer>(s);
         nSel.retainAll(dancers());
         return new TaggedFormation
         (location, Collections.unmodifiableSet(nSel), tags);
@@ -69,10 +72,13 @@ public class TaggedFormation extends Formation {
 	    .append(tags, f.tags)
             .isEquals();
     }
+    private transient int hashCode = 0;
     public int hashCode() {
-	return new HashCodeBuilder()
+        if (this.hashCode==0)
+            this.hashCode = new HashCodeBuilder()
             .appendSuper(super.hashCode()).append(tags)
-	    .toHashCode();
+            .toHashCode();
+        return this.hashCode;
     }
     public String toString() {
 	return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
@@ -83,19 +89,25 @@ public class TaggedFormation extends Formation {
 
     public TaggedFormation(TaggedFormation tf, Map<Dancer,Dancer> map) {
         super(tf, map);
-        Map<Dancer,Set<Tag>> t = new HashMap<Dancer,Set<Tag>>();
-        for (Map.Entry<Dancer,Set<Tag>> me : tf.tags.entrySet())
-            t.put(map.get(me.getKey()), me.getValue());
-        this.tags = Collections.unmodifiableMap(t);
+        MultiMap<Dancer,Tag> t = new GenericMultiMap<Dancer,Tag>
+        (Factories.enumSetFactory(Tag.class));
+        for (Dancer d : tf.dancers())
+            t.addAll(map.get(d), tf.tags.getValues(d));
+        this.tags = UnmodifiableMultiMap.proxy(t);
+    }
+    public TaggedFormation(Formation f, MultiMap<Dancer,Tag> tags) {
+        super(f.location,f.selected);
+        this.tags = UnmodifiableMultiMap.proxy(tags);//tags can be changed
     }
     
     TaggedFormation(TaggedDancerInfo... dis) {
         super((Formation.DancerInfo[])dis);
-        Map<Dancer,Set<Tag>> t = new HashMap<Dancer,Set<Tag>>();
+        MultiMap<Dancer,Tag> t = new GenericMultiMap<Dancer,Tag>
+        (Factories.enumSetFactory(Tag.class));
 	for (TaggedDancerInfo di : dis) {
-	    t.put(di.dancer, Collections.unmodifiableSet(di.tags));
+	    t.addAll(di.dancer, di.tags);
 	}
-        this.tags = Collections.unmodifiableMap(t);
+        this.tags = UnmodifiableMultiMap.proxy(t);
     }
     static class TaggedDancerInfo extends DancerInfo {
 	final Set<Tag> tags;
