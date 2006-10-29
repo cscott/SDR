@@ -1,7 +1,9 @@
 sdr.jar
 bin
 api
-sphinx-dist
-jme-dist
 research
 properties.cfg
+local
+dist
+blah
+debug.txt
