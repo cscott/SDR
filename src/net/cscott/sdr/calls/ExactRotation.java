@@ -5,8 +5,8 @@ import net.cscott.sdr.util.Fraction;
 /** Rotations are represented as fractions, where '0' is facing north,
  *  and '1/4' is facing east.  Positive denotes clockwise rotation. */
 public class ExactRotation extends Rotation implements Comparable<ExactRotation> {
-    /** Protected constructor from a <code>Fraction</code> object. */
-    protected ExactRotation(Fraction amount) {
+    /** Constructor from a <code>Fraction</code> object. */
+    public ExactRotation(Fraction amount) {
         super(amount, Fraction.ONE);
     }
     /** Add the given amount to this rotation direction. */
