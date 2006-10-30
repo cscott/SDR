@@ -41,6 +41,14 @@ public class Formation {
         this.selected = this.location.keySet();
     }
 
+    /** Create a new formation containing only the selected dancers from this
+     * formation. */
+    public Formation onlySelected() {
+	Map<Dancer,Position> nloc = new LinkedHashMap<Dancer,Position>
+	    (this.location);
+	nloc.keySet().retainAll(this.selected);
+	return new Formation(nloc);
+    }
     public boolean isSelected(Dancer d) {
 	return selected.contains(d);
     }
