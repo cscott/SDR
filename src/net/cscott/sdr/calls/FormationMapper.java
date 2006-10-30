@@ -10,7 +10,7 @@ import net.cscott.sdr.util.*;
  * (given a diamond and the various tandems and couples, put them
  * together, breathing out).
  * @author C. Scott Ananian
- * @version $Id: FormationMapper.java,v 1.9 2006-10-30 03:58:09 cananian Exp $
+ * @version $Id: FormationMapper.java,v 1.10 2006-10-30 22:09:29 cananian Exp $
  */
 public class FormationMapper {
     public static Formation test1=null, test2=null;
@@ -48,8 +48,7 @@ public class FormationMapper {
     }
     
     
-    /** Insert formations into a meta-formation.  Note that
-     * rotations in the meta formation must be exact. */
+    /** Insert formations into a meta-formation.  */
     public static Formation insert(final Formation meta,
             final Map<Dancer,Formation> components) {
         // Rotate components to match orientations of meta dancers.
@@ -61,17 +60,8 @@ public class FormationMapper {
         // Find 'inner boundaries' of meta dancers.
         Set<Fraction> xiB = new HashSet<Fraction>();
         Set<Fraction> yiB = new HashSet<Fraction>();
-        for (Dancer d : meta.dancers()) {
-            Box b = meta.bounds(d);
-            if (b.ll.x.compareTo(Fraction.ZERO)>0)
-                xiB.add(b.ll.x);
-            if (b.ur.x.compareTo(Fraction.ZERO)<0)
-                xiB.add(b.ur.x);
-            if (b.ll.y.compareTo(Fraction.ZERO)>0)
-                yiB.add(b.ll.y);
-            if (b.ur.y.compareTo(Fraction.ZERO)<0)
-                yiB.add(b.ur.y);
-        }
+        for (Dancer d : meta.dancers())
+            addInner(meta.bounds(d), xiB, yiB);
         xiB.add(Fraction.ZERO); yiB.add(Fraction.ZERO);
         // sort boundaries.
         List<Fraction> xBound = new ArrayList<Fraction>(xiB);
@@ -237,13 +227,21 @@ public class FormationMapper {
         
         return result;
     }
-    
-    /** Create canonical formation by compressing components of a given
-     * formation. The result has the meta formation, as well as a map giving
-     * the correspondence between the new phantom dancers and the input formations.*/
-    public static Formation compress(List<FormationPiece> pieces) {
-        return null;
+    /** Add inner boundaries of the given box to the boundary sets. */
+    private static void addInner(Box b, Set<Fraction> xBounds,
+            Set<Fraction> yBounds) {
+        if (b.ll.x.compareTo(Fraction.ZERO)>0)
+            xBounds.add(b.ll.x);
+        if (b.ur.x.compareTo(Fraction.ZERO)<0)
+            xBounds.add(b.ur.x);
+        if (b.ll.y.compareTo(Fraction.ZERO)>0)
+            yBounds.add(b.ll.y);
+        if (b.ur.y.compareTo(Fraction.ZERO)<0)
+            yBounds.add(b.ur.y);
     }
+
+    /*-----------------------------------------------------------------------*/
+    
     public static class FormationPiece {
         /** Warped rotated formation. The input formation is a simple
          * superposition of these. */
@@ -259,6 +257,79 @@ public class FormationMapper {
             this.f = f;
             this.d = d;
             this.r = r;
+        }
+    }
+    /** Create canonical formation by compressing components of a given
+     * formation. The result has the meta formation, as well as a map giving
+     * the correspondence between the new phantom dancers and the input formations.*/
+    public static Formation compress(List<FormationPiece> pieces) {
+        // Find 'inner boundaries' of component formations.
+        Set<Fraction> xiB = new HashSet<Fraction>();
+        Set<Fraction> yiB = new HashSet<Fraction>();
+        for (FormationPiece fp : pieces)
+            addInner(fp.f.bounds(), xiB, yiB);
+        xiB.add(Fraction.ZERO); yiB.add(Fraction.ZERO);
+        // sort boundaries.
+        List<Fraction> xBound = new ArrayList<Fraction>(xiB);
+        List<Fraction> yBound = new ArrayList<Fraction>(yiB);
+        Collections.sort(xBound); Collections.sort(yBound);
+        
+        // initalize 'expansion' list so that there is 0 space between
+        // bounds.
+        // Note that expansion occurs *between* elements of the original
+        // boundary list, so it is 1 element shorter than the boundary list.
+        // expansion[0] is the expansion between boundary[0] and boundary[1].
+        List<Fraction> xExpand = new ArrayList<Fraction>(xBound.size()-1);
+        List<Fraction> yExpand = new ArrayList<Fraction>(yBound.size()-1);
+        for (int i=0; i<xBound.size()-1; i++)
+            xExpand.add(xBound.get(i+1).subtract(xBound.get(i)).negate());
+        for (int i=0; i<yBound.size()-1; i++)
+            yExpand.add(yBound.get(i+1).subtract(yBound.get(i)).negate());
+
+        // now expand bounds so that they are just big enough for a single
+        // dancer.  Work from center out.
+        List<FormationPiece> fpSorted = new ArrayList<FormationPiece>(pieces);
+        // sort dancers by absolute x
+        Collections.sort(fpSorted, new FormationPieceComparator(true,true)); 
+        for (FormationPiece fp : fpSorted) {
+            Box b = fp.f.bounds();
+            expand(xExpand, xBound, b.ll.x, b.ur.x, Fraction.TWO);
+        }
+        // sort dancers by absolute y
+        Collections.sort(fpSorted, new FormationPieceComparator(false,true)); 
+        for (FormationPiece fp : fpSorted) {
+            Box b = fp.f.bounds();
+            expand(yExpand, yBound, b.ll.y, b.ur.y, Fraction.TWO);
+        }
+        // assemble meta formation.
+        Map<Dancer,Position> nf = new HashMap<Dancer,Position>();
+        Box dancerSize = new Box(new Point(Fraction.mONE,Fraction.mONE),
+                new Point(Fraction.ONE,Fraction.ONE));
+        for (FormationPiece fp : pieces) {
+            // find the boundary this piece is going to hang off
+            Box b = fp.f.bounds();
+            Integer[] xb = findNearest(xBound, b.ll.x, b.ur.x);
+            Integer[] yb = findNearest(yBound, b.ll.y, b.ur.y);
+            Point dancerLoc = computeCenter(dancerSize,
+                    warpPair(xExpand,xBound,xb[0],xb[1]),
+                    warpPair(yExpand,yBound,yb[0],yb[1]));
+            nf.put(fp.d, new Position(dancerLoc.x,dancerLoc.y,fp.r));
+        }
+        Formation result = new Formation(nf);
+        return result.recenter();
+    }
+    private static class FormationPieceComparator implements Comparator<FormationPiece> {
+        final boolean isX, isAbs; 
+        public FormationPieceComparator(boolean isX, boolean isAbs) {
+            this.isX = isX; this.isAbs = isAbs;
+        }
+        public int compare(FormationPiece fp1, FormationPiece fp2) {
+            Point p1 = fp1.f.bounds().center(), p2=fp2.f.bounds().center();
+            Fraction xy1, xy2;
+            if (isX) { xy1=p1.x; xy2=p2.x; }
+            else { xy1=p1.y; xy2=p2.y; }
+            if (isAbs) { xy1=xy1.abs(); xy2=xy2.abs(); }
+            return xy1.compareTo(xy2);
         }
     }
 }
