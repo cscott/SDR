@@ -287,7 +287,7 @@ public abstract class FormationList {
         for (NumAndTags nt : tags)
             tm.addAll(dancers.get(nt.dancerNum), nt.tags);
         // add implicit/automatic tags
-        Tagger.addAutomatic(f, tm);
+        //Tagger.addAutomatic(f, tm);
         return new TaggedFormation(f, tm) {
             @Override
             public String toString() { return true?super.toString():name; }
