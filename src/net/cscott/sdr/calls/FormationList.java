@@ -1,7 +1,5 @@
 package net.cscott.sdr.calls;
 
-import static net.cscott.sdr.calls.TaggedFormation.Tag.*;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,6 +13,7 @@ import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
+import static net.cscott.sdr.calls.TaggedFormation.Tag.*;
 import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.util.Fraction;
 
@@ -30,16 +29,6 @@ public abstract class FormationList {
     // things like 'three and one' lines really want another programming
     // "check formation" method which can be overridden??
 /*
-    public static final Formation SQUARE =
-	create(" ss ","e  w","e  w"," nn ");
-    public static final Formation BACK_TO_BACK_LINES =
-	create("nnnn","ssss");
-    public static final Formation RIGHT_HAND_COLUMN =
-	create("ns","ns","ns","ns");
-    public static final Formation LEFT_HAND_COLUMN =
-	create("sn","sn","sn","sn");
-    public static final Formation COMPLETED_DOUBLE_PASS_THRU =
-	create("nn","nn","ss","ss");
     public static final Formation DIAMONDS = // only one version of these
 	create(// centers
 	       d(0,+3,"e", CENTER, BEAU),
@@ -62,18 +51,8 @@ public abstract class FormationList {
 	       d(-3,-2,"|", END),
 	       d(+3,+2,"|", END),
 	       d(+3,-2,"|", END));
-    public static final Formation DOUBLE_PASS_THRU =
-	create("ss","ss","nn","nn");
     public static final Formation GENERAL_TAG =
 	create(" - ","---","---"," - ");
-    public static final Formation QUARTER_TAG =
-	create(" e ","eww","eew"," w ");
-    public static final Formation PARALLEL_WAVES = // also "half tag"
-	create("ee","ww","ee","ww");
-    public static final Formation THREE_QUARTER_TAG =
-	create(" e ","wwe","wee"," w ");
-    public static final Formation EIGHT_CHAIN_THRU =
-	create("ss","nn","ss","nn");
     public static final Formation THAR =
 	create(d(0,-1,"w", BEAU, CENTER),
 	       d(0,-3,"e", BEAU, END, OUTSIDE4),
@@ -92,14 +71,8 @@ public abstract class FormationList {
 	       d(0,+3,"e", BEAU, END, OUTSIDE4),
 	       d(-1,0,"s", BEAU, CENTER),
 	       d(-3,0,"n", BEAU, END, OUTSIDE4));
-    public static final Formation TIDAL_WAVE =
-	create("e","w","e","w","e","w","e","w");
-    public static final Formation TIDAL_TWO_FACED_LINE =
-	create("e","e","w","w","e","e","w","w");
     public static final Formation Z_FORMATION =
 	create("s ","sn","sn","sn"," n");
-    public static final Formation TRADE_BY =
-	create("nn","ss","nn","ss");
     public static final Formation PROMENADE =
 	create(d(0,-1,"e", BEAU),
 	       d(0,-3,"e", BELLE),
@@ -148,7 +121,7 @@ public abstract class FormationList {
                d(-1,0,"s",BELLE),
                d(+1,0,"n",BELLE));
     // 4-person formations
-    public static final Formation GENERAL_LINE =
+    public static final TaggedFormation GENERAL_LINE =
         create("GENERAL LINE", f("||||"), t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
     public static final TaggedFormation FACING_COUPLES = // callerlab #6
         xofy("FACING COUPLES", FACING_DANCERS, COUPLE);
@@ -166,6 +139,32 @@ public abstract class FormationList {
         xofy("RH TWO-FACED LINE", RH_MINIWAVE, COUPLE);
     public static final TaggedFormation LH_TWO_FACED_LINE = // callerlab #13
         xofy("LH_TWO_FACED_LINE", LH_MINIWAVE, COUPLE);
+    public static final TaggedFormation SINGLE_INVERTED_LINE =
+        create("SINGLE INVERTED LINE", f("snns"), t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
+    public static final TaggedFormation RH_DIAMOND =
+        create("RH DIAMOND",
+               d( 0, 3,"e",POINT),
+               d(-1, 0,"n",BEAU,CENTER),
+               d(+1, 0,"s",BEAU,CENTER),
+               d( 0,-3,"w",POINT));
+    public static final TaggedFormation RH_FACING_DIAMOND =
+        create("RH FACING DIAMOND",
+               d( 0, 3,"e",POINT),
+               d(-1, 0,"s",BELLE,CENTER),
+               d(+1, 0,"n",BELLE,CENTER),
+               d( 0,-3,"w",POINT));
+    public static final TaggedFormation LH_DIAMOND =
+        create("LH DIAMOND",
+               d( 0, 3,"w",POINT),
+               d(-1, 0,"s",BELLE,CENTER),
+               d(+1, 0,"n",BELLE,CENTER),
+               d( 0,-3,"e",POINT));
+    public static final TaggedFormation LH_FACING_DIAMOND =
+        create("LH FACING DIAMOND",
+               d( 0, 3,"w",POINT),
+               d(-1, 0,"n",BEAU,CENTER),
+               d(+1, 0,"s",BEAU,CENTER),
+               d( 0,-3,"e",POINT));
     public static final TaggedFormation LH_SINGLE_PROMENADE =
         create("LH SINGLE PROMENADE",
                 d( 0, 1, "w"),
@@ -178,6 +177,12 @@ public abstract class FormationList {
                 d(-1, 0, "n"),
                 d( 0,-1, "w"),
                 d( 1, 0, "s")); // this is a star: is that correct?
+    // 8-person formations. ///////////////////////////////
+    public static final TaggedFormation STATIC_SQUARE = // callerlab #14
+        create("STATIC SQUARE", f(" ss ","e  w","e  w"," nn "));
+    // XXX circle, callerlab #15
+    // XXX single file promenade, callerlab #16
+    // XXX alamo style, callerlab #17
     public static final TaggedFormation PROMENADE = // callerlab #18
         xofy("PROMENADE", LH_SINGLE_PROMENADE, COUPLE);
     public static final TaggedFormation WRONG_WAY_PROMENADE =
@@ -188,20 +193,83 @@ public abstract class FormationList {
         xofy("WRONG WAY THAR", LH_SINGLE_PROMENADE, RH_MINIWAVE); // XXX CHECK ME
     public static final TaggedFormation FACING_LINES = // callerlab #22
         xofy("FACING LINES", FACING_COUPLES, COUPLE);
-    
-
-    public static final TaggedFormation RH_DIAMOND =
-        create("RH DIAMOND",
-               d( 0, 3,"e",POINT),
-               d(-1, 0,"n",BEAU,CENTER),
-               d(+1, 0,"s",BEAU,CENTER),
-               d( 0,-3,"w",POINT));
-    public static final TaggedFormation LH_DIAMOND =
-        create("LH DIAMOND",
-               d( 0, 3,"w",POINT),
-               d(-1, 0,"s",BELLE,CENTER),
-               d(+1, 0,"n",BELLE,CENTER),
-               d( 0,-3,"e",POINT));
+    public static final TaggedFormation EIGHT_CHAIN_THRU = // callerlab #23
+        xofy("EIGHT CHAIN THRU", FACING_COUPLES, FACING_DANCERS);
+    public static final TaggedFormation TRADE_BY = // callerlab #24
+        xofy("TRADE BY", FACING_COUPLES, BACK_TO_BACK_DANCERS);
+    public static final TaggedFormation DOUBLE_PASS_THRU = // callerlab #25
+        xofy("DOUBLE PASS THRU", FACING_COUPLES, TANDEM);
+    public static final TaggedFormation COMPLETED_DOUBLE_PASS_THRU = // callerlab #26
+        xofy("COMPLETED DOUBLE PASS THRU", BACK_TO_BACK_COUPLES, TANDEM);
+    public static final TaggedFormation LINES_FACING_OUT = // callerlab #27
+        xofy("LINES FACING OUT", BACK_TO_BACK_COUPLES, COUPLE);
+    public static final TaggedFormation PARALLEL_RH_WAVES = // callerlab #28(a)
+        xofy("PARALLEL RH WAVES", RH_OCEAN_WAVE, TANDEM);
+    public static final TaggedFormation PARALLEL_LH_WAVES = // callerlab #28(b)
+        xofy("PARALLEL LH WAVES", LH_OCEAN_WAVE, TANDEM);
+    public static final TaggedFormation PARALLEL_RH_TWO_FACED_LINES = // callerlab #29(a)
+        xofy("PARALLEL RH TWO-FACED LINES", RH_BOX, COUPLE);
+    public static final TaggedFormation PARALLEL_LH_TWO_FACED_LINES = // callerlab #29(b)
+        xofy("PARALLEL LH TWO-FACED LINES", LH_BOX, COUPLE);
+    public static final TaggedFormation RH_COLUMN = // callerlab #30
+        xofy("RH COLUMN", RH_BOX, TANDEM,
+                t(0,NUMBER_1),t(1,NUMBER_4),
+                t(2,NUMBER_2),t(3,NUMBER_3),
+                t(4,NUMBER_3),t(5,NUMBER_2),
+                t(6,NUMBER_4),t(7,NUMBER_1));
+    public static final TaggedFormation LH_COLUMN = // callerlab #31
+        xofy("LH COLUMN", LH_BOX, TANDEM,
+                t(0,NUMBER_4),t(1,NUMBER_1),
+                t(2,NUMBER_3),t(3,NUMBER_2),
+                t(4,NUMBER_2),t(5,NUMBER_3),
+                t(6,NUMBER_1),t(7,NUMBER_4));
+    // XXX 3-and-1 lines, 8 possible, callerlab #32
+    public static final TaggedFormation ENDS_IN_INVERTED_LINES = // callerlab #33
+        xofy("ENDS IN INVERTED LINES", SINGLE_INVERTED_LINE, BACK_TO_BACK_DANCERS);
+    public static final TaggedFormation ENDS_OUT_INVERTED_LINES = // callerlab #34
+        xofy("ENDS OUT INVERTED LINES", SINGLE_INVERTED_LINE, FACING_DANCERS);
+    // XXX in t-bone lines, callerlab #35
+    // XXX out t-bone lines, callerlab #36
+    public static final TaggedFormation QUARTER_TAG = // callerlab #37
+        create("1/4 TAG", f(" e ","eww","eew"," w ")); // XXX ADD TAGS
+    public static final TaggedFormation THREE_QUARTER_TAG = // callerlab #38
+        create("3/4 TAG", f(" e ","wwe","wee"," w ")); // XXX ADD TAGS
+    public static final TaggedFormation QUARTER_LINE = // callerlab #39
+        create("1/4 LINE",f(" e ","eew","eww"," w ")); // XXX ADD TAGS
+    public static final TaggedFormation RH_TWIN_DIAMONDS = // callerlab #40
+        xofy("RH TWIN DIAMONDS", COUPLE, RH_DIAMOND);
+    public static final TaggedFormation LH_TWIN_DIAMONDS = // callerlab #41
+        xofy("LH TWIN DIAMONDS", COUPLE, LH_DIAMOND);
+    public static final TaggedFormation RH_POINT_TO_POINT_DIAMONDS = // callerlab #42(a)
+        xofy("RH POINT-TO-POINT DIAMONDS", TANDEM, RH_DIAMOND);
+    public static final TaggedFormation RH_POINT_TO_POINT_FACING_DIAMONDS = // callerlab #42(b)
+        xofy("RH POINT-TO-POINT FACING DIAMONDS", TANDEM, RH_FACING_DIAMOND);
+    public static final TaggedFormation LH_POINT_TO_POINT_DIAMONDS = // callerlab #42(c)
+        xofy("LH POINT-TO-POINT DIAMONDS", TANDEM, LH_DIAMOND);
+    public static final TaggedFormation LH_POINT_TO_POINT_FACING_DIAMONDS = // callerlab #42(d)
+        xofy("LH POINT-TO-POINT FACING DIAMONDS", TANDEM, LH_FACING_DIAMOND);
+    public static final TaggedFormation RH_TWIN_FACING_DIAMONDS = // callerlab #43
+        xofy("RH TWIN FACING DIAMONDS", COUPLE, RH_FACING_DIAMOND);
+    public static final TaggedFormation LH_TWIN_FACING_DIAMONDS = // callerlab #44
+        xofy("LH TWIN FACING DIAMONDS", COUPLE, LH_FACING_DIAMOND);
+    // XXX hourglass, callerlab #45
+    // XXX left hand Z, callerlab #46
+    // XXX right hand Z, callerlab #47
+    // XXX right hand stars, callerlab #48
+    // XXX left hand stars, callerlab #49
+    public static final TaggedFormation RH_TIDAL_WAVE = // callerlab #50(a)
+        xofy("RH TIDAL WAVE", COUPLE, RH_OCEAN_WAVE);
+    public static final TaggedFormation LH_TIDAL_WAVE = // callerlab #50(b)
+        xofy("LH TIDAL WAVE", COUPLE, LH_OCEAN_WAVE);
+    public static final TaggedFormation RH_TIDAL_TWO_FACED_LINE = // callerlab #51(a)
+        xofy("RH TIDAL TWO-FACED LINE", COUPLE, RH_TWO_FACED_LINE);
+    public static final TaggedFormation LH_TIDAL_TWO_FACED_LINE = // callerlab #51(b)
+        xofy("LH TIDAL TWO-FACED LINE", COUPLE, LH_TWO_FACED_LINE);
+    public static final TaggedFormation RH_TIDAL_LINE = // callerlab #52(a)
+        xofy("RH TIDAL LINE", RH_TWO_FACED_LINE, COUPLE);
+    public static final TaggedFormation LH_TIDAL_LINE = // callerlab #52(b)
+        xofy("LH TIDAL LINE", LH_TWO_FACED_LINE, COUPLE);
+    // XXX galaxy, callerlab #53
 
     private static class PositionAndTag {
         public final Position position;
@@ -226,7 +294,7 @@ public abstract class FormationList {
     }
     // first string is 'top' of diagram (closest to caller)
     // dancers are numbered left to right, top to bottom. (reading order)
-    private static Formation create(String name, String[] sa, NumAndTags... tags) {
+    private static TaggedFormation create(String name, String[] sa, NumAndTags... tags) {
         Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
 	// check validity
 	assert sa.length>0;
