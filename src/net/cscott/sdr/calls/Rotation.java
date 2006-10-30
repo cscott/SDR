@@ -109,7 +109,7 @@ public class Rotation {
      *  is a valid input to <code>ExactRotation.valueOf(String)</code>. */
     @Override
     public String toString() {
-	return this.amount.toProperString()+" mod "+this.modulus;
+        return this.amount.toProperString()+" mod "+this.modulus.toProperString();
     }
     /** Returns a human-readable description of the rotation, similar to the
      *  input to <code>ExactRotation.fromAbsoluteString(String)</code>. */
