@@ -88,12 +88,18 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.ENDS_IN_INVERTED_LINES);
     public static final Selector ENDS_OUT_INVERTED_LINES =
         GeneralFormationMatcher.makeSelector(FormationList.ENDS_OUT_INVERTED_LINES);
-    public static final Selector QUARTER_TAG =
-        GeneralFormationMatcher.makeSelector(FormationList.QUARTER_TAG);
-    public static final Selector THREE_QUARTER_TAG =
-        GeneralFormationMatcher.makeSelector(FormationList.THREE_QUARTER_TAG);
-    public static final Selector QUARTER_LINE =
-        GeneralFormationMatcher.makeSelector(FormationList.QUARTER_LINE);
+    public static final Selector RH_QUARTER_TAG =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_QUARTER_TAG);
+    public static final Selector LH_QUARTER_TAG =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_QUARTER_TAG);
+    public static final Selector RH_THREE_QUARTER_TAG =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_THREE_QUARTER_TAG);
+    public static final Selector LH_THREE_QUARTER_TAG =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_THREE_QUARTER_TAG);
+    public static final Selector RH_QUARTER_LINE =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_QUARTER_LINE);
+    public static final Selector LH_QUARTER_LINE =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_QUARTER_LINE);
     public static final Selector RH_TWIN_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.RH_TWIN_DIAMONDS);
     public static final Selector LH_TWIN_DIAMONDS =
