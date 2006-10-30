@@ -19,6 +19,11 @@ public class Box {
     public Fraction width() {
         return ur.x.subtract(ll.x);
     }
+    public Point center() {
+        return new Point(
+                ll.x.add(ur.x).divide(Fraction.TWO),
+                ll.y.add(ur.y).divide(Fraction.TWO));
+    }
     public boolean equals(Object o) {
         if (!(o instanceof Box)) return false;
         Box b = (Box) o;
