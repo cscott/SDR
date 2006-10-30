@@ -19,7 +19,7 @@ import net.cscott.sdr.util.Fraction;
 
 /** A list of common formations, specified with phantoms.
  */
-// can use xxxx.yyyy() to associate phantoms with real dancers.
+// can use SelectorList to associate phantoms with real dancers.
 public abstract class FormationList {
 
 
