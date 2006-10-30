@@ -9,9 +9,11 @@ import static net.cscott.sdr.calls.StandardDancer.COUPLE_3_GIRL;
 import static net.cscott.sdr.calls.StandardDancer.COUPLE_4_BOY;
 import static net.cscott.sdr.calls.StandardDancer.COUPLE_4_GIRL;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -148,6 +150,68 @@ public class Formation {
 	    .append("selected", selected)
 	    .toString();
     }
+    public String toStringDiagram() {
+        // each 2x2 dancer becomes a 5x2 char array, with facing direction
+        // indicator centered in the 5 unit width.
+        // ie, a box (bounds -2,-2 to 2,2) is:
+        //       "1B^  1Gv  "
+        //       "          "
+        //       "3B^  3Gv  "
+        GridString gs = new GridString();
+        for (Dancer d : dancers()) {
+            Position p = location(d);
+            int x = Math.round(p.x.multiply(Fraction.valueOf(5,2)).floatValue());
+            int y = Math.round(p.y.floatValue());
+            char facing = p.facing.equals(ExactRotation.NORTH)?'^':p.facing.equals(ExactRotation.SOUTH)?'v':p.facing.equals(ExactRotation.EAST)?'>':p.facing.equals(ExactRotation.WEST)?'<':'o';
+            gs.set(x,y,facing);
+            if (d instanceof StandardDancer) {
+                StandardDancer sd = (StandardDancer) d;
+                gs.set(x-1,y,sd.isBoy()?'B':'G');
+                gs.set(x-2,y,(char)(sd.coupleNumber()+'0'));
+            }
+        }
+        return gs.toString();
+    }
+    private static class GridString {
+        private int minx=0, miny=0;
+        private final List<StringBuilder> grid = new ArrayList<StringBuilder>();
+        GridString() { }
+        void set(int x, int y, char c) {
+            // insert left padding if we need it.
+            while (x<minx) {
+                for (StringBuilder sb : grid)
+                    if (sb.length()>0)
+                        sb.insert(0,' ');
+                minx--;
+            }
+            // insert new rows at top if we need it.
+            while (y<miny) {
+                grid.add(0,new StringBuilder());
+                miny--;
+            }
+            x -= minx; y -= miny;
+            // make new rows at bottom if we need to.
+            while (grid.size() <= y)
+                grid.add(new StringBuilder());
+            // find the correct row.
+            StringBuilder sb = grid.get(y);
+            // make it longer if we must.
+            while (sb.length() <= x)
+                sb.append(' ');
+            sb.setCharAt(x,c);
+            // done!
+        }
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            // need to reverse y direction.
+            for (int i=grid.size()-1; i>=0; i--) {
+                sb.append(grid.get(i));
+                sb.append('\n');
+            }
+            return sb.toString();
+        }
+    }
+    
     // starting formation for 8-couple dancing
     public static final Formation SQUARED_SET = new Formation
 	(new DancerInfo(COUPLE_1_BOY,
