@@ -4,6 +4,27 @@ program: basic
 def: nothing
  prim: 0,0,none
 
+def: circle left(n)
+  spoken: [10] circle left <n=fraction>
+  call: _fractional(_multiply_num([n],4), _circle left 1/4)
+def: circle right(n)
+  spoken: [10] circle right <n=fraction>
+  call: mirror(circle left([n]))
+
+def: _circle left 1/4
+ from: STATIC SQUARE // xxx should also work from 2 and 4-person formations
+   ipart:
+     select: BEAU
+       call: _long_circle_left, _short_circle_left
+     select: BELLE
+       call: _short_circle_left, _long_circle_left
+def: _long_circle_left
+  in: 12/5
+  prim: -2,2,right
+def: _short_circle_left
+  in: 8/5
+  prim: -2,0,none
+
 def: trade
   from: COUPLE
     in: 6
@@ -257,9 +278,9 @@ def: _extend // the general case
 def: swing thru
   optional: LEFT
   in: 6
-  from: RH WAVE
+  from: RH OCEAN WAVE
     call: right arm turn 1/2, centers(left(right arm turn 1/2))
-  from: LH WAVE
+  from: LH OCEAN WAVE
     call: centers(right arm turn 1/2), left(right arm turn 1/2)
 
 // NOTE THAT 'leads run' = 'IN YOUR BOX, leads run'
@@ -386,7 +407,7 @@ def: couples circulate
 def: spin the top
   optional: LEFT
   in: 8 // from wave
-  from: RH WAVE, LH WAVE // any hand
+  from: RH OCEAN WAVE, LH OCEAN WAVE // any hand
     call: swing, fan the top
 
 def: walk and dodge

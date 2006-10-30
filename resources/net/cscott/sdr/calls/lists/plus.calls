@@ -3,7 +3,7 @@ program: plus
 def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
   optional: LEFT
   in: 4
-  from: RH WAVE, LH WAVE
+  from: RH OCEAN WAVE, LH OCEAN WAVE
     select: CENTER
       call: cast off 3/4
     select: END

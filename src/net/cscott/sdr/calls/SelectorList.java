@@ -31,7 +31,7 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.BACK_TO_BACK_COUPLES);
     public static final Selector RH_OCEAN_WAVE =
         GeneralFormationMatcher.makeSelector(FormationList.RH_OCEAN_WAVE);
-    public static final Selector LH_OCEA_WAVE =
+    public static final Selector LH_OCEAN_WAVE =
         GeneralFormationMatcher.makeSelector(FormationList.LH_OCEAN_WAVE);
     public static final Selector RH_BOX =
         GeneralFormationMatcher.makeSelector(FormationList.RH_BOX);
