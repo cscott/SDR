@@ -26,7 +26,7 @@ public class PhantomDancer implements Dancer {
     /** Repeatable hashcode: return the id field of this phantom, which
      * is incremented by one for each dancer. */
     @Override
-    public int hashCode() { return id; }
+    public int hashCode() { return 123+id; }
     @Override
     public boolean equals(Object o) { return this==o; }
 }
