@@ -3,7 +3,6 @@ package net.cscott.sdr.calls.transform;
 import java.util.*;
 
 import net.cscott.sdr.calls.*;
-import net.cscott.sdr.calls.FormationMatch.TaggedFormationAndWarp;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.*;
 
@@ -13,7 +12,7 @@ import net.cscott.sdr.calls.ast.*;
  * {@link Par}s.  It inserts {@link Warp} elements as needed.
  * The result is a 'simplified tree'.
  * @author C. Scott Ananian
- * @version $Id: Elaborate.java,v 1.4 2006-10-25 20:43:28 cananian Exp $
+ * @version $Id: Elaborate.java,v 1.5 2006-10-30 03:58:09 cananian Exp $
  */
 public class Elaborate extends TransformVisitor<Formation> {
     /** Static dance state (like program, etc). */
@@ -87,17 +86,16 @@ public class Elaborate extends TransformVisitor<Formation> {
         assert !fm.matches.isEmpty();
         int dancers = 0;
         List<ParCall> l = new ArrayList<ParCall>(fm.matches.size());
-        for (TaggedFormationAndWarp tfw : fm.matches) {
-            Comp c = oc.child.accept(this, tfw.tf);
+        for (Dancer md : fm.meta.dancers()) {
+            TaggedFormation tf = fm.matches.get(md);
+            Comp c = oc.child.accept(this, tf);
             if (!doFully) {
                 c = new Opt(oc.build(oc.selectors, c));
             } else { // xxx broken
-                // at the moment, only warp at the very end
-                if (tfw.w!=Warp.NONE)
-                    c = new Warped(tfw.w, c);
+                c = null;
             }
-            l.add(new ParCall(selectedTags(tfw.tf), c));
-            dancers += tfw.tf.dancers().size();
+            l.add(new ParCall(selectedTags(tf), c));
+            dancers += tf.dancers().size();
         }
         // xxx are there leftover dancers?  we'll be safe...
         // add a call for them to do nothing.

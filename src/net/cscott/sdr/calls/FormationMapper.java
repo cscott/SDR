@@ -10,14 +10,14 @@ import net.cscott.sdr.util.*;
  * (given a diamond and the various tandems and couples, put them
  * together, breathing out).
  * @author C. Scott Ananian
- * @version $Id: FormationMapper.java,v 1.8 2006-10-27 21:41:18 cananian Exp $
+ * @version $Id: FormationMapper.java,v 1.9 2006-10-30 03:58:09 cananian Exp $
  */
 public class FormationMapper {
     public static Formation test1=null, test2=null;
     /** This method is just for testing. */
     public static void main(String[] args) {
         Map<Dancer,Formation> m = new HashMap<Dancer,Formation>();
-        Formation meta = FormationList.RH_WAVE;
+        Formation meta = FormationList.RH_OCEAN_WAVE;
         int i=0;
         for (Dancer d : meta.dancers()) {
             Map<Dancer,Dancer> mm = new HashMap<Dancer,Dancer>();
@@ -239,8 +239,26 @@ public class FormationMapper {
     }
     
     /** Create canonical formation by compressing components of a given
-     * formation. */
-    public static Formation compress(Formation f, List<Formation> components) {
+     * formation. The result has the meta formation, as well as a map giving
+     * the correspondence between the new phantom dancers and the input formations.*/
+    public static Formation compress(List<FormationPiece> pieces) {
         return null;
+    }
+    public static class FormationPiece {
+        /** Warped rotated formation. The input formation is a simple
+         * superposition of these. */
+        public final Formation f;
+        /** The (typically {@link PhantomDancer Phantom}) dancer who will
+         * correspond to this in the output meta formation. */
+        public final Dancer d;
+        /** The rotation to use for this dancer in the output meta formation
+         * (typically this is the rotation of formation {@code f} from
+         * whatever the 'canonical' orientation is. */
+        public final ExactRotation r;
+        public FormationPiece(Formation f, Dancer d, ExactRotation r) {
+            this.f = f;
+            this.d = d;
+            this.r = r;
+        }
     }
 }

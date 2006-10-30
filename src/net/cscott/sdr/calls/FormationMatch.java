@@ -15,19 +15,21 @@ import java.util.*;
  * which will initially stretch the boxes.
  */
 public class FormationMatch {
-    public final List<TaggedFormationAndWarp> matches;
+    /** The meta formation contains one dancer for each matched
+     * sub-formation in the setup.  Unmatched dancers (if allowed by the match)
+     * result in phantom dancers in the meta formation mapped to the
+     * {@link FormationList#SINGLE_DANCER} sub-formation.
+     */
+    public final Formation meta; // meta formation
+    /** The {@link FormationMatch#matches} field is a map from phantom dancers
+     * in the meta formation to real dancers in a tagged subformation.  The
+     * meta formation says how these subformations could be rotated, shifted,
+     * and recombined into the original setup.
+     */
+    public final Map<Dancer,TaggedFormation> matches;
 
-    public FormationMatch(List<TaggedFormationAndWarp> l) {
-        this.matches = Collections.unmodifiableList
-        (Arrays.asList
-                (l.toArray(new TaggedFormationAndWarp[l.size()])));
-    }
-
-    public static class TaggedFormationAndWarp {
-        public final TaggedFormation tf;
-        public final Warp w;
-        public TaggedFormationAndWarp(TaggedFormation tf, Warp w) {
-            this.tf = tf; this.w = w;
-        }
+    public FormationMatch(Formation meta, Map<Dancer,TaggedFormation> matches) {
+        this.meta = meta;
+        this.matches = Collections.unmodifiableMap(matches);
     }
 }

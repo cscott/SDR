@@ -3,7 +3,6 @@ package net.cscott.sdr.calls;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.cscott.sdr.calls.FormationMatch.TaggedFormationAndWarp;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import static net.cscott.sdr.calls.SelectorList.*;
 
@@ -23,11 +22,13 @@ public class TestSelectors {
         Formation f = Formation.SQUARED_SET;
         FormationMatch fm = COUPLE.match(f);
         assertEquals(fm.matches.size(), 4);
-        for (TaggedFormationAndWarp fw : fm.matches) {
-            for (Dancer d : fw.tf.dancers()) {
-                assertEquals(fw.tf.isTagged(d, Tag.BEAU),
+        assertEquals(fm.meta.dancers().size(), 4);
+        for (Dancer md : fm.meta.dancers()) {
+            TaggedFormation tf = fm.matches.get(md);
+            for (Dancer d : tf.dancers()) {
+                assertEquals(tf.isTagged(d, Tag.BEAU),
                         d.isBoy());
-                assertEquals(fw.tf.isTagged(d, Tag.BELLE),
+                assertEquals(tf.isTagged(d, Tag.BELLE),
                         d.isGirl());
             }
         }
@@ -38,11 +39,13 @@ public class TestSelectors {
         Formation f = Formation.FOUR_SQUARE;
         FormationMatch fm = COUPLE.match(f);
         assertEquals(fm.matches.size(), 2);
-        for (TaggedFormationAndWarp fw : fm.matches) {
-            for (Dancer d : fw.tf.dancers()) {
-                assertEquals(fw.tf.isTagged(d, Tag.BEAU),
+        assertEquals(fm.meta.dancers().size(), 2);
+        for (Dancer md : fm.meta.dancers()) {
+            TaggedFormation tf = fm.matches.get(md);
+            for (Dancer d : tf.dancers()) {
+                assertEquals(tf.isTagged(d, Tag.BEAU),
                         d.isBoy());
-                assertEquals(fw.tf.isTagged(d, Tag.BELLE),
+                assertEquals(tf.isTagged(d, Tag.BELLE),
                         d.isGirl());
             }
         }
@@ -53,8 +56,10 @@ public class TestSelectors {
         Formation f = Formation.FOUR_SQUARE;
         FormationMatch fm = FACING_DANCERS.match(f);
         assertEquals(fm.matches.size(), 2);
-        for (TaggedFormationAndWarp fw : fm.matches) {
-            List<Dancer> l = new ArrayList<Dancer>(fw.tf.dancers());
+        assertEquals(fm.meta.dancers().size(), 2);
+        for (Dancer md : fm.meta.dancers()) {
+            TaggedFormation tf = fm.matches.get(md);
+            List<Dancer> l = new ArrayList<Dancer>(tf.dancers());
             assertEquals(l.size(), 2);
             assertEquals(l.get(0).isBoy(), l.get(1).isGirl());
         }
@@ -65,5 +70,6 @@ public class TestSelectors {
         Formation f = Formation.FOUR_SQUARE;
         FormationMatch fm = FACING_COUPLES.match(f);
         assertEquals(fm.matches.size(), 1);
+        assertEquals(fm.meta.dancers().size(), 1);
     }
 }
