@@ -1,5 +1,7 @@
 package net.cscott.sdr.calls;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -188,9 +190,9 @@ public abstract class FormationList {
     public static final TaggedFormation WRONG_WAY_PROMENADE =
         xofy("WRONG WAY PROMENADE", RH_SINGLE_PROMENADE, COUPLE);
     public static final TaggedFormation THAR =
-        xofy("THAR", LH_SINGLE_PROMENADE, LH_MINIWAVE); // XXX CHECK ME
+        xofy("THAR", LH_SINGLE_PROMENADE, LH_MINIWAVE);
     public static final TaggedFormation WRONG_WAY_THAR =
-        xofy("WRONG WAY THAR", LH_SINGLE_PROMENADE, RH_MINIWAVE); // XXX CHECK ME
+        xofy("WRONG WAY THAR", LH_SINGLE_PROMENADE, RH_MINIWAVE);
     public static final TaggedFormation FACING_LINES = // callerlab #22
         xofy("FACING LINES", FACING_COUPLES, COUPLE);
     public static final TaggedFormation EIGHT_CHAIN_THRU = // callerlab #23
@@ -225,17 +227,23 @@ public abstract class FormationList {
                 t(6,NUMBER_1),t(7,NUMBER_4));
     // XXX 3-and-1 lines, 8 possible, callerlab #32
     public static final TaggedFormation ENDS_IN_INVERTED_LINES = // callerlab #33
-        xofy("ENDS IN INVERTED LINES", SINGLE_INVERTED_LINE, BACK_TO_BACK_DANCERS);
+        xofy("ENDS IN INVERTED LINES", BACK_TO_BACK_DANCERS, SINGLE_INVERTED_LINE);
     public static final TaggedFormation ENDS_OUT_INVERTED_LINES = // callerlab #34
-        xofy("ENDS OUT INVERTED LINES", SINGLE_INVERTED_LINE, FACING_DANCERS);
+        xofy("ENDS OUT INVERTED LINES", FACING_DANCERS, SINGLE_INVERTED_LINE);
     // XXX in t-bone lines, callerlab #35
     // XXX out t-bone lines, callerlab #36
-    public static final TaggedFormation QUARTER_TAG = // callerlab #37
+    public static final TaggedFormation RH_QUARTER_TAG = // callerlab #37(a)
         create("1/4 TAG", f(" e ","eww","eew"," w ")); // XXX ADD TAGS
-    public static final TaggedFormation THREE_QUARTER_TAG = // callerlab #38
+    public static final TaggedFormation LH_QUARTER_TAG = // callerlab #37(b)
+        create("1/4 TAG", f(" w ","eew","eww"," e ")); // XXX ADD TAGS
+    public static final TaggedFormation RH_THREE_QUARTER_TAG = // callerlab #38(a)
         create("3/4 TAG", f(" e ","wwe","wee"," w ")); // XXX ADD TAGS
-    public static final TaggedFormation QUARTER_LINE = // callerlab #39
+    public static final TaggedFormation LH_THREE_QUARTER_TAG = // callerlab #38(b)
+        create("3/4 TAG", f(" w ","wee","wwe"," e ")); // XXX ADD TAGS
+    public static final TaggedFormation RH_QUARTER_LINE = // callerlab #39(a)
         create("1/4 LINE",f(" e ","eew","eww"," w ")); // XXX ADD TAGS
+    public static final TaggedFormation LH_QUARTER_LINE = // callerlab #39(b)
+        create("1/4 LINE",f(" w ","eww","eew"," e ")); // XXX ADD TAGS
     public static final TaggedFormation RH_TWIN_DIAMONDS = // callerlab #40
         xofy("RH TWIN DIAMONDS", COUPLE, RH_DIAMOND);
     public static final TaggedFormation LH_TWIN_DIAMONDS = // callerlab #41
@@ -307,11 +315,11 @@ public abstract class FormationList {
 		Rotation r = 
 		    Rotation.fromAbsoluteString(sa[y].substring(x,x+1));
 		m.put(new PhantomDancer(), 
-		        new Position(Fraction.valueOf(x,1),
-		                Fraction.valueOf(y,1).negate(),
+		        new Position(Fraction.valueOf(x*2),
+		                Fraction.valueOf(y*2).negate(),
 		                r));
 	    }
-	Formation f = new Formation(m);
+	Formation f = new Formation(m).recenter();
         return addTags(name, f, tags);
     }
     // helper
@@ -373,7 +381,15 @@ public abstract class FormationList {
             EnumSet.of(tags[0], tags);
         return new NumAndTags(dancerNum, t);
     }
-    public static void main(String[] args) {
-        System.out.println(xofy("test formation", FACING_DANCERS, COUPLE));
+    public static void main(String[] args) throws Exception {
+        //System.out.println(xofy("test formation", FACING_DANCERS, COUPLE).toStringDiagram());
+        for (Field f : FormationList.class.getFields()) {
+            if (Modifier.isPublic(f.getModifiers()) &&
+                Modifier.isStatic(f.getModifiers())) {
+                Formation ff = (Formation) f.get(null);
+                System.out.println(f.getName());
+                System.out.println(ff.toStringDiagram());
+            }
+        }
     }
 }
