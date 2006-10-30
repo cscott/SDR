@@ -88,6 +88,9 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
 	THREE_QUARTERS = create(6,8),
 	SEVEN_EIGHTHS = create(7,8),
 	ONE = create(8,8);
+    /** Common absolute rotations. */
+    public static final ExactRotation
+        NORTH=ZERO, EAST=ONE_QUARTER, SOUTH=ONE_HALF, WEST=THREE_QUARTERS;
     /** A list of rotations in 1/8 turn increments. */
     private static ExactRotation[] eighths = new ExactRotation[]
 	{ ZERO, ONE_EIGHTH, ONE_QUARTER, THREE_EIGHTHS,
@@ -149,5 +152,9 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
      *  is a counter-clockwise movement. */
     static boolean isCCW(ExactRotation from, ExactRotation to) {
 	return from.compareTo(to) > 0;
+    }
+    @Override
+    public String toString() {
+        return this.amount.toProperString();
     }
 }
