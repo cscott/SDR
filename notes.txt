@@ -250,7 +250,7 @@ solid dancers (similar to the above):
 Note that compressing a tandem diamond in this fashion will result in
 a 'short' diamond (points at (0,+/-2) instead of (0,+/-3).  We
 recognize this as an alternative diamond formation that can be
-breathed into the standard diamond.
+breathed out into the standard diamond.
 -----------
 Dancers are diamond shaped:
   ^
@@ -325,7 +325,7 @@ how to deal with "swing and mix"/"and(swing,mix)" ambiguity?
 Answer: post-process parse tree to create "(apply swing-and-mix)" from
 "(apply and (apply swing) (apply mix))".
 -----------
-What about doing a "find all parses" with a truely ambiguous grammar?
+What about doing a "find all parses" with a truly ambiguous grammar?
 We could do the same thing we do with speech recognition: try each
 possible parse & discard any that don't work.
 -----------
@@ -359,7 +359,7 @@ ANSWER:
  inserting tandems into a standard 2x4 diamond yield (effectively) a
  tandem 2x3 diamond.
  Second: whenever we try to match a formation and fail, try also to
- match "isomorphic" formations & insert a 'breath' operation if
+ match "isomorphic" formations & insert a 'breathe' operation if
  necessary.  Make 'small diamonds' isomorphic to 'big diamonds', just
  like 'quarter tag with ends facing right' is isomorphic to 'twin
  diamonds'. (and in some cases, facing couples are isomorphic to waves
