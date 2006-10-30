@@ -324,6 +324,19 @@ anything4
 how to deal with "swing and mix"/"and(swing,mix)" ambiguity?
 Answer: post-process parse tree to create "(apply swing-and-mix)" from
 "(apply and (apply swing) (apply mix))".
+
+More tricky parses:
+ <designator> (<anything> and <anything>)
+ (<designator> <anything>) (and|while the) (<designator> <anything>)
+ "swing and (TANDEM mix)" vs. "TANDEM (swing and mix)"
+                          NOT "(TANDEM swing) and mix"
+Use greedy parse?
+or:
+ <anything1> = <designator> <anything2>
+             | <designator> <anything2> AND <designator> <anything2>
+ <anything2> = <anything2> AND <anything2> // ie, no designators allowed here
+ <anything3> = LPAREN <anything1> RPAREN
+
 -----------
 What about doing a "find all parses" with a truly ambiguous grammar?
 We could do the same thing we do with speech recognition: try each
@@ -408,3 +421,51 @@ know that the denominators are < 1000, which gives us plenty of room.
 Use the Sphinx RuleGrammar to parse our inputs, rather than having a
 separate ANTLRv3 grammar?  cons: Sphinx doesn't recognize ambiguity
 in the grammar.  pro: it (seems to have) no problem with left recursion.
+---------------
+1. Each movement ought to be interpolated according to the momentary center of
+the (sub)formation - ie, box counter rotate is an arcing movement, not a a
+straightforward prim 0,2,right (for trailer in right hand box).  This is
+important for roll/sweep and flow.
+2. Post processing at SELECT (ParCall) should insert handhold actions for
+connected dancers.  Actions are "left hand hold" and "right hand hold".
+3. Evaluate returns list of "Prim or Action" per Dancer; these are applied
+during SELECT (ParCall) processing to yield a formation.  (Separate class
+does the combination from the sorted list of time steps).  Note that we may
+need to interpolate paths in order to get a uniform set of steps; ensure
+that crossing paths will actually result in identical locations for the
+relevant dancers -- tricky for t-boned jaywalk.
+4. Create 'or' selector: BOX = or(RH_BOX, LH_BOX)
+   OCEAN_WAVE = or(RH_OCEAN_WAVE, LH_OCEAN_WAVE)
+   Be careful to distinguish between 'general formations' and disjunctive
+   selectors.  Use general formation where possible, and use GENERAL in the
+   name of the selector.  BOX and OCEAN_WAVE can't be general selectors.
+5. NEAR WAVE / NEAR LINE / FAR WAVE / FAR LINE tags?
+-----
+Result of evaluation includes:
+ DancerPath:
+   Point from, to, arcCenter; // arcCenter can be null for straight paths.
+   Fraction time;
+   ExactRotation from, to;
+   PathType pt; // 1,2,4,8 person, for flow
+   Rotation rollDir, sweepDir; // these can be none.
+Some of these can be automatically computed from the other information.
+----
+Circular interpolation algorithm:
+ 0. If motion is explicitly tagged ("ARC") then use formation origin as
+    arc center.  Otherwise:
+ 1. Get intersection of lines perp. to motion at start and end.
+    If no intersection, then bail to straight line path.
+ 2. Check whether intersection is to left or right of motion direction,
+    at both start and end.
+    If intersection point is colinear with motion direction, bail to straight
+    line path.
+ 3. If both left or both right, then arc is possible: center is at intersection
+    point.  Otherwise, bail to straight line path.
+-----
+After SELECT fails, we go to a 'try harder' phase, where we try to find the
+appropriate tags, irrespective of the current TaggedFormation.
+
+After FROM fails, we 'try harder', which involves trying breathing and applying
+"from facing couples" and "from waves" rules.  Need explicit tag in call
+definition to say when this is/is not applicable?  Ie, recycle from facing
+couples not okay using "from facing couples" rule.
