@@ -56,6 +56,9 @@ public class TaggedFormation extends Formation {
                 s.add(d);
         return s;
     }
+    public Set<Tag> tags(Dancer d) {
+        return EnumSet.copyOf(tags.getValues(d));
+    }
     @Override
     public TaggedFormation select(Set<Dancer> s) {
         Set<Dancer> nSel = new LinkedHashSet<Dancer>(s);
