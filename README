@@ -1,0 +1,9 @@
+This directory contains java sources for the Square Dance Revolution game.
+
+This project can be build with either Eclipse or Ant.
+
+A Java 1.5 compiler is required.
+
+For more information, see: http://cscott.net/Projects/SDR
+
+ -- C. Scott Ananian, sdr@cscott.net

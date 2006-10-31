@@ -4,6 +4,8 @@
 <description>
 Square Dance Revolution build file.
 </description>
+<property name="package" value="sdr" />
+<property name="version" value="0.1" />
 
     <!-- set the classpath and properties -->
     <property name="top_dir"		value="."/>
@@ -134,5 +136,26 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
 	    <move file="src/net/cscott/sdr/calls/lists/C4Parser.lexer.g"
 	        tofile="src/net/cscott/sdr/calls/lists/C4Parser.lexer.3g" />
     </target>
+
+<!-- bundle up all files for distribution -->
+<target name="dist" depends="jar,javadoc">
+  <delete file="ChangeLog" />
+  <exec executable="cvs2cl" />
+  <tar destfile="${package}-${version}.tar.gz" compression="gzip">
+    <tarfileset dir="api" prefix="${package}-${version}/api" />
+    <tarfileset dir="src" prefix="${package}-${version}/src"
+                includes="**/*.java **/*.html" excludes="CVS" />
+    <tarfileset dir="resources" prefix="${package}-${version}/resources"
+                excludes="CVS" />
+    <tarfileset dir="lib" prefix="${package}-${version}/lib"
+                excludes="CVS" />
+    <tarfileset dir="." prefix="${package}-${version}"
+     includes="README AUTHORS COPYING ChangeLog NEWS sdr.Manifest
+               build.xml .antlr-eclipse .classpath .project .settings/**/*
+               notes.txt sdr.jar" />
+  </tar>
+</target>
+    
+
 
 </project>
