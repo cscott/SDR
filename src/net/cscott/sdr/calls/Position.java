@@ -20,11 +20,15 @@ public class Position {
     /** Facing direction. Note that {@code facing} should always be an
      * {@link ExactRotation} for real (non-phantom) dancers. */
     public final Rotation facing;
-    /** Create a Position object. Note that <code>facing</code> may
-     *  be <code>null</code> to indicate 'rotation unspecified'. */
+    /** Create a Position object from the given x and y coordinates
+     * and {@link Rotation}. */
     public Position(Fraction x, Fraction y, Rotation facing) {
-	assert x!=null; assert y!=null;
+	assert x!=null; assert y!=null; assert facing!=null;
 	this.x = x; this.y = y; this.facing = facing;
+    }
+    /** Create a Position object with integer-valued x and y coordinates. */
+    public Position(int x, int y, Rotation facing) {
+        this(Fraction.valueOf(x),Fraction.valueOf(y),facing);
     }
     /** Move the given distance in the facing direction.
      * Requires that the {@code facing} direction be an
