@@ -1,11 +1,14 @@
 ChangeLog
 sdr-*.tar.gz
-sdr.jar
+sdr.jar*
+sdr-libs.jar*
 bin
 api
 research
 properties.cfg
 local
 dist
-blah
+blah*
 debug.txt
+build.properties
+sdr.keystore

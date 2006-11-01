@@ -5,27 +5,36 @@
 Square Dance Revolution build file.
 </description>
 <property name="package" value="sdr" />
-<property name="version" value="0.1" />
+<property name="version" value="0.1" /> <!-- change version # here! -->
 
-    <!-- set the classpath and properties -->
-    <property name="top_dir"		value="."/>
-    <property name="api_dir"            value="${top_dir}/api"/>
-    <property name="lib_dir"            value="${top_dir}/lib"/>
-    <property name="src_dir"            value="${top_dir}/src"/>
-    <property name="classes_dir"	value="${top_dir}/bin"/>
-    <property name="resources_dir"	value="${top_dir}/resources"/>
-
-    <path id="classpath.path">
-        <pathelement path="${classes_dir}"/>
-	<fileset dir="lib">
-	    <include name="*.jar" />
-	    <include name="sphinx/*.jar" />
-	    <include name="jme/*.jar" />
-	</fileset>
-    </path>
+    <taskdef resource="net/sf/antcontrib/antlib.xml"
+	     classpath="lib/dev/ant-contrib.jar" />
 
     <!-- define some variables for the script -->
     <target name="init">
+      <!-- load the variable definitions from another file -->
+      <property file="build.properties" />
+      <!-- define other variables -->
+      <property name="api_dir"            value="${basedir}/api"/>
+      <property name="lib_dir"            value="${basedir}/lib"/>
+      <property name="src_dir"            value="${basedir}/src"/>
+      <property name="classes_dir"	value="${basedir}/bin"/>
+      <property name="resources_dir"	value="${basedir}/resources"/>
+      <!-- set the classpath -->
+      <fileset id="jar.set" dir="lib">
+        <include name="*.jar" />
+	<include name="sphinx/*.jar" />
+	<include name="jme/jme*.jar" />
+	<include name="jme/jinput.jar jme/jogg*.jar jme/jorbis*.jar" />
+	<include name="jme/lwjgl.jar" />
+      </fileset>
+      <path id="classpath.path">
+        <pathelement path="${classes_dir}"/>
+	<fileset refid="jar.set" />
+        <fileset dir="lib/dev"> <!-- for development only -->
+          <include name="*.jar" />
+        </fileset>
+      </path>
     </target>
 
     <target name="none">
@@ -37,7 +46,7 @@ Square Dance Revolution build file.
             description="Removes the generated class files and javadoc">
 	<delete dir="${classes_dir}" />
 	<delete dir="${api_dir}" />
-	<delete file="${top_dir}/${ant.project.name}.jar" />
+	<delete file="${basedir}/${ant.project.name}.jar" />
     </target>
 
     <!-- compile the source code -->
@@ -66,25 +75,29 @@ Square Dance Revolution build file.
 	<javadoc sourcepath="${src_dir}"
 		 packagenames="net.cscott.*"
 		 destdir="${api_dir}"
+                 windowtitle="SDR documentation"
 		 doctitle="Square Dance Revolution!"
+                 header="${ant.project.name}"
 		 source="1.5"
-		 windowtitle="${ant.project.name}">
+		 bottom="Copyright (c) 2006 C. Scott Ananian"
+                 access="protected" nodeprecated="false"
+                 author="true" use="true" version="true" breakiterator="true">
 		<classpath refid="classpath.path" />
             <link href="http://jakarta.apache.org/commons/lang/api-release/"/>
             <link href="http://cmusphinx.sourceforge.net/sphinx4/javadoc/"/>
             <link href="http://www.jmonkeyengine.com/doc/"/>
             <link href="http://cscott.net/Projects/JUtil/jutil-latest/doc/"/>
-            <link href="http://java.sun.com/products/java-media/speech/forDevelopers/jsapi-doc/"/>
+            <!--<link href="http://java.sun.com/products/java-media/speech/forDevelopers/jsapi-doc/"/>-->
             <link href="http://java.sun.com/javase/6/docs/api"/>
             <link href="http://www.antlr.org/javadoc/"/>
 	</javadoc>
     </target>
 
     <!-- export the project as a jar -->
-    <target name="jar" depends="compile"
+    <target name="jar" depends="init,compile"
             description="Exports the project as a jar">
-	<jar destfile="${top_dir}/${ant.project.name}.jar"
-             update="true" manifest="${top_dir}/${ant.project.name}.Manifest"> 
+	<jar destfile="${basedir}/${ant.project.name}.jar"
+             update="true" manifest="${basedir}/${ant.project.name}.Manifest"> 
 		<fileset dir="${classes_dir}" />
 		<fileset dir="${resources_dir}" />
 	</jar>
@@ -101,7 +114,7 @@ Square Dance Revolution build file.
     <target name="run"
 	    description="Runs the application."
 	    depends="jar">
-	    <java jar="${top_dir}/${ant.project.name}.jar"
+	    <java jar="${basedir}/${ant.project.name}.jar"
 	          fork="true"
 		  maxmemory="256m">
 		  <sysproperty key="java.library.path" value="lib/jme"/>
@@ -137,25 +150,76 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
 	        tofile="src/net/cscott/sdr/calls/lists/C4Parser.lexer.3g" />
     </target>
 
-<!-- bundle up all files for distribution -->
-<target name="dist" depends="jar,javadoc">
-  <delete file="ChangeLog" />
-  <exec executable="cvs2cl" />
-  <tar destfile="${package}-${version}.tar.gz" compression="gzip">
-    <tarfileset dir="api" prefix="${package}-${version}/api" />
-    <tarfileset dir="src" prefix="${package}-${version}/src"
-                includes="**/*.java **/*.html" excludes="CVS" />
-    <tarfileset dir="resources" prefix="${package}-${version}/resources"
-                excludes="CVS" />
-    <tarfileset dir="lib" prefix="${package}-${version}/lib"
-                excludes="CVS" />
-    <tarfileset dir="." prefix="${package}-${version}"
-     includes="README AUTHORS COPYING ChangeLog NEWS sdr.Manifest
-               build.xml .antlr-eclipse .classpath .project .settings/**/*
-               notes.txt sdr.jar" />
-  </tar>
-</target>
-    
+    <!-- bundle up all files for distribution -->
+    <target name="dist" depends="jar,javadoc">
+      <delete file="ChangeLog" />
+      <exec executable="cvs2cl" />
+      <tar destfile="${package}-${version}.tar.gz" compression="gzip">
+        <tarfileset dir="api" prefix="${package}-${version}/api" />
+        <tarfileset dir="src" prefix="${package}-${version}/src"
+                    includes="**/*.java **/*.html" excludes="CVS" />
+        <tarfileset dir="resources" prefix="${package}-${version}/resources"
+                    excludes="CVS" />
+        <tarfileset dir="lib" prefix="${package}-${version}/lib"
+                    excludes="CVS" />
+        <tarfileset dir="." prefix="${package}-${version}"
+         includes="README AUTHORS COPYING ChangeLog NEWS sdr.Manifest
+                   build.xml .antlr-eclipse .classpath .project .settings/**/*
+                   notes.txt sdr.jar" />
+      </tar>
+    </target>
+        
+    <!-- **************** java web start stuff ************* -->
 
+    <!-- generate signing key; only needs to be done once -->
+    <target name="sdr.keystore" depends="init" >
+      <genkey alias="sdr" keystore="${basedir}/sdr.keystore"
+                     storepass="${keystore.password}" validity="365" >
+        <dname>
+        <param name="CN" value="C. Scott Ananian"/>
+        <param name="O"  value="cscott.net"/>
+        <param name="L"  value="Somerville"/>
+        <param name="ST"  value="Massachusetts"/>
+        <param name="C"  value="US"/>
+        </dname>
+      </genkey>
+    </target>
+
+    <!-- combine our libraries into one huge library -->
+    <target name="exported-jar" depends="init" >
+      <property name="e" value="${basedir}/exported"/>
+      <delete dir="${e}" />
+      <mkdir dir="${e}" />
+      <foreach target="unpack-one-jar" param="jar.file">
+        <fileset refid="jar.set" />
+      </foreach>
+      <jar destfile="${basedir}/${ant.project.name}-libs.jar"
+           update="true" basedir="${e}" />
+      <delete dir="${e}" />
+    </target>
+    <target name="unpack-one-jar" depends="init" >
+      <property name="e" value="${basedir}/exported"/>
+      <unjar dest="${e}" src="${jar.file}" />
+    </target>
+    <target name="sign-jars" depends="jar,exported-jar">
+      <foreach target="sign-one-jar" param="sign.file">
+        <fileset dir=".">
+          <include name="sdr.jar" />
+          <include name="sdr-libs.jar" />
+	  <include name="lib/jme/jnlp/*.jar" />
+        </fileset>
+      </foreach>
+    </target>
+    <target name="sign-one-jar">
+      <property file="build.properties" />
+      <if>
+        <checksum file="${sign.file}" />
+        <else>
+          <signjar alias="sdr" keystore="${basedir}/sdr.keystore"
+    	       storepass="${keystore.password}" jar="${sign.file}" />
+          <checksum  file="${sign.file}" forceOverwrite="yes" />
+        </else>
+      </if>
+    </target>
 
 </project>

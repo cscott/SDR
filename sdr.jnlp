@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+"
+      codebase="http://cscott.net/Projects/SDR/sdr-0.1/"
+      href="sdr.jnlp">
+
+  <information>
+    <title>Square Dance Revolution! (v0.1)</title>
+    <vendor>C. Scott Ananian</vendor>
+    <homepage href="http://cscott.net/Projects/SDR"/>
+    <icon kind="splash" href="http://cscott.net/Projects/SDR/splash.png" />
+    <icon href="http://cscott.net/Projects/SDR/logo.png"/>
+    <description kind="one-line">Square Dance Revolution!</description>
+    <description kind="tooltip">Square Dance Revolution!</description>
+    <description>Square Dance Revolution!
+    A square dance calling game, where you get points for making dancers swing.
+    </description>
+    <offline-allowed/>
+  </information>
+
+  <security>
+      <all-permissions/>
+  </security>
+
+  <resources>
+    <j2se version="1.5+" java-vm-args="-ea -Xmx256m -Xincgc" />
+    <jar href="sdr.jar" main="true"/>
+    <jar href="lib/sdr-libs.jar"/>
+  </resources>
+
+  <resources os="Windows">
+  	<j2se version="1.4+"/>
+    <nativelib href="lib/jinput-windows.jar"/>
+    <nativelib href="lib/lwjgl-windows.jar"/>
+    <nativelib href="lib/openal-windows.jar"/>
+  </resources>
+  <resources os="Mac OS">
+    <j2se version="1.4+"/>
+    <nativelib href="lib/jinput-mac.jar"/>
+    <nativelib href="lib/lwjgl-mac.jar"/>
+    <nativelib href="lib/openal-mac.jar"/>
+  </resources>
+  <resources os="Linux" arch="i386">
+    <j2se version="1.4+"/>
+    <nativelib href="lib/jinput-linux.jar"/>
+    <nativelib href="lib/lwjgl-linux.jar"/>
+    <nativelib href="lib/openal-linux.jar"/>
+  </resources>
+
+  <property key="java.library.path" value="." />
+  <application-desc/>
+</jnlp>
