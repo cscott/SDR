@@ -90,9 +90,9 @@ Square Dance Revolution build file.
 	<javadoc sourcepath="${src_dir}"
 		 packagenames="net.cscott.*"
 		 destdir="${api_dir}"
-                 windowtitle="SDR documentation"
+                 windowtitle="SDR ${version} documentation"
 		 doctitle="Square Dance Revolution!"
-                 header="${ant.project.name}"
+                 header="${ant.project.name} ${version}"
 		 source="1.5"
 		 bottom="Copyright (c) 2006 C. Scott Ananian"
                  access="protected" nodeprecated="false"
@@ -171,7 +171,7 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
       <tar destfile="${package}-${version}.tar.gz" compression="gzip">
         <tarfileset dir="api" prefix="${package}-${version}/api" />
         <tarfileset dir="src" prefix="${package}-${version}/src"
-                    includes="**/*.java **/*.html **/*.java.in"
+                    includes="**/*.java **/*.html **/*.java.in **/*.g **/*.3g"
                     excludes="CVS" />
         <tarfileset dir="resources" prefix="${package}-${version}/resources"
                     excludes="CVS" />
