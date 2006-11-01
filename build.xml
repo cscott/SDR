@@ -196,7 +196,7 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
         <tarfileset dir="." prefix="${package}-${version}"
          includes="README AUTHORS COPYING ChangeLog NEWS sdr.Manifest
                    build.xml .antlr-eclipse .classpath .project .settings/**/*
-                   notes.txt sdr.jar sample.build.properties sdr.jnlp" />
+                   notes.txt sdr.jar sample.build.properties sdr.jnlp.in" />
       </tar>
     </target>
         
