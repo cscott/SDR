@@ -326,22 +326,28 @@ public abstract class FormationList {
     private static String[] f(String... sa) { return sa; }
 
     /** Formation composition: create a formation with an X of Ys. */
-    private static Formation _xofy(Formation x, Formation y) {
+    private static TaggedFormation _xofy(Formation x, TaggedFormation y) {
         /* create an instance of 'y' for each dancer in 'x'. */
         Map<Dancer,Formation> sub = new LinkedHashMap<Dancer,Formation>();
+        MultiMap<Dancer,Tag> tags = new GenericMultiMap<Dancer,Tag>();
         for (Dancer d: x.dancers()) {
             Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
-            for (Dancer dd : y.dancers())
-                m.put(new PhantomDancer(), y.location(dd));
+            for (Dancer dd : y.dancers()) {
+                Dancer phantom = new PhantomDancer();
+                m.put(phantom, y.location(dd));
+                tags.addAll(phantom, y.tags(dd));
+            }
             sub.put(d, new Formation(m));
         }
-        return FormationMapper.insert(x,sub);
+        Formation result = FormationMapper.insert(x,sub);
+        // Transfer tags from formation y.
+        return new TaggedFormation(result, tags);
     }
     /** Helper function for the above to add dancer tags. The dancers
      * are numbered left to right, top to bottom.  A null indicates
      * "no additional tags".
      */
-    private static TaggedFormation xofy(final String name, Formation x, Formation y, NumAndTags... tags){
+    private static TaggedFormation xofy(final String name, Formation x, TaggedFormation y, NumAndTags... tags){
         return addTags(name, _xofy(x,y), tags);
     }
     private static TaggedFormation addTags(final String name, final Formation f, NumAndTags... tags) {
@@ -359,11 +365,16 @@ public abstract class FormationList {
         });
         MultiMap<Dancer,Tag> tm = new GenericMultiMap<Dancer,Tag>
             (Factories.enumSetFactory(Tag.class));
+        // add existing tags
+        if (f instanceof TaggedFormation)
+            for (Dancer d : f.dancers())
+                tm.addAll(d, ((TaggedFormation)f).tags(d));
         // add explicitly specified tags.
         for (NumAndTags nt : tags)
             tm.addAll(dancers.get(nt.dancerNum), nt.tags);
         // add implicit/automatic tags
-        //Tagger.addAutomatic(f, tm);
+        if (tags.length==0) // XXX NOT QUITE RIGHT, but general formations don't get tags
+            Tagger.addAutomatic(f, tm);
         return new TaggedFormation(f, tm) {
             @Override
             public String toString() { return true?super.toString():name; }
@@ -386,9 +397,10 @@ public abstract class FormationList {
         for (Field f : FormationList.class.getFields()) {
             if (Modifier.isPublic(f.getModifiers()) &&
                 Modifier.isStatic(f.getModifiers())) {
-                Formation ff = (Formation) f.get(null);
+                TaggedFormation ff = (TaggedFormation) f.get(null);
                 System.out.println(f.getName());
                 System.out.println(ff.toStringDiagram());
+                System.out.println(ff.toString());
             }
         }
     }
