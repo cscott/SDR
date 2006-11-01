@@ -3,6 +3,7 @@ package net.cscott.sdr.calls;
 import java.util.*;
 
 import net.cscott.sdr.calls.FormationMapper.FormationPiece;
+import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.jutil.*;
 
@@ -84,10 +85,12 @@ public abstract class GeneralFormationMatcher {
         assert goal.isCentered(); // Assumes center of goal formation is 0,0
         Dancer gd0 = goalDancers.get(0);
         Set<Dancer> eq0 = gsf.makeSet();
-        Position p0 = goal.location(gd0).normalize();
+        Position p0 = goal.location(gd0).normalize(); // remember p0.facing is most exact
         for (Dancer gd : goalDancers)
-            if (rotated(goal.location(gd)).contains(p0))
-                eq0.add(gd);
+            for (Position rp: rotated(goal.location(gd)))
+                    if (rp.x.equals(p0.x) && rp.y.equals(p0.y)&& 
+                            rp.facing.includes(p0.facing))
+                        eq0.add(gd);
         assert eq0.contains(gd0);//at the very least, gd0 is symmetric to itself
         
         // now try setting each dancer in 'f' to d0 in the goal formation.
@@ -106,6 +109,7 @@ public abstract class GeneralFormationMatcher {
         tryOne(mi, 0, initialAssignment, inputEmpty);
         if (mi.matches.isEmpty())
             throw new NoMatchException("no matches");
+        
         // Filter out the max
         int max = 0;
         for (PersistentSet<OneMatch> match: mi.matches)
@@ -133,19 +137,28 @@ public abstract class GeneralFormationMatcher {
                 "at least one real dancer must be in formation";
             // make an ExactRotation for pGoal, given the extraRot
             Position goP = makeExact(mi.goalPositions.get(0), om.extraRot);
-            Warp warp = Warp.rotateAndMove(goP, inP);
+            Warp warpF = Warp.rotateAndMove(goP, inP);
+            Warp warpB = Warp.rotateAndMove(inP, goP);
 	    ExactRotation rr = (ExactRotation) inP.facing.subtract(goP.facing.amount);
-            Map<Dancer,Dancer> map = new HashMap<Dancer,Dancer>();
-            for (int g=0; g<mi.goalPositions.size(); g++) {
-                goP = mi.goalPositions.get(g);
-                inP = warp.warp(goP, Fraction.ZERO);
-                Dancer id = mi.inputPositionMap.get(zeroRotation(inP));
-                map.put(goalDancers.get(g), id);
+            Map<Dancer,Position> subPos = new LinkedHashMap<Dancer,Position>();
+            MultiMap<Dancer,Tag> subTag = new GenericMultiMap<Dancer,Tag>();
+            for (Dancer goD : mi.goalDancers) {
+                goP = goal.location(goD);
+                // warp to find which input dancer corresponds to this one
+                inP = warpF.warp(goP, Fraction.ZERO);
+                Dancer inD = mi.inputPositionMap.get(zeroRotation(inP));
+                // warp back to get an exact rotation for this version of goal
+                goP = warpB.warp(input.location(inD), Fraction.ZERO);
+                // add to this subformation.
+                subPos.put(inD, goP);
+                subTag.addAll(inD, goal.tags(goD));
             }
-	    Formation piece = input.select(new HashSet<Dancer>(map.values())).onlySelected();
+            TaggedFormation tf =
+                new TaggedFormation(new Formation(subPos), subTag);
 	    Dancer dd = new PhantomDancer();
-            TaggedFormation tf = new TaggedFormation(goal, map);
 	    canonical.put(dd, tf);
+
+            Formation piece = input.select(tf.dancers()).onlySelected();
 	    pieces.add(new FormationPiece(piece, dd, rr));
         }
         // the components formations are the warped & rotated version.
