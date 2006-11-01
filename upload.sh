@@ -1,8 +1,7 @@
 #!/bin/bash
-# before release, change version here, as well as in build.xml and in
-# src/net/cscott/sdr/Version.java
+# Version number is kept in build.xml.  Change it there.
 PACKAGE=sdr
-VERSION=0.1
+VERSION=$(ant echo-version | fgrep "Current version is: " | sed -e 's/^.*Current version is: //')
 # build prerequisites
 ant dist sign-jars
 # make upload bundle
@@ -27,6 +26,9 @@ cp sdr.jnlp ${PACKAGE}-${VERSION}/
 mkdir -p ${PACKAGE}-${VERSION}/lib
 cp sdr-libs.jar ${PACKAGE}-${VERSION}/lib
 cp lib/jme/jnlp/*.jar ${PACKAGE}-${VERSION}/lib
+cp resources/net/cscott/sdr/anim/splash.png \
+   resources/net/cscott/sdr/icon.png \
+   ${PACKAGE}-${VERSION}/
 # transfer to the distribution machine.
 ssh k2.csail.mit.edu "mkdir -p public_html/Projects/SDR/${PACKAGE}-${VERSION}"
 rsync -avz --delete ${PACKAGE}-${VERSION} k2.csail.mit.edu:public_html/Projects/SDR

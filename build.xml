@@ -59,6 +59,16 @@ Square Dance Revolution build file.
          <filter token="VERSION" value="${version}"/>
         </filterset>
       </copy>
+      <copy file="sdr.jnlp.in"
+            tofile="sdr.jnlp" >
+        <filterset>
+         <filter token="VERSION" value="${version}"/>
+        </filterset>
+      </copy>
+    </target>
+    <target name="echo-version" depends="init"
+            description="Print the current version number." >
+      <echo message="Current version is: ${version}" />
     </target>
 
     <!-- compile the source code -->

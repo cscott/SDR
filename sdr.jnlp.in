@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jnlp spec="1.0+"
-      codebase="http://cscott.net/Projects/SDR/sdr-0.1/"
+      codebase="http://cscott.net/Projects/SDR/sdr-@VERSION@/"
       href="sdr.jnlp">
 
   <information>
-    <title>Square Dance Revolution! (v0.1)</title>
+    <title>Square Dance Revolution! (v@VERSION@)</title>
     <vendor>C. Scott Ananian</vendor>
     <homepage href="http://cscott.net/Projects/SDR"/>
-    <icon kind="splash" href="http://cscott.net/Projects/SDR/splash.png" />
-    <icon href="http://cscott.net/Projects/SDR/logo.png"/>
+    <icon kind="splash" href="splash.png" width="512" height="512" />
+    <icon kind="default" href="icon.png" width="64" height="64" />
     <description kind="one-line">Square Dance Revolution!</description>
     <description kind="tooltip">Square Dance Revolution!</description>
     <description>Square Dance Revolution!
