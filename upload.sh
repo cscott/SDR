@@ -27,7 +27,7 @@ mkdir -p ${PACKAGE}-${VERSION}/lib
 cp sdr-libs.jar ${PACKAGE}-${VERSION}/lib
 cp lib/jme/jnlp/*.jar ${PACKAGE}-${VERSION}/lib
 cp resources/net/cscott/sdr/anim/splash.png \
-   resources/net/cscott/sdr/icon.png \
+   resources/net/cscott/sdr/icon.gif \
    ${PACKAGE}-${VERSION}/
 # transfer to the distribution machine.
 ssh k2.csail.mit.edu "mkdir -p public_html/Projects/SDR/${PACKAGE}-${VERSION}"
