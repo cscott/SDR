@@ -17,6 +17,8 @@ touch ${PACKAGE}-${VERSION}/VERSION_${VERSION}
                 > ${PACKAGE}-${VERSION}/ChangeLog.txt
 # sources & binaries
 cp ${PACKAGE}-${VERSION}.tar.gz ${PACKAGE}-${VERSION}/
+gunzip ${PACKAGE}-${VERSION}/${PACKAGE}-${VERSION}.tar.gz
+gzip --rsyncable ${PACKAGE}-${VERSION}/${PACKAGE}-${VERSION}.tar
 ( cd ${PACKAGE}-${VERSION} && \
     ln -s ${PACKAGE}-${VERSION}.tar.gz ${PACKAGE}.tar.gz )
 cp ${PACKAGE}.jar ${PACKAGE}-${VERSION}/
@@ -26,6 +28,7 @@ mkdir -p ${PACKAGE}-${VERSION}/lib
 cp sdr-libs.jar ${PACKAGE}-${VERSION}/lib
 cp lib/jme/jnlp/*.jar ${PACKAGE}-${VERSION}/lib
 # transfer to the distribution machine.
-tar -c ${PACKAGE}-${VERSION}/ | \
-    ssh k2.csail.mit.edu "mkdir -p public_html/Projects/SDR && cd public_html/Projects/SDR && /bin/rm -rf ${PACKAGE}-${VERSION} && tar -xv"
+ssh k2.csail.mit.edu "mkdir -p public_html/Projects/SDR/${PACKAGE}-${VERSION}"
+rsync -avz --delete ${PACKAGE}-${VERSION} k2.csail.mit.edu:public_html/Projects/SDR
+
 /bin/rm -rf ${PACKAGE}-${VERSION}

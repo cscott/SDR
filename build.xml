@@ -74,7 +74,7 @@ Square Dance Revolution build file.
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
 		   excludes="CVS"
-		   deprecation="on" source="1.5" debug="true">
+		   deprecation="on" source="1.5" target="1.5" debug="true">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
 	    </javac>
@@ -84,7 +84,13 @@ Square Dance Revolution build file.
     </target>
 
     <!-- run the javadoc tool on the source code -->
-    <target name="javadoc" depends="init"
+    <target name="chk-javadoc" depends="init" >
+      <uptodate property="javadoc.notRequired"
+                targetfile="${api_dir}">
+        <srcfiles dir="${src_dir}" includes="**/*.java **/*.html" />
+      </uptodate>
+    </target>
+    <target name="javadoc" depends="chk-javadoc" unless="javadoc.notRequired"
             description="Generates javadoc in ${api_dir}">
 	<mkdir dir="${api_dir}" />
 	<javadoc sourcepath="${src_dir}"
@@ -201,7 +207,14 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
     </target>
 
     <!-- combine our libraries into one huge library -->
-    <target name="exported-jar" depends="init" >
+    <target name="chk-exported-jar" depends="init" >
+      <uptodate property="exported.notRequired"
+                targetfile="${basedir}/${ant.project.name}-libs.jar">
+        <srcfiles refid="jar.set" />
+      </uptodate>
+    </target>
+    <target name="exported-jar" depends="chk-exported-jar"
+            unless="exported.notRequired" >
       <property name="e" value="${basedir}/exported"/>
       <delete dir="${e}" />
       <mkdir dir="${e}" />
