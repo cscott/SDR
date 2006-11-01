@@ -47,10 +47,22 @@ Square Dance Revolution build file.
 	<delete dir="${classes_dir}" />
 	<delete dir="${api_dir}" />
 	<delete file="${basedir}/${ant.project.name}.jar" />
+        <delete file="src/net/cscott/sdr/Version.java" />
+    </target>
+
+    <!-- make the version file -->
+    <target name="version"
+     description="Generates Version.java with the correct version number." >
+      <copy file="src/net/cscott/sdr/Version.java.in"
+            tofile="src/net/cscott/sdr/Version.java" >
+        <filterset>
+         <filter token="VERSION" value="${version}"/>
+        </filterset>
+      </copy>
     </target>
 
     <!-- compile the source code -->
-    <target name="compile" depends="init"
+    <target name="compile" depends="init,version"
             description="Compiles the code in ${src_dir} to ${classes_dir}">
     <antlr target="src/net/cscott/sdr/calls/transform/CallFile.g">
 		<classpath refid="classpath.path" />
@@ -66,6 +78,9 @@ Square Dance Revolution build file.
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
 	    </javac>
+            <copy todir="${classes_dir}">
+              <fileset dir="${resources_dir}" />
+            </copy>
     </target>
 
     <!-- run the javadoc tool on the source code -->
@@ -94,12 +109,11 @@ Square Dance Revolution build file.
     </target>
 
     <!-- export the project as a jar -->
-    <target name="jar" depends="init,compile"
+    <target name="jar" depends="compile"
             description="Exports the project as a jar">
 	<jar destfile="${basedir}/${ant.project.name}.jar"
              update="true" manifest="${basedir}/${ant.project.name}.Manifest"> 
 		<fileset dir="${classes_dir}" />
-		<fileset dir="${resources_dir}" />
 	</jar>
     </target>
 
@@ -157,7 +171,8 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
       <tar destfile="${package}-${version}.tar.gz" compression="gzip">
         <tarfileset dir="api" prefix="${package}-${version}/api" />
         <tarfileset dir="src" prefix="${package}-${version}/src"
-                    includes="**/*.java **/*.html" excludes="CVS" />
+                    includes="**/*.java **/*.html **/*.java.in"
+                    excludes="CVS" />
         <tarfileset dir="resources" prefix="${package}-${version}/resources"
                     excludes="CVS" />
         <tarfileset dir="lib" prefix="${package}-${version}/lib"
@@ -165,7 +180,7 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
         <tarfileset dir="." prefix="${package}-${version}"
          includes="README AUTHORS COPYING ChangeLog NEWS sdr.Manifest
                    build.xml .antlr-eclipse .classpath .project .settings/**/*
-                   notes.txt sdr.jar" />
+                   notes.txt sdr.jar sample.build.properties sdr.jnlp" />
       </tar>
     </target>
         
