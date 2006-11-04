@@ -18,6 +18,7 @@ import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
 import com.jme.math.FastMath;
 import com.jme.math.Matrix3f;
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Skybox;
@@ -35,7 +36,7 @@ public class SdrGame extends SdrBaseGame {
     private final static Vector3f camStartup = new Vector3f(8,20,50);
     private final static Vector3f camCeiling = new Vector3f(0, -.1f, 11);
     private Vector3f camTarget = camCaller;
-    private Vector3f oldCamDirection=new Vector3f();
+    private Quaternion oldCamDirection=new Quaternion();
     private Vector3f oldCamLocation=new Vector3f();
     private float oldCamTime = 0;
     private static final float SLEW_TIME = 2.0f; /* seconds */
@@ -43,8 +44,8 @@ public class SdrGame extends SdrBaseGame {
     private float initialTime = 0;
     
     public void onCamera() {
-        oldCamDirection.set(cam.getDirection());
         oldCamLocation.set(cam.getLocation());
+        oldCamDirection.fromAxes(cam.getLeft(), cam.getUp(), cam.getDirection());
         oldCamTime = timer.getTimeInSeconds();
     }
 
@@ -79,30 +80,25 @@ public class SdrGame extends SdrBaseGame {
         // now apply acceleration factor.
         interp = (interp<.5f)?(2*interp*interp):(interp*(4-2*interp)-1);
         
-        Vector3f location = new Vector3f(oldCamLocation);
-        location.interpolate(camTarget,interp);
-        cam.setLocation(location);
+        m_location.set(oldCamLocation);
+        m_location.interpolate(camTarget,interp);
+        cam.setLocation(m_location);
         // keep skybox with cam.
-        skybox.setLocalTranslation(location);
+        skybox.setLocalTranslation(m_location);
             
         // target direction is from current location towards 0,0,0
         // with upvector 0,0,1 (maybe should slew from current location?)
-        Vector3f targetDirection = Vector3f.ZERO.subtract(location).normalizeLocal();
-        Vector3f direction = new Vector3f(cam.getDirection());
-        direction.interpolate(targetDirection, interp);
-
-        Vector3f worldUp = Vector3f.UNIT_Z; // world up vector
-        Vector3f left = new Vector3f(worldUp).crossLocal(direction)
-	    .normalizeLocal();
-        Vector3f up = new Vector3f(direction).crossLocal(left)
-	    .normalizeLocal();
-        cam.setAxes(left, up, direction);
+        m_rotation.lookAt(Vector3f.ZERO.subtract(camTarget), Vector3f.UNIT_Z);
+        m_rotation.slerp(oldCamDirection,1-interp);
+        cam.setAxes(m_rotation);
         
         // update dancer locations.
         Fraction beats = Fraction.valueOf((timer.getTimeInSeconds()-initialTime)*2);
         for (AnimDancer ad : dancers)
             ad.update(beats);
     }
+    private final Vector3f m_location = new Vector3f();
+    private final Quaternion m_rotation = new Quaternion();
 
     /**
      * builds the trimesh.
