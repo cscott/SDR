@@ -124,7 +124,8 @@ public abstract class FormationList {
                d(+1,0,"n",BELLE));
     // 4-person formations
     public static final TaggedFormation GENERAL_LINE =
-        create("GENERAL LINE", f("||||"), t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
+        create("GENERAL LINE", f("||||"), WhetherTagger.NO_AUTO_TAGS,
+                t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
     public static final TaggedFormation FACING_COUPLES = // callerlab #6
         xofy("FACING COUPLES", FACING_DANCERS, COUPLE);
     public static final TaggedFormation BACK_TO_BACK_COUPLES = // callerlab #7
@@ -142,7 +143,8 @@ public abstract class FormationList {
     public static final TaggedFormation LH_TWO_FACED_LINE = // callerlab #13
         xofy("LH_TWO_FACED_LINE", LH_MINIWAVE, COUPLE);
     public static final TaggedFormation SINGLE_INVERTED_LINE =
-        create("SINGLE INVERTED LINE", f("snns"), t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
+        create("SINGLE INVERTED LINE", f("snns"), WhetherTagger.AUTO_TAGS,
+                t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
     public static final TaggedFormation RH_DIAMOND =
         create("RH DIAMOND",
                d( 0, 3,"e",POINT),
@@ -181,7 +183,8 @@ public abstract class FormationList {
                 d( 1, 0, "s")); // this is a star: is that correct?
     // 8-person formations. ///////////////////////////////
     public static final TaggedFormation STATIC_SQUARE = // callerlab #14
-        create("STATIC SQUARE", f(" ss ","e  w","e  w"," nn "));
+        create("STATIC SQUARE", f(" ss ","e  w","e  w"," nn "),
+                WhetherTagger.AUTO_TAGS);
     // XXX circle, callerlab #15
     // XXX single file promenade, callerlab #16
     // XXX alamo style, callerlab #17
@@ -233,17 +236,17 @@ public abstract class FormationList {
     // XXX in t-bone lines, callerlab #35
     // XXX out t-bone lines, callerlab #36
     public static final TaggedFormation RH_QUARTER_TAG = // callerlab #37(a)
-        create("1/4 TAG", f(" e ","eww","eew"," w ")); // XXX ADD TAGS
+        create("1/4 TAG", f(" e ","eww","eew"," w "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
     public static final TaggedFormation LH_QUARTER_TAG = // callerlab #37(b)
-        create("1/4 TAG", f(" w ","eew","eww"," e ")); // XXX ADD TAGS
+        create("1/4 TAG", f(" w ","eew","eww"," e "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
     public static final TaggedFormation RH_THREE_QUARTER_TAG = // callerlab #38(a)
-        create("3/4 TAG", f(" e ","wwe","wee"," w ")); // XXX ADD TAGS
+        create("3/4 TAG", f(" e ","wwe","wee"," w "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
     public static final TaggedFormation LH_THREE_QUARTER_TAG = // callerlab #38(b)
-        create("3/4 TAG", f(" w ","wee","wwe"," e ")); // XXX ADD TAGS
+        create("3/4 TAG", f(" w ","wee","wwe"," e "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
     public static final TaggedFormation RH_QUARTER_LINE = // callerlab #39(a)
-        create("1/4 LINE",f(" e ","eew","eww"," w ")); // XXX ADD TAGS
+        create("1/4 LINE",f(" e ","eew","eww"," w "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
     public static final TaggedFormation LH_QUARTER_LINE = // callerlab #39(b)
-        create("1/4 LINE",f(" w ","eww","eew"," e ")); // XXX ADD TAGS
+        create("1/4 LINE",f(" w ","eww","eew"," e "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
     public static final TaggedFormation RH_TWIN_DIAMONDS = // callerlab #40
         xofy("RH TWIN DIAMONDS", COUPLE, RH_DIAMOND);
     public static final TaggedFormation LH_TWIN_DIAMONDS = // callerlab #41
@@ -302,7 +305,7 @@ public abstract class FormationList {
     }
     // first string is 'top' of diagram (closest to caller)
     // dancers are numbered left to right, top to bottom. (reading order)
-    private static TaggedFormation create(String name, String[] sa, NumAndTags... tags) {
+    private static TaggedFormation create(String name, String[] sa, WhetherTagger wt, NumAndTags... tags) {
         Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
 	// check validity
 	assert sa.length>0;
@@ -320,7 +323,7 @@ public abstract class FormationList {
 		                r));
 	    }
 	Formation f = new Formation(m).recenter();
-        return addTags(name, f, tags);
+        return addTags(name, f, wt, tags);
     }
     // helper
     private static String[] f(String... sa) { return sa; }
@@ -348,9 +351,11 @@ public abstract class FormationList {
      * "no additional tags".
      */
     private static TaggedFormation xofy(final String name, Formation x, TaggedFormation y, NumAndTags... tags){
-        return addTags(name, _xofy(x,y), tags);
+        return addTags(name, _xofy(x,y), WhetherTagger.AUTO_TAGS, tags);
     }
-    private static TaggedFormation addTags(final String name, final Formation f, NumAndTags... tags) {
+    private static enum WhetherTagger { AUTO_TAGS, NO_AUTO_TAGS; }
+    private static TaggedFormation addTags(final String name, final Formation f,
+            WhetherTagger wt, NumAndTags... tags) {
         List<Dancer> dancers = new ArrayList<Dancer>(f.dancers());
         // sort them left to right, top to bottom.
         Collections.sort(dancers, new Comparator<Dancer>() {
@@ -373,7 +378,7 @@ public abstract class FormationList {
         for (NumAndTags nt : tags)
             tm.addAll(dancers.get(nt.dancerNum), nt.tags);
         // add implicit/automatic tags
-        if (tags.length==0) // XXX NOT QUITE RIGHT, but general formations don't get tags
+        if (wt != WhetherTagger.NO_AUTO_TAGS) // general formations don't get tags
             Tagger.addAutomatic(f, tm);
         return new TaggedFormation(f, tm) {
             @Override
