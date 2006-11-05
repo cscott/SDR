@@ -27,7 +27,7 @@ import com.jme.util.TextureManager;
  * {@link CheckerDancer} is an {@link AnimDancer} which displays a simple
  * "square dance checker" model.
  * @author C. Scott Ananian
- * @version $Id: CheckerDancer.java,v 1.2 2006-10-27 06:18:41 cananian Exp $
+ * @version $Id: CheckerDancer.java,v 1.3 2006-11-05 16:02:14 cananian Exp $
  */
 public class CheckerDancer extends AnimDancer {
     private final Fraction footOffset;
@@ -74,14 +74,12 @@ public class CheckerDancer extends AnimDancer {
         // arrow
         Quad qq = new Quad("arrow"+dancer.ordinal(), 1.3f, 1.3f);
         qq.setLocalTranslation(new Vector3f(0,dancer.isBoy()?0f:.1f,.3f));
-        qq.setRenderState(getTextureArrow(display));
-        qq.setRenderState(getAlphaState(display));
-        qq.updateModelBound();
-        n.attachChild(qq);
-        // number
-        qq = new Quad("num"+dancer.ordinal(), .4f, .4f);
-        qq.setLocalTranslation(new Vector3f(0,0,.32f));
-        qq.setRenderState(getTextureNumber(display, dancer));
+        TextureState ts = display.getRenderer().createTextureState();
+        ts.setEnabled(true);
+        ts.setTexture(getTextureArrow(), 0);
+        ts.setTexture(getTextureNumber(dancer), 1);
+        qq.copyTextureCoords(0,0,1,1/*2*/);//xx
+        qq.setRenderState(ts);
         qq.setRenderState(getAlphaState(display));
         qq.updateModelBound();
         n.attachChild(qq);
@@ -109,32 +107,43 @@ public class CheckerDancer extends AnimDancer {
         }
         return materials[i];
     }
-    static TextureState texArrow = null;
-    static TextureState getTextureArrow(DisplaySystem display) {
+    static Texture texArrow = null;
+    static Texture getTextureArrow() {
         if (texArrow==null) {
-            texArrow = display.getRenderer().createTextureState();
-            texArrow.setEnabled(true);
-            texArrow.setTexture(TextureManager.loadTexture
-                               (CheckerDancer.class.getClassLoader().getResource
-                                ("net/cscott/sdr/anim/arrow.png"),
-                                Texture.MM_LINEAR_LINEAR,
-                                Texture.FM_LINEAR));
-            
+            texArrow = TextureManager.loadTexture
+            (CheckerDancer.class.getClassLoader().getResource
+                    ("net/cscott/sdr/anim/arrow.png"),
+                    Texture.MM_LINEAR_LINEAR,
+                    Texture.FM_LINEAR);
+            texArrow.setApply(Texture.AM_COMBINE);
+            texArrow.setCombineFuncRGB(Texture.ACF_MODULATE);
+            texArrow.setCombineOp0RGB(Texture.ACO_SRC_COLOR);
+            texArrow.setCombineOp1RGB(Texture.ACO_SRC_COLOR);
+            texArrow.setCombineScaleRGB(1.0f);
+            texArrow.setCombineFuncAlpha(Texture.ACF_REPLACE);
         }
         return texArrow;
     }
-    static TextureState[] texNumber = new TextureState[4];
-    static TextureState getTextureNumber(DisplaySystem display,
-                                         StandardDancer d) {
+    static Texture[] texNumber = new Texture[4];
+    static Texture getTextureNumber(StandardDancer d) {
         int i = d.coupleNumber() - 1;
         if (texNumber[i]==null) {
-            texNumber[i] = display.getRenderer().createTextureState();
-            texNumber[i].setEnabled(true);
-            texNumber[i].setTexture(TextureManager.loadTexture
-                                    (SdrGame.class.getClassLoader().getResource
-                                     ("net/cscott/sdr/anim/"+(i+1)+".png"),
-                                     Texture.MM_LINEAR_LINEAR,
-                                     Texture.FM_LINEAR));
+            texNumber[i] = TextureManager.loadTexture
+            (SdrGame.class.getClassLoader().getResource
+                    ("net/cscott/sdr/anim/"+(i+1)+".png"),
+                    Texture.MM_LINEAR_LINEAR,
+                    Texture.FM_LINEAR);
+            texNumber[i].setApply(Texture.AM_COMBINE);
+            texNumber[i].setCombineFuncRGB(Texture.ACF_MODULATE);
+            texNumber[i].setCombineOp0RGB(Texture.ACO_SRC_COLOR);
+            texNumber[i].setCombineOp1RGB(Texture.ACO_SRC_COLOR);
+            texNumber[i].setCombineScaleRGB(1.0f);
+
+            texNumber[i].setCombineFuncAlpha(Texture.ACF_ADD);
+            texNumber[i].setCombineSrc0Alpha(Texture.ACS_TEXTURE);
+            texNumber[i].setCombineOp0Alpha(Texture.ACO_SRC_ALPHA);
+            texNumber[i].setCombineSrc1Alpha(Texture.ACS_PREVIOUS);
+            texNumber[i].setCombineOp1Alpha(Texture.ACO_SRC_ALPHA);
         }
         return texNumber[i];
     }
