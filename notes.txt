@@ -469,3 +469,11 @@ After FROM fails, we 'try harder', which involves trying breathing and applying
 "from facing couples" and "from waves" rules.  Need explicit tag in call
 definition to say when this is/is not applicable?  Ie, recycle from facing
 couples not okay using "from facing couples" rule.
+----
+Add audio feedback element to Sphinx frontend pipeline, between
+edu.cmu.sphinx.frontend.util.Microphone and 
+edu.cmu.sphinx.frontend.endpoint.SpeechClassifier.   Look at the
+SpeechClassifer for ideas: it is estimating input level as well; we just need
+a shorter time constant.  Alternatively, grab audio after the
+edu.cmu.sphinx.frontend.endpoint.SpeechMarker; then we can use different
+colors for non-speech (grey with high alpha) and speech (primary color) data.
