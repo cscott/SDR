@@ -476,4 +476,18 @@ edu.cmu.sphinx.frontend.endpoint.SpeechClassifier.   Look at the
 SpeechClassifer for ideas: it is estimating input level as well; we just need
 a shorter time constant.  Alternatively, grab audio after the
 edu.cmu.sphinx.frontend.endpoint.SpeechMarker; then we can use different
-colors for non-speech (grey with high alpha) and speech (primary color) data.
+colors for non-speech (grey with high alpha) and speech (primary
+color) data.
+----
+Write own Text class for JME which renders text in strips to a
+texture, and creates quads with proper texture coordinates to display.
+Ie, in contructor you give the size texture you want, and the class
+scales the text to fit. (ie, a text with aspect ratio 2.6 would be
+divided into three horizontal strips to fit in the texture.)  The Text
+class should support left/right/center justification (in x and y) and
+use the appropriate LocalTranslation to ensure that the given anchor
+point is at the alignment.  Probably need one quad per strip to deal
+with the discontinuity.  Class should also deal with invalidating and
+refreshing the texture if the text changes, and scaling the quads to
+a desired output height (or width?).  This should be six text textures
+for the HUD, then.
