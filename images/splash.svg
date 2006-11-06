@@ -128,9 +128,9 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.95117188"
      inkscape:cx="256"
-     inkscape:cy="257.06665"
+     inkscape:cy="256.01532"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer3"
      width="512px"
      height="512px"
      gridspacingx="16px"
@@ -157,8 +157,7 @@
      inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="Back"
-     style="display:inline"
-     sodipodi:insensitive="true">
+     style="display:inline">
     <rect
        style="fill:url(#linearGradient11132);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect3759"
@@ -245,7 +244,7 @@
          id="tspan3745"
          x="259.83301"
          y="412.16"
-         style="fill:url(#linearGradient17409);fill-opacity:1">Revolution</tspan></text>
+         style="fill:url(#linearGradient17409);fill-opacity:1">RevolutioN</tspan></text>
   </g>
   <g
      inkscape:label="Layer 1"
@@ -449,8 +448,7 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Text"
-     style="display:inline"
-     sodipodi:insensitive="true">
+     style="display:inline">
     <text
        sodipodi:linespacing="75%"
        id="text6430"
