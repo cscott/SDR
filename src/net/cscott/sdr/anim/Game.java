@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
+import net.cscott.sdr.calls.*;
+
 import com.jme.app.FixedFramerateGame;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
@@ -23,6 +25,8 @@ import com.jmex.game.state.load.TransitionGameState;
 
 public class Game extends FixedFramerateGame {
     private Timer timer;
+    MenuState menuState;
+    VenueState venueState;
 
     public Game() {
         //LoggingSystem.getLogger().setLevel(java.util.logging.Level.OFF);
@@ -53,8 +57,8 @@ public class Game extends FixedFramerateGame {
             e.printStackTrace();
             System.exit( 1 );
         }
-        /** Set a black background. */
-        display.getRenderer().setBackgroundColor( ColorRGBA.black );
+        /** Set a green background (nicer during initial load) */
+        display.getRenderer().setBackgroundColor( ColorRGBA.green );
         // global "quit now" command.
         KeyBindingManager.getKeyBindingManager().set( "exit",
                 KeyInput.KEY_ESCAPE );
@@ -87,29 +91,38 @@ public class Game extends FixedFramerateGame {
         // processed (rendered and updated) it needs to get activated.
 
         URL url = SdrGame.class.getClassLoader().getResource      
-        ("net/cscott/sdr/anim/splash-start.png");
-        final TransitionGameState loading = new TransitionGameState(3, url);
+        ("net/cscott/sdr/anim/loading.png");
+        final TransitionGameState loading = new TransitionGameState(5, url);
         loading.setActive(true);
         GameStateManager.getInstance().attachChild(loading);
 
         new Thread() {
             public void run() {
-                inc();
-                MenuState menu = new MenuState();
-                GameStateManager.getInstance().attachChild(menu);
-                menu.setActive(false);
+                inc("Loading menus...");
+                menuState = new MenuState();
+                GameStateManager.getInstance().attachChild(menuState);
+                menuState.setActive(false);
                 
-                inc();
-                VenueState venue = new VenueState();
-                venue.setActive(true);
-                GameStateManager.getInstance().attachChild(venue);
-                inc();
+                inc("Loading venue...");
+                venueState = new VenueState();
+                venueState.setActive(true);
+                GameStateManager.getInstance().attachChild(venueState);
+                inc("Loading formations...");
+                // load formations
+                try { Class.forName(FormationList.class.getName());
+                } catch (ClassNotFoundException e) { /* ignore */ }
+                inc("Loading call list...");
+                // load call database
+                try { Class.forName(CallDB.class.getName());
+                } catch (ClassNotFoundException e) { /* ignore */ }
+                inc("Loading complete.");
+                menuState.setActive(true);
             }
-            private void inc() {
+            private void inc(final String msg) {
                 GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
                 .enqueue(new Callable<Void>() {
                     public Void call() throws Exception {
-                        loading.increment(); return null;
+                        loading.increment(msg); return null;
                     }
                 });
             }
