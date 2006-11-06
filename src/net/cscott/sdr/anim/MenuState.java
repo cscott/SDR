@@ -17,12 +17,12 @@ import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 import com.jmex.game.state.*;
 
-/** The {@MenuState} displays a cursor on the screen and an appropriate
+/** The {@link MenuState} displays a cursor on the screen and an appropriate
  *  menu of options.  It uses ORTHO mode and does not reset the camera,
  *  so some other camera-controlling state should also be active for
  *  background visuals.
  * @author C. Scott Ananian
- * @version $Id: MenuState.java,v 1.1 2006-11-06 03:20:25 cananian Exp $
+ * @version $Id: MenuState.java,v 1.2 2006-11-06 20:20:35 cananian Exp $
  */
 public class MenuState extends StandardGameStateDefaultCamera {
 
