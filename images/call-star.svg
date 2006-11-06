@@ -16,12 +16,23 @@
    inkscape:version="0.44.1"
    version="1.0"
    sodipodi:docbase="/home/cananian/Projects/SDR/images"
-   sodipodi:docname="measure.svg"
+   sodipodi:docname="call-star.svg"
    inkscape:export-filename="/home/cananian/Projects/SDR/images/measure.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
      id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2810"
+       id="linearGradient2822"
+       x1="0"
+       y1="256"
+       x2="256"
+       y2="256"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       gradientTransform="matrix(0.777952,0,0,0.194488,-31.99993,207.4887)" />
     <linearGradient
        id="linearGradient7350">
       <stop
@@ -109,11 +120,11 @@
          offset="0"
          style="stop-color:#ff1400;stop-opacity:0;" />
       <stop
-         style="stop-color:#fd0e00;stop-opacity:1;"
+         style="stop-color:#fd0e00;stop-opacity:0.75294119;"
          offset="0.25"
          id="stop2814" />
       <stop
-         style="stop-color:#fbff00;stop-opacity:1;"
+         style="stop-color:#fbff00;stop-opacity:0.75294119;"
          offset="0.5"
          id="stop2816" />
       <stop
@@ -237,16 +248,6 @@
        fx="285.00156"
        fy="181.48114"
        r="6" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient7350"
-       id="linearGradient7348"
-       x1="488"
-       y1="224"
-       x2="502"
-       y2="224"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-8,0)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -271,8 +272,8 @@
      gridempspacing="4"
      inkscape:window-width="902"
      inkscape:window-height="583"
-     inkscape:window-x="315"
-     inkscape:window-y="358"
+     inkscape:window-x="165"
+     inkscape:window-y="324"
      showguides="true"
      inkscape:guide-bbox="true" />
   <metadata
@@ -297,6 +298,22 @@
        height="24"
        x="0"
        y="244" />
+    <path
+       sodipodi:type="star"
+       style="opacity:1;fill:#fbff00;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path3741"
+       sodipodi:sides="5"
+       sodipodi:cx="153.0582"
+       sodipodi:cy="73.14286"
+       sodipodi:r1="134.53915"
+       sodipodi:r2="67.269585"
+       sodipodi:arg1="-2.8453143"
+       sodipodi:arg2="-2.2169958"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 24.380955,33.86244 L 112.55138,19.436299 L 150.65264,-61.374786 L 191.61888,18.022347 L 280.24872,29.286803 L 217.39683,92.783071 L 234.07182,180.55597 L 154.26098,140.40169 L 75.936843,183.38387 L 89.462927,95.070893 L 24.380955,33.86244 z "
+       transform="matrix(0.777952,0,0,0.777952,48.71362,205.4464)" />
     <g
        id="g6441"
        transform="translate(32,0)">
@@ -335,5 +352,28 @@
          d="M 276,116.5 L 288,116.5 L 288,251.5 L 276,251.5 L 276,184 L 276,116.5 z "
          style="fill:url(#radialGradient6453);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1" />
     </g>
+    <rect
+       style="opacity:1;fill:url(#linearGradient2822);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1897"
+       width="398.31165"
+       height="49.788956"
+       x="-32"
+       y="232.3831" />
+    <path
+       sodipodi:type="star"
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#080807;stroke-width:10;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path3727"
+       sodipodi:sides="5"
+       sodipodi:cx="153.0582"
+       sodipodi:cy="73.14286"
+       sodipodi:r1="134.53915"
+       sodipodi:r2="67.269585"
+       sodipodi:arg1="-2.8453143"
+       sodipodi:arg2="-2.2169958"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 24.380955,33.86244 L 112.55138,19.436299 L 150.65264,-61.374786 L 191.61888,18.022347 L 280.24872,29.286803 L 217.39683,92.783071 L 234.07182,180.55597 L 154.26098,140.40169 L 75.936843,183.38387 L 89.462927,95.070893 L 24.380955,33.86244 z "
+       transform="matrix(0.777952,0,0,0.777952,48.71362,205.4464)" />
   </g>
 </svg>
