@@ -20,6 +20,7 @@ import com.jme.util.GameTaskQueueManager;
 import com.jme.util.LoggingSystem;
 import com.jme.util.TextureManager;
 import com.jme.util.Timer;
+import com.jmex.game.state.GameState;
 import com.jmex.game.state.GameStateManager;
 import com.jmex.game.state.load.TransitionGameState;
 
@@ -92,21 +93,22 @@ public class Game extends FixedFramerateGame {
 
         URL url = SdrGame.class.getClassLoader().getResource      
         ("net/cscott/sdr/anim/loading.png");
-        final TransitionGameState loading = new TransitionGameState(5, url);
+        final TransitionGameState loading = new TransitionGameState(6, url);
         loading.setActive(true);
         GameStateManager.getInstance().attachChild(loading);
 
+        final GameTaskQueue updateQueue =
+            GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE);
         new Thread() {
             public void run() {
                 inc("Loading menus...");
                 menuState = new MenuState();
-                GameStateManager.getInstance().attachChild(menuState);
-                menuState.setActive(false);
+                attach(menuState, false);
                 
                 inc("Loading venue...");
                 venueState = new VenueState();
-                venueState.setActive(true);
-                GameStateManager.getInstance().attachChild(venueState);
+                attach(venueState,true);
+
                 inc("Loading formations...");
                 // load formations
                 try { Class.forName(FormationList.class.getName());
@@ -115,12 +117,27 @@ public class Game extends FixedFramerateGame {
                 // load call database
                 try { Class.forName(CallDB.class.getName());
                 } catch (ClassNotFoundException e) { /* ignore */ }
+
+                inc("Creating menus...");
+                updateQueue.enqueue(new Callable<Void>() {
+                    public Void call() throws Exception {
+                        menuState.setActive(true);
+                        return null;
+                    }
+                });
                 inc("Loading complete.");
-                menuState.setActive(true);
+            }
+            private void attach(final GameState state,final boolean active){
+                updateQueue.enqueue(new Callable<Void>() {
+                    public Void call() throws Exception {
+                        state.setActive(active);
+                        GameStateManager.getInstance().attachChild(state);
+                        return null;
+                    }
+                });
             }
             private void inc(final String msg) {
-                GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
-                .enqueue(new Callable<Void>() {
+                updateQueue.enqueue(new Callable<Void>() {
                     public Void call() throws Exception {
                         loading.increment(msg); return null;
                     }
