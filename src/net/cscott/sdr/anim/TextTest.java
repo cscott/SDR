@@ -36,31 +36,31 @@ public class TextTest extends JApplet {
         setBackground(Color.white);
         bi = new BufferedImage(textureSize,textureSize,BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D g2 = bi.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g2.setColor(Color.white);
+
         Font f= font.deriveFont((float)pointSize);
+        g2.setFont(f);
         
         TextLayout layout = new TextLayout(text, f, g2.getFontRenderContext());
         // okay, get aspect ratio
         Rectangle2D bounds = layout.getBounds();
         int nStrips = (int) Math.ceil(Math.sqrt(bounds.getWidth() / bounds.getHeight()));
         int stripHeight = (int) Math.floor(textureSize/(double)nStrips);
-        int stripWidth = nStrips*textureSize;//textureSize*(int)Math.ceil(stripHeight*bounds.getWidth()/bounds.getHeight()/textureSize);
+        int stripWidth = nStrips*textureSize;
 
-        BufferedImage wide = new BufferedImage(stripWidth,stripHeight,BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics2D wg2 = (Graphics2D) wide.getGraphics();
-        wg2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        wg2.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
-        wg2.setColor(Color.white);
-        double scale = stripHeight / bounds.getHeight();
-
-        wg2.setFont(f);
-        wg2.scale(scale,scale);
-        wg2.drawString(text,(float)-bounds.getX(),(float)-bounds.getY());
-        // now transfer strips to our parent image.
+        float ox = (float)-bounds.getX(), oy = (float)-bounds.getY();
+        double sx = stripWidth / bounds.getWidth();
+        double sy = stripHeight / bounds.getHeight();
+        // Write the text in strips to our image.
         for (int i=0; i<nStrips; i++) {
-            BufferedImage sub = wide.getSubimage(i*textureSize,0,textureSize,stripHeight);
-            g2.drawRenderedImage(sub,AffineTransform.getTranslateInstance(0,i*stripHeight));
+            AffineTransform oat = g2.getTransform();
+            g2.scale(sx,sy);
+            g2.drawString(text, ox-(i*textureSize/(float)sx), oy+((float)bounds.getHeight()*i));
+            g2.setTransform(oat);
         }
     }
 
@@ -104,7 +104,8 @@ public class TextTest extends JApplet {
             URL url = TextTest.class.getClassLoader().getResource      
             ("net/cscott/sdr/fonts/exprswy_free.ttf");
             font = Font.createFont(Font.TRUETYPE_FONT, url.openStream());
-            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
+            // The .registerFont() method is only available in 1.6.
+            //GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
         } catch (Exception e) {
             System.err.println(e);
         }
@@ -119,7 +120,7 @@ public class TextTest extends JApplet {
         f.getContentPane().add("Center", applet);
         applet.init();
         f.pack();
-        f.setSize(new Dimension(550,550));
+        f.setSize(new Dimension(550,600));
         f.show();
     }
 
