@@ -38,7 +38,7 @@ import com.jme.util.geom.BufferUtils;
  * is at the specified justification point of the text string, allowing easier
  * placement.
  * @author C. Scott Ananian
- * @version $Id: TextureText.java,v 1.3 2006-11-07 20:49:16 cananian Exp $
+ * @version $Id: TextureText.java,v 1.4 2006-11-07 23:07:25 cananian Exp $
  */
 public class TextureText extends Node {
     /** An enumeration of horizontal justification options. */
@@ -72,6 +72,9 @@ public class TextureText extends Node {
     private final Font font;
     /** The {@link Texture} we will ultimately generate with this text. */
     private final Texture texture;
+    /** The {@link TextureState} (we need to invalidate this from time to 
+     * time). */
+    private TextureState textureState = null;
     /** The color to display the text. */
     private final ColorRGBA color;
 
@@ -95,7 +98,7 @@ public class TextureText extends Node {
         texture.setApply(Texture.AM_MODULATE);
         texture.setCorrection(Texture.CM_AFFINE);
         texture.setFilter(Texture.FM_LINEAR);
-        texture.setMipmapState(Texture.MM_NONE);
+        texture.setMipmapState(Texture.MM_LINEAR/*LINEAR_LINEAR*/);
         texture.setWrap(Texture.WM_WRAP_S_WRAP_T);
        
         // in update thread. (we're thread-safe!)
@@ -103,10 +106,10 @@ public class TextureText extends Node {
         .enqueue(new Callable<Void>() {
             public Void call() throws Exception {
                 DisplaySystem display = DisplaySystem.getDisplaySystem();
-                TextureState ts1 = display.getRenderer().createTextureState();
-                ts1.setTexture(texture);
-                ts1.setEnabled(true);
-                quad.setRenderState(ts1);
+                textureState = display.getRenderer().createTextureState();
+                textureState.setTexture(texture);
+                textureState.setEnabled(true);
+                quad.setRenderState(textureState);
 
                 AlphaState as = display.getRenderer().createAlphaState();
                 as.setBlendEnabled(true);
@@ -152,7 +155,14 @@ public class TextureText extends Node {
         this.color.set(color);
         update();
     }
-
+    /** Return the actual height of this textured text object. */
+    public float getHeight() {
+        return height;
+    }
+    /** Return the actual width of this textured text object. */
+    public float getWidth() {
+        return width;
+    }
     /** Private method: create a texture image with the given text, and then
      * tweak the quad to have the proper texture, size, and local translation.
      */
@@ -190,12 +200,12 @@ public class TextureText extends Node {
         int stripWidth = nStrips*textureSize;
 
         // the given bounds are usually slightly too small: grow them by
-        // 10% in the Y direction and 2% in the X direction
+        // 10% in the Y direction and 5% in the X direction
         bounds = new Rectangle2D.Double
-               (bounds.getX()-.01*bounds.getWidth(),
-                bounds.getY()-.05*bounds.getHeight(),
-                bounds.getWidth()*1.02,
-                bounds.getHeight()*1.1);
+               (bounds.getX()-.025*bounds.getWidth(),
+                bounds.getY()-.050*bounds.getHeight(),
+                bounds.getWidth()*1.05,
+                bounds.getHeight()*1.10);
         
         this.height = this.maxHeight;
         this.width = (float) (bounds.getWidth() * this.height / bounds.getHeight());
@@ -234,6 +244,8 @@ public class TextureText extends Node {
             public Void call() throws Exception {
                 // set new texture
                 texture.setImage(TextureManager.loadImage(textureImage,false));
+                // refresh texture state
+                textureState.load();
                 // set new texture coordinates
                 quad.setTextureBuffer(0, texCoords);
                 // rescale the quad.
@@ -259,10 +271,10 @@ public class TextureText extends Node {
         case RIGHT: ox = this.width/2f; break;
         }
         switch (this.alignY) {
-        case TOP: oy = -this.height/2f; break;
+        case TOP: oy = this.height/2f; break;
         case MIDDLE: oy = 0; break;
         default:
-        case BOTTOM: oy = this.height/2f; break;
+        case BOTTOM: oy = -this.height/2f; break;
         }
         // 
         this.quad.setLocalTranslation(new Vector3f(-ox,-oy,0f));
@@ -284,7 +296,7 @@ public class TextureText extends Node {
      */
     public static void main(String[] args) throws Exception {
         URL url = TextureText.class.getClassLoader().getResource      
-        ("net/cscott/sdr/fonts/exprswy_free.ttf");
+        ("net/cscott/sdr/fonts/bluebold.ttf");
         final Font font=Font.createFont(Font.TRUETYPE_FONT, url.openStream());
         SimpleGame game = new SimpleGame() {
             @Override
