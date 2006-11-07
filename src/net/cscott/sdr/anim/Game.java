@@ -28,6 +28,7 @@ public class Game extends FixedFramerateGame {
     private Timer timer;
     MenuState menuState;
     VenueState venueState;
+    HUDState hudState;
 
     public Game() {
         //LoggingSystem.getLogger().setLevel(java.util.logging.Level.OFF);
@@ -93,7 +94,7 @@ public class Game extends FixedFramerateGame {
 
         URL url = SdrGame.class.getClassLoader().getResource      
         ("net/cscott/sdr/anim/loading.png");
-        final TransitionGameState loading = new TransitionGameState(6, url);
+        final TransitionGameState loading = new TransitionGameState(7, url);
         loading.setActive(true);
         GameStateManager.getInstance().attachChild(loading);
 
@@ -118,6 +119,10 @@ public class Game extends FixedFramerateGame {
                 try { Class.forName(CallDB.class.getName());
                 } catch (ClassNotFoundException e) { /* ignore */ }
 
+                inc("Creating HUD...");
+                hudState = new HUDState(null);
+                attach(hudState,true);
+                
                 inc("Creating menus...");
                 updateQueue.enqueue(new Callable<Void>() {
                     public Void call() throws Exception {
