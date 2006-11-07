@@ -8,6 +8,7 @@ import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.lang.ref.SoftReference;
 import java.net.URL;
 import java.nio.FloatBuffer;
 import java.util.concurrent.Callable;
@@ -28,21 +29,56 @@ import com.jme.util.GameTaskQueueManager;
 import com.jme.util.TextureManager;
 import com.jme.util.geom.BufferUtils;
 
+/** {@link TextureText} renders text to a textured quad.  This allows great
+ * flexibility in choice of font & size, albeit by burning texture memory.
+ * {@link TextureText} stripes the text across a square texture to (hopefully)
+ * optimally use the texels, allowing the use of very small texture sizes.
+ * In my experiments, a 64x64 texture yields only-slightly-fuzzy text for
+ * a 400-pixel-wide string.  The origin of the {@link TextureText} {@link Node}
+ * is at the specified justification point of the text string, allowing easier
+ * placement.
+ * @author C. Scott Ananian
+ * @version $Id: TextureText.java,v 1.3 2006-11-07 20:49:16 cananian Exp $
+ */
 public class TextureText extends Node {
+    /** An enumeration of horizontal justification options. */
     public static enum JustifyX { RIGHT, CENTER, LEFT; }
+    /** An enumeration of vertical justification options. */
     public static enum JustifyY { TOP, MIDDLE, BOTTOM; }
 
+    /** This is the internal {@link Quad} which is textured and translated. */
     private final Quad quad;
+    /** The user's choice of horizontal alignments. */
     private JustifyX alignX;
+    /** The user's choice of vertical alignments. */
     private JustifyY alignY;
+    /** The user's maximum width and height restrictions. */
     private float maxWidth=0, maxHeight=0;
+    /** The actual width and height of the text. */
     private float width=0, height=0;
+    /** The string to display, or null if the TextureText has not been
+     *  completely initialized yet. */
     private String text=null;
-    private final BufferedImage textureImage;
+    /** The desired texture size -- for a 64x64 texture, specify '64' here. */
+    private final int textureSize;
+    /** An image buffer for drawing the texture; this is a soft reference to
+     *  allow reclamation in mostly-static {@link TextureText}s, but hopefully
+     *  the gc will be smart enough to keep enough around that we don't need
+     *  to be doing frequent allocation in {@link #update()}. */
+    private SoftReference<BufferedImage> textureImageRef = null;
+    /** The {@link Font} to use to draw this text.  Use
+     * {@link Font#createFont(int, java.io.InputStream)} to use a truetype
+     * font from a resource file. */
     private final Font font;
+    /** The {@link Texture} we will ultimately generate with this text. */
     private final Texture texture;
+    /** The color to display the text. */
     private final ColorRGBA color;
-    
+
+    /** Create a {@link TextureText} with the given node name (required to
+     * be unique in the scene graph) which will display using the given
+     * {@link Font} and use the given amount of texture memory.  For a
+     * 64 texel by 64 texel texture, {@code textureSize} should be 64. */
     public TextureText(String nodeName, Font font, int textureSize) {
         super(nodeName);
         this.quad = new Quad(nodeName+": internal quad", 1, 1);
@@ -50,8 +86,7 @@ public class TextureText extends Node {
         this.alignY = JustifyY.BOTTOM;
         this.font = font;
         this.color = new ColorRGBA(1, 1, 1, 1); // white by default
-        this.textureImage = new BufferedImage
-        (textureSize,textureSize,BufferedImage.TYPE_4BYTE_ABGR);
+        this.textureSize = textureSize;
         this.quad.setColorBuffer(0,null);//use default color
         this.quad.setDefaultColor(this.color);
         attachChild(this.quad);
@@ -63,7 +98,7 @@ public class TextureText extends Node {
         texture.setMipmapState(Texture.MM_NONE);
         texture.setWrap(Texture.WM_WRAP_S_WRAP_T);
        
-        // in update thread.
+        // in update thread. (we're thread-safe!)
         GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
         .enqueue(new Callable<Void>() {
             public Void call() throws Exception {
@@ -102,20 +137,37 @@ public class TextureText extends Node {
         if (maxWidth < width || maxHeight < height)
             update();
     }
+    /** Set the text to display.  This method is thread-safe, but rather
+     * expensive.  As long as you're not updating the text here in every frame,
+     * you should be alright. */
     public void setText(String text) {
         if (this.text!=null && this.text.equals(text)) return;
         this.text = text;
         update();
     }
+    /** Set the foreground color in which to display the text. The text always
+     * has a transparent background. */
     public void setColor(ColorRGBA color) {
         if (this.color.equals(color)) return;
         this.color.set(color);
         update();
     }
 
+    /** Private method: create a texture image with the given text, and then
+     * tweak the quad to have the proper texture, size, and local translation.
+     */
     private void update() {
         if (text==null) return; // not initialized yet.
-        Graphics2D g2 = this.textureImage.createGraphics();
+        // Create BufferedImage (or reuse old one if it hasn't been gc'ed yet)
+        BufferedImage ti =
+            textureImageRef==null ? null : textureImageRef.get();
+        if (ti==null) {
+            ti = new BufferedImage
+                     (textureSize,textureSize,BufferedImage.TYPE_4BYTE_ABGR);
+            textureImageRef = new SoftReference<BufferedImage>(ti);
+        }
+        final BufferedImage textureImage = ti; // make this final; used below
+        Graphics2D g2 = textureImage.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_RENDERING,
@@ -125,8 +177,8 @@ public class TextureText extends Node {
         Font f= this.font.deriveFont(maxHeight);
         g2.setFont(f);
         // clear the old background
-        int textureSize = this.textureImage.getHeight();
-        assert textureSize == this.textureImage.getWidth();
+        int textureSize = textureImage.getHeight();
+        assert textureSize == textureImage.getWidth();
         g2.setBackground(new Color(0f, 0f, 0f, 0f));
         g2.clearRect(0, 0, textureSize, textureSize);
         
@@ -195,6 +247,8 @@ public class TextureText extends Node {
         });
     }
     
+    /** Private helper: just reset the local translation to reflect the
+     * alignment settings. */
     private void recenter() {
         // the "native" center of the quad is at its center.
         float ox, oy;
@@ -214,13 +268,19 @@ public class TextureText extends Node {
         this.quad.setLocalTranslation(new Vector3f(-ox,-oy,0f));
     }
     
+    /** Release the texture when this {@link TextureText} is no longer being
+     *  used. */
     @Override
     public void finalize() {
         TextureManager.releaseTexture(this.texture);
     }
     
     /**
-     * Simple test harness.
+     * Simple test harness to exercise the features of this class.
+     * Note that the texture size used below (64x64) is intentionally a little
+     * low for the size of the text object (400 pixels wide), so that we can
+     * see how the texture filtering works.  You'll get much better quality if
+     * you increase the texture size to 128x128 in the TextureText constructor.
      */
     public static void main(String[] args) throws Exception {
         URL url = TextureText.class.getClassLoader().getResource      
