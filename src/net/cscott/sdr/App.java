@@ -2,7 +2,7 @@ package net.cscott.sdr;
 
 import java.util.List;
 
-import net.cscott.sdr.anim.SdrGame;
+import net.cscott.sdr.anim.Game;
 import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.util.Fraction;
@@ -16,7 +16,7 @@ import net.cscott.sdr.CommandInput.PossibleCommand;
  * and one to play music (in net.cscott.sdr.sound).
  * 
  * @author C. Scott Ananian
- * @version $Id: App.java,v 1.3 2006-10-26 17:33:53 cananian Exp $
+ * @version $Id: App.java,v 1.4 2006-11-07 16:41:29 cananian Exp $
  */
 public class App {
     /**
@@ -35,7 +35,7 @@ public class App {
         // TODO: create music player thread
 
         // Start the game thread.
-        SdrGame game = new SdrGame();
+        Game game = new Game();
         game.start();
 
         // Now start processing input, handing resulting formations to the
