@@ -1,7 +1,4 @@
 package net.cscott.sdr.anim;
-/*
- * @(#)ImageOps.java    1.2 98/07/09
- */
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,9 +6,7 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.font.TextLayout;
@@ -25,10 +20,15 @@ import java.net.URL;
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 
+/** This class is a simple test harness to develop the text texture-generation
+ * code.
+ * @author C. Scott Ananian
+ * @version $Id: TextTest.java,v 1.3 2006-11-07 18:11:41 cananian Exp $
+ */
 public class TextTest extends JApplet {
 
     private BufferedImage bi;
-    private final String text = "TIMING & FLOW";
+    private final String text = "TIMING & FLOW (oh my!)";
     private final int pointSize = 24;
     private final int textureSize = 512;
 
@@ -56,10 +56,15 @@ public class TextTest extends JApplet {
         double sx = stripWidth / bounds.getWidth();
         double sy = stripHeight / bounds.getHeight();
         // Write the text in strips to our image.
-        for (int i=0; i<nStrips; i++) {
+        for (int i=0; i<=nStrips; i++) {
             AffineTransform oat = g2.getTransform();
+            if (i<nStrips)
+                g2.translate(-i*textureSize,0);
+            else
+                g2.translate(-(i-1)*textureSize,-textureSize);
+            g2.shear(0,stripHeight/(double)textureSize);
             g2.scale(sx,sy);
-            g2.drawString(text, ox-(i*textureSize/(float)sx), oy+((float)bounds.getHeight()*i));
+            g2.drawString(text, ox, oy);
             g2.setTransform(oat);
         }
     }
@@ -89,7 +94,7 @@ public class TextTest extends JApplet {
                 AffineTransformOp.TYPE_BILINEAR);
         
         g2.drawImage(bi,biop,x,y); 
-        TextLayout tl = new TextLayout("CSA!", g2.getFont(),g2.getFontRenderContext());
+        TextLayout tl = new TextLayout("Text Texture Image:", g2.getFont(),g2.getFontRenderContext());
         g2.setColor(Color.black);
         tl.draw(g2, (float) x, (float) y-4);
     }
@@ -112,7 +117,7 @@ public class TextTest extends JApplet {
     }
     
     public static void main(String s[]) {
-        JFrame f = new JFrame("ImageOps");
+        JFrame f = new JFrame("Text Texture Test");
         f.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {System.exit(0);}
         });
@@ -120,8 +125,8 @@ public class TextTest extends JApplet {
         f.getContentPane().add("Center", applet);
         applet.init();
         f.pack();
-        f.setSize(new Dimension(550,600));
-        f.show();
+        f.setSize(new Dimension(550,560));
+        f.setVisible(true);
     }
 
 }
