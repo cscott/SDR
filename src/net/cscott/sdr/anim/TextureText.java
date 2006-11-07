@@ -41,6 +41,7 @@ public class TextureText extends Node {
     private final BufferedImage textureImage;
     private final Font font;
     private final Texture texture;
+    private final ColorRGBA color;
     
     public TextureText(String nodeName, Font font, int textureSize) {
         super(nodeName);
@@ -48,13 +49,15 @@ public class TextureText extends Node {
         this.alignX = JustifyX.LEFT;
         this.alignY = JustifyY.BOTTOM;
         this.font = font;
+        this.color = new ColorRGBA(1, 1, 1, 1); // white by default
         this.textureImage = new BufferedImage
         (textureSize,textureSize,BufferedImage.TYPE_4BYTE_ABGR);
+        this.quad.setColorBuffer(0,null);//use default color
+        this.quad.setDefaultColor(this.color);
         attachChild(this.quad);
         
         this.texture = new Texture(); 
         texture.setApply(Texture.AM_MODULATE);
-        texture.setBlendColor(new ColorRGBA(1, 1, 1, 1));
         texture.setCorrection(Texture.CM_AFFINE);
         texture.setFilter(Texture.FM_LINEAR);
         texture.setMipmapState(Texture.MM_NONE);
@@ -87,12 +90,14 @@ public class TextureText extends Node {
      * origin will be at the specified alignment point of the text.
      */
     public void setAlign(JustifyX alignX, JustifyY alignY) {
+        if (this.alignX==alignX && this.alignY==alignY) return;
         this.alignX = alignX; this.alignY = alignY;
         recenter();
     }
     /** Set the maximum width/height of this node. The generated text is
      *  guaranteed not to exceed this size. */
     public void setMaxSize(float maxWidth, float maxHeight) {
+        if (this.maxWidth==maxWidth && this.maxHeight==maxHeight) return;
         this.maxWidth = maxWidth; this.maxHeight = maxHeight;
         if (maxWidth < width || maxHeight < height)
             update();
@@ -100,6 +105,11 @@ public class TextureText extends Node {
     public void setText(String text) {
         if (this.text!=null && this.text.equals(text)) return;
         this.text = text;
+        update();
+    }
+    public void setColor(ColorRGBA color) {
+        if (this.color.equals(color)) return;
+        this.color.set(color);
         update();
     }
 
@@ -178,6 +188,8 @@ public class TextureText extends Node {
                 quad.resize(width, height);
                 // relocate the quad.
                 recenter();
+                // update quad color
+                quad.setDefaultColor(color);
                 return null;
             }
         });
@@ -223,6 +235,7 @@ public class TextureText extends Node {
                 TextureText tt = new TextureText("Test",font,64);
                 tt.setAlign(JustifyX.CENTER,JustifyY.MIDDLE);
                 tt.setMaxSize(400,400);
+                tt.setColor(new ColorRGBA(1,0,0,1));//red
                 tt.setText("Hello, world!");
                 tt.setRenderQueueMode(Renderer.QUEUE_ORTHO);
                 tt.setLightCombineMode(LightState.OFF);
