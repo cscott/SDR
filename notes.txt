@@ -78,7 +78,11 @@ Originality is scored via histogram: sort calls by frequency, and
 display bar.  More points for 'flat' graph (no calls over- or
 under-used), and per-call score is positive if call frequency is below
 average or negative is call frequency is above average.
-
+Should consider bigram and trigram distributions, so that we penalize
+"modules".  Perhaps make suggestions for alternate calls, based on freqs?
+(NO: score at measure or phase boundaries.  Meter is integral of "good and bad"
+things; current meter values==score, applied at discrete points.  Also
+"resolve" bonus.)
 
 ----
 splice 'miditimers' together to allow switching tunes?
@@ -343,40 +347,13 @@ We could do the same thing we do with speech recognition: try each
 possible parse & discard any that don't work.
 -----------
 
-What about diamonds?  Two options:
- a) insist that every formation is 'compact'  -- this will move the
- points in from (0,+/-3) to (0,+/-2), and endangers the idea that
- centers are centers and ends are ends of crossed waves.
- b) Introduce some phantoms to hold space in the formation?  The
- reason that siamese diamonds work as:
-     > >
-     ^ v
-     ^ v
-     < <
-  and the ends don't have to shift out is because there is still space
-  for the two 'center' phantoms:
-
-     > >
-      x
-      x
-     < <
-
-  so mark phantom positions in formations, and no real dancers need to
-  match these, but they still hold space?  careful that they don't
-  interfere with the expansion of the tandem in the center.
- c) formations have 'struts'?  points are held out by length-two struts?
-
-ANSWER:
- When expanding a formation, use the "inside" edges to push out on
- only: never remove space from the formation.  This should make
- inserting tandems into a standard 2x4 diamond yield (effectively) a
- tandem 2x3 diamond.
- Second: whenever we try to match a formation and fail, try also to
- match "isomorphic" formations & insert a 'breathe' operation if
- necessary.  Make 'small diamonds' isomorphic to 'big diamonds', just
- like 'quarter tag with ends facing right' is isomorphic to 'twin
- diamonds'. (and in some cases, facing couples are isomorphic to waves
- & vice versa).
+Whenever we try to match a formation and fail, try also to
+match "isomorphic" formations & insert a 'breathe' operation if
+necessary.  Make 'small diamonds' (points at (0,+/-2) isomorphic to 
+'big diamonds' (points at (0,+/-3), just
+like 'quarter tag with ends facing right' is isomorphic to 'twin
+diamonds'. (and in some cases, facing couples are isomorphic to waves
+& vice versa).
 --------
 Formation elaboration does:
  * simplifies formations known to be impossible, given input.
@@ -479,23 +456,8 @@ edu.cmu.sphinx.frontend.endpoint.SpeechMarker; then we can use different
 colors for non-speech (grey with high alpha) and speech (primary
 color) data.
 ----
-Write own Text class for JME which renders text in strips to a
-texture, and creates quads with proper texture coordinates to display.
-Ie, in contructor you give the size texture you want, and the class
-scales the text to fit. (ie, a text with aspect ratio 2.6 would be
-divided into three horizontal strips to fit in the texture.)  The Text
-class should support left/right/center justification (in x and y) and
-use the appropriate LocalTranslation to ensure that the given anchor
-point is at the alignment.  Probably need one quad per strip to deal
-with the discontinuity.  Class should also deal with invalidating and
-refreshing the texture if the text changes, and scaling the quads to
-a desired output height (or width?).  This should be six text textures
-for the HUD, then.
-------
 HUD To-Do:
  gauges (min/max and specify gradient texture?)
- x static "now" bar
- x scrolling note bar
  support for scrolling "measure end" and "call stars"
  real time microphone volume display
 ----
