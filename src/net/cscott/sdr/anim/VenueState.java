@@ -43,7 +43,7 @@ import com.jmex.game.state.StandardGameState;
  *  {@link VenueState}s and cross-fade between them to change venues.
  *  {@link VenueState} does not process any keyboard or mouse input.
  * @author C. Scott Ananian
- * @version $Id: VenueState.java,v 1.2 2006-11-08 05:18:44 cananian Exp $
+ * @version $Id: VenueState.java,v 1.3 2006-11-08 21:19:05 cananian Exp $
  */
 public class VenueState extends StandardGameState {
     private Skybox skybox;
@@ -89,8 +89,7 @@ public class VenueState extends StandardGameState {
         rootNode.setRenderState( lightState );
         
         // setup camera
-        GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
-        .enqueue(new Callable<Void>() {
+        GameTaskQueueManager.getManager().update(new Callable<Void>() {
             public Void call() throws Exception {
                 cam.setFrustumPerspective( 45.0f, (float) display.getWidth()
                         / (float) display.getHeight(), 1, 1000 );
@@ -268,15 +267,12 @@ public class VenueState extends StandardGameState {
     }
     protected void initCamera() {
         try {
-            GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
-            .enqueue(new Callable<Void>() {
+            GameTaskQueueManager.getManager().update(new Callable<Void>() {
                 public Void call() throws Exception {
-                    System.err.println("IN UPDATE THREAD");
                     _initCamera(); return null;
                 }
             })/*.get()*/;
         } catch (Exception e) { /* this is fatal */ assert false : e; }
-        System.err.println("DUDE!");
     }
     void _initCamera() { super.initCamera(); }
 }

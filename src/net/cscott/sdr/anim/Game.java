@@ -101,8 +101,7 @@ public class Game extends FixedFramerateGame {
         loading.setActive(true);
         GameStateManager.getInstance().attachChild(loading);
 
-        final GameTaskQueue updateQueue =
-            GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE);
+        final GameTaskQueueManager queueMan =GameTaskQueueManager.getManager();
         new Thread() {
             public void run() {
                 inc("Loading menus...");
@@ -127,16 +126,21 @@ public class Game extends FixedFramerateGame {
                 attach(hudState,true);
                 
                 inc("Creating menus...");
-                updateQueue.enqueue(new Callable<Void>() {
+                queueMan.update(new Callable<Void>() {
                     public Void call() throws Exception {
                         menuState.setActive(true);
                         return null;
                     }
                 });
+                // from now on, make sure that all update tasks are completed
+                // to avoid glitches updating textured quads.
+                GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
+                .setExecuteAll(true);
+
                 inc("Loading complete.");
             }
             private void attach(final GameState state,final boolean active){
-                updateQueue.enqueue(new Callable<Void>() {
+                queueMan.update(new Callable<Void>() {
                     public Void call() throws Exception {
                         state.setActive(active);
                         GameStateManager.getInstance().attachChild(state);
@@ -145,7 +149,7 @@ public class Game extends FixedFramerateGame {
                 });
             }
             private void inc(final String msg) {
-                updateQueue.enqueue(new Callable<Void>() {
+                queueMan.update(new Callable<Void>() {
                     public Void call() throws Exception {
                         loading.increment(msg); return null;
                     }

@@ -126,8 +126,7 @@ public class HUDState extends StandardGameStateDefaultCamera {
         nowNote.setRenderState(mkAlpha());
         nowNote.setCullMode(Spatial.CULL_ALWAYS);
         
-        GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
-        .enqueue(new Callable<Void>() {
+        GameTaskQueueManager.getManager().update(new Callable<Void>() {
             public Void call() throws Exception {
                 notesTex = TextureManager.loadTexture(
                         HUDState.class.getClassLoader().getResource(
