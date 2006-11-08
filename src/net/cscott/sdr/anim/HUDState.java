@@ -45,6 +45,11 @@ public class HUDState extends StandardGameStateDefaultCamera {
     private TextureText bonusText;
     /** The notes texture, for animation. */
     private Texture notesTex=null;
+    /** The "now" note. */
+    private Quad nowNote;
+    /** The "now" note texture. */
+    private Texture nowNoteTex=null;
+    
     /** The font to use for the HUD. */
     private static Font font;
     static { // initialize the font.
@@ -74,6 +79,7 @@ public class HUDState extends StandardGameStateDefaultCamera {
         // first background shading:
         //   shading behind notice.
         this.noticeShade = mkShade("Notice Shade", x(320), y(240), x(20), y(20));
+        this.noticeShade.setCullMode(Spatial.CULL_ALWAYS);
         //   shading at bottom
         mkShade("Call Shade", x(320), y(32), x(640), y(64));
         
@@ -90,7 +96,8 @@ public class HUDState extends StandardGameStateDefaultCamera {
         this.callText = mkText("Call display: ", "Square thru 4 hands around", 128, JustifyX.LEFT, JustifyY.BOTTOM, x(32), y(10), x(640-32), y(24));
         
         this.noticeText = mkText("Notice: ", "Last Sequence!", 128, JustifyX.CENTER, JustifyY.MIDDLE, x(320), y(240), x(640), y(26));
-
+        this.noticeText.setCullMode(Spatial.CULL_ALWAYS);
+        
         /*
         this.bonusText = mkText("Bonus: ", "Right-hand Columns", 128, JustifyX.LEFT, JustifyY.TOP, x(490), y(410), x(150), y(25));
         this.bonusText.setColor(new ColorRGBA(1,1,0,1));
@@ -112,7 +119,13 @@ public class HUDState extends StandardGameStateDefaultCamera {
         final Quad now = new Quad("now bar", 128, 128);
         now.setLocalTranslation(new Vector3f(64,y(64),0));
         now.setRenderState(mkAlpha());
-
+        
+        // highlight the active note
+        nowNote = new Quad("now note", 128, 128);
+        nowNote.setLocalTranslation(new Vector3f(64,y(64),0));
+        nowNote.setRenderState(mkAlpha());
+        nowNote.setCullMode(Spatial.CULL_ALWAYS);
+        
         GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
         .enqueue(new Callable<Void>() {
             public Void call() throws Exception {
@@ -122,22 +135,35 @@ public class HUDState extends StandardGameStateDefaultCamera {
                         Texture.MM_NONE,
                         Texture.FM_NEAREST); // there will be no stretching
                 notesTex.setWrap(Texture.WM_WRAP_S_CLAMP_T);
-                TextureState noteTS = display.getRenderer().createTextureState();
-                noteTS.setEnabled(true);
-                noteTS.setTexture(notesTex);
-                notes.setRenderState(noteTS);
+                TextureState ts = display.getRenderer().createTextureState();
+                ts.setEnabled(true);
+                ts.setTexture(notesTex);
+                notes.setRenderState(ts);
                 rootNode.attachChild(notes);
                 notes.updateRenderState();
+
+                nowNoteTex = TextureManager.loadTexture(
+                        HUDState.class.getClassLoader().getResource(
+                        "net/cscott/sdr/anim/measure-bang.png"),
+                        Texture.MM_NONE,
+                        Texture.FM_NEAREST); // there will be no stretching
+                nowNoteTex.setWrap(Texture.WM_WRAP_S_CLAMP_T);
+                ts = display.getRenderer().createTextureState();
+                ts.setEnabled(true);
+                ts.setTexture(nowNoteTex);
+                nowNote.setRenderState(ts);
+                rootNode.attachChild(nowNote);
+                nowNote.updateRenderState();
 
                 Texture nowTex = TextureManager.loadTexture(
                         HUDState.class.getClassLoader().getResource(
                         "net/cscott/sdr/anim/measure-now.png"),
                         Texture.MM_NONE,
                         Texture.FM_NEAREST); // there will be no stretching
-                TextureState nowTS = display.getRenderer().createTextureState();
-                nowTS.setEnabled(true);
-                nowTS.setTexture(nowTex);
-                now.setRenderState(nowTS);
+                ts = display.getRenderer().createTextureState();
+                ts.setEnabled(true);
+                ts.setTexture(nowTex);
+                now.setRenderState(ts);
                 rootNode.attachChild(now);
                 now.updateRenderState();
 
@@ -226,6 +252,10 @@ public class HUDState extends StandardGameStateDefaultCamera {
         // is at pixel 66 (of 128), leading to the offset (14/128) below.
         noteTrans.set((partialBeat.floatValue()/2)+(12/128f),0,0);
         if (notesTex!=null) notesTex.setTranslation(noteTrans);
+        if (nowNoteTex!=null) nowNoteTex.setTranslation(noteTrans);
+        // flash 'now Note' for short period around beat.
+        nowNote.setCullMode(partialBeat.compareTo(Fraction.ONE_HALF) < 0 ?
+                Spatial.CULL_NEVER : Spatial.CULL_ALWAYS);
 
         rootNode.updateGeometricState(tpf, true);
     }
