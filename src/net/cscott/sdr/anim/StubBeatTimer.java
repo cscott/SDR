@@ -12,9 +12,10 @@ import net.cscott.sdr.util.Fraction;
  * The {@link StubBeatTimer} generates 120bpm from a wall clock: it is not
  * synchronized to any music source.
  * @author C. Scott Ananian
- * @version $Id: StubBeatTimer.java,v 1.1 2006-11-08 05:18:44 cananian Exp $
+ * @version $Id: StubBeatTimer.java,v 1.2 2006-11-08 18:53:44 cananian Exp $
  */
 public class StubBeatTimer implements BeatTimer {
+    private final int BPM = 120;
     private final Timer timer = Timer.getTimer();
     private final float initialTime;
     /**
@@ -25,6 +26,8 @@ public class StubBeatTimer implements BeatTimer {
     }
 
     public Fraction getCurrentBeat() {
-        return Fraction.valueOf((timer.getTimeInSeconds()-initialTime)*2);
+        float t = timer.getTimeInSeconds()-initialTime;
+        
+        return Fraction.valueOf(t*BPM/60f);
     }
 }
