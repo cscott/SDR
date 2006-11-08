@@ -38,7 +38,7 @@ import com.jme.util.geom.BufferUtils;
  * is at the specified justification point of the text string, allowing easier
  * placement.
  * @author C. Scott Ananian
- * @version $Id: TextureText.java,v 1.5 2006-11-08 17:15:52 cananian Exp $
+ * @version $Id: TextureText.java,v 1.6 2006-11-08 21:20:07 cananian Exp $
  */
 public class TextureText extends Node {
     /** An enumeration of horizontal justification options. */
@@ -46,8 +46,8 @@ public class TextureText extends Node {
     /** An enumeration of vertical justification options. */
     public static enum JustifyY { TOP, MIDDLE, BOTTOM; }
 
-    /** This is the internal {@link Quad} which is textured and translated. */
-    private final Quad quad;
+    /** This is the internal {@link TexturedQuad} which is textured and translated. */
+    private final TexturedQuad quad;
     /** The user's choice of horizontal alignments. */
     private JustifyX alignX;
     /** The user's choice of vertical alignments. */
@@ -61,20 +61,10 @@ public class TextureText extends Node {
     private String text=null;
     /** The desired texture size -- for a 64x64 texture, specify '64' here. */
     private final int textureSize;
-    /** An image buffer for drawing the texture; this is a soft reference to
-     *  allow reclamation in mostly-static {@link TextureText}s, but hopefully
-     *  the gc will be smart enough to keep enough around that we don't need
-     *  to be doing frequent allocation in {@link #update()}. */
-    private SoftReference<BufferedImage> textureImageRef = null;
     /** The {@link Font} to use to draw this text.  Use
      * {@link Font#createFont(int, java.io.InputStream)} to use a truetype
      * font from a resource file. */
     private final Font font;
-    /** The {@link Texture} we will ultimately generate with this text. */
-    private final Texture texture;
-    /** The {@link TextureState} (we need to invalidate this from time to 
-     * time). */
-    private TextureState textureState = null;
     /** The color to display the text. */
     private final ColorRGBA color;
 
@@ -84,45 +74,18 @@ public class TextureText extends Node {
      * 64 texel by 64 texel texture, {@code textureSize} should be 64. */
     public TextureText(String nodeName, Font font, int textureSize) {
         super(nodeName);
-        this.quad = new Quad(nodeName+": internal quad", 1, 1);
+        this.quad = new TexturedQuad(nodeName+": internal quad", textureSize);
         this.alignX = JustifyX.LEFT;
         this.alignY = JustifyY.BOTTOM;
         this.font = font;
         this.color = new ColorRGBA(1, 1, 1, 1); // white by default
         this.textureSize = textureSize;
-        this.quad.setColorBuffer(0,null);//use default color
         this.quad.setDefaultColor(this.color);
         attachChild(this.quad);
         
-        this.texture = new Texture(); 
-        texture.setApply(Texture.AM_MODULATE);
-        texture.setCorrection(Texture.CM_AFFINE);
-        texture.setFilter(Texture.FM_LINEAR);
-        texture.setMipmapState(Texture.MM_LINEAR/*LINEAR_LINEAR*/);
-        texture.setWrap(Texture.WM_WRAP_S_WRAP_T);
-       
-        // in update thread. (we're thread-safe!)
-        GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
-        .enqueue(new Callable<Void>() {
-            public Void call() throws Exception {
-                DisplaySystem display = DisplaySystem.getDisplaySystem();
-                textureState = display.getRenderer().createTextureState();
-                textureState.setTexture(texture);
-                textureState.setEnabled(true);
-                quad.setRenderState(textureState);
-
-                AlphaState as = display.getRenderer().createAlphaState();
-                as.setBlendEnabled(true);
-                as.setSrcFunction(AlphaState.SB_SRC_ALPHA);
-                as.setDstFunction(AlphaState.DB_ONE_MINUS_SRC_ALPHA);
-                as.setTestEnabled(false);
-                as.setEnabled(true);
-                quad.setRenderState(as);
-                
-                quad.updateRenderState();
-                return null;
-            }
-        });
+        this.quad.texture.setFilter(Texture.FM_LINEAR);
+        this.quad.texture.setMipmapState(Texture.MM_LINEAR/*LINEAR_LINEAR*/);
+        this.quad.texture.setWrap(Texture.WM_WRAP_S_WRAP_T);
     }
     /** Set the desired alignment of this text node.  The node's local
      * origin will be at the specified alignment point of the text.
@@ -168,15 +131,8 @@ public class TextureText extends Node {
      */
     private void update() {
         if (text==null) return; // not initialized yet.
-        // Create BufferedImage (or reuse old one if it hasn't been gc'ed yet)
-        BufferedImage ti =
-            textureImageRef==null ? null : textureImageRef.get();
-        if (ti==null) {
-            ti = new BufferedImage
-                     (textureSize,textureSize,BufferedImage.TYPE_4BYTE_ABGR);
-            textureImageRef = new SoftReference<BufferedImage>(ti);
-        }
-        final BufferedImage textureImage = ti; // make this final; used below
+        BufferedImage textureImage = this.quad.getTextureImage();
+        // note: the textureImage will be completely transparent to start with
         Graphics2D g2 = textureImage.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -186,11 +142,6 @@ public class TextureText extends Node {
 
         Font f= this.font.deriveFont(maxHeight);
         g2.setFont(f);
-        // clear the old background
-        int textureSize = textureImage.getHeight();
-        assert textureSize == textureImage.getWidth();
-        g2.setBackground(new Color(0f, 0f, 0f, 0f));
-        g2.clearRect(0, 0, textureSize, textureSize);
         
         // okay, let's do our stuff.
         TextLayout layout = new TextLayout(this.text, f, g2.getFontRenderContext());
@@ -238,14 +189,12 @@ public class TextureText extends Node {
         texCoords.put(nStrips).put(1+(stripHeight/(float)textureSize)); // bottom-right
         texCoords.put(nStrips).put(1); // top-right
 
-        // in update thread.
-        GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
-        .enqueue(new Callable<Void>() {
+        // update texture.
+        quad.updateTexture(textureImage);
+
+        // in update thread, to try to sync with the texture update.
+        GameTaskQueueManager.getManager().update(new Callable<Void>() {
             public Void call() throws Exception {
-                // set new texture
-                texture.setImage(TextureManager.loadImage(textureImage,false));
-                // refresh texture state
-                textureState.load();
                 // set new texture coordinates
                 quad.setTextureBuffer(0, texCoords);
                 // rescale the quad.
@@ -254,7 +203,7 @@ public class TextureText extends Node {
                 recenter();
                 // update quad color
                 quad.setDefaultColor(color);
-                // make sure render state updates are noticed.
+                // superstitiously try to ensure that these changes 'take'
                 quad.updateRenderState();
                 return null;
             }
@@ -280,13 +229,6 @@ public class TextureText extends Node {
         }
         // 
         this.quad.setLocalTranslation(new Vector3f(-ox,-oy,0f));
-    }
-    
-    /** Release the texture when this {@link TextureText} is no longer being
-     *  used. */
-    @Override
-    public void finalize() {
-        TextureManager.releaseTexture(this.texture);
     }
     
     /**
