@@ -44,7 +44,7 @@ public class HUDState extends StandardGameStateDefaultCamera {
     /** A bonus in the top-right corner. */
     private TextureText bonusText;
     /** The notes texture, for animation. */
-    private Texture notesTex;
+    private Texture notesTex=null;
     /** The font to use for the HUD. */
     private static Font font;
     static { // initialize the font.
@@ -100,12 +100,6 @@ public class HUDState extends StandardGameStateDefaultCamera {
         final Quad notes = new Quad("Scrolling notes",x(640),128);
         notes.setLocalTranslation(new Vector3f(x(320),y(64),0));
         notes.setRenderState(mkAlpha());
-        this.notesTex = TextureManager.loadTexture(
-                HUDState.class.getClassLoader().getResource(
-                "net/cscott/sdr/anim/measure.png"),
-                Texture.MM_NONE,
-                Texture.FM_NEAREST); // there will be no stretching
-        notesTex.setWrap(Texture.WM_WRAP_S_CLAMP_T);
         // set texture coordinates. coordinates ccw from top-left
         FloatBuffer texCoords = BufferUtils.createVector2Buffer(4);
         texCoords.put(0).put(1); // top-left
@@ -113,16 +107,40 @@ public class HUDState extends StandardGameStateDefaultCamera {
         texCoords.put(display.getWidth()/128).put(0); // bottom-right
         texCoords.put(display.getWidth()/128).put(1); // top-right
         notes.setTextureBuffer(0, texCoords);
+        
+        // the "now" bar
+        final Quad now = new Quad("now bar", 128, 128);
+        now.setLocalTranslation(new Vector3f(64,y(64),0));
+        now.setRenderState(mkAlpha());
 
         GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
         .enqueue(new Callable<Void>() {
             public Void call() throws Exception {
+                notesTex = TextureManager.loadTexture(
+                        HUDState.class.getClassLoader().getResource(
+                        "net/cscott/sdr/anim/measure.png"),
+                        Texture.MM_NONE,
+                        Texture.FM_NEAREST); // there will be no stretching
+                notesTex.setWrap(Texture.WM_WRAP_S_CLAMP_T);
                 TextureState noteTS = display.getRenderer().createTextureState();
                 noteTS.setEnabled(true);
                 noteTS.setTexture(notesTex);
                 notes.setRenderState(noteTS);
                 rootNode.attachChild(notes);
                 notes.updateRenderState();
+
+                Texture nowTex = TextureManager.loadTexture(
+                        HUDState.class.getClassLoader().getResource(
+                        "net/cscott/sdr/anim/measure-now.png"),
+                        Texture.MM_NONE,
+                        Texture.FM_NEAREST); // there will be no stretching
+                TextureState nowTS = display.getRenderer().createTextureState();
+                nowTS.setEnabled(true);
+                nowTS.setTexture(nowTex);
+                now.setRenderState(nowTS);
+                rootNode.attachChild(now);
+                now.updateRenderState();
+
                 return null;
             }
         });
@@ -196,15 +214,18 @@ public class HUDState extends StandardGameStateDefaultCamera {
     }
     @Override
     protected void stateUpdate(float tpf) {
-        updateScore(counter++); // for debugging
-        if ((counter % 200) < 100) setNotice(null);
+        // for debugging.
+        if ((counter++ % 200) < 100) setNotice(null);
         else setNotice("Last sequence!");
+        
         Fraction currentBeat = beatTimer.getCurrentBeat();
         Fraction partialBeat = Fraction.valueOf
              (currentBeat.getProperNumerator(),currentBeat.getDenominator());
-        noteTrans.set(partialBeat.floatValue()/2,0,0);
-        //noteTrans.set((counter%100)/100f,0,0);
-        notesTex.setTranslation(noteTrans);
+        updateScore((int)Math.floor(1+partialBeat.floatValue()*4)); // debugging
+        // "now" bar right edge is at pixel 54 (of 128); second note center
+        // is at pixel 66 (of 128), leading to the offset (14/128) below.
+        noteTrans.set((partialBeat.floatValue()/2)+(12/128f),0,0);
+        if (notesTex!=null) notesTex.setTranslation(noteTrans);
 
         rootNode.updateGeometricState(tpf, true);
     }

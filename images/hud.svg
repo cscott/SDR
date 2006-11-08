@@ -1280,7 +1280,7 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.79166667"
+     inkscape:zoom="0.79583333"
      inkscape:cx="320"
      inkscape:cy="240"
      inkscape:document-units="px"
@@ -1595,18 +1595,21 @@
        style="fill:url(#linearGradient5990);fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1.44472015px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 51.191999,406.32083 L 38.449584,384.25786 L 23.583439,412.338 L 12.964773,397.29507 L 0.2223563,421.36376 L 17.212231,435.40382 L 23.583439,420.36091 L 42.697062,445.43245 L 53.315728,418.35518 L 51.191999,414.34372"
        id="path5097" />
-    <rect
-       style="opacity:1;fill:url(#linearGradient4139);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:15;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.62777776"
-       id="rect3246"
-       width="20"
-       height="66.705574"
-       x="-52"
-       y="373.89847"
-       transform="scale(-1,1)" />
-    <path
-       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#fcffff;stroke-width:3.06667495;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 52.368017,373.9823 L 52.368017,440.8587"
-       id="path4143" />
+    <g
+       id="g2084">
+      <rect
+         transform="scale(-1,1)"
+         y="373.89847"
+         x="-52"
+         height="66.705574"
+         width="20"
+         id="rect3246"
+         style="opacity:1;fill:url(#linearGradient4139);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:15;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.62777776" />
+      <path
+         id="path4143"
+         d="M 52.368017,373.9823 L 52.368017,440.8587"
+         style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#fcffff;stroke-width:3.06667495;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
     <g
        id="g10713">
       <path

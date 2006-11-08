@@ -9,8 +9,8 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="512"
-   height="512"
+   width="128"
+   height="128"
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.44.1"
@@ -104,7 +104,7 @@
        x2="256"
        y2="268"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.25,0,0,1,192,0)" />
+       gradientTransform="matrix(6.25e-2,0,0,0.25,48,0)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient7350"
@@ -114,7 +114,7 @@
        x2="502"
        y2="224"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-239,0)" />
+       gradientTransform="matrix(0.25,0,0,0.25,-59.75,0)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient2813"
@@ -158,15 +158,15 @@
      objecttolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.74609375"
-     inkscape:cx="256"
-     inkscape:cy="256"
+     inkscape:zoom="2.96875"
+     inkscape:cx="64"
+     inkscape:cy="64"
      inkscape:document-units="px"
      inkscape:current-layer="layer3"
-     width="512px"
-     height="512px"
-     gridspacingx="8px"
-     gridspacingy="8px"
+     width="128px"
+     height="128px"
+     gridspacingx="1px"
+     gridspacingy="1px"
      showgrid="true"
      gridempspacing="4"
      inkscape:window-width="902"
@@ -190,15 +190,15 @@
      inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="Background"
-     sodipodi:insensitive="true"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <rect
        style="opacity:1;fill:#373737;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:inline"
        id="rect4854"
-       width="512"
-       height="512"
+       width="128"
+       height="128"
        x="0"
-       y="1.0803424e-14" />
+       y="0" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -206,7 +206,8 @@
      inkscape:label="Highlight"
      style="display:inline">
     <g
-       id="g4827">
+       id="g4827"
+       transform="scale(0.25,0.25)">
       <rect
          y="64"
          x="208"
@@ -239,16 +240,16 @@
     <rect
        style="opacity:1;fill:url(#linearGradient4636);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect4628"
-       width="128"
-       height="24"
-       x="192"
-       y="244" />
+       width="32"
+       height="6"
+       x="48"
+       y="61" />
     <rect
        style="opacity:1;fill:url(#linearGradient7348);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect6455"
-       width="14"
-       height="256"
-       x="249"
-       y="96" />
+       width="3.5"
+       height="64"
+       x="62.25"
+       y="24" />
   </g>
 </svg>
