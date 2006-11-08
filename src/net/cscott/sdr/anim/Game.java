@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
+import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.calls.*;
 
 import com.jme.app.FixedFramerateGame;
@@ -25,17 +26,21 @@ import com.jmex.game.state.GameStateManager;
 import com.jmex.game.state.load.TransitionGameState;
 
 public class Game extends FixedFramerateGame {
-    private Timer timer;
+    /** Get a high resolution timer for FPS updates. */
+    private final Timer timer = Timer.getTimer();
+    /** Timer sync'ed to music. */
+    private final BeatTimer beatTimer;
     MenuState menuState;
     VenueState venueState;
     HUDState hudState;
 
-    public Game() {
+    public Game(BeatTimer beatTimer) {
         //LoggingSystem.getLogger().setLevel(java.util.logging.Level.OFF);
         URL url = SdrGame.class.getClassLoader().getResource      
             ("net/cscott/sdr/anim/splash.png");
         this.setDialogBehaviour
             (FIRSTRUN_OR_NOCONFIGFILE_SHOW_PROPS_DIALOG, url);
+        this.beatTimer = beatTimer;
     }
     /** Creates display, sets up camera, and binds keys. */
     protected void initSystem() {
@@ -84,8 +89,6 @@ public class Game extends FixedFramerateGame {
     protected void initGame() {
         setFrameRate(20); // limit frame rate: save our CPU for speech
         display.setTitle(net.cscott.sdr.Version.PACKAGE_STRING);
-        /** Get a high resolution timer for FPS updates. */
-        timer = Timer.getTimer();
 
         // Creates the GameStateManager. Only needs to be called once.
         GameStateManager.create();
@@ -107,7 +110,7 @@ public class Game extends FixedFramerateGame {
                 attach(menuState, false);
                 
                 inc("Loading venue...");
-                venueState = new VenueState();
+                venueState = new VenueState(beatTimer);
                 attach(venueState,true);
 
                 inc("Loading formations...");
@@ -120,7 +123,7 @@ public class Game extends FixedFramerateGame {
                 } catch (ClassNotFoundException e) { /* ignore */ }
 
                 inc("Creating HUD...");
-                hudState = new HUDState(null);
+                hudState = new HUDState(beatTimer);
                 attach(hudState,true);
                 
                 inc("Creating menus...");
@@ -198,7 +201,7 @@ public class Game extends FixedFramerateGame {
 
     // test
     public static void main(String... args) {
-        Game game = new Game();
+        Game game = new Game(new StubBeatTimer());
         game.start();
     }
     @Override

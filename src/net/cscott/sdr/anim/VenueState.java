@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.Version;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.ExactRotation;
@@ -42,7 +43,7 @@ import com.jmex.game.state.StandardGameState;
  *  {@link VenueState}s and cross-fade between them to change venues.
  *  {@link VenueState} does not process any keyboard or mouse input.
  * @author C. Scott Ananian
- * @version $Id: VenueState.java,v 1.1 2006-11-06 03:20:25 cananian Exp $
+ * @version $Id: VenueState.java,v 1.2 2006-11-08 05:18:44 cananian Exp $
  */
 public class VenueState extends StandardGameState {
     private Skybox skybox;
@@ -60,11 +61,12 @@ public class VenueState extends StandardGameState {
 
     /** High resolution timer for tempo-independent animation. */
     protected Timer timer;
-    private float initialTime = 0;
+    /** Music-synced timer. */
+    protected BeatTimer beatTimer;
 
-
-    public VenueState() {
+    public VenueState(BeatTimer beatTimer) {
         super("Venue");
+        this.beatTimer = beatTimer;
         initState();
     }
     private void initState() {
@@ -196,9 +198,6 @@ public class VenueState extends StandardGameState {
             }
         }
         
-        
-        initialTime = timer.getTimeInSeconds();
-
         rootNode.updateGeometricState( 0.0f, true );
         rootNode.updateRenderState();
         
@@ -255,7 +254,7 @@ public class VenueState extends StandardGameState {
         cam.setAxes(m_rotation);
         
         // update dancer locations.
-        Fraction beats = Fraction.valueOf((timer.getTimeInSeconds()-initialTime)*2);
+        Fraction beats = beatTimer.getCurrentBeat();
         for (AnimDancer ad : dancers)
             ad.update(beats);
     }
