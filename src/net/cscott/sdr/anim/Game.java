@@ -35,7 +35,7 @@ public class Game extends FixedFramerateGame {
     HUDState hudState;
 
     public Game(BeatTimer beatTimer) {
-        //LoggingSystem.getLogger().setLevel(java.util.logging.Level.OFF);
+        LoggingSystem.getLogger().setLevel(java.util.logging.Level.WARNING);
         URL url = SdrGame.class.getClassLoader().getResource      
             ("net/cscott/sdr/anim/splash.png");
         this.setDialogBehaviour
