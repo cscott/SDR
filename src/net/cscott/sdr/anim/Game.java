@@ -201,7 +201,7 @@ public class Game extends FixedFramerateGame {
 
     // test
     public static void main(String... args) {
-        Game game = new Game(new StubBeatTimer());
+        Game game = new Game(new SilentBeatTimer());
         game.start();
     }
     @Override

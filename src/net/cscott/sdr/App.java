@@ -3,7 +3,7 @@ package net.cscott.sdr;
 import java.util.List;
 
 import net.cscott.sdr.anim.Game;
-import net.cscott.sdr.anim.StubBeatTimer;
+import net.cscott.sdr.anim.SilentBeatTimer;
 import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.util.Fraction;
@@ -17,7 +17,7 @@ import net.cscott.sdr.CommandInput.PossibleCommand;
  * and one to play music (in net.cscott.sdr.sound).
  * 
  * @author C. Scott Ananian
- * @version $Id: App.java,v 1.5 2006-11-08 05:18:44 cananian Exp $
+ * @version $Id: App.java,v 1.6 2006-11-08 19:04:39 cananian Exp $
  */
 public class App {
     /**
@@ -36,7 +36,7 @@ public class App {
         // TODO: create music player thread
 
         // Start the game thread.
-        Game game = new Game(new StubBeatTimer());
+        Game game = new Game(new SilentBeatTimer());
         game.start();
 
         // Now start processing input, handing resulting formations to the
