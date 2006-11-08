@@ -2,13 +2,17 @@ package net.cscott.sdr.anim;
 
 import java.awt.Font;
 import java.net.URL;
+import java.nio.FloatBuffer;
 import java.text.DecimalFormat;
+import java.util.concurrent.Callable;
 
 import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.Version;
 import net.cscott.sdr.anim.TextureText.JustifyX;
 import net.cscott.sdr.anim.TextureText.JustifyY;
+import net.cscott.sdr.util.Fraction;
 
+import com.jme.image.Texture;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
@@ -16,7 +20,12 @@ import com.jme.scene.Spatial;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.AlphaState;
 import com.jme.scene.state.LightState;
+import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
+import com.jme.util.GameTaskQueue;
+import com.jme.util.GameTaskQueueManager;
+import com.jme.util.TextureManager;
+import com.jme.util.geom.BufferUtils;
 import com.jmex.game.state.StandardGameStateDefaultCamera;
 
 public class HUDState extends StandardGameStateDefaultCamera {
@@ -32,6 +41,10 @@ public class HUDState extends StandardGameStateDefaultCamera {
     private TextureText noticeText;
     /** The shade behind the notice. */
     private Quad noticeShade;
+    /** A bonus in the top-right corner. */
+    private TextureText bonusText;
+    /** The notes texture, for animation. */
+    private Texture notesTex;
     /** The font to use for the HUD. */
     private static Font font;
     static { // initialize the font.
@@ -78,6 +91,41 @@ public class HUDState extends StandardGameStateDefaultCamera {
         
         this.noticeText = mkText("Notice: ", "Last Sequence!", 128, JustifyX.CENTER, JustifyY.MIDDLE, x(320), y(240), x(640), y(26));
 
+        /*
+        this.bonusText = mkText("Bonus: ", "Right-hand Columns", 128, JustifyX.LEFT, JustifyY.TOP, x(490), y(410), x(150), y(25));
+        this.bonusText.setColor(new ColorRGBA(1,1,0,1));
+        */
+        
+        // scrolling notes.
+        final Quad notes = new Quad("Scrolling notes",x(640),128);
+        notes.setLocalTranslation(new Vector3f(x(320),y(64),0));
+        notes.setRenderState(mkAlpha());
+        this.notesTex = TextureManager.loadTexture(
+                HUDState.class.getClassLoader().getResource(
+                "net/cscott/sdr/anim/measure.png"),
+                Texture.MM_NONE,
+                Texture.FM_NEAREST); // there will be no stretching
+        notesTex.setWrap(Texture.WM_WRAP_S_CLAMP_T);
+        // set texture coordinates. coordinates ccw from top-left
+        FloatBuffer texCoords = BufferUtils.createVector2Buffer(4);
+        texCoords.put(0).put(1); // top-left
+        texCoords.put(0).put(0); // bottom-left
+        texCoords.put(display.getWidth()/128).put(0); // bottom-right
+        texCoords.put(display.getWidth()/128).put(1); // top-right
+        notes.setTextureBuffer(0, texCoords);
+
+        GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
+        .enqueue(new Callable<Void>() {
+            public Void call() throws Exception {
+                TextureState noteTS = display.getRenderer().createTextureState();
+                noteTS.setEnabled(true);
+                noteTS.setTexture(notesTex);
+                notes.setRenderState(noteTS);
+                rootNode.attachChild(notes);
+                notes.updateRenderState();
+                return null;
+            }
+        });
     }
     private void setNotice(final String notice) {
         if (notice == null) {
@@ -91,18 +139,25 @@ public class HUDState extends StandardGameStateDefaultCamera {
             noticeShade.setCullMode(Spatial.CULL_NEVER);
         }
     }
+    private AlphaState mkAlpha() {
+        if (sharedAlpha==null) {
+            sharedAlpha = display.getRenderer().createAlphaState();
+            sharedAlpha.setBlendEnabled(true);
+            sharedAlpha.setSrcFunction(AlphaState.SB_SRC_ALPHA);
+            sharedAlpha.setDstFunction(AlphaState.DB_ONE_MINUS_SRC_ALPHA);
+            sharedAlpha.setTestEnabled(false);
+            sharedAlpha.setEnabled(true);
+        }
+        return sharedAlpha;
+    }
+    private AlphaState sharedAlpha = null;
     private Quad mkShade(String nodeName, float x, float y, float width, float height) {
         Quad q = new Quad(nodeName, width, height);
         q.setDefaultColor(new ColorRGBA(0,0,0,.55f));
         q.setLocalTranslation(new Vector3f(x,y,0));
-        AlphaState as = display.getRenderer().createAlphaState();
-        as.setBlendEnabled(true);
-        as.setSrcFunction(AlphaState.SB_SRC_ALPHA);
-        as.setDstFunction(AlphaState.DB_ONE_MINUS_SRC_ALPHA);
-        as.setTestEnabled(false);
-        as.setEnabled(true);
-        q.setRenderState(as);
+        q.setRenderState(mkAlpha());
         rootNode.attachChild(q);
+        q.updateRenderState();
         return q;
     }
     private TextureText mkTopTitle(String title, float x, float y) {
@@ -144,8 +199,15 @@ public class HUDState extends StandardGameStateDefaultCamera {
         updateScore(counter++); // for debugging
         if ((counter % 200) < 100) setNotice(null);
         else setNotice("Last sequence!");
+        Fraction currentBeat = beatTimer.getCurrentBeat();
+        Fraction partialBeat = Fraction.valueOf
+             (currentBeat.getProperNumerator(),currentBeat.getDenominator());
+        noteTrans.set(partialBeat.floatValue()/2,0,0);
+        //noteTrans.set((counter%100)/100f,0,0);
+        notesTex.setTranslation(noteTrans);
 
         rootNode.updateGeometricState(tpf, true);
     }
+    private final Vector3f noteTrans = new Vector3f();
     private int counter=0;
 }
