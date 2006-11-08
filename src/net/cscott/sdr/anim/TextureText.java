@@ -38,7 +38,7 @@ import com.jme.util.geom.BufferUtils;
  * is at the specified justification point of the text string, allowing easier
  * placement.
  * @author C. Scott Ananian
- * @version $Id: TextureText.java,v 1.4 2006-11-07 23:07:25 cananian Exp $
+ * @version $Id: TextureText.java,v 1.5 2006-11-08 17:15:52 cananian Exp $
  */
 public class TextureText extends Node {
     /** An enumeration of horizontal justification options. */
@@ -254,6 +254,8 @@ public class TextureText extends Node {
                 recenter();
                 // update quad color
                 quad.setDefaultColor(color);
+                // make sure render state updates are noticed.
+                quad.updateRenderState();
                 return null;
             }
         });
