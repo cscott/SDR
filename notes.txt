@@ -491,3 +491,25 @@ with the discontinuity.  Class should also deal with invalidating and
 refreshing the texture if the text changes, and scaling the quads to
 a desired output height (or width?).  This should be six text textures
 for the HUD, then.
+------
+HUD To-Do:
+ gauges (min/max and specify gradient texture?)
+ x static "now" bar
+ x scrolling note bar
+ support for scrolling "measure end" and "call stars"
+ real time microphone volume display
+----
+Use ChaseCamera to 'chase' the center of the set.
+
+Put HUD behind loading screen somehow.
+----
+Bonus formations on right.
+Suggestions for 'new' calls you can do presently also on right.  Part
+of 'tutorial'.  Can select "help" level.   Always give suggestion when
+stalled.
+
+Better error messages for calls. "Boys and Girls must be together" or
+"only from waves or facing couples" eg when caller gets it wrong.
+
+try to teach caller w/o having to rely on outside references?
+----
