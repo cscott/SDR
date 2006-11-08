@@ -1,5 +1,6 @@
 package net.cscott.sdr.anim;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.net.URL;
 import java.nio.FloatBuffer;
@@ -49,6 +50,12 @@ public class HUDState extends StandardGameStateDefaultCamera {
     private Quad nowNote;
     /** The "now" note texture. */
     private Texture nowNoteTex=null;
+    /** The "originality" gauge. */
+    private Gauge origGauge;
+    /** The "timing & flow" gauge. */
+    private Gauge timeFlowGauge;
+    /** The "sequence length" gauge. */
+    private Gauge seqLenGauge;
     
     /** The font to use for the HUD. */
     private static Font font;
@@ -98,10 +105,31 @@ public class HUDState extends StandardGameStateDefaultCamera {
         this.noticeText = mkText("Notice: ", "Last Sequence!", 128, JustifyX.CENTER, JustifyY.MIDDLE, x(320), y(240), x(640), y(26));
         this.noticeText.setCullMode(Spatial.CULL_ALWAYS);
         
-        /*
         this.bonusText = mkText("Bonus: ", "Right-hand Columns", 128, JustifyX.LEFT, JustifyY.TOP, x(490), y(410), x(150), y(25));
         this.bonusText.setColor(new ColorRGBA(1,1,0,1));
-        */
+
+        // gauges
+        this.origGauge = new Gauge("originality gauge",
+                new Color[] { Color.red, Color.yellow, Color.green },
+                0f, .5f, 1f);
+        origGauge.setLocalTranslation(new Vector3f(x(16+0*148),y(464),0));
+        rootNode.attachChild(origGauge);
+
+        this.timeFlowGauge = new Gauge("flow gauge",
+                new Color[] { Color.red, Color.yellow, Color.green },
+                0f, .3f, 1f);
+        timeFlowGauge.setLocalTranslation(new Vector3f(x(16+1*148),y(464),0));
+        rootNode.attachChild(timeFlowGauge);
+
+        this.seqLenGauge = new Gauge("sequence length gauge",
+                new Color[] { Color.red, Color.yellow, Color.green, Color.yellow, Color.red },
+                0f, .2f, .5f, .8f, 1f);
+        seqLenGauge.setLocalTranslation(new Vector3f(x(16+2*148),y(464),0));
+        rootNode.attachChild(seqLenGauge);
+
+        origGauge.update(0.3f);
+        timeFlowGauge.update(0.5f);
+        seqLenGauge.update(0.7f);
         
         // scrolling notes.
         final Quad notes = new Quad("Scrolling notes",x(640),128);
@@ -256,6 +284,8 @@ public class HUDState extends StandardGameStateDefaultCamera {
         nowNote.setCullMode(partialBeat.compareTo(Fraction.ONE_HALF) < 0 ?
                 Spatial.CULL_NEVER : Spatial.CULL_ALWAYS);
 
+        timeFlowGauge.update(partialBeat.floatValue());//debugging
+        
         rootNode.updateGeometricState(tpf, true);
     }
     private final Vector3f noteTrans = new Vector3f();
