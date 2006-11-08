@@ -24,7 +24,7 @@ import com.jmex.game.state.StandardGameStateDefaultCamera;
  *  so some other camera-controlling state should also be active for
  *  background visuals.
  * @author C. Scott Ananian
- * @version $Id: MenuState.java,v 1.3 2006-11-08 23:04:19 cananian Exp $
+ * @version $Id: MenuState.java,v 1.4 2006-11-08 23:42:12 cananian Exp $
  */
 public class MenuState extends StandardGameStateDefaultCamera {
 
@@ -111,11 +111,11 @@ public class MenuState extends StandardGameStateDefaultCamera {
     private void initText() {
         DisplaySystem display = DisplaySystem.getDisplaySystem();
         text = new TextureText("menu/text", HUDState.font, 128); 
-        text.setAlign(JustifyX.CENTER, JustifyY.MIDDLE);
-        text.setMaxSize(display.getWidth(),30);
-        text.setText("Press Enter to start!");
+        text.setAlign(JustifyX.CENTER, JustifyY.BOTTOM);
+        text.setMaxSize(display.getWidth(),display.getHeight()*3/48f);
+        text.setText("Press Enter to start, or Esc to quit.");
         text.getLocalTranslation().set
-        ( display.getWidth()/2, display.getHeight()*3/4, 0 );
+        ( display.getWidth()/2, display.getHeight()*8/480f, 0 );
         
         rootNode.attachChild( text );
     }

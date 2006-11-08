@@ -3,9 +3,7 @@ package net.cscott.sdr.anim;
 import java.awt.Color;
 import java.awt.Font;
 import java.net.URL;
-import java.nio.FloatBuffer;
 import java.text.DecimalFormat;
-import java.util.concurrent.Callable;
 
 import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.Version;
@@ -13,20 +11,15 @@ import net.cscott.sdr.anim.TextureText.JustifyX;
 import net.cscott.sdr.anim.TextureText.JustifyY;
 import net.cscott.sdr.util.Fraction;
 
-import com.jme.image.Texture;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
+import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.AlphaState;
 import com.jme.scene.state.LightState;
-import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
-import com.jme.util.GameTaskQueue;
-import com.jme.util.GameTaskQueueManager;
-import com.jme.util.TextureManager;
-import com.jme.util.geom.BufferUtils;
 import com.jmex.game.state.StandardGameStateDefaultCamera;
 
 public class HUDState extends StandardGameStateDefaultCamera {
@@ -44,12 +37,6 @@ public class HUDState extends StandardGameStateDefaultCamera {
     private Quad noticeShade;
     /** A bonus in the top-right corner. */
     private TextureText bonusText;
-    /** The notes texture, for animation. */
-    private Texture notesTex=null;
-    /** The "now" note. */
-    private Quad nowNote;
-    /** The "now" note texture. */
-    private Texture nowNoteTex=null;
     /** The "originality" gauge. */
     private Gauge origGauge;
     /** The "timing & flow" gauge. */
@@ -72,7 +59,6 @@ public class HUDState extends StandardGameStateDefaultCamera {
         super("HUD");
         this.display = DisplaySystem.getDisplaySystem();
         this.beatTimer = beatTimer;
-        initInput();
         initHUD();
 
         rootNode.setLightCombineMode(LightState.OFF);
@@ -81,14 +67,11 @@ public class HUDState extends StandardGameStateDefaultCamera {
         rootNode.updateGeometricState(0, true);
     }
 
-    private void initInput() { }
     private void initHUD() {
         // first background shading:
         //   shading behind notice.
-        this.noticeShade = mkShade("Notice Shade", x(320), y(240), x(20), y(20));
+        this.noticeShade = mkShade(rootNode, "Notice Shade", x(320), y(240), x(20), y(20));
         this.noticeShade.setCullMode(Spatial.CULL_ALWAYS);
-        //   shading at bottom
-        mkShade("Call Shade", x(320), y(32), x(640), y(64));
         
         // labels.
         mkTopTitle("ORIGINALITY", x(16+0*148), y(466));
@@ -131,72 +114,6 @@ public class HUDState extends StandardGameStateDefaultCamera {
         timeFlowGauge.update(0.5f);
         seqLenGauge.update(0.7f);
         
-        // scrolling notes.
-        final Quad notes = new Quad("Scrolling notes",x(640),128);
-        notes.setLocalTranslation(new Vector3f(x(320),y(64),0));
-        notes.setRenderState(mkAlpha());
-        // set texture coordinates. coordinates ccw from top-left
-        FloatBuffer texCoords = BufferUtils.createVector2Buffer(4);
-        texCoords.put(0).put(1); // top-left
-        texCoords.put(0).put(0); // bottom-left
-        texCoords.put(display.getWidth()/128).put(0); // bottom-right
-        texCoords.put(display.getWidth()/128).put(1); // top-right
-        notes.setTextureBuffer(0, texCoords);
-        
-        // the "now" bar
-        final Quad now = new Quad("now bar", 128, 128);
-        now.setLocalTranslation(new Vector3f(64,y(64),0));
-        now.setRenderState(mkAlpha());
-        
-        // highlight the active note
-        nowNote = new Quad("now note", 128, 128);
-        nowNote.setLocalTranslation(new Vector3f(64,y(64),0));
-        nowNote.setRenderState(mkAlpha());
-        nowNote.setCullMode(Spatial.CULL_ALWAYS);
-        
-        GameTaskQueueManager.getManager().update(new Callable<Void>() {
-            public Void call() throws Exception {
-                notesTex = TextureManager.loadTexture(
-                        HUDState.class.getClassLoader().getResource(
-                        "net/cscott/sdr/anim/measure.png"),
-                        Texture.MM_NONE,
-                        Texture.FM_NEAREST); // there will be no stretching
-                notesTex.setWrap(Texture.WM_WRAP_S_CLAMP_T);
-                TextureState ts = display.getRenderer().createTextureState();
-                ts.setEnabled(true);
-                ts.setTexture(notesTex);
-                notes.setRenderState(ts);
-                rootNode.attachChild(notes);
-                notes.updateRenderState();
-
-                nowNoteTex = TextureManager.loadTexture(
-                        HUDState.class.getClassLoader().getResource(
-                        "net/cscott/sdr/anim/measure-bang.png"),
-                        Texture.MM_NONE,
-                        Texture.FM_NEAREST); // there will be no stretching
-                nowNoteTex.setWrap(Texture.WM_WRAP_S_CLAMP_T);
-                ts = display.getRenderer().createTextureState();
-                ts.setEnabled(true);
-                ts.setTexture(nowNoteTex);
-                nowNote.setRenderState(ts);
-                rootNode.attachChild(nowNote);
-                nowNote.updateRenderState();
-
-                Texture nowTex = TextureManager.loadTexture(
-                        HUDState.class.getClassLoader().getResource(
-                        "net/cscott/sdr/anim/measure-now.png"),
-                        Texture.MM_NONE,
-                        Texture.FM_NEAREST); // there will be no stretching
-                ts = display.getRenderer().createTextureState();
-                ts.setEnabled(true);
-                ts.setTexture(nowTex);
-                now.setRenderState(ts);
-                rootNode.attachChild(now);
-                now.updateRenderState();
-
-                return null;
-            }
-        });
     }
     private void setNotice(final String notice) {
         if (notice == null) {
@@ -210,9 +127,10 @@ public class HUDState extends StandardGameStateDefaultCamera {
             noticeShade.setCullMode(Spatial.CULL_NEVER);
         }
     }
-    private AlphaState mkAlpha() {
+    static AlphaState mkAlpha() {
         if (sharedAlpha==null) {
-            sharedAlpha = display.getRenderer().createAlphaState();
+            sharedAlpha = DisplaySystem.getDisplaySystem()
+            .getRenderer().createAlphaState();
             sharedAlpha.setBlendEnabled(true);
             sharedAlpha.setSrcFunction(AlphaState.SB_SRC_ALPHA);
             sharedAlpha.setDstFunction(AlphaState.DB_ONE_MINUS_SRC_ALPHA);
@@ -221,8 +139,8 @@ public class HUDState extends StandardGameStateDefaultCamera {
         }
         return sharedAlpha;
     }
-    private AlphaState sharedAlpha = null;
-    private Quad mkShade(String nodeName, float x, float y, float width, float height) {
+    private static AlphaState sharedAlpha = null;
+    static Quad mkShade(Node rootNode, String nodeName, float x, float y, float width, float height) {
         Quad q = new Quad(nodeName, width, height);
         q.setDefaultColor(new ColorRGBA(0,0,0,.55f));
         q.setLocalTranslation(new Vector3f(x,y,0));
@@ -247,13 +165,6 @@ public class HUDState extends StandardGameStateDefaultCamera {
         return tt;
     }
     
-    // convert 640x480-relative coordinates to appropriately scaled coords.
-    private float x(int x) {
-        return x*display.getWidth()/640f;
-    }
-    private float y(int y) {
-        return y*display.getHeight()/480f;
-    }
     private void updateScore(int score) {
         // format the score prettily
         this.scoreText.setText(scoreFormat.format(score).toString());
@@ -275,19 +186,19 @@ public class HUDState extends StandardGameStateDefaultCamera {
         Fraction partialBeat = Fraction.valueOf
              (currentBeat.getProperNumerator(),currentBeat.getDenominator());
         updateScore((int)Math.floor(1+partialBeat.floatValue()*4)); // debugging
-        // "now" bar right edge is at pixel 54 (of 128); second note center
-        // is at pixel 66 (of 128), leading to the offset (14/128) below.
-        noteTrans.set((partialBeat.floatValue()/2)+(12/128f),0,0);
-        if (notesTex!=null) notesTex.setTranslation(noteTrans);
-        if (nowNoteTex!=null) nowNoteTex.setTranslation(noteTrans);
-        // flash 'now Note' for short period around beat.
-        nowNote.setCullMode(partialBeat.compareTo(Fraction.ONE_HALF) < 0 ?
-                Spatial.CULL_NEVER : Spatial.CULL_ALWAYS);
 
         timeFlowGauge.update(partialBeat.floatValue());//debugging
         
         rootNode.updateGeometricState(tpf, true);
     }
-    private final Vector3f noteTrans = new Vector3f();
     private int counter=0;
+    
+    //---------------------------------------------------------
+    // convert 640x480-relative coordinates to appropriately scaled coords.
+    private float x(int x) {
+        return x*display.getWidth()/640f;
+    }
+    private float y(int y) {
+        return y*display.getHeight()/480f;
+    }
 }

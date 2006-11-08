@@ -33,6 +33,7 @@ public class Game extends FixedFramerateGame {
     MenuState menuState;
     VenueState venueState;
     HUDState hudState;
+    MusicState musicState;
 
     public Game(BeatTimer beatTimer) {
         LoggingSystem.getLogger().setLevel(java.util.logging.Level.WARNING);
@@ -104,10 +105,6 @@ public class Game extends FixedFramerateGame {
         final GameTaskQueueManager queueMan =GameTaskQueueManager.getManager();
         new Thread() {
             public void run() {
-                inc("Loading menus...");
-                menuState = new MenuState(Game.this);
-                attach(menuState, false);
-                
                 inc("Loading venue...");
                 venueState = new VenueState(beatTimer);
                 attach(venueState,true);
@@ -121,17 +118,30 @@ public class Game extends FixedFramerateGame {
                 try { Class.forName(CallDB.class.getName());
                 } catch (ClassNotFoundException e) { /* ignore */ }
 
+                inc("Loading scrolling notes...");
+                musicState = new MusicState(beatTimer);
+                
                 inc("Creating HUD...");
                 hudState = new HUDState(beatTimer);
                 attach(hudState,false);
                 
-                inc("Creating menus...");
+                inc("Loading menus...");
+                menuState = new MenuState(Game.this);
                 queueMan.update(new Callable<Void>() {
                     public Void call() throws Exception {
+                        GameStateManager m = GameStateManager.getInstance();
+                        musicState.setActive(true);
+                        hudState.setActive(false);
                         menuState.setActive(true);
+                        m.attachChild(musicState);
+                        m.attachChild(hudState);
+                        m.attachChild(menuState);
+                        m.detachChild(loading);
+                        m.attachChild(loading);// reorder to keep on top.
                         return null;
                     }
                 });
+
                 // from now on, make sure that all update tasks are completed
                 // to avoid glitches updating textured quads.
                 GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
