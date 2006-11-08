@@ -58,7 +58,7 @@ public class HUDState extends StandardGameStateDefaultCamera {
     private Gauge seqLenGauge;
     
     /** The font to use for the HUD. */
-    private static Font font;
+    static Font font;
     static { // initialize the font.
         URL url = TextureText.class.getClassLoader().getResource      
         ("net/cscott/sdr/fonts/bluebold.ttf");

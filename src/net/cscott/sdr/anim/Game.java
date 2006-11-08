@@ -105,7 +105,7 @@ public class Game extends FixedFramerateGame {
         new Thread() {
             public void run() {
                 inc("Loading menus...");
-                menuState = new MenuState();
+                menuState = new MenuState(Game.this);
                 attach(menuState, false);
                 
                 inc("Loading venue...");
@@ -123,7 +123,7 @@ public class Game extends FixedFramerateGame {
 
                 inc("Creating HUD...");
                 hudState = new HUDState(beatTimer);
-                attach(hudState,true);
+                attach(hudState,false);
                 
                 inc("Creating menus...");
                 queueMan.update(new Callable<Void>() {

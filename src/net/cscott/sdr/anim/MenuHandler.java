@@ -9,11 +9,11 @@ import com.jmex.game.state.GameState;
 import com.jmex.game.state.GameStateManager;
 
 public class MenuHandler extends InputHandler {
-    private GameState myState;
+    private final Game game;
 
-    public MenuHandler( GameState myState ) {
+    public MenuHandler( Game game ) {
         setKeyBindings();
-        this.myState = myState;
+        this.game = game;
     }
 
     private void setKeyBindings() {
@@ -33,12 +33,8 @@ public class MenuHandler extends InputHandler {
 
     private class EnterAction extends InputAction {
         public void performAction( InputActionEvent evt ) {
-            /*
-            GameState ingame = new IngameState("ingame");
-            ingame.setActive(true);
-            GameStateManager.getInstance().attachChild(ingame);
-            myState.setActive(false); // Deactivate this (the menu) state.
-            */
+            game.hudState.setActive(true);
+            game.menuState.setActive(false);
         }
     }
 }

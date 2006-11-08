@@ -1,6 +1,8 @@
 package net.cscott.sdr.anim;
 
 import net.cscott.sdr.Version;
+import net.cscott.sdr.anim.TextureText.JustifyX;
+import net.cscott.sdr.anim.TextureText.JustifyY;
 
 import com.jme.image.Texture;
 import com.jme.input.AbsoluteMouse;
@@ -9,28 +11,28 @@ import com.jme.input.Mouse;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
-import com.jme.scene.Text;
 import com.jme.scene.state.AlphaState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
-import com.jmex.game.state.*;
+import com.jmex.game.state.GameState;
+import com.jmex.game.state.StandardGameStateDefaultCamera;
 
 /** The {@link MenuState} displays a cursor on the screen and an appropriate
  *  menu of options.  It uses ORTHO mode and does not reset the camera,
  *  so some other camera-controlling state should also be active for
  *  background visuals.
  * @author C. Scott Ananian
- * @version $Id: MenuState.java,v 1.2 2006-11-06 20:20:35 cananian Exp $
+ * @version $Id: MenuState.java,v 1.3 2006-11-08 23:04:19 cananian Exp $
  */
 public class MenuState extends StandardGameStateDefaultCamera {
 
-    public MenuState() {
+    public MenuState(Game game) {
         super(Version.PACKAGE_NAME+" Menu");
 
         display = DisplaySystem.getDisplaySystem();
-        initInput();
+        initInput(game);
         initCursor();
         initText();
 
@@ -46,7 +48,7 @@ public class MenuState extends StandardGameStateDefaultCamera {
     /** Our display system. */
     private DisplaySystem display;
 
-    private Text text;
+    private TextureText text;
     
     private InputHandler input;
     private Mouse mouse;
@@ -61,8 +63,8 @@ public class MenuState extends StandardGameStateDefaultCamera {
     /**
      * Inits the input handler we will use for navigation of the menu.
      */
-    protected void initInput() {
-        input = new MenuHandler( this );
+    protected void initInput(Game game) {
+        input = new MenuHandler( game );
 
         DisplaySystem display = DisplaySystem.getDisplaySystem();
         mouse = new AbsoluteMouse("Mouse Input", display.getWidth(),
@@ -107,9 +109,13 @@ public class MenuState extends StandardGameStateDefaultCamera {
      * Inits the button placed at the center of the screen.
      */
     private void initText() {
-        text = Text.createDefaultTextLabel( "info" );
-        text.print( "press enter" );
-        text.getLocalTranslation().set( 100, 100, 0 );
+        DisplaySystem display = DisplaySystem.getDisplaySystem();
+        text = new TextureText("menu/text", HUDState.font, 128); 
+        text.setAlign(JustifyX.CENTER, JustifyY.MIDDLE);
+        text.setMaxSize(display.getWidth(),30);
+        text.setText("Press Enter to start!");
+        text.getLocalTranslation().set
+        ( display.getWidth()/2, display.getHeight()*3/4, 0 );
         
         rootNode.attachChild( text );
     }
