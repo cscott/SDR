@@ -20,7 +20,7 @@ import com.jme.util.TextureManager;
  * can draw into.  This makes it easy to write subclasses to generate dynamic
  * HUD elements by drawing into the Image.
  * @author C. Scott Ananian
- * @version $Id: TexturedQuad.java,v 1.1 2006-11-08 21:20:08 cananian Exp $
+ * @version $Id: TexturedQuad.java,v 1.2 2006-11-09 20:10:10 cananian Exp $
  */
 public class TexturedQuad extends Quad {
     /** An image buffer for drawing the texture; this is a soft reference to
@@ -115,15 +115,21 @@ public class TexturedQuad extends Quad {
     public void updateTexture(final BufferedImage textureImage) {
         GameTaskQueueManager.getManager().update(new Callable<Void>() {
             public Void call() throws Exception {
-                // set new texture
-                texture.setImage(TextureManager.loadImage(textureImage,false));
-                // refresh texture state
-                textureState.load();
-                // make sure render state updates are noticed.
-                updateRenderState();
+                _updateTextureNow(textureImage);
                 return null;
             }
         });
+    }
+    /** Update the texture on the quad.  This method performs this update
+     * immediately; it should only be used from the update thread.
+     */
+    void _updateTextureNow(BufferedImage textureImage) {
+        // set new texture
+        texture.setImage(TextureManager.loadImage(textureImage,false));
+        // refresh texture state
+        textureState.load();
+        // make sure render state updates are noticed.
+        updateRenderState();
     }
     /** Release the texture when this {@link TexturedQuad} is no longer being
      *  used. */
