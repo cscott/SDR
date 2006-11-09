@@ -2,11 +2,15 @@ package net.cscott.sdr.anim;
 
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
 import net.cscott.sdr.BeatTimer;
-import net.cscott.sdr.calls.*;
+import net.cscott.sdr.calls.CallDB;
+import net.cscott.sdr.calls.FormationList;
+import net.cscott.sdr.recog.LevelMonitor;
 
 import com.jme.app.FixedFramerateGame;
 import com.jme.input.KeyBindingManager;
@@ -34,14 +38,20 @@ public class Game extends FixedFramerateGame {
     VenueState venueState;
     HUDState hudState;
     MusicState musicState;
+    private final BlockingQueue<LevelMonitor> rendezvous;
 
-    public Game(BeatTimer beatTimer) {
+    /** You must provide the game a beat timer, along with a
+     * {@link BlockingQueue} from which we can get a {@link LevelMonitor}
+     * (presumably from the speech-recognition thread).
+     */ 
+    public Game(BeatTimer beatTimer, BlockingQueue<LevelMonitor> rendezvous) {
         LoggingSystem.getLogger().setLevel(java.util.logging.Level.WARNING);
         URL url = SdrGame.class.getClassLoader().getResource      
             ("net/cscott/sdr/anim/splash.png");
         this.setDialogBehaviour
             (FIRSTRUN_OR_NOCONFIGFILE_SHOW_PROPS_DIALOG, url);
         this.beatTimer = beatTimer;
+        this.rendezvous = rendezvous;
     }
     /** Creates display, sets up camera, and binds keys. */
     protected void initSystem() {
@@ -98,7 +108,7 @@ public class Game extends FixedFramerateGame {
 
         URL url = SdrGame.class.getClassLoader().getResource      
         ("net/cscott/sdr/anim/loading.png");
-        final TransitionGameState loading = new TransitionGameState(7, url);
+        final TransitionGameState loading = new TransitionGameState(8, url);
         loading.setActive(true);
         GameStateManager.getInstance().attachChild(loading);
 
@@ -118,8 +128,16 @@ public class Game extends FixedFramerateGame {
                 try { Class.forName(CallDB.class.getName());
                 } catch (ClassNotFoundException e) { /* ignore */ }
 
+                inc("Waiting for Sphinx...");
+                LevelMonitor lm;
+                while(true)
+                    try {
+                        lm = rendezvous.take();
+                        break;
+                    } catch (InterruptedException e) { /* try again */ }
+                
                 inc("Loading scrolling notes...");
-                musicState = new MusicState(beatTimer);
+                musicState = new MusicState(beatTimer, lm);
                 
                 inc("Creating HUD...");
                 hudState = new HUDState(beatTimer);
@@ -215,7 +233,9 @@ public class Game extends FixedFramerateGame {
 
     // test
     public static void main(String... args) {
-        Game game = new Game(new SilentBeatTimer());
+        BlockingQueue<LevelMonitor> bq = new ArrayBlockingQueue<LevelMonitor>(1);
+        bq.add((LevelMonitor)null);
+        Game game = new Game(new SilentBeatTimer(), bq);
         game.start();
     }
     @Override

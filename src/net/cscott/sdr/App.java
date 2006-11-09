@@ -1,11 +1,15 @@
 package net.cscott.sdr;
 
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import net.cscott.sdr.anim.Game;
 import net.cscott.sdr.anim.SilentBeatTimer;
 import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.recog.LevelMonitor;
+import net.cscott.sdr.recog.RecogThread;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.CommandInput.PossibleCommand;
 
@@ -17,7 +21,7 @@ import net.cscott.sdr.CommandInput.PossibleCommand;
  * and one to play music (in net.cscott.sdr.sound).
  * 
  * @author C. Scott Ananian
- * @version $Id: App.java,v 1.6 2006-11-08 19:04:39 cananian Exp $
+ * @version $Id: App.java,v 1.7 2006-11-09 20:12:31 cananian Exp $
  */
 public class App {
     /**
@@ -31,13 +35,27 @@ public class App {
         // This is the choreography engine.
         DanceState ds = new DanceState(Program.MAINSTREAM);
         ChoreoEngine choreo = new ChoreoEngine(ds);
-            
-        // TODO: create voice recognition thread
+        
         // TODO: create music player thread
 
         // Start the game thread.
-        Game game = new Game(new SilentBeatTimer());
-        game.start();
+        BlockingQueue<LevelMonitor> rendezvous =
+            new ArrayBlockingQueue<LevelMonitor>(1);
+        final Game game = new Game(new SilentBeatTimer(), rendezvous);
+        new Thread() { // THIS IS THE GRAPHICS THREAD
+            @Override public void run() { game.start(); }
+        }.start();
+
+        // give the 'loading' UI a chance to come up.
+        try {
+            System.err.println("SLEEPING");
+            Thread.sleep(1000L);
+        } catch (InterruptedException e) { /* ignore */ }
+        System.err.println("CONTINUING");
+
+        // create voice recognition thread
+        RecogThread rt = new RecogThread(input, rendezvous);
+        rt.start();
 
         // Now start processing input, handing resulting formations to the
         // game thread.
