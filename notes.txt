@@ -475,3 +475,8 @@ Better error messages for calls. "Boys and Girls must be together" or
 
 try to teach caller w/o having to rely on outside references?
 ----
+Should add package.html files.
+----
+On java 1.5, the "sequence length" graph just goes from Red to Red.
+Add 'reflected' flag to deal with this?
+----
