@@ -10,6 +10,10 @@ import net.cscott.sdr.util.Fraction;
 public abstract class Tagger {
     private Tagger() { /* no instances */ }
     
+    // XXX if we find 4-dancer formations, we should look inside those for
+    //     2-person formations (ie, not allow 2-person matches which span
+    //     multiple 4-person formations, like the very centers in
+    //     point-to-point diamonds.
     public static void addAutomatic(Formation f, MultiMap<Dancer, Tag> tags) {
         switch(f.dancers().size()) {
         case 8:
@@ -33,7 +37,6 @@ public abstract class Tagger {
         assert false : "unimplemented";
     }
 
-    // XXX: protect against exceptions thrown by doMatch
     // XXX: in some formations, doMatch will find multiple possible matches
     //      and complain about ambiguity.  How to solve?
     //   >v  <- all are trailing beaus
@@ -72,7 +75,7 @@ public abstract class Tagger {
         // ok, finally: there are two "pinwheel" formations that will cause
         // doMatch to report an ambiguous match, yet these do actually have
         // beaus/belles/leaders/trailers.  Try these.
-        //XXX DO ME.
+        // XXX DO ME.
     }
     /** Our private stash of phantom dancers. */
     private static final PhantomDancer[] dancers = new PhantomDancer[] {
