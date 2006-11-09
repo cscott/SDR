@@ -92,27 +92,24 @@ public class HUDState extends StandardGameStateDefaultCamera {
         this.bonusText.setColor(new ColorRGBA(1,1,0,1));
 
         // gauges
-        this.origGauge = new Gauge("originality gauge",
-                new Color[] { Color.red, Color.yellow, Color.green },
-                0f, .5f, 1f);
+        this.origGauge = new Gauge("originality gauge", false,
+                new Color[] { Color.red, Color.yellow, Color.green }, .5f);
         origGauge.setLocalTranslation(new Vector3f(x(16+0*148),y(464),0));
         rootNode.attachChild(origGauge);
 
-        this.timeFlowGauge = new Gauge("flow gauge",
-                new Color[] { Color.red, Color.yellow, Color.green },
-                0f, .3f, 1f);
+        this.timeFlowGauge = new Gauge("flow gauge", false,
+                new Color[] { Color.red, Color.yellow, Color.green }, .3f);
         timeFlowGauge.setLocalTranslation(new Vector3f(x(16+1*148),y(464),0));
         rootNode.attachChild(timeFlowGauge);
 
-        this.seqLenGauge = new Gauge("sequence length gauge",
-                new Color[] { Color.red, Color.yellow, Color.green, Color.yellow, Color.red },
-                0f, .2f, .5f, .8f, 1f);
+        this.seqLenGauge = new Gauge("sequence length gauge", true,
+                new Color[] { Color.red, Color.yellow, Color.green }, .2f);
         seqLenGauge.setLocalTranslation(new Vector3f(x(16+2*148),y(464),0));
         rootNode.attachChild(seqLenGauge);
 
         origGauge.update(0.3f);
         timeFlowGauge.update(0.5f);
-        seqLenGauge.update(0.7f);
+        seqLenGauge.update(0.95f);
         
     }
     private void setNotice(final String notice) {
