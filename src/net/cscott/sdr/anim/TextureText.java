@@ -8,7 +8,6 @@ import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.lang.ref.SoftReference;
 import java.net.URL;
 import java.nio.FloatBuffer;
 import java.util.concurrent.Callable;
@@ -19,14 +18,8 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
-import com.jme.scene.shape.Quad;
-import com.jme.scene.state.AlphaState;
 import com.jme.scene.state.LightState;
-import com.jme.scene.state.TextureState;
-import com.jme.system.DisplaySystem;
-import com.jme.util.GameTaskQueue;
 import com.jme.util.GameTaskQueueManager;
-import com.jme.util.TextureManager;
 import com.jme.util.geom.BufferUtils;
 
 /** {@link TextureText} renders text to a textured quad.  This allows great
@@ -38,7 +31,7 @@ import com.jme.util.geom.BufferUtils;
  * is at the specified justification point of the text string, allowing easier
  * placement.
  * @author C. Scott Ananian
- * @version $Id: TextureText.java,v 1.6 2006-11-08 21:20:07 cananian Exp $
+ * @version $Id: TextureText.java,v 1.7 2006-11-09 21:01:28 cananian Exp $
  */
 public class TextureText extends Node {
     /** An enumeration of horizontal justification options. */

@@ -19,7 +19,6 @@ import net.cscott.sdr.recog.LevelMonitor.LevelMeasurement;
 import net.cscott.sdr.util.Fraction;
 
 import com.jme.image.Texture;
-import com.jme.math.FastMath;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Spatial;
@@ -36,7 +35,7 @@ import com.jmex.game.state.StandardGameStateDefaultCamera;
  * of the screen.  This is shown in the {@link MenuState} as well, since it
  * helps debug the microphone issues.
  * @author C. Scott Ananian
- * @version $Id: MusicState.java,v 1.2 2006-11-09 20:12:31 cananian Exp $
+ * @version $Id: MusicState.java,v 1.3 2006-11-09 21:01:28 cananian Exp $
  */
 public class MusicState extends StandardGameStateDefaultCamera {
     /** Our display system. */

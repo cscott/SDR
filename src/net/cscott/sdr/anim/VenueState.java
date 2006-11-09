@@ -3,7 +3,6 @@ package net.cscott.sdr.anim;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.Version;
@@ -31,7 +30,6 @@ import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
-import com.jme.util.GameTaskQueue;
 import com.jme.util.GameTaskQueueManager;
 import com.jme.util.TextureManager;
 import com.jme.util.Timer;
@@ -43,7 +41,7 @@ import com.jmex.game.state.StandardGameState;
  *  {@link VenueState}s and cross-fade between them to change venues.
  *  {@link VenueState} does not process any keyboard or mouse input.
  * @author C. Scott Ananian
- * @version $Id: VenueState.java,v 1.3 2006-11-08 21:19:05 cananian Exp $
+ * @version $Id: VenueState.java,v 1.4 2006-11-09 21:01:27 cananian Exp $
  */
 public class VenueState extends StandardGameState {
     private Skybox skybox;

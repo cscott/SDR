@@ -5,8 +5,6 @@ import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
 import com.jme.input.action.InputAction;
 import com.jme.input.action.InputActionEvent;
-import com.jmex.game.state.GameState;
-import com.jmex.game.state.GameStateManager;
 
 public class MenuHandler extends InputHandler {
     private final Game game;

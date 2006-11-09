@@ -1,18 +1,16 @@
 package net.cscott.sdr.recog;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.concurrent.BlockingQueue;
+
+import net.cscott.sdr.CommandInput;
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.jsapi.JSGFGrammar;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.props.ConfigurationManager;
 import edu.cmu.sphinx.util.props.PropertyException;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.concurrent.BlockingQueue;
-
-import net.cscott.sdr.CommandInput;
 
 
 /**

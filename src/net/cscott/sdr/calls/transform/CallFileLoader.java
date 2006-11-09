@@ -1,14 +1,9 @@
 package net.cscott.sdr.calls.transform;
 
-import java.io.*;
 import java.net.URL;
 import java.util.Map;
 
-import antlr.Token;
-import antlr.debug.misc.ASTFrame;
-
 import net.cscott.sdr.calls.Call;
-import net.cscott.sdr.calls.transform.*;
 
 /** This class contains the code to parse and load a call list. */
 public abstract class CallFileLoader {
