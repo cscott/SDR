@@ -21,7 +21,7 @@ import net.cscott.sdr.CommandInput.PossibleCommand;
  * and one to play music (in net.cscott.sdr.sound).
  * 
  * @author C. Scott Ananian
- * @version $Id: App.java,v 1.7 2006-11-09 20:12:31 cananian Exp $
+ * @version $Id: App.java,v 1.8 2006-11-10 00:56:49 cananian Exp $
  */
 public class App {
     /**
@@ -54,7 +54,7 @@ public class App {
         System.err.println("CONTINUING");
 
         // create voice recognition thread
-        RecogThread rt = new RecogThread(input, rendezvous);
+        RecogThread rt = new RecogThread(ds, input, rendezvous);
         rt.start();
 
         // Now start processing input, handing resulting formations to the
@@ -104,6 +104,9 @@ public class App {
                 assert a != null;
                 try {
                     start = sendResults(choreo.execute(start, a, score));
+                    // this was a good call!
+                    System.err.println(a.toString()); // XXX SEND TO HUD
+                    return;
                 } catch (BadCallException be) {
                     lastCall = a.toString();
                     message = be.getMessage();
@@ -121,7 +124,7 @@ public class App {
             // TODO: step 1: adjust timing as needed if 'start' is no longer in the future.
             // TODO: step 2: go through the formations and pull out individual dancer actions
             // TODO: step 3: send the dancer actions to the AnimDancer objects.
-            return l.get(l.size()-1);
+            return null;//l.get(l.size()-1);
         }
         
         @Override
