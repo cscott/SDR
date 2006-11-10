@@ -8,7 +8,7 @@ import net.cscott.sdr.calls.ast.Apply;
  * {@link ChoreoEngine} specifies the interface through which the choreography
  * engine communicates with the rest of the SDR application.
  * @author C. Scott Ananian
- * @version $Id: ChoreoEngine.java,v 1.1 2006-10-26 17:33:53 cananian Exp $
+ * @version $Id: ChoreoEngine.java,v 1.2 2006-11-10 00:56:07 cananian Exp $
  */
 public class ChoreoEngine {
     private DanceState ds;
@@ -32,7 +32,7 @@ public class ChoreoEngine {
     public List<TimedFormation>
     execute(TimedFormation start, Apply call, ScoreAccumulator score)
     throws BadCallException {
-        assert false : "unimplemented"; // XXX: unimplemented
+        //assert false : "unimplemented"; // XXX: unimplemented
         // List<TimedFormation> returned from call evaluation will be
         // relative.  We will need to convert to an absolutely-timed list
         // before we return it.
