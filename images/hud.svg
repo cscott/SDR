@@ -1293,7 +1293,7 @@
      inkscape:window-width="902"
      inkscape:window-height="583"
      inkscape:window-x="8"
-     inkscape:window-y="133"
+     inkscape:window-y="130"
      inkscape:grid-bbox="false" />
   <metadata
      id="metadata7">
@@ -1318,7 +1318,7 @@
        height="480"
        width="640"
        sodipodi:absref="/home/cananian/Projects/SDR/images/back.png"
-       xlink:href="back.png" />
+       xlink:href="hud-back.png" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -1634,7 +1634,7 @@
          height="11.558976"
          width="86.725632"
          id="rect1897"
-         style="fill:url(#linearGradient9813);fill-opacity:1.0;fill-rule:evenodd;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+         style="fill:url(#linearGradient9813);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
       <path
          transform="matrix(0.169386,0,0,0.180609,398.9802,402.6397)"
          d="M 24.380955,33.86244 L 112.55138,19.436299 L 150.65264,-61.374786 L 191.61888,18.022347 L 280.24872,29.286803 L 217.39683,92.783071 L 234.07182,180.55597 L 154.26098,140.40169 L 75.936843,183.38387 L 89.462927,95.070893 L 24.380955,33.86244 z "
@@ -1768,7 +1768,7 @@
          y="477.97971"
          style="font-size:14px;text-align:end;text-anchor:end;fill:white">F1 for help, Esc to quit</tspan></text>
     <rect
-       style="opacity:1;fill:black;fill-opacity:0.70391068;fill-rule:evenodd;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:1;fill:black;fill-opacity:0.70391074;fill-rule:evenodd;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect8021"
        width="123.23862"
        height="46.467014"
