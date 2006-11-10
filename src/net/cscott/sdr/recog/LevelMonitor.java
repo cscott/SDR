@@ -11,7 +11,7 @@ import edu.cmu.sphinx.frontend.*;
  * and keeps a record of the maximum level of each data packet.  This
  * is used by the graphical front end to display current input levels.
  * @author C. Scott Ananian
- * @version $Id: LevelMonitor.java,v 1.1 2006-11-09 20:12:31 cananian Exp $
+ * @version $Id: LevelMonitor.java,v 1.2 2006-11-10 00:55:00 cananian Exp $
  */
 public class LevelMonitor extends BaseDataProcessor {
     public static class LevelMeasurement {
@@ -49,7 +49,7 @@ public class LevelMonitor extends BaseDataProcessor {
     }
     /** Add all the level measurements taken since the last time this
      * method was called (up to a maximum of 4096 measurements) to the
-     * given list. */
+     * given list. This method is thread-safe. */
     public void getLevels(List<LevelMeasurement> l) {
         levels.drainTo(l);
     }
