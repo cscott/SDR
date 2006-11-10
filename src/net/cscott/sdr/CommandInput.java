@@ -20,7 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * ordered from most-likely to least-likely.  We'll try each possibility
  * and take the first one that works.
  * @author C. Scott Ananian
- * @version $Id: CommandInput.java,v 1.3 2006-10-27 15:37:22 cananian Exp $
+ * @version $Id: CommandInput.java,v 1.4 2006-11-10 15:24:20 cananian Exp $
  */
 public class CommandInput {
     /** Create a CommandInput object to synchronize communication between
@@ -52,29 +52,30 @@ public class CommandInput {
         return queue.take();
     }
     // helper methods.
-    /** Create a PossibleCommand from a list of possibilities, ordered
-     * from best to worst. */
-    public PossibleCommand commandFromStrings(final DanceState ds,
-                                               final List<String> l) {
-        if (l.isEmpty()) return null;
-        String best = l.get(0); // our next-best guess.
-        Apply a;
-        try {
-            a = CallDB.INSTANCE.parse(ds.getProgram(), best);
-        } catch (BadCallException e) {
-            a = null; // we'll skip this one & end up trying the next.
-        }
-        final Apply aa = a;
+    /** Create a PossibleCommand from an unparsed user input, along with the
+     * 'next worst' PossibleCommand.  Does the parsing lazily, so that we
+     * don't parse unless the "better" PossibleCommands don't work out. */
+    public PossibleCommand commandFromUnparsed
+    (final DanceState ds, final String userInput,
+     final long startTime, final long endTime, final PossibleCommand next) {
         PossibleCommand pc = new PossibleCommand() {
             @Override
-            public Apply get() { return aa; }
+            public String getUserInput() { return userInput; }
             @Override
-            public PossibleCommand next() {
-                return commandFromStrings(ds, l.subList(1,l.size()));
+            public long getStartTime() { return startTime; }
+            @Override
+            public long getEndTime() { return endTime; }
+            @Override
+            public Apply getApply() throws BadCallException {
+                if (cache==null)
+                    cache=CallDB.INSTANCE.parse(ds.getProgram(), userInput);
+                return cache; 
             }
+            private transient Apply cache=null;
+            @Override
+            public PossibleCommand next() { return next; }
         };
-        if (pc.get()==null) return pc.next();
-        return pc;
+        return pc; // careful: the first one might return null for getApply()
     }
     
     /** A {@link PossibleCommand} is an {@link Apply} corresponding to
@@ -87,8 +88,17 @@ public class CommandInput {
     // XXX: is this really the interface we want?  seems cumbersome.
     public static abstract class PossibleCommand
     implements Iterable<PossibleCommand> {
-        /** Return the command possibility. */
-        public abstract Apply get();
+        /** Return the raw user input. */
+        public abstract String getUserInput();
+        /** Return the time the user input began, in milliseconds since the
+         * epoch. */
+        public abstract long getStartTime();
+        /** Return the time the user input was complete, in milliseconds since
+         * the epoch. */
+        public abstract long getEndTime();
+        /** Return the parsed command possibility; throwing
+         *  {@link BadCallException} if there is a problem with the parse. */
+        public abstract Apply getApply() throws BadCallException;
         /** Return the next possible command, or null if there are no more. */
         public abstract PossibleCommand next();
 

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 import net.cscott.sdr.CommandInput;
+import net.cscott.sdr.CommandInput.PossibleCommand;
 import net.cscott.sdr.calls.DanceState;
 import edu.cmu.sphinx.decoder.search.Token;
 import edu.cmu.sphinx.frontend.Data;
@@ -95,13 +96,13 @@ public class RecogThread extends Thread {
                 // XXX: HUD: "I couldn't hear you"
                 continue;
             }
-            /* sort so the best (highest score) is first */
+            /* sort so the worst (lowest score) is first */
             Collections.sort(tokens, new Comparator<Token>() {
                 public int compare(Token t1, Token t2) {
-                    return -Float.compare(t1.getScore(), t2.getScore());
+                    return Float.compare(t1.getScore(), t2.getScore());
                 }
             });
-            List<String> sl = new ArrayList<String>(tokens.size());
+            PossibleCommand pc = null;
             for (Token t : tokens) {
                 // get the words in the result
                 String resultText = t.getWordPathNoFiller();
@@ -118,11 +119,12 @@ public class RecogThread extends Thread {
                 }
                 long startTime = firstFeature.getCollectTime();
                 long endTime = lastFeature.getCollectTime();
-                // XXX DO SOMETHING WITH THESE TIMES!
-                // (they're in milliseconds since the epoch)
-                sl.add(resultText);
+                // note that we construct pc backwards from worst to best
+                // so that the best ends up at the head.
+                pc = input.commandFromUnparsed
+                (ds, resultText, startTime, endTime, pc);
             }
-            input.addCommand(input.commandFromStrings(ds, sl));
+            input.addCommand(pc);
             System.err.println("---");
         }
     }

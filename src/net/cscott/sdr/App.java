@@ -21,7 +21,7 @@ import net.cscott.sdr.CommandInput.PossibleCommand;
  * and one to play music (in net.cscott.sdr.sound).
  * 
  * @author C. Scott Ananian
- * @version $Id: App.java,v 1.8 2006-11-10 00:56:49 cananian Exp $
+ * @version $Id: App.java,v 1.9 2006-11-10 15:24:20 cananian Exp $
  */
 public class App {
     /**
@@ -100,15 +100,16 @@ public class App {
             PossibleCommand pc = input.getNextCommand();
             // go through the possibilities, and see if any is a valid call.
             while (pc != null) {
-                Apply a = pc.get();
-                assert a != null;
                 try {
+                    Apply a = pc.getApply();
+                    if (a==null) throw new BadCallException("Parsing error");
                     start = sendResults(choreo.execute(start, a, score));
                     // this was a good call!
-                    System.err.println(a.toString()); // XXX SEND TO HUD
+                    System.err.println(pc.getUserInput()); // XXX SEND TO HUD
+                    score.goodCallGiven(a, pc.getStartTime(), pc.getEndTime());
                     return;
                 } catch (BadCallException be) {
-                    lastCall = a.toString();
+                    lastCall = pc.getUserInput();
                     message = be.getMessage();
                     // try the next possibility.
                 }
