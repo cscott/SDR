@@ -477,3 +477,7 @@ try to teach caller w/o having to rely on outside references?
 ----
 Should add package.html files.
 ----
+ScoreAccumulator should get updates when the dancers are waiting for their next
+call, as the "timing and flow" meter should continue to run down while they
+wait.  Current ScoreAccumulator method should just be responsible for the jump
+in "timing and flow" when a good call is given.
