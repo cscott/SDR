@@ -76,7 +76,12 @@ public class Game extends FixedFramerateGame {
             System.exit( 1 );
         }
         /** Set a green background (nicer during initial load) */
-        display.getRenderer().setBackgroundColor( ColorRGBA.green );
+        display.getRenderer().setBackgroundColor( new ColorRGBA(.7f,1,.7f,1) );
+        // global "screen shot" command
+        KeyBindingManager.getKeyBindingManager().set( "screen_shot",
+                KeyInput.KEY_SYSRQ /* The "Print Screen" button */);
+        KeyBindingManager.getKeyBindingManager().set( "screen_shot",
+                KeyInput.KEY_SCROLL /* GNOME already has PrtSc bound */);
         // global "quit now" command.
         KeyBindingManager.getKeyBindingManager().set( "exit",
                 KeyInput.KEY_ESCAPE );
@@ -205,6 +210,12 @@ public class Game extends FixedFramerateGame {
         .execute();
         // Render the current game state.
         GameStateManager.getInstance().render(tpf);
+        // global printscreen
+        if (KeyBindingManager.getKeyBindingManager()
+                .isValidCommand( "screen_shot", false ) ) {
+	    // XXX: we don't get all the game states in the screen shot =(
+            display.getRenderer().takeScreenShot("SDRScreenShot");
+        }
         // global quit.
         if (KeyBindingManager.getKeyBindingManager()
                 .isValidCommand( "exit", false ) ) {
