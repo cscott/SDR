@@ -13,6 +13,7 @@ import net.cscott.sdr.calls.FormationList;
 import net.cscott.sdr.recog.LevelMonitor;
 
 import com.jme.app.FixedFramerateGame;
+import com.jme.image.Image;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
 import com.jme.input.MouseInput;
@@ -113,13 +114,30 @@ public class Game extends FixedFramerateGame {
 
         URL url = SdrGame.class.getClassLoader().getResource      
         ("net/cscott/sdr/anim/loading.png");
-        final TransitionGameState loading = new TransitionGameState(8, url);
+        final TransitionGameState loading = new TransitionGameState(9, url);
         loading.setActive(true);
         GameStateManager.getInstance().attachChild(loading);
 
         final GameTaskQueueManager queueMan =GameTaskQueueManager.getManager();
         new Thread() {
             public void run() {
+                inc("Loading icons...");
+                final Image icon16 = TextureManager.loadImage(
+                        SdrGame.class.getClassLoader().getResource(
+                                "net/cscott/sdr/icon16.png"), false);
+                final Image icon32 = TextureManager.loadImage(
+                        SdrGame.class.getClassLoader().getResource(
+                                "net/cscott/sdr/icon32.png"), false);
+                final Image icon128= TextureManager.loadImage(
+                        SdrGame.class.getClassLoader().getResource(
+                                "net/cscott/sdr/icon128.png"), false);
+                queueMan.update(new Callable<Void>() {
+                    public Void call() throws Exception {
+                        display.setIcon(new Image[]{ icon128, icon32, icon16});
+                        return null;
+                    }
+                });
+                
                 inc("Loading venue...");
                 venueState = new VenueState(beatTimer);
                 attach(venueState,true);
