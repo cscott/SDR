@@ -21,7 +21,7 @@ import net.cscott.sdr.CommandInput.PossibleCommand;
  * and one to play music (in net.cscott.sdr.sound).
  * 
  * @author C. Scott Ananian
- * @version $Id: App.java,v 1.9 2006-11-10 15:24:20 cananian Exp $
+ * @version $Id: App.java,v 1.10 2006-11-11 03:06:21 cananian Exp $
  */
 public class App {
     /**
@@ -48,10 +48,10 @@ public class App {
 
         // give the 'loading' UI a chance to come up.
         try {
-            System.err.println("SLEEPING");
+            System.err.print("Waiting for UI...");
             Thread.sleep(1000L);
         } catch (InterruptedException e) { /* ignore */ }
-        System.err.println("CONTINUING");
+        System.err.println("done.");
 
         // create voice recognition thread
         RecogThread rt = new RecogThread(ds, input, rendezvous);
