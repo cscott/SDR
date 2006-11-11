@@ -477,7 +477,24 @@ try to teach caller w/o having to rely on outside references?
 ----
 Should add package.html files.
 ----
-ScoreAccumulator should get updates when the dancers are waiting for their next
-call, as the "timing and flow" meter should continue to run down while they
-wait.  Current ScoreAccumulator method should just be responsible for the jump
-in "timing and flow" when a good call is given.
+ScoreAccumulator should get updates when the dancers are waiting for
+their next call, as the "timing and flow" meter should continue to run
+down while they wait.  ScoreAccumulator 'goodCall' method should just
+be responsible for the jump in "timing and flow" when a good call is
+given.
+---
+Sphinx states like GameStates; pass Results around from each (since we
+need different result processing in different states).
+
+"Say "square up" or press enter to start" w/ high "out of grammar
+utterance" probability.
+
+Menu: microphone selection and volume (virtualize Sphinx "Microphone"
+component?), # of dancers (4/8/12 <- "at home" really is at home for
+everyone), dance program (basic->c4), judging (easy/medium/hard).
+
+"Poor man's SD" (PMSD) interface, with text i/o to call engine.
+--
+Change background color so that loading screen looks better.
+--
+Display.setIcon() to use SDR application icon.
