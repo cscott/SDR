@@ -26,7 +26,7 @@ import com.jmex.game.state.StandardGameStateDefaultCamera;
  *  so some other camera-controlling state should also be active for
  *  background visuals.
  * @author C. Scott Ananian
- * @version $Id: MenuState.java,v 1.7 2006-11-12 20:58:23 cananian Exp $
+ * @version $Id: MenuState.java,v 1.8 2006-11-12 21:57:39 cananian Exp $
  */
 public class MenuState extends BaseState {
 
@@ -148,10 +148,25 @@ public class MenuState extends BaseState {
         
         for (int i=0; i<6; i++) {
             float y = y(127+64*i);
+            // menu label
             TextureText tt = mkText("menu/menu text:", labels[i], 128,
                     JustifyX.LEFT, JustifyY.MIDDLE, x(83),y,x(280),y(44));
             tt.setColor(new ColorRGBA(.95f,.95f,.95f,1));
+            // menu arrows: height 44, width 24
+  
+            MenuArrow leftArrow = new MenuArrow
+            ("menu/arrow "+i+"/left", true);
+            leftArrow.getLocalTranslation().set(x(468-75-1),y,0);
+            rootNode.attachChild(leftArrow);
 
+            MenuArrow rightArrow = new MenuArrow
+            ("menu/arrow "+i+"/right", false);
+            rightArrow.getLocalTranslation().set(x(468+75+1),y,0);
+            rootNode.attachChild(rightArrow);
+
+            if (i==5) { leftArrow.setSelected(true); rightArrow.setSelected(true); }
+            
+            // menu values
             tt = mkText("menu/menu value:", values[i], 128,
                     JustifyX.CENTER, JustifyY.MIDDLE, x(468), y, x(150),y(24));
             tt.setColor(new ColorRGBA(1,1,0,1));
