@@ -79,11 +79,11 @@ public class HUDState extends StandardGameStateDefaultCamera {
         mkTopTitle("SEQUENCE LENGTH",x(16+2*148), y(466));
         mkTopTitle("SCORE", x(490), y(466));
         
-        this.scoreText = mkText("Score display: ", "150,000", 128, JustifyX.RIGHT, JustifyY.TOP, x(640),y(464), x(196),y(40));
+        this.scoreText = mkText("Score display: ", "150,000", 128, JustifyX.RIGHT, JustifyY.TOP, x(640),y(464), x(196),y(56));
 
-        mkText("F1 for help, Esc to quit", 64, JustifyX.RIGHT, JustifyY.BOTTOM, x(640),y(0), x(200), y(12));
+        mkText("F1 for help, Esc to quit", 64, JustifyX.RIGHT, JustifyY.BOTTOM, x(640),y(0), x(200), y(14));
         
-        this.callText = mkText("Call display: ", "Square thru 4 hands around", 128, JustifyX.LEFT, JustifyY.BOTTOM, x(32), y(10), x(640-32), y(24));
+        this.callText = mkText("Call display: ", "Square thru 4 hands around", 128, JustifyX.LEFT, JustifyY.BOTTOM, x(32), 3, x(640-32), 36);
         
         this.noticeText = mkText("Notice: ", "Last Sequence!", 128, JustifyX.CENTER, JustifyY.MIDDLE, x(320), y(240), x(640), y(26));
         this.noticeText.setCullMode(Spatial.CULL_ALWAYS);
@@ -147,7 +147,7 @@ public class HUDState extends StandardGameStateDefaultCamera {
         return q;
     }
     private TextureText mkTopTitle(String title, float x, float y) {
-        return mkText("Top Title: ", title, 64, JustifyX.LEFT, JustifyY.BOTTOM, x, y, x(132), y(12));
+        return mkText("Top Title: ", title, 64, JustifyX.LEFT, JustifyY.BASELINE, x, y, x(132), y(16));
     }
     private TextureText mkText(String text, int textureSize, JustifyX alignX, JustifyY alignY, float x, float y, float width, float height) {
         return mkText("Text: ", text, textureSize, alignX, alignY, x, y, width, height);
