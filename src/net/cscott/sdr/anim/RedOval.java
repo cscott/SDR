@@ -7,7 +7,6 @@ import com.jme.image.Texture;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.TriMesh;
 import com.jme.scene.batch.TriangleBatch;
-import com.jme.scene.state.AlphaState;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
@@ -17,7 +16,7 @@ import com.jme.util.geom.BufferUtils;
  * {@link RedOval} is the background shape for the menu: a semi-transparent red
  * rectangle with rounded edges.
  * @author C. Scott Ananian
- * @version $Id: RedOval.java,v 1.1 2006-11-12 20:22:16 cananian Exp $
+ * @version $Id: RedOval.java,v 1.2 2006-11-12 21:28:41 cananian Exp $
  */
 public class RedOval extends TriMesh {
 
@@ -73,27 +72,26 @@ public class RedOval extends TriMesh {
         setDefaultColor(ColorRGBA.white);
     }
     private void initTexture() {
-        DisplaySystem display = DisplaySystem.getDisplaySystem();
-        Texture texture =
-            TextureManager.loadTexture(
-                    MenuState.class.getClassLoader().getResource(
-                    "net/cscott/sdr/anim/menu-oval.png"),
-                    Texture.MM_NONE,
-                    Texture.FM_LINEAR);
-        
-        TextureState ts = display.getRenderer().createTextureState();
-        ts.setEnabled(true);
-        ts.setTexture(texture);
-        this.setRenderState(ts);
-        
-        AlphaState alpha = display.getRenderer().createAlphaState();
-        alpha.setBlendEnabled(true);
-        alpha.setSrcFunction(AlphaState.SB_SRC_ALPHA);
-        alpha.setDstFunction(AlphaState.DB_ONE_MINUS_SRC_ALPHA);
-        alpha.setTestEnabled(true);
-        alpha.setTestFunction(AlphaState.TF_GREATER);
-        alpha.setEnabled(true);
-        this.setRenderState(alpha);
+        this.setRenderState(getTextureState());
+        this.setRenderState(BaseState.mkAlpha());
         this.updateRenderState();
+    }
+    static TextureState sharedTextureState = null;
+    private TextureState getTextureState() {
+        if (sharedTextureState==null) {
+            Texture texture =
+                TextureManager.loadTexture(
+                        RedOval.class.getClassLoader().getResource(
+                        "net/cscott/sdr/anim/menu-oval.png"),
+                        Texture.MM_NONE,
+                        Texture.FM_LINEAR);
+            
+            TextureState ts = DisplaySystem.getDisplaySystem()
+                .getRenderer().createTextureState();
+            ts.setEnabled(true);
+            ts.setTexture(texture);
+            sharedTextureState = ts;
+        }
+        return sharedTextureState;
     }
 }
