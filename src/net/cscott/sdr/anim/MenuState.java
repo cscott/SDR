@@ -26,30 +26,22 @@ import com.jmex.game.state.StandardGameStateDefaultCamera;
  *  so some other camera-controlling state should also be active for
  *  background visuals.
  * @author C. Scott Ananian
- * @version $Id: MenuState.java,v 1.6 2006-11-12 20:25:06 cananian Exp $
+ * @version $Id: MenuState.java,v 1.7 2006-11-12 20:58:23 cananian Exp $
  */
-public class MenuState extends StandardGameStateDefaultCamera {
+public class MenuState extends BaseState {
 
     public MenuState(Game game) {
         super(Version.PACKAGE_NAME+" Menu");
-
-        display = DisplaySystem.getDisplaySystem();
         initInput(game);
         initStar();
         initMenus();
         initCursor();
-
-        rootNode.setLightCombineMode(LightState.OFF);
-        rootNode.setRenderQueueMode(Renderer.QUEUE_ORTHO);
         rootNode.updateRenderState();
         rootNode.updateGeometricState(0, true);
     }
         
     /** The cursor node which holds the mouse gotten from input. */
     private Node cursor;
-        
-    /** Our display system. */
-    private DisplaySystem display;
 
     private TextureText text;
     
@@ -101,15 +93,7 @@ public class MenuState extends StandardGameStateDefaultCamera {
         ts.setEnabled(true);
         ts.setTexture(texture);
         star.setRenderState(ts);
-        
-        AlphaState alpha = display.getRenderer().createAlphaState();
-        alpha.setBlendEnabled(true);
-        alpha.setSrcFunction(AlphaState.SB_SRC_ALPHA);
-        alpha.setDstFunction(AlphaState.DB_ONE_MINUS_SRC_ALPHA);
-        alpha.setTestEnabled(true);
-        alpha.setTestFunction(AlphaState.TF_GREATER);
-        alpha.setEnabled(true);
-        star.setRenderState(alpha);
+        star.setRenderState(mkAlpha());
         star.updateRenderState();
 
         rootNode.attachChild(star);
@@ -130,16 +114,8 @@ public class MenuState extends StandardGameStateDefaultCamera {
         ts.setEnabled(true);
         ts.setTexture(texture);
         
-        AlphaState alpha = display.getRenderer().createAlphaState();
-        alpha.setBlendEnabled(true);
-        alpha.setSrcFunction(AlphaState.SB_SRC_ALPHA);
-        alpha.setDstFunction(AlphaState.DB_ONE);
-        alpha.setTestEnabled(true);
-        alpha.setTestFunction(AlphaState.TF_GREATER);
-        alpha.setEnabled(true);
-        
         mouse.setRenderState(ts);
-        mouse.setRenderState(alpha);
+        mouse.setRenderState(mkAlpha());
         mouse.setLocalScale(new Vector3f(1, 1, 1));
         
         cursor = new Node("Cursor");
@@ -152,14 +128,9 @@ public class MenuState extends StandardGameStateDefaultCamera {
      * Inits the button placed at the center of the screen.
      */
     private void initMenus() {
-        text = new TextureText("menu/text", HUDState.font, 128); 
-        text.setAlign(JustifyX.CENTER, JustifyY.BOTTOM);
-        text.setMaxSize(x(620),36);
-        text.setText("Say \"Square Up\" or press Enter to start, Esc to quit.");
-        text.getLocalTranslation().set
-        ( x(320), 3, 0 );
-        
-        rootNode.attachChild( text );
+        text = mkText("menu/bottom:",
+                "Say \"Square Up\" or press Enter to start, Esc to quit.",
+                128, JustifyX.CENTER, JustifyY.BOTTOM, x(320), 3, x(620), 36);
         
         // top one at y center 446
         // bottom one y center 127
@@ -171,22 +142,19 @@ public class MenuState extends StandardGameStateDefaultCamera {
             RedOval ro = new RedOval("menu/oval", x(509),y(50));
             ro.getLocalTranslation().set(x(320),y,0);
             rootNode.attachChild(ro);
-            TextureText tt = new TextureText
-            ("menu/menu text "+i, HUDState.font, 128);
-            tt.setAlign(JustifyX.LEFT, JustifyY.MIDDLE);
-            tt.setMaxSize(x(280),y(44));
-            tt.setText(labels[i]);
+        }
+        
+        mkShade("menu/selected", x(320), y(127+5*64), x(640), y(50));
+        
+        for (int i=0; i<6; i++) {
+            float y = y(127+64*i);
+            TextureText tt = mkText("menu/menu text:", labels[i], 128,
+                    JustifyX.LEFT, JustifyY.MIDDLE, x(83),y,x(280),y(44));
             tt.setColor(new ColorRGBA(.95f,.95f,.95f,1));
-            tt.getLocalTranslation().set(x(83),y,0);
-            rootNode.attachChild(tt);
-            tt = new TextureText
-            ("menu/menu value "+i, HUDState.font, 128);
-            tt.setAlign(JustifyX.CENTER, JustifyY.MIDDLE);
-            tt.setMaxSize(x(150), y(24));
-            tt.setText(values[i]);
+
+            tt = mkText("menu/menu value:", values[i], 128,
+                    JustifyX.CENTER, JustifyY.MIDDLE, x(468), y, x(150),y(24));
             tt.setColor(new ColorRGBA(1,1,0,1));
-            tt.getLocalTranslation().set(x(468),y,0);
-            rootNode.attachChild(tt);
         }
     }
     
@@ -205,14 +173,5 @@ public class MenuState extends StandardGameStateDefaultCamera {
         input.update(tpf);
         // Check if the button has been pressed.
         rootNode.updateGeometricState(tpf, true);
-    }
-    
-    //---------------------------------------------------------
-    // convert 640x480-relative coordinates to appropriately scaled coords.
-    private float x(int x) {
-        return x*display.getWidth()/640f;
-    }
-    private float y(int y) {
-        return y*display.getHeight()/480f;
     }
 }

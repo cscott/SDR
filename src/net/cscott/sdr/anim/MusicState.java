@@ -1,8 +1,5 @@
 package net.cscott.sdr.anim;
 
-import static net.cscott.sdr.anim.HUDState.mkAlpha;
-import static net.cscott.sdr.anim.HUDState.mkShade;
-
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
@@ -20,26 +17,20 @@ import net.cscott.sdr.util.Fraction;
 
 import com.jme.image.Texture;
 import com.jme.math.Vector3f;
-import com.jme.renderer.Renderer;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Quad;
-import com.jme.scene.state.LightState;
 import com.jme.scene.state.TextureState;
-import com.jme.system.DisplaySystem;
 import com.jme.util.GameTaskQueueManager;
 import com.jme.util.TextureManager;
 import com.jme.util.geom.BufferUtils;
-import com.jmex.game.state.StandardGameStateDefaultCamera;
 
 /** {@link MusicState} handles the "scrolling notes" display at the bottom
  * of the screen.  This is shown in the {@link MenuState} as well, since it
  * helps debug the microphone issues.
  * @author C. Scott Ananian
- * @version $Id: MusicState.java,v 1.3 2006-11-09 21:01:28 cananian Exp $
+ * @version $Id: MusicState.java,v 1.4 2006-11-12 20:58:23 cananian Exp $
  */
-public class MusicState extends StandardGameStateDefaultCamera {
-    /** Our display system. */
-    private DisplaySystem display;
+public class MusicState extends BaseState {
     /** What beat are we at? */
     private BeatTimer beatTimer;
     /** Monitor microphone levels. */
@@ -58,19 +49,16 @@ public class MusicState extends StandardGameStateDefaultCamera {
 
     public MusicState(BeatTimer beatTimer, LevelMonitor levelMonitor) {
         super("Music");
-        this.display = DisplaySystem.getDisplaySystem();
         this.beatTimer = beatTimer;
         this.levelMonitor = levelMonitor;
         initHUD();
 
-        rootNode.setLightCombineMode(LightState.OFF);
-        rootNode.setRenderQueueMode(Renderer.QUEUE_ORTHO);
         rootNode.updateRenderState();
         rootNode.updateGeometricState(0, true);
     }
     private void initHUD() {
         // background shading at bottom
-        mkShade(rootNode, "Call Shade", x(320), y(32), x(640), y(64));
+        mkShade("Call Shade", x(320), y(32), x(640), y(64));
         
         // scrolling notes.
         final Quad notes = new Quad("Scrolling notes",x(640),128);
@@ -227,13 +215,4 @@ public class MusicState extends StandardGameStateDefaultCamera {
     private static final float[] c2 = Color.YELLOW.getRGBComponents(null);
     private static final float[] c3 = Color.RED.getRGBComponents(null);
     static { c2[3]=0.5f; /* add some alpha */ }
-    
-    //---------------------------------------------------------
-    // convert 640x480-relative coordinates to appropriately scaled coords.
-    private float x(int x) {
-        return x*display.getWidth()/640f;
-    }
-    private float y(int y) {
-        return y*display.getHeight()/480f;
-    }
 }

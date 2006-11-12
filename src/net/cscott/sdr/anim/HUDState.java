@@ -22,9 +22,7 @@ import com.jme.scene.state.LightState;
 import com.jme.system.DisplaySystem;
 import com.jmex.game.state.StandardGameStateDefaultCamera;
 
-public class HUDState extends StandardGameStateDefaultCamera {
-    /** Our display system. */
-    private DisplaySystem display;
+public class HUDState extends BaseState {
     /** What beat are we at? */
     private BeatTimer beatTimer;
     /** The Score label. */
@@ -44,25 +42,12 @@ public class HUDState extends StandardGameStateDefaultCamera {
     /** The "sequence length" gauge. */
     private Gauge seqLenGauge;
     
-    /** The font to use for the HUD. */
-    static Font font;
-    static { // initialize the font.
-        URL url = TextureText.class.getClassLoader().getResource      
-        ("net/cscott/sdr/fonts/bluebold.ttf");
-        try {
-            font=Font.createFont(Font.TRUETYPE_FONT, url.openStream());
-        } catch (Exception e) { assert false : e; }
-    }
 
 
     public HUDState(BeatTimer beatTimer) {
         super("HUD");
-        this.display = DisplaySystem.getDisplaySystem();
         this.beatTimer = beatTimer;
         initHUD();
-
-        rootNode.setLightCombineMode(LightState.OFF);
-        rootNode.setRenderQueueMode(Renderer.QUEUE_ORTHO);
         rootNode.updateRenderState();
         rootNode.updateGeometricState(0, true);
     }
@@ -70,7 +55,7 @@ public class HUDState extends StandardGameStateDefaultCamera {
     private void initHUD() {
         // first background shading:
         //   shading behind notice.
-        this.noticeShade = mkShade(rootNode, "Notice Shade", x(320), y(240), x(20), y(20));
+        this.noticeShade = mkShade("Notice Shade", x(320), y(240), x(20), y(20));
         this.noticeShade.setCullMode(Spatial.CULL_ALWAYS);
         
         // labels.
@@ -124,42 +109,8 @@ public class HUDState extends StandardGameStateDefaultCamera {
             noticeShade.setCullMode(Spatial.CULL_NEVER);
         }
     }
-    static AlphaState mkAlpha() {
-        if (sharedAlpha==null) {
-            sharedAlpha = DisplaySystem.getDisplaySystem()
-            .getRenderer().createAlphaState();
-            sharedAlpha.setBlendEnabled(true);
-            sharedAlpha.setSrcFunction(AlphaState.SB_SRC_ALPHA);
-            sharedAlpha.setDstFunction(AlphaState.DB_ONE_MINUS_SRC_ALPHA);
-            sharedAlpha.setTestEnabled(false);
-            sharedAlpha.setEnabled(true);
-        }
-        return sharedAlpha;
-    }
-    private static AlphaState sharedAlpha = null;
-    static Quad mkShade(Node rootNode, String nodeName, float x, float y, float width, float height) {
-        Quad q = new Quad(nodeName, width, height);
-        q.setDefaultColor(new ColorRGBA(0,0,0,.55f));
-        q.setLocalTranslation(new Vector3f(x,y,0));
-        q.setRenderState(mkAlpha());
-        rootNode.attachChild(q);
-        q.updateRenderState();
-        return q;
-    }
     private TextureText mkTopTitle(String title, float x, float y) {
         return mkText("Top Title: ", title, 64, JustifyX.LEFT, JustifyY.BASELINE, x, y, x(132), y(16));
-    }
-    private TextureText mkText(String text, int textureSize, JustifyX alignX, JustifyY alignY, float x, float y, float width, float height) {
-        return mkText("Text: ", text, textureSize, alignX, alignY, x, y, width, height);
-    }
-    private TextureText mkText(String nodePrefix, String text, int textureSize, JustifyX alignX, JustifyY alignY, float x, float y, float width, float height) {
-        TextureText tt = new TextureText(nodePrefix+text, font, textureSize);
-        tt.setAlign(alignX, alignY);
-        tt.setMaxSize(width,height);
-        tt.setLocalTranslation(new Vector3f(x,y,0));
-        tt.setText(text);
-        rootNode.attachChild(tt);
-        return tt;
     }
     
     private void updateScore(int score) {
@@ -189,13 +140,4 @@ public class HUDState extends StandardGameStateDefaultCamera {
         rootNode.updateGeometricState(tpf, true);
     }
     private int counter=0;
-    
-    //---------------------------------------------------------
-    // convert 640x480-relative coordinates to appropriately scaled coords.
-    private float x(int x) {
-        return x*display.getWidth()/640f;
-    }
-    private float y(int y) {
-        return y*display.getHeight()/480f;
-    }
 }
