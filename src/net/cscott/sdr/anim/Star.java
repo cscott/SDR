@@ -1,6 +1,7 @@
 package net.cscott.sdr.anim;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import com.jme.math.FastMath;
 import com.jme.math.Vector3f;
@@ -19,7 +20,7 @@ import com.jme.util.geom.BufferUtils;
  * textures with radial gradients or outlines, but probably makes it hard to
  * overlay an undistorted image on the star.
  * @author C. Scott Ananian
- * @version $Id: Star.java,v 1.1 2006-11-12 18:18:17 cananian Exp $
+ * @version $Id: Star.java,v 1.2 2006-11-12 20:23:37 cananian Exp $
  */
 public class Star extends TriMesh {
     private static final float INNER_RATIO=.5f;
@@ -43,16 +44,17 @@ public class Star extends TriMesh {
         batch.setVertexCount(1+pts*2);
         batch.setVertexBuffer(BufferUtils.createVector3Buffer(batch.getVertexCount()));
         batch.setNormalBuffer(BufferUtils.createVector3Buffer(batch.getVertexCount()));
-        FloatBuffer tbuf = BufferUtils.createVector2Buffer(batch.getVertexCount());
-        setTextureBuffer(0,tbuf);
+        FloatBuffer tb = BufferUtils.createVector2Buffer(batch.getVertexCount());
+        setTextureBuffer(0,tb);
         batch.setTriangleQuantity(2*pts);
         batch.setIndexBuffer(BufferUtils.createIntBuffer(batch.getTriangleCount() * 3));
         
         FloatBuffer vb = batch.getVertexBuffer();
         FloatBuffer nb = batch.getNormalBuffer();
+        IntBuffer ib = batch.getIndexBuffer();
         vb.put(0).put(0).put(0);
         nb.put(0).put(0).put(1);
-        tbuf.put(1).put(0);
+        tb.put(1).put(0);
         for (int i=0; i<pts; i++) {
             boolean last = (i==pts-1);
             // point position
@@ -61,7 +63,7 @@ public class Star extends TriMesh {
             float y = FastMath.cos(angle)*diameter/2;
             vb.put(x).put(y).put(0);
             nb.put(0).put(0).put(1);
-            tbuf.put(0).put(1);
+            tb.put(0).put(1);
             // inner point
             if (last)
                 angle = (angle+2*FastMath.PI)/2;
@@ -71,18 +73,15 @@ public class Star extends TriMesh {
             y = FastMath.cos(angle)*diameter*INNER_RATIO/2;
             vb.put(x).put(y).put(0);
             nb.put(0).put(0).put(1);
-            tbuf.put(.5f).put(1);
+            tb.put(.5f).put(1);
 
-            batch.getIndexBuffer().put(0);
-            batch.getIndexBuffer().put(1+2*i);
-            batch.getIndexBuffer().put(2+2*i);
+            ib.put(0).put(1+2*i).put(2+2*i);
 
-            batch.getIndexBuffer().put(0);
-            batch.getIndexBuffer().put(2+2*i);
+            ib.put(0).put(2+2*i);
             if (last)
-                batch.getIndexBuffer().put(1);
+                ib.put(1);
             else
-                batch.getIndexBuffer().put(3+2*i);
+                ib.put(3+2*i);
         }
 
         setDefaultColor(ColorRGBA.white);
