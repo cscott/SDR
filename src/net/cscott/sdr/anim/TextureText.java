@@ -31,13 +31,13 @@ import com.jme.util.geom.BufferUtils;
  * is at the specified justification point of the text string, allowing easier
  * placement.
  * @author C. Scott Ananian
- * @version $Id: TextureText.java,v 1.7 2006-11-09 21:01:28 cananian Exp $
+ * @version $Id: TextureText.java,v 1.8 2006-11-12 20:26:23 cananian Exp $
  */
 public class TextureText extends Node {
     /** An enumeration of horizontal justification options. */
     public static enum JustifyX { RIGHT, CENTER, LEFT; }
     /** An enumeration of vertical justification options. */
-    public static enum JustifyY { TOP, MIDDLE, BOTTOM; }
+    public static enum JustifyY { TOP, MIDDLE, BASELINE, BOTTOM; }
 
     /** This is the internal {@link TexturedQuad} which is textured and translated. */
     private final TexturedQuad quad;
@@ -49,6 +49,8 @@ public class TextureText extends Node {
     private float maxWidth=0, maxHeight=0;
     /** The actual width and height of the text. */
     private float width=0, height=0;
+    /** Baseline offset (from bottom) */
+    private float baseline=0;
     /** The string to display, or null if the TextureText has not been
      *  completely initialized yet. */
     private String text=null;
@@ -139,28 +141,25 @@ public class TextureText extends Node {
         // okay, let's do our stuff.
         TextLayout layout = new TextLayout(this.text, f, g2.getFontRenderContext());
         Rectangle2D bounds = layout.getBounds();
-        int nStrips = (int) Math.ceil(Math.sqrt(bounds.getWidth() / bounds.getHeight()));
+        double bHeight = layout.getAscent() + layout.getDescent();
+        double bWidth = bounds.getWidth()*1.04;// 2% padding
+        
+        int nStrips = (int) Math.ceil(Math.sqrt(bWidth / bHeight));
         int stripHeight = (int) Math.floor(textureSize/(double)nStrips);
         int stripWidth = nStrips*textureSize;
 
-        // the given bounds are usually slightly too small: grow them by
-        // 10% in the Y direction and 5% in the X direction
-        bounds = new Rectangle2D.Double
-               (bounds.getX()-.025*bounds.getWidth(),
-                bounds.getY()-.050*bounds.getHeight(),
-                bounds.getWidth()*1.05,
-                bounds.getHeight()*1.10);
-        
         this.height = this.maxHeight;
-        this.width = (float) (bounds.getWidth() * this.height / bounds.getHeight());
+        this.width = (float) (bWidth * this.height / bHeight);
+        this.baseline = (float) (layout.getDescent()*this.height / bHeight);
         if (this.width > this.maxWidth) {
             this.width = this.maxWidth;
-            this.height = (float) (bounds.getHeight() * this.width / bounds.getWidth());
+            this.height = (float) (bHeight * this.width / bWidth);
+            this.baseline =(float)(layout.getDescent() * this.width / bWidth);
         }
         
-        float ox = (float)-bounds.getX(), oy = (float)-bounds.getY();
-        double sx = stripWidth / bounds.getWidth();
-        double sy = stripHeight / bounds.getHeight();
+        float ox = (float)-bounds.getX() + 1/*padding*/, oy = layout.getAscent();
+        double sx = stripWidth / bWidth;
+        double sy = stripHeight / bHeight;
         // Write the text in strips to our image.
         for (int i=0; i<=nStrips; i++) {
             AffineTransform oat = g2.getTransform();
@@ -179,8 +178,8 @@ public class TextureText extends Node {
         final FloatBuffer texCoords = BufferUtils.createVector2Buffer(4);
         texCoords.put(0).put(0); // top-left
         texCoords.put(0).put(stripHeight/(float)textureSize); // bottom-left
-        texCoords.put(nStrips).put(1+(stripHeight/(float)textureSize)); // bottom-right
-        texCoords.put(nStrips).put(1); // top-right
+        texCoords.put(nStrips-.01f).put(1+(stripHeight/(float)textureSize)); // bottom-right
+        texCoords.put(nStrips-.01f).put(1); // top-right
 
         // update texture.
         quad.updateTexture(textureImage);
@@ -196,7 +195,7 @@ public class TextureText extends Node {
                 recenter();
                 // update quad color
                 quad.setDefaultColor(color);
-                // superstitiously try to ensure that these changes 'take'
+                // since we updated the texture, update the render state
                 quad.updateRenderState();
                 return null;
             }
@@ -218,6 +217,7 @@ public class TextureText extends Node {
         case TOP: oy = this.height/2f; break;
         case MIDDLE: oy = 0; break;
         default:
+        case BASELINE: oy = this.baseline-this.height/2f; break;
         case BOTTOM: oy = -this.height/2f; break;
         }
         // 
@@ -241,14 +241,25 @@ public class TextureText extends Node {
                 setDialogBehaviour(SimpleGame.ALWAYS_SHOW_PROPS_DIALOG);
                 // Set a green background, so we can see the transparency.
                 display.getRenderer().setBackgroundColor( ColorRGBA.green );
-                TextureText tt = new TextureText("Test",font,64);
+                TextureText tt = new TextureText("Test",font,128);
                 tt.setAlign(JustifyX.CENTER,JustifyY.MIDDLE);
-                tt.setMaxSize(400,400);
+                tt.setMaxSize(display.getWidth(),display.getHeight()/8f);
                 tt.setColor(new ColorRGBA(1,0,0,1));//red
-                tt.setText("Hello, world!");
+                tt.setText("aeuuo, worua");
                 tt.setRenderQueueMode(Renderer.QUEUE_ORTHO);
                 tt.setLightCombineMode(LightState.OFF);
-                tt.setLocalTranslation(new Vector3f(display.getWidth()/2,display.getHeight()/2,0));
+                tt.setLocalTranslation(new Vector3f(display.getWidth()/2,display.getHeight()*4.5f/8f,0));
+                tt.updateRenderState();
+                rootNode.attachChild(tt);
+                // check that size is consistent with a version with descenders
+                tt = new TextureText("Test2",font,128);
+                tt.setAlign(JustifyX.CENTER,JustifyY.MIDDLE);
+                tt.setMaxSize(display.getWidth(),display.getHeight()/8f);
+                tt.setColor(new ColorRGBA(1,0,0,1));//red
+                tt.setText("Hello, daisy!");
+                tt.setRenderQueueMode(Renderer.QUEUE_ORTHO);
+                tt.setLightCombineMode(LightState.OFF);
+                tt.setLocalTranslation(new Vector3f(display.getWidth()/2,display.getHeight()*3.5f/8f,0));
                 tt.updateRenderState();
                 rootNode.attachChild(tt);
             }
