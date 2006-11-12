@@ -457,13 +457,12 @@ colors for non-speech (grey with high alpha) and speech (primary
 color) data.
 ----
 HUD To-Do:
- gauges (min/max and specify gradient texture?)
  support for scrolling "measure end" and "call stars"
- real time microphone volume display
 ----
 Use ChaseCamera to 'chase' the center of the set.
 
-Put HUD behind loading screen somehow.
+During menu modes, slowly rotate the camera around the set.  Slew to
+chase position when game starts.
 ----
 Bonus formations on right.
 Suggestions for 'new' calls you can do presently also on right.  Part
@@ -494,7 +493,14 @@ component?), # of dancers (4/8/12 <- "at home" really is at home for
 everyone), dance program (basic->c4), judging (easy/medium/hard).
 
 "Poor man's SD" (PMSD) interface, with text i/o to call engine.
+(java.util.Scanner)
 --
-Change background color so that loading screen looks better.
---
-Display.setIcon() to use SDR application icon.
+Integrate with DDR game?  Maybe generate step sequences based on calls &
+timing, so that the caller is effectively dynamically generating step
+sequences.  Other ideas: 4x4 grid of DDR pads?  Step on facing direction?
+---
+Rewrite TextureText to generate triangle strips and a non-sheared texture.
+How do we make the bounding box actually match up?  Generate 10% extra and
+then dynamically shrink?  Maybe use different means to get text width?
+---
+
