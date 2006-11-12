@@ -2,9 +2,9 @@ package net.cscott.sdr.anim;
 
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CyclicBarrier;
 import java.util.logging.Level;
 
 import net.cscott.sdr.BeatTimer;
@@ -34,25 +34,32 @@ public class Game extends FixedFramerateGame {
     /** Get a high resolution timer for FPS updates. */
     private final Timer timer = Timer.getTimer();
     /** Timer sync'ed to music. */
-    private final BeatTimer beatTimer;
+    private BeatTimer beatTimer;
     MenuState menuState;
     VenueState venueState;
     HUDState hudState;
     MusicState musicState;
-    private final BlockingQueue<LevelMonitor> rendezvous;
+    private final BlockingQueue<LevelMonitor> rendezvousLM;
+    private final BlockingQueue<BeatTimer> rendezvousBT;
+    private final CyclicBarrier musicSync, sphinxSync;
 
-    /** You must provide the game a beat timer, along with a
-     * {@link BlockingQueue} from which we can get a {@link LevelMonitor}
-     * (presumably from the speech-recognition thread).
+    /** You must provide the game with {@link BlockingQueue}s from which we can
+     * get a {@link BeatTimer} (presumably from the music player thread) and a
+     * {@link LevelMonitor} (presumably from the speech-recognition thread).
      */ 
-    public Game(BeatTimer beatTimer, BlockingQueue<LevelMonitor> rendezvous) {
+    public Game(BlockingQueue<BeatTimer> rendezvousBT,
+            BlockingQueue<LevelMonitor> rendezvousLM,
+            CyclicBarrier musicSync,
+            CyclicBarrier sphinxSync) {
         LoggingSystem.getLogger().setLevel(java.util.logging.Level.WARNING);
         URL url = SdrGame.class.getClassLoader().getResource      
             ("net/cscott/sdr/anim/splash.png");
         this.setDialogBehaviour
             (FIRSTRUN_OR_NOCONFIGFILE_SHOW_PROPS_DIALOG, url);
-        this.beatTimer = beatTimer;
-        this.rendezvous = rendezvous;
+        this.rendezvousBT = rendezvousBT;
+        this.rendezvousLM = rendezvousLM;
+        this.musicSync = musicSync;
+        this.sphinxSync = sphinxSync;
     }
     /** Creates display, sets up camera, and binds keys. */
     protected void initSystem() {
@@ -114,7 +121,7 @@ public class Game extends FixedFramerateGame {
 
         URL url = SdrGame.class.getClassLoader().getResource      
         ("net/cscott/sdr/anim/loading.png");
-        final TransitionGameState loading = new TransitionGameState(9, url);
+        final TransitionGameState loading = new TransitionGameState(10, url);
         loading.setActive(true);
         GameStateManager.getInstance().attachChild(loading);
 
@@ -138,24 +145,34 @@ public class Game extends FixedFramerateGame {
                     }
                 });
                 
-                inc("Loading venue...");
-                venueState = new VenueState(beatTimer);
-                attach(venueState,true);
-
                 inc("Loading formations...");
                 // load formations
                 try { Class.forName(FormationList.class.getName());
                 } catch (ClassNotFoundException e) { /* ignore */ }
+
                 inc("Loading call list...");
                 // load call database
                 try { Class.forName(CallDB.class.getName());
                 } catch (ClassNotFoundException e) { /* ignore */ }
 
+                inc("Waiting for music startup...");
+                try {
+                    musicSync.await(); // release music thread
+                } catch (Exception e) { assert false : e; } // broken barrier!
+                BeatTimer beatTimer = getBeatTimer();// wait for our beat timer
+
+                inc("Loading venue...");
+                venueState = new VenueState(beatTimer);
+                attach(venueState,true);
+
                 inc("Waiting for Sphinx...");
+                try {
+                    sphinxSync.await(); // release sphinx thread
+                } catch (Exception e) { assert false : e; } // broken barrier!
                 LevelMonitor lm;
                 while(true)
                     try {
-                        lm = rendezvous.take();
+                        lm = rendezvousLM.take(); // wait for our LevelMonitor
                         break;
                     } catch (InterruptedException e) { /* try again */ }
                 
@@ -240,6 +257,22 @@ public class Game extends FixedFramerateGame {
                 finish();
             }
     }
+    
+    public BeatTimer getBeatTimer() {
+        if (beatTimer==null)
+            synchronized(this) {
+                if (beatTimer==null)
+                    while (true)
+                        try {
+                            beatTimer = rendezvousBT.take();
+                            break;
+                        } catch (InterruptedException e) { /* try again */ }
+            }
+        assert beatTimer != null;
+        return beatTimer;
+    }
+    
+    
     @Override
     protected void cleanup() {
         LoggingSystem.getLogger().log(Level.INFO, "Cleaning up resources.");
@@ -260,13 +293,6 @@ public class Game extends FixedFramerateGame {
         System.exit( 0 );
     }
 
-    // test
-    public static void main(String... args) {
-        BlockingQueue<LevelMonitor> bq = new ArrayBlockingQueue<LevelMonitor>(1);
-        bq.add((LevelMonitor)null);
-        Game game = new Game(new SilentBeatTimer(), bq);
-        game.start();
-    }
     @Override
     protected void reinit() {
         // do nothing

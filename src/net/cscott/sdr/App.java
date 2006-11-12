@@ -3,15 +3,20 @@ package net.cscott.sdr;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CyclicBarrier;
 
+import net.cscott.sdr.CommandInput.PossibleCommand;
 import net.cscott.sdr.anim.Game;
-import net.cscott.sdr.anim.SilentBeatTimer;
-import net.cscott.sdr.calls.*;
+import net.cscott.sdr.calls.BadCallException;
+import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.Formation;
+import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.recog.LevelMonitor;
 import net.cscott.sdr.recog.RecogThread;
+import net.cscott.sdr.sound.MidiThread;
 import net.cscott.sdr.util.Fraction;
-import net.cscott.sdr.CommandInput.PossibleCommand;
 
 /**
  * This is the main class of the SDR application.
@@ -21,7 +26,7 @@ import net.cscott.sdr.CommandInput.PossibleCommand;
  * and one to play music (in net.cscott.sdr.sound).
  * 
  * @author C. Scott Ananian
- * @version $Id: App.java,v 1.10 2006-11-11 03:06:21 cananian Exp $
+ * @version $Id: App.java,v 1.11 2006-11-12 22:54:16 cananian Exp $
  */
 public class App {
     /**
@@ -36,27 +41,33 @@ public class App {
         DanceState ds = new DanceState(Program.MAINSTREAM);
         ChoreoEngine choreo = new ChoreoEngine(ds);
         
-        // TODO: create music player thread
-
         // Start the game thread.
-        BlockingQueue<LevelMonitor> rendezvous =
+        BlockingQueue<LevelMonitor> rendezvousLM =
             new ArrayBlockingQueue<LevelMonitor>(1);
-        final Game game = new Game(new SilentBeatTimer(), rendezvous);
+        BlockingQueue<BeatTimer> rendezvousBT =
+            new ArrayBlockingQueue<BeatTimer>(1);
+        CyclicBarrier musicSync = new CyclicBarrier(2);
+        CyclicBarrier sphinxSync = new CyclicBarrier(2);
+        final Game game =
+            new Game(rendezvousBT, rendezvousLM, musicSync, sphinxSync);
         new Thread() { // THIS IS THE GRAPHICS THREAD
-            @Override public void run() { game.start(); }
+            @Override public void run() {
+                game.start();
+            }
         }.start();
 
-        // give the 'loading' UI a chance to come up.
-        try {
-            System.err.print("Waiting for UI...");
-            Thread.sleep(1000L);
-        } catch (InterruptedException e) { /* ignore */ }
-        System.err.println("done.");
+        // Create music player thread
+        try { musicSync.await(); }
+        catch (Exception e) { assert false : e; /* broken barrier! */ }
+        MidiThread mt = new MidiThread(rendezvousBT);
+        mt.start();
 
         // create voice recognition thread
-        RecogThread rt = new RecogThread(ds, input, rendezvous);
+        try { sphinxSync.await(); }
+        catch (Exception e) { assert false : e; /* broken barrier! */ }
+        RecogThread rt = new RecogThread(ds, input, rendezvousLM);
         rt.start();
-
+        
         // Now start processing input, handing resulting formations to the
         // game thread.
         TimedFormation start = new TimedFormation
