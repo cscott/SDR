@@ -88,6 +88,7 @@ public class MidiThread extends Thread
          * created above.
          */
         sequencer.setSequence(sequence);
+        // XXX: at this point, it would be safe to create/return the BeatTimer
 
         // Mississippi Sawyer is *half note*=120; Java doesn't seem to grok
         // this.  Something like the following is needed for these cases:
@@ -161,6 +162,6 @@ public class MidiThread extends Thread
          */
         sequencer.start();
         
-        return new SilentBeatTimer();
+        return new MidiTimer(sequencer);
     }
 }

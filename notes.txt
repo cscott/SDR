@@ -503,4 +503,9 @@ Rewrite TextureText to generate triangle strips and a non-sheared texture.
 How do we make the bounding box actually match up?  Generate 10% extra and
 then dynamically shrink?  Maybe use different means to get text width?
 ---
-
+Moderate volume level of MidiThread!
+---
+Wrap BeatTimer so that it returns 0 until music is started up; this will
+allow us to delay music startup until after Venue (ideally, music would
+start when the menu comes up, so that user immediately has the option to
+turn it off or adjust the volume).

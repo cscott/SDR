@@ -219,7 +219,7 @@ public class MidiDemo
 	}
 
 	/* check timer */
-	MidiTimer mt = new MidiTimer(sequencer);
+	OldMidiTimer mt = new OldMidiTimer(sequencer);
 	while(true) {
 	    System.out.println(mt.getTime());
 	    try {
