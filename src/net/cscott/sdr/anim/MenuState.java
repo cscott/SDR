@@ -8,6 +8,7 @@ import com.jme.image.Texture;
 import com.jme.input.AbsoluteMouse;
 import com.jme.input.InputHandler;
 import com.jme.input.Mouse;
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
@@ -24,7 +25,7 @@ import com.jmex.game.state.StandardGameStateDefaultCamera;
  *  so some other camera-controlling state should also be active for
  *  background visuals.
  * @author C. Scott Ananian
- * @version $Id: MenuState.java,v 1.4 2006-11-08 23:42:12 cananian Exp $
+ * @version $Id: MenuState.java,v 1.5 2006-11-12 18:19:59 cananian Exp $
  */
 public class MenuState extends StandardGameStateDefaultCamera {
 
@@ -33,8 +34,9 @@ public class MenuState extends StandardGameStateDefaultCamera {
 
         display = DisplaySystem.getDisplaySystem();
         initInput(game);
+        initStar();
+        initMenus();
         initCursor();
-        initText();
 
         rootNode.setLightCombineMode(LightState.OFF);
         rootNode.setRenderQueueMode(Renderer.QUEUE_ORTHO);
@@ -53,6 +55,10 @@ public class MenuState extends StandardGameStateDefaultCamera {
     private InputHandler input;
     private Mouse mouse;
 
+    private Star star;
+    private float starAngle = 0;
+    private Quaternion starRot = new Quaternion();
+    
     /**
      * @see com.jmex.game.state.StandardGameState#onActivate()
      */
@@ -71,7 +77,44 @@ public class MenuState extends StandardGameStateDefaultCamera {
                 display.getHeight());
         mouse.registerWithInputHandler( input );
     }
+
+    /**
+     * Create a star slowly rotating in the background.
+     */
+    private void initStar() {
+        int HUD_SPACE = 40; // pixels down at the bottom for note display
+        star = new Star("menu/star", 5, display.getHeight()-HUD_SPACE);
+        star.getLocalTranslation().set
+        (display.getWidth()/2, display.getHeight()/2 + (HUD_SPACE/4), 0);
+        starAngle = 0;
+        starRot.fromAngleAxis(starAngle,Vector3f.UNIT_Z);
+        star.setLocalRotation(starRot);
         
+        Texture texture =
+            TextureManager.loadTexture(
+                    MenuState.class.getClassLoader().getResource(
+                    "net/cscott/sdr/anim/star-grad.png"),
+                    Texture.MM_NONE,
+                    Texture.FM_LINEAR);
+        
+        TextureState ts = display.getRenderer().createTextureState();
+        ts.setEnabled(true);
+        ts.setTexture(texture);
+        star.setRenderState(ts);
+        
+        AlphaState alpha = display.getRenderer().createAlphaState();
+        alpha.setBlendEnabled(true);
+        alpha.setSrcFunction(AlphaState.SB_SRC_ALPHA);
+        alpha.setDstFunction(AlphaState.DB_ONE_MINUS_SRC_ALPHA);
+        alpha.setTestEnabled(true);
+        alpha.setTestFunction(AlphaState.TF_GREATER);
+        alpha.setEnabled(true);
+        star.setRenderState(alpha);
+        star.updateRenderState();
+
+        rootNode.attachChild(star);
+    }
+    
     /**
      * Creates a pretty cursor.
      */
@@ -108,12 +151,12 @@ public class MenuState extends StandardGameStateDefaultCamera {
     /**
      * Inits the button placed at the center of the screen.
      */
-    private void initText() {
+    private void initMenus() {
         DisplaySystem display = DisplaySystem.getDisplaySystem();
         text = new TextureText("menu/text", HUDState.font, 128); 
         text.setAlign(JustifyX.CENTER, JustifyY.BOTTOM);
         text.setMaxSize(display.getWidth(),display.getHeight()*3/48f);
-        text.setText("Press Enter to start, or Esc to quit.");
+        text.setText("Say \"Square Up\" or press Enter to start, Esc to quit.");
         text.getLocalTranslation().set
         ( display.getWidth()/2, display.getHeight()*8/480f, 0 );
         
@@ -127,6 +170,11 @@ public class MenuState extends StandardGameStateDefaultCamera {
      * @see GameState#update(float)
      */
     protected void stateUpdate(float tpf) {
+        // rotate the star
+        starAngle+=.005f; // slowly rotate the star
+        starRot.fromAngleAxis(starAngle,Vector3f.UNIT_Z);
+        star.setLocalRotation(starRot);
+        // update the input handler
         input.update(tpf);
         // Check if the button has been pressed.
         rootNode.updateGeometricState(tpf, true);
