@@ -10,6 +10,7 @@ import com.jme.input.InputHandler;
 import com.jme.input.Mouse;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.state.AlphaState;
@@ -25,7 +26,7 @@ import com.jmex.game.state.StandardGameStateDefaultCamera;
  *  so some other camera-controlling state should also be active for
  *  background visuals.
  * @author C. Scott Ananian
- * @version $Id: MenuState.java,v 1.5 2006-11-12 18:19:59 cananian Exp $
+ * @version $Id: MenuState.java,v 1.6 2006-11-12 20:25:06 cananian Exp $
  */
 public class MenuState extends StandardGameStateDefaultCamera {
 
@@ -72,7 +73,6 @@ public class MenuState extends StandardGameStateDefaultCamera {
     protected void initInput(Game game) {
         input = new MenuHandler( game );
 
-        DisplaySystem display = DisplaySystem.getDisplaySystem();
         mouse = new AbsoluteMouse("Mouse Input", display.getWidth(),
                 display.getHeight());
         mouse.registerWithInputHandler( input );
@@ -85,7 +85,7 @@ public class MenuState extends StandardGameStateDefaultCamera {
         int HUD_SPACE = 40; // pixels down at the bottom for note display
         star = new Star("menu/star", 5, display.getHeight()-HUD_SPACE);
         star.getLocalTranslation().set
-        (display.getWidth()/2, display.getHeight()/2 + (HUD_SPACE/4), 0);
+        (x(320), display.getHeight()/2 + (HUD_SPACE/4), 0);
         starAngle = 0;
         starRot.fromAngleAxis(starAngle,Vector3f.UNIT_Z);
         star.setLocalRotation(starRot);
@@ -152,15 +152,42 @@ public class MenuState extends StandardGameStateDefaultCamera {
      * Inits the button placed at the center of the screen.
      */
     private void initMenus() {
-        DisplaySystem display = DisplaySystem.getDisplaySystem();
         text = new TextureText("menu/text", HUDState.font, 128); 
         text.setAlign(JustifyX.CENTER, JustifyY.BOTTOM);
-        text.setMaxSize(display.getWidth(),display.getHeight()*3/48f);
+        text.setMaxSize(x(620),36);
         text.setText("Say \"Square Up\" or press Enter to start, Esc to quit.");
         text.getLocalTranslation().set
-        ( display.getWidth()/2, display.getHeight()*8/480f, 0 );
+        ( x(320), 3, 0 );
         
         rootNode.attachChild( text );
+        
+        // top one at y center 446
+        // bottom one y center 127
+        // 6 ovals.  64 pixels between. bottom at 127
+        String[] labels = { "Judging Difficulty", "Dancers", "Venue", "Dance Level", "Music", "Microphone" };
+        String[] values = { "Moderate", "Checkers", "Mountains", "4-dancer Plus", "Music Off", "Line Input" };
+        for (int i=0; i<6; i++) {
+            float y = y(127+64*i);
+            RedOval ro = new RedOval("menu/oval", x(509),y(50));
+            ro.getLocalTranslation().set(x(320),y,0);
+            rootNode.attachChild(ro);
+            TextureText tt = new TextureText
+            ("menu/menu text "+i, HUDState.font, 128);
+            tt.setAlign(JustifyX.LEFT, JustifyY.MIDDLE);
+            tt.setMaxSize(x(280),y(44));
+            tt.setText(labels[i]);
+            tt.setColor(new ColorRGBA(.95f,.95f,.95f,1));
+            tt.getLocalTranslation().set(x(83),y,0);
+            rootNode.attachChild(tt);
+            tt = new TextureText
+            ("menu/menu value "+i, HUDState.font, 128);
+            tt.setAlign(JustifyX.CENTER, JustifyY.MIDDLE);
+            tt.setMaxSize(x(150), y(24));
+            tt.setText(values[i]);
+            tt.setColor(new ColorRGBA(1,1,0,1));
+            tt.getLocalTranslation().set(x(468),y,0);
+            rootNode.attachChild(tt);
+        }
     }
     
     /**
@@ -180,5 +207,12 @@ public class MenuState extends StandardGameStateDefaultCamera {
         rootNode.updateGeometricState(tpf, true);
     }
     
-    
+    //---------------------------------------------------------
+    // convert 640x480-relative coordinates to appropriately scaled coords.
+    private float x(int x) {
+        return x*display.getWidth()/640f;
+    }
+    private float y(int y) {
+        return y*display.getHeight()/480f;
+    }
 }
