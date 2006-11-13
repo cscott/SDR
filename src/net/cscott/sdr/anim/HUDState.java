@@ -1,8 +1,6 @@
 package net.cscott.sdr.anim;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.net.URL;
 import java.text.DecimalFormat;
 
 import net.cscott.sdr.BeatTimer;
@@ -13,14 +11,8 @@ import net.cscott.sdr.util.Fraction;
 
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import com.jme.renderer.Renderer;
-import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Quad;
-import com.jme.scene.state.AlphaState;
-import com.jme.scene.state.LightState;
-import com.jme.system.DisplaySystem;
-import com.jmex.game.state.StandardGameStateDefaultCamera;
 
 public class HUDState extends BaseState {
     /** What beat are we at? */
@@ -88,7 +80,7 @@ public class HUDState extends BaseState {
         rootNode.attachChild(timeFlowGauge);
 
         this.seqLenGauge = new Gauge("sequence length gauge", true,
-                new Color[] { Color.red, Color.yellow, Color.green }, .2f);
+                new Color[] { Color.red, Color.yellow, Color.green }, .5f);
         seqLenGauge.setLocalTranslation(new Vector3f(x(16+2*148),y(464),0));
         rootNode.attachChild(seqLenGauge);
 
@@ -113,11 +105,15 @@ public class HUDState extends BaseState {
         return mkText("Top Title: ", title, 64, JustifyX.LEFT, JustifyY.BASELINE, x, y, x(132), y(16));
     }
     
-    private void updateScore(int score) {
+    public void updateScore(int score) {
         // format the score prettily
         this.scoreText.setText(scoreFormat.format(score).toString());
     }
     private static final DecimalFormat scoreFormat =new DecimalFormat("#,###");
+    
+    public void updateCall(String call) {
+        this.callText.setText(call);
+    }
     
     
     @Override
