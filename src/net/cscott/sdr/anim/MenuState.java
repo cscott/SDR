@@ -10,23 +10,17 @@ import com.jme.input.InputHandler;
 import com.jme.input.Mouse;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
-import com.jme.renderer.ColorRGBA;
-import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
-import com.jme.scene.state.AlphaState;
-import com.jme.scene.state.LightState;
 import com.jme.scene.state.TextureState;
-import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 import com.jmex.game.state.GameState;
-import com.jmex.game.state.StandardGameStateDefaultCamera;
 
 /** The {@link MenuState} displays a cursor on the screen and an appropriate
  *  menu of options.  It uses ORTHO mode and does not reset the camera,
  *  so some other camera-controlling state should also be active for
  *  background visuals.
  * @author C. Scott Ananian
- * @version $Id: MenuState.java,v 1.9 2006-11-13 04:27:09 cananian Exp $
+ * @version $Id: MenuState.java,v 1.10 2006-11-13 05:07:33 cananian Exp $
  */
 public class MenuState extends BaseState {
 
@@ -43,8 +37,6 @@ public class MenuState extends BaseState {
     /** The cursor node which holds the mouse gotten from input. */
     private Node cursor;
 
-    private TextureText text;
-    
     private InputHandler input;
     private Mouse mouse;
 
@@ -127,7 +119,7 @@ public class MenuState extends BaseState {
      * Inits the button placed at the center of the screen.
      */
     private void initMenus() {
-        text = mkText("menu/bottom:",
+        mkText("menu/bottom:",
                 "Say \"Square Up\" or press Enter to start, Esc to quit.",
                 128, JustifyX.CENTER, JustifyY.BOTTOM, x(320), y(3), x(620), y(36));
         
@@ -135,7 +127,7 @@ public class MenuState extends BaseState {
         // bottom one y center 127
         // 6 ovals.  64 pixels between. bottom at 127
         String[] labels = { "Judging Difficulty", "Dancers", "Venue", "Dance Level", "Music", "Microphone" };
-        String[] values = { "Moderate", "Checkers", "Mountains", "4-dancer Plus", "Music Off", "Line Input" };
+        String[][] values = { {"Easy","Moderate","Hard"}, {"Checkers"}, {"Mountains"}, {"4-dancer Basic","4-dancer Mainstream","4-dancer Plus","8-dancer Basic","8-dancer Mainstream","8-dancer Plus"}, {"No Music","Saturday Night"}, {"Line Input","Mic Input","USB Input"} };
         for (int i=0; i<6; i++) {
             float y = y(127+64*i);
             RedOval ro = new RedOval("menu/oval", x(509),y(50));
@@ -148,27 +140,11 @@ public class MenuState extends BaseState {
         for (int i=0; i<6; i++) {
             float y = y(127+64*i);
             // menu label
-            TextureText tt = mkText("menu/menu text:", labels[i], 128,
-                    JustifyX.LEFT, JustifyY.MIDDLE, x(83),y,x(280),y(44));
-            tt.setColor(new ColorRGBA(.95f,.95f,.95f,1));
-            // menu arrows: height 44, width 24
-  
-            MenuArrow leftArrow = new MenuArrow
-            ("menu/arrow "+i+"/left", this, true);
-            leftArrow.getLocalTranslation().set(x(468-75-1),y,0);
-            rootNode.attachChild(leftArrow);
+            MenuItem mi = new MenuItem("menu/item "+i, labels[i], this, values[i]);
+            mi.getLocalTranslation().set(x(320),y,0);
+            rootNode.attachChild(mi);
 
-            MenuArrow rightArrow = new MenuArrow
-            ("menu/arrow "+i+"/right", this, false);
-            rightArrow.getLocalTranslation().set(x(468+75+1),y,0);
-            rootNode.attachChild(rightArrow);
-
-            if (i==5) { leftArrow.setSelected(true); rightArrow.setSelected(true); }
-            
-            // menu values
-            tt = mkText("menu/menu value:", values[i], 128,
-                    JustifyX.CENTER, JustifyY.MIDDLE, x(468), y, x(150),y(24));
-            tt.setColor(new ColorRGBA(1,1,0,1));
+            if (i==5) { mi.setSelected(true); }
         }
     }
     
