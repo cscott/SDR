@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
 import java.util.logging.Level;
 
+import net.cscott.sdr.App;
 import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.FormationList;
@@ -144,7 +145,7 @@ public class Game extends FixedFramerateGame {
                         return null;
                     }
                 });
-                
+ 
                 inc("Loading formations...");
                 // load formations
                 try { Class.forName(FormationList.class.getName());
@@ -164,6 +165,7 @@ public class Game extends FixedFramerateGame {
                 inc("Loading venue...");
                 venueState = new VenueState(beatTimer);
                 attach(venueState,true);
+                if (App.DEBUG) attach(new DebugState(),true);
 
                 inc("Waiting for Sphinx...");
                 try {

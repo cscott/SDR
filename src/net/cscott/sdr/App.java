@@ -26,9 +26,10 @@ import net.cscott.sdr.util.Fraction;
  * and one to play music (in net.cscott.sdr.sound).
  * 
  * @author C. Scott Ananian
- * @version $Id: App.java,v 1.11 2006-11-12 22:54:16 cananian Exp $
+ * @version $Id: App.java,v 1.12 2006-11-13 04:28:15 cananian Exp $
  */
 public class App {
+    public static final boolean DEBUG=true;
     /**
      * The main entry point for the application.
      * @param args unused
