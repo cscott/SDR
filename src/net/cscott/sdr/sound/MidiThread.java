@@ -55,7 +55,7 @@ public class MidiThread extends Thread
         Soundbank soundbank = MidiSystem.getSoundbank
         (MidiThread.class.getClassLoader().getResource
                 ("net/cscott/sdr/sound/soundbank-deluxe.gm"));
-        soundbank=null;
+        //soundbank=null;
         
         /* We read in the MIDI file to a Sequence object.  This object
          * is set at the Sequencer later.

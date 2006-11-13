@@ -112,7 +112,7 @@ public class MidiDemo
 	Soundbank soundbank = MidiSystem.getSoundbank
 	    (MidiDemo.class.getClassLoader().getResource
 	     ("net/cscott/sdr/sound/soundbank-deluxe.gm"));
-	soundbank=null;
+	//soundbank=null;
 
 	/* We read in the MIDI file to a Sequence object.  This object
 	 * is set at the Sequencer later.
