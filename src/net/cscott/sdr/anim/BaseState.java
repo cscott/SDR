@@ -9,7 +9,6 @@ import net.cscott.sdr.anim.TextureText.JustifyY;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
-import com.jme.scene.Node;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.AlphaState;
 import com.jme.scene.state.LightState;
@@ -62,12 +61,16 @@ abstract class BaseState extends StandardGameStateDefaultCamera {
         return mkText("Text: ", text, textureSize, alignX, alignY, x, y, width, height);
     }
     TextureText mkText(String nodePrefix, String text, int textureSize, JustifyX alignX, JustifyY alignY, float x, float y, float width, float height) {
+        TextureText tt = _mkText(nodePrefix, text, textureSize, alignX, alignY, x, y, width, height);
+        rootNode.attachChild(tt);
+        return tt;
+    }
+    TextureText _mkText(String nodePrefix, String text, int textureSize, JustifyX alignX, JustifyY alignY, float x, float y, float width, float height) {
         TextureText tt = new TextureText(nodePrefix+text, font, textureSize);
         tt.setAlign(alignX, alignY);
         tt.setMaxSize(width,height);
         tt.setLocalTranslation(new Vector3f(x,y,0));
         tt.setText(text);
-        rootNode.attachChild(tt);
         return tt;
     }
 
