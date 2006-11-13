@@ -26,7 +26,7 @@ import com.jmex.game.state.StandardGameStateDefaultCamera;
  *  so some other camera-controlling state should also be active for
  *  background visuals.
  * @author C. Scott Ananian
- * @version $Id: MenuState.java,v 1.8 2006-11-12 21:57:39 cananian Exp $
+ * @version $Id: MenuState.java,v 1.9 2006-11-13 04:27:09 cananian Exp $
  */
 public class MenuState extends BaseState {
 
@@ -74,10 +74,9 @@ public class MenuState extends BaseState {
      * Create a star slowly rotating in the background.
      */
     private void initStar() {
-        int HUD_SPACE = 40; // pixels down at the bottom for note display
-        star = new Star("menu/star", 5, display.getHeight()-HUD_SPACE);
+        star = new Star("menu/star", 5, y(200));
         star.getLocalTranslation().set
-        (x(320), display.getHeight()/2 + (HUD_SPACE/4), 0);
+        (x(320), y(250), 0);
         starAngle = 0;
         starRot.fromAngleAxis(starAngle,Vector3f.UNIT_Z);
         star.setLocalRotation(starRot);
@@ -130,7 +129,7 @@ public class MenuState extends BaseState {
     private void initMenus() {
         text = mkText("menu/bottom:",
                 "Say \"Square Up\" or press Enter to start, Esc to quit.",
-                128, JustifyX.CENTER, JustifyY.BOTTOM, x(320), 3, x(620), 36);
+                128, JustifyX.CENTER, JustifyY.BOTTOM, x(320), y(3), x(620), y(36));
         
         // top one at y center 446
         // bottom one y center 127
@@ -155,12 +154,12 @@ public class MenuState extends BaseState {
             // menu arrows: height 44, width 24
   
             MenuArrow leftArrow = new MenuArrow
-            ("menu/arrow "+i+"/left", true);
+            ("menu/arrow "+i+"/left", this, true);
             leftArrow.getLocalTranslation().set(x(468-75-1),y,0);
             rootNode.attachChild(leftArrow);
 
             MenuArrow rightArrow = new MenuArrow
-            ("menu/arrow "+i+"/right", false);
+            ("menu/arrow "+i+"/right", this, false);
             rightArrow.getLocalTranslation().set(x(468+75+1),y,0);
             rootNode.attachChild(rightArrow);
 

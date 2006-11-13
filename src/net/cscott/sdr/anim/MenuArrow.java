@@ -9,12 +9,12 @@ import com.jme.util.TextureManager;
  * {@link MenuArrow} is a {@link GradientTriangle} which is sized and textured
  * appropriately for use in the {@link MenuState}.
  * @author C. Scott Ananian
- * @version $Id: MenuArrow.java,v 1.1 2006-11-12 21:57:39 cananian Exp $
+ * @version $Id: MenuArrow.java,v 1.2 2006-11-13 04:27:09 cananian Exp $
  */
 public class MenuArrow extends GradientTriangle {
     final TextureState textureState;
-    public MenuArrow(String name, boolean isLeft) {
-        super(name, 0, -22, isLeft?-24:24, 0, 0, 22);
+    public MenuArrow(String name, BaseState st, boolean isLeft) {
+        super(name, st.x(0), st.y(-22), st.x(isLeft?-24:24), st.y(0), st.x(0), st.y(22));
         textureState = DisplaySystem.getDisplaySystem()
             .getRenderer().createTextureState();
         textureState.setEnabled(true);
