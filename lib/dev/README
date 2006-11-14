@@ -1,0 +1,9 @@
+Directory contents:
+ant-contrib.jar:
+ from: http://ant-contrib.sourceforge.net/
+deployment-ant-pack200-1.0beta.jar:
+ from https://deployment.dev.java.net
+junit-4.1.jar:
+ from http://junit.org/
+stringtemplate-2.3b9.jar:
+ from http://www.antlr.org/

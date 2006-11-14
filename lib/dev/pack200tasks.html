@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <title>Java Pack200 Tasks</title>
+  <link rel="stylesheet" type="text/css"
+</head>
+<body>
+<h2><a name="javah"></a>Pack200Tasks</h2>
+<h3>Introduction</h3>
+These tasks provide an interface to the Java Pack200 API. The
+implementation follows the pack200(1) command line interface. All the
+functionality of the pack200(1) can be accomplished by this task. The
+primary advantage of using this task over calling the CLI from ANT is
+performance. The user is encourage to familiarize themselves with
+java.util.jar.pack.Pack200, before using these Tasks. <br>
+<br>
+Note: JRE/JDK 1.5+ required.<br>
+<h3>The Tasks</h3>
+<a href="#pack200task"> Pack200Task</a><br>
+<a href="#Unpack200Task"> Unpack200Task</a>
+<h3><a name="pack200task"></a>Pack200Task<br>
+</h3>
+<h3>Description</h3>
+<p>Packs a jar to Packed file or a compressed packed file, as well as
+repack a file, typically for jarsigning. </p>
+<br>
+<h3>Parameters</h3>
+<br>
+<br>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tbody>
+    <tr>
+      <td valign="top"><b>Attribute</b></td>
+      <td valign="top"><b>Description</b></td>
+      <td valign="top" align="center"><b>Required</b></td>
+    </tr>
+    <tr>
+      <td valign="top">src<br>
+      </td>
+      <td valign="top">file name of the input jar to be packed, must
+have extension ".jar"<br>
+      </td>
+      <td align="center" valign="top">Yes</td>
+    </tr>
+    <tr>
+      <td valign="top">destfile<br>
+      </td>
+      <td valign="top">file name of the output file, extensions, ".pack
+or .pac"<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">Yes<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">gzipoutput<br>
+      </td>
+      <td valign="top">specifies the file should be compressed using
+value "true, false", cannot be used with repack, the destfile must have
+an extension ".pack.gz, pac.gz".<br>
+      </td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
+      <td valign="top">verbose<br>
+      </td>
+      <td valign="top">specify a numeric value for the verbosity values
+range from 0 to 9.<br>
+      </td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
+      <td valign="top">modificationtime<br>
+      </td>
+      <td valign="top">generic modification time for the entries with
+in a jar, string&nbsp; "keep, latest".<br>
+      </td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
+      <td valign="top">stripdebug<br>
+      </td>
+      <td valign="top">strips Java Class attributes not required for
+runtime a value of "true, false". </td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
+      <td valign="top">deflatehint<br>
+      </td>
+      <td valign="top">deflate hint for the jar entries when the packed
+file is unpacked, "keep, true, false"<br>
+      </td>
+      <td align="center" valign="top">No</td>
+    </tr>
+    <tr>
+      <td valign="top">keepfileorder<br>
+      </td>
+      <td valign="top">specifies whether the ordering of the entries
+should be maintained upon unpacking, string "true, false".<br>
+      </td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
+      <td valign="top">unknownattribute<br>
+      </td>
+      <td valign="top">action to be taken when an unknown java
+attribute is encountered by the packer, string "strip, error, pass"</td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">segmentlimit<br>
+      </td>
+      <td style="vertical-align: top;">the file sizes (numerical value)
+to consider for each segment in a packed files.<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">No<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">effort<br>
+      </td>
+      <td style="vertical-align: top;">the packing effort a numerical
+value ranging from 1 to 9.<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">No<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">configfile<br>
+      </td>
+      <td style="vertical-align: top;">used to set other options, by
+creating a properties file and specifying it here.<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">No<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Either gzipout or repack must be used, but not both.</p>
+<h3><a name="Unpack200Task"></a>Unpack200Task</h3>
+<h3>Description</h3>
+Unpacks a packed stream to a jar. <br>
+<br>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tbody>
+    <tr>
+      <td valign="top"><b>Attribute</b></td>
+      <td valign="top"><b>Description</b></td>
+      <td valign="top" align="center"><b>Required</b></td>
+    </tr>
+    <tr>
+      <td valign="top">src<br>
+      </td>
+      <td valign="top">file name of the input packed stream, the
+extension must be ".pack, pac, .gz" </td>
+      <td align="center" valign="top">Yes</td>
+    </tr>
+    <tr>
+      <td valign="top">destfile<br>
+      </td>
+      <td valign="top">file name of the output JAR file, extensions,
+".jar"<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">Yes<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">verbose<br>
+      </td>
+      <td valign="top">specify a numeric value for the verbosity values
+range from 0 to 9.<br>
+      </td>
+      <td valign="top" align="center">No</td>
+    </tr>
+  </tbody>
+</table>
+<h3>Examples</h3>
+<p>In order to use this, download the deployment-ant-tasks.jar to some location
+of your choice &lt;install&gt;/deployment-ant-pack200.jar.<br>
+In the build.xml create the Task for example:<br>
+</p>
+<pre>&nbsp; &lt;!-- Create our Pack200 Tasks --&gt;<br>&nbsp; &lt;target name="p200"&gt;<br><br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- Create our packer task --&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;taskdef name="pack200"<br>&nbsp;&nbsp;&nbsp; 	classname="org.jdesktop.deployment.ant.Pack200Task"<br>&nbsp;&nbsp;&nbsp; 	classpath="&lt;install&gt;/deployment-ant-pack200.jar"/&gt;<br><br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- Create our unpacker task --&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;taskdef name="unpack200"<br>&nbsp;&nbsp;&nbsp; 	classname="org.jdesktop.deployment.ant.Unpack200Task"<br>&nbsp;&nbsp;&nbsp; 	classpath="${dist}/deployment-ant-pack200.jar"/&gt;<br><br>&nbsp; &lt;/target&gt;<br><br></pre>
+<p>and you are ready to go.....<br>
+</p>
+<p>Here is a simple example to pack and unpack a jar.<br>
+</p>
+<pre>&nbsp; &lt;target name="simple" depends="p200"&gt;<br>    &nbsp;&lt;pack200 src="${test}/Test.jar" <br>	destfile="${test}/testout.pack.gz"/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; &lt;unpack200 src="${test}/testout.pack.gz" <br>	dest="${test}/foo.jar"/&gt;</pre>
+<pre>&nbsp; &lt;/target&gt;</pre>
+To repack a file for signing, the above example also accomplishes the
+same.<br>
+<pre>&nbsp; &lt;target name="simple2" depends="p200"&gt;<br>    &nbsp;&lt;pack200 src="${test}/Test.jar" <br>	destfile="${test}/testout.jar<br>	repack="true"/&gt;</pre>
+<pre>&nbsp; &lt;/target&gt;</pre>
+<br>
+An example which describes the use of some attributes to reduce the
+resulting pack file size.<br>
+<pre>&nbsp; &lt;target name="complex" depends="p200"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;delete file="${test}/testout.pack"/&gt;<br>	&nbsp;&lt;pack200 src="${test}/Test.jar"<br>	    destfile="${test}/testout.pack"<br>	    zipoutput="false"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; verbose="1"<br>	    modificationtime="latest"<br>	    deflatehint="false"<br>	    unknownattribute="error"<br>	&lt;unpack200 src="${test}/testout.pack" <br>	    dest="${test}/foobar.jar"/&gt;</pre>
+<pre>&nbsp; &lt;/target&gt; </pre>
+<br>
+The above example using a configuration file to acheive the same result.<br>
+<pre>&nbsp; &lt;target name="complex2" depends="p200"&gt;<br>     &lt;!-- Create a configuration file --&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;echo file="${test}/pack.conf" append="false"&gt;pack.modification.time=latest<br>pack.deflate.hint=false<br>pack.unknown.attribute=error<br>     &lt;/echo&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; &lt;pack200 src="${test}/Test.jar"<br>	destfile="${test}/testout.pack"<br>	configfile="${test}/pack.conf"<br>	verbose="1"/&gt;<br><br>	&lt;unpack200 src="${test}/testout.pack" <br>	    dest="${test}/foobar.jar"/&gt;<br>&nbsp; &lt;/target&gt;<br><br><br></pre>
+<hr>
+<hr>
+<p align="center">Sun Copyright ???<br>
+</p>
+</body>
+</html>
