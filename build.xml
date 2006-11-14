@@ -102,6 +102,12 @@ Square Dance Revolution build file.
     </target>
     <target name="javadoc" depends="chk-javadoc" unless="javadoc.notRequired"
             description="Generates javadoc in ${api_dir}">
+        <!-- copy call lists to doc-files -->
+        <mkdir dir="${src_dir}/net/cscott/sdr/calls/lists/doc-files" />
+        <copy todir="${src_dir}/net/cscott/sdr/calls/lists/doc-files">
+                <fileset dir="${resources_dir}/net/cscott/sdr/calls/lists"
+                         includes="*.calls" />
+        </copy>
 	<mkdir dir="${api_dir}" />
 	<javadoc sourcepath="${src_dir}"
 		 packagenames="net.cscott.*"

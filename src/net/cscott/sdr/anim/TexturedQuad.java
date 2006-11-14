@@ -19,7 +19,7 @@ import com.jme.util.TextureManager;
  * can draw into.  This makes it easy to write subclasses to generate dynamic
  * HUD elements by drawing into the Image.
  * @author C. Scott Ananian
- * @version $Id: TexturedQuad.java,v 1.3 2006-11-09 21:01:29 cananian Exp $
+ * @version $Id: TexturedQuad.java,v 1.4 2006-11-14 08:00:36 cananian Exp $
  */
 public class TexturedQuad extends Quad {
     /** An image buffer for drawing the texture; this is a soft reference to
@@ -89,7 +89,6 @@ public class TexturedQuad extends Quad {
      * {@link BufferedImage} to the {@link #updateTexture(BufferedImage)}
      * method.  Note that the returned image will always be completely
      * transparent, even if internally we're reusing an old reference.
-     * @return
      */
     public BufferedImage getTextureImage() {
         // Create BufferedImage (or reuse old one if it hasn't been gc'ed yet)
