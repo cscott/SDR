@@ -3,6 +3,8 @@ package net.cscott.sdr.anim;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import com.jme.math.FastMath;
+import com.jme.math.Vector2f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.TriMesh;
 import com.jme.scene.batch.TriangleBatch;
@@ -13,14 +15,18 @@ import com.jme.util.geom.BufferUtils;
  * suitable for a gradient giving an outline.  This triangle is actually
  * three triangles, so that texture interpolation works correctly.
  * @author C. Scott Ananian
- * @version $Id: GradientTriangle.java,v 1.1 2006-11-12 21:57:39 cananian Exp $
+ * @version $Id: GradientTriangle.java,v 1.2 2006-11-14 07:00:00 cananian Exp $
  */
 public class GradientTriangle extends TriMesh {
+    private final Vector2f p1,p2,p3; // just for use of "isInside()"
     GradientTriangle(String name,
             float x1, float y1,
             float x2, float y2,
             float x3, float y3) {
         super(name);
+        this.p1=new Vector2f(x1,y1);
+        this.p2=new Vector2f(x2,y2);
+        this.p3=new Vector2f(x3,y3);
 
         TriangleBatch batch = getBatch(0);
         batch.setVertexCount(5);
@@ -61,4 +67,9 @@ public class GradientTriangle extends TriMesh {
 
         setDefaultColor(ColorRGBA.white);
     }
+    public boolean isInside(float x, float y) {
+        testPoint.set(x,y);
+        return 0 != FastMath.pointInsideTriangle(p1,p2,p3,testPoint);
+    }
+    private final Vector2f testPoint = new Vector2f();
 }
