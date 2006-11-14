@@ -8,11 +8,11 @@ import net.cscott.sdr.calls.Program;
  * and concept definitions which are on the 'mainstream' program.
  * Note that "simple" calls and concepts are defined in
  * the resource file at
- * <code>net/cscott/sdr/calls/lists/mainstream.calls</code>;
+ * <a href="doc-files/mainstream.calls"><code>net/cscott/sdr/calls/lists/mainstream.calls</code></a>;
  * this class contains only those definitions for which an
  * executable component is required.
  * @author C. Scott Ananian
- * @version $Id: MainstreamList.java,v 1.6 2006-11-14 16:12:39 cananian Exp $
+ * @version $Id: MainstreamList.java,v 1.7 2006-11-14 16:20:53 cananian Exp $
  */
 public abstract class MainstreamList {
     // hide constructor.

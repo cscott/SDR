@@ -96,7 +96,7 @@ Square Dance Revolution build file.
     <!-- run the javadoc tool on the source code -->
     <target name="chk-javadoc" depends="init" >
       <uptodate property="javadoc.notRequired"
-                targetfile="${api_dir}">
+                targetfile="${api_dir}/index.html">
         <srcfiles dir="${src_dir}" includes="**/*.java **/*.html" />
       </uptodate>
     </target>
