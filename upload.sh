@@ -4,7 +4,14 @@ PACKAGE=sdr
 VERSION=$(ant echo-version | fgrep "Current version is: " | sed -e 's/^.*Current version is: //')
 # build prerequisites
 ant dist sign-jars
+if [ sdr-libs.jar -nt sdr-libs.jar.pack.gz ]; then
+  echo "Packing..." # this saves about 4M of download (~16%)
+  /bin/rm -f sdr-libs.jar.pack.gz
+  pack200 -E9 -mlatest -g sdr-libs.jar.pack sdr-libs.jar
+  gzip --rsyncable sdr-libs.jar.pack
+fi
 # make upload bundle
+echo "Making upload bundle..."
 /bin/rm -rf ${PACKAGE}-${VERSION}
 mkdir ${PACKAGE}-${VERSION}
 # API docs
@@ -24,11 +31,36 @@ cp ${PACKAGE}.jar ${PACKAGE}-${VERSION}/
 # Java web start stuff
 cp sdr.jnlp ${PACKAGE}-${VERSION}/
 mkdir -p ${PACKAGE}-${VERSION}/lib
-cp sdr-libs.jar ${PACKAGE}-${VERSION}/lib
+cp sdr-libs.jar.pack.gz ${PACKAGE}-${VERSION}/lib
 cp lib/jme/jnlp/*.jar ${PACKAGE}-${VERSION}/lib
 cp resources/net/cscott/sdr/anim/splash.png \
    resources/net/cscott/sdr/icon.gif \
    ${PACKAGE}-${VERSION}/
+# Magic to allow pack200 to work, courtesy of:
+# http://joust.kano.net/weblog/archive/2004/10/16/pack200-on-apache-web-server/
+cat > ${PACKAGE}-${VERSION}/lib/.htaccess <<EOF
+# Return the right mime type for JARs
+AddType application/x-java-archive .jar
+# Enable type maps
+AddHandler application/x-type-map .var
+Options +MultiViews
+# Tweak MultiViews - this line is for
+# APACHE 2.0 ONLY!
+MultiViewsMatch Any
+
+<Files *.pack.gz>
+  # Enable the Content-Encoding header for .jar.pack.gz files
+  AddEncoding pack200-gzip .jar
+  # Stop mod_gzip from messing with the Content-Encoding
+  # response for these files
+  RemoveEncoding .gz
+</Files>
+EOF
+cat > ${PACKAGE}-${VERSION}/lib/sdr-libs.jar.var <<EOF
+URI: sdr-libs.jar.pack.gz
+Content-Type: x-java-archive
+Content-Encoding: pack200-gzip
+EOF
 # transfer to the distribution machine.
 ssh k2.csail.mit.edu "mkdir -p public_html/Projects/SDR/${PACKAGE}-${VERSION}"
 rsync -avz --delete ${PACKAGE}-${VERSION} k2.csail.mit.edu:public_html/Projects/SDR

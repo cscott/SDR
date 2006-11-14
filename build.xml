@@ -240,9 +240,16 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
       <foreach target="unpack-one-jar" param="jar.file">
         <fileset refid="jar.set" />
       </foreach>
-      <jar destfile="${basedir}/${ant.project.name}-libs.jar"
+      <delete dir="${e}/META-INF" /> <!-- remove any old signatures -->
+      <jar destfile="${basedir}/${ant.project.name}-libs-unpack.jar"
            update="true" basedir="${e}" />
       <delete dir="${e}" />
+      <!-- repack jar, so that we can sign & pack w/o invalidating the sig -->
+      <pack200 src="${basedir}/${ant.project.name}-libs-unpack.jar"
+               destfile="${basedir}/${ant.project.name}-libs.jar"
+	       modificationtime="latest"
+               repack="true" />
+      <delete file="${basedir}/${ant.project.name}-libs-unpack.jar" />
     </target>
     <target name="unpack-one-jar" depends="init" >
       <property name="e" value="${basedir}/exported"/>
