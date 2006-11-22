@@ -509,3 +509,16 @@ Wrap BeatTimer so that it returns 0 until music is started up; this will
 allow us to delay music startup until after Venue (ideally, music would
 start when the menu comes up, so that user immediately has the option to
 turn it off or adjust the volume).
+---
+At the moment we're using the Java Sound API for recording/playback.
+For fancier (& hardware-accelerated) playback, we could switch to
+OpenAL, which lets us do doppler-shifted positional sounds & other fun
+stuff.  OpenAL 1.1 has a capture interface; look for
+alcCaptureOpenDevice & friends.  To enumerate capture devices, call
+alcGetString(NULL, ALC_CAPTURE_DEVICE_SPECIFIER).
+  xxx: this results in a very limited list of capture devices:
+         '((device '(native))
+       no way to select microphone vs line in vs usb mic.
+---
+For midi output, we don't need to manually set
+Transmitters/Receivers/etc. Look at MidiSystem.getSequencer(true);
