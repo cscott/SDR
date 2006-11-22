@@ -31,7 +31,7 @@ import com.jme.util.geom.BufferUtils;
  * is at the specified justification point of the text string, allowing easier
  * placement.
  * @author C. Scott Ananian
- * @version $Id: TextureText.java,v 1.8 2006-11-12 20:26:23 cananian Exp $
+ * @version $Id: TextureText.java,v 1.9 2006-11-22 20:56:55 cananian Exp $
  */
 public class TextureText extends Node {
     /** An enumeration of horizontal justification options. */
@@ -184,22 +184,16 @@ public class TextureText extends Node {
         // update texture.
         quad.updateTexture(textureImage);
 
-        // in update thread, to try to sync with the texture update.
-        GameTaskQueueManager.getManager().update(new Callable<Void>() {
-            public Void call() throws Exception {
-                // set new texture coordinates
-                quad.setTextureBuffer(0, texCoords);
-                // rescale the quad.
-                quad.resize(width, height);
-                // relocate the quad.
-                recenter();
-                // update quad color
-                quad.setDefaultColor(color);
-                // since we updated the texture, update the render state
-                quad.updateRenderState();
-                return null;
-            }
-        });
+        // set new texture coordinates
+        quad.setTextureBuffer(0, texCoords);
+        // rescale the quad.
+        quad.resize(width, height);
+        // relocate the quad.
+        recenter();
+        // update quad color
+        quad.setDefaultColor(color);
+        // since we updated the texture, update the render state
+        quad.updateRenderState();
     }
     
     /** Private helper: just reset the local translation to reflect the

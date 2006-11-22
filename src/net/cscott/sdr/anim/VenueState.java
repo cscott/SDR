@@ -41,7 +41,7 @@ import com.jmex.game.state.StandardGameState;
  *  {@link VenueState}s and cross-fade between them to change venues.
  *  {@link VenueState} does not process any keyboard or mouse input.
  * @author C. Scott Ananian
- * @version $Id: VenueState.java,v 1.4 2006-11-09 21:01:27 cananian Exp $
+ * @version $Id: VenueState.java,v 1.5 2006-11-22 20:56:55 cananian Exp $
  */
 public class VenueState extends StandardGameState {
     private Skybox skybox;
@@ -139,7 +139,12 @@ public class VenueState extends StandardGameState {
         skybox.setTexture(Skybox.EAST, east);//west
         skybox.setTexture(Skybox.UP, up);//north
         skybox.setTexture(Skybox.DOWN, down);
-        //skybox.preloadTextures();
+        GameTaskQueueManager.getManager().update(new Callable<Void>() {
+            public Void call() throws Exception {
+		skybox.preloadTextures();
+		return null;
+	    }
+	});
         Matrix3f skyRot = new Matrix3f();
         skyRot.fromAngleNormalAxis(FastMath.PI/2,new Vector3f(1,0,0));
         skybox.setLocalRotation(skyRot);

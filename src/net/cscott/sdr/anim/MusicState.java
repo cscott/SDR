@@ -28,7 +28,7 @@ import com.jme.util.geom.BufferUtils;
  * of the screen.  This is shown in the {@link MenuState} as well, since it
  * helps debug the microphone issues.
  * @author C. Scott Ananian
- * @version $Id: MusicState.java,v 1.4 2006-11-12 20:58:23 cananian Exp $
+ * @version $Id: MusicState.java,v 1.5 2006-11-22 20:56:55 cananian Exp $
  */
 public class MusicState extends BaseState {
     /** What beat are we at? */
@@ -88,52 +88,45 @@ public class MusicState extends BaseState {
         nowNote.setRenderState(mkAlpha());
         nowNote.setCullMode(Spatial.CULL_ALWAYS);
         
-        GameTaskQueueManager.getManager().update(new Callable<Void>() {
-            public Void call() throws Exception {
-                
-                notesTex = TextureManager.loadTexture(
-                        HUDState.class.getClassLoader().getResource(
-                        "net/cscott/sdr/anim/measure.png"),
-                        Texture.MM_NONE,
-                        Texture.FM_NEAREST); // there will be no stretching
-                notesTex.setWrap(Texture.WM_WRAP_S_CLAMP_T);
-                TextureState ts = display.getRenderer().createTextureState();
-                ts.setEnabled(true);
-                ts.setTexture(notesTex);
-                notes.setRenderState(ts);
-                rootNode.attachChild(notes);
-                notes.updateRenderState();
-
-                nowNoteTex = TextureManager.loadTexture(
-                        HUDState.class.getClassLoader().getResource(
-                        "net/cscott/sdr/anim/measure-bang.png"),
-                        Texture.MM_NONE,
-                        Texture.FM_NEAREST); // there will be no stretching
-                nowNoteTex.setWrap(Texture.WM_WRAP_S_CLAMP_T);
-                ts = display.getRenderer().createTextureState();
-                ts.setEnabled(true);
-                ts.setTexture(nowNoteTex);
-                nowNote.setRenderState(ts);
-                rootNode.attachChild(nowNote);
-                nowNote.updateRenderState();
-
-                rootNode.attachChild(levelQuad);
-
-                Texture nowTex = TextureManager.loadTexture(
-                        HUDState.class.getClassLoader().getResource(
-                        "net/cscott/sdr/anim/measure-now.png"),
-                        Texture.MM_NONE,
-                        Texture.FM_NEAREST); // there will be no stretching
-                ts = display.getRenderer().createTextureState();
-                ts.setEnabled(true);
-                ts.setTexture(nowTex);
-                now.setRenderState(ts);
-                rootNode.attachChild(now);
-                now.updateRenderState();
-
-                return null;
-            }
-        });
+        notesTex = TextureManager.loadTexture(
+                HUDState.class.getClassLoader().getResource(
+                "net/cscott/sdr/anim/measure.png"),
+                Texture.MM_NONE,
+                Texture.FM_NEAREST); // there will be no stretching
+        notesTex.setWrap(Texture.WM_WRAP_S_CLAMP_T);
+        TextureState ts = display.getRenderer().createTextureState();
+        ts.setEnabled(true);
+        ts.setTexture(notesTex);
+        notes.setRenderState(ts);
+        rootNode.attachChild(notes);
+        notes.updateRenderState();
+        
+        nowNoteTex = TextureManager.loadTexture(
+                HUDState.class.getClassLoader().getResource(
+                "net/cscott/sdr/anim/measure-bang.png"),
+                Texture.MM_NONE,
+                Texture.FM_NEAREST); // there will be no stretching
+        nowNoteTex.setWrap(Texture.WM_WRAP_S_CLAMP_T);
+        ts = display.getRenderer().createTextureState();
+        ts.setEnabled(true);
+        ts.setTexture(nowNoteTex);
+        nowNote.setRenderState(ts);
+        rootNode.attachChild(nowNote);
+        nowNote.updateRenderState();
+        
+        rootNode.attachChild(levelQuad);
+        
+        Texture nowTex = TextureManager.loadTexture(
+                HUDState.class.getClassLoader().getResource(
+                "net/cscott/sdr/anim/measure-now.png"),
+                Texture.MM_NONE,
+                Texture.FM_NEAREST); // there will be no stretching
+        ts = display.getRenderer().createTextureState();
+        ts.setEnabled(true);
+        ts.setTexture(nowTex);
+        now.setRenderState(ts);
+        rootNode.attachChild(now);
+        now.updateRenderState();
     }
     @Override
     protected void onActivate() {
@@ -193,7 +186,7 @@ public class MusicState extends BaseState {
             g2.drawLine(x,64-disp,x,64+disp+1);
         }
         // update the texture!
-        levelQuad._updateTextureNow(levelImage);
+        levelQuad.updateTexture(levelImage);
         // clean up.
         g2.dispose();
         levels.clear();

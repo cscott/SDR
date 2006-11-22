@@ -19,7 +19,7 @@ import com.jme.util.TextureManager;
  * can draw into.  This makes it easy to write subclasses to generate dynamic
  * HUD elements by drawing into the Image.
  * @author C. Scott Ananian
- * @version $Id: TexturedQuad.java,v 1.4 2006-11-14 08:00:36 cananian Exp $
+ * @version $Id: TexturedQuad.java,v 1.5 2006-11-22 20:56:55 cananian Exp $
  */
 public class TexturedQuad extends Quad {
     /** An image buffer for drawing the texture; this is a soft reference to
@@ -58,30 +58,24 @@ public class TexturedQuad extends Quad {
         this.textureSize = textureSize;
         this.texture = new Texture();
         texture.setApply(Texture.AM_MODULATE);
-        texture.setCorrection(Texture.CM_AFFINE);
         texture.setFilter(Texture.FM_NEAREST);
         texture.setMipmapState(Texture.MM_NONE);
-        // in update thread. (we're thread-safe!)
-        GameTaskQueueManager.getManager().update(new Callable<Void>() {
-            public Void call() throws Exception {
-                DisplaySystem display = DisplaySystem.getDisplaySystem();
-                textureState = display.getRenderer().createTextureState();
-                textureState.setTexture(texture);
-                textureState.setEnabled(true);
-                setRenderState(textureState);
 
-                AlphaState as = display.getRenderer().createAlphaState();
-                as.setBlendEnabled(true);
-                as.setSrcFunction(AlphaState.SB_SRC_ALPHA);
-                as.setDstFunction(AlphaState.DB_ONE_MINUS_SRC_ALPHA);
-                as.setTestEnabled(false);
-                as.setEnabled(true);
-                setRenderState(as);
-                
-                updateRenderState();
-                return null;
-            }
-        });
+        DisplaySystem display = DisplaySystem.getDisplaySystem();
+        textureState = display.getRenderer().createTextureState();
+        textureState.setTexture(texture);
+        textureState.setEnabled(true);
+        setRenderState(textureState);
+        
+        AlphaState as = display.getRenderer().createAlphaState();
+        as.setBlendEnabled(true);
+        as.setSrcFunction(AlphaState.SB_SRC_ALPHA);
+        as.setDstFunction(AlphaState.DB_ONE_MINUS_SRC_ALPHA);
+        as.setTestEnabled(false);
+        as.setEnabled(true);
+        setRenderState(as);
+        
+        updateRenderState();
     }
 
     /** Return an appropriate {@link BufferedImage} in which to draw the
@@ -111,21 +105,15 @@ public class TexturedQuad extends Quad {
      * to the update queue, so it will not take effect immediately.
      */
     public void updateTexture(final BufferedImage textureImage) {
-        GameTaskQueueManager.getManager().update(new Callable<Void>() {
-            public Void call() throws Exception {
-                _updateTextureNow(textureImage);
-                return null;
-            }
-        });
-    }
-    /** Update the texture on the quad.  This method performs this update
-     * immediately; it should only be used from the update thread.
-     */
-    void _updateTextureNow(BufferedImage textureImage) {
         // set new texture
         texture.setImage(TextureManager.loadImage(textureImage,false));
         // refresh texture state
-        textureState.load();
+        GameTaskQueueManager.getManager().update(new Callable<Void>() {
+            public Void call() throws Exception {
+                textureState.load();
+                return null;
+            }
+        });
         // make sure render state updates are noticed.
         updateRenderState();
     }
