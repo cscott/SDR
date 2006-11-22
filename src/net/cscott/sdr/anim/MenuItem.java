@@ -15,7 +15,7 @@ import com.jme.scene.Node;
  * A {@link MenuItem} is one row of the {@link MenuState}.  It is in charge
  * of its own highlight state and input processing.
  * @author C. Scott Ananian
- * @version $Id: MenuItem.java,v 1.2 2006-11-14 07:02:54 cananian Exp $
+ * @version $Id: MenuItem.java,v 1.3 2006-11-22 20:52:22 cananian Exp $
  */
 public class MenuItem extends Node {
     private final TextureText label, value;
@@ -86,7 +86,7 @@ public class MenuItem extends Node {
                 relativeLoc.set(am.getHotSpotPosition());
                 relativeLoc.subtractLocal(MenuItem.this.getLocalTranslation());
                 // we don't handle rotation or scaling at the moment.
-                assert MenuItem.this.getLocalRotation().equals(Quaternion.IDENTITY);
+                assert MenuItem.this.getLocalRotation().isIdentity();
                 assert MenuItem.this.getLocalScale().equals(Vector3f.UNIT_XYZ);
 
                 Vector3f leftTrans = leftArrow.getLocalTranslation();
