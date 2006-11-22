@@ -124,6 +124,7 @@ public class Game extends FixedFramerateGame {
         ("net/cscott/sdr/anim/loading.png");
         final TransitionGameState loading = new TransitionGameState(10, url);
         loading.setActive(true);
+	loading.setProgress(0,"Loading..."); // center the progress bar.
         GameStateManager.getInstance().attachChild(loading);
 
         final GameTaskQueueManager queueMan =GameTaskQueueManager.getManager();
