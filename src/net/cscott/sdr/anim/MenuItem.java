@@ -6,7 +6,6 @@ import net.cscott.sdr.anim.TextureText.JustifyY;
 import com.jme.input.AbsoluteMouse;
 import com.jme.input.action.InputActionEvent;
 import com.jme.input.action.MouseInputAction;
-import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
@@ -15,7 +14,7 @@ import com.jme.scene.Node;
  * A {@link MenuItem} is one row of the {@link MenuState}.  It is in charge
  * of its own highlight state and input processing.
  * @author C. Scott Ananian
- * @version $Id: MenuItem.java,v 1.4 2006-11-28 05:04:18 cananian Exp $
+ * @version $Id: MenuItem.java,v 1.5 2006-11-28 06:46:31 cananian Exp $
  */
 public class MenuItem extends Node {
     private final TextureText label, value;
