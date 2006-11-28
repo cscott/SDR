@@ -411,9 +411,7 @@ does the combination from the sorted list of time steps).  Note that we may
 need to interpolate paths in order to get a uniform set of steps; ensure
 that crossing paths will actually result in identical locations for the
 relevant dancers -- tricky for t-boned jaywalk.
-4. Create 'or' selector: BOX = or(RH_BOX, LH_BOX)
-   OCEAN_WAVE = or(RH_OCEAN_WAVE, LH_OCEAN_WAVE)
-   Be careful to distinguish between 'general formations' and disjunctive
+4. Be careful to distinguish between 'general formations' and disjunctive
    selectors.  Use general formation where possible, and use GENERAL in the
    name of the selector.  BOX and OCEAN_WAVE can't be general selectors.
 5. NEAR WAVE / NEAR LINE / FAR WAVE / FAR LINE tags?
