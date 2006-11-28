@@ -15,7 +15,7 @@ import com.jme.scene.Node;
  * A {@link MenuItem} is one row of the {@link MenuState}.  It is in charge
  * of its own highlight state and input processing.
  * @author C. Scott Ananian
- * @version $Id: MenuItem.java,v 1.3 2006-11-22 20:52:22 cananian Exp $
+ * @version $Id: MenuItem.java,v 1.4 2006-11-28 05:04:18 cananian Exp $
  */
 public class MenuItem extends Node {
     private final TextureText label, value;
@@ -42,6 +42,8 @@ public class MenuItem extends Node {
         this.rightArrow = new MenuArrow
         (nodeName+"/arrow/right", st, false);
         rightArrow.getLocalTranslation().set(st.x(468+75+1-320),st.y(0),0);
+        if (valueText.length<=1)
+            this.rightArrow.setCullMode(CULL_ALWAYS);
         this.attachChild(rightArrow);
 
         // menu values
