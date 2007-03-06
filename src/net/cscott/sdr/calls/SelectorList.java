@@ -154,8 +154,10 @@ public abstract class SelectorList {
         OR(RH_TIDAL_LINE, LH_TIDAL_LINE);
 
     // selector combinator
-    /** The {@link OR} function creates a Selector which matches any one of the
-     * given alternatives. */
+    /**
+     * The {@link #OR} function creates a Selector which matches any one of
+     * the given alternatives.
+     */
     public static Selector OR(final Selector... alternatives) {
         return new Selector() {
             @Override
