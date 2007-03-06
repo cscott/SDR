@@ -70,6 +70,9 @@ Difficulty level: tempo, dancer appearance (arky/identical),
 
 Bonus for recovering after a turkey.
 
+Switch one boy/girl pair in one square w/ two squares displayed; points for
+resolving both squares correctly (using Dave Wilson's technique or another).
+
 Maybe caller movement as well to receive bonuses.
 
 Meters: instantaneous 'flow', 'sequence length', 'originality'.
