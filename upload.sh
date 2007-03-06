@@ -2,6 +2,11 @@
 # Version number is kept in build.xml.  Change it there.
 PACKAGE=sdr
 VERSION=$(ant echo-version | fgrep "Current version is: " | sed -e 's/^.*Current version is: //')
+# make sure generated version number is up-to-date
+# (can't we do this in the ant build file?)
+if [ build.xml -nt sdr.jnlp ]; then
+  /bin/rm sdr.jnlp src/net/cscott/sdr/Version.java
+fi
 # build prerequisites
 ant dist sign-jars
 if [ sdr-libs.jar -nt sdr-libs.jar.pack.gz ]; then

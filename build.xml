@@ -5,7 +5,7 @@
 Square Dance Revolution build file.
 </description>
 <property name="package" value="sdr" />
-<property name="version" value="0.2" /> <!-- change version # here! -->
+<property name="version" value="0.21" /> <!-- change version # here! -->
 
     <taskdef resource="net/sf/antcontrib/antlib.xml"
 	     classpath="lib/dev/ant-contrib.jar" />
