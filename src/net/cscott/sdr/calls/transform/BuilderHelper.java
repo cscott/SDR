@@ -2,6 +2,7 @@ package net.cscott.sdr.calls.transform;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.Program;
@@ -18,10 +19,35 @@ import net.cscott.sdr.util.Fraction;
  * "ast tree generation functions", while optimizing the case where the
  * function generates a constant.
  * @author C. Scott Ananian
- * @version $Id: BuilderHelper.java,v 1.6 2006-10-25 20:43:28 cananian Exp $
+ * @version $Id: BuilderHelper.java,v 1.7 2007-03-07 19:25:05 cananian Exp $
  */
 abstract class BuilderHelper {
-    // 'B' is pronounced as 'Builder'.  So a B<Prim> builds Prim objects.
+    /** An enumeration of directions, as specified in the call file. */
+    static enum BDirection {
+        ASIS, IN, OUT;
+        /** Translate {@link BDirection}s to {@link Prim.Direction}s. */
+        Prim.Direction primDir() {
+            switch (this) {
+            case OUT:
+            case IN: return Prim.Direction.IN;
+            default: assert false;
+            case ASIS: return Prim.Direction.ASIS;
+            }
+        }
+        /** Flip the sign of the given fraction if {@link BDirection} is OUT. */
+        Fraction setSign(Fraction f) {
+            return (this==OUT) ? f.negate() : f;
+        }
+        ExactRotation setSign(ExactRotation r) {
+            return (this==OUT) ? r.negate() : r;
+        }
+    }
+    /** An enumeration of primitive attributes, as specified in the call file.
+     */
+    static enum BPrimAttrib { FORCE_ARC, PASS_LEFT; }
+    /**
+     * 'B' is pronounced as 'Builder'.  So a B<Prim> builds Prim objects.
+     */
     static abstract class B<T> {
         public abstract T build(List<Apply> args);
         /** 
@@ -115,10 +141,16 @@ abstract class BuilderHelper {
             }
         }, child.isConstant());
     }
-    static B<Prim> mkPrim(final Direction dirX, final Fraction x,
-            final Direction dirY, final Fraction y,
-            final Direction dirRot, final ExactRotation rot) {
-        return mkConstant(new Prim(dirX, x, dirY, y, dirRot, rot));
+    static B<Prim> mkPrim(final BDirection dirX, final Fraction x,
+            final BDirection dirY, final Fraction y,
+            final BDirection dirRot, final ExactRotation rot,
+            final Set<BPrimAttrib> attribs) {
+        return mkConstant(new Prim(dirX.primDir(), dirX.setSign(x),
+                                   dirY.primDir(), dirY.setSign(y),
+                                   dirRot.primDir(), dirRot.setSign(rot),
+                                   Fraction.ONE,
+                                   !attribs.contains(BPrimAttrib.PASS_LEFT),
+                                   attribs.contains(BPrimAttrib.FORCE_ARC)));
     }
     static B<Seq> mkSeq(final List<B<? extends SeqCall>> children) {
         return optimize(new B<Seq>() {

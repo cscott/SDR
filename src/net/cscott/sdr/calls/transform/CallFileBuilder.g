@@ -22,7 +22,7 @@ options { importVocab = CallFileParser; defaultErrorHandler=false; }
 	Program currentProgram = null;
 	// quick helper
 	public <T> T ifNull(T t, T otherwise) { return (t==null)?otherwise:t; }
-	public Prim.Direction d(Prim.Direction d) { return ifNull(d, Prim.Direction.ASIS); }
+	public BDirection d(BDirection d) { return ifNull(d, BDirection.ASIS); }
 	private Map<String,Integer> scope = new HashMap<String,Integer>();
 	private void semex(AST a, String s) throws SemanticException {
 		throw new SemanticException(s, "<unknown>", a.getLine(), a.getColumn());
@@ -106,10 +106,11 @@ seq returns [B<Seq> s=null]
 	;
 one_seq returns [B<? extends SeqCall> sc=null]
 { Fraction x, y; B<? extends Comp> d;
-  Prim.Direction dx=null, dy=null, dr=null; ExactRotation r=null;
+  BDirection dx=null, dy=null, dr=null; ExactRotation r=null;
+  EnumSet<BPrimAttrib> a=EnumSet.noneOf(BPrimAttrib.class);
 }
-	: #(PRIM (dx=direction)? x=number (dy=direction)? y=number (dr=direction | r=rotation) )
-	{ sc=mkPrim(d(dx), x, d(dy), y, d(dr), ifNull(r,ExactRotation.ONE_QUARTER)); }
+	: #(PRIM (dx=direction)? x=number (dy=direction)? y=number (dr=direction | r=rotation) #(ATTRIBS ( attribs[a] )* ) )
+	{ sc=mkPrim(d(dx), x, d(dy), y, d(dr), ifNull(r,ExactRotation.ONE_QUARTER), a); }
 	| #(CALL sc=call_body)
 	| #(PART d=pieces)
 	{ sc = mkPart(true, d); /* divisible part */}
@@ -117,14 +118,18 @@ one_seq returns [B<? extends SeqCall> sc=null]
 	{ sc = mkPart(false, d); /* indivisible part */}
 	;
 
-direction returns [Prim.Direction d=null]
-	: IN { d=Prim.Direction.IN; }
-	| OUT { d=Prim.Direction.OUT; }
+direction returns [BDirection d=null]
+	: IN { d=BDirection.IN; }
+	| OUT { d=BDirection.OUT; }
 	;
 rotation returns [ExactRotation r=null]
 	: RIGHT { r = ExactRotation.ONE_QUARTER; }
 	| LEFT { r = ExactRotation.mONE_QUARTER; }
 	| NONE { r = ExactRotation.ZERO; }
+	;
+attribs[EnumSet<BPrimAttrib> s]
+	: ARC { s.add(BPrimAttrib.FORCE_ARC); }
+	| LEFT { s.add(BPrimAttrib.PASS_LEFT); }
 	;
 
 par returns [B<Par> p=null] {B<ParCall> pc;List<B<ParCall>> l=new ArrayList<B<ParCall>>();}

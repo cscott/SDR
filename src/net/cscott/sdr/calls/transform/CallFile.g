@@ -27,6 +27,8 @@ tokens {
 	RIGHT;
 	LEFT;
 	NONE;
+	ARC;
+	ATTRIBS;
 	REF;
 	ADJ;
 }
@@ -159,10 +161,20 @@ cond_args
 	: cond_body (COMMA! cond_body)*
 	;
 prim_body
-	: in_out_num COMMA! in_out_num COMMA! (IN | OUT | RIGHT | LEFT | NONE)
+	: in_out_num COMMA! in_out_num COMMA! (IN | OUT | RIGHT | LEFT | NONE) opt_prim_attrib
 	;
 in_out_num
 	: (IN | OUT)? number
+	;
+opt_prim_attrib!
+	: COMMA! a:prim_attribs
+	{ #opt_prim_attrib = #([ATTRIBS, "attribs"], a); }
+	|
+	{ #opt_prim_attrib = #([ATTRIBS, "attribs"]); }
+	;
+prim_attribs
+	: ARC ( prim_attribs )?
+	| LEFT ( prim_attribs )?
 	;
 number
 	{ String s; }
@@ -377,6 +389,7 @@ IDENT
       	else if (id=="left") $setType(LEFT);
       	else if (id=="right") $setType(RIGHT);
       	else if (id=="none") $setType(NONE);
+      	else if (id=="arc") $setType(ARC);
    	  }
     }
   ;

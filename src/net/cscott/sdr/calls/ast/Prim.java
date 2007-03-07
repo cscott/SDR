@@ -14,29 +14,55 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * forward and to the side, while rotating a certain amount, performed
  * in a certain number of beats.  PRIM is a leaf node in a our AST.
  * @author C. Scott Ananian
- * @version $Id: Prim.java,v 1.10 2006-10-25 20:39:36 cananian Exp $
+ * @version $Id: Prim.java,v 1.11 2007-03-07 19:25:05 cananian Exp $
  */
 public class Prim extends SeqCall {
-    public static enum Direction { ASIS, IN, OUT; }
-    public final Fraction x, y;
+    /** The {@link Direction} enumeration tells whether the movement
+     * is relative to the center of the formation. */
+    public static enum Direction {
+        /** Directions are not relative to formation: positive is
+         *  right/forward/cw; negative is left/backward/ccw. */
+        ASIS,
+        /** Directions are relative to formation: positive is "toward the
+         * center" and negative is "away from the center". */
+        IN; }
+    /** Amount of movement in the 'x' direction (dancer's right/left). */
+    public final Fraction x;
+    /** Amount of movement in the 'y' direction (dancer forward and back). */
+    public final Fraction y;
+    /** Amount of rotation. */
     public final ExactRotation rot;
+    /** Is the movement direction relative to the center of the formation? */
     public final Direction dirX, dirY, dirRot;
+    /** The number of beats which this motion should take. */
     public final Fraction time;
+    /** This parameter indicates whether this motion involves a right
+     * shoulder pass (as most motions do, including "cross" calls where the
+     * crossers start far apart) or else a left shoulder pass
+     * ("cross" calls which start with adjacent crossers).
+     */
     public final boolean passRight;
+    /** The @{link #forceArc} parameter helps distinguish between (say)
+     * "pass thru and quarter in" and "split counter rotate 1/4".  Both
+     * of these involve traveling forward and turning, but the latter
+     * is an arcing motion (hence {@link #forceArc} would be true) while
+     * the former is a straight line path (hence {@link #forceArc} would
+     * be false).
+     */
+    public final boolean forceArc;
+
     public Prim(Direction dirX, Fraction x, Direction dirY, Fraction y,
-            Direction dirRot, ExactRotation rot) {
-        this(dirX, x, dirY, y, dirRot, rot, Fraction.ONE, true);
-    }
-    public Prim(Direction dirX, Fraction x, Direction dirY, Fraction y,
-            Direction dirRot, ExactRotation rot, Fraction time, boolean passRight) {
+            Direction dirRot, ExactRotation rot, Fraction time,
+            boolean passRight, boolean forceArc) {
         super(PRIM);
         this.x = x; this.y = y; this.rot = rot; this.time = time;
         this.dirX = dirX; this.dirY = dirY; this.dirRot = dirRot;
         this.passRight = passRight;
+        this.forceArc = forceArc;
     }
     public static final Prim STAND_STILL =
         new Prim(Direction.ASIS,Fraction.ZERO, Direction.ASIS,Fraction.ZERO,
-                Direction.ASIS,ExactRotation.ZERO);
+                Direction.ASIS,ExactRotation.ZERO, Fraction.ONE, true, false);
     // support visitor
     @Override
     public <T> SeqCall accept(TransformVisitor<T> v, T t) {
@@ -51,7 +77,9 @@ public class Prim extends SeqCall {
     @Override
     public String argsToString() {
         return x.toProperString()+" "+y.toProperString()+
-            " "+rot.toRelativeString()+" "+time.toProperString();
+            " "+rot.toRelativeString()+" "+time.toProperString()+
+            (passRight?"":" pass-left")+
+            (forceArc?" force-arc":"");
     }
     @Override
     public boolean equals(Object o) {
@@ -66,6 +94,7 @@ public class Prim extends SeqCall {
             .append(rot, p.rot)
             .append(time, p.time)
             .append(passRight, p.passRight)
+            .append(forceArc, p.forceArc)
             .isEquals();
     }
     @Override
@@ -73,7 +102,8 @@ public class Prim extends SeqCall {
         if (hashCode==0)
             hashCode = new HashCodeBuilder()
             .append(x).append(y).append(rot).append(time)
-            .append(dirX).append(dirY).append(dirRot).append(passRight)
+            .append(dirX).append(dirY).append(dirRot)
+            .append(passRight).append(forceArc)
             .toHashCode();
         return hashCode;
     }
@@ -85,12 +115,13 @@ public class Prim extends SeqCall {
     public Prim scaleTime(Fraction f) {
         if (Fraction.ONE.equals(f)) return this;
         return new Prim(dirX, x, dirY, y, dirRot, rot,
-                time.multiply(f), passRight);
+                time.multiply(f), passRight, forceArc);
     }
     /** Factory: creates new Prim only if it would differ from this. */
     public Prim build(Direction dirX, Fraction x, Direction dirY, Fraction y,
-            Direction dirRot, ExactRotation rot, Fraction time, boolean passRight) {
-        Prim p = new Prim(dirX, x, dirY, y, dirRot, rot, time, passRight);
+            Direction dirRot, ExactRotation rot, Fraction time,
+            boolean passRight, boolean forceArc) {
+        Prim p = new Prim(dirX, x, dirY, y, dirRot, rot, time, passRight, forceArc);
         if (this.equals(p)) return this;
         return p;
     }
