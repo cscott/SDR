@@ -27,7 +27,7 @@ import com.jmex.game.state.GameState;
  *  so some other camera-controlling state should also be active for
  *  background visuals.
  * @author C. Scott Ananian
- * @version $Id: MenuState.java,v 1.12 2007-03-07 19:17:20 cananian Exp $
+ * @version $Id: MenuState.java,v 1.13 2007-03-07 19:56:01 cananian Exp $
  */
 public class MenuState extends BaseState {
 
@@ -56,7 +56,7 @@ public class MenuState extends BaseState {
     private int selectTarget;
 
     /**
-     * @see com.jmex.game.state.StandardGameState#onActivate()
+     * @see com.jmex.game.state.CameraGameState#onActivate()
      */
     public void onActivate() {
         display.setTitle(Version.PACKAGE_STRING+" Main Menu");

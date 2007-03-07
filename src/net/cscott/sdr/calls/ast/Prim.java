@@ -14,7 +14,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * forward and to the side, while rotating a certain amount, performed
  * in a certain number of beats.  PRIM is a leaf node in a our AST.
  * @author C. Scott Ananian
- * @version $Id: Prim.java,v 1.11 2007-03-07 19:25:05 cananian Exp $
+ * @version $Id: Prim.java,v 1.12 2007-03-07 19:56:21 cananian Exp $
  */
 public class Prim extends SeqCall {
     /** The {@link Direction} enumeration tells whether the movement
@@ -25,7 +25,8 @@ public class Prim extends SeqCall {
         ASIS,
         /** Directions are relative to formation: positive is "toward the
          * center" and negative is "away from the center". */
-        IN; }
+        IN
+    }
     /** Amount of movement in the 'x' direction (dancer's right/left). */
     public final Fraction x;
     /** Amount of movement in the 'y' direction (dancer forward and back). */
