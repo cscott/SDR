@@ -9,9 +9,13 @@ import net.cscott.sdr.util.Point;
  * information about flow, roll, sweep, and timing.
  * <p>
  * The flow information we collect is based on Lynette Bellini's
- * <a href="http://www.lynette.org/flow.html">Rules of Flow</a>.
+ * <a href="http://www.lynette.org/flow.html">Rules of Flow</a>,
+ * along with Dave Wilson's theories about dancer kinematics; to wit:
+ * certain "bad flow" motions actually work if there is hand contact
+ * between certain dancers, as it lets them push off of one another.
+ * 
  * @author C. Scott Ananian
- * @version $Id: DancerPath.java,v 1.1 2006-11-28 06:48:13 cananian Exp $
+ * @version $Id: DancerPath.java,v 1.2 2007-03-07 19:24:00 cananian Exp $
  */
 public class DancerPath {
     /**
