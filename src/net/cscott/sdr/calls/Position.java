@@ -4,7 +4,8 @@ import net.cscott.sdr.util.Fraction;
 import org.apache.commons.lang.builder.*;
 
 /** Position objects represent the position and orientation of a dancer.
- *  The (0,0) coordinate represents the center of the square, and dancers
+ *  The (0,0) coordinate represents the center of the square (or formation),
+ *  and dancers
  *  are nominally at least two units away from each other (although breathing
  *  may change this).  A zero rotation for 'facing direction' means
  *  "facing the caller".  Positive y is "towards the caller".  Positive
