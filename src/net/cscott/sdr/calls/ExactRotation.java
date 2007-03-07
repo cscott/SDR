@@ -9,6 +9,11 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
     public ExactRotation(Fraction amount) {
         super(amount, Fraction.ONE);
     }
+    @Override
+    public boolean isExact() {
+        assert this.modulus.equals(Fraction.ONE);
+        return true;
+    }
     /** Add the given amount to this rotation direction. */
     @Override
     public ExactRotation add(Fraction f) {
@@ -143,13 +148,39 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
 	else
 	    return Fraction.ONE;
     }
+    /** Convert an x/y displacement to a rotation, using our 'squared off'
+     * circle.  Roughly equivalent to atan2().
+     */
+    public static ExactRotation fromXY(Fraction x, Fraction y) {
+        assert !(x.equals(Fraction.ZERO) && y.equals(Fraction.ZERO));
+        if (x.abs().compareTo(y.abs()) >= 0) {
+            // use atan: y/x
+            Fraction yOverX = y.divide(x);
+            assert yOverX.compareTo(Fraction.mONE) >= 0;
+            assert yOverX.compareTo(Fraction.ONE) <= 0;
+            Fraction r = Fraction.ONE_QUARTER.subtract
+                (yOverX.multiply(Fraction.ONE_EIGHTH));
+            if (x.compareTo(Fraction.ZERO) < 0) {
+                r = r.add(Fraction.ONE_HALF);
+            }
+            return new ExactRotation(r);
+        } else {
+            // use acot: x/y
+            // actually, we'll get the rotation of (y,-x) and then
+            // rotate ccw 90 degrees.
+            ExactRotation er = fromXY(y,x.negate());
+            return er.subtract(Fraction.ONE_QUARTER).normalize();
+        }
+    }
     /** Return true if rotating from <code>from</code> to <code>to</code>
      *  is a clockwise movement. */
+    // XXX careful: doesn't really work on normalized rotations
     static boolean isCW(ExactRotation from, ExactRotation to) {
 	return from.compareTo(to) < 0;
     }
     /** Return true if rotating from <code>from</code> to <code>to</code>
      *  is a counter-clockwise movement. */
+    // XXX careful: doesn't really work on normalized rotations
     static boolean isCCW(ExactRotation from, ExactRotation to) {
 	return from.compareTo(to) > 0;
     }

@@ -38,6 +38,12 @@ public class Rotation {
         return (modulo.compareTo(Fraction.ONE)==0) ?
                 new ExactRotation(amount) : new Rotation(amount, modulo);
     }
+    /** Return true iff this rotation is exact (that is, if the modulus is
+     *  one). */
+    public boolean isExact() {
+        assert !this.modulus.equals(Fraction.ONE);
+        return false;
+    }
     /** Add the given amount to this rotation direction. */
     public Rotation add(Fraction f) {
 	return create(this.amount.add(f), this.modulus);
