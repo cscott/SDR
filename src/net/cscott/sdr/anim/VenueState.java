@@ -23,6 +23,7 @@ import com.jme.math.FastMath;
 import com.jme.math.Matrix3f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Skybox;
 import com.jme.scene.shape.Quad;
@@ -33,7 +34,7 @@ import com.jme.system.DisplaySystem;
 import com.jme.util.GameTaskQueueManager;
 import com.jme.util.TextureManager;
 import com.jme.util.Timer;
-import com.jmex.game.state.StandardGameState;
+import com.jmex.game.state.CameraGameState;
 
 /** The {@link VenueState} is in charge of showing the background venue
  *  and controlling the camera. (Maybe separate the camera into a separate
@@ -41,9 +42,9 @@ import com.jmex.game.state.StandardGameState;
  *  {@link VenueState}s and cross-fade between them to change venues.
  *  {@link VenueState} does not process any keyboard or mouse input.
  * @author C. Scott Ananian
- * @version $Id: VenueState.java,v 1.5 2006-11-22 20:56:55 cananian Exp $
+ * @version $Id: VenueState.java,v 1.6 2007-03-07 19:17:20 cananian Exp $
  */
-public class VenueState extends StandardGameState {
+public class VenueState extends CameraGameState {
     private Skybox skybox;
     private DisplaySystem display;
 

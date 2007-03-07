@@ -14,7 +14,7 @@ import com.jme.scene.Node;
  * A {@link MenuItem} is one row of the {@link MenuState}.  It is in charge
  * of its own highlight state and input processing.
  * @author C. Scott Ananian
- * @version $Id: MenuItem.java,v 1.5 2006-11-28 06:46:31 cananian Exp $
+ * @version $Id: MenuItem.java,v 1.6 2007-03-07 19:17:20 cananian Exp $
  */
 public class MenuItem extends Node {
     private final TextureText label, value;
@@ -79,7 +79,6 @@ public class MenuItem extends Node {
     /////////// InputActions
     public MouseInputAction getMouseInputAction() {
         return new MouseInputAction() {
-            @Override
             public void performAction(InputActionEvent event) {
                 if (!isEnabled) return; // only look for input if enabled
                 AbsoluteMouse am = (AbsoluteMouse) mouse;

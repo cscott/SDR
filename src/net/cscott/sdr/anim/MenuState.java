@@ -27,7 +27,7 @@ import com.jmex.game.state.GameState;
  *  so some other camera-controlling state should also be active for
  *  background visuals.
  * @author C. Scott Ananian
- * @version $Id: MenuState.java,v 1.11 2006-11-14 07:02:54 cananian Exp $
+ * @version $Id: MenuState.java,v 1.12 2007-03-07 19:17:20 cananian Exp $
  */
 public class MenuState extends BaseState {
 
@@ -80,34 +80,29 @@ public class MenuState extends BaseState {
         KeyBindingManager.getKeyBindingManager().set( "menu_right",
                 KeyInput.KEY_RIGHT );
         input.addAction(new KeyInputAction() {
-            @Override
             public void performAction(InputActionEvent arg0) {
                 if (selectTarget<menu.length-1)
                     doSelect(selectTarget+1);
             }
         }, "menu_up", false);
         input.addAction(new KeyInputAction() {
-            @Override
             public void performAction(InputActionEvent arg0) {
                 if (selectTarget>0)
                     doSelect(selectTarget-1);
             }
         }, "menu_down", false);
         input.addAction(new KeyInputAction() {
-            @Override
             public void performAction(InputActionEvent arg0) {
                 menu[selectTarget].dec();
             }
         }, "menu_left", false);
         input.addAction(new KeyInputAction() {
-            @Override
             public void performAction(InputActionEvent arg0) {
                 menu[selectTarget].inc();
             }
         }, "menu_right", false);
 
         input.addAction(new InputAction() {
-            @Override
             public void performAction(InputActionEvent arg0) {
                 Vector3f mousePos = mouse.getHotSpotPosition();
                 if (mousePos.y > y(127-25) && mousePos.y < y(127+5*64+25)) {

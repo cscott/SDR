@@ -13,9 +13,9 @@ import com.jme.scene.shape.Quad;
 import com.jme.scene.state.AlphaState;
 import com.jme.scene.state.LightState;
 import com.jme.system.DisplaySystem;
-import com.jmex.game.state.StandardGameStateDefaultCamera;
+import com.jmex.game.state.CameraGameStateDefaultCamera;
 
-abstract class BaseState extends StandardGameStateDefaultCamera {
+abstract class BaseState extends CameraGameStateDefaultCamera {
     /** Our display system. */
     final DisplaySystem display;
     /** Default font for our app. */

@@ -38,6 +38,7 @@ import com.jme.input.MouseLookHandler;
 import com.jme.input.RelativeMouse;
 import com.jme.input.action.InputAction;
 import com.jme.input.action.InputActionEvent;
+import com.jme.input.action.InputActionInterface;
 import com.jme.input.action.MouseInputAction;
 import com.jme.input.action.MouseLook;
 import com.jme.math.Vector3f;
@@ -51,7 +52,7 @@ import com.jme.renderer.Camera;
  * the camera. <br>
  * This is a handler that is composed from {@link KeyboardLookHandler} and {@link MouseLookHandler}.
  * @author Mark Powell
- * @version $Id: SdrFirstPersonHandler.java,v 1.1 2006-10-06 21:29:08 cananian Exp $
+ * @version $Id: SdrFirstPersonHandler.java,v 1.2 2007-03-07 19:17:20 cananian Exp $
  */
 public abstract class SdrFirstPersonHandler extends InputHandler {
     private InputHandler mouseLookHandler;
@@ -74,7 +75,6 @@ public abstract class SdrFirstPersonHandler extends InputHandler {
             addAction(mouseLook);
             addAction(new MouseInputAction() {
                 { setMouse(m); }
-                @Override
                 public void performAction(InputActionEvent evt) {
                     if (mouse.getLocalTranslation().x!=0 ||
                         mouse.getLocalTranslation().y!=0)
@@ -86,10 +86,12 @@ public abstract class SdrFirstPersonHandler extends InputHandler {
         addToAttachedHandlers( mouseLookHandler );
         keyboardLookHandler = new KeyboardLookHandler( cam, moveSpeed, turnSpeed ) {
             @Override
-            public void addAction( final InputAction inputAction, String triggerCommand, boolean allowRepeats ) {
+            public void addAction( final InputActionInterface inputAction, String triggerCommand, boolean allowRepeats ) {
                 InputAction wrapperAction = new InputAction() {
-                    { setSpeed(inputAction.getSpeed()); }
-                    @Override
+                    {
+                        if (inputAction instanceof InputAction)
+                            setSpeed(((InputAction)inputAction).getSpeed());
+                    }
                     public void performAction(InputActionEvent evt) {
                         inputAction.performAction(evt);
                         onAction();
