@@ -15,7 +15,7 @@ import net.cscott.sdr.util.Point;
  * between certain dancers, as it lets them push off of one another.
  * 
  * @author C. Scott Ananian
- * @version $Id: DancerPath.java,v 1.2 2007-03-07 19:24:00 cananian Exp $
+ * @version $Id: DancerPath.java,v 1.3 2007-03-07 22:05:29 cananian Exp $
  */
 public class DancerPath {
     /**
@@ -35,20 +35,53 @@ public class DancerPath {
      * </dl> 
      * There are multiple ways to pair dancers; swing and slip are both
      * examples of the two dancer point of rotation, but they are different.
-     * The same thing applies for the four dancer situations: from waves,
+     * The same thing applies for the four dancer situations: from parallel
+     * ocean waves,
      * lockit and split counter rotate operate around different points, but
      * they are each four dancers large.
      * <p>(From Lynette Bellini's
      * <a href="http://www.lynette.org/flow.html">Rules of Flow</a>.)
      */
     public static enum PointOfRotation {
-        SINGLE_DANCER, TWO_DANCERS, FOUR_DANCERS, SQUARE_CENTER;
+        /** The point of rotation is about the center of a single dancer, as in
+         * the call roll. */
+        SINGLE_DANCER,
+        /** The point of rotation is about a point between two dancers. */
+        TWO_DANCERS,
+        /** The point of rotation is about a point in the center of four
+         *  dancers. */
+        FOUR_DANCERS,
+        /** The point of rotation is about the center point of the square. */
+        SQUARE_CENTER
     }
     
-    public Position from, to; // rotations should be exact
-    public Point arcCenter; // arcCenter can be null for straight paths.
-    public Fraction time;
-    public PointOfRotation pointOfRotation; // 1,2,4,8 person, for flow
-    public Rotation rollDir, sweepDir; // these can be none.
+    /** The rotations on the to and from positions should be exact. */
+    public final Position from, to;
+    /** The arcCenter can be null for straight paths. */
+    public final Point arcCenter;
+    /** The time this motion should take. */
+    public final Fraction time;
+    /** The point of rotation, for flow computations.  May be null for
+     * straight paths. */
+    public final PointOfRotation pointOfRotation; // 1,2,4,8 person, for flow
+    /** The rollDir and sweepDir may be zero. */
+    public final Rotation rollDir, sweepDir; // these can be none.
     // XXX: lateral translation?
+    /**
+     * Create an immutable {@link DancerPath} object.
+     */
+    public DancerPath(Position from, Position to, Point arcCenter, Fraction time, PointOfRotation pointOfRotation, Rotation rollDir, Rotation sweepDir) {
+        this.from = from;
+        this.to = to;
+        this.arcCenter = arcCenter;
+        this.time = time;
+        this.pointOfRotation = pointOfRotation;
+        this.rollDir = rollDir;
+        this.sweepDir = sweepDir;
+        assert from != null && to != null && time != null;
+        assert rollDir != null && sweepDir != null;
+        assert from.facing.isExact() && to.facing.isExact();
+        assert rollDir.isExact() && sweepDir.isExact();
+        assert time.compareTo(Fraction.ZERO) >= 0;
+    }
 }
