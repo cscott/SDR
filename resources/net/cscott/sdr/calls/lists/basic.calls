@@ -191,17 +191,19 @@ def: star thru
   from: FACING DANCERS
   condition: not(or(ALL(BOYS), ALL(GIRLS)))
   call: slide thru // modulo styling
+
+// I've seen 1/2 slide thru, and 'finish a slide thru' called, so
+// pretend that slide thru has two parts.
 def: slide thru
   in: 4
   from: FACING DANCERS
-  ipart:
-    part:
-      call: pull by
-    part:
-      select: BOY
-        call: quarter right
-      select: GIRL
-        call: quarter left
+  part: 
+    call: pass thru
+  part:
+    select: BOY
+      call: quarter right
+    select: GIRL
+      call: quarter left
 def: bend the line
   in: 4
   call: as couples(_single bend)
@@ -549,7 +551,7 @@ def: square thru(n)
     in: 2
     call: _fractional([n], pull by)
   from: FACING COUPLES
-    condition: greater([n], 0)
+    condition: greater([n], 1)
     in: 2
     ipart: // actually, square thru N probably has N distinct parts.
       call: pull by, quarter in, left(square thru(_subtract_num(n,1)))
