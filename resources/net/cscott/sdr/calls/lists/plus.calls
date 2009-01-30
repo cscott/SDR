@@ -9,3 +9,5 @@ def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
     select: END
       //call: counter rotate 1/4   // we'll use a primitive for simplicity
       prim: in 3,3,in
+
+// track(n) is c3b
