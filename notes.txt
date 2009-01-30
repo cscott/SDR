@@ -357,6 +357,11 @@ necessary.  Make 'small diamonds' (points at (0,+/-2) isomorphic to
 like 'quarter tag with ends facing right' is isomorphic to 'twin
 diamonds'. (and in some cases, facing couples are isomorphic to waves
 & vice versa).
+
+Also "heads r&l thru" from squared set results in a quantum
+superimposition.  Challenge dancers would be a 2x4; mainstream dancers
+would be back in a squared set.
+
 --------
 Formation elaboration does:
  * simplifies formations known to be impossible, given input.
