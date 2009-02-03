@@ -22,6 +22,8 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.RH_MINIWAVE);
     public static final Selector LH_MINIWAVE =
         GeneralFormationMatcher.makeSelector(FormationList.LH_MINIWAVE);
+    public static final Selector MINIWAVE =
+        OR(RH_MINIWAVE, LH_MINIWAVE);
     // 4-person selectors
     public static final Selector GENERAL_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.GENERAL_LINE);
@@ -204,4 +206,6 @@ public abstract class SelectorList {
     public static final Selector PARALLEL_GENERAL_LINES = _STUB_;
     public static final Selector GENERAL_COLUMNS = _STUB_;
     public static final Selector FACING_TANDEMS = _STUB_;
+    public static final Selector TANDEM_COUPLES = _STUB_;
+    public static final Selector _2_X2 = _STUB_;
 }

@@ -21,8 +21,11 @@ public abstract class Selector {
     public static Selector valueOf(String s) {
         // Look for this selector in the SelectorList
         try {
-            return (Selector) SelectorList.class.getField
-                (s.toUpperCase().replace(' ','_').replace('-','_')).get(null);
+            // convert to uppercase, prepend underscore if numeric,
+            // replace spaces and dashes with underscores.
+            s = s.toUpperCase().replaceFirst("^(?=\\d)", "_")
+                .replace(' ','_').replace('-','_');
+            return (Selector) SelectorList.class.getField(s).get(null);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Bad selector name: "+s);
         } catch (IllegalAccessException e) {
