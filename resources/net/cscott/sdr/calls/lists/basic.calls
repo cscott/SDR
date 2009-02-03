@@ -262,7 +262,7 @@ def: extend
   // XXX at basic/mainstream, extend is from 1/4 tag only
   call: _extend
 def: _extend // the general case
-  from: SINGLE DPT
+  from: SINGLE DOUBLE PASS THRU
     call: centers(extend)
   from: LH BOX
     call: mirror(_extend)
@@ -292,7 +292,7 @@ def: run(sel)
   spoken: [10] <sel=anyone> run
   in: 4
   // XXX: this definition doesn't currently apply to T-boned formations.
-  from: GENERAL LINE, GENERAL BOX, COUPLE, RH MINIWAVE, LH MINIWAVE
+  from: GENERAL LINE, BOX, COUPLE, RH MINIWAVE, LH MINIWAVE
     // we can't use in/out in primitives here because (1) centers of waves
     // run out, while ends of waves run in, and (2) the "run-around" dancer
     // stands on the centerline of the formation at one point.
@@ -329,7 +329,7 @@ def: cross run(sel)
 
 def: zoom
   in: 4
-  from: GENERAL BOX
+  from: BOX, TANDEM COUPLES
     select: BEAU
       call: mirror(_right single zoom)
     select: BELLE
@@ -397,7 +397,7 @@ def: _trail circ // trailers part of a box/column circulate
 
 def: box circulate
   in: 4 // not official
-  from: GENERAL BOX
+  from: BOX, TANDEM COUPLES, FACING COUPLES, BACK TO BACK COUPLES
     select: LEADER
       call: _lead circ
     select: TRAILER
@@ -419,7 +419,7 @@ def: walk and dodge
 def: walk others dodge(sel)
   spoken: [10] <sel=anyone> walk (others|<anyone>) dodge
   in: 4
-  from: GENERAL BOX
+  from: BOX
     select: [sel]
       condition: SELECTED ARE(TRAILER)
       prim: 0,1,none
@@ -456,7 +456,7 @@ def: recycle // xxx cheat definition, for the present
 def: scoot back
   optional: LEFT
   in: 6
-  from: RH BOX, LH BOX
+  from: BOX
     select: TRAILER
       ipart:
         prim: 0,1,none
@@ -475,10 +475,10 @@ def: _tag(atc, n)
   ipart:
     call: [atc], _finish_tag([n])
 def: _finish_tag(n)
-  from: FACING_TANDEMS
+  from: SINGLE DOUBLE PASS THRU
     condition: EQUAL([n], 0)
     call: nothing
-  from: FACING_TANDEMS
+  from: SINGLE DOUBLE PASS THRU
     condition: GREATER([n], 0)
     call: _fractional(_multiply_num(4,[n]), extend)
 // or else: n=0->atc; else fractional(n, part(atc,extend), part(extend), part(extend), part(extend))

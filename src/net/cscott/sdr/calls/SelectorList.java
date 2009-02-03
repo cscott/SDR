@@ -27,10 +27,16 @@ public abstract class SelectorList {
     // 4-person selectors
     public static final Selector GENERAL_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.GENERAL_LINE);
+    // this selector has an extra underscore because the parser treats it
+    // as two items: the number two, and the identifier x2.
+    public static final Selector _2_X2 =
+        GeneralFormationMatcher.makeSelector(FormationList._2x2);
     public static final Selector FACING_COUPLES =
         GeneralFormationMatcher.makeSelector(FormationList.FACING_COUPLES);
     public static final Selector BACK_TO_BACK_COUPLES =
         GeneralFormationMatcher.makeSelector(FormationList.BACK_TO_BACK_COUPLES);
+    public static final Selector TANDEM_COUPLES =
+        GeneralFormationMatcher.makeSelector(FormationList.TANDEM_COUPLES);
     public static final Selector RH_OCEAN_WAVE =
         GeneralFormationMatcher.makeSelector(FormationList.RH_OCEAN_WAVE);
     public static final Selector LH_OCEAN_WAVE =
@@ -76,8 +82,12 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.TRADE_BY);
     public static final Selector DOUBLE_PASS_THRU =
         GeneralFormationMatcher.makeSelector(FormationList.DOUBLE_PASS_THRU);
+    public static final Selector SINGLE_DOUBLE_PASS_THRU =
+        GeneralFormationMatcher.makeSelector(FormationList.SINGLE_DOUBLE_PASS_THRU);
     public static final Selector COMPLETED_DOUBLE_PASS_THRU =
         GeneralFormationMatcher.makeSelector(FormationList.COMPLETED_DOUBLE_PASS_THRU);
+    public static final Selector COMPLETED_SINGLE_DOUBLE_PASS_THRU =
+        GeneralFormationMatcher.makeSelector(FormationList.COMPLETED_SINGLE_DOUBLE_PASS_THRU);
     public static final Selector LINES_FACING_OUT =
         GeneralFormationMatcher.makeSelector(FormationList.LINES_FACING_OUT);
     public static final Selector PARALLEL_RH_WAVES =
@@ -197,15 +207,10 @@ public abstract class SelectorList {
         @Override
         public String toString() { return "*STUB*"; }
     };
-    public static final Selector SINGLE_DPT = _STUB_;
-    public static final Selector GENERAL_BOX = _STUB_;
     public static final Selector LH_3_AND_1 = _STUB_;
     public static final Selector LH_SPLIT_3_AND_1 = _STUB_;
     public static final Selector RH_3_AND_1 = _STUB_;
     public static final Selector RH_SPLIT_3_AND_1 = _STUB_;
     public static final Selector PARALLEL_GENERAL_LINES = _STUB_;
     public static final Selector GENERAL_COLUMNS = _STUB_;
-    public static final Selector FACING_TANDEMS = _STUB_;
-    public static final Selector TANDEM_COUPLES = _STUB_;
-    public static final Selector _2_X2 = _STUB_;
 }

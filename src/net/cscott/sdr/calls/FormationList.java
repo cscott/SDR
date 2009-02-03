@@ -126,10 +126,14 @@ public abstract class FormationList {
     public static final TaggedFormation GENERAL_LINE =
         create("GENERAL LINE", f("||||"), WhetherTagger.NO_AUTO_TAGS,
                 t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
+    public static final TaggedFormation _2x2 =
+        create("2x2", f("++","++"), WhetherTagger.NO_AUTO_TAGS);
     public static final TaggedFormation FACING_COUPLES = // callerlab #6
         xofy("FACING COUPLES", FACING_DANCERS, COUPLE);
     public static final TaggedFormation BACK_TO_BACK_COUPLES = // callerlab #7
         xofy("BACK TO BACK COUPLES", BACK_TO_BACK_DANCERS, COUPLE);
+    public static final TaggedFormation TANDEM_COUPLES =
+        xofy("TANDEM COUPLES", TANDEM, COUPLE);
     public static final TaggedFormation RH_OCEAN_WAVE = // callerlab #8
         xofy("RH OCEAN WAVE", COUPLE, RH_MINIWAVE); // XXX label centers/end
     public static final TaggedFormation LH_OCEAN_WAVE = // callerlab #9
@@ -204,8 +208,12 @@ public abstract class FormationList {
         xofy("TRADE BY", FACING_COUPLES, BACK_TO_BACK_DANCERS);
     public static final TaggedFormation DOUBLE_PASS_THRU = // callerlab #25
         xofy("DOUBLE PASS THRU", FACING_COUPLES, TANDEM);
+    public static final TaggedFormation SINGLE_DOUBLE_PASS_THRU =
+        xofy("SINGLE DOUBLE PASS THRU", FACING_DANCERS, TANDEM);
     public static final TaggedFormation COMPLETED_DOUBLE_PASS_THRU = // callerlab #26
         xofy("COMPLETED DOUBLE PASS THRU", BACK_TO_BACK_COUPLES, TANDEM);
+    public static final TaggedFormation COMPLETED_SINGLE_DOUBLE_PASS_THRU =
+        xofy("COMPLETED SINGLE DOUBLE PASS THRU", BACK_TO_BACK_DANCERS, TANDEM);
     public static final TaggedFormation LINES_FACING_OUT = // callerlab #27
         xofy("LINES FACING OUT", BACK_TO_BACK_COUPLES, COUPLE);
     public static final TaggedFormation PARALLEL_RH_WAVES = // callerlab #28(a)
