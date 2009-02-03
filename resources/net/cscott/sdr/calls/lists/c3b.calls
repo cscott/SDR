@@ -1,0 +1,624 @@
+program: c3b
+
+/* ... */
+
+/*
+def: _steps at a time(n)
+  spoken: <n=number> steps at a time
+  from: COLUMNS
+  // lead dancers do an Nx(4-n) peel off, as-couples-on-N quarter in (3 parts)
+  // other dancers circulate (n/2) times, trade, roll (3 parts)
+*/
+
+/* ... */
+
+
+def: bingo
+  from: RH BOX, LH BOX, 2x2
+    select: LEADER
+      call: 3/4 out
+    select: TRAILER
+      call: any shoulder wheel thru // XXX: any shoulder is a concept?
+  example: bingo // from RH box
+    before:
+    !  A> a>
+    ! <c <C
+    after:
+    ! ^ 
+    ! C a
+    ! ^ v
+    ! c A
+    !   v
+  example: bingo // from t-boned setup
+    before:
+    ! A a>
+    ! v ^
+    !<c C
+    after:
+    ! <C a
+    !  ^ v
+    !  c A> 
+  example: _and roll(bingo)
+    // ensure that we're going 3/4 out, not 1/4 in! (common cheat)
+    before:
+    ! <A <a
+    !  c> C>
+    after:
+    ! <A <c
+    !  a> C>
+  example: 1/2(bingo), box counter rotate 1/8
+    // check left shoulder pass & 45-off setups.
+    before:
+    ! <A <a
+    !  c> C>
+    after:
+    !   A>
+    !    ^
+    !  a c
+    !  v
+    !  <C
+
+def: boomerang
+  from: TANDEM COUPLES
+    select: LEADER
+      call: zoom
+    select: TRAILER
+      call: circulate, trade
+    //ends in: FACING COUPLES // not parsed yet, but helps in reversing calls.
+  from: RH BOX, LH BOX, 2x2 // tandem couples should match first rule, not 2x2
+    // should be fractionalizable into halves
+    select: LEADER
+      call: zoom
+    select: TRAILER // "scoot back"
+      call: extend
+      call: trade
+      call: extend
+  example: boomerang // from tandem couples
+    before:
+    ! A> C>
+    ! a> c>
+    after:
+    ! C><a
+    ! c><A
+  example: _and roll(boomerang) // everyone can roll from tandem couples
+    before:
+    ! A> C>
+    ! a> c>
+    after:
+    ! ^
+    ! C a
+    !   v
+    !   ^
+    ! c A
+    ! v
+  example: boomerang // from rh box
+    before:
+    ! A> a>
+    !<c <C
+    after:
+    ! a> C>
+    !<A <c
+  example: 1/2(boomerang) // same as peel to a diamond!
+    before:
+    ! A> a>
+    !<c <C
+    after:
+    ! <a
+    ! ^
+    ! C A
+    !   v
+    !  c>
+  example: boomerang // from t-bone
+    before:
+    ! ^
+    ! A <a
+    ! c> C
+    !    v
+    after:
+    ! <c C
+    !  ^ v
+    !  A a>
+  example: 1/2(boomerang) // fractionalizable
+    before:
+    ! ^
+    ! A <a
+    ! c> C
+    !    v
+    after:
+    !     ^ ^
+    ! A a c C
+    ! v v
+  example: _and roll(boomerang) // only leaders can roll.
+    before:
+    ! ^
+    ! A <a
+    ! c> C
+    !    v
+    after:
+    ! <c C>
+    ! <A a>
+
+/* skipping "busy <anything>" and "by golly" */
+def: by golly
+  // this alternate definition for by golly is borrowed by vic ceder
+  // it's more general than the "standard" definition and allows by golly
+  // following couple up, r&l thru, etc.
+  from: FACING COUPLES
+    condition: ROLL IS(RIGHT) // all selected dancers can roll right
+    ipart:
+      call: veer left
+      call: 1/2 tag
+  from: FACING COUPLES
+    condition: ROLL IS(LEFT) // all selected dancers can roll left
+    ipart:
+      call: veer right
+      call: left 1/2 tag
+  example: recycle, by golly
+    before:
+    ! ^   ^
+    ! A a c C
+    !   v   v
+    after:
+    ! C> c>
+    !<a <A
+  example: bend the line, by golly
+    before:
+    ! ^ ^
+    ! A a c C
+    !     v v
+    after:
+    ! ^
+    ! c A
+    ! ^ v
+    ! C a
+    !   v
+  example: ferris wheel, centers(by golly)
+    before:
+    ! ^ ^
+    ! A a c C
+    ! ^ ^ v v
+    ! B b d D
+    !     v v
+    after: // XXX haven't done the by golly yet
+    ! a A
+    ! v v
+    ! b B
+    ! v v
+    ! ^ ^
+    ! C c
+    ! ^ ^
+    ! D d
+
+/* .... */
+def: reverse the pass
+  from: TANDEM COUPLES
+    select: LEADER
+      part:
+        call: trade
+      part:
+        call: pass thru
+      part: // should be divisible in half
+        call: nothing
+        call: nothing
+    select: TRAILER
+      part: // should be divisible in two
+        call: nothing
+        call: nothing
+      part:
+        call: pass thru
+      part:
+        call: trade
+    //ends in: TANDEM COUPLES
+  example: reverse the pass
+    before:
+    ! ^ ^
+    ! A a
+    ! ^ ^
+    ! C c
+    after:
+    ! c C
+    ! v v
+    ! a A
+    ! v v
+  example: 1/2(reverse the pass)
+    before:
+    ! ^ ^
+    ! A a
+    ! ^ ^
+    ! C c
+    after:
+    ! ^   ^
+    ! C a c A
+    !   v   v
+
+def: reverse the top
+  call: fan the top
+  call: swing
+  //ends in: WAVE // XXX grammar doesn't admit this yet
+  example: reverse the top
+    before:
+    ! A><c
+    ! a><C
+    after:
+    ! ^   ^
+    ! a C A c
+    !   v   v
+
+def: revolve to a wave
+  // XXX: this is a cheat!
+  from: 2x2 // XXX: non-T-bone 2x2
+  ipart:
+    call: leaders(twice(quarter right)) // XXX nothing if no leaders.
+    call: facing recycle
+  example: revolve to a wave
+    before:
+    ! ^ ^
+    ! A c
+    ! ^ ^
+    ! a C
+    after:
+    ! ^   ^
+    ! C a c A
+    !   v   v
+  example: revolve to a wave
+    before:
+    ! A c
+    ! v v
+    ! ^ ^
+    ! a C
+    after:
+    ! ^   ^
+    ! C a c A
+    !   v   v
+  example: revolve to a wave
+    before:
+    ! ^
+    ! A c
+    !   v
+    !   ^
+    ! a C
+    ! v
+    after:
+    ! ^   ^
+    ! C a c A
+    !   v   v
+
+def: rip off
+  from: 2x2
+    select: LEADER
+      select: BEAU
+        call: run
+      select: BELLE
+        call: zoom
+    select: TRAILER
+      call: walk others dodge(BEAU)
+  example: rip off
+    before:
+    ! ^ ^
+    ! A a
+    ! ^ ^
+    ! C c
+    after:
+    ! ^ ^
+    ! C A
+    ! ^ ^
+    ! c a
+  example: rip off
+    before:
+    ! ^  
+    ! A c
+    !   v
+    !   ^
+    ! a C
+    ! v
+    after:
+    ! a A
+    ! v v
+    ! ^  
+    ! C c
+    !   v
+  example: _and roll(rip off)
+    before:
+    ! ^  
+    ! A c
+    !   v
+    !   ^
+    ! a C
+    ! v
+    after:
+    !<a<A
+    ! ^  
+    ! C c
+    !   v
+
+/* ... */
+def: scramble
+  select: END
+    call: ends bend // does this work from select?
+    call: turn thru
+  select: CENTER
+    call: face in // does this work from select?
+    call: cross trail thru
+  example: scramble
+    before:
+    ! ^ ^ ^ ^
+    ! A a D d
+    ! b B c C
+    ! v v v v
+    after:
+    ! <A d>
+    ! <c B>
+    ! <D a<
+    ! <b C>
+  example: scramble
+    before:
+    ! ^   ^ ^
+    ! A a D d
+    !   v ^
+    ! b B c C
+    ! v v   v
+    after:
+    ! <A d>
+    ! <c B>
+    ! <D a<
+    ! <b C>
+  example: 1/2(scramble)
+    before:
+    ! ^ ^ ^ ^
+    ! A a D d
+    ! b B c C
+    ! v v v v
+    after:
+    !  A><d
+    !  a><D
+    !  B><c 
+    !  b><C
+
+/* ... */
+
+/*sidetrack, single sidetrack, split sidetrack (different from single concept)*/
+
+/* ... */
+def: track(n)
+  spoken: track <n=number>
+  condition: not(or(less([n],0),greater([n],4)))
+  condition: or(PROGRAM AT LEAST(c3b),equal([n],2))
+  from: COMPLETED DOUBLE PASS THRU
+    call: _tag(tandem(partner trade), [n])
+  example: track(0)
+    before:
+    ! <a<b D>C>
+    ! <A<B d>c>
+    after:
+    ! B> A><c <d
+    ! b> a><C <D
+  example: track(1)
+    before:
+    ! <a<b D>C>
+    ! <A<B d>c>
+    after:
+    !    A>
+    ! B><c <d
+    ! b> a><D
+    !   <C
+  example: track(2)
+    before:
+    ! <a<b D>C>
+    ! <A<B d>c>
+    after:
+    ! B> A>
+    !<c <d
+    ! b> a>
+    !<C <D
+  example: track(3)
+    before:
+    ! <a<b D>C>
+    ! <A<B d>c>
+    after:
+    !     B>
+    ! <c <d  A>
+    ! <C  b> a>
+    !    <D
+  example: track(4)
+    before:
+    ! <a<b D>C>
+    ! <A<B d>c>
+    after:
+    ! <c <d  B> A>
+    ! <C <D  b> a>
+
+/* ... */
+
+def: turn the key
+  call: trade
+  call: counter rotate // XXX: all 8 counter rotate
+  call: hinge
+  example: turn the key // 3 & 1 lines
+    before:
+    !       ^
+    ! a A D d
+    ! v v v
+    !   ^ ^ ^
+    ! b B C c
+    ! v
+    after:
+    !   ^ ^
+    ! D b a A
+    ! v     v
+    ! ^     ^
+    ! C c d B
+    !   v v
+  example: turn the key // 1/4 tag
+    before:
+    !   d D
+    !   v v
+    ! ^   ^
+    ! A a c C
+    !   v   v
+    !   ^ ^
+    !   B b
+    after:
+    !     ^
+    !     C a
+    ! ^     v ^
+    ! B d     b D
+    !   v ^     v
+    !     c A
+    !       v
+
+def: the key
+  call: counter rotate // XXX: all 8 counter rotate
+  call: hinge
+
+def: split turn the key
+  call: trade
+  call: split counter rotate
+  call: hinge
+
+def: turnstyle
+  select: CENTER
+    from: FACING DANCERS
+      ipart:
+        call: touch
+        call: cast off 3/4
+    from: COUPLE, MINIWAVE
+      call: cast off 3/4
+  select: END
+    call: quarter right
+  example: turnstyle
+    before:
+    ! A> a><c <C
+    after:
+    !   ^   ^
+    ! A a c C
+    ! v   v
+  example: turnstyle
+    before:
+    !   ^ ^
+    !   a d
+    ! ^ ^
+    ! A B D C
+    !     v v
+    !   b c
+    !   v v
+    after:
+    ! a> d>
+    ! A><D
+    ! B><C
+    !<b <c
+  example: turnstyle
+    before:
+    ! A>a>B>b>
+    !<d<D<c<C
+    after:
+    ! A         b
+    ! v ^   ^   v
+    !   a D B c
+    ! ^   v   v ^
+    ! d         C
+
+def: wave the(sel)
+  spoken: [10] wave the <sel=anyone>
+  ipart:
+    call: press ahead
+  ipart:
+    select: OUTSIDE 4
+      call: kickoff([sel])
+    select: CENTER 4
+      call: concentric(walk others dodge([sel]))
+  example: wave the(BEAU)
+    before:
+    !   ^ ^
+    ! A>B b<c
+    ! a>d D<C
+    !   v v
+    after:
+    ! <b <B
+    !  a> A>
+    ! <C <c
+    !  D> d>
+  example: wave the(BELLE)
+    before:
+    ! A><b D><c
+    ! a><B d><C
+    after:
+    ! ^
+    ! B<c<C d
+    ! ^     v
+    ! b A>a>D
+    !       v
+def: wave nobody
+  call: wave the(NOBODY)
+  example: wave nobody
+    before:
+    !   ^ ^
+    ! A>B b<c
+    ! a>d D<C
+    !   v v
+    after:
+    ! <b  B>
+    !  a><C
+    !  A> <c
+    ! <D  d>
+def: wave everybody
+  call: wave the(EVERYBODY)
+  example: wave everybody
+    before:
+    ! c C
+    ! v v
+    ! ^ ^
+    ! B b
+    ! d D
+    ! v v
+    ! ^ ^
+    ! A a
+    after:
+    ! b><B
+    ! ^  ^
+    ! A  a
+    ! c  C
+    ! v  v
+    ! D><d
+
+def: with confidence
+  part:
+    select: END
+      call: nothing
+    select: CENTER
+      call: HINGE
+  part:
+    select: END
+      call: 1/2(circulate)
+    select: CENTER
+      select: CENTER // very centers
+        call: hinge
+      select: END
+        call: nothing
+  part:
+    // XXX: adjust to a thar,  couples 1/2 press ahead, miniwaves...
+    call: _finish with confidence
+  example: with confidence // very centers end up in couples
+    before:
+    ! ^   ^
+    ! A a B b
+    ! ^ v ^ v
+    ! d D c C
+    !   v   v
+    after:
+    ! ^ ^
+    ! d c B A
+    ! ^ ^ v v
+    ! C D a b
+    !     v v
+  example: with confidence // very centers end up in miniwaves
+    before:
+    !     ^ ^
+    ! A a B b
+    ! v v ^ ^
+    ! d D c C
+    ! v v
+    after:
+    !<b <C
+    !<B <a
+    ! c> D>
+    ! A> d>
