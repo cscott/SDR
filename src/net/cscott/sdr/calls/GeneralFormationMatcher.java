@@ -18,15 +18,21 @@ public abstract class GeneralFormationMatcher {
         };
     }
 
-    // eventually: pass booleans for 'allow unmatched dancers' and
-    // 'use phantoms' which allow dancers in the input and result formations,
+    // booleans for 'allow unmatched dancers' and
+    // 'use phantoms' allow dancers in the input and result formations,
     // respectively, not to match up.
+    // XXX: implement usePhantoms
     public static FormationMatch doMatch(
             final Formation input, 
             final TaggedFormation goal,
             boolean allowUnmatchedDancers,
             boolean usePhantoms)
     throws NoMatchException {
+        // XXX if allowUnmatchedDancers, we should be observing to
+        // the contract of FormationMatch, which insists that unmatched
+        // dancers get mapped to the SINGLE_DANCER formation.
+        // we currently just omit them (i think)
+        assert !usePhantoms : "matching with phantoms is not implemented";
         // okay, try to perform match by trying to use each dancer in turn
         // as dancer #1 in the goal formation.  We then validate the match:
         // make sure that there is a dancer in each position, that no dancer
@@ -106,7 +112,7 @@ public abstract class GeneralFormationMatcher {
             }
         }); 
         // Do the match
-        tryOne(mi, 0, initialAssignment, inputEmpty);
+        tryOne(mi, 0, initialAssignment, inputEmpty, allowUnmatchedDancers);
         if (mi.matches.isEmpty())
             throw new NoMatchException("no matches");
         
@@ -265,15 +271,21 @@ public abstract class GeneralFormationMatcher {
     }
         
     private static void tryOne(MatchInfo mi, int dancerNum,
-            PersistentSet<OneMatch> currentAssignment, PersistentSet<Dancer> inFormation) {
+            PersistentSet<OneMatch> currentAssignment,
+            PersistentSet<Dancer> inFormation,
+            boolean allowUnmatchedDancers) {
         if (dancerNum >= mi.numInput) {
+            if (inFormation.size() != mi.numInput)
+                if (!allowUnmatchedDancers)
+                    return; // not a good assignment
             // we've got a complete assignment; save it.
             if (!currentAssignment.isEmpty())
                 mi.matches.add(currentAssignment);
             return;
         }
         // try NOT assigning this dancer
-        tryOne(mi, dancerNum+1, currentAssignment, inFormation);
+        tryOne(mi, dancerNum+1, currentAssignment, inFormation,
+               allowUnmatchedDancers);
         // okay, try to assign the next dancer, possibly w/ some extra rotation
         for (int i=0; i < mi.numExtra; i++) {
             Fraction extraRot = Fraction.valueOf(i,mi.numExtra);
@@ -281,7 +293,8 @@ public abstract class GeneralFormationMatcher {
                 (new OneMatch(mi.inputIndex.getByID(dancerNum), extraRot));
             mi.inFormation = inFormation;
             if (validate(mi, dancerNum, extraRot))
-                tryOne(mi, dancerNum+1, newAssignment, mi.inFormation);
+                tryOne(mi, dancerNum+1, newAssignment, mi.inFormation,
+                        allowUnmatchedDancers);
         }
     }
 
