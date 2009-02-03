@@ -84,6 +84,12 @@ def
 	}
 	;
 	
+example
+	: #(EXAMPLE call_body BEFORE FIGURE AFTER FIGURE)
+        // XXX we currently throw these figures away.
+        //     we should save them, and later check them.
+	;
+
 pieces returns [B<? extends Comp> r]
 	: r=opt
 	| r=seq

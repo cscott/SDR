@@ -31,3 +31,25 @@ def: _beau cast 4/4 // ie, cast around beau
       prim: -2,2,left
       prim: -2,2,left
       prim: -2,2,left
+
+// ferris wheel should be: call: ferris(wheel and deal)
+// but ferris is a hard concept to program, and c3b and/or c4 to boot.
+// XXX: we'll use the simpler stretch definition for now.
+def: ferris wheel
+  call: stretch(wheel and deal)
+  example: ferris wheel
+    before:
+    !  ^ ^
+    !  A a c C
+    !  ^ ^ v v
+    !  B b d D
+    !      v v
+    after:
+    !  a A
+    !  v v
+    !  b B
+    !  v v
+    !  ^ ^
+    !  C c
+    !  ^ ^
+    !  D d

@@ -3,8 +3,8 @@ header {
 	import java.io.*;
 	import java.util.ArrayList;
 	import java.util.List;
+	import antlr.collections.AST;
 	import antlr.debug.misc.ASTFrame;
-	import antlr.BaseAST;
 	import antlr.CommonToken;
 }
 // @@parser
@@ -53,7 +53,7 @@ program
 	;
 
 def
-    : DEF^ COLON! call_body INDENT! (os)? pieces DEDENT!
+    : DEF^ COLON! call_body INDENT! (os)? pieces ( example )* DEDENT!
     ;
 os	: optional (spoken)?
 	| s:spoken (o:optional)? { #os = #(o,s); }
@@ -67,6 +67,19 @@ spoken
 priority
 	: LBRACK! number RBRACK!
 	;
+example
+    : EXAMPLE^ COLON! call_body_seq 
+      INDENT! BEFORE COLON! figure AFTER COLON! figure DEDENT!
+    ;
+figure
+    : ( f:FIGURE )+
+       { StringBuilder sb = new StringBuilder();
+         for (AST a = #figure.getFirstChild(); a!=null; a=a.getNextSibling()) {
+           sb.append(a.getText()); sb.append('\n');
+         }
+         #figure = #([FIGURE, sb.toString()]);
+       }
+    ;
 
 pieces
     :! INDENT p:pieces DEDENT { #pieces = #p; }
@@ -83,6 +96,19 @@ res
 	{ #res = #([IF, "if"], c, p); }
     ;
 
+// informational
+// XXX not yet integrated into grammar probably safest to treat as a
+// 'res' like IN, but then ENDS IN should come *first* (we'd rather
+// like it to come last, as a suffix to a one_opt, but that causes
+// ambiguities).  ASSERT is very similar to CONDITION except that it
+// indicates a programmer error, rather than a simple "can't do that
+// from here"
+endsin
+    : ENDS^ IN! COLON! simple_body
+    ;
+assertion
+    : ASSERT^ COLON! cond_body
+    ;
 
 // options (exactly one of the list must be selected)
 opt
@@ -90,7 +116,7 @@ opt
 	{ #opt = #([OPT, "opt"], #opt); }
     ;
 protected one_opt
-    : FROM^ COLON! simple_body pieces
+    : FROM^ COLON! simple_body pieces //( endsin! )? //XXX see above
     ;
 
 seq
@@ -366,6 +392,11 @@ INITIAL_WS
     { this.afterIndent=true; }
     ;
 
+// Parse formation figure
+FIGURE
+  : '!'! (~('\n'|'\r'))*
+  ;
+
 IDENT
   : {this.afterIndent||getColumn()!=1}?
     ('_'|'a'..'z'|'A'..'Z') ('_'|'a'..'z'|'A'..'Z'|'0'..'9'|'-')*
@@ -383,6 +414,11 @@ IDENT
     	else if (id=="program") $setType(PROGRAM);
     	else if (id=="optional") $setType(OPTIONAL);
     	else if (id=="spoken") $setType(SPOKEN);
+        else if (id=="example") $setType(EXAMPLE);
+        else if (id=="before") $setType(BEFORE);
+        else if (id=="after") $setType(AFTER);
+        else if (id=="ends") $setType(ENDS);
+        else if (id=="assert") $setType(ASSERT);
       } else if (this.afterPrim) {
       	if (id=="in") $setType(IN);
       	else if (id=="out") $setType(OUT);
