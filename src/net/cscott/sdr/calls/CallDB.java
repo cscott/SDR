@@ -75,8 +75,9 @@ public class CallDB {
     public Apply parse(Program program, String s) {
         program = Program.C4; // xxx: force C4 for now.
         String pkgName = "net.cscott.sdr.calls.lists.";
-        String parserName = program.toTitleCase()+"Parser";
-        String lexerName = parserName+"Lexer";
+        String baseName = program.toTitleCase()+"Grammar";
+        String parserName = baseName+"Parser";
+        String lexerName = baseName+"Lexer";
 
         try {
             Lexer lexer = (Lexer) Class.forName(pkgName+lexerName)

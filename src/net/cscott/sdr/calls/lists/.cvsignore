@@ -6,4 +6,5 @@
 *.tokens
 *.lexer.3g
 *.3g
+*__.g
 doc-files
