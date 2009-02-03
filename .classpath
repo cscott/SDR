@@ -1,62 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/*.lexer.g|**/*~" path="src" kind="src"/>
-	<classpathentry excluding="**/*~" path="resources" kind="src"/>
-	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
-	<classpathentry path="lib/sphinx/jsapi.jar" kind="lib">
+	<classpathentry excluding="**/*.lexer.g|**/*~" kind="src" path="src"/>
+	<classpathentry excluding="**/*~" kind="src" path="resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/sphinx/jsapi.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://java.sun.com/products/java-media/speech/forDevelopers/jsapi-doc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry path="lib/sphinx/sphinx4.jar" kind="lib">
+	<classpathentry kind="lib" path="lib/sphinx/sphinx4.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://cmusphinx.sourceforge.net/sphinx4/javadoc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry path="lib/sphinx/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar" kind="lib"/>
-	<classpathentry path="lib/jme/jinput.jar" kind="lib"/>
-	<classpathentry sourcepath="jme-dist/jme/src" path="lib/jme/jme.jar" kind="lib">
+	<classpathentry kind="lib" path="lib/sphinx/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar"/>
+	<classpathentry kind="lib" path="lib/jme/jinput.jar"/>
+	<classpathentry kind="lib" path="lib/jme/jme.jar" sourcepath="jme-dist/jme/src">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.jmonkeyengine.com/doc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry path="lib/jme/jme-awt.jar" kind="lib"/>
-	<classpathentry path="lib/jme/jme-editors.jar" kind="lib"/>
-	<classpathentry path="lib/jme/jme-effects.jar" kind="lib"/>
-	<classpathentry path="lib/jme/jme-font.jar" kind="lib"/>
-	<classpathentry path="lib/jme/jme-gamestates.jar" kind="lib"/>
-	<classpathentry path="lib/jme/jme-model.jar" kind="lib"/>
-	<classpathentry path="lib/jme/jme-scene.jar" kind="lib"/>
-	<classpathentry path="lib/jme/jme-sound.jar" kind="lib"/>
-	<classpathentry path="lib/jme/jme-terrain.jar" kind="lib"/>
-	<classpathentry path="lib/jme/jogg-0.0.5.jar" kind="lib"/>
-	<classpathentry path="lib/jme/jorbis-0.0.12.jar" kind="lib"/>
-	<classpathentry path="lib/jme/lwjgl_applet.jar" kind="lib"/>
-	<classpathentry path="lib/jme/lwjgl_fmod3.jar" kind="lib"/>
-	<classpathentry path="lib/jme/lwjgl_util_applet.jar" kind="lib"/>
-	<classpathentry path="lib/jme/lwjgl_util.jar" kind="lib"/>
-	<classpathentry path="lib/jme/lwjgl.jar" kind="lib">
+	<classpathentry kind="lib" path="lib/jme/jme-awt.jar"/>
+	<classpathentry kind="lib" path="lib/jme/jme-editors.jar"/>
+	<classpathentry kind="lib" path="lib/jme/jme-effects.jar"/>
+	<classpathentry kind="lib" path="lib/jme/jme-font.jar"/>
+	<classpathentry kind="lib" path="lib/jme/jme-gamestates.jar"/>
+	<classpathentry kind="lib" path="lib/jme/jme-model.jar"/>
+	<classpathentry kind="lib" path="lib/jme/jme-scene.jar"/>
+	<classpathentry kind="lib" path="lib/jme/jme-sound.jar"/>
+	<classpathentry kind="lib" path="lib/jme/jme-terrain.jar"/>
+	<classpathentry kind="lib" path="lib/jme/jogg-0.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/jme/jorbis-0.0.12.jar"/>
+	<classpathentry kind="lib" path="lib/jme/lwjgl_applet.jar"/>
+	<classpathentry kind="lib" path="lib/jme/lwjgl_fmod3.jar"/>
+	<classpathentry kind="lib" path="lib/jme/lwjgl_util_applet.jar"/>
+	<classpathentry kind="lib" path="lib/jme/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="lib/jme/lwjgl.jar">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="SDR/lib/jme"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry path="lib/commons-lang.jar" kind="lib">
+	<classpathentry kind="lib" path="lib/commons-lang.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://jakarta.apache.org/commons/lang/api-release/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry sourcepath="/home/cananian/Projects/JUtil/jutil-source.jar" path="lib/jutil.jar" kind="lib">
+	<classpathentry kind="lib" path="lib/jutil.jar" sourcepath="/home/cananian/Projects/JUtil/jutil-source.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://cscott.net/Projects/JUtil/jutil-latest/doc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry path="lib/antlr-3.0b4.jar" kind="lib"/>
-	<classpathentry path="lib/antlr-2.7.6.jar" kind="lib">
-		<attributes>
-			<attribute name="javadoc_location" value="http://antlr.org/javadoc/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry path="lib/dev/junit-4.1.jar" kind="lib"/>
-	<classpathentry path="lib/dev/stringtemplate-2.3b9.jar" kind="lib"/>
-	<classpathentry path="bin" kind="output"/>
+	<classpathentry kind="lib" path="lib/dev/junit-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/dev/stringtemplate-2.3b9.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-3.1.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
