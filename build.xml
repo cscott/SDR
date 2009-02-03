@@ -129,7 +129,7 @@ Square Dance Revolution build file.
             <link href="http://cscott.net/Projects/JUtil/jutil-latest/doc/"/>
             <!--<link href="http://java.sun.com/products/java-media/speech/forDevelopers/jsapi-doc/"/>-->
             <link href="http://java.sun.com/javase/6/docs/api"/>
-            <link href="http://www.antlr.org/javadoc/"/>
+            <link href="http://www.antlr2.org/javadoc/"/>
 	</javadoc>
     </target>
 
