@@ -165,6 +165,19 @@ Square Dance Revolution build file.
 		  <classpath refid="classpath.path"/>
 	    </java>
     </target>
+    <target name="run.test"
+	    description="Runs a self-test, for development purposes."
+	    depends="jar">
+	    <java classname="net.cscott.sdr.calls.Test"
+	          fork="true">
+                  <classpath>
+                    <fileset dir=".">
+                      <include name="sdr.jar"/>
+                    </fileset>
+		    <path refid="classpath.path"/>
+                  </classpath>
+	    </java>
+    </target>
 
     <!-- ********* Build the natural-language grammars. ********* -->
     <target name="build.grm"
