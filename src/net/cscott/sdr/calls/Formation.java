@@ -44,13 +44,46 @@ public class Formation {
     }
 
     /** Create a new formation containing only the selected dancers from this
-     * formation. */
+     * formation.
+     * @doc.test
+     *  Create a formation containing only the sides from a squared set:
+     *  js> importPackage(java.util)
+     *  js> f = Formation.SQUARED_SET ; undefined
+     *  js> sides = [d for each (d in Iterator(f.dancers())) if (d.isSide())]
+     *  COUPLE 2 BOY,COUPLE 2 GIRL,COUPLE 4 BOY,COUPLE 4 GIRL
+     *  js> f2 = f.select(new LinkedHashSet(Arrays.asList(sides))).onlySelected()
+     *  net.cscott.sdr.calls.Formation@4fce71[
+     *    location={COUPLE 2 BOY=3,-1,3/4, COUPLE 2 GIRL=3,1,3/4, COUPLE 4 BOY=-3,1,1/4, COUPLE 4 GIRL=-3,-1,1/4}
+     *    selected=[COUPLE 2 BOY, COUPLE 2 GIRL, COUPLE 4 BOY, COUPLE 4 GIRL]
+     *  ]
+     *  js> f2.toStringDiagram()
+     *  4B>            2G<
+     *  
+     *  4G>            2B<
+     *  
+     */
     public Formation onlySelected() {
 	Map<Dancer,Position> nloc = new LinkedHashMap<Dancer,Position>
 	    (this.location);
 	nloc.keySet().retainAll(this.selected);
 	return new Formation(nloc);
     }
+    /** Return true iff the given dancer is selected.
+     * @doc.test
+     *  Select the sides, and verify that isSelected() returns
+     *  the expected results:
+     *  js> importPackage(java.util)
+     *  js> f = Formation.SQUARED_SET ; undefined
+     *  js> heads = [d for each (d in Iterator(f.dancers())) if (d.isHead())]
+     *  COUPLE 1 BOY,COUPLE 1 GIRL,COUPLE 3 BOY,COUPLE 3 GIRL
+     *  js> sides = [d for each (d in Iterator(f.dancers())) if (d.isSide())]
+     *  COUPLE 2 BOY,COUPLE 2 GIRL,COUPLE 4 BOY,COUPLE 4 GIRL
+     *  js> f2 = f.select(new LinkedHashSet(Arrays.asList(sides))); undefined
+     *  js> [f2.isSelected(d) for each (d in sides)]
+     *  true,true,true,true
+     *  js> [f2.isSelected(d) for each (d in heads)]
+     *  false,false,false,false
+     */
     public boolean isSelected(Dancer d) {
 	return selected.contains(d);
     }
@@ -67,7 +100,13 @@ public class Formation {
      * box around all the dancers' bounding boxes.  This means that
      * the 1 unit border from {@link #bounds(Dancer)} applies here
      * as well. If there are no dancers, returns a zero-width,
-     * zero-height box centered at the origin. */
+     * zero-height box centered at the origin.
+     * @doc.test
+     *  js> Formation.SQUARED_SET.bounds()
+     *  -4,-4,4,4
+     *  js> Formation.SQUARED_SET.select(java.util.Collections.EMPTY_SET).onlySelected().bounds()
+     *  0,0,0,0
+     */
     public Box bounds() {
         Fraction minx=null,miny=null,maxx=null,maxy=null;
         for (Position p : location.values()) {
@@ -98,13 +137,44 @@ public class Formation {
                new Point(p.x.add(Fraction.ONE),p.y.add(Fraction.ONE)));
     }
     /** Build a new formation with only the given dancers
-     * selected. */
+     * selected.
+     * @doc.test
+     *  js> importPackage(java.util)
+     *  js> f = Formation.SQUARED_SET ; undefined
+     *  js> heads = [d for each (d in Iterator(f.dancers())) if (d.isHead())]
+     *  COUPLE 1 BOY,COUPLE 1 GIRL,COUPLE 3 BOY,COUPLE 3 GIRL
+     *  js> f2 = f.select(new LinkedHashSet(Arrays.asList(heads)))
+     *  net.cscott.sdr.calls.Formation@12a0f6c[
+     *    location={COUPLE 1 BOY=-1,-3,0, COUPLE 1 GIRL=1,-3,0, COUPLE 2 BOY=3,-1,3/4, COUPLE 2 GIRL=3,1,3/4, COUPLE 3 BOY=1,3,1/2, COUPLE 3 GIRL=-1,3,1/2, COUPLE 4 BOY=-3,1,1/4, COUPLE 4 GIRL=-3,-1,1/4}
+     *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL, COUPLE 3 BOY, COUPLE 3 GIRL]
+     *  ]
+     */
     public Formation select(Set<Dancer> s) {
         Set<Dancer> nSel = new LinkedHashSet<Dancer>(s);
         nSel.retainAll(dancers());
         return new Formation(location, Collections.unmodifiableSet(nSel));
     }
-    /** Build a new formation, centered on 0,0 */
+    /**
+     * Build a new formation, centered on 0,0.
+     * @doc.test Isolate the #1 couple, then recenter:
+     *  js> importPackage(java.util)
+     *  js> couple1 = [StandardDancer.COUPLE_1_BOY, StandardDancer.COUPLE_1_GIRL]
+     *  COUPLE 1 BOY,COUPLE 1 GIRL
+     *  js> f = Formation.SQUARED_SET.select(new LinkedHashSet(Arrays.asList(couple1))).onlySelected()
+     *  net.cscott.sdr.calls.Formation@a31e1b[
+     *    location={COUPLE 1 BOY=-1,-3,0, COUPLE 1 GIRL=1,-3,0}
+     *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
+     *  ]
+     *  js> f.isCentered()
+     *  false
+     *  js> f = f.recenter()
+     *  net.cscott.sdr.calls.Formation@1b3f829[
+     *    location={COUPLE 1 BOY=-1,0,0, COUPLE 1 GIRL=1,0,0}
+     *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
+     *  ]
+     *  js> f.isCentered()
+     *  true
+     */
     public Formation recenter() {
         Box bounds = bounds();
         Fraction ox = bounds.ll.x.add(bounds.ur.x).divide(Fraction.TWO);
@@ -115,15 +185,34 @@ public class Formation {
                     me.getValue().y.subtract(oy), me.getValue().facing));
         return new Formation(Collections.unmodifiableMap(m), selected);
     }
-    /** Build a new formation, like this one except rotated around 0,0.
+    /**
+     * Build a new formation, like this one except rotated around 0,0.
      * We rotate CW by the amount given in the {@code rotation} parameter;
-     * "north" corresponds to no rotation. */
+     * "north" corresponds to no rotation.
+     * @doc.test
+     *  Rotate the squared set 90 degrees CW:
+     *  js> Formation.SQUARED_SET.rotate(ExactRotation.ONE_QUARTER).toStringDiagram()
+     *       4Gv  4Bv
+     *  
+     *  1B>            3G<
+     *  
+     *  1G>            3B<
+     *  
+     *       2B^  2G^
+     *  
+     */
     public Formation rotate(ExactRotation rotation) {
         Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>(location.size());
         for (Map.Entry<Dancer,Position> me : location.entrySet())
             m.put(me.getKey(), me.getValue().rotateAroundOrigin(rotation));
         return new Formation(Collections.unmodifiableMap(m), selected);
     }
+    /**
+     * Return true if the given formation is centered at the origin.
+     * @doc.test
+     *  js> Formation.SQUARED_SET.isCentered()
+     *  true
+     */
     public boolean isCentered() {
         Box bounds = bounds();
         return
@@ -150,13 +239,18 @@ public class Formation {
 	    .append("selected", selected)
 	    .toString();
     }
+    /**
+     * Return an ascii-art diagram of this formation.
+     * Each 2x2 dancer becomes a 5x2 char array, with facing direction
+     * indicator centered in the 5 unit width.
+     * ie, a box (bounds -2,-2 to 2,2) is:
+     * <pre>
+     * "1B^  1Gv  "
+     * "          "
+     * "3B^  3Gv  "
+     * </pre>
+     */
     public String toStringDiagram() {
-        // each 2x2 dancer becomes a 5x2 char array, with facing direction
-        // indicator centered in the 5 unit width.
-        // ie, a box (bounds -2,-2 to 2,2) is:
-        //       "1B^  1Gv  "
-        //       "          "
-        //       "3B^  3Gv  "
         GridString gs = new GridString();
         for (Dancer d : dancers()) {
             Position p = location(d);
@@ -172,10 +266,17 @@ public class Formation {
         }
         return gs.toString();
     }
+    
+    /**
+     * A {@link GridString} lets you write ascii-art graphics to an
+     * array of {@link StringBuilder}s, and then turn the results
+     * into a new-line separated string at the end.
+     */
     private static class GridString {
         private int minx=0, miny=0;
         private final List<StringBuilder> grid = new ArrayList<StringBuilder>();
         GridString() { }
+	/** Set the character at position (x,y) to c.  */
         void set(int x, int y, char c) {
             // insert left padding if we need it.
             while (x<minx) {
@@ -201,6 +302,7 @@ public class Formation {
             sb.setCharAt(x,c);
             // done!
         }
+	/** Return a newline-separated string. */
         public String toString() {
             StringBuilder sb = new StringBuilder();
             // need to reverse y direction.
@@ -212,7 +314,20 @@ public class Formation {
         }
     }
     
-    // starting formation for 8-couple dancing
+    /**
+     * Starting formation for 8-couple dancing.
+     * @doc.test
+     *  Check the diagram for this formation:
+     *  js> Formation.SQUARED_SET.toStringDiagram()
+     *       3Gv  3Bv
+     *  
+     *  4B>            2G<
+     *  
+     *  4G>            2B<
+     *  
+     *       1B^  1G^
+     *  
+     */
     public static final Formation SQUARED_SET = new Formation
 	(new DancerInfo(COUPLE_1_BOY,
 			Position.getGrid(-1,-3,ExactRotation.ZERO)),
@@ -231,7 +346,16 @@ public class Formation {
 	 new DancerInfo(COUPLE_4_GIRL,
 			Position.getGrid(-3,-1,ExactRotation.ONE_QUARTER))
 	 );
-    // starting formation for 2-couple dancing.
+    /**
+     * Starting formation for 2-couple dancing.
+     * @doc.test
+     *  Check the diagram for this formation:
+     *  js> Formation.FOUR_SQUARE.toStringDiagram()
+     *  3Gv  3Bv
+     *  
+     *  1B^  1G^
+     *  
+     */
     public static final Formation FOUR_SQUARE = new Formation
         (new DancerInfo(COUPLE_1_BOY,
                 Position.getGrid(-1,-1,ExactRotation.ZERO)),
