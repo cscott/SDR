@@ -193,10 +193,7 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
      *  The character '.' is used for "unrepresentable rotations".
      *  The southeast and northwest characters are a little funny.
      * @doc.test Show rotations going CW from north:
-     *  js> function c2s(c) { // convenience func for testing chars
-     *    >   ca=java.lang.reflect.Array.newInstance(java.lang.Character.TYPE,1)
-     *    >   ca[0] = c; return java.lang.String(ca)
-     *    > }
+     *  js> function c2s(c) { return String.fromCharCode(c) }
      *  js> [c2s(r.toDiagramChar()) for each (r in 
      *    >  [ExactRotation.NORTH, ExactRotation.EAST,
      *    >   ExactRotation.SOUTH, ExactRotation.WEST])]

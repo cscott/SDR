@@ -171,24 +171,16 @@ public class Rotation {
      *  not Rotation.)  The character '.' is used for "unrepresentable
      *  rotations".
      * @doc.test Show that fromAbsoluteString and toDiagramChar are inverse
-     *  js> function c2s(c) { // convenience func for testing chars
-     *    >   ca=java.lang.reflect.Array.newInstance(java.lang.Character.TYPE,1)
-     *    >   ca[0] = c; return java.lang.String(ca)
-     *    > }
      *  js> function m(s) {
-     *    >   return c2s(Rotation.fromAbsoluteString(s).toDiagramChar())
+     *    >   return String.fromCharCode(Rotation.fromAbsoluteString(s).toDiagramChar())
      *    > }
      *  js> Array.map("|-+xo", m)
      *  |,-,+,x,o
      * @doc.test Unrepresentable rotation:
      *  js> importPackage(net.cscott.sdr.util)
-     *  js> function c2s(c) { // convenience func for testing chars
-     *    >   ca=java.lang.reflect.Array.newInstance(java.lang.Character.TYPE,1)
-     *    >   ca[0] = c; return java.lang.String(ca)
-     *    > }
      *  js> r = Rotation.create(Fraction.ZERO, Fraction.ONE_THIRD)
      *  0 mod 1/3
-     *  js> c2s(r.toDiagramChar())
+     *  js> String.fromCharCode(r.toDiagramChar())
      *  .
      */
     public char toDiagramChar() {
