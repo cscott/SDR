@@ -528,3 +528,10 @@ alcGetString(NULL, ALC_CAPTURE_DEVICE_SPECIFIER).
 ---
 For midi output, we don't need to manually set
 Transmitters/Receivers/etc. Look at MidiSystem.getSequencer(true);
+
+----------------------
+Selecting ends/centers etc depends on matching a specific formation.
+So: FROM xyz SELECT pdq.
+FROM converts the Formation to a TaggedFormation.
+SELECT w/o a controlling FROM can fail.
+FROM is an explicit "re-evaluate".
