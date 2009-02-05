@@ -19,13 +19,13 @@ import net.cscott.sdr.util.Fraction;
  * "ast tree generation functions", while optimizing the case where the
  * function generates a constant.
  * @author C. Scott Ananian
- * @version $Id: BuilderHelper.java,v 1.7 2007-03-07 19:25:05 cananian Exp $
+ * @version $Id: BuilderHelper.java,v 1.8 2009-02-05 09:50:02 cananian Exp $
  */
 abstract class BuilderHelper {
     /** An enumeration of directions, as specified in the call file. */
     static enum BDirection {
         ASIS, IN, OUT;
-        /** Translate {@link BDirection}s to {@link Prim.Direction}s. */
+        /** Translate {@link BDirection}s to {@link Direction}s. */
         Prim.Direction primDir() {
             switch (this) {
             case OUT:
