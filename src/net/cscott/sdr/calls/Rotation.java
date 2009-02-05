@@ -96,6 +96,20 @@ public class Rotation {
      * includes {@code 7/4 mod 1}, but does not include {@code 0 mod 1/4}.
      * Formally, returns true iff the congruence class of {@code this} is
      * a superset of the congruence class of {@code r}.
+     * @doc.test Demonstrate the properties described above:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> r1 = Rotation.create(Fraction.ZERO, Fraction.ONE_QUARTER)
+     *  0 mod 1/4
+     *  js> r2 = Rotation.create(Fraction.THREE_QUARTERS, Fraction.ONE)
+     *  3/4
+     *  js> r3 = Rotation.create(Fraction.valueOf(7, 4), Fraction.ONE)
+     *  1 3/4
+     *  js> r1.includes(r2)
+     *  true
+     *  js> r2.includes(r1)
+     *  false
+     *  js> r2.includes(r3)
+     *  true
      */
     public boolean includes(Rotation r) {
         Rotation r1 = this.normalize(), r2 = r.normalize();
@@ -118,9 +132,8 @@ public class Rotation {
     public String toString() {
         return this.amount.toProperString()+" mod "+this.modulus.toProperString();
     }
-    /** Returns a human-readable description of the rotation, similar to the
-     *  input to <code>ExactRotation.fromAbsoluteString(String)</code>. */
-    public String toAbsoluteString() {
+    /** Handle special Rotation values; return null if unrepresentable. */
+    private String _toDiagramString() {
         if (this.modulus.compareTo(Fraction.ZERO)==0) return "o";
         else if (this.modulus.compareTo(Fraction.ONE_QUARTER)==0) {
             if (this.amount.compareTo(Fraction.ZERO)==0) return "+";
@@ -130,8 +143,15 @@ public class Rotation {
             if (this.amount.compareTo(Fraction.ZERO)==0) return "|";
             else if (this.amount.compareTo(Fraction.ONE_QUARTER)==0) return "-";
         } else if (this.modulus.compareTo(Fraction.ONE)==0)
-            assert false : "we should have invoked ExactRotation.toAbsoluteString()";
-        return toString();
+            assert false: "we should have invoked an override in ExactRotation";
+	return null;
+    }
+
+    /** Returns a human-readable description of the rotation, similar to the
+     *  input to <code>ExactRotation.fromAbsoluteString(String)</code>. */
+    public String toAbsoluteString() {
+	String s = _toDiagramString();
+        return s!=null ? s : toString();
     }
     /** Converts a string (one of n/s/e/w, ne/nw/se/sw) to the
      * appropriate rotation object. 'n' is facing away from the caller.
@@ -145,5 +165,38 @@ public class Rotation {
         if (s.equals("x")) return create(Fraction.ONE_EIGHTH, Fraction.ONE_QUARTER);
         if (s.equalsIgnoreCase("o")) return create(Fraction.ZERO,Fraction.ZERO);
         return ExactRotation.fromAbsoluteString(s);
+    }
+    /** Convert rotation to an appropriate ascii-art representation.
+     *  (Most of the interesting directions are in ExactRotation,
+     *  not Rotation.)  The character '.' is used for "unrepresentable
+     *  rotations".
+     * @doc.test Show that fromAbsoluteString and toDiagramChar are inverse
+     *  js> function c2s(c) { // convenience func for testing chars
+     *    >   ca=java.lang.reflect.Array.newInstance(java.lang.Character.TYPE,1)
+     *    >   ca[0] = c; return java.lang.String(ca)
+     *    > }
+     *  js> function m(s) {
+     *    >   return c2s(Rotation.fromAbsoluteString(s).toDiagramChar())
+     *    > }
+     *  js> Array.map("|-+xo", m)
+     *  |,-,+,x,o
+     * @doc.test Unrepresentable rotation:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> function c2s(c) { // convenience func for testing chars
+     *    >   ca=java.lang.reflect.Array.newInstance(java.lang.Character.TYPE,1)
+     *    >   ca[0] = c; return java.lang.String(ca)
+     *    > }
+     *  js> r = Rotation.create(Fraction.ZERO, Fraction.ONE_THIRD)
+     *  0 mod 1/3
+     *  js> c2s(r.toDiagramChar())
+     *  .
+     */
+    public char toDiagramChar() {
+	String s = _toDiagramString();
+	if (s!=null) {
+	    assert s.length()==1;
+	    return s.charAt(0);
+	}
+	return '.'; // unrepresentable.
     }
 }

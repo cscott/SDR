@@ -189,4 +189,42 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
     public String toString() {
         return this.amount.toProperString();
     }
+    /** Convert rotation to an appropriate ascii-art representation.
+     *  The character '.' is used for "unrepresentable rotations".
+     *  The southeast and northwest characters are a little funny.
+     * @doc.test Show rotations going CW from north:
+     *  js> function c2s(c) { // convenience func for testing chars
+     *    >   ca=java.lang.reflect.Array.newInstance(java.lang.Character.TYPE,1)
+     *    >   ca[0] = c; return java.lang.String(ca)
+     *    > }
+     *  js> [c2s(r.toDiagramChar()) for each (r in 
+     *    >  [ExactRotation.NORTH, ExactRotation.EAST,
+     *    >   ExactRotation.SOUTH, ExactRotation.WEST])]
+     *  ^,>,v,<
+     *  js> [c2s(r.toDiagramChar()) for each (r in 
+     *    >  [ExactRotation.ONE_EIGHTH, ExactRotation.THREE_EIGHTHS,
+     *    >   ExactRotation.FIVE_EIGHTHS, ExactRotation.SEVEN_EIGHTHS])]
+     *  7,Q,L,`
+     *  js> c2s(new ExactRotation(net.cscott.sdr.util.Fraction.valueOf(1,3))
+     *    >     .toDiagramChar())
+     *  .
+     */
+    @Override
+    public char toDiagramChar() {
+	// we have special character for exact rotations aligned to eighths
+	Fraction f = this.amount.multiply(Fraction.valueOf(8));
+	if (f.getProperNumerator() == 0)
+	    switch (f.getProperWhole() % 8) {
+	    case 0: return '^'; // north
+	    case 1: return '7'; // northeast
+	    case 2: return '>'; // east
+	    case 3: return 'Q'; // southeast
+	    case 4: return 'v'; // south
+	    case 5: return 'L'; // southwest
+	    case 6: return '<'; // west
+	    case 7: return '`'; // northwest
+	    default: assert false : "impossible!";
+	    }
+	return '.'; // unrepresentable
+    }
 }
