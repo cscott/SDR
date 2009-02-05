@@ -12,7 +12,8 @@ import static net.cscott.sdr.calls.ast.TokenTypes.PART;
 import net.cscott.sdr.util.Fraction;
 
 /**
- * Tranformation implementing {@link BasicList._FRACTIONAL}.
+ * Tranformation implementing
+ * {@link net.cscott.sdr.calls.lists.BasicList#_FRACTIONAL}.
  * @author C. Scott Ananian
  */
 public class Fractional extends TransformVisitor<Fraction> {
