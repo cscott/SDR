@@ -5,6 +5,7 @@
 Square Dance Revolution build file.
 </description>
 <property name="package" value="sdr" />
+<property name="package_topdir" value="net/cscott/sdr" />
 <property name="version" value="0.21" /> <!-- change version # here! -->
 
     <taskdef resource="net/sf/antcontrib/antlib.xml"
@@ -58,14 +59,36 @@ Square Dance Revolution build file.
     </target>
 
     <!-- make the version file -->
-    <target name="version"
-     description="Generates Version.java with the correct version number." >
-      <copy file="src/net/cscott/sdr/Version.java.in"
-            tofile="src/net/cscott/sdr/Version.java" >
+    <target name="chk-version"
+	    description="Generates Version.java.tmp and sets the
+			 version.uptodate property to false if it should
+			 be moved to replace Version.java" >
+      <copy file="src/${package_topdir}/Version.java.in"
+            tofile="src/${package_topdir}/Version.java.tmp" >
         <filterset>
          <filter token="VERSION" value="${version}"/>
+         <filter token="PACKAGE" value="${package}"/>
         </filterset>
       </copy>
+      <condition property="version.uptodate">
+	<filesmatch file1="src/${package_topdir}/Version.java"
+		    file2="src/${package_topdir}/Version.java.tmp" />
+      </condition>
+    </target>
+    <target name="move-version" depends="chk-version" unless="version.uptodate"
+	    description="Renames Version.java.tmp iff it is different
+			 from Version.java">
+      <!-- be careful only to overwrite Verson.java if there are changes -->
+      <move file="src/${package_topdir}/Version.java.tmp"
+	    tofile="src/${package_topdir}/Version.java" />
+    </target>
+    <target name="version"
+	    description="Generates Version.java with the correct
+			 version number."
+	    depends="move-version">
+      <!-- clean up the temp file in any case -->
+      <delete file="src/${package_topdir}/Version.java.tmp" />
+      <!-- put version in the jnlp file -->
       <copy file="sdr.jnlp.in"
             tofile="sdr.jnlp" >
         <filterset>
