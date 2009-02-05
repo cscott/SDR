@@ -200,6 +200,18 @@ public class Formation {
      *  
      *       2B^  2G^
      *  
+     * @doc.test Non-orthogonal rotation:
+     *  js> Formation.SQUARED_SET.rotate(ExactRotation.ONE_EIGHTH).toStringDiagram()
+     *       4BQ       3GL
+     *  
+     *  4GQ                 3BL
+     *  
+     *  
+     *  
+     *  1B7                 2G`
+     *  
+     *       1G7       2B`
+     *  
      */
     public Formation rotate(ExactRotation rotation) {
         Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>(location.size());
@@ -251,20 +263,66 @@ public class Formation {
      * </pre>
      */
     public String toStringDiagram() {
+	/* invoke the full toStringDiagram() with default dancer names*/
+	return toStringDiagram(_dancer_names);
+    }
+    /**
+     * Return an ascii-art diagram of this formation, using a custom
+     * mapping from {@link Dancer}s to 2-character strings.
+     * @see #toStringDiagram()
+     * @doc.test Use AA through HH to represent dancers
+     *  js> m = java.util.LinkedHashMap()
+     *  {}
+     *  js> for (i in Iterator(StandardDancer.values())) {
+     *    >   m.put(i[1], String.fromCharCode(65+i[0],65+i[0]))
+     *    > }
+     *  null
+     *  js> Formation.SQUARED_SET.toStringDiagram(m)
+     *       FFv  EEv
+     *  
+     *  GG>            DD<
+     *  
+     *  HH>            CC<
+     *  
+     *       AA^  BB^
+     *  
+     */
+    public String toStringDiagram(Map<Dancer,String> dancerNames) {
         GridString gs = new GridString();
         for (Dancer d : dancers()) {
             Position p = location(d);
             int x = Math.round(p.x.multiply(Fraction.valueOf(5,2)).floatValue());
             int y = Math.round(p.y.floatValue());
-            char facing = p.facing.equals(ExactRotation.NORTH)?'^':p.facing.equals(ExactRotation.SOUTH)?'v':p.facing.equals(ExactRotation.EAST)?'>':p.facing.equals(ExactRotation.WEST)?'<':'o';
+	    char facing = p.facing.toDiagramChar();
             gs.set(x,y,facing);
-            if (d instanceof StandardDancer) {
-                StandardDancer sd = (StandardDancer) d;
-                gs.set(x-1,y,sd.isBoy()?'B':'G');
-                gs.set(x-2,y,(char)(sd.coupleNumber()+'0'));
+	    String name = dancerNames.get(d);
+	    if (name != null) {
+		assert name.length()==2;
+		gs.set(x-2,y,name.charAt(0));
+		gs.set(x-1,y,name.charAt(1));
             }
         }
         return gs.toString();
+    }
+    private static final Map<Dancer,String> _dancer_names =
+	new LinkedHashMap<Dancer,String>(8);
+    /**
+     * Map from {@link StandardDancer}s to 2-character dancer representations.
+     * @doc.test
+     *  js> Formation.dancer_names.get(StandardDancer.COUPLE_1_BOY)
+     *  1B
+     *  js> Formation.dancer_names.get(StandardDancer.COUPLE_4_GIRL)
+     *  4G
+     */
+    public static final Map<Dancer,String> dancer_names =
+	Collections.unmodifiableMap(_dancer_names);
+    static {
+	/* initialize the static _dancer_names map */
+	for (StandardDancer sd: StandardDancer.values()) {
+	    char a = (char) (sd.coupleNumber()+'0');
+	    char b = sd.isBoy()?'B':'G';
+	    _dancer_names.put(sd, new String(new char[] { a, b }).intern());
+	}
     }
     
     /**
