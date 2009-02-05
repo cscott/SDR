@@ -2,7 +2,8 @@ package net.cscott.sdr.calls;
 
 import net.cscott.sdr.util.Fraction;
 
-/** Rotations are represented as fractions, where '0' is facing north,
+/** Rotations are represented as fractions, where '0' is facing north
+ *  (away from the caller),
  *  and '1/4' is facing east.  Positive denotes clockwise rotation. */
 public class ExactRotation extends Rotation implements Comparable<ExactRotation> {
     /** Constructor from a <code>Fraction</code> object. */
@@ -56,7 +57,7 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
         return toString();
     }
     /** Converts a string (one of n/s/e/w, ne/nw/se/sw) to the
-     * appropriate rotation object. 'n' is facing the caller. */
+     * appropriate rotation object. 'n' is facing away from the caller. */
     public static ExactRotation fromAbsoluteString(String s) {
 	for (int i=0; i<eighthNames.length; i++)
 	    if (eighthNames[i].equalsIgnoreCase(s))

@@ -2,7 +2,8 @@ package net.cscott.sdr.calls;
 
 import net.cscott.sdr.util.Fraction;
 
-/** Rotations are represented as fractions, where '0' is facing north,
+/** Rotations are represented as fractions, where '0' is facing north
+ *  (that is, away from the caller),
  *  and '1/4' is facing east.  The also have a 'modulus', since they can
  *  represent "general" directions.  For example, "1/4 modulo 1/2" means
  *  facing east or west (but not north, south, or any other direction).
@@ -81,7 +82,7 @@ public class Rotation {
         if (!this.modulus.equals(r.modulus)) return false;
         return this.normalize().amount.equals(r.normalize().amount);
     }
-    /** Hashcode of the normalized amount & modulus. */
+    /** Hashcode of the normalized amount &amp; modulus. */
     @Override
     public int hashCode() {
         Rotation r = this.normalize();
@@ -133,7 +134,7 @@ public class Rotation {
         return toString();
     }
     /** Converts a string (one of n/s/e/w, ne/nw/se/sw) to the
-     * appropriate rotation object. 'n' is facing the caller.
+     * appropriate rotation object. 'n' is facing away from the caller.
      * The string '-' means "east or west", and the string '|' means
      * "north or south".  The string "+" means "north, south, east, or west".
      * The string 'o' means "any rotation". */
