@@ -14,7 +14,28 @@ import net.cscott.sdr.util.Fraction;
 /**
  * Tranformation implementing
  * {@link net.cscott.sdr.calls.lists.BasicList#_FRACTIONAL}.
+ * This only handles the case where the fraction is less than one;
+ * {@link net.cscott.sdr.calls.lists.BasicList#_FRACTIONAL} handles
+ * the whole-number portions of the fraction.
  * @author C. Scott Ananian
+ * @doc.test
+ *  Use Fractional class to evaluate TWICE QUARTER RIGHT:
+ *  js> importPackage(net.cscott.sdr.calls.ast)
+ *  js> importPackage(net.cscott.sdr.util)
+ *  js> callname="dosado"
+ *  dosado
+ *  js> call = net.cscott.sdr.calls.CallDB.INSTANCE.lookup(callname)
+ *  dosado[basic]
+ *  js> comp = call.apply(Apply.makeApply(callname))
+ *  (In 6 (Opt (From [FACING DANCERS] (Seq (Prim -1 1 none 1) (Prim 1 1 none 1) (Prim 1 -1 none 1) (Prim -1 -1 none 1)))))
+ *  js> comp.accept(new Fractional(), Fraction.ONE_QUARTER)
+ *  (In 1 1/2 (Opt (From [FACING DANCERS] (Seq (Prim -1 1 none 1)))))
+ *  js> try {
+ *    >   comp.accept(new Fractional(), Fraction.ONE_THIRD)
+ *    > } catch (e) {
+ *    >   print(e.javaException)
+ *    > }
+ *  net.cscott.sdr.calls.BadCallException: No formation options left: Primitives cannot be subdivided: 1/3
  */
 public class Fractional extends TransformVisitor<Fraction> {
     @Override

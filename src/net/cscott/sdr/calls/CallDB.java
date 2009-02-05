@@ -32,6 +32,20 @@ public class CallDB {
     /** Lookup a call in the database.
      * @throws IllegalArgumentException if the call name is
      * unknown.
+     * @doc.test
+     *  Basic lookup test:
+     *  js> db = CallDB.INSTANCE
+     *  net.cscott.sdr.calls.CallDB@1d66e22
+     *  js> db.lookup("square thru")
+     *  square thru[basic]
+     * @doc.test
+     *  Check that exceptions are properly thrown for bogus calls:
+     *  js> try {
+     *    >   CallDB.INSTANCE.lookup("foobar bat")
+     *    > } catch (e) {
+     *    >   print(e.javaException)
+     *    > }
+     *  java.lang.IllegalArgumentException: Unknown call: foobar bat
      */
     public Call lookup(String name) {
         if (!db.containsKey(name))
@@ -71,7 +85,16 @@ public class CallDB {
         }
     }
     ///////////////////////////////////////////////
-    /** Parse a natural-language string of calls. */
+    /** Parse a natural-language string of calls.
+     *
+     * @doc.test
+     * js> db = CallDB.INSTANCE
+     * net.cscott.sdr.calls.CallDB@1d66e22
+     * js> db.parse(Program.BASIC, "double pass thru")
+     * (Apply double pass thru)
+     * js> db.parse(Program.BASIC, "square thru three and a half")
+     * (Apply square thru (Apply 3 1/2))
+     */
     public Apply parse(Program program, String s) {
         program = Program.C4; // xxx: force C4 for now.
         String pkgName = "net.cscott.sdr.calls.lists.";

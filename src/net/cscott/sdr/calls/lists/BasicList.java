@@ -24,7 +24,7 @@ import net.cscott.sdr.util.Fraction;
  * this class contains only those definitions for which an
  * executable component is required.
  * @author C. Scott Ananian
- * @version $Id: BasicList.java,v 1.19 2006-11-14 16:20:53 cananian Exp $
+ * @version $Id: BasicList.java,v 1.20 2009-02-05 06:13:31 cananian Exp $
  */
 public abstract class BasicList {
     // hide constructor.
@@ -128,6 +128,26 @@ public abstract class BasicList {
         }
     };
     // complex concept -- not sure correct program here?
+    // XXX: support further subdivision of DOSADO 1 1/2 by allowing an
+    //      integer argument to Part which specifies how many parts
+    //      it should be considered as?
+    /**
+     * The "fractional" concept.
+     * @doc.test
+     *  Evaluate TWICE DOSADO and the DOSADO 1 1/2.  Note that we prohibit
+     *  further subdivision of the DOSADO 1 1/2.
+     *  js> importPackage(net.cscott.sdr.calls.ast)
+     *  js> a1 = Apply.makeApply("dosado")
+     *  (Apply dosado)
+     *  js> a = Apply.makeApply("_fractional", Apply.makeApply("2"), a1)
+     *  (Apply _fractional (Apply 2) (Apply dosado))
+     *  js> BasicList._FRACTIONAL.apply(a)
+     *  (Seq (Part true (Seq (Apply dosado))) (Part true (Seq (Apply dosado))))
+     *  js> a = Apply.makeApply("_fractional", Apply.makeApply("1 1/2"), a1)
+     *  (Apply _fractional (Apply 1 1/2) (Apply dosado))
+     *  js> BasicList._FRACTIONAL.apply(a)
+     *  (Seq (Part false (Seq (Part true (Seq (Apply dosado))) (Part true (In 3 (Opt (From [FACING DANCERS] (Seq (Prim -1 1 none 1) (Prim 1 1 none 1)))))))))
+     */
     public static final Call _FRACTIONAL = new BasicCall("_fractional") {
         private Fractional fv = new Fractional(); // visitor singleton
         @Override

@@ -130,7 +130,8 @@ Square Dance Revolution build file.
         <srcfiles dir="${src_dir}" includes="**/*.java **/*.html" />
       </uptodate>
     </target>
-    <target name="javadoc" depends="chk-javadoc" unless="javadoc.notRequired"
+    <target name="javadoc"
+	    depends="build.grm,compile,chk-javadoc" unless="javadoc.notRequired"
             description="Generates javadoc in ${api_dir}">
         <!-- copy call lists to doc-files -->
         <mkdir dir="${src_dir}/net/cscott/sdr/calls/lists/doc-files" />
@@ -150,6 +151,16 @@ Square Dance Revolution build file.
                  access="protected" nodeprecated="false"
                  author="true" use="true" version="true" breakiterator="true">
 		<classpath refid="classpath.path" />
+		<taglet name="net.cscott.jdoctest.JDoctest">
+		  <path>
+		    <fileset dir="lib/jdoctest">
+		      <include name="*.jar"/>
+		    </fileset>
+		    <path refid="classpath.path" />
+		  </path>
+		</taglet>
+		<!-- enable assertions when evaluating doctests -->
+		<arg value="-J-ea:net.cscott..." />
             <link href="http://jakarta.apache.org/commons/lang/api-release/"/>
             <link href="http://cmusphinx.sourceforge.net/sphinx4/javadoc/"/>
             <link href="http://www.jmonkeyengine.com/doc/"/>
@@ -188,6 +199,7 @@ Square Dance Revolution build file.
 		  <classpath refid="classpath.path"/>
 	    </java>
     </target>
+    <!-- runs a self-test -->
     <target name="run.test"
 	    description="Runs a self-test, for development purposes."
 	    depends="jar">
@@ -201,6 +213,32 @@ Square Dance Revolution build file.
                   </classpath>
 	    </java>
     </target>
+    <!-- runs a javascript shell for interactive debugging -->
+    <!-- however, ant insists on redirecting stdin/out, which is unpleasant-->
+    <target name="run.shell"
+	    description="Runs a javascript shell, for development and
+			 debugging."
+	    depends="jar">
+      <java classname="org.mozilla.javascript.tools.shell.Main"
+	    fork="true">
+	<classpath>
+	  <fileset dir=".">
+	    <include name="sdr.jar" />
+	  </fileset>
+	  <!-- the jline library is optional; it just nicer line
+	  editing.  It's apparently unfriendly to Eclipse's console,
+	  though. -->
+	  <fileset dir="lib">
+	    <include name="jline*.jar" />
+	  </fileset>
+	  <fileset dir="lib/jdoctest">
+	    <include name="rhino*.jar"/>
+	  </fileset>
+	  <path refid="classpath.path"/>
+	</classpath>
+      </java>
+    </target>
+
 
     <!-- ********* Build the natural-language grammars. ********* -->
     <target name="build.grm"
@@ -230,6 +268,14 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
 	        tofile="src/net/cscott/sdr/calls/lists/C4Parser.lexer.3g"
 	    />
             -->
+	    <!-- build newly-generated grammars -->
+	    <javac srcdir="${src_dir}"
+		   destdir="${classes_dir}"
+		   excludes="CVS"
+		   deprecation="on" source="1.5" target="1.5" debug="true">
+                   <compilerarg value="-Xlint:unchecked"/>
+		   <classpath refid="classpath.path" />
+	    </javac>
     </target>
 
     <!-- bundle up all files for distribution -->
