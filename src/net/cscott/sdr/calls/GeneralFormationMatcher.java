@@ -81,6 +81,21 @@ public abstract class GeneralFormationMatcher {
      *     ^
      *  FF:
      *     ^
+     * @doc.test When possible, symmetry is preserved in the result:
+     *  js> GeneralFormationMatcher.doMatch(FormationList.PARALLEL_RH_WAVES,
+     *    >                                 FormationList.RH_MINIWAVE,
+     *    >                                 false, false)
+     *  AA^  BBv
+     *  
+     *  CC^  DDv
+     *  AA:
+     *     ^    v
+     *  BB:
+     *     ^    v
+     *  CC:
+     *     ^    v
+     *  DD:
+     *     ^    v
      */
     // booleans for 'allow unmatched dancers' and
     // 'use phantoms' allow dancers in the input and result formations,
@@ -135,17 +150,25 @@ public abstract class GeneralFormationMatcher {
         // that the resulting matches tend to symmetry.
         final List<Dancer> inputDancers=new ArrayList<Dancer>(input.dancers());
         Collections.sort(inputDancers, new Comparator<Dancer>() {
+            /** minimum of position rotated through 4 quarter rotations */
+            private Position qtrMin(Position p) {
+                return Collections.min(rotated(p), pcomp);
+            }
+            /** minimum of position rotated by 180 degrees */
+            private Position halfMin(Position p) {
+                Position pprime = p.rotateAroundOrigin(ExactRotation.ONE_HALF);
+                return Collections.min(Arrays.asList(p,pprime), pcomp);
+            }
             public int compare(Dancer d1, Dancer d2) {
-                Position p1a = input.location(d1), p2a = input.location(d2);
-                Position p1b = p1a.rotateAroundOrigin(ExactRotation.ONE_HALF);
-                Position p2b = p2a.rotateAroundOrigin(ExactRotation.ONE_HALF);
-                // first comparison is against min(original, rotated)
-                Position p1 = Collections.min(Arrays.asList(p1a,p1b), pcomp);
-                Position p2 = Collections.min(Arrays.asList(p2a,p2b), pcomp);
-                int c = p1.compareTo(p2);
+                Position p1 = input.location(d1), p2 = input.location(d2);
+                // first comparison is against min of quarter-rotated versions
+                int c = pcomp.compare(qtrMin(p1), qtrMin(p2));
                 if (c!=0) return c;
-                // second comparison is against the "real" position.
-                return pcomp.compare(p1a, p2a);
+                // now, compare against min of half-rotated versions
+                c = pcomp.compare(halfMin(p1), halfMin(p2));
+                if (c!=0) return c;
+                // finally, break ties by comparing against "real" position
+                return pcomp.compare(p1, p2);
             }
         });
         final Indexer<Dancer> inputIndex = new Indexer<Dancer>() {
@@ -405,14 +428,11 @@ public abstract class GeneralFormationMatcher {
         return new Position(p.x, p.y, ExactRotation.ZERO);
     }
     private static Set<Position> rotated(Position p) {
-        Set<Position> s = new HashSet<Position>(4);
+        Set<Position> s = new LinkedHashSet<Position>(4);
         for (int i=0; i<4; i++) {
-            p = ONE_QUARTER_AROUND_ORIGIN.warp(p, Fraction.ZERO);
             s.add(p);
+            p = p.rotateAroundOrigin(ExactRotation.ONE_QUARTER);
         }
         return s;
     }
-    private static final Warp ONE_QUARTER_AROUND_ORIGIN = Warp.rotateAndMove
-           (Position.getGrid(0,0,ExactRotation.ZERO),
-            Position.getGrid(0,0,ExactRotation.ONE_QUARTER));
 }
