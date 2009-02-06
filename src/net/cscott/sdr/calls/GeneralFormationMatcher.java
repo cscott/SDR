@@ -118,8 +118,10 @@ public abstract class GeneralFormationMatcher {
         // for efficiency. (ie largest rotation moduli are first)
         Collections.sort(goalDancers, new Comparator<Dancer>() {
             public int compare(Dancer d1, Dancer d2) {
-                return -goal.location(d1).facing.modulus.compareTo
-                (goal.location(d2).facing.modulus);
+                Position p1 = goal.location(d1), p2 = goal.location(d2);
+                int c = -p1.facing.modulus.compareTo(p2.facing.modulus);
+                if (c!=0) return c;
+                return p1.compareTo(p2);
             }
         });
         SetFactory<Dancer> gsf = new BitSetFactory<Dancer>(goalDancers);
@@ -128,8 +130,10 @@ public abstract class GeneralFormationMatcher {
         final List<Dancer> inputDancers=new ArrayList<Dancer>(input.dancers());
         Collections.sort(inputDancers, new Comparator<Dancer>() {
             public int compare(Dancer d1, Dancer d2) {
-                return -input.location(d1).facing.modulus.compareTo
-                (input.location(d2).facing.modulus);
+                Position p1 = input.location(d1), p2 = input.location(d2);
+                int c = -p1.facing.modulus.compareTo(p2.facing.modulus);
+                if (c!=0) return c;
+                return p1.compareTo(p2);
             }
         });
         final Indexer<Dancer> inputIndex = new Indexer<Dancer>() {

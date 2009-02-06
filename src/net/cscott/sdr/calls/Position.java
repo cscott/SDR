@@ -16,7 +16,7 @@ import org.apache.commons.lang.builder.*;
  *  or when specifying "general lines") use a {@link Rotation} with a
  *  modulus of 0.
  */
-public class Position {
+public class Position implements Comparable<Position> {
     /** Location. Always non-null. */
     public final Fraction x, y;
     /** Facing direction. Note that {@code facing} should always be an
@@ -114,8 +114,6 @@ public class Position {
     /** Returns a position corresponding to the standard square
      *  dance grid.  0,0 is the center of the set, and odd coordinates
      *  between -3 and 3 correspond to the standard 4x4 grid.
-     *  Remember <code>null</code> IS a legal value for the
-     *  <code>ExactRotation</code>.
      * @doc.test Some sample grid locations:
      *  js> Position.getGrid(0,0,ExactRotation.ZERO)
      *  0,0,0
@@ -123,6 +121,7 @@ public class Position {
      *  -3,3,3/4
      */
     public static Position getGrid(int x, int y, ExactRotation r) {
+        assert r != null;
 	return new Position
 	    (Fraction.valueOf(x), Fraction.valueOf(y), r);
     }
@@ -168,5 +167,38 @@ public class Position {
 	    .append("y", y.toProperString())
 	    .append("facing", facing)
 	    .toString();
+    }
+    /**
+     * Compare two {@link Position}s.  We use reading order: top to bottom,
+     * then left to right.  Ties are broken by facing direction: first
+     * the most specific rotation modulus, then by normalized direction.
+     * @doc.test Top to bottom:
+     *  js> Position.getGrid(0,0,"n").compareTo(Position.getGrid(1,1,"n")) > 0
+     *  true
+     * @doc.test Left to right:
+     *  js> Position.getGrid(1,0,"n").compareTo(Position.getGrid(0,0,"n")) > 0
+     *  true
+     * @doc.test Most specific rotation modulus first:
+     *  js> new Position["(int,int,net.cscott.sdr.calls.Rotation)"](
+     *    >              0,0,Rotation.fromAbsoluteString("|")
+     *    >              ).compareTo(Position.getGrid(0,0,"n")) > 0
+     *  true
+     * @doc.test Normalized direction:
+     *  js> Position.getGrid(0,0,"e").compareTo(Position.getGrid(0,0,"n")) > 0
+     *  true
+     * @doc.test Equality:
+     *  js> Position.getGrid(1,2,"w").compareTo(Position.getGrid(1,2,"w")) == 0
+     *  true
+     */
+    public int compareTo(Position p) {
+        int c = -this.y.compareTo(p.y);
+        if (c!=0) return c;
+        c = this.x.compareTo(p.x);
+        if (c!=0) return c;
+        c = -this.facing.modulus.compareTo(p.facing.modulus);
+        if (c!=0) return c;
+        c = this.facing.normalize().amount.compareTo
+            (p.facing.normalize().amount);
+        return c;
     }
 }

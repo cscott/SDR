@@ -46,10 +46,7 @@ public class FormationMatch {
             // in reading order: top-to-bottom, left-to-right
             public int compare(Dancer d1, Dancer d2) {
                 Position p1 = meta.location(d1), p2 = meta.location(d2);
-                int c = -p1.y.compareTo(p2.y); // largest y first
-                if (c!=0) return c;
-                c = p1.x.compareTo(p2.x); // smallest x first
-                return c;
+                return p1.compareTo(p2);
             }
         });
         // now map phantoms to 'AA', 'BB', etc.
