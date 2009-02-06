@@ -8,8 +8,11 @@ import antlr.debug.misc.ASTFrame;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.transform.*;
 
+/** Simple parser driver to syntax-check call lists. */
 public abstract class TestParser {
-    // Define a main
+    /** Invoke this driver as:
+     * <pre>java TestParser &lt;file or directory name&gt;</pre>
+     */
     public static void main(String[] args) {
       // Use a try/catch block for parser exceptions
       try {
@@ -22,7 +25,7 @@ public abstract class TestParser {
             doFile(new File(args[i])); // parse it
         }
         else
-          System.err.println("Usage: java TestParser <directory name>");
+          System.err.println("Usage: java TestParser <file or directory name>");
 
       }
       catch(Exception e) {
@@ -42,7 +45,7 @@ public abstract class TestParser {
           doFile(new File(f, files[i]));
       }
 
-      // otherwise, if this is a java file, parse it!
+      // otherwise, if this is a .calls file, parse it!
       else if ((f.getName().length()>6) &&
                f.getName().substring(f.getName().length()-6).equals(".calls")) {
         System.err.println("-------------------------------------------");
