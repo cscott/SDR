@@ -40,19 +40,27 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="SDR/lib/jme"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/commons-lang.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://jakarta.apache.org/commons/lang/api-release/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/jutil.jar" sourcepath="/home/cananian/Projects/JUtil/jutil-source.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://cscott.net/Projects/JUtil/jutil-latest/doc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/dev/junit-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/dev/junit-4.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://junit.org/junit/javadoc/4.5/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/dev/stringtemplate-2.3b9.jar"/>
-	<classpathentry kind="lib" path="lib/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-2.7.7.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.antlr2.org/javadoc/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/antlr-3.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.4.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://jakarta.apache.org/commons/lang/api-release/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
