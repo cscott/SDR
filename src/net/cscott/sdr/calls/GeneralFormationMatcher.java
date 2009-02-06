@@ -4,9 +4,18 @@ import java.util.*;
 
 import net.cscott.sdr.calls.FormationMapper.FormationPiece;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
+import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.jutil.*;
 
+/**
+ * {@link GeneralFormationMatcher} produces a {@link FormationMatch}
+ * given an input {@link Formation} and a goal {@link TaggedFormation}.
+ * This can be used to make {@link Selector}s out of {@link TaggedFormation}s,
+ * via the {@link #makeSelector} method.
+ *
+ * @author C. Scott Ananian
+ */
 public abstract class GeneralFormationMatcher {
     // currying, oh, my
     public static Selector makeSelector(final TaggedFormation goal) {
@@ -18,20 +27,73 @@ public abstract class GeneralFormationMatcher {
         };
     }
 
+    /**
+     * Attempt to match the input formation against the goal formation; you can
+     * have multiple rotated copies of the goal formation in the input.
+     * Allow dancers who are not part of copies of the goal formation if
+     * allowUnmatchedDancers is true; allow copies of the goal formation
+     * with phantoms in them if usePhantoms is true.  Returns the best
+     * such match (ie, most copies of the goal formation).
+     * @param input An untagged formation to match against.
+     * @param goal A tagged goal formation
+     * @param allowUnmatchedDancers allow dancers in the input formation not to
+     *        match dancers in (copies of) the goal
+     * @param usePhantoms allow dancers in the goal formation not to match
+     *        dancers in the input
+     * @return the match result
+     * @throws NoMatchException if there is no way to match the goal formation
+     *   with the given input
+     * @doc.test A successful match with no phantoms or unmatched dancers:
+     *  js> GeneralFormationMatcher.doMatch(Formation.SQUARED_SET,
+     *    >                                 FormationList.COUPLE,
+     *    >                                 false, false)
+     *       AAv
+     *  
+     *  BB>       CC<
+     *  
+     *       DD^
+     *  AA:
+     *     3B^  3G^
+     *  BB:
+     *     4B^  4G^
+     *  CC:
+     *     2B^  2G^
+     *  DD:
+     *     1B^  1G^
+     * @doc.test A successful match with some unmatched dancers:
+     *  js> GeneralFormationMatcher.doMatch(FormationList.RH_TWIN_DIAMONDS,
+     *    >                                 FormationList.RH_MINIWAVE,
+     *    >                                 true, false)
+     *  AA>  BB>
+     *  
+     *  CCv  DDv
+     *  
+     *  EE<  FF<
+     *  AA:
+     *     ^
+     *  BB:
+     *     ^
+     *  CC:
+     *     ^    v
+     *  DD:
+     *     ^    v
+     *  EE:
+     *     ^
+     *  FF:
+     *     ^
+     */
     // booleans for 'allow unmatched dancers' and
     // 'use phantoms' allow dancers in the input and result formations,
     // respectively, not to match up.
     // XXX: implement usePhantoms
+    // NOTE THAT result will include 1-dancer formations if
+    // allowUnmatchedDancers is true; see the contract of FormationMatch.
     public static FormationMatch doMatch(
             final Formation input, 
             final TaggedFormation goal,
             boolean allowUnmatchedDancers,
             boolean usePhantoms)
     throws NoMatchException {
-        // XXX if allowUnmatchedDancers, we should be observing to
-        // the contract of FormationMatch, which insists that unmatched
-        // dancers get mapped to the SINGLE_DANCER formation.
-        // we currently just omit them (i think)
         assert !usePhantoms : "matching with phantoms is not implemented";
         // okay, try to perform match by trying to use each dancer in turn
         // as dancer #1 in the goal formation.  We then validate the match:
@@ -132,6 +194,8 @@ public abstract class GeneralFormationMatcher {
                     found = true;
                 }
         assert found;
+        // track the input dancers who aren't involved in matches
+        Set<Dancer> unmappedInputDancers = new LinkedHashSet<Dancer>(inputDancers);
         // Create a FormationMatch object from FormationPieces.
 	List<FormationPiece> pieces = new ArrayList<FormationPiece>(max);
         Map<Dancer,TaggedFormation> canonical=new LinkedHashMap<Dancer,TaggedFormation>();
@@ -145,7 +209,7 @@ public abstract class GeneralFormationMatcher {
             Position goP = makeExact(mi.goalPositions.get(0), om.extraRot);
             Warp warpF = Warp.rotateAndMove(goP, inP);
             Warp warpB = Warp.rotateAndMove(inP, goP);
-	    ExactRotation rr = (ExactRotation) inP.facing.subtract(goP.facing.amount);
+            ExactRotation rr = (ExactRotation) inP.facing.subtract(goP.facing.amount);
             Map<Dancer,Position> subPos = new LinkedHashMap<Dancer,Position>();
             MultiMap<Dancer,Tag> subTag = new GenericMultiMap<Dancer,Tag>();
             for (Dancer goD : mi.goalDancers) {
@@ -158,6 +222,7 @@ public abstract class GeneralFormationMatcher {
                 // add to this subformation.
                 subPos.put(inD, goP);
                 subTag.addAll(inD, goal.tags(goD));
+                unmappedInputDancers.remove(inD);
             }
             TaggedFormation tf =
                 new TaggedFormation(new Formation(subPos), subTag);
@@ -166,6 +231,21 @@ public abstract class GeneralFormationMatcher {
 
             Formation piece = input.select(tf.dancers()).onlySelected();
 	    pieces.add(new FormationPiece(piece, dd, rr));
+        }
+        // add pieces for unmapped dancers (see spec for FormationMatch.meta)
+        for (Dancer d : unmappedInputDancers) {
+	    // these clauses are parallel to the ones above for matched dancers
+            Position inP = input.location(d);
+            Position goP = Position.getGrid(0,0,"n");
+            ExactRotation rr = (ExactRotation) // i know this is a no-op.
+		inP.facing.subtract(goP.facing.amount);
+
+            Dancer dd = new PhantomDancer();
+            TaggedFormation tf = new TaggedFormation
+		(new TaggedDancerInfo(d, goP));
+            canonical.put(dd, tf);
+            Formation piece = input.select(tf.dancers()).onlySelected();
+            pieces.add(new FormationPiece(piece, dd, rr));
         }
         // the components formations are the warped & rotated version.
         // the rotation in 'components' tells how much they were rotated.

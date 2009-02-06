@@ -97,6 +97,10 @@ public abstract class FormationList {
     // labelled calls named as per the "Callerlab Approved Formations"
     // from April 1980
     
+    // 1-person formation
+    public static final TaggedFormation SINGLE_DANCER =
+        create("SINGLE DANCER",
+                d(0,0,"n"));
     // 2-person formations
     public static final TaggedFormation COUPLE = // callerlab #1
         create("COUPLE",
@@ -321,7 +325,7 @@ public abstract class FormationList {
 	    assert sa[i].length()==sa[i+1].length();
 	// okay, create formation w/ phantoms.
 	for (int y=0; y<sa.length; y++)
-	    L1: for (int x=0; x<sa[y].length(); x++) {
+	    for (int x=0; x<sa[y].length(); x++) {
 		if (sa[y].charAt(x)==' ') continue;
 		Rotation r = 
 		    Rotation.fromAbsoluteString(sa[y].substring(x,x+1));
@@ -390,7 +394,7 @@ public abstract class FormationList {
             Tagger.addAutomatic(f, tm);
         return new TaggedFormation(f, tm) {
             @Override
-            public String toString() { return true?super.toString():name; }
+            public String toString() { return false?super.toString():name; }
         };
     }
     private static class NumAndTags {
