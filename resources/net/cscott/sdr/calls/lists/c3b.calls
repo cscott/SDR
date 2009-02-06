@@ -190,6 +190,24 @@ def: by golly
     ! D d
 
 /* .... */
+
+def: explode the diamond
+  from: TWIN DIAMONDS, TWIN FACING DIAMONDS
+    //ends in: ENDS IN INVERTED LINES
+    select: CENTER
+      call: explode the wave
+    select: END
+      // strictly speaking, "in your phantom waves, circulate
+      // and the lead end u-turn back"
+      call: concentric(couple up)
+  from: THREE QUARTER TAG
+    select: CENTER
+      call: explode the wave
+    select: END
+      call: trade // couple up (not actually concentric, like acey-deucey)
+  // XXX: "from other applicable formations" (what might they be?)
+    
+/* .... */
 def: reverse the pass
   from: TANDEM COUPLES
     select: LEADER
