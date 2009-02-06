@@ -1,6 +1,8 @@
 package net.cscott.sdr.calls;
 
 import java.util.*;
+
+import net.cscott.sdr.calls.TaggedFormation.Tag;
 /** 
  * A successful attempt to match one or more instances of a given formation
  * against the current setup yields a <code>FormationMatch</code>
@@ -42,13 +44,7 @@ public class FormationMatch {
     public String toString() {
 	List<Dancer> phantoms = new ArrayList<Dancer>(meta.dancers());
 	// sort the phantoms to ensure a consistent string representation
-        Collections.sort(phantoms, new Comparator<Dancer>() {
-            // in reading order: top-to-bottom, left-to-right
-            public int compare(Dancer d1, Dancer d2) {
-                Position p1 = meta.location(d1), p2 = meta.location(d2);
-                return p1.compareTo(p2);
-            }
-        });
+        Collections.sort(phantoms, meta.dancerComparator());
         // now map phantoms to 'AA', 'BB', etc.
         Map<Dancer,String> metaDancerNames =
             new HashMap<Dancer,String>(meta.dancers().size());
@@ -65,9 +61,31 @@ public class FormationMatch {
         for (Dancer d: phantoms) {
             sb.append(metaDancerNames.get(d));
             sb.append(":\n");
-            sb.append(matches.get(d).toStringDiagram
-                      ("   ", Formation.dancerNames)); // xx tags?
+            TaggedFormation tf = matches.get(d);
+            sb.append(tf.toStringDiagram
+                      ("   ", Formation.dancerNames));
             sb.append("\n");
+            // inclue tags for tagged dancers
+            List<Dancer> sortedDancers = new ArrayList<Dancer>(tf.dancers());
+            Collections.sort(sortedDancers, tf.dancerComparator());
+            boolean atLeastOne=false;
+            for (Dancer dd: sortedDancers) {
+                List<Tag> tags = new ArrayList<Tag>(tf.tags(dd));
+                Collections.sort(tags);
+                if (tags.isEmpty()) continue;
+                sb.append(atLeastOne ? "; ":" [");
+                atLeastOne=true;
+                String name = Formation.dancerNames.get(dd);
+                sb.append(name!=null ? name : "ph");
+                sb.append(": ");
+                boolean firstTag = true;
+                for (Tag t: tags) {
+                    if (firstTag) firstTag=false;
+                    else sb.append(",");
+                    sb.append(t);
+                }
+            }
+            if (atLeastOne) sb.append("]\n");
         }
         // trim trailing \n
         sb.setLength(sb.length()-1);

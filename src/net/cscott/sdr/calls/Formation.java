@@ -11,6 +11,7 @@ import static net.cscott.sdr.calls.StandardDancer.COUPLE_4_GIRL;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -227,6 +228,19 @@ public class Formation {
         return
         (bounds.ll.x.add(bounds.ur.x).compareTo(Fraction.ZERO) == 0) &&
         (bounds.ll.y.add(bounds.ur.y).compareTo(Fraction.ZERO) == 0);
+    }
+    /**
+     * Return a {@link Dancer} {@link Comparator} that compares dancers
+     * based on their positions within this {@link Formation}.
+     */
+    public Comparator<Dancer> dancerComparator() {
+        return new Comparator<Dancer>() {
+            public int compare(Dancer d1, Dancer d2) {
+                Position p1 = Formation.this.location(d1);
+                Position p2 = Formation.this.location(d2);
+                return p1.compareTo(p2);
+            }
+        };
     }
     // utility functions.
     @Override

@@ -54,12 +54,16 @@ public abstract class GeneralFormationMatcher {
      *       DD^
      *  AA:
      *     3B^  3G^
+     *   [3B: BEAU; 3G: BELLE]
      *  BB:
      *     4B^  4G^
+     *   [4B: BEAU; 4G: BELLE]
      *  CC:
      *     2B^  2G^
+     *   [2B: BEAU; 2G: BELLE]
      *  DD:
      *     1B^  1G^
+     *   [1B: BEAU; 1G: BELLE]
      * @doc.test A successful match with some unmatched dancers:
      *  js> GeneralFormationMatcher.doMatch(FormationList.RH_TWIN_DIAMONDS,
      *    >                                 FormationList.RH_MINIWAVE,
@@ -75,8 +79,10 @@ public abstract class GeneralFormationMatcher {
      *     ^
      *  CC:
      *     ^    v
+     *   [ph: BEAU; ph: BEAU]
      *  DD:
      *     ^    v
+     *   [ph: BEAU; ph: BEAU]
      *  EE:
      *     ^
      *  FF:
@@ -90,12 +96,16 @@ public abstract class GeneralFormationMatcher {
      *  CC^  DDv
      *  AA:
      *     ^    v
+     *   [ph: BEAU; ph: BEAU]
      *  BB:
      *     ^    v
+     *   [ph: BEAU; ph: BEAU]
      *  CC:
      *     ^    v
+     *   [ph: BEAU; ph: BEAU]
      *  DD:
      *     ^    v
+     *   [ph: BEAU; ph: BEAU]
      */
     // booleans for 'allow unmatched dancers' and
     // 'use phantoms' allow dancers in the input and result formations,
