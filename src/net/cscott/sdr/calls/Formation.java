@@ -60,7 +60,6 @@ public class Formation {
      *  4B>            2G<
      *  
      *  4G>            2B<
-     *  
      */
     public Formation onlySelected() {
 	Map<Dancer,Position> nloc = new LinkedHashMap<Dancer,Position>
@@ -199,7 +198,6 @@ public class Formation {
      *  1G>            3B<
      *  
      *       2B^  2G^
-     *  
      * @doc.test Non-orthogonal rotation:
      *  js> Formation.SQUARED_SET.rotate(ExactRotation.ONE_EIGHTH).toStringDiagram()
      *       4BQ       3GL
@@ -211,7 +209,6 @@ public class Formation {
      *  1B7                 2G`
      *  
      *       1G7       2B`
-     *  
      */
     public Formation rotate(ExactRotation rotation) {
         Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>(location.size());
@@ -232,6 +229,7 @@ public class Formation {
         (bounds.ll.y.add(bounds.ur.y).compareTo(Fraction.ZERO) == 0);
     }
     // utility functions.
+    @Override
     public boolean equals(Object o) {
 	if (!(o instanceof Formation)) return false;
 	Formation f = (Formation) o;
@@ -240,11 +238,13 @@ public class Formation {
 	    .append(selected, f.selected)
 	    .isEquals();
     }
+    @Override
     public int hashCode() {
 	return new HashCodeBuilder()
 	    .append(location).append(selected)
 	    .toHashCode();
     }
+    @Override
     public String toString() {
 	return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
 	    .append("location", location)
@@ -257,18 +257,21 @@ public class Formation {
      * indicator centered in the 5 unit width.
      * ie, a box (bounds -2,-2 to 2,2) is:
      * <pre>
-     * "1B^  1Gv  "
-     * "          "
+     * "1B^  1Gv  \n"
+     * "          \n"
      * "3B^  3Gv  "
      * </pre>
+     * Note that the return value has no trailing \n.
      */
     public String toStringDiagram() {
 	/* invoke the full toStringDiagram() with default dancer names*/
-	return toStringDiagram(_dancer_names);
+	return toStringDiagram("", dancerNames);
     }
     /**
      * Return an ascii-art diagram of this formation, using a custom
-     * mapping from {@link Dancer}s to 2-character strings.
+     * mapping from {@link Dancer}s to 2-character strings.  Each line
+     * of the diagram is preceded with the specified prefix.
+     * Note that the return value has no trailing \n.
      * @see #toStringDiagram()
      * @doc.test Use AA through HH to represent dancers
      *  js> m = java.util.LinkedHashMap()
@@ -277,18 +280,18 @@ public class Formation {
      *    >   m.put(i[1], String.fromCharCode(65+i[0],65+i[0]))
      *    > }
      *  null
-     *  js> Formation.SQUARED_SET.toStringDiagram(m)
-     *       FFv  EEv
-     *  
-     *  GG>            DD<
-     *  
-     *  HH>            CC<
-     *  
-     *       AA^  BB^
-     *  
+     *  js> Formation.SQUARED_SET.toStringDiagram("|", m)
+     *  |     FFv  EEv
+     *  |
+     *  |GG>            DD<
+     *  |
+     *  |HH>            CC<
+     *  |
+     *  |     AA^  BB^
      */
-    public String toStringDiagram(Map<Dancer,String> dancerNames) {
-        GridString gs = new GridString();
+    public String toStringDiagram(String prefix,
+                                  Map<Dancer,String> dancerNames) {
+        GridString gs = new GridString(prefix);
         for (Dancer d : dancers()) {
             Position p = location(d);
             int x = Math.round(p.x.multiply(Fraction.valueOf(5,2)).floatValue());
@@ -304,24 +307,24 @@ public class Formation {
         }
         return gs.toString();
     }
-    private static final Map<Dancer,String> _dancer_names =
+    private static final Map<Dancer,String> _dancerNames =
 	new LinkedHashMap<Dancer,String>(8);
     /**
      * Map from {@link StandardDancer}s to 2-character dancer representations.
      * @doc.test
-     *  js> Formation.dancer_names.get(StandardDancer.COUPLE_1_BOY)
+     *  js> Formation.dancerNames.get(StandardDancer.COUPLE_1_BOY)
      *  1B
-     *  js> Formation.dancer_names.get(StandardDancer.COUPLE_4_GIRL)
+     *  js> Formation.dancerNames.get(StandardDancer.COUPLE_4_GIRL)
      *  4G
      */
-    public static final Map<Dancer,String> dancer_names =
-	Collections.unmodifiableMap(_dancer_names);
+    public static final Map<Dancer,String> dancerNames =
+	Collections.unmodifiableMap(_dancerNames);
     static {
 	/* initialize the static _dancer_names map */
 	for (StandardDancer sd: StandardDancer.values()) {
 	    char a = (char) (sd.coupleNumber()+'0');
 	    char b = sd.isBoy()?'B':'G';
-	    _dancer_names.put(sd, new String(new char[] { a, b }).intern());
+	    _dancerNames.put(sd, new String(new char[] { a, b }).intern());
 	}
     }
     
@@ -331,9 +334,10 @@ public class Formation {
      * into a new-line separated string at the end.
      */
     private static class GridString {
+        private final String prefix;
         private int minx=0, miny=0;
         private final List<StringBuilder> grid = new ArrayList<StringBuilder>();
-        GridString() { }
+        GridString(String prefix) { this.prefix=prefix; }
 	/** Set the character at position (x,y) to c.  */
         void set(int x, int y, char c) {
             // insert left padding if we need it.
@@ -360,13 +364,18 @@ public class Formation {
             sb.setCharAt(x,c);
             // done!
         }
-	/** Return a newline-separated string. */
+	/**
+         * Return a newline-separated string.
+         * The return value has no trailing \n.
+         */
+        @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();
             // need to reverse y direction.
             for (int i=grid.size()-1; i>=0; i--) {
+                sb.append(prefix);
                 sb.append(grid.get(i));
-                sb.append('\n');
+                if (i>0) sb.append('\n');
             }
             return sb.toString();
         }
@@ -384,7 +393,6 @@ public class Formation {
      *  4G>            2B<
      *  
      *       1B^  1G^
-     *  
      */
     public static final Formation SQUARED_SET = new Formation
 	(new DancerInfo(COUPLE_1_BOY,
@@ -412,7 +420,6 @@ public class Formation {
      *  3Gv  3Bv
      *  
      *  1B^  1G^
-     *  
      */
     public static final Formation FOUR_SQUARE = new Formation
         (new DancerInfo(COUPLE_1_BOY,
