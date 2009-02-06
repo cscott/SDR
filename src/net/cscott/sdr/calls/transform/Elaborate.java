@@ -12,8 +12,9 @@ import net.cscott.sdr.calls.ast.*;
  * {@link Par}s.  It inserts {@link Warp} elements as needed.
  * The result is a 'simplified tree'.
  * @author C. Scott Ananian
- * @version $Id: Elaborate.java,v 1.5 2006-10-30 03:58:09 cananian Exp $
+ * @version $Id: Elaborate.java,v 1.6 2009-02-06 06:27:55 cananian Exp $
  */
+// XXX: should this be a TranformationVisitor<TaggedFormation> ?
 public class Elaborate extends TransformVisitor<Formation> {
     /** Static dance state (like program, etc). */
     private final DanceState ds;
@@ -24,6 +25,17 @@ public class Elaborate extends TransformVisitor<Formation> {
         this.ds = ds;
         this.doFully = doFully;
     }
+    /**
+     * Evaluate formations to eliminate {@link Opt} elements and identify the
+     * dancers in {@link Par}s.  It inserts {@link Warp} elements as needed.
+     * The result is a 'simplified tree'.
+     * @param ds current static {@link DanceState} (program, etc)
+     * @param f  current {@link Formation} (dynamic state)
+     * @param c  the call component to elaborate
+     * @param doFully if false, performs just one step of elaboration;
+     *  otherwise, evaluate all the way down to a simplified tree.
+     * @return the elaborated call component
+     */
     public static Comp elaborate(DanceState ds, Formation f, Comp c, boolean doFully) {
         return c.accept(new Elaborate(ds, doFully), f);
     }
@@ -82,7 +94,9 @@ public class Elaborate extends TransformVisitor<Formation> {
         // this is the tricky part: perform the formation match
         assert oc.selectors.size()==1;
         Selector s = oc.selectors.get(0);
+        System.err.println("TRYING TO MATCH "+s+" TO "+f);
         FormationMatch fm = s.match(f);
+        System.err.println("NUMBER OF MATCHES: "+fm.matches.size());
         assert !fm.matches.isEmpty();
         int dancers = 0;
         List<ParCall> l = new ArrayList<ParCall>(fm.matches.size());
@@ -92,6 +106,7 @@ public class Elaborate extends TransformVisitor<Formation> {
             if (!doFully) {
                 c = new Opt(oc.build(oc.selectors, c));
             } else { // xxx broken
+                assert false : "unimplemented?";
                 c = null;
             }
             l.add(new ParCall(selectedTags(tf), c));
@@ -114,6 +129,7 @@ public class Elaborate extends TransformVisitor<Formation> {
      * Ensure that every selected dancer matches one of the clauses. */
     @Override
     public Comp visit(Par p, Formation _f) {
+        // XXX: Should I be dynamically applying tags here? (probably!)
         TaggedFormation tf = (TaggedFormation) _f;
         Set<Dancer> sel = new HashSet<Dancer>(tf.selectedDancers());
         List<ParCall> l = new ArrayList<ParCall>(p.children.size());
@@ -122,6 +138,7 @@ public class Elaborate extends TransformVisitor<Formation> {
                 l.add(pc.accept(this, tf));
             } catch (BadCallException ex) {
                 // ignore the exception; just don't add it to the list
+                System.err.println("BAD CALL IN PAR ELABORATION: "+ex);
             }
             // remove matched dancers from the formation.
             sel.removeAll(selected(pc,tf));
@@ -172,8 +189,10 @@ public class Elaborate extends TransformVisitor<Formation> {
      */
     private Set<Tag> selectedTags(Formation f) {
         Set<Tag> tags = EnumSet.noneOf(Tag.class);
-        for (Dancer d : f.selectedDancers())
+        for (Dancer d : f.selectedDancers()) {
+            assert d.primitiveTag() != null : "formation consists of phantoms";
             tags.add(d.primitiveTag());
+        }
         return tags;
     }
 
