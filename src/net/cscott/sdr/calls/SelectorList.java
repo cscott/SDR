@@ -1,7 +1,97 @@
 package net.cscott.sdr.calls;
 
 
-/** The selector list creates selectors for various formations. */
+/**
+ * The selector list creates selectors for various formations.
+ * It mostly parallels {@link FormationList}, although there are
+ * selectors for general formations which are a combination of
+ * several formations in the formation list.
+ *
+ * @doc.test Apply STATIC_SQUARE selector to a SQUARED_SET:
+ *  js> SelectorList.STATIC_SQUARE.match(Formation.SQUARED_SET)
+ *  AA^
+ *  AA:
+ *          3Gv  3Bv
+ *     
+ *     4B>            2G<
+ *     
+ *     4G>            2B<
+ *     
+ *          1B^  1G^
+ *   [3G: BELLE; 3B: BEAU; 4B: BEAU; 2G: BELLE; 4G: BELLE; 2B: BEAU; 1B: BEAU; 1G: BELLE]
+ * @doc.test Apply COUPLE selector to a SQUARED_SET:
+ *  js> fm = SelectorList.COUPLE.match(Formation.SQUARED_SET)
+ *       AAv
+ *  
+ *  BB>       CC<
+ *  
+ *       DD^
+ *  AA:
+ *     3B^  3G^
+ *   [3B: BEAU; 3G: BELLE]
+ *  BB:
+ *     4B^  4G^
+ *   [4B: BEAU; 4G: BELLE]
+ *  CC:
+ *     2B^  2G^
+ *   [2B: BEAU; 2G: BELLE]
+ *  DD:
+ *     1B^  1G^
+ *   [1B: BEAU; 1G: BELLE]
+ *  js> fm.matches.size()
+ *  4
+ *  js> fm.meta.dancers().size()
+ *  4
+ * @doc.test Apply COUPLE selector to FOUR_SQUARE:
+ *  js> fm = SelectorList.COUPLE.match(Formation.FOUR_SQUARE)
+ *  AAv
+ *  
+ *  BB^
+ *  AA:
+ *     3B^  3G^
+ *   [3B: BEAU; 3G: BELLE]
+ *  BB:
+ *     1B^  1G^
+ *   [1B: BEAU; 1G: BELLE]
+ * @doc.test Apply FACING_DANCERS selector to FOUR_SQUARE:
+ *  js> fm = SelectorList.FACING_DANCERS.match(Formation.FOUR_SQUARE)
+ *  AAv  BB^
+ *  AA:
+ *     1Bv
+ *     
+ *     3G^
+ *   [1B: TRAILER; 3G: TRAILER]
+ *  BB:
+ *     3Bv
+ *     
+ *     1G^
+ *   [3B: TRAILER; 1G: TRAILER]
+ * @doc.test Apply FACING_COUPLES selector to FOUR_SQUARE:
+ *  js> fm = SelectorList.FACING_COUPLES.match(Formation.FOUR_SQUARE)
+ *  AA^
+ *  AA:
+ *     3Gv  3Bv
+ *     
+ *     1B^  1G^
+ *   [3G: BELLE,TRAILER; 3B: BEAU,TRAILER; 1B: BEAU,TRAILER; 1G: BELLE,TRAILER]
+ * @doc.test Apply RH_MINIWAVE selector to PARALLEL_RH_WAVES:
+ *  js> fm = SelectorList.RH_MINIWAVE.match(FormationList.PARALLEL_RH_WAVES)
+ *  AA^  BBv
+ *  
+ *  CC^  DDv
+ *  AA:
+ *     ^    v
+ *   [ph: BEAU; ph: BEAU]
+ *  BB:
+ *     ^    v
+ *   [ph: BEAU; ph: BEAU]
+ *  CC:
+ *     ^    v
+ *   [ph: BEAU; ph: BEAU]
+ *  DD:
+ *     ^    v
+ *   [ph: BEAU; ph: BEAU]
+ */
 public abstract class SelectorList {
     // 0-person selectors
     public static final Selector NONE = new Selector() {
