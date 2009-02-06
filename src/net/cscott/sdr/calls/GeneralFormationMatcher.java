@@ -66,7 +66,7 @@ public abstract class GeneralFormationMatcher {
      *    >                                 true, false)
      *  AA>  BB>
      *  
-     *  CCv  DDv
+     *  CC^  DDv
      *  
      *  EE<  FF<
      *  AA:
@@ -116,24 +116,36 @@ public abstract class GeneralFormationMatcher {
         List<Dancer> goalDancers=new ArrayList<Dancer>(goal.dancers());
         // sort so that first dancers' target rotations are most constrained,
         // for efficiency. (ie largest rotation moduli are first)
-        Collections.sort(goalDancers, new Comparator<Dancer>() {
-            public int compare(Dancer d1, Dancer d2) {
-                Position p1 = goal.location(d1), p2 = goal.location(d2);
+        final Comparator<Position> pcomp = new Comparator<Position>() {
+            public int compare(Position p1, Position p2) {
                 int c = -p1.facing.modulus.compareTo(p2.facing.modulus);
                 if (c!=0) return c;
                 return p1.compareTo(p2);
+            }
+        };
+        Collections.sort(goalDancers, new Comparator<Dancer>() {
+            public int compare(Dancer d1, Dancer d2) {
+                return pcomp.compare(goal.location(d1), goal.location(d2));
             }
         });
         SetFactory<Dancer> gsf = new BitSetFactory<Dancer>(goalDancers);
         // sort the input dancers the same way: real dancers before phantoms.
         // there must be at least one non-phantom dancer in the formation.
+        // in addition, group symmetric dancers together in the order, so
+        // that the resulting matches tend to symmetry.
         final List<Dancer> inputDancers=new ArrayList<Dancer>(input.dancers());
         Collections.sort(inputDancers, new Comparator<Dancer>() {
             public int compare(Dancer d1, Dancer d2) {
-                Position p1 = input.location(d1), p2 = input.location(d2);
-                int c = -p1.facing.modulus.compareTo(p2.facing.modulus);
+                Position p1a = input.location(d1), p2a = input.location(d2);
+                Position p1b = p1a.rotateAroundOrigin(ExactRotation.ONE_HALF);
+                Position p2b = p2a.rotateAroundOrigin(ExactRotation.ONE_HALF);
+                // first comparison is against min(original, rotated)
+                Position p1 = Collections.min(Arrays.asList(p1a,p1b), pcomp);
+                Position p2 = Collections.min(Arrays.asList(p2a,p2b), pcomp);
+                int c = p1.compareTo(p2);
                 if (c!=0) return c;
-                return p1.compareTo(p2);
+                // second comparison is against the "real" position.
+                return pcomp.compare(p1a, p2a);
             }
         });
         final Indexer<Dancer> inputIndex = new Indexer<Dancer>() {
