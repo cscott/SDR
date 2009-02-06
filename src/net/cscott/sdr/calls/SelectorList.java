@@ -134,18 +134,26 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.RH_TWIN_DIAMONDS);
     public static final Selector LH_TWIN_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.LH_TWIN_DIAMONDS);
+    public static final Selector TWIN_DIAMONDS =
+        OR(RH_TWIN_DIAMONDS, LH_TWIN_DIAMONDS);
     public static final Selector RH_POINT_TO_POINT_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.RH_POINT_TO_POINT_DIAMONDS);
     public static final Selector LH_POINT_TO_POINT_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.LH_POINT_TO_POINT_DIAMONDS);
+    public static final Selector POINT_TO_POINT_DIAMONDS =
+        OR(RH_POINT_TO_POINT_DIAMONDS, LH_POINT_TO_POINT_DIAMONDS);
     public static final Selector RH_POINT_TO_POINT_FACING_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.RH_POINT_TO_POINT_FACING_DIAMONDS);
     public static final Selector LH_POINT_TO_POINT_FACING_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.LH_POINT_TO_POINT_FACING_DIAMONDS);
+    public static final Selector POINT_TO_POINT_FACING_DIAMONDS =
+        OR(RH_POINT_TO_POINT_FACING_DIAMONDS, LH_POINT_TO_POINT_FACING_DIAMONDS);
     public static final Selector RH_TWIN_FACING_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.RH_TWIN_FACING_DIAMONDS);
     public static final Selector LH_TWIN_FACING_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.LH_TWIN_FACING_DIAMONDS);
+    public static final Selector TWIN_FACING_DIAMONDS =
+        OR(RH_TWIN_FACING_DIAMONDS, LH_TWIN_FACING_DIAMONDS);
     public static final Selector RH_TIDAL_WAVE =
         GeneralFormationMatcher.makeSelector(FormationList.RH_TIDAL_WAVE);
     public static final Selector LH_TIDAL_WAVE =
