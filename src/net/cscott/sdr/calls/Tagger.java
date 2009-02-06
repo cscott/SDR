@@ -67,8 +67,12 @@ public abstract class Tagger {
                     }
                 }
             } catch (NoMatchException nme) {
-                System.err.println(f.toStringDiagram()+" "+nme);
                 // no leaders/trailers/beaus/belles to be found here.
+                /* for debugging: but we seem to be doing The Right Thing.
+                String which = (i==0)?"beaus or belles":"leaders or trailers";
+                System.err.println("No "+which+" in: ("+nme+")");
+                System.err.println(f.toStringDiagram());
+                */
                 continue;
             }
         }
