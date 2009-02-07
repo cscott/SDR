@@ -248,17 +248,17 @@ public abstract class FormationList {
     // XXX in t-bone lines, callerlab #35
     // XXX out t-bone lines, callerlab #36
     public static final TaggedFormation RH_QUARTER_TAG = // callerlab #37(a)
-        create("1/4 TAG", f(" e ","eww","eew"," w "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
+        create("RH 1/4 TAG", f(" e ","eww","eew"," w "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
     public static final TaggedFormation LH_QUARTER_TAG = // callerlab #37(b)
-        create("1/4 TAG", f(" w ","eew","eww"," e "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
+        create("LH 1/4 TAG", f(" w ","eew","eww"," e "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
     public static final TaggedFormation RH_THREE_QUARTER_TAG = // callerlab #38(a)
-        create("3/4 TAG", f(" e ","wwe","wee"," w "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
+        create("RH 3/4 TAG", f(" e ","wwe","wee"," w "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
     public static final TaggedFormation LH_THREE_QUARTER_TAG = // callerlab #38(b)
-        create("3/4 TAG", f(" w ","wee","wwe"," e "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
+        create("LH 3/4 TAG", f(" w ","wee","wwe"," e "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
     public static final TaggedFormation RH_QUARTER_LINE = // callerlab #39(a)
-        create("1/4 LINE",f(" e ","eew","eww"," w "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
+        create("RH 1/4 LINE",f(" e ","eew","eww"," w "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
     public static final TaggedFormation LH_QUARTER_LINE = // callerlab #39(b)
-        create("1/4 LINE",f(" w ","eww","eew"," e "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
+        create("LH 1/4 LINE",f(" w ","eww","eew"," e "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
     public static final TaggedFormation RH_TWIN_DIAMONDS = // callerlab #40
         xofy("RH TWIN DIAMONDS", COUPLE, RH_DIAMOND);
     public static final TaggedFormation LH_TWIN_DIAMONDS = // callerlab #41
