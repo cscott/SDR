@@ -304,7 +304,10 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
     <!-- bundle up all files for distribution -->
     <target name="dist" depends="jar,javadoc">
       <delete file="ChangeLog" />
-      <!--<exec executable="cvs2cl" />-->
+      <exec executable="git-log" output="ChangeLog">
+	<arg value="--stat" />
+	<arg value="-C" /> <!-- "-C -C" is nice, but it takes 2m to run! -->
+      </exec>
       <tar destfile="${package}-${version}.tar.gz" compression="gzip">
         <tarfileset dir="api" prefix="${package}-${version}/api" />
         <tarfileset dir="src" prefix="${package}-${version}/src"
