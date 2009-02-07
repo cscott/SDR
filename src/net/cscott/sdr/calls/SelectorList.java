@@ -267,6 +267,27 @@ public abstract class SelectorList {
     /**
      * The {@link #OR} function creates a Selector which matches any one of
      * the given alternatives.
+     * @doc.test Diamonds or quarter tag:
+     *  js> sel = SelectorList.OR(SelectorList.RH_BOX, SelectorList.RH_DIAMOND)
+     *  OR(RH BOX,RH DIAMOND)
+     *  js> sel.match(FormationList.RH_BOX)                                    
+     *  AA^
+     *  AA:
+     *     ^    v
+     *     
+     *     ^    v
+     *   [ph: BEAU,LEADER; ph: BEAU,TRAILER; ph: BEAU,TRAILER; ph: BEAU,LEADER]
+     *  js> sel.match(FormationList.RH_DIAMOND)
+     *  AA^
+     *  AA:
+     *       >
+     *     
+     *     
+     *     ^    v
+     *     
+     *     
+     *       <
+     *   [ph: POINT; ph: BEAU,CENTER; ph: BEAU,CENTER; ph: POINT]
      */
     public static Selector OR(final Selector... alternatives) {
         return new Selector() {
@@ -296,6 +317,7 @@ public abstract class SelectorList {
     }
 
     // unimplemented selectors
+    /** Stub for not-yet-implemented {@link Selector}s. */
     private static final Selector _STUB_ = new Selector() {
         @Override
         public FormationMatch match(Formation f) throws NoMatchException {
