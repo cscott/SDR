@@ -140,6 +140,8 @@ Square Dance Revolution build file.
                          includes="*.calls" />
         </copy>
 	<mkdir dir="${api_dir}" />
+	<!-- XXX: change access="private" to access="protected" for release -->
+	<!-- XXX: use access="private" for testing -->
 	<javadoc sourcepath="${src_dir}"
 		 packagenames="net.cscott.*"
 		 destdir="${api_dir}"
@@ -147,9 +149,30 @@ Square Dance Revolution build file.
 		 doctitle="Square Dance Revolution!"
                  header="${ant.project.name} ${version}"
 		 source="1.5"
-		 bottom="Copyright (c) 2006 C. Scott Ananian"
                  access="protected" nodeprecated="false"
+		 failonerror="true"
                  author="true" use="true" version="true" breakiterator="true">
+	  <bottom><![CDATA[
+             Copyright &copy; 2006-2009 C. Scott Ananian
+             <script type="text/javascript">
+// simple thunk to load the prettify code
+function loadScript(href) {
+    //trim 'stylesheet.css' off the end of the stylesheet url
+    idx = href.lastIndexOf('/');
+    href = (idx==-1)?"":href.substring(0, idx+1);
+    window['JAVADOC_BASE'] = href; // pass to loadpretty.js
+    ltgt = String.fromCharCode(60,62)
+    document.write(ltgt[0]+'script type="text/javascript" src="'+href+'doc-files/loadpretty.js"'+ltgt[1]+ltgt[0]+'/script'+ltgt[1]);
+}
+// find the path to the top-level stylesheet.
+links = document.getElementsByTagName("link");
+for (var i=0; i != links.length; i++) {
+    if (links[i].getAttribute("rel").toLowerCase()=="stylesheet") {
+	loadScript(links[i].getAttribute("href"));
+    }
+}
+             </script>
+          ]]></bottom>
 		<classpath refid="classpath.path" />
 		<taglet name="net.cscott.jdoctest.JDoctest">
 		  <path>
@@ -281,16 +304,17 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
     <!-- bundle up all files for distribution -->
     <target name="dist" depends="jar,javadoc">
       <delete file="ChangeLog" />
-      <exec executable="cvs2cl" />
+      <!--<exec executable="cvs2cl" />-->
       <tar destfile="${package}-${version}.tar.gz" compression="gzip">
         <tarfileset dir="api" prefix="${package}-${version}/api" />
         <tarfileset dir="src" prefix="${package}-${version}/src"
-                    includes="**/*.java **/*.html **/*.java.in **/*.g **/*.3g"
+                    includes="**/*.java **/*.html **/*.java.in **/*.g **/*.3g
+			      **/*.js **/*.css"
                     excludes="CVS" />
         <tarfileset dir="resources" prefix="${package}-${version}/resources"
-                    excludes="CVS" />
+                    excludes="CVS **/*~" />
         <tarfileset dir="lib" prefix="${package}-${version}/lib"
-                    excludes="CVS" />
+                    excludes="CVS **/*~" />
         <tarfileset dir="." prefix="${package}-${version}"
          includes="README AUTHORS COPYING ChangeLog NEWS sdr.Manifest
                    build.xml .antlr-eclipse .classpath .project .settings/**/*
