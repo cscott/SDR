@@ -163,8 +163,8 @@ def: two ladies chain(sel)
   spoken: [10] two <sel=genders> chain // 'two ladies chain'
   in: 8
   from: FACING COUPLES
-  condition: ARE(sel, BELLE)
-  call: 1/4(wheel around), chain down the line
+    condition: ARE(sel, BELLE)
+    call: 1/4(wheel around), chain down the line
 
 def: flutter wheel
   optional: REVERSE
@@ -189,8 +189,8 @@ def: left and right thru
 def: star thru
   in: 4
   from: FACING DANCERS
-  condition: not(or(ALL(BOYS), ALL(GIRLS)))
-  call: slide thru // modulo styling
+    condition: not(or(ALL(BOYS), ALL(GIRLS)))
+    call: slide thru // modulo styling
 
 // I've seen 1/2 slide thru, and 'finish a slide thru' called, so
 // pretend that slide thru has two parts.

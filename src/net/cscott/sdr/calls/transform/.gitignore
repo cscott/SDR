@@ -1,7 +1,5 @@
 CallFileBuilder.java
 CallFileLexer.java
 CallFileParser.java
-expanded*.g
-*TokenTypes.java
-*TokenTypes.txt
-*.smap
+CallFile__.g
+*.tokens

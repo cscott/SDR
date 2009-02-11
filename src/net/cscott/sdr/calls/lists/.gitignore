@@ -1,10 +1,6 @@
-*.smap
-*Lexer.java
-*Parser.java
-*TokenTypes.java
-*TokenTypes.txt
+*GrammarLexer.java
+*GrammarParser.java
 *.tokens
-*.lexer.3g
-*.3g
+*Grammar.g
 *__.g
 doc-files

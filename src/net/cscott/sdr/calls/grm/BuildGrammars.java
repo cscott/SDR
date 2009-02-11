@@ -78,7 +78,7 @@ public class BuildGrammars {
                 EmitANTLR.emit(programName, rules));
         */
         // emit as ANTLR v3 grammar
-        writeFile("src/net/cscott/sdr/calls/lists/"+programName+"Grammar.3g",
+        writeFile("src/net/cscott/sdr/calls/lists/"+programName+"Grammar.g",
                 EmitANTLRv3.emit(programName, rules));
         // emit as JSAPI grammar.
         writeFile("resources/net/cscott/sdr/recog/"+programName+".gram",

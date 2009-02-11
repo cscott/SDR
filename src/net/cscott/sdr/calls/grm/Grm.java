@@ -112,24 +112,24 @@ public abstract class Grm {
             l.add(new Terminal(s));
         return new Concat(l);
     }
-    /** Parse a string representing a {@link Grm}.  Parameter
+    /**
+     * Parse a string representing a {@link Grm}.  Parameter
      * references must be numerical. 
-     * @throws IllegalArgumentException if the rule is malformed. */
+     * @throws IllegalArgumentException if the rule is malformed.
+     * @doc.test Successful parse:
+     *  js> Grm.parse("foo bar|bat? baz")
+     *  foo bar|bat? baz
+     * @doc.test Unsuccessful parse:
+     *  js> try {
+     *    >   Grm.parse("[abc]")
+     *    > } catch (e) { print (e.javaException) }
+     *  java.lang.IllegalArgumentException: bad grammar rule: [abc]
+     */
     public static Grm parse(String rule) {
         try {
-            // Create a scanner that reads from the input stream passed to us
-            CallFileLexer lexer = new CallFileLexer(new StringReader(rule));
-            // don't need an indent processor, but do need to setup lexer
-            lexer.setToRuleStart();
-            // Create a parser that reads from the scanner
-            CallFileParser parser = new CallFileParser(lexer);
-            // start parsing at the grammar_start rule
-            parser.grammar_start();
-            // now build a proper AST.
-            CallFileBuilder builder = new CallFileBuilder();
-            return builder.grammar_start(parser.getAST());
+	    return CallFileBuilder.parseGrm(rule);
         } catch (Exception e) {
-            throw new IllegalArgumentException("bad grammar rule:"+e);
+            throw new IllegalArgumentException("bad grammar rule: "+rule);
         }
     }
 }

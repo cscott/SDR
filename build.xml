@@ -13,6 +13,8 @@ Square Dance Revolution build file.
     <taskdef name="pack200"
              classname="org.jdesktop.deployment.ant.pack200.Pack200Task"
              classpath="lib/dev/deployment-ant-pack200-1.0beta.jar" />
+    <taskdef resource="org/apache/tools/ant/antlr/antlib.xml"
+             classpath="lib/dev/antlr3-ant.jar" />
 
     <!-- define some variables for the script -->
     <target name="init">
@@ -55,6 +57,15 @@ Square Dance Revolution build file.
         <delete>
           <fileset dir="src/net/cscott/sdr/calls/lists/"
 		   includes="C4Grammar*" />
+	</delete>
+    </target>
+    <target name="maint-clean" depends="init,clean,clean.grm"
+	    description="Removes ANTLR generated files">
+        <delete>
+	  <fileset dir="src/net/cscott/sdr/calls/transform/"
+		   includes="CallFileBuilder.java CallFileParser.java
+			     CallFileLexer.java CallFile__.g *.tokens"
+		   />
 	</delete>
     </target>
 
@@ -104,12 +115,13 @@ Square Dance Revolution build file.
     <!-- compile the source code -->
     <target name="compile" depends="init,version"
             description="Compiles the code in ${src_dir} to ${classes_dir}">
-    <antlr target="src/net/cscott/sdr/calls/transform/CallFile.g">
+    <antlr3 target="src/net/cscott/sdr/calls/transform/CallFile.g">
 		<classpath refid="classpath.path" />
-    </antlr>
-    <antlr target="src/net/cscott/sdr/calls/transform/CallFileBuilder.g">
+    </antlr3>
+    <antlr3 target="src/net/cscott/sdr/calls/transform/CallFileBuilder.g"
+            libdirectory="src/net/cscott/sdr/calls/transform" >
 		<classpath refid="classpath.path" />
-    </antlr>
+    </antlr3>
 	    <mkdir dir="${classes_dir}" />
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
@@ -276,21 +288,9 @@ for (var i=0; i != links.length; i++) {
 		    <path refid="classpath.path"/>
                   </classpath>
 	    </java>
-<!--
-java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bin org.antlr.Tool -o . src/net/cscott/sdr/calls/lists/C4Grammar.3g
--->
-	    <java classname="org.antlr.Tool"
-	          fork="true">
-		  <classpath refid="classpath.path"/>
-		  <arg value="-o" />
-		  <arg path="." />
-		  <arg value="src/net/cscott/sdr/calls/lists/C4Grammar.3g" />
-	    </java>
-	    <!--
-	    <move file="src/net/cscott/sdr/calls/lists/C4Parser.lexer.g"
-	        tofile="src/net/cscott/sdr/calls/lists/C4Parser.lexer.3g"
-	    />
-            -->
+    <antlr3 target="src/net/cscott/sdr/calls/lists/C4Grammar.g">
+		<classpath refid="classpath.path" />
+    </antlr3>
 	    <!-- build newly-generated grammars -->
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
@@ -299,6 +299,16 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
 	    </javac>
+    </target>
+    <target name="clean.grm" depends="init"
+	    description="Remove generated natural language grammars">
+        <delete>
+	  <fileset dir="resources/net/cscott/sdr/recog/"
+		   includes="*.gram" excludes="sdr.gram" />
+	  <fileset dir="src/net/cscott/sdr/calls/lists/"
+		   includes="*Grammar.g *Grammar__.g *.tokens
+			     *GrammarLexer.java *GrammarParser.java" />
+	</delete>
     </target>
 
     <!-- bundle up all files for distribution -->
@@ -311,7 +321,7 @@ java -cp lib/antlr-3.0b4.jar:lib/antlr-2.7.6.jar:lib/stringtemplate-2.3b9.jar:bi
       <tar destfile="${package}-${version}.tar.gz" compression="gzip">
         <tarfileset dir="api" prefix="${package}-${version}/api" />
         <tarfileset dir="src" prefix="${package}-${version}/src"
-                    includes="**/*.java **/*.html **/*.java.in **/*.g **/*.3g
+                    includes="**/*.java **/*.html **/*.java.in **/*.g
 			      **/*.js **/*.css"
                     excludes="CVS" />
         <tarfileset dir="resources" prefix="${package}-${version}/resources"

@@ -5,5 +5,7 @@ deployment-ant-pack200-1.0beta.jar:
  from https://deployment.dev.java.net
 junit-4.1.jar:
  from http://junit.org/
-stringtemplate-2.3b9.jar:
- from http://www.antlr.org/
+antlr3-ant.jar:
+ from: http://fisheye2.atlassian.com/browse/antlr-buildtools
+ specifically:
+  http://fisheye2.atlassian.com/browse/~raw,r=5375/antlr-buildtools/ant/antlr-ant/main/antlr3-task/antlr3.jar

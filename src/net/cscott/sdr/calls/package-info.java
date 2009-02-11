@@ -12,7 +12,7 @@
  *  js> sqthr = CallDB.INSTANCE.lookup("square thru")
  *  square thru[basic]
  *  js> sqthr.apply(Apply.makeApply("square thru", Fraction.valueOf("1 1/2")))
- *  (Opt (From [FACING COUPLES] (If (Condition and (Condition greater (Condition 3/2) (Condition 0)) (Condition not (Condition greater (Condition 3/2) (Condition 1)))) (In 2 (Seq (Apply _fractional (Apply 3/2) (Apply pull by)))))) (From [FACING COUPLES] (If (Condition greater (Condition 3/2) (Condition 1)) (In 2 (Seq (Part false (Seq (Apply and (Apply pull by) (Apply left (Apply square thru (Apply _subtract_num (Apply n) (Apply _fractional (Apply 1/1)))))))))))))
+ *  (Opt (From [FACING COUPLES] (If (Condition and (Condition greater (Condition 3/2) (Condition 0)) (Condition not (Condition greater (Condition 3/2) (Condition 1)))) (In 2 (Seq (Apply _fractional (Apply 3/2) (Apply pull by)))))) (From [FACING COUPLES] (If (Condition greater (Condition 3/2) (Condition 1)) (In 2 (Seq (Part false (Seq (Apply and (Apply pull by) (Apply quarter in) (Apply left (Apply square thru (Apply _subtract_num (Apply n) (Apply _fractional (Apply 1/1)))))))))))))
  *
  * @doc.test Call fractionalization:
  *  js> importPackage(net.cscott.sdr.util) // for Fraction

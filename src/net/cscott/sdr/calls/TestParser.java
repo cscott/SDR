@@ -2,8 +2,8 @@ package net.cscott.sdr.calls;
 
 import java.io.*;
 
-import antlr.Token;
-import antlr.debug.misc.ASTFrame;
+import org.antlr.runtime.*;
+import org.antlr.runtime.tree.*;
 
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.transform.*;
@@ -56,26 +56,22 @@ public abstract class TestParser {
 
     // Here's where we do the real work...
     public static void parseFile(InputStream s) throws Exception {
+      Reader r = new InputStreamReader(s, "utf-8");
       try {
         // Create a scanner that reads from the input stream passed to us
-        CallFileLexer lexer = new CallFileLexer(s);
-        CallFileLexer.IndentProcessor ip =
-            new CallFileLexer.IndentProcessor(lexer);
+	  CallFileLexer lexer = new CallFileLexer(new ANTLRReaderStream(r));
         if (true) {
         // Create a parser that reads from the scanner
-        CallFileParser parser = new CallFileParser(ip);
+	    CallFileParser parser = new CallFileParser(new CommonTokenStream(lexer));
 
         // start parsing at the calllist rule
         parser.calllist();
-        System.out.println(parser.getAST().toStringList());
-          if (false) { // fancy gui
-                ASTFrame frame = new ASTFrame("Call AST", parser.getAST());
-                frame.setVisible(true);
-          }
+	Tree t = (Tree) parser.calllist().getTree();
+        System.out.println(t.toStringTree());
         
         // now build a proper AST.
-        CallFileBuilder builder = new CallFileBuilder();
-        builder.calllist(parser.getAST());
+        CallFileBuilder builder = new CallFileBuilder(new CommonTreeNodeStream(t));
+        builder.calllist();
           for (Call call : builder.getList()) {
               if (call.getMinNumberOfArguments()==0)
                 System.out.println(call.getName()+": "+call.apply(Apply.makeApply(call.getName())).toString());
@@ -83,11 +79,12 @@ public abstract class TestParser {
                   System.out.println(call.getRule());
           }
         }else {
+	    lexer.indentProcessor.disabled = true; // false.
                 Token t;
                 do {
-                t = (false)?lexer.nextToken():ip.nextToken();
-                System.out.println(t);
-                } while(t.getType()!=Token.EOF_TYPE);
+		    t = lexer.nextToken();
+		    System.out.println(t);
+                } while(t!=Token.EOF_TOKEN);
         }
       }
       catch (Exception e) {
