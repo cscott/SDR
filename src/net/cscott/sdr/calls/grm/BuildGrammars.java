@@ -1,7 +1,13 @@
 package net.cscott.sdr.calls.grm;
 
-import java.io.FileWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -214,10 +220,37 @@ public class BuildGrammars {
             
         });
     }
+    private static String readFully(Reader r) throws IOException {
+	StringBuilder sb = new StringBuilder();
+	char buf[] = new char[4096];
+	int n;
+	while (true) {
+	    n = r.read(buf);
+	    if (n < 0) return sb.toString(); // done
+	    sb.append(buf, 0, n);
+	}
+    }
+
     public static void writeFile(String filename, String contents)
     throws IOException {
-        System.err.println("Writing "+filename);
-        FileWriter fw = new FileWriter(filename);
+	File f = new File(filename);
+	// only rewrite file if the contents would be different.
+	try {
+	    if (f.exists() && f.length() == contents.length()) {
+		// compare existing contents
+		Reader r=new InputStreamReader(new FileInputStream(f), "utf-8");
+		try {
+		    if (readFully(r).equals(contents)) {
+			System.err.println("Already up to date: "+filename);
+			return;
+		    }
+		} finally { r.close(); }
+	    }
+	} catch (Throwable t) {
+	    /* ignore error during comparison; just write! */
+	}
+        System.err.println("Writing: "+filename);
+	Writer fw = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
         fw.write(contents);
         fw.close();
     }

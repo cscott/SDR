@@ -125,7 +125,7 @@ Square Dance Revolution build file.
 	    <mkdir dir="${classes_dir}" />
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
-		   excludes="CVS"
+		   excludes="**/package-info.java"
 		   deprecation="on" source="1.5" target="1.5" debug="true">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
@@ -207,7 +207,7 @@ for (var i=0; i != links.length; i++) {
     </target>
 
     <!-- export the project as a jar -->
-    <target name="jar" depends="compile"
+    <target name="jar" depends="compile,build.grm"
             description="Exports the project as a jar">
 	<jar destfile="${basedir}/${ant.project.name}.jar"
              update="true" manifest="${basedir}/${ant.project.name}.Manifest"> 
@@ -278,13 +278,10 @@ for (var i=0; i != links.length; i++) {
     <!-- ********* Build the natural-language grammars. ********* -->
     <target name="build.grm"
 	    description="Build the natural-langauge grammars."
-	    depends="jar">
+	    depends="compile">
 	    <java classname="net.cscott.sdr.calls.grm.BuildGrammars"
 	          fork="true">
                   <classpath>
-                    <fileset dir=".">
-                      <include name="sdr.jar"/>
-                    </fileset>
 		    <path refid="classpath.path"/>
                   </classpath>
 	    </java>
@@ -294,7 +291,7 @@ for (var i=0; i != links.length; i++) {
 	    <!-- build newly-generated grammars -->
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
-		   excludes="CVS"
+		   excludes="**/package-info.java"
 		   deprecation="on" source="1.5" target="1.5" debug="true">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
