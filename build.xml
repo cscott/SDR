@@ -115,6 +115,9 @@ Square Dance Revolution build file.
     <!-- compile the source code -->
     <target name="compile" depends="init,version"
             description="Compiles the code in ${src_dir} to ${classes_dir}">
+    <antlr3 target="src/net/cscott/sdr/calls/ast/Ast.g">
+		<classpath refid="classpath.path" />
+    </antlr3>
     <antlr3 target="src/net/cscott/sdr/calls/transform/CallFile.g">
 		<classpath refid="classpath.path" />
     </antlr3>
