@@ -6,13 +6,26 @@ package net.cscott.sdr.calls.transform;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.util.*;
 import java.util.*;
-/** Propagate 'inherent' time bottom-up: where prim and part = 1, and IN resets
- * to its spec, whatever that is. */
+/**
+ * Remove {@link In}s from a call tree by pushing them down and adjusting
+ * {@link Prim} timing. We use the "inherent" times given by a
+ * {@link BeatCounter} to proportionally allocate the available beats from
+ * the top down.
+ * @doc.test Eliminate In from 1/2 DOSADO:
+ *  js> importPackage(net.cscott.sdr.calls.ast)
+ *  js> a = Apply.makeApply("_fractional", Apply.makeApply("1/2"), Apply.makeApply("dosado"))
+ *  (Apply _fractional (Apply 1/2) (Apply dosado))
+ *  js> def = a.expand()
+ *  (In 3 (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1) (Prim 1, 1, none, 1)))))
+ *  js> RemoveIn.removeIn(def)
+ *  (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1 1/2) (Prim 1, 1, none, 1 1/2))))
+ */
 public class RemoveIn extends TransformVisitor<Fraction> {
     private final BeatCounter bc;
     private RemoveIn(BeatCounter bc) { this.bc = bc; }
 
-    /** Main method: pass in a comp, and get out a Comp without In nodes. */
+    /** Main method: pass in a {@link Comp}, and get out a {@link Comp}
+     *  without {@link In} nodes. */
     public static Comp removeIn(Comp c) {
         BeatCounter bc = new BeatCounter(c);
         RemoveIn ri = new RemoveIn(bc);

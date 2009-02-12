@@ -8,8 +8,18 @@ import net.cscott.sdr.util.*;
 
 import java.util.*;
 
-/** Propagate 'inherent' time bottom-up: where prim and part = 1, and IN resets
- * to its spec, whatever that is. */
+/**
+ * Propagate 'inherent' time bottom-up: where prim and part = 1, and IN resets
+ * to its spec, whatever that is.  This is used by {@link RemoveIn} to
+ * allocate beats appropriately when rescaling.
+ * @doc.test Simple SEQ:
+ *  js> importPackage(net.cscott.sdr.calls.ast)
+ *  js> s = AstNode.valueOf("(Seq (Prim -1 1 none 1 1/2) (Prim 1 1 none 1 1/2))")
+ *  (Seq (Prim -1 1 none 1 1/2) (Prim 1 1 none 1 1/2))
+ *  js> bc = BeatCounter(s)
+ *  js> bc.getBeats(s)
+ *  3
+ */
 class BeatCounter extends ValueVisitor<Fraction,Void> {
     public BeatCounter(Comp c) {
         c.accept(this,null);
