@@ -146,7 +146,7 @@ public abstract class BasicList {
      *  js> a = Apply.makeApply("_fractional", Apply.makeApply("1 1/2"), a1)
      *  (Apply _fractional (Apply 1 1/2) (Apply dosado))
      *  js> BasicList._FRACTIONAL.apply(a)
-     *  (Seq (Part false (Seq (Part true (Seq (Apply dosado))) (Part true (In 3 (Opt (From [FACING DANCERS] (Seq (Prim -1 1 none 1) (Prim 1 1 none 1)))))))))
+     *  (Seq (Part false (Seq (Part true (Seq (Apply dosado))) (Part true (In 3 (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1) (Prim 1, 1, none, 1)))))))))
      */
     public static final Call _FRACTIONAL = new BasicCall("_fractional") {
         private Fractional fv = new Fractional(); // visitor singleton

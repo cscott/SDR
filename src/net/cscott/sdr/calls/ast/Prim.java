@@ -77,10 +77,15 @@ public class Prim extends SeqCall {
     // utility methods
     @Override
     public String argsToString() {
-        return x.toProperString()+" "+y.toProperString()+
-            " "+rot.toRelativeString()+" "+time.toProperString()+
-            (passRight?"":" pass-left")+
-            (forceArc?" force-arc":"");
+        return (dirX==Direction.IN?"in ":"")+
+	    x.toProperString()+", "+
+	    (dirY==Direction.IN?"in ":"")+
+	    y.toProperString()+", "+
+	    (dirRot==Direction.IN?"in ":"")+
+            rot.toRelativeString()+", "+
+	    time.toProperString()+
+            (passRight?"":", pass-left")+
+            (forceArc?", force-arc":"");
     }
     @Override
     public boolean equals(Object o) {

@@ -27,9 +27,9 @@ import net.cscott.sdr.util.Fraction;
  *  js> call = net.cscott.sdr.calls.CallDB.INSTANCE.lookup(callname)
  *  dosado[basic]
  *  js> comp = call.apply(Apply.makeApply(callname))
- *  (In 6 (Opt (From [FACING DANCERS] (Seq (Prim -1 1 none 1) (Prim 1 1 none 1) (Prim 1 -1 none 1) (Prim -1 -1 none 1)))))
+ *  (In 6 (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1) (Prim 1, 1, none, 1) (Prim 1, -1, none, 1) (Prim -1, -1, none, 1)))))
  *  js> comp.accept(new Fractional(), Fraction.ONE_QUARTER)
- *  (In 1 1/2 (Opt (From [FACING DANCERS] (Seq (Prim -1 1 none 1)))))
+ *  (In 1 1/2 (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1)))))
  *  js> try {
  *    >   comp.accept(new Fractional(), Fraction.ONE_THIRD)
  *    > } catch (e) {
