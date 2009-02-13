@@ -54,7 +54,7 @@ public class Formation {
      *  COUPLE 2 BOY,COUPLE 2 GIRL,COUPLE 4 BOY,COUPLE 4 GIRL
      *  js> f2 = f.select(new LinkedHashSet(Arrays.asList(sides))).onlySelected()
      *  net.cscott.sdr.calls.Formation@4fce71[
-     *    location={COUPLE 2 BOY=3,-1,3/4, COUPLE 2 GIRL=3,1,3/4, COUPLE 4 BOY=-3,1,1/4, COUPLE 4 GIRL=-3,-1,1/4}
+     *    location={COUPLE 2 BOY=3,-1,w, COUPLE 2 GIRL=3,1,w, COUPLE 4 BOY=-3,1,e, COUPLE 4 GIRL=-3,-1,e}
      *    selected=[COUPLE 2 BOY, COUPLE 2 GIRL, COUPLE 4 BOY, COUPLE 4 GIRL]
      *  ]
      *  js> f2.toStringDiagram()
@@ -145,7 +145,7 @@ public class Formation {
      *  COUPLE 1 BOY,COUPLE 1 GIRL,COUPLE 3 BOY,COUPLE 3 GIRL
      *  js> f2 = f.select(new LinkedHashSet(Arrays.asList(heads)))
      *  net.cscott.sdr.calls.Formation@12a0f6c[
-     *    location={COUPLE 1 BOY=-1,-3,0, COUPLE 1 GIRL=1,-3,0, COUPLE 2 BOY=3,-1,3/4, COUPLE 2 GIRL=3,1,3/4, COUPLE 3 BOY=1,3,1/2, COUPLE 3 GIRL=-1,3,1/2, COUPLE 4 BOY=-3,1,1/4, COUPLE 4 GIRL=-3,-1,1/4}
+     *    location={COUPLE 1 BOY=-1,-3,n, COUPLE 1 GIRL=1,-3,n, COUPLE 2 BOY=3,-1,w, COUPLE 2 GIRL=3,1,w, COUPLE 3 BOY=1,3,s, COUPLE 3 GIRL=-1,3,s, COUPLE 4 BOY=-3,1,e, COUPLE 4 GIRL=-3,-1,e}
      *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL, COUPLE 3 BOY, COUPLE 3 GIRL]
      *  ]
      */
@@ -162,14 +162,14 @@ public class Formation {
      *  COUPLE 1 BOY,COUPLE 1 GIRL
      *  js> f = Formation.SQUARED_SET.select(new LinkedHashSet(Arrays.asList(couple1))).onlySelected()
      *  net.cscott.sdr.calls.Formation@a31e1b[
-     *    location={COUPLE 1 BOY=-1,-3,0, COUPLE 1 GIRL=1,-3,0}
+     *    location={COUPLE 1 BOY=-1,-3,n, COUPLE 1 GIRL=1,-3,n}
      *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
      *  ]
      *  js> f.isCentered()
      *  false
      *  js> f = f.recenter()
      *  net.cscott.sdr.calls.Formation@1b3f829[
-     *    location={COUPLE 1 BOY=-1,0,0, COUPLE 1 GIRL=1,0,0}
+     *    location={COUPLE 1 BOY=-1,0,n, COUPLE 1 GIRL=1,0,n}
      *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
      *  ]
      *  js> f.isCentered()

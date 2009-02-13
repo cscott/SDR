@@ -1,8 +1,12 @@
 package net.cscott.sdr.calls;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,9 +91,25 @@ public class TaggedFormation extends Formation {
         return this.hashCode;
     }
     public String toString() {
+	// convert tags map to string in order by dancer
+	List<Dancer> dl = new ArrayList<Dancer>(dancers());
+	Collections.sort(dl, this.dancerComparator());
+	StringBuilder sb = new StringBuilder("{");
+	for (Dancer d: dl) {
+	    Collection<Tag> t = tags.getValues(d);
+	    if (t.size()==0) continue;
+	    if (sb.length() > 1) sb.append(", ");
+	    sb.append(d);
+	    sb.append('=');
+	    if (t.size()==1)
+		sb.append(t.iterator().next());
+	    else
+		sb.append(tags.getValues(d));
+	}
+	sb.append("}");
 	return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
 	    .appendSuper(super.toString())
-	    .append("tags", tags)
+	    .append("tags", sb.toString())
             .toString();
     }
 

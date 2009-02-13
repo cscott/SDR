@@ -38,7 +38,7 @@ public class Position implements Comparable<Position> {
      * @doc.test Move the couple #1 boy forward (in to the center) two steps:
      *  js> importPackage(net.cscott.sdr.util)
      *  js> Position.getGrid(-1,-3,"n").forwardStep(Fraction.TWO)
-     *  -1,-1,0
+     *  -1,-1,n
      */
     public Position forwardStep(Fraction distance) {
 	assert facing!=null : "rotation unspecified!";
@@ -53,11 +53,11 @@ public class Position implements Comparable<Position> {
      * @doc.test Couple #1 boy truck:
      *  js> importPackage(net.cscott.sdr.util)
      *  js> Position.getGrid(-1,-3,"n").sideStep(Fraction.mONE)
-     *  -2,-3,0
+     *  -2,-3,n
      * @doc.test Couple #2 girl truck:
      *  js> importPackage(net.cscott.sdr.util)
      *  js> Position.getGrid(3,1,"w").sideStep(Fraction.ONE)
-     *  3,2,3/4
+     *  3,2,w
      */
     public Position sideStep(Fraction distance) {
         assert facing!=null : "rotation unspecified!";
@@ -71,9 +71,11 @@ public class Position implements Comparable<Position> {
      *  js> ONE_HALF = net.cscott.sdr.util.Fraction.ONE_HALF
      *  1/2
      *  js> p = Position.getGrid(0,0,"n").turn(ONE_HALF)
-     *  0,0,1/2
+     *  0,0,s
      *  js> p = p.turn(ONE_HALF)
-     *  0,0,1
+     *  0,0,n
+     *  js> p.facing.amount.toProperString()
+     *  1
      */
     public Position turn(Fraction amount) {
 	assert facing!=null : "rotation unspecified!";
@@ -83,9 +85,9 @@ public class Position implements Comparable<Position> {
     /** Rotate this position around the origin by the given amount.
      * @doc.test Rotating the #1 boy by 1/4 gives the #4 boy position:
      *  js> p = Position.getGrid(-1,-3,0)
-     *  -1,-3,0
+     *  -1,-3,n
      *  js> p.rotateAroundOrigin(ExactRotation.ONE_QUARTER)
-     *  -3,1,1/4
+     *  -3,1,e
      */
     public Position rotateAroundOrigin(ExactRotation rot) {
         // x' =  x*cos(rot) + y*sin(rot)
@@ -100,11 +102,15 @@ public class Position implements Comparable<Position> {
      * @doc.test Show normalization after two 180-degree turns:
      *  js> importPackage(net.cscott.sdr.util)
      *  js> p = Position.getGrid(0,0,"e").turn(Fraction.ONE_HALF)
-     *  0,0,3/4
+     *  0,0,w
      *  js> p = p.turn(Fraction.ONE_HALF)
-     *  0,0,1 1/4
-     *  js> p.normalize()
-     *  0,0,1/4
+     *  0,0,e
+     *  js> p.facing.amount.toProperString()
+     *  1 1/4
+     *  js> p = p.normalize()
+     *  0,0,e
+     *  js> p.facing.amount.toProperString()
+     *  1/4
      */
     public Position normalize() {
         return new Position(x, y, facing.normalize());
@@ -116,9 +122,9 @@ public class Position implements Comparable<Position> {
      *  between -3 and 3 correspond to the standard 4x4 grid.
      * @doc.test Some sample grid locations:
      *  js> Position.getGrid(0,0,ExactRotation.ZERO)
-     *  0,0,0
+     *  0,0,n
      *  js> Position.getGrid(-3,3,ExactRotation.WEST)
-     *  -3,3,3/4
+     *  -3,3,w
      */
     public static Position getGrid(int x, int y, ExactRotation r) {
         assert r != null;
@@ -132,9 +138,9 @@ public class Position implements Comparable<Position> {
      *  valid for <code>ExactRotation.valueOf(String)</code>.
      * @doc.test Some sample grid locations:
      *  js> Position.getGrid(0,0,"n")
-     *  0,0,0
+     *  0,0,n
      *  js> Position.getGrid(1,2,"e")
-     *  1,2,1/4
+     *  1,2,e
      */
     public static Position getGrid(int x, int y, String direction) {
 	return getGrid(x,y,ExactRotation.fromAbsoluteString(direction));
@@ -165,7 +171,7 @@ public class Position implements Comparable<Position> {
 	return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
 	    .append("x", x.toProperString())
 	    .append("y", y.toProperString())
-	    .append("facing", facing)
+	    .append("facing", facing.toAbsoluteString())
 	    .toString();
     }
     /**
