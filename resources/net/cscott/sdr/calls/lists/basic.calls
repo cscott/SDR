@@ -30,7 +30,7 @@ def: trade
     in: 6
     select: BEAU
       prim: 1, 3, right
-      prim: -3,1, right
+      prim: 3, 1, right
     select: BELLE
       prim: -1, 1, left
       prim: -1, 1, left
