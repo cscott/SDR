@@ -4,10 +4,8 @@ import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 
 /**
- * A <code>Comp</code> is a composition operator: either a sequence,
- * an option list, a parallel split, or a restriction operator.
- * A top-level <code>Comp</code> is a call definition.  Lower-level
- * <code>Comp</code>s you can think of as call "comp"onents.
+ * <code>AstNode</code> is the abstract base class for abstract syntax
+ * tree nodes representing parsed call definitions and components.
  * @author C. Scott Ananian
  * @version $Id: AstNode.java,v 1.1 2006-10-17 16:29:05 cananian Exp $
  */

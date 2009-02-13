@@ -131,4 +131,11 @@ public class Prim extends SeqCall {
         if (this.equals(p)) return this;
         return p;
     }
+    public static AstNode valueOf(String s) throws IllegalArgumentException {
+	try {
+	    return new AstParser(s).prim();
+	} catch (org.antlr.runtime.RecognitionException e) {
+	    throw new IllegalArgumentException("Bad Prim: "+s);
+	}
+    }
 }
