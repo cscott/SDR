@@ -494,6 +494,7 @@ def: split turn the key
   call: hinge
 
 def: turnstyle
+  spoken: turn style
   select: CENTER
     from: FACING DANCERS
       ipart:
