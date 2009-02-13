@@ -73,6 +73,15 @@ public class TaggedFormation extends Formation {
         return new TaggedFormation
         (location, Collections.unmodifiableSet(nSel), tags);
     }
+    @Override
+    public TaggedFormation move(Dancer d, Position p) {
+	assert this.location.containsKey(d);
+	Map<Dancer,Position> nmap = new LinkedHashMap<Dancer,Position>
+	    (this.location);
+	nmap.put(d, p);
+	return new TaggedFormation(nmap, this.selected, this.tags);
+    }
+
     // utility functions.
     public boolean equals(Object o) {
 	if (!(o instanceof TaggedFormation)) return false;

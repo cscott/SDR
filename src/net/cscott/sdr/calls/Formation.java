@@ -480,4 +480,13 @@ public class Formation {
             this(d,p,true);
         }
     }
+    /** Return a formation like this one, except that the given dancer is
+     *  moved to the specified position. */
+    public Formation move(Dancer d, Position p) {
+	assert this.location.containsKey(d);
+	Map<Dancer,Position> nmap = new LinkedHashMap<Dancer,Position>
+	    (this.location);
+	nmap.put(d, p);
+	return new Formation(nmap, this.selected);
+    }
 }

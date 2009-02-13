@@ -12,6 +12,52 @@ import net.cscott.jutil.Default.PairList;
  * {@link DancerPath} (which contains a new {@link Position}).
  * @author C. Scott Ananian
  * @version $Id: EvalPrim.java,v 1.1 2007-03-07 22:11:09 cananian Exp $
+ * @doc.test Partner trade:
+ *  js> importPackage(net.cscott.sdr.calls)
+ *  js> importPackage(net.cscott.sdr.calls.ast)
+ *  js> fm = SelectorList.COUPLE.match(Formation.FOUR_SQUARE); undefined
+ *  js> f=[ff for (ff in Iterator(fm.matches.values()))
+ *    >    if (ff.dancers().contains(StandardDancer.COUPLE_1_BOY))][0]
+ *  net.cscott.sdr.calls.TaggedFormation@1e6612c[
+ *    location={COUPLE 1 BOY=-1,0,n, COUPLE 1 GIRL=1,0,n}
+ *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
+ *    tags={COUPLE 1 BOY=BEAU, COUPLE 1 GIRL=BELLE}
+ *  ]
+ *  js> f.toStringDiagram()
+ *  1B^  1G^
+ *  js> // first part of partner trade
+ *  js> p1b = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f,
+ *    >                      AstNode.valueOf('(Prim 1, 3, right, 3)'))
+ *  DancerPath[from=-1,0,n,to=0,3,e,arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS,rollDir=right,sweepDir=right]
+ *  js> p1g = EvalPrim.apply(StandardDancer.COUPLE_1_GIRL, f,
+ *    >                      AstNode.valueOf('(Prim -1, 1, left, 3)'))
+ *  DancerPath[from=1,0,n,to=0,1,w,arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS,rollDir=left,sweepDir=left]
+ *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1b.to).move(StandardDancer.COUPLE_1_GIRL, p1g.to); f.toStringDiagram()
+ *  1B>
+ *  
+ *  1G<
+ *  
+ *  js> // second part of partner trade
+ *  js> p1b = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f,
+ *    >                      AstNode.valueOf('(Prim 3, 1, right, 3)'))
+ *  DancerPath[from=0,3,e,to=1,0,s,arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS,rollDir=right,sweepDir=right]
+ *  js> p1g = EvalPrim.apply(StandardDancer.COUPLE_1_GIRL, f,
+ *    >                      AstNode.valueOf('(Prim -1, 1, left, 3)'))
+ *  DancerPath[from=0,1,w,to=-1,0,s,arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS,rollDir=left,sweepDir=left]
+ *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1b.to).move(StandardDancer.COUPLE_1_GIRL, p1g.to); f.toStringDiagram()
+ *  1Gv  1Bv
+ * @doc.test Check that sweep direction computation doesn't crash if
+ *  a dancer ends up on the centerline:
+ *  js> importPackage(net.cscott.sdr.calls)
+ *  js> importPackage(net.cscott.sdr.calls.ast)
+ *  js> f = Formation.FOUR_SQUARE ; undefined
+ *  js> // first part of partner trade
+ *  js> p1g = EvalPrim.apply(StandardDancer.COUPLE_1_GIRL, f,
+ *    >                      AstNode.valueOf('(Prim -1, 1, left, 3)'))
+ *  DancerPath[from=1,-1,n,to=0,0,w,arcCenter=0,0,time=3,pointOfRotation=FOUR_DANCERS,rollDir=left,sweepDir=none]
+ * @doc.test Check that in/out motions are computed correctly:
+ * @doc.test Check that roll/sweep work even if you turn more than 360-degrees:
+ * @doc.test Trailers part of scoot back.
  */
 public abstract class EvalPrim {
 
@@ -23,18 +69,20 @@ public abstract class EvalPrim {
     /** "Dance" the given primitive from the given position (in a
      * formation of the given size) to yield a {@link DancerPath}. */
     public static DancerPath apply(Prim prim, final Position from, int formationSize) {
-        // XXX: for now, use the center of the formation as the center point
-        // for in/out/etc.  We may have to revisit this for 'pass in',
-        // which explicitly wants to reference the flagpole center of
-        // the set.
+	// use the center of the formation as the center point for
+        // in/out/etc.  We deal with 'pass in' (which explicitly wants
+        // to reference the flagpole center of the set) by
+        // re-evaluating to an 8-person formation before the quarter in.
         final Point center = new Point(Fraction.ZERO, Fraction.ZERO);
         // apply 'in/out' modifier to x/y/rotation
-        Fraction dx = applyDir(prim.dirX, from.x, center.x);
-        Fraction dy = applyDir(prim.dirY, from.y, center.y);
-        Fraction dr = applyDir(prim.dirRot, from.facing, from, center);
+        Fraction dx = applyDir(prim.dirX, prim.x, from.x, center.x);
+        Fraction dy = applyDir(prim.dirY, prim.y, from.y, center.y);
+        Fraction dr = applyDir(prim.dirRot, prim.rot, from, center);
         // add the deltas to create a new Position.
         Position to = new Position
              (from.x.add(dx), from.y.add(dy), from.facing.add(dr));
+	to = from.forwardStep(dy).sideStep(dx).turn(dr);
+	// XXX THIS COMPUTATION DOESN'T HANDLE 'in' PROPERLY
         // the arc center is the center of the formation, although we should
         // set it to null if this motion doesn't involve rotation.
         Point arcCenter = null;
@@ -47,6 +95,8 @@ public abstract class EvalPrim {
             arcCenter = center;
         // set the point of rotation based on the size of the formation
         // XXX: we may need to do something smarter here eventually.
+	// XXX: por should be the center of our formation, and mapped back
+	//      to a real physical center?
         PointOfRotation por = null;
         switch(formationSize) {
         case 1: por = PointOfRotation.SINGLE_DANCER; break;
@@ -64,11 +114,20 @@ public abstract class EvalPrim {
         // sweep dir is set based on angle swept through center from 'from' to
         // 'to', although of course remember the 'sweep' call is only valid
         // if we end up 'as couples'
-        ExactRotation fromSweep = ExactRotation.fromXY
-            (center.x.subtract(from.x), center.y.subtract(from.y));
-        ExactRotation toSweep = ExactRotation.fromXY
-            (center.x.subtract(to.x), center.y.subtract(to.y));
-        ExactRotation sweepDir = toSweep.subtract(fromSweep.amount);
+        ExactRotation sweepDir;
+        if ((from.x.compareTo(center.x)==0 && from.y.compareTo(center.y)==0) ||
+            (to.x.compareTo(center.x)==0 && to.y.compareTo(center.y)==0)) {
+            // we start or end dead center.  probably this means that our
+            // center of rotation is wrong, but it's better just to say
+            // "can't sweep".
+            sweepDir = ExactRotation.ZERO; // we end up dead center.
+        } else {
+            ExactRotation fromSweep = ExactRotation.fromXY
+                (center.x.subtract(from.x), center.y.subtract(from.y));
+            ExactRotation toSweep = ExactRotation.fromXY
+                (center.x.subtract(to.x), center.y.subtract(to.y));
+            sweepDir = toSweep.subtract(fromSweep.amount);
+        }
         if (sweepDir.amount.compareTo(Fraction.ONE_HALF) >= 0)
             sweepDir = sweepDir.subtract(Fraction.ONE);
         if (sweepDir.amount.compareTo(Fraction.ONE_HALF)==0 ||
@@ -76,15 +135,18 @@ public abstract class EvalPrim {
             sweepDir = ExactRotation.ZERO; // XXX: can't tell sweep direction
         
         
-        return new DancerPath(from, to, arcCenter, prim.time, por, rollDir, sweepDir);
+        return new DancerPath(from, to, arcCenter, prim.time, por,
+			      rollDir, sweepDir);
     }
     
     /** Negate the given fraction if necessary to be consistent with the "in"
      * direction. */
-    private static Fraction applyDir(Direction d, Fraction x, Fraction center) {
+    private static Fraction applyDir(Direction d, Fraction x,
+                                     Fraction from, Fraction center) {
         if (d==Direction.ASIS) return x;
-        assert x.compareTo(center) == 0;
-        return (x.compareTo(center) > 0) ? x.negate() : x;
+        if (from.compareTo(center)==0)
+            throw new BadCallException("can't go 'in' if already centered!");
+        return (from.compareTo(center) > 0) ? x.negate() : x;
     }
     /** Adjust the given rotation to be consistent with the direction of "in"
      * rotation. */
