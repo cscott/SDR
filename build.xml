@@ -50,13 +50,20 @@ Square Dance Revolution build file.
     <!-- delete generated files -->
     <target name="clean" depends="init"
             description="Removes the generated class files and javadoc">
+        <!-- version numbers -->
+        <delete file="src/net/cscott/sdr/Version.java" />
+        <delete file="sdr.jnlp" />
+	<!-- classes and api docs -->
 	<delete dir="${classes_dir}" />
 	<delete dir="${api_dir}" />
 	<delete file="${basedir}/${ant.project.name}.jar" />
-        <delete file="src/net/cscott/sdr/Version.java" />
-        <delete>
-          <fileset dir="src/net/cscott/sdr/calls/lists/"
-		   includes="C4Grammar*" />
+	<delete file="${basedir}/${ant.project.name}.jar.MD5" />
+	<!-- from dist targets -->
+	<delete>
+	  <fileset dir="${basedir}"
+		   includes="${ant.project.name}-libs.jar*
+			     ${ant.project.name}-libs-unpack.jar
+			     ChangeLog" />
 	</delete>
     </target>
     <target name="maint-clean" depends="init,clean,clean.grm"
@@ -70,10 +77,10 @@ Square Dance Revolution build file.
     </target>
 
     <!-- make the version file -->
-    <target name="chk-version"
-	    description="Generates Version.java.tmp and sets the
+    <target name="chk-version">
+	    <!-- description="Generates Version.java.tmp and sets the
 			 version.uptodate property to false if it should
-			 be moved to replace Version.java" >
+			 be moved to replace Version.java" -->
       <copy file="src/${package_topdir}/Version.java.in"
             tofile="src/${package_topdir}/Version.java.tmp" >
         <filterset>
@@ -86,9 +93,8 @@ Square Dance Revolution build file.
 		    file2="src/${package_topdir}/Version.java.tmp" />
       </condition>
     </target>
-    <target name="move-version" depends="chk-version" unless="version.uptodate"
-	    description="Renames Version.java.tmp iff it is different
-			 from Version.java">
+    <target name="move-version" depends="chk-version" unless="version.uptodate">
+      <!-- Renames Version.java.tmp iff it is different from Version.java-->
       <!-- be careful only to overwrite Verson.java if there are changes -->
       <move file="src/${package_topdir}/Version.java.tmp"
 	    tofile="src/${package_topdir}/Version.java" />
@@ -254,8 +260,7 @@ for (var i=0; i != links.length; i++) {
     <!-- runs a javascript shell for interactive debugging -->
     <!-- however, ant insists on redirecting stdin/out, which is unpleasant-->
     <target name="run.shell"
-	    description="Runs a javascript shell, for development and
-			 debugging."
+	    description="Runs a javascript shell, for development and debugging."
 	    depends="jar">
       <java classname="org.mozilla.javascript.tools.shell.Main"
 	    fork="true">
@@ -340,7 +345,7 @@ for (var i=0; i != links.length; i++) {
     <!-- generate signing key; only needs to be done once -->
     <target name="sdr.keystore" depends="init" >
       <genkey alias="sdr" keystore="${basedir}/sdr.keystore"
-                     storepass="${keystore.password}" validity="365" >
+                     storepass="${keystore.password}" validity="3650" >
         <dname>
         <param name="CN" value="C. Scott Ananian"/>
         <param name="O"  value="cscott.net"/>

@@ -67,7 +67,6 @@ Content-Type: x-java-archive
 Content-Encoding: pack200-gzip
 EOF
 # transfer to the distribution machine.
-ssh k2.csail.mit.edu "mkdir -p public_html/Projects/SDR/${PACKAGE}-${VERSION}"
-rsync -avz --delete ${PACKAGE}-${VERSION} k2.csail.mit.edu:public_html/Projects/SDR
+rsync -avyz --delete-after --copy-dest=sdr-0.21 --copy-dest=sdr-0.2 ${PACKAGE}-${VERSION} cscott.net:public_html/Projects/SDR/
 
 /bin/rm -rf ${PACKAGE}-${VERSION}
