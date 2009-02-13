@@ -7,8 +7,11 @@
  * @doc.test White space is ignored:
  *  js> new AstParser("( Seq\n (Prim\tin\r-1 ,  1 , none  ,1 ) ) ").ast()
  *  (Seq (Prim in -1, 1, none, 1))
- * @doc.test Keywords ought to be ignored in call names, etc.
+ * @doc.test Call names, predicates, formations, etc can be quoted:
  *  js> new AstParser("(Condition \"Condition\" (Condition \"If\") (Condition \"Prim\"))").ast()
+ *  (Condition Condition (Condition If) (Condition Prim))
+ * @doc.test Keywords ought to be ignored in call names, etc.
+ *  js> new AstParser("(Condition Condition (Condition If) (Condition Prim))").ast()
  *  (Condition Condition (Condition If) (Condition Prim))
  */
 grammar Ast;
@@ -59,19 +62,18 @@ comp returns [Comp r]
     ;
 condition returns [Condition r]
 @init { List<Condition> args = new ArrayList<Condition>(); }
-    : '(' 'Condition' predicate (cc=condition {args.add(cc);})* ')'
+    : {input.LT(2).getText().equalsIgnoreCase("Condition")}?
+        '(' IDENT predicate (cc=condition {args.add(cc);})* ')'
         { $r=new Condition($predicate.r, args); }
     ;
-predicate returns [String r]
-    : simple_words { $r = $simple_words.r; }
-    | STRING { $r = $STRING.text; }
-    ;
 optcall returns [OptCall r]
-    : '(' 'OptCall' selectors child=comp ')'
+    : {input.LT(2).getText().equalsIgnoreCase("OptCall")}?
+        '(' IDENT selectors child=comp ')'
         { $r=new OptCall($selectors.r, $child.r); }
     ;
 parcall returns [ParCall r]
-    : '(' 'ParCall' tags child=comp ')'
+    : {input.LT(2).getText().equalsIgnoreCase("ParCall")}?
+        '(' IDENT tags child=comp ')'
         { $r=new ParCall($tags.r, $child.r); }
     ;
 seqcall returns [SeqCall r]
@@ -81,16 +83,19 @@ seqcall returns [SeqCall r]
     ;
 apply returns [Apply r]
 @init { List<Apply> args = new ArrayList<Apply>(); }
-    : '(' 'Apply' callname=simple_words (aa=apply {args.add(aa);})* ')'
+    : {input.LT(2).getText().equalsIgnoreCase("Apply")}?
+        '(' IDENT callname=simple_words (aa=apply {args.add(aa);})* ')'
         { $r = new Apply($callname.r, args); }
     ;
 part returns [Part r]
-    : '(' 'Part' divisible=bool child=comp ')'
+    : {input.LT(2).getText().equalsIgnoreCase("Part")}?
+        '(' IDENT divisible=bool child=comp ')'
         { $r = new Part($divisible.r, $child.r); }
     ;
 prim returns [Prim r]
 @init { boolean passRight = true, forceArc = false; }
-    : '(' 'Prim' x=in_out_num ',' y=in_out_num ',' rot=in_out_dir ','
+    : {input.LT(2).getText().equalsIgnoreCase("Prim")}?
+        '(' IDENT x=in_out_num ',' y=in_out_num ',' rot=in_out_dir ','
         time=number
         (',' 'pass-left' {passRight=false;})?
         (',' 'force-arc' {forceArc=true;})? ')'
@@ -98,33 +103,43 @@ prim returns [Prim r]
                         $time.r, passRight, forceArc); }
     ;
 if_ returns [If r]
-    : '(' 'If' condition child=comp ')'
+    : {input.LT(2).getText().equalsIgnoreCase("If")}?
+        '(' IDENT condition child=comp ')'
         { $r = new If($condition.r, $child.r); }
     ;
 in returns [In r]
-    : '(' 'In' count=number child=comp ')'
+    : {input.LT(2).getText().equalsIgnoreCase("In")}?
+        '(' IDENT count=number child=comp ')'
         { $r = new In($count.r, $child.r); }
     ;
 opt returns [Opt r]
 @init { List<OptCall> oc = new ArrayList<OptCall>(); }
-    : '(' 'Opt' (optcall { oc.add($optcall.r); })* ')'
+    : {input.LT(2).getText().equalsIgnoreCase("Opt")}?
+        '(' IDENT (optcall { oc.add($optcall.r); })* ')'
         { $r = new Opt(oc); }
     ;
 par returns [Par r]
 @init { List<ParCall> pc = new ArrayList<ParCall>(); }
-    : '(' 'Par' (parcall { pc.add($parcall.r); })* ')'
+    : {input.LT(2).getText().equalsIgnoreCase("Par")}?
+        '(' IDENT (parcall { pc.add($parcall.r); })* ')'
         { $r = new Par(pc); }
     ;
 seq returns [Seq r]
 @init { List<SeqCall> sc = new ArrayList<SeqCall>(); }
-    : '(' 'Seq' (seqcall {sc.add($seqcall.r); })* ')'
+    : {input.LT(2).getText().equalsIgnoreCase("Seq")}?
+        '(' IDENT (seqcall {sc.add($seqcall.r); })* ')'
         { $r = new Seq(sc); }
     ;
 warped returns [Warped r]
-    : '(' 'Warped' warp child=comp ')'
+    : {input.LT(2).getText().equalsIgnoreCase("Warped")}?
+        '(' IDENT warp child=comp ')'
         { $r = new Warped($warp.r, $child.r); }
     ;
 
+predicate returns [String r]
+    : list_elem
+        { $r = $list_elem.r; }
+    ;
 selectors returns [List<Selector> r]
     : string_list
         { $r = OptCall.parseFormations($string_list.r); }
@@ -208,18 +223,26 @@ in_out_dir returns [Prim.Direction dir, ExactRotation rot]
     ;
 fragment
 rotation
-    : 'right' | 'left' | 'none' | fraction ;
+    : { input.LT(1).getText().equalsIgnoreCase("right") ||
+        input.LT(1).getText().equalsIgnoreCase("left") ||
+        input.LT(1).getText().equalsIgnoreCase("none") }?
+        IDENT
+    | fraction ;
 
 fragment
 in_out returns [boolean in, boolean out]
 @init { $in=false; $out=false; }
-    : 'in' { $in=true; }
-    | 'out' { $out=true; }
+    : {input.LT(1).getText().equalsIgnoreCase("in")}?
+        IDENT { $in=true; }
+    | {input.LT(1).getText().equalsIgnoreCase("out")}?
+        IDENT { $out=true; }
     ;
 fragment
 bool returns [Boolean r]
-    : 'true' { $r = Boolean.TRUE; }
-    | 'false' { $r = Boolean.FALSE; }
+    : {input.LT(1).getText().equalsIgnoreCase("true")}?
+        IDENT { $r = Boolean.TRUE; }
+    | {input.LT(1).getText().equalsIgnoreCase("false")}?
+        IDENT { $r = Boolean.FALSE; }
     ;
 fragment
 simple_word returns [String r]
@@ -243,21 +266,8 @@ INT
     : ('0'..'9')+
     ;
 STRING
-    : '"' STRING_BODY '"'
-        { setText($STRING_BODY.text); }
-    ;
-fragment
-STRING_BODY
-    : CHAR*
-    ;
-fragment
-CHAR
-    : '\\n' { setText("\n"); }
-    | '\\r' { setText("\r"); }
-    | '\\t' { setText("\t"); }
-    | '\\\"' { setText("\""); }
-    | '\\\\' { setText("\\"); }
-    | ~('/'|'"')
+    : '"' .* '"'
+        { setText(getText().substring(1,getText().length()-1)); }
     ;
 IDENT
     : ('A'..'Z'|'a'..'z'|'_')('A'..'Z'|'a'..'z'|'_'|'0'..'9')*
