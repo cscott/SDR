@@ -12,7 +12,7 @@ ant dist sign-jars
 if [ sdr-libs.jar -nt sdr-libs.jar.pack.gz ]; then
   echo "Packing..." # this saves about 4M of download (~16%)
   /bin/rm -f sdr-libs.jar.pack.gz
-  pack200 -E9 -mlatest -g sdr-libs.jar.pack sdr-libs.jar
+  pack200 -E9 -mlatest -g -G sdr-libs.jar.pack sdr-libs.jar
   gzip --rsyncable sdr-libs.jar.pack
 fi
 # make upload bundle
@@ -36,6 +36,7 @@ cp ${PACKAGE}.jar ${PACKAGE}-${VERSION}/
 # Java web start stuff
 cp sdr.jnlp ${PACKAGE}-${VERSION}/
 mkdir -p ${PACKAGE}-${VERSION}/lib
+#cp sdr-libs.jar ${PACKAGE}-${VERSION}/lib
 cp sdr-libs.jar.pack.gz ${PACKAGE}-${VERSION}/lib
 cp lib/jme/jnlp/*.jar ${PACKAGE}-${VERSION}/lib
 cp resources/net/cscott/sdr/anim/splash.png \

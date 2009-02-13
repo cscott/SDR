@@ -197,7 +197,7 @@ for (var i=0; i != links.length; i++) {
 		<classpath refid="classpath.path" />
 		<taglet name="net.cscott.jdoctest.JDoctest">
 		  <path>
-		    <fileset dir="lib/jdoctest">
+		    <fileset dir="lib/dev/jdoctest">
 		      <include name="*.jar"/>
 		    </fileset>
 		    <path refid="classpath.path" />
@@ -271,10 +271,10 @@ for (var i=0; i != links.length; i++) {
 	  <!-- the jline library is optional; it just nicer line
 	  editing.  It's apparently unfriendly to Eclipse's console,
 	  though. -->
-	  <fileset dir="lib">
+	  <fileset dir="lib/dev">
 	    <include name="jline*.jar" />
 	  </fileset>
-	  <fileset dir="lib/jdoctest">
+	  <fileset dir="lib/dev/jdoctest">
 	    <include name="rhino*.jar"/>
 	  </fileset>
 	  <path refid="classpath.path"/>
@@ -377,10 +377,24 @@ for (var i=0; i != links.length; i++) {
       <delete dir="${e}" />
       <!-- repack jar, so that we can sign & pack w/o invalidating the sig -->
       <pack200 src="${basedir}/${ant.project.name}-libs-unpack.jar"
-               destfile="${basedir}/${ant.project.name}-libs.jar"
+               destfile="${basedir}/${ant.project.name}-libsX.jar"
 	       modificationtime="latest"
+	       stripdebug="true" effort="9" gzipoutput="false"
                repack="true" />
       <delete file="${basedir}/${ant.project.name}-libs-unpack.jar" />
+      <!-- workaround to:
+	   http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5078608
+      -->
+      <antcall target="sign-one-jar">
+	<param name="sign.file" value="sdr-libsX.jar" />
+      </antcall>
+      <pack200 src="${basedir}/${ant.project.name}-libsX.jar"
+               destfile="${basedir}/${ant.project.name}-libs.jar"
+	       modificationtime="latest"
+	       stripdebug="true" effort="9" gzipoutput="false"
+               repack="true" />
+      <delete file="${basedir}/${ant.project.name}-libsX.jar" />
+      <delete file="${basedir}/${ant.project.name}-libsX.jar.MD5" />
     </target>
     <target name="unpack-one-jar" depends="init" >
       <property name="e" value="${basedir}/exported"/>
