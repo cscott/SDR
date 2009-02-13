@@ -99,10 +99,6 @@ options {
   k=2;
   output=AST;
   //tokenVocab = Ast;
-// lexer options
-  //charVocabulary = '\0'..'\177'; // ascii only
-  //testLiterals=false;    // don't automatically test for literals
-  //k=2;                   // two characters of lookahead
 }
 tokens {
 	CALLLIST;
@@ -120,7 +116,6 @@ tokens {
 }
 @parser::header {
 	package net.cscott.sdr.calls.transform;
-	import java.io.*;
 	import java.util.ArrayList;
 	import java.util.List;
 	import org.antlr.runtime.tree.Tree;
@@ -154,11 +149,9 @@ tokens {
     public final IndentProcessor indentProcessor;
     {
         indentProcessor = new IndentProcessor(new TokenSource() {
-                @Override
                 public String getSourceName() {
                     return CallFileLexer.this.getSourceName();
                 }
-                @Override
                 public Token nextToken() {
                     return superNextToken();
                 }

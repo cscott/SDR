@@ -97,7 +97,7 @@ public class Game extends FixedFramerateGame {
 
         /** Close the splash screen, if not already closed. */
         try {
-            Class c = Class.forName("java.awt.SplashScreen");
+            Class<?> c = Class.forName("java.awt.SplashScreen");
             Method m = c.getMethod("getSplashScreen");
             Object o = m.invoke(null); // SplashScreen instance.
             if (o!=null) {

@@ -1,6 +1,5 @@
 package net.cscott.sdr.calls.grm;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,8 +7,6 @@ import java.util.List;
 
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.transform.CallFileBuilder;
-import net.cscott.sdr.calls.transform.CallFileLexer;
-import net.cscott.sdr.calls.transform.CallFileParser;
 
 /**
  * This class contains inner classes creating an AST for the 'natural language'

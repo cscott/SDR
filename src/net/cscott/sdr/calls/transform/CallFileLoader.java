@@ -7,9 +7,6 @@ import java.util.Map;
 
 import net.cscott.sdr.calls.Call;
 
-import org.antlr.runtime.*;
-import org.antlr.runtime.tree.*;
-
 /** This class contains the code to parse and load a call list. */
 public abstract class CallFileLoader {
     // This does the load
