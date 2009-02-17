@@ -28,6 +28,9 @@ import com.jme.scene.state.TextureState;
 import com.jme.util.LoggingSystem;
 import com.jme.util.TextureManager;
 
+/**
+ * @deprecated This was the original implementation; replaced by {@link Game}.
+ */
 public class SdrGame extends SdrBaseGame {
 
     private Skybox skybox;

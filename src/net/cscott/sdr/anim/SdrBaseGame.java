@@ -33,6 +33,7 @@ import com.jme.util.geom.Debugger;
  * but defers the really application-specific stuff to subclasses.
  * @author C. Scott Ananian
  * @version $Id: SdrBaseGame.java,v 1.4 2006-10-25 17:46:46 cananian Exp $
+ * @deprecated Replaced by {@link Game}.
  */
 public abstract class SdrBaseGame extends FixedFramerateGame {
     /** Our camera. */

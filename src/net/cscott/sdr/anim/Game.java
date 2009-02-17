@@ -31,6 +31,9 @@ import com.jmex.game.state.GameState;
 import com.jmex.game.state.GameStateManager;
 import com.jmex.game.state.load.TransitionGameState;
 
+/** Base game class. */
+// XXX: we've lost the keyboard camera control which was in the SdrGame/BaseGame
+//      implementation.  Can we put that back?
 public class Game extends FixedFramerateGame {
     /** Get a high resolution timer for FPS updates. */
     private final Timer timer = Timer.getTimer();
@@ -53,7 +56,7 @@ public class Game extends FixedFramerateGame {
             CyclicBarrier musicSync,
             CyclicBarrier sphinxSync) {
         LoggingSystem.getLogger().setLevel(java.util.logging.Level.WARNING);
-        URL url = SdrGame.class.getClassLoader().getResource      
+        URL url = Game.class.getClassLoader().getResource
             ("net/cscott/sdr/anim/splash.png");
         this.setDialogBehaviour
             (FIRSTRUN_OR_NOCONFIGFILE_SHOW_PROPS_DIALOG, url);
@@ -120,7 +123,7 @@ public class Game extends FixedFramerateGame {
         // Adds a new GameState to the GameStateManager. In order for it to get
         // processed (rendered and updated) it needs to get activated.
 
-        URL url = SdrGame.class.getClassLoader().getResource      
+        URL url = Game.class.getClassLoader().getResource
         ("net/cscott/sdr/anim/loading.png");
         final TransitionGameState loading = new TransitionGameState(10, url);
         loading.setActive(true);
@@ -132,13 +135,13 @@ public class Game extends FixedFramerateGame {
             public void run() {
                 inc("Loading icons...");
                 final Image icon16 = TextureManager.loadImage(
-                        SdrGame.class.getClassLoader().getResource(
+                        Game.class.getClassLoader().getResource(
                                 "net/cscott/sdr/icon16.png"), false);
                 final Image icon32 = TextureManager.loadImage(
-                        SdrGame.class.getClassLoader().getResource(
+                        Game.class.getClassLoader().getResource(
                                 "net/cscott/sdr/icon32.png"), false);
                 final Image icon128= TextureManager.loadImage(
-                        SdrGame.class.getClassLoader().getResource(
+                        Game.class.getClassLoader().getResource(
                                 "net/cscott/sdr/icon128.png"), false);
                 queueMan.update(new Callable<Void>() {
                     public Void call() throws Exception {

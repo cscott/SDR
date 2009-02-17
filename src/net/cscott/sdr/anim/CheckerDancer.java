@@ -110,7 +110,7 @@ public class CheckerDancer extends AnimDancer {
         int i = d.coupleNumber() - 1;
         if (texNumber[i]==null) {
             texNumber[i] = TextureManager.loadTexture
-            (SdrGame.class.getClassLoader().getResource
+            (Game.class.getClassLoader().getResource
                     ("net/cscott/sdr/anim/"+(i+1)+".png"),
                     Texture.MM_LINEAR_LINEAR,
                     Texture.FM_LINEAR);

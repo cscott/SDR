@@ -104,32 +104,32 @@ public class VenueState extends CameraGameState {
         skybox = new Skybox("skybox", 10, 10, 10);
         
         Texture north = TextureManager.loadTexture(
-                SdrGame.class.getClassLoader().getResource(
+                Game.class.getClassLoader().getResource(
                 "net/cscott/sdr/anim/north.jpg"),
                 Texture.MM_LINEAR,
                 Texture.FM_LINEAR);
         Texture south = TextureManager.loadTexture(
-                SdrGame.class.getClassLoader().getResource(
+                Game.class.getClassLoader().getResource(
                 "net/cscott/sdr/anim/south.jpg"),
                 Texture.MM_LINEAR,
                 Texture.FM_LINEAR);
         Texture east = TextureManager.loadTexture(
-                SdrGame.class.getClassLoader().getResource(
+                Game.class.getClassLoader().getResource(
                 "net/cscott/sdr/anim/east.jpg"),
                 Texture.MM_LINEAR,
                 Texture.FM_LINEAR);
         Texture west = TextureManager.loadTexture(
-                SdrGame.class.getClassLoader().getResource(
+                Game.class.getClassLoader().getResource(
                 "net/cscott/sdr/anim/west.jpg"),
                 Texture.MM_LINEAR,
                 Texture.FM_LINEAR);
         Texture up = TextureManager.loadTexture(
-                SdrGame.class.getClassLoader().getResource(
+                Game.class.getClassLoader().getResource(
                 "net/cscott/sdr/anim/top.jpg"),
                 Texture.MM_LINEAR,
                 Texture.FM_LINEAR);
         Texture down = TextureManager.loadTexture(
-                SdrGame.class.getClassLoader().getResource(
+                Game.class.getClassLoader().getResource(
                 "net/cscott/sdr/anim/bottom.jpg"),
                 Texture.MM_LINEAR,
                 Texture.FM_LINEAR);
@@ -163,7 +163,7 @@ public class VenueState extends CameraGameState {
         ts.setEnabled(true);
         ts.setTexture
         (TextureManager.loadTexture
-                (SdrGame.class.getClassLoader().getResource
+                (Game.class.getClassLoader().getResource
                         ("net/cscott/sdr/anim/floor.png"),
                         Texture.MM_LINEAR_LINEAR,
                         Texture.FM_LINEAR));
