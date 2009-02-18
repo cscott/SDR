@@ -11,6 +11,76 @@ import net.cscott.sdr.util.*;
  * together, breathing out).
  * @author C. Scott Ananian
  * @version $Id: FormationMapper.java,v 1.10 2006-10-30 22:09:29 cananian Exp $
+ * @doc.test Insert COUPLEs, then TANDEMs into a RH_OCEAN_WAVE.  Then, for
+ *  a challenge, insert TANDEMs into a DIAMOND to give a t-bone column:
+ *  js> function xofy(meta, f) {
+ *    >   var i=0
+ *    >   var m=new java.util.LinkedHashMap()
+ *    >   for (d in Iterator(meta.dancers())) {
+ *    >     var mm=new java.util.LinkedHashMap()
+ *    >     for (dd in Iterator(f.dancers())) {
+ *    >       mm.put(dd, StandardDancer.values()[i++])
+ *    >     }
+ *    >     m.put(d, new Formation(f, mm))
+ *    >     print(m.get(d).toStringDiagram())
+ *    >   }
+ *    >   return m
+ *    > }
+ *  js> meta = FormationList.RH_OCEAN_WAVE ; meta.toStringDiagram()
+ *  ^    v    ^    v
+ *  js> m = xofy(meta, FormationList.COUPLE); undefined
+ *  1B^  1G^
+ *  2B^  2G^
+ *  3B^  3G^
+ *  4B^  4G^
+ *  js> FormationMapper.insert(meta, m).toStringDiagram()
+ *  2B^  2G^  1Gv  1Bv  4B^  4G^  3Gv  3Bv
+ *  js> m = xofy(meta, FormationList.TANDEM); undefined
+ *  1B^
+ *  
+ *  1G^
+ *  2B^
+ *  
+ *  2G^
+ *  3B^
+ *  
+ *  3G^
+ *  4B^
+ *  
+ *  4G^
+ *  js> FormationMapper.insert(meta, m).toStringDiagram()
+ *  2B^  1Gv  4B^  3Gv
+ *  
+ *  2G^  1Bv  4G^  3Bv
+ *  js> meta = FormationList.RH_DIAMOND ; meta.toStringDiagram("|", Formation.dancerNames)
+ *  |  >
+ *  |
+ *  |
+ *  |^    v
+ *  |
+ *  |
+ *  |  <
+ *  js> m = xofy(meta, FormationList.TANDEM); undefined
+ *  1B^
+ *  
+ *  1G^
+ *  2B^
+ *  
+ *  2G^
+ *  3B^
+ *  
+ *  3G^
+ *  4B^
+ *  
+ *  4G^
+ *  js> FormationMapper.insert(meta, m).toStringDiagram()
+ *  1G>  1B>
+ *  
+ *  2B^  3Gv
+ *  
+ *  2G^  3Bv
+ *  
+ *  4B<  4G<
  */
 public class FormationMapper {
     public static Formation test1=null, test2=null;
