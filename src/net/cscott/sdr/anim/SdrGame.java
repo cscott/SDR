@@ -190,7 +190,7 @@ public class SdrGame extends SdrBaseGame {
             rootNode.attachChild(ad.node);
             ad.addPosition(Fraction.ZERO, f.location(d));
         }
-        if (false) {
+        if (true) {
         // dancer[5] is COUPLE 3 GIRL, starting at (-1,3,1/2)
         for (int i=0; i<40; i+=8) {
         dancers.get(5).addPosition(Fraction.valueOf(i+2), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), ExactRotation.THREE_QUARTERS));
@@ -198,18 +198,7 @@ public class SdrGame extends SdrBaseGame {
         dancers.get(5).addPosition(Fraction.valueOf(i+6), new Position(Fraction.valueOf(-3), Fraction.valueOf(4), ExactRotation.ONE_QUARTER));
         dancers.get(5).addPosition(Fraction.valueOf(i+8), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), ExactRotation.ONE_HALF));
         }
-        } else {
-        // help debug FormationMapper
-        FormationMapper.main(null);
-        for (AnimDancer ad: dancers) {
-            ad.addPosition(Fraction.valueOf( 5), FormationMapper.test1.location(ad.dancer));
-            ad.addPosition(Fraction.valueOf(10), FormationMapper.test1.location(ad.dancer));
-            ad.addPosition(Fraction.valueOf(15), FormationMapper.test2.location(ad.dancer));
-            ad.addPosition(Fraction.valueOf(20), FormationMapper.test2.location(ad.dancer));
-            ad.addPosition(Fraction.valueOf(25), FormationMapper.test1.location(ad.dancer));
         }
-        }
-            
         
         initialTime = timer.getTimeInSeconds();
         

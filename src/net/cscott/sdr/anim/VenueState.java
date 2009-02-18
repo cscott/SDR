@@ -1,6 +1,7 @@
 package net.cscott.sdr.anim;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -9,6 +10,7 @@ import net.cscott.sdr.Version;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Formation;
+import net.cscott.sdr.calls.FormationList;
 import net.cscott.sdr.calls.FormationMapper;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.StandardDancer;
@@ -181,25 +183,34 @@ public class VenueState extends CameraGameState {
             rootNode.attachChild(ad.node);
             ad.addPosition(Fraction.ZERO, f.location(d));
         }
-        if (false) {
-            // dancer[5] is COUPLE 3 GIRL, starting at (-1,3,1/2)
-            for (int i=0; i<40; i+=8) {
-                dancers.get(5).addPosition(Fraction.valueOf(i+2), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), ExactRotation.THREE_QUARTERS));
-                dancers.get(5).addPosition(Fraction.valueOf(i+4), new Position(Fraction.valueOf(-4), Fraction.valueOf(3), ExactRotation.ZERO));
-                dancers.get(5).addPosition(Fraction.valueOf(i+6), new Position(Fraction.valueOf(-3), Fraction.valueOf(4), ExactRotation.ONE_QUARTER));
-                dancers.get(5).addPosition(Fraction.valueOf(i+8), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), ExactRotation.ONE_HALF));
-            }
-        } else {
-            // help debug FormationMapper
-            FormationMapper.main(null);
-            for (AnimDancer ad: dancers) {
-                ad.addPosition(Fraction.valueOf( 5), FormationMapper.test1.location(ad.dancer));
-                ad.addPosition(Fraction.valueOf(10), FormationMapper.test1.location(ad.dancer));
-                ad.addPosition(Fraction.valueOf(15), FormationMapper.test2.location(ad.dancer));
-                ad.addPosition(Fraction.valueOf(20), FormationMapper.test2.location(ad.dancer));
-                ad.addPosition(Fraction.valueOf(25), FormationMapper.test1.location(ad.dancer));
-            }
-        }
+	// nice animation demo
+	int time = 5;
+	for (Formation ff : new Formation[] {
+		FormationList.STATIC_SQUARE,
+		FormationList.PROMENADE,
+		FormationList.THAR,
+		FormationList.FACING_LINES,
+		FormationList.RH_QUARTER_TAG,
+		FormationList.RH_TWIN_DIAMONDS,
+		FormationList.RH_POINT_TO_POINT_DIAMONDS,
+		FormationList.RH_TIDAL_WAVE,
+		FormationList.EIGHT_CHAIN_THRU,
+		FormationList.ENDS_IN_INVERTED_LINES,
+		FormationList.LH_COLUMN,
+		FormationList.FACING_LINES,
+		FormationList.STATIC_SQUARE,
+		FormationList.PROMENADE,
+		FormationList.THAR,
+	    }) {
+	    List<Dancer> ld = new ArrayList<Dancer>(ff.dancers());
+	    Collections.sort(ld, ff.dancerComparator());
+	    for (AnimDancer ad: dancers) {
+		Position p = ff.location(ld.get(ad.dancer.ordinal()));
+		ad.addPosition(Fraction.valueOf(time), p);
+		ad.addPosition(Fraction.valueOf(time+1), p);
+	    }
+	    time += 5;
+	}
         
         rootNode.updateGeometricState( 0.0f, true );
         rootNode.updateRenderState();

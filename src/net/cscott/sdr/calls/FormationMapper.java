@@ -83,40 +83,6 @@ import net.cscott.sdr.util.*;
  *  4B<  4G<
  */
 public class FormationMapper {
-    public static Formation test1=null, test2=null;
-    /** This method is just for testing. */
-    public static void main(String[] args) {
-        Map<Dancer,Formation> m = new HashMap<Dancer,Formation>();
-        Formation meta = FormationList.RH_OCEAN_WAVE;
-        int i=0;
-        for (Dancer d : meta.dancers()) {
-            Map<Dancer,Dancer> mm = new HashMap<Dancer,Dancer>();
-            Formation f = FormationList.COUPLE; 
-            for (Dancer dd : f.dancers())
-                mm.put(dd,StandardDancer.values()[i++]);
-            f = new Formation(f, mm);
-            m.put(d,f);
-        }
-        // okay, we've made our inputs: results should be tidal two-faced line
-        test1=insert(meta, m);
-        System.out.println(test1);
-        
-        // new formation.
-        m.clear();
-        meta = FormationList.RH_DIAMOND;
-        i=0;
-        for (Dancer d : meta.dancers()) {
-            Map<Dancer,Dancer> mm = new HashMap<Dancer,Dancer>();
-            Formation f = FormationList.TANDEM;
-            for (Dancer dd : f.dancers())
-                mm.put(dd,StandardDancer.values()[i++]);
-            f = new Formation(f, mm);
-            m.put(d,f);
-        }
-        test2=insert(meta,m);
-        System.out.println(test2);
-    }
-    
     
     /** Insert formations into a meta-formation.  */
     public static Formation insert(final Formation meta,
