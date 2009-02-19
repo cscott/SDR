@@ -288,16 +288,32 @@ public class FormationMapper {
         /** The rotation to use for this dancer in the output meta formation
          * (typically this is the rotation of formation {@code f} from
          * whatever the 'canonical' orientation is. */
-        public final ExactRotation r;
-        public FormationPiece(Formation f, Dancer d, ExactRotation r) {
+        public final Rotation r;
+        public FormationPiece(Formation f, Dancer d, Rotation r) {
             this.f = f;
             this.d = d;
             this.r = r;
         }
     }
+    /**
+     * Create a canonical formation by compressing the given one.  This
+     * is just an invokation of {@link #compress(List)} with
+     * trivial {@link FormationPiece}s consisting of a single dancer each.
+     */
+    public static Formation compress(Formation f) {
+        List<FormationPiece> fpl = new ArrayList<FormationPiece>
+            (f.dancers().size());
+        for (Dancer d: f.dancers()) {
+            Formation nf = f.select(Collections.singleton(d)).onlySelected();
+            fpl.add(new FormationPiece(nf, d, f.location(d).facing));
+        }
+        return compress(fpl);
+    }
     /** Create canonical formation by compressing components of a given
-     * formation. The result has the meta formation, as well as a map giving
-     * the correspondence between the new phantom dancers and the input formations.*/
+     * formation.  (The map giving the correspondence between dancers in
+     * the new formation and the input formations is given by the
+     * individual {@link FormationPiece} objects.)
+     */
     public static Formation compress(List<FormationPiece> pieces) {
         // Find 'inner boundaries' of component formations.
         Set<Fraction> xiB = new HashSet<Fraction>();
