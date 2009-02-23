@@ -26,22 +26,22 @@ import net.cscott.sdr.util.Fraction;
  *  Diamonds are a special case.  There should be "expanded" diamonds and
  *  "compressed" diamonds.  (Also the case for quarter tags?)
  *  js> for (f in Iterator(FormationList.all)) {
- *    >   if (!FormationMapper.compress(f).equals(f)) {
- *    >     print("Uncompressed formation: "+f.toString());
+ *    >   if (!FormationMapper.breathe(f).equals(f)) {
+ *    >     print("Unbreathed formation: "+f.toString());
  *    >   }
  *    > }
- *  Uncompressed formation: RH DIAMOND
- *  Uncompressed formation: RH FACING DIAMOND
- *  Uncompressed formation: LH DIAMOND
- *  Uncompressed formation: LH FACING DIAMOND
- *  Uncompressed formation: RH TWIN DIAMONDS
- *  Uncompressed formation: LH TWIN DIAMONDS
- *  Uncompressed formation: RH POINT-TO-POINT DIAMONDS
- *  Uncompressed formation: RH POINT-TO-POINT FACING DIAMONDS
- *  Uncompressed formation: LH POINT-TO-POINT DIAMONDS
- *  Uncompressed formation: LH POINT-TO-POINT FACING DIAMONDS
- *  Uncompressed formation: RH TWIN FACING DIAMONDS
- *  Uncompressed formation: LH TWIN FACING DIAMONDS
+ *  Unbreathed formation: RH DIAMOND
+ *  Unbreathed formation: RH FACING DIAMOND
+ *  Unbreathed formation: LH DIAMOND
+ *  Unbreathed formation: LH FACING DIAMOND
+ *  Unbreathed formation: RH TWIN DIAMONDS
+ *  Unbreathed formation: LH TWIN DIAMONDS
+ *  Unbreathed formation: RH POINT-TO-POINT DIAMONDS
+ *  Unbreathed formation: RH POINT-TO-POINT FACING DIAMONDS
+ *  Unbreathed formation: LH POINT-TO-POINT DIAMONDS
+ *  Unbreathed formation: LH POINT-TO-POINT FACING DIAMONDS
+ *  Unbreathed formation: RH TWIN FACING DIAMONDS
+ *  Unbreathed formation: LH TWIN FACING DIAMONDS
  */
 // can use SelectorList to associate phantoms with real dancers.
 public abstract class FormationList {

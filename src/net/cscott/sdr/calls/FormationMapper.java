@@ -297,17 +297,17 @@ public class FormationMapper {
     }
     /**
      * Create a canonical formation by compressing the given one.  This
-     * is just an invokation of {@link #compress(List)} with
+     * is just an invokation of {@link #breathe(List)} with
      * trivial {@link FormationPiece}s consisting of a single dancer each.
      */
-    public static Formation compress(Formation f) {
+    public static Formation breathe(Formation f) {
         List<FormationPiece> fpl = new ArrayList<FormationPiece>
             (f.dancers().size());
         for (Dancer d: f.dancers()) {
             Formation nf = f.select(Collections.singleton(d)).onlySelected();
             fpl.add(new FormationPiece(nf, d, f.location(d).facing));
         }
-        return compress(fpl);
+        return breathe(fpl);
     }
     /** Create canonical formation by compressing components of a given
      * formation.  (The map giving the correspondence between dancers in
@@ -321,7 +321,7 @@ public class FormationMapper {
     //      non-overlapping?  Maybe this could be the same routine that
     //      handles "crashing to right hands" for dancers who end up on
     //      the same spot...
-    public static Formation compress(List<FormationPiece> pieces) {
+    public static Formation breathe(List<FormationPiece> pieces) {
         // Find 'inner boundaries' of component formations.
         Set<Fraction> xiB = new HashSet<Fraction>();
         Set<Fraction> yiB = new HashSet<Fraction>();
