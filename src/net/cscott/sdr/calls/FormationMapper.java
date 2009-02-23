@@ -4,87 +4,108 @@ import java.util.*;
 
 import net.cscott.sdr.util.*;
 
-/** The {@link FormationMapper} class contains methods to disassemble
- * a square, given component formations (ie, get a diamond back from
- * a siamese diamond, breathing in), and to reassemble a square given components
- * (given a diamond and the various tandems and couples, put them
- * together, breathing out).
+/**
+ * The {@link FormationMapper} class contains methods to reassemble and
+ * breathe formations.
+ *
+ * <p>The {@link #insert(Formation,Map) insert()} method pushes
+ * sub-formations into a meta-formation after performing (say) a four
+ * person call &mdash; ie, starting with a tidal wave, {@link
+ * Selector} will pull out two four-person waves as a mini-wave as the
+ * meta-formation.  We do a crossfire (say) from the mini-waves to get
+ * boxes.  Now {@link #insert(Formation,Map)} will shove the boxes
+ * into the mini-wave meta-formation to get parallel ocean waves.</p>
+ *
+ * <p>The {@link #breathe(List) breathe()} method is a part of {@link
+ * #insert(Formation,Map) insert()} which is useful in its own right:
+ * it takes a {@link Formation} (or a list of {@link FormationPiece}s)
+ * and breathes it in or out to normalize the spacing between dancers.
+ * For example, after "trailers extend" from boxes, we need to make
+ * room for the resulting mini-wave in the center.  If the ends then
+ * u-turn back and everyone extends again, the formation has to
+ * squeeze in again to erase the space.</p>
+ *
  * @author C. Scott Ananian
  * @version $Id: FormationMapper.java,v 1.10 2006-10-30 22:09:29 cananian Exp $
- * @doc.test Insert COUPLEs, then TANDEMs into a RH_OCEAN_WAVE.  Then, for
- *  a challenge, insert TANDEMs into a DIAMOND to give a t-bone column:
- *  js> function xofy(meta, f) {
- *    >   var i=0
- *    >   var m=new java.util.LinkedHashMap()
- *    >   for (d in Iterator(meta.dancers())) {
- *    >     var mm=new java.util.LinkedHashMap()
- *    >     for (dd in Iterator(f.dancers())) {
- *    >       mm.put(dd, StandardDancer.values()[i++])
- *    >     }
- *    >     m.put(d, new Formation(f, mm))
- *    >     print(m.get(d).toStringDiagram())
- *    >   }
- *    >   return m
- *    > }
- *  js> meta = FormationList.RH_OCEAN_WAVE ; meta.toStringDiagram()
- *  ^    v    ^    v
- *  js> m = xofy(meta, FormationList.COUPLE); undefined
- *  1B^  1G^
- *  2B^  2G^
- *  3B^  3G^
- *  4B^  4G^
- *  js> FormationMapper.insert(meta, m).toStringDiagram()
- *  2B^  2G^  1Gv  1Bv  4B^  4G^  3Gv  3Bv
- *  js> m = xofy(meta, FormationList.TANDEM); undefined
- *  1B^
- *  
- *  1G^
- *  2B^
- *  
- *  2G^
- *  3B^
- *  
- *  3G^
- *  4B^
- *  
- *  4G^
- *  js> FormationMapper.insert(meta, m).toStringDiagram()
- *  2B^  1Gv  4B^  3Gv
- *  
- *  2G^  1Bv  4G^  3Bv
- *  js> meta = FormationList.RH_DIAMOND ; meta.toStringDiagram("|", Formation.dancerNames)
- *  |  >
- *  |
- *  |
- *  |^    v
- *  |
- *  |
- *  |  <
- *  js> m = xofy(meta, FormationList.TANDEM); undefined
- *  1B^
- *  
- *  1G^
- *  2B^
- *  
- *  2G^
- *  3B^
- *  
- *  3G^
- *  4B^
- *  
- *  4G^
- *  js> FormationMapper.insert(meta, m).toStringDiagram()
- *  1G>  1B>
- *  
- *  2B^  3Gv
- *  
- *  2G^  3Bv
- *  
- *  4B<  4G<
  */
 public class FormationMapper {
     
-    /** Insert formations into a meta-formation.  */
+    /**
+     * Insert formations into a meta-formation.  This reassembles the
+     * formation after we've decomposed it into (say) boxes to do a
+     * four-person call.
+     *
+     * @doc.test Insert COUPLEs, then TANDEMs into a RH_OCEAN_WAVE.  Then, for
+     *  a challenge, insert TANDEMs into a DIAMOND to give a t-bone column:
+     *  js> function xofy(meta, f) {
+     *    >   var i=0
+     *    >   var m=new java.util.LinkedHashMap()
+     *    >   for (d in Iterator(meta.dancers())) {
+     *    >     var mm=new java.util.LinkedHashMap()
+     *    >     for (dd in Iterator(f.dancers())) {
+     *    >       mm.put(dd, StandardDancer.values()[i++])
+     *    >     }
+     *    >     m.put(d, new Formation(f, mm))
+     *    >     print(m.get(d).toStringDiagram())
+     *    >   }
+     *    >   return m
+     *    > }
+     *  js> meta = FormationList.RH_OCEAN_WAVE ; meta.toStringDiagram()
+     *  ^    v    ^    v
+     *  js> m = xofy(meta, FormationList.COUPLE); undefined
+     *  1B^  1G^
+     *  2B^  2G^
+     *  3B^  3G^
+     *  4B^  4G^
+     *  js> FormationMapper.insert(meta, m).toStringDiagram()
+     *  2B^  2G^  1Gv  1Bv  4B^  4G^  3Gv  3Bv
+     *  js> m = xofy(meta, FormationList.TANDEM); undefined
+     *  1B^
+     *  
+     *  1G^
+     *  2B^
+     *  
+     *  2G^
+     *  3B^
+     *  
+     *  3G^
+     *  4B^
+     *  
+     *  4G^
+     *  js> FormationMapper.insert(meta, m).toStringDiagram()
+     *  2B^  1Gv  4B^  3Gv
+     *  
+     *  2G^  1Bv  4G^  3Bv
+     *  js> meta = FormationList.RH_DIAMOND ; meta.toStringDiagram("|", Formation.dancerNames)
+     *  |  >
+     *  |
+     *  |
+     *  |^    v
+     *  |
+     *  |
+     *  |  <
+     *  js> m = xofy(meta, FormationList.TANDEM); undefined
+     *  1B^
+     *  
+     *  1G^
+     *  2B^
+     *  
+     *  2G^
+     *  3B^
+     *  
+     *  3G^
+     *  4B^
+     *  
+     *  4G^
+     *  js> FormationMapper.insert(meta, m).toStringDiagram()
+     *  1G>  1B>
+     *  
+     *  2B^  3Gv
+     *  
+     *  2G^  3Bv
+     *  
+     *  4B<  4G<
+     */
     public static Formation insert(final Formation meta,
             final Map<Dancer,Formation> components) {
         // Rotate components to match orientations of meta dancers.
