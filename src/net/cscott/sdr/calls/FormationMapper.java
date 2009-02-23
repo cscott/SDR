@@ -314,6 +314,13 @@ public class FormationMapper {
      * the new formation and the input formations is given by the
      * individual {@link FormationPiece} objects.)
      */
+    // XXX: compress() doesn't work for expansion yet; if you let the
+    //      beaus extend from facing couples, this function won't (yet)
+    //      expand to a proper single quarter tag.  needs a separate pass
+    //      to compute/adjust original dancer bounds so that they are
+    //      non-overlapping?  Maybe this could be the same routine that
+    //      handles "crashing to right hands" for dancers who end up on
+    //      the same spot...
     public static Formation compress(List<FormationPiece> pieces) {
         // Find 'inner boundaries' of component formations.
         Set<Fraction> xiB = new HashSet<Fraction>();
