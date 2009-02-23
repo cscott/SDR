@@ -5,8 +5,8 @@
  *  js> new AstParser("(Seq (Prim -1, in 1, none, 1))").ast()
  *  (Seq (Prim -1, in 1, none, 1))
  * @doc.test White space is ignored:
- *  js> new AstParser("( Seq\n (Prim\tin\r-1 ,  1 , none  ,1 ) ) ").ast()
- *  (Seq (Prim in -1, 1, none, 1))
+ *  js> new AstParser("( Seq\n (Prim\tin\r-1 ,  1 , out  1  / 4  ,1 ) ) ").ast()
+ *  (Seq (Prim in -1, 1, in -1/4, 1))
  * @doc.test Call names, predicates, formations, etc can be quoted:
  *  js> new AstParser("(Condition \"Condition\" (Condition \"If\") (Condition \"Prim\"))").ast()
  *  (Condition Condition (Condition If) (Condition Prim))

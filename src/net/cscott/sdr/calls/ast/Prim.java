@@ -81,8 +81,8 @@ public class Prim extends SeqCall {
 	    x.toProperString()+", "+
 	    (dirY==Direction.IN?"in ":"")+
 	    y.toProperString()+", "+
-	    (dirRot==Direction.IN?"in ":"")+
-            rot.toRelativeString()+", "+
+	    (dirRot==Direction.IN?("in "+rot.toString())
+                                 :rot.toRelativeString())+", "+
 	    time.toProperString()+
             (passRight?"":", pass-left")+
             (forceArc?", force-arc":"");
