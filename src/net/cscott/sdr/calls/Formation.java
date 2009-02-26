@@ -17,6 +17,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
@@ -52,10 +54,10 @@ public class Formation {
      *  js> f = Formation.SQUARED_SET ; undefined
      *  js> sides = [d for each (d in Iterator(f.dancers())) if (d.isSide())]
      *  COUPLE 2 BOY,COUPLE 2 GIRL,COUPLE 4 BOY,COUPLE 4 GIRL
-     *  js> f2 = f.select(new LinkedHashSet(Arrays.asList(sides))).onlySelected()
+     *  js> f2 = f.select(new HashSet(Arrays.asList(sides))).onlySelected()
      *  net.cscott.sdr.calls.Formation@4fce71[
-     *    location={COUPLE 2 BOY=3,-1,w, COUPLE 2 GIRL=3,1,w, COUPLE 4 BOY=-3,1,e, COUPLE 4 GIRL=-3,-1,e}
-     *    selected=[COUPLE 2 BOY, COUPLE 2 GIRL, COUPLE 4 BOY, COUPLE 4 GIRL]
+     *    location={COUPLE 4 BOY=-3,1,e, COUPLE 2 GIRL=3,1,w, COUPLE 4 GIRL=-3,-1,e, COUPLE 2 BOY=3,-1,w}
+     *    selected=[COUPLE 4 BOY, COUPLE 2 GIRL, COUPLE 4 GIRL, COUPLE 2 BOY]
      *  ]
      *  js> f2.toStringDiagram()
      *  4B>            2G<
@@ -78,7 +80,7 @@ public class Formation {
      *  COUPLE 1 BOY,COUPLE 1 GIRL,COUPLE 3 BOY,COUPLE 3 GIRL
      *  js> sides = [d for each (d in Iterator(f.dancers())) if (d.isSide())]
      *  COUPLE 2 BOY,COUPLE 2 GIRL,COUPLE 4 BOY,COUPLE 4 GIRL
-     *  js> f2 = f.select(new LinkedHashSet(Arrays.asList(sides))); undefined
+     *  js> f2 = f.select(new HashSet(Arrays.asList(sides))); undefined
      *  js> [f2.isSelected(d) for each (d in sides)]
      *  true,true,true,true
      *  js> [f2.isSelected(d) for each (d in heads)]
@@ -143,10 +145,10 @@ public class Formation {
      *  js> f = Formation.SQUARED_SET ; undefined
      *  js> heads = [d for each (d in Iterator(f.dancers())) if (d.isHead())]
      *  COUPLE 1 BOY,COUPLE 1 GIRL,COUPLE 3 BOY,COUPLE 3 GIRL
-     *  js> f2 = f.select(new LinkedHashSet(Arrays.asList(heads)))
+     *  js> f2 = f.select(new HashSet(Arrays.asList(heads)))
      *  net.cscott.sdr.calls.Formation@12a0f6c[
-     *    location={COUPLE 1 BOY=-1,-3,n, COUPLE 1 GIRL=1,-3,n, COUPLE 2 BOY=3,-1,w, COUPLE 2 GIRL=3,1,w, COUPLE 3 BOY=1,3,s, COUPLE 3 GIRL=-1,3,s, COUPLE 4 BOY=-3,1,e, COUPLE 4 GIRL=-3,-1,e}
-     *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL, COUPLE 3 BOY, COUPLE 3 GIRL]
+     *    location={COUPLE 3 GIRL=-1,3,s, COUPLE 3 BOY=1,3,s, COUPLE 4 BOY=-3,1,e, COUPLE 2 GIRL=3,1,w, COUPLE 4 GIRL=-3,-1,e, COUPLE 2 BOY=3,-1,w, COUPLE 1 BOY=-1,-3,n, COUPLE 1 GIRL=1,-3,n}
+     *    selected=[COUPLE 3 GIRL, COUPLE 3 BOY, COUPLE 1 BOY, COUPLE 1 GIRL]
      *  ]
      */
     public Formation select(Set<Dancer> s) {
@@ -160,7 +162,7 @@ public class Formation {
      *  js> importPackage(java.util)
      *  js> couple1 = [StandardDancer.COUPLE_1_BOY, StandardDancer.COUPLE_1_GIRL]
      *  COUPLE 1 BOY,COUPLE 1 GIRL
-     *  js> f = Formation.SQUARED_SET.select(new LinkedHashSet(Arrays.asList(couple1))).onlySelected()
+     *  js> f = Formation.SQUARED_SET.select(new HashSet(Arrays.asList(couple1))).onlySelected()
      *  net.cscott.sdr.calls.Formation@a31e1b[
      *    location={COUPLE 1 BOY=-1,-3,n, COUPLE 1 GIRL=1,-3,n}
      *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
@@ -260,6 +262,14 @@ public class Formation {
     }
     @Override
     public String toString() {
+	// order dancers by location so that string representation is
+	// consistent
+	SortedMap<Dancer,Position> location =
+	    new TreeMap<Dancer,Position>(this.dancerComparator());
+	location.putAll(this.location);
+	List<Dancer> selected = new ArrayList<Dancer>(this.selected);
+	Collections.sort(selected, this.dancerComparator());
+	// build the result string
 	return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
 	    .append("location", location)
 	    .append("selected", selected)
