@@ -73,17 +73,6 @@ public abstract class FormationList {
     // things like 'three and one' lines really want another programming
     // "check formation" method which can be overridden??
 /*
-    public static final Formation DIAMONDS = // only one version of these
-	create(// centers
-	       d(0,+3,"e", CENTER, BEAU),
-	       d(0,+1,"w", CENTER, VERY_CENTER, BEAU),
-	       d(0,-1,"e", CENTER, VERY_CENTER, BEAU),
-	       d(0,-3,"w", CENTER, BEAU),
-	       // points
-	       d(-3,+2,"n", POINT, END),
-	       d(-3,-2,"n", POINT, END),
-	       d(+3,+2,"s", POINT, END),
-	       d(+3,-2,"s", POINT, END));
     public static final Formation GENERAL_DIAMONDS = // too permissive?
 	create(// centers
 	       d(0,+3,"-", CENTER),
@@ -97,44 +86,8 @@ public abstract class FormationList {
 	       d(+3,-2,"|", END));
     public static final Formation GENERAL_TAG =
 	create(" - ","---","---"," - ");
-    public static final Formation THAR =
-	create(d(0,-1,"w", BEAU, CENTER),
-	       d(0,-3,"e", BEAU, END, OUTSIDE4),
-	       d(+1,0,"s", BEAU, CENTER),
-	       d(+3,0,"n", BEAU, END, OUTSIDE4),
-	       d(0,+1,"e", BEAU, CENTER),
-	       d(0,+3,"w", BEAU, END, OUTSIDE4),
-	       d(-1,0,"n", BEAU, CENTER),
-	       d(-3,0,"s", BEAU, END, OUTSIDE4));
-    public static final Formation WRONG_WAY_THAR =
-	create(d(0,-1,"e", BEAU, CENTER),
-	       d(0,-3,"w", BEAU, END, OUTSIDE4),
-	       d(+1,0,"n", BEAU, CENTER),
-	       d(+3,0,"s", BEAU, END, OUTSIDE4),
-	       d(0,+1,"w", BEAU, CENTER),
-	       d(0,+3,"e", BEAU, END, OUTSIDE4),
-	       d(-1,0,"s", BEAU, CENTER),
-	       d(-3,0,"n", BEAU, END, OUTSIDE4));
     public static final Formation Z_FORMATION =
 	create("s ","sn","sn","sn"," n");
-    public static final Formation PROMENADE =
-	create(d(0,-1,"e", BEAU),
-	       d(0,-3,"e", BELLE),
-	       d(+1,0,"n", BEAU),
-	       d(+3,0,"n", BELLE),
-	       d(0,+1,"w", BEAU),
-	       d(0,+3,"w", BELLE),
-	       d(-1,0,"s", BEAU),
-	       d(-3,0,"s", BELLE));
-    public static final Formation WRONG_WAY_PROMENADE =
-	create(d(0,-1,"w",BELLE),
-	       d(0,-3,"w",BEAU),
-	       d(+1,0,"s",BELLE),
-	       d(+3,0,"s",BEAU),
-	       d(0,+1,"e",BELLE),
-	       d(0,+3,"e",BEAU),
-	       d(-1,0,"n",BELLE),
-	       d(-3,0,"n",BEAU));
 */
     // labelled calls named as per the "Callerlab Approved Formations"
     // from April 1980
@@ -231,6 +184,30 @@ public abstract class FormationList {
                 d(-1, 0, "n"),
                 d( 0,-1, "w"),
                 d( 1, 0, "s")); // this is a star: is that correct?
+    public static final TaggedFormation RH_SINGLE_QUARTER_TAG =
+        create("RH SINGLE 1/4 TAG",
+               d( 0, 2,"s",END),
+               d(-1, 0,"n",BEAU,CENTER),
+               d(+1, 0,"s",BEAU,CENTER),
+               d( 0,-2,"n",END));
+    public static final TaggedFormation LH_SINGLE_QUARTER_TAG =
+        create("LH SINGLE 1/4 TAG",
+               d( 0, 2,"s",END),
+               d(-1, 0,"s",BELLE,CENTER),
+               d(+1, 0,"n",BELLE,CENTER),
+               d( 0,-2,"n",END));
+    public static final TaggedFormation RH_SINGLE_THREE_QUARTER_TAG =
+        create("RH SINGLE 3/4 TAG",
+               d( 0, 2,"n",END),
+               d(-1, 0,"n",BEAU,CENTER),
+               d(+1, 0,"s",BEAU,CENTER),
+               d( 0,-2,"s",END));
+    public static final TaggedFormation LH_SINGLE_THREE_QUARTER_TAG =
+        create("LH SINGLE 3/4 TAG",
+               d( 0, 2,"n",END),
+               d(-1, 0,"s",BELLE,CENTER),
+               d(+1, 0,"n",BELLE,CENTER),
+               d( 0,-2,"s",END));
     // 8-person formations. ///////////////////////////////
     public static final TaggedFormation STATIC_SQUARE = // callerlab #14
         create("STATIC SQUARE", f(" ss ","e  w","e  w"," nn "),
@@ -289,18 +266,56 @@ public abstract class FormationList {
         xofy("ENDS OUT INVERTED LINES", FACING_DANCERS, SINGLE_INVERTED_LINE);
     // XXX in t-bone lines, callerlab #35
     // XXX out t-bone lines, callerlab #36
+    // xxx both diamond-spot quarter tag & compressed quarter tag?
+    // xxx do we want all variants here, or just the "canonical" ones?
     public static final TaggedFormation RH_QUARTER_TAG = // callerlab #37(a)
-        create("RH 1/4 TAG", f(" e ","eww","eew"," w "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
-    public static final TaggedFormation LH_QUARTER_TAG = // callerlab #37(b)
-        create("LH 1/4 TAG", f(" w ","eew","eww"," e "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
+	_ends_in(xofy("RH 1/4 TAG", RH_MINIWAVE, RH_SINGLE_QUARTER_TAG,
+		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
+		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
+		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
+		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
+    public static final TaggedFormation LH_QUARTER_TAG = // callerlab #37(a)
+	_ends_in(xofy("LH 1/4 TAG", LH_MINIWAVE, LH_SINGLE_QUARTER_TAG,
+		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
+		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
+		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
+		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
     public static final TaggedFormation RH_THREE_QUARTER_TAG = // callerlab #38(a)
-        create("RH 3/4 TAG", f(" e ","wwe","wee"," w "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
+	_ends_in(xofy("RH 3/4 TAG", RH_MINIWAVE, RH_SINGLE_THREE_QUARTER_TAG,
+		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
+		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
+		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
+		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
     public static final TaggedFormation LH_THREE_QUARTER_TAG = // callerlab #38(b)
-        create("LH 3/4 TAG", f(" w ","wee","wwe"," e "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
+	_ends_in(xofy("LH 3/4 TAG", LH_MINIWAVE, LH_SINGLE_THREE_QUARTER_TAG,
+		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
+		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
+		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
+		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
     public static final TaggedFormation RH_QUARTER_LINE = // callerlab #39(a)
-        create("RH 1/4 LINE",f(" e ","eew","eww"," w "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
+	_ends_in(xofy("RH 1/4 LINE", RH_SINGLE_QUARTER_TAG, COUPLE,
+		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
+		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
+		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
+		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
     public static final TaggedFormation LH_QUARTER_LINE = // callerlab #39(b)
-        create("LH 1/4 LINE",f(" w ","eww","eew"," e "), WhetherTagger.AUTO_TAGS); // XXX ADD TAGS
+	_ends_in(xofy("LH 1/4 LINE", LH_SINGLE_QUARTER_TAG, COUPLE,
+		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
+		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
+		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
+		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
+    public static final TaggedFormation RH_THREE_QUARTER_LINE = // callerlab #39(a)
+	_ends_in(xofy("RH 3/4 LINE", RH_SINGLE_THREE_QUARTER_TAG, COUPLE,
+		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
+		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
+		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
+		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
+    public static final TaggedFormation LH_THREE_QUARTER_LINE = // callerlab #39(b)
+	_ends_in(xofy("LH 3/4 LINE", LH_SINGLE_THREE_QUARTER_TAG, COUPLE,
+		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
+		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
+		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
+		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
     public static final TaggedFormation RH_TWIN_DIAMONDS = // callerlab #40
         xofy("RH TWIN DIAMONDS", COUPLE, RH_DIAMOND);
     public static final TaggedFormation LH_TWIN_DIAMONDS = // callerlab #41
@@ -452,6 +467,22 @@ public abstract class FormationList {
             EnumSet.of(tags[0], tags);
         return new NumAndTags(dancerNum, t);
     }
+    // tweak ends of a quarter tag or diamond on "diamond spots" in.
+    private static TaggedFormation _ends_in(TaggedFormation tf) {
+	Rotation ew = Rotation.fromAbsoluteString("|");
+	TaggedFormation result=tf;
+	for (Dancer d: tf.tagged(END)) {
+	    Position p = tf.location(d);
+	    // step "in" in east/west direction towards center line.
+	    if (ew.includes(p.facing))
+		p = p.sideStep(Fraction.ONE, true);
+	    else
+		p = p.forwardStep(Fraction.ONE, true);
+	    result = result.move(d, p);
+	}
+	return result;
+    }
+
     public static void main(String[] args) throws Exception {
         //System.out.println(xofy("test formation", FACING_DANCERS, COUPLE).toStringDiagram());
         for (Field f : FormationList.class.getFields()) {

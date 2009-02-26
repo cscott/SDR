@@ -36,7 +36,8 @@ public class TaggedFormation extends Formation {
         BOY, GIRL, HEAD, SIDE, ALL,
         // more interesting tags.
         BEAU, BELLE, LEADER, TRAILER,
-        POINT, CENTER, VERY_CENTER, END, OUTSIDE4,
+	POINT, CENTER, VERY_CENTER, END,
+	OUTSIDE_4, CENTER_6, OUTSIDE_6,
         NUMBER_1, NUMBER_2, NUMBER_3, NUMBER_4;
         public boolean isPrimitive() {
             return ordinal() <= ALL.ordinal();

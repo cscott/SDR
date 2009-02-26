@@ -303,6 +303,8 @@ public class Formation {
      *  |
      *  |     AA^  BB^
      */
+    // xxx add "include detail" boolean arg that includes tag and
+    //     'selected' information?
     public String toStringDiagram(String prefix,
                                   Map<Dancer,String> dancerNames) {
         GridString gs = new GridString(prefix);
