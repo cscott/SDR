@@ -99,6 +99,9 @@ public abstract class SelectorList {
             throw new NoMatchException("NONE selector used");
         }
     };
+    // 1-person selectors
+    public static final Selector SINGLE_DANCER =
+        GeneralFormationMatcher.makeSelector(FormationList.SINGLE_DANCER);
     // 2-person selectors
     public static final Selector COUPLE = 
         GeneralFormationMatcher.makeSelector(FormationList.COUPLE);
@@ -153,6 +156,19 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.LH_DIAMOND);
     public static final Selector LH_FACING_DIAMOND =
         GeneralFormationMatcher.makeSelector(FormationList.LH_FACING_DIAMOND);
+    public static final Selector RH_SINGLE_PROMENADE =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_SINGLE_PROMENADE);
+    public static final Selector LH_SINGLE_PROMENADE =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_SINGLE_PROMENADE);
+    public static final Selector RH_SINGLE_QUARTER_TAG =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_SINGLE_QUARTER_TAG);
+    public static final Selector LH_SINGLE_QUARTER_TAG =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_SINGLE_QUARTER_TAG);
+    public static final Selector RH_SINGLE_THREE_QUARTER_TAG =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_SINGLE_THREE_QUARTER_TAG);
+    public static final Selector LH_SINGLE_THREE_QUARTER_TAG =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_SINGLE_THREE_QUARTER_TAG);
+
     // 8-person selectors
     public static final Selector STATIC_SQUARE =
         GeneralFormationMatcher.makeSelector(FormationList.STATIC_SQUARE);
@@ -202,6 +218,8 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.ENDS_IN_INVERTED_LINES);
     public static final Selector ENDS_OUT_INVERTED_LINES =
         GeneralFormationMatcher.makeSelector(FormationList.ENDS_OUT_INVERTED_LINES);
+    public static final Selector INVERTED_LINES =
+	OR(ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES);
     public static final Selector RH_QUARTER_TAG =
         GeneralFormationMatcher.makeSelector(FormationList.RH_QUARTER_TAG);
     public static final Selector LH_QUARTER_TAG =

@@ -172,18 +172,18 @@ public abstract class FormationList {
                d(-1, 0,"n",BEAU,CENTER),
                d(+1, 0,"s",BEAU,CENTER),
                d( 0,-3,"e",POINT));
-    public static final TaggedFormation LH_SINGLE_PROMENADE =
-        create("LH SINGLE PROMENADE",
-                d( 0, 1, "w"),
-                d(-1, 0, "s"),
-                d( 0,-1, "e"),
-                d( 1, 0, "n")); // this is a star: is that correct?
     public static final TaggedFormation RH_SINGLE_PROMENADE =
         create("RH SINGLE PROMENADE",
                 d( 0, 1, "e"),
                 d(-1, 0, "n"),
                 d( 0,-1, "w"),
                 d( 1, 0, "s")); // this is a star: is that correct?
+    public static final TaggedFormation LH_SINGLE_PROMENADE =
+        create("LH SINGLE PROMENADE",
+                d( 0, 1, "w"),
+                d(-1, 0, "s"),
+                d( 0,-1, "e"),
+                d( 1, 0, "n")); // this is a star: is that correct?
     public static final TaggedFormation RH_SINGLE_QUARTER_TAG =
         create("RH SINGLE 1/4 TAG",
                d( 0, 2,"s",END),
