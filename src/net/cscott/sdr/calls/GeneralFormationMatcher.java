@@ -23,7 +23,12 @@ public abstract class GeneralFormationMatcher {
             public FormationMatch match(Formation f) throws NoMatchException {
                 return doMatch(f, goal, false, false);
             }
-            public String toString() { return goal.toString(); }
+            public String toString() {
+		// special case for "standard" formations.
+		if (goal instanceof NamedTaggedFormation)
+		    return ((NamedTaggedFormation)goal).getName();
+		return goal.toString();
+	    }
         };
     }
 

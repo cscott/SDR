@@ -27,7 +27,7 @@ import net.cscott.sdr.util.Fraction;
  *  "compressed" diamonds.  (Also the case for quarter tags?)
  *  js> for (f in Iterator(FormationList.all)) {
  *    >   if (!FormationMapper.breathe(f).equals(f)) {
- *    >     print("Unbreathed formation: "+f.toString());
+ *    >     print("Unbreathed formation: "+f.getName());
  *    >   }
  *    > }
  *  Unbreathed formation: RH DIAMOND
@@ -42,6 +42,26 @@ import net.cscott.sdr.util.Fraction;
  *  Unbreathed formation: LH POINT-TO-POINT FACING DIAMONDS
  *  Unbreathed formation: RH TWIN FACING DIAMONDS
  *  Unbreathed formation: LH TWIN FACING DIAMONDS
+ * @doc.test Canonical formations should be centered.
+ *  js> for (f in Iterator(FormationList.all)) {
+ *    >   if (!f.isCentered()) {
+ *    >     print("Uncentered formation: "+f.getName());
+ *    >   }
+ *    > } ; undefined
+ *  js> // note no output from the above.
+ * @doc.test Canonical formations should be oriented so that "most"
+ *  dancers are facing north or south.  This seems to match standard
+ *  diagrams best.
+ *  js> ns = Rotation.fromAbsoluteString("|");
+ *  0 mod 1/2
+ *  js> for (f in Iterator(FormationList.all)) {
+ *    >   l=[ns.includes(f.location(d).facing) for (d in Iterator(f.dancers()))]
+ *    >   if ([b for each (b in l) if (b)].length <
+ *    >       [b for each (b in l) if (!b)].length) {
+ *    >     print("Unexpected orientation: "+f.getName());
+ *    >   }
+ *    > } ; undefined
+ *  js> // note no output from the above.
  */
 // can use SelectorList to associate phantoms with real dancers.
 public abstract class FormationList {
@@ -348,10 +368,7 @@ public abstract class FormationList {
 	List<TaggedDancerInfo> dil = new ArrayList<TaggedDancerInfo>(ptl.length);
 	for (PositionAndTag pt: ptl)
 	    dil.add(new TaggedDancerInfo(new PhantomDancer(), pt.position, pt.tags, true));
-	TaggedFormation f = new TaggedFormation(dil.toArray(new TaggedDancerInfo[dil.size()])) {
-	    public String toString() { return (name==null)?super.toString():name; }
-        };
-	return f;
+	return new NamedTaggedFormation(name, dil.toArray(new TaggedDancerInfo[dil.size()]));
     }
     // first string is 'top' of diagram (closest to caller)
     // dancers are numbered left to right, top to bottom. (reading order)
@@ -421,10 +438,7 @@ public abstract class FormationList {
         // add implicit/automatic tags
         if (wt != WhetherTagger.NO_AUTO_TAGS) // general formations don't get tags
             Tagger.addAutomatic(f, tm);
-        return new TaggedFormation(f, tm) {
-            @Override
-            public String toString() { return false?super.toString():name; }
-        };
+        return new NamedTaggedFormation(name, f, tm);
     }
     private static class NumAndTags {
         public final int dancerNum;
@@ -442,11 +456,13 @@ public abstract class FormationList {
         //System.out.println(xofy("test formation", FACING_DANCERS, COUPLE).toStringDiagram());
         for (Field f : FormationList.class.getFields()) {
             if (Modifier.isPublic(f.getModifiers()) &&
-                Modifier.isStatic(f.getModifiers())) {
+                Modifier.isStatic(f.getModifiers()) &&
+		f.getName().toUpperCase().equals(f.getName())) {
                 TaggedFormation ff = (TaggedFormation) f.get(null);
-                System.out.println(f.getName());
+                System.out.println("FormationList."+f.getName());
                 System.out.println(ff.toStringDiagram());
                 System.out.println(ff.toString());
+		System.out.println();
             }
         }
     }
