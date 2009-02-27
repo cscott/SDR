@@ -320,7 +320,105 @@ public class FormationMapper {
      * Create a canonical formation by compressing the given one.  This
      * is just an invokation of {@link #breathe(List)} with
      * trivial {@link FormationPiece}s consisting of a single dancer each.
+     *
+     * @doc.test From couples back to back, step out; then breathe in:
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> f = FormationList.BACK_TO_BACK_COUPLES ; f.toStringDiagram()
+     *  ^    ^
+     *  
+     *  v    v
+     *  js> for (d in Iterator(f.dancers())) {
+     *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE, false));
+     *    > }; f.toStringDiagram()
+     *  ^    ^
+     *  
+     *  
+     *  
+     *  v    v
+     *  js> FormationMapper.breathe(f).toStringDiagram()
+     *  ^    ^
+     *  
+     *  v    v
+     * @doc.test From facing couples, take half a step in; breathe out:
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> f = FormationList.FACING_COUPLES ; f.toStringDiagram()
+     *  v    v
+     *  
+     *  ^    ^
+     *  js> for (d in Iterator(f.dancers())) {
+     *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE_HALF, false));
+     *    > }; f.toStringDiagram()
+     *  v    v
+     *  ^    ^
+     *  js> // EXPECT FAIL
+     *  js> FormationMapper.breathe(f).toStringDiagram()
+     *  v    v
+     *  
+     *  ^    ^
+     * @doc.test From single three quarter tag, step out; then breathe in:
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> f = FormationList.RH_SINGLE_THREE_QUARTER_TAG ; f.toStringDiagram()
+     *    ^
+     *  
+     *  ^    v
+     *  
+     *    v
+     *  js> for (d in Iterator(f.tagged(TaggedFormation.Tag.END))) {
+     *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE, false));
+     *    > }; f.toStringDiagram()
+     *    ^
+     *  
+     *  
+     *  ^    v
+     *  
+     *  
+     *    v
+     *  js> FormationMapper.breathe(f).toStringDiagram()
+     *    ^
+     *  
+     *  ^    v
+     *  
+     *    v
+     * @doc.test From single quarter tag, take half a step in; breathe out:
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> f = FormationList.RH_SINGLE_QUARTER_TAG ; f.toStringDiagram()
+     *    v
+     *  
+     *  ^    v
+     *  
+     *    ^
+     *  js> for (d in Iterator(f.tagged(TaggedFormation.Tag.END))) {
+     *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE, false));
+     *    > }; f.toStringDiagram()
+     *    v
+     *  ^    v
+     *    ^
+     *  js> // EXPECT FAIL
+     *  js> FormationMapper.breathe(f).toStringDiagram()
+     *    v
+     *  
+     *  ^    v
+     *  
+     *    ^
+     * @doc.test Facing dancers step forward; resolve collision.
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> f = FormationList.FACING_DANCERS ; f.toStringDiagram()
+     *  v
+     *  
+     *  ^
+     *  js> for (d in Iterator(f.dancers())) {
+     *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE, false));
+     *    > }; f
+     *  net.cscott.sdr.calls.TaggedFormation@1db3e20[
+     *    location={<phantom@7f>=0,0,n, <phantom@7e>=0,0,s}
+     *    selected=[<phantom@7f>, <phantom@7e>]
+     *    tags={<phantom@7f>=TRAILER, <phantom@7e>=TRAILER}
+     *  ]
+     *  js> // EXPECT FAIL
+     *  js> FormationMapper.breathe(f).toStringDiagram()
+     *  ^    v
      */
+    // XXX: add test case for left-hand collisions
     public static Formation breathe(Formation f) {
         List<FormationPiece> fpl = new ArrayList<FormationPiece>
             (f.dancers().size());
@@ -330,10 +428,12 @@ public class FormationMapper {
         }
         return breathe(fpl);
     }
-    /** Create canonical formation by compressing components of a given
+    /** Create canonical formation by compressing or expanding components of a given
      * formation.  (The map giving the correspondence between dancers in
      * the new formation and the input formations is given by the
-     * individual {@link FormationPiece} objects.)
+     * individual {@link FormationPiece} objects.)  We also resolve
+     * collisions to right or left hands, depending on whether the
+     * pass-left flag is set for the {@link Position}s involved.
      */
     // XXX: compress() doesn't work for expansion yet; if you let the
     //      beaus extend from facing couples, this function won't (yet)
