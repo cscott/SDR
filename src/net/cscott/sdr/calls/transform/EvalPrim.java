@@ -27,10 +27,10 @@ import net.cscott.sdr.util.Point;
  *  js> // first part of partner trade
  *  js> p1b = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f,
  *    >                      AstNode.valueOf('(Prim 1, 3, right, 3)'))
- *  DancerPath[from=-1,0,n,to=0,3,e,arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS,rollDir=right,sweepDir=none]
+ *  DancerPath[from=-1,0,n,to=0,3,e,[ROLL_RIGHT],arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS]
  *  js> p1g = EvalPrim.apply(StandardDancer.COUPLE_1_GIRL, f,
  *    >                      AstNode.valueOf('(Prim -1, 1, left, 3)'))
- *  DancerPath[from=1,0,n,to=0,1,w,arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS,rollDir=left,sweepDir=none]
+ *  DancerPath[from=1,0,n,to=0,1,w,[ROLL_LEFT],arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1b.to).move(StandardDancer.COUPLE_1_GIRL, p1g.to); f.toStringDiagram()
  *  1B>
  *  
@@ -39,10 +39,10 @@ import net.cscott.sdr.util.Point;
  *  js> // second part of partner trade
  *  js> p1b = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f,
  *    >                      AstNode.valueOf('(Prim 3, 1, right, 3)'))
- *  DancerPath[from=0,3,e,to=1,0,s,arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS,rollDir=right,sweepDir=none]
+ *  DancerPath[from=0,3,e,[ROLL_RIGHT],to=1,0,s,[ROLL_RIGHT],arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS]
  *  js> p1g = EvalPrim.apply(StandardDancer.COUPLE_1_GIRL, f,
  *    >                      AstNode.valueOf('(Prim -1, 1, left, 3)'))
- *  DancerPath[from=0,1,w,to=-1,0,s,arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS,rollDir=left,sweepDir=none]
+ *  DancerPath[from=0,1,w,[ROLL_LEFT],to=-1,0,s,[ROLL_LEFT],arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1b.to).move(StandardDancer.COUPLE_1_GIRL, p1g.to); f.toStringDiagram()
  *  1Gv  1Bv
  * @doc.test Check that sweep direction computation doesn't crash if
@@ -53,7 +53,7 @@ import net.cscott.sdr.util.Point;
  *  js> // first part of partner trade
  *  js> p1g = EvalPrim.apply(StandardDancer.COUPLE_1_GIRL, f,
  *    >                      AstNode.valueOf('(Prim -1, 1, left, 3)'))
- *  DancerPath[from=1,-1,n,to=0,0,w,arcCenter=0,0,time=3,pointOfRotation=FOUR_DANCERS,rollDir=left,sweepDir=none]
+ *  DancerPath[from=1,-1,n,to=0,0,w,[ROLL_LEFT],arcCenter=0,0,time=3,pointOfRotation=FOUR_DANCERS]
  * @doc.test Check that in/out motions are computed correctly:
  *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
@@ -64,10 +64,10 @@ import net.cscott.sdr.util.Point;
  *  js> // boy face in, girl face out
  *  js> p1b = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f,
  *    >                      AstNode.valueOf('(Prim 0, 0, in 1/4, 3)'))
- *  DancerPath[from=-1,0,n,to=-1,0,e,arcCenter=-1,0,time=3,pointOfRotation=SINGLE_DANCER,rollDir=right,sweepDir=none]
+ *  DancerPath[from=-1,0,n,to=-1,0,e,[ROLL_RIGHT],arcCenter=-1,0,time=3,pointOfRotation=SINGLE_DANCER]
  *  js> p1g = EvalPrim.apply(StandardDancer.COUPLE_1_GIRL, f,
  *    >                      AstNode.valueOf('(Prim 0, 0, out 1/4, 3)'))
- *  DancerPath[from=1,0,n,to=1,0,e,arcCenter=1,0,time=3,pointOfRotation=SINGLE_DANCER,rollDir=right,sweepDir=none]
+ *  DancerPath[from=1,0,n,to=1,0,e,[ROLL_RIGHT],arcCenter=1,0,time=3,pointOfRotation=SINGLE_DANCER]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1b.to).move(StandardDancer.COUPLE_1_GIRL, p1g.to); f.toStringDiagram()
  *  1B>  1G>
  * @doc.test Check that roll/sweep work, even if you turn more than 360 degrees:
@@ -86,7 +86,7 @@ import net.cscott.sdr.util.Point;
  *  js> f.location(StandardDancer.COUPLE_1_BOY).facing.amount
  *  0/1
  *  js> p1a = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f, prim)
- *  DancerPath[from=-1,-3,n,to=-3,1,e,arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS,rollDir=right,sweepDir=left]
+ *  DancerPath[from=-1,-3,n,to=-3,1,e,[ROLL_RIGHT, SWEEP_LEFT],arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1a.to); f.toStringDiagram()
  *  1B>
  *  
@@ -96,7 +96,7 @@ import net.cscott.sdr.util.Point;
  *  js> f.location(StandardDancer.COUPLE_1_BOY).facing.amount
  *  1/4
  *  js> p1b = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f, prim)
- *  DancerPath[from=-3,1,e,to=1,3,s,arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS,rollDir=right,sweepDir=left]
+ *  DancerPath[from=-3,1,e,[ROLL_RIGHT, SWEEP_LEFT],to=1,3,s,[ROLL_RIGHT, SWEEP_LEFT],arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1b.to); f.toStringDiagram()
  *   1Bv
  *  
@@ -108,7 +108,7 @@ import net.cscott.sdr.util.Point;
  *  js> f.location(StandardDancer.COUPLE_1_BOY).facing.amount
  *  1/2
  *  js> p1c = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f, prim)
- *  DancerPath[from=1,3,s,to=3,-1,w,arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS,rollDir=right,sweepDir=left]
+ *  DancerPath[from=1,3,s,[ROLL_RIGHT, SWEEP_LEFT],to=3,-1,w,[ROLL_RIGHT, SWEEP_LEFT],arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1c.to); f.toStringDiagram()
  *        1B<
  *  
@@ -116,13 +116,23 @@ import net.cscott.sdr.util.Point;
  *  js> f.location(StandardDancer.COUPLE_1_BOY).facing.amount
  *  3/4
  *  js> p1d = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f, prim)
- *  DancerPath[from=3,-1,w,to=-1,-3,n,arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS,rollDir=right,sweepDir=left]
+ *  DancerPath[from=3,-1,w,[ROLL_RIGHT, SWEEP_LEFT],to=-1,-3,n,[ROLL_RIGHT, SWEEP_LEFT],arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1d.to); f.toStringDiagram()
  *  
  *  
  *  1B^  1G^
  *  js> f.location(StandardDancer.COUPLE_1_BOY).facing.amount
  *  1/1
+ *  js> p1e = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f, prim)
+ *  DancerPath[from=-1,-3,n,[ROLL_RIGHT, SWEEP_LEFT],to=-3,1,e,[ROLL_RIGHT, SWEEP_LEFT],arcCenter=0,0,time=3,pointOfRotation=TWO_DANCERS]
+ *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1e.to); f.toStringDiagram()
+ *  1B>
+ *  
+ *  
+ *  
+ *            1G^
+ *  js> f.location(StandardDancer.COUPLE_1_BOY).facing.amount
+ *  5/4
  * @doc.test Scoot back. Note: trailers can't roll at finish; and the
  *  first (extend) part of the call doesn't have a sweep direction because the
  *  dancers don't end up facing the center.
@@ -148,9 +158,9 @@ import net.cscott.sdr.util.Point;
  *  (Prim in 1, 1, in 1/4, 3)
  *  js> // trailers extend
  *  js> p1 = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f, prim1)
- *  DancerPath[from=-1,-1,n,to=-1,0,n,arcCenter=<null>,time=1 1/2,pointOfRotation=<null>,rollDir=none,sweepDir=none]
+ *  DancerPath[from=-1,-1,n,to=-1,0,n,arcCenter=<null>,time=1 1/2,pointOfRotation=<null>]
  *  js> p3 = EvalPrim.apply(StandardDancer.COUPLE_3_BOY, f, prim1)
- *  DancerPath[from=1,1,s,to=1,0,s,arcCenter=<null>,time=1 1/2,pointOfRotation=<null>,rollDir=none,sweepDir=none]
+ *  DancerPath[from=1,1,s,to=1,0,s,arcCenter=<null>,time=1 1/2,pointOfRotation=<null>]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1.to).move(
  *    >            StandardDancer.COUPLE_3_BOY, p3.to); f.toStringDiagram()
  *  3G^
@@ -160,13 +170,13 @@ import net.cscott.sdr.util.Point;
  *  js> //     show proper right-hand z (but does not yet; spots are too close)
  *  js> // everyone start a trade
  *  js> p1 = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f, prim2)
- *  DancerPath[from=-1,0,n,to=0,1,e,arcCenter=0,0,time=1 1/2,pointOfRotation=FOUR_DANCERS,rollDir=right,sweepDir=none]
+ *  DancerPath[from=-1,0,n,to=0,1,e,[ROLL_RIGHT],arcCenter=0,0,time=1 1/2,pointOfRotation=FOUR_DANCERS]
  *  js> p2 = EvalPrim.apply(StandardDancer.COUPLE_1_GIRL, f, prim3)
- *  DancerPath[from=1,-1,s,to=0,-2,w,arcCenter=0,0,time=3,pointOfRotation=FOUR_DANCERS,rollDir=right,sweepDir=none]
+ *  DancerPath[from=1,-1,s,to=0,-2,w,[ROLL_RIGHT],arcCenter=0,0,time=3,pointOfRotation=FOUR_DANCERS]
  *  js> p3 = EvalPrim.apply(StandardDancer.COUPLE_3_BOY, f, prim2)
- *  DancerPath[from=1,0,s,to=0,-1,w,arcCenter=0,0,time=1 1/2,pointOfRotation=FOUR_DANCERS,rollDir=right,sweepDir=none]
+ *  DancerPath[from=1,0,s,to=0,-1,w,[ROLL_RIGHT],arcCenter=0,0,time=1 1/2,pointOfRotation=FOUR_DANCERS]
  *  js> p4 = EvalPrim.apply(StandardDancer.COUPLE_3_GIRL, f, prim3)
- *  DancerPath[from=-1,1,n,to=0,2,e,arcCenter=0,0,time=3,pointOfRotation=FOUR_DANCERS,rollDir=right,sweepDir=none]
+ *  DancerPath[from=-1,1,n,to=0,2,e,[ROLL_RIGHT],arcCenter=0,0,time=3,pointOfRotation=FOUR_DANCERS]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1.to).move(
  *    >            StandardDancer.COUPLE_1_GIRL, p2.to).move(
  *    >            StandardDancer.COUPLE_3_BOY, p3.to).move(
@@ -178,9 +188,9 @@ import net.cscott.sdr.util.Point;
  *  | 1G<
  *  js> // boys finish the trade
  *  js> p1 = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f, prim2)
- *  DancerPath[from=0,1,e,to=1,0,s,arcCenter=0,0,time=1 1/2,pointOfRotation=FOUR_DANCERS,rollDir=right,sweepDir=none]
+ *  DancerPath[from=0,1,e,[ROLL_RIGHT],to=1,0,s,[ROLL_RIGHT],arcCenter=0,0,time=1 1/2,pointOfRotation=FOUR_DANCERS]
  *  js> p3 = EvalPrim.apply(StandardDancer.COUPLE_3_BOY, f, prim2)
- *  DancerPath[from=0,-1,w,to=-1,0,n,arcCenter=0,0,time=1 1/2,pointOfRotation=FOUR_DANCERS,rollDir=right,sweepDir=none]
+ *  DancerPath[from=0,-1,w,[ROLL_RIGHT],to=-1,0,n,[ROLL_RIGHT],arcCenter=0,0,time=1 1/2,pointOfRotation=FOUR_DANCERS]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1.to).move(
  *    >            StandardDancer.COUPLE_3_BOY, p3.to); f.toStringDiagram()
  *    3G>
@@ -190,13 +200,13 @@ import net.cscott.sdr.util.Point;
  *    1G<
  *  js> // boys extend, girls finish the trade. girls can roll and sweep.
  *  js> p1 = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f, prim1)
- *  DancerPath[from=1,0,s,to=1,-1,s,arcCenter=<null>,time=1 1/2,pointOfRotation=<null>,rollDir=none,sweepDir=none]
+ *  DancerPath[from=1,0,s,[ROLL_RIGHT],to=1,-1,s,arcCenter=<null>,time=1 1/2,pointOfRotation=<null>]
  *  js> p2 = EvalPrim.apply(StandardDancer.COUPLE_1_GIRL, f, prim3)
- *  DancerPath[from=0,-2,w,to=-1,-1,n,arcCenter=0,0,time=3,pointOfRotation=FOUR_DANCERS,rollDir=right,sweepDir=left]
+ *  DancerPath[from=0,-2,w,[ROLL_RIGHT],to=-1,-1,n,[ROLL_RIGHT, SWEEP_LEFT],arcCenter=0,0,time=3,pointOfRotation=FOUR_DANCERS]
  *  js> p3 = EvalPrim.apply(StandardDancer.COUPLE_3_BOY, f, prim1)
- *  DancerPath[from=-1,0,n,to=-1,1,n,arcCenter=<null>,time=1 1/2,pointOfRotation=<null>,rollDir=none,sweepDir=none]
+ *  DancerPath[from=-1,0,n,[ROLL_RIGHT],to=-1,1,n,arcCenter=<null>,time=1 1/2,pointOfRotation=<null>]
  *  js> p4 = EvalPrim.apply(StandardDancer.COUPLE_3_GIRL, f, prim3)
- *  DancerPath[from=0,2,e,to=1,1,s,arcCenter=0,0,time=3,pointOfRotation=FOUR_DANCERS,rollDir=right,sweepDir=left]
+ *  DancerPath[from=0,2,e,[ROLL_RIGHT],to=1,1,s,[ROLL_RIGHT, SWEEP_LEFT],arcCenter=0,0,time=3,pointOfRotation=FOUR_DANCERS]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1.to).move(
  *    >            StandardDancer.COUPLE_1_GIRL, p2.to).move(
  *    >            StandardDancer.COUPLE_3_BOY, p3.to).move(
@@ -205,18 +215,35 @@ import net.cscott.sdr.util.Point;
  *  
  *  1G^  1Bv
  *  js> // roll!
- *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1.to.turn(p1.rollDir.amount,false)).move(
- *    >            StandardDancer.COUPLE_1_GIRL, p2.to.turn(p2.rollDir.amount,false)).move(
- *    >            StandardDancer.COUPLE_3_BOY, p3.to.turn(p3.rollDir.amount,false)).move(
- *    >            StandardDancer.COUPLE_3_GIRL, p4.to.turn(p4.rollDir.amount,false)); f.toStringDiagram()
+ *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1.to.turn(p1.to.roll(),false)).move(
+ *    >            StandardDancer.COUPLE_1_GIRL, p2.to.turn(p2.to.roll(),false)).move(
+ *    >            StandardDancer.COUPLE_3_BOY, p3.to.turn(p3.to.roll(),false)).move(
+ *    >            StandardDancer.COUPLE_3_GIRL, p4.to.turn(p4.to.roll(),false)); f.toStringDiagram()
  *  3B^  3G<
  *  
  *  1G>  1Bv
+ * @doc.test Prims which "stand still" preserve roll.
+ *  js> importPackage(net.cscott.sdr.calls)
+ *  js> importPackage(net.cscott.sdr.calls.ast)
+ *  js> fm = SelectorList.COUPLE.match(Formation.FOUR_SQUARE); undefined
+ *  js> f=[ff for (ff in Iterator(fm.matches.values()))
+ *    >    if (ff.dancers().contains(StandardDancer.COUPLE_1_BOY))][0]; f.toStringDiagram()
+ *  1B^  1G^
+ *  js> // boy face out
+ *  js> p1a = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f,
+ *    >                      AstNode.valueOf('(Prim 0, 0, out 1/4, 3)'))
+ *  DancerPath[from=-1,0,n,to=-1,0,w,[ROLL_LEFT],arcCenter=-1,0,time=3,pointOfRotation=SINGLE_DANCER]
+ *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1a.to); f.toStringDiagram()
+ *  1B<  1G^
+ *  js> // do nothing (but preserve roll)
+ *  js> p1b = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f,
+ *    >                      AstNode.valueOf('(Prim 0, 0, none, 3)'))
+ *  DancerPath[from=-1,0,w,[ROLL_LEFT],to=-1,0,w,[ROLL_LEFT],arcCenter=<null>,time=3,pointOfRotation=<null>]
+ *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1b.to); f.toStringDiagram()
+ *  1B<  1G^
  */
 // xxx should test circle left & check roll
 //     add "force roll" flags to Prim (only print if set)
-// xxx also "stand still" prims that preserve roll ("swing thru and roll")
-//     add "last roll dir" to Position (only print if set)
 public abstract class EvalPrim {
 
     /** "Dance" the given primitive for the given dancer in the given
@@ -270,7 +297,7 @@ public abstract class EvalPrim {
         if (from.facing.isExact())
             rollDir = (ExactRotation) to.facing.subtract(from.facing.amount);
         else
-            rollDir = null;
+            rollDir = ExactRotation.ZERO;
         
         // sweep dir is set based on angle swept through center from 'from' to
         // 'to', although of course remember the 'sweep' call is only valid
@@ -310,7 +337,31 @@ public abstract class EvalPrim {
         // observer standing at the origin
         sweepDir = sweepDir.negate();
 
-        return new DancerPath(from, to, arcCenter, prim.time, por,
-			      rollDir, sweepDir);
+	// preserve roll/sweep flags if this is a "stand still" prim.
+	if (prim.x.compareTo(Fraction.ZERO)==0 &&
+	    prim.y.compareTo(Fraction.ZERO)==0 &&
+	    prim.rot.compareTo(ExactRotation.ZERO)==0) {
+	    rollDir = new ExactRotation(from.roll());
+	    sweepDir = new ExactRotation(from.sweep());
+	}
+	// set position flags
+	to = addFlag(to, rollDir,
+		     Position.Flag.ROLL_RIGHT, Position.Flag.ROLL_LEFT);
+	to = addFlag(to, sweepDir,
+		     Position.Flag.SWEEP_RIGHT, Position.Flag.SWEEP_LEFT);
+	if (!prim.passRight)
+	    to = to.addFlags(Position.Flag.PASS_LEFT);
+
+        return new DancerPath(from, to, arcCenter, prim.time, por);
+    }
+    /** Normalize an ExactRotation, and set appropriate 'right' or 'left'
+     * {@link Position.Flag}s to a given {@link Position} as appropriate.
+     */
+    private static Position addFlag(Position p, ExactRotation r,
+				    Position.Flag right, Position.Flag left) {
+        int c = r.amount.compareTo(Fraction.ZERO);
+        if (c>0) return p.addFlags(right);
+        else if (c<0) return p.addFlags(left);
+        else return p;
     }
  }

@@ -68,32 +68,19 @@ public class DancerPath {
     /** The point of rotation, for flow computations.  May be null for
      * straight paths. */
     public final PointOfRotation pointOfRotation; // 1,2,4,8 person, for flow
-    /** The rollDir and sweepDir may be zero. */
-    public final ExactRotation rollDir, sweepDir; // these can be zero (not null).
     // XXX: lateral translation?
     /**
      * Create an immutable {@link DancerPath} object.
      */
-    public DancerPath(Position from, Position to, Point arcCenter, Fraction time, PointOfRotation pointOfRotation, ExactRotation rollDir, ExactRotation sweepDir) {
+    public DancerPath(Position from, Position to, Point arcCenter, Fraction time, PointOfRotation pointOfRotation) {
         assert from != null && to != null && time != null;
-        assert rollDir != null && sweepDir != null;
         assert from.facing.isExact() && to.facing.isExact();
-        assert rollDir.isExact() && sweepDir.isExact();
         assert time.compareTo(Fraction.ZERO) >= 0;
         this.from = from;
         this.to = to;
         this.arcCenter = arcCenter;
         this.time = time;
         this.pointOfRotation = pointOfRotation;
-        this.rollDir = sign(rollDir);
-        this.sweepDir = sign(sweepDir);
-    }
-    /** Normalize an ExactRotation to 'right', 'left', or 'none'. */
-    private static ExactRotation sign(ExactRotation r) {
-        int c = r.amount.compareTo(Fraction.ZERO);
-        if (c>0) return ExactRotation.ONE_QUARTER;
-        else if (c<0) return ExactRotation.mONE_QUARTER;
-        else return ExactRotation.ZERO;
     }
     @Override
     public String toString() {
@@ -103,8 +90,6 @@ public class DancerPath {
 	    .append("arcCenter", arcCenter)
 	    .append("time", time.toProperString())
 	    .append("pointOfRotation", pointOfRotation)
-	    .append("rollDir", rollDir.toRelativeString())
-	    .append("sweepDir", sweepDir.toRelativeString())
 	    .toString();
     }
 }
