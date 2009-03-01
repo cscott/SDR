@@ -15,6 +15,14 @@ Square Dance Revolution build file.
              classpath="lib/dev/deployment-ant-pack200-1.0beta.jar" />
     <taskdef resource="org/apache/tools/ant/antlr/antlib.xml"
              classpath="lib/dev/antlr3-ant.jar" />
+    <!-- cobertura integration -->
+    <property name="cobertura.dir" value="${basedir}/lib/dev/cobertura" />
+    <path id="cobertura.classpath">
+      <fileset dir="${cobertura.dir}">
+        <include name="**/*.jar" />
+      </fileset>
+    </path>
+    <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
     <!-- define some variables for the script -->
     <target name="init">
@@ -25,6 +33,7 @@ Square Dance Revolution build file.
       <property name="lib_dir"            value="${basedir}/lib"/>
       <property name="src_dir"            value="${basedir}/src"/>
       <property name="classes_dir"	value="${basedir}/bin"/>
+      <property name="instrumented_dir" value="${basedir}/bin.cover" />
       <property name="resources_dir"	value="${basedir}/resources"/>
       <!-- set the classpath -->
       <fileset id="jar.set" dir="lib">
@@ -58,6 +67,8 @@ Square Dance Revolution build file.
 	<delete dir="${api_dir}" />
 	<delete file="${basedir}/${ant.project.name}.jar" />
 	<delete file="${basedir}/${ant.project.name}.jar.MD5" />
+	<!-- coverage information -->
+	<delete dir="${instrumented_dir}" />
 	<!-- from dist targets -->
 	<delete>
 	  <fileset dir="${basedir}"
@@ -65,6 +76,9 @@ Square Dance Revolution build file.
 			     ${ant.project.name}-libs-unpack.jar
 			     ChangeLog" />
 	</delete>
+    </target>
+    <target name="clean.cobertura" depends="init">
+      <delete file="${instrumented_dir}/cobertura.ser" />
     </target>
     <target name="maint-clean" depends="init,clean,clean.grm"
 	    description="Removes ANTLR generated files">
@@ -119,7 +133,7 @@ Square Dance Revolution build file.
     </target>
 
     <!-- compile the source code -->
-    <target name="compile" depends="init,version"
+    <target name="compile.base" depends="init,version"
             description="Compiles the code in ${src_dir} to ${classes_dir}">
     <antlr3 target="src/net/cscott/sdr/calls/ast/Ast.g">
 		<classpath refid="classpath.path" />
@@ -152,7 +166,7 @@ Square Dance Revolution build file.
       </uptodate>
     </target>
     <target name="javadoc"
-	    depends="build.grm,compile,chk-javadoc" unless="javadoc.notRequired"
+	    depends="compile,instrument,chk-javadoc" unless="javadoc.notRequired"
             description="Generates javadoc in ${api_dir}">
         <!-- copy call lists to doc-files -->
         <mkdir dir="${src_dir}/net/cscott/sdr/calls/lists/doc-files" />
@@ -169,6 +183,7 @@ Square Dance Revolution build file.
                  windowtitle="SDR ${version} documentation"
 		 doctitle="Square Dance Revolution!"
                  header="${ant.project.name} ${version}"
+		 overview="${src_dir}/overview.html"
 		 source="1.5"
                  access="protected" nodeprecated="false"
 		 failonerror="true"
@@ -187,9 +202,13 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		    <fileset dir="lib/dev/jdoctest">
 		      <include name="*.jar"/>
 		    </fileset>
+		    <pathelement path="${instrumented_dir}"/>
 		    <path refid="classpath.path" />
+		    <path refid="cobertura.classpath" />
 		  </path>
 		</taglet>
+		<!-- write coverage info to cobertura.ser -->
+		<arg value="-J-Dnet.sourceforge.cobertura.datafile=${instrumented_dir}/cobertura.ser" />
 		<!-- write tests to api/tests -->
 		<arg value="-J-Dnet.cscott.jdoctest.output=${api_dir}/tests" />
 		<!-- enable assertions when evaluating doctests -->
@@ -202,10 +221,15 @@ window['JAVADOC_BASE'] = '{@docRoot}';
             <link href="http://java.sun.com/javase/6/docs/api"/>
             <link href="http://www.antlr2.org/javadoc/"/>
 	</javadoc>
+	<!-- generate coverage report -->
+	<cobertura-report format="html"
+			  destdir="${api_dir}/coverage"
+			  srcdir="${src_dir}"
+			  datafile="${instrumented_dir}/cobertura.ser" />
     </target>
 
     <!-- export the project as a jar -->
-    <target name="jar" depends="compile,build.grm"
+    <target name="jar" depends="compile"
             description="Exports the project as a jar">
 	<jar destfile="${basedir}/${ant.project.name}.jar"
              update="true" manifest="${basedir}/${ant.project.name}.Manifest"> 
@@ -215,6 +239,23 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 
     <!-- most ant scripts have a build target -->
     <target name="build" depends="jar" description="Alias for jar target"/>
+    <!-- build classes and grammars -->
+    <target name="compile" depends="compile.base,compile.grm" />
+
+    <!-- create instrumented binaries for cobertura -->
+    <target name="instrument" depends="compile,clean.cobertura"
+	    description="Instrument classes for coverage tool">
+      <cobertura-instrument todir="${instrumented_dir}"
+			    datafile="${instrumented_dir}/cobertura.ser">
+	<!-- we get an over-size method error in class file
+	     net/cscott/sdr/calls/transform/CallFileLexer$DFA9, so
+	     we'll ignore it. -->
+	<fileset dir="${classes_dir}">
+          <include name="**/*.class" />
+	  <exclude name="**/CallFileLexer*.class" />
+	</fileset>
+      </cobertura-instrument>
+    </target>
 
     <!-- ********************************************************** -->
     <!-- *                                                        * -->
@@ -273,9 +314,9 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 
 
     <!-- ********* Build the natural-language grammars. ********* -->
-    <target name="build.grm"
+    <target name="compile.grm"
 	    description="Build the natural-langauge grammars."
-	    depends="compile">
+	    depends="compile.base">
 	    <java classname="net.cscott.sdr.calls.grm.BuildGrammars"
 	          fork="true">
                   <classpath>

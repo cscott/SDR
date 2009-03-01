@@ -3,6 +3,7 @@ sdr-*.tar.gz
 sdr.jar*
 sdr-libs.jar*
 bin
+bin.cover
 api
 research
 properties.cfg
