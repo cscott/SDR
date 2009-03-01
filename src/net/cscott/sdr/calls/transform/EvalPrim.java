@@ -280,7 +280,7 @@ public abstract class EvalPrim {
         // set it to null if this motion doesn't involve rotation, or to the
         // dancer's location if only rotation is involved.
         Point arcCenter;
-        if (prim.forceArc)
+        if (prim.flags.contains(Prim.Flag.FORCE_ARC))
             arcCenter = center;
         else if (to.facing.equals(from.facing)) {
             arcCenter = null;
@@ -291,8 +291,6 @@ public abstract class EvalPrim {
         } else
             arcCenter = center;
         // we'll set rolldir equal to dr.
-        // XXX: we should be clever about how we translate "stand still" actions
-        // so that the roll/sweep dirs are preserved.
         ExactRotation rollDir;
         if (from.facing.isExact())
             rollDir = (ExactRotation) to.facing.subtract(from.facing.amount);
@@ -344,12 +342,19 @@ public abstract class EvalPrim {
 	    rollDir = new ExactRotation(from.roll());
 	    sweepDir = new ExactRotation(from.sweep());
 	}
+	// force-roll from Prim.Flags
+	if (prim.flags.contains(Prim.Flag.FORCE_ROLL_RIGHT)) {
+	    assert !prim.flags.contains(Prim.Flag.FORCE_ROLL_LEFT);
+	    rollDir = ExactRotation.ONE_QUARTER;
+	} else if (prim.flags.contains(Prim.Flag.FORCE_ROLL_LEFT))
+	    rollDir = ExactRotation.mONE_QUARTER;
+
 	// set position flags
 	to = addFlag(to, rollDir,
 		     Position.Flag.ROLL_RIGHT, Position.Flag.ROLL_LEFT);
 	to = addFlag(to, sweepDir,
 		     Position.Flag.SWEEP_RIGHT, Position.Flag.SWEEP_LEFT);
-	if (!prim.passRight)
+	if (prim.flags.contains(Prim.Flag.PASS_LEFT))
 	    to = to.addFlags(Position.Flag.PASS_LEFT);
 
         return new DancerPath(from, to, arcCenter, prim.time, por);

@@ -5,8 +5,15 @@
  *  js> CallFileBuilder.parseCalllist("program:basic")
  *  []
  * @doc.test An actual call definition:
- *  js> CallFileBuilder.parseCalllist("program:basic\ndef: foo\n call: bar,bat")
+ *  js> cl=CallFileBuilder.parseCalllist("program:basic\ndef: foo\n call: bar,bat")
  *  [foo[basic]]
+ *  js> cl.get(0).apply(net.cscott.sdr.calls.ast.Apply.makeApply('foo'))
+ *  (Seq (Apply and (Apply bar) (Apply bat)))
+ * @doc.test Parsing Prims:
+ *  js> cl=CallFileBuilder.parseCalllist("program:basic\ndef: foo\n prim: 1 1/2, 1/2, left, force-arc pass-left force-roll-right")
+ *  [foo[basic]]
+ *  js> cl.get(0).apply(net.cscott.sdr.calls.ast.Apply.makeApply('foo'))
+ *  (Seq (Prim 1 1/2, 1/2, left, 1, PASS_LEFT, FORCE_ARC, FORCE_ROLL_RIGHT))
  * @doc.test Parsing spoken-language grammar rules:
  *  js> CallFileBuilder.parseGrm("foo bar|bat? baz")
  *  foo bar|bat? baz
@@ -198,8 +205,8 @@ seq returns [B<Seq> s]
 	{ $s = mkSeq(l); }
 	;
 one_seq returns [B<? extends SeqCall> sc]
-@init { EnumSet<BPrimAttrib> a=EnumSet.noneOf(BPrimAttrib.class); }
-	: ^(PRIM (dx=direction)? x=number (dy=direction)? y=number (dr=direction | r=rotation) ^(ATTRIBS ( attribs[a] )* ) )
+@init { EnumSet<Prim.Flag> a=EnumSet.noneOf(Prim.Flag.class); }
+	: ^(PRIM (dx=direction)? x=number (dy=direction)? y=number (dr=direction | r=rotation) ^(ATTRIBS ( prim_flag[a] )* ) )
 	{ $sc=mkPrim(d(dx), x, d(dy), y, d(dr), ifNull(r,ExactRotation.ONE_QUARTER), a); }
 	| ^(CALL call_body) { $sc=$call_body.ast; }
 	| ^(PART p=pieces)
@@ -217,10 +224,10 @@ rotation returns [ExactRotation r]
 	| LEFT { $r = ExactRotation.mONE_QUARTER; }
 	| NONE { $r = ExactRotation.ZERO; }
 	;
-attribs[EnumSet<BPrimAttrib> s]
-	: ARC { $s.add(BPrimAttrib.FORCE_ARC); }
-	| LEFT { $s.add(BPrimAttrib.PASS_LEFT); }
-	;
+fragment
+prim_flag[Set<Prim.Flag> s]
+    : IDENT { $s.add(Prim.Flag.valueOf(Prim.Flag.canon($IDENT.text))); }
+    ;
 
 par returns [B<Par> p]
 @init {List<B<ParCall>> l=new ArrayList<B<ParCall>>();}

@@ -42,9 +42,6 @@ abstract class BuilderHelper {
             return (this==OUT) ? r.negate() : r;
         }
     }
-    /** An enumeration of primitive attributes, as specified in the call file.
-     */
-    static enum BPrimAttrib { FORCE_ARC, PASS_LEFT; }
     /**
      * 'B' is pronounced as 'Builder'.  So a B<Prim> builds Prim objects.
      */
@@ -144,13 +141,13 @@ abstract class BuilderHelper {
     static B<Prim> mkPrim(final BDirection dirX, final Fraction x,
             final BDirection dirY, final Fraction y,
             final BDirection dirRot, final ExactRotation rot,
-            final Set<BPrimAttrib> attribs) {
+            final Set<Prim.Flag> flags) {
         return mkConstant(new Prim(dirX.primDir(), dirX.setSign(x),
                                    dirY.primDir(), dirY.setSign(y),
                                    dirRot.primDir(), dirRot.setSign(rot),
                                    Fraction.ONE,
-                                   !attribs.contains(BPrimAttrib.PASS_LEFT),
-                                   attribs.contains(BPrimAttrib.FORCE_ARC)));
+				   flags.toArray(new Prim.Flag[flags.size()])
+				   ));
     }
     static B<Seq> mkSeq(final List<B<? extends SeqCall>> children) {
         return optimize(new B<Seq>() {

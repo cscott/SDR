@@ -13,12 +13,16 @@
  * @doc.test Keywords ought to be ignored in call names, etc.
  *  js> new AstParser("(Condition Condition (Condition If) (Condition Prim))").ast()
  *  (Condition Condition (Condition If) (Condition Prim))
+ * @doc.test Parsing complicated Prims:
+ *  js> new AstParser("(Seq (Prim 1 1/2, 1/2, left, 1, PASS_LEFT, FORCE_ARC, FORCE_ROLL_RIGHT))").ast()
+ *  (Seq (Prim 1 1/2, 1/2, left, 1, PASS_LEFT, FORCE_ARC, FORCE_ROLL_RIGHT))
  */
 grammar Ast;
 @parser::header {
 package net.cscott.sdr.calls.ast;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -96,12 +100,22 @@ prim returns [Prim r]
 @init { boolean passRight = true, forceArc = false; }
     : {input.LT(2).getText().equalsIgnoreCase("Prim")}?
         '(' IDENT x=in_out_num ',' y=in_out_num ',' rot=in_out_dir ','
-        time=number
-        (',' 'pass-left' {passRight=false;})?
-        (',' 'force-arc' {forceArc=true;})? ')'
+        time=number flags=prim_flags ')'
         { $r = new Prim($x.dir, $x.amt, $y.dir, $y.amt, $rot.dir, $rot.rot,
-                        $time.r, passRight, forceArc); }
+                        $time.r,
+                        $flags.r.toArray(new Prim.Flag[$flags.r.size()])); }
     ;
+fragment
+prim_flags returns [Set<Prim.Flag> r]
+@init { r = EnumSet.noneOf(Prim.Flag.class); }
+    : ( ',' prim_flag { $r.add($prim_flag.r); } )*
+    ;
+fragment
+prim_flag returns [Prim.Flag r]
+    : {Prim.Flag.contains(Prim.Flag.canon(input.LT(1).getText()))}?
+        IDENT { $r = Prim.Flag.valueOf(Prim.Flag.canon($IDENT.text)); }
+    ;
+
 if_ returns [If r]
     : {input.LT(2).getText().equalsIgnoreCase("If")}?
         '(' IDENT condition child=comp ')'

@@ -76,10 +76,10 @@
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cp("def:foo\n prim: 1 1/2, 1/2, left")
  *  (def (APPLY (ITEM foo)) (SEQ (prim 1 1/2 1/2 left ATTRIBS)))
- *  js> cp("def:foo\n prim: 1 1/2, 1/2, left, arc left")
- *  (def (APPLY (ITEM foo)) (SEQ (prim 1 1/2 1/2 left (ATTRIBS arc left))))
- *  js> cp("def:foo\n prim: -1 1/2, -1/2, left, left")
- *  (def (APPLY (ITEM foo)) (SEQ (prim -1 1/2 -1/2 left (ATTRIBS left))))
+ *  js> cp("def:foo\n prim: 1 1/2, 1/2, left, force-arc pass-left")
+ *  (def (APPLY (ITEM foo)) (SEQ (prim 1 1/2 1/2 left (ATTRIBS force-arc pass-left))))
+ *  js> cp("def:foo\n prim: -1 1/2, -1/2, left, pass-left")
+ *  (def (APPLY (ITEM foo)) (SEQ (prim -1 1/2 -1/2 left (ATTRIBS pass-left))))
  * @doc.test Spoken language grammar rules, w/ precedence:
  *  js> function g(s) { return new CallFileParser(s).grm_rule().getTree().toStringTree() }
  *  js> g("foo bar|bat? baz")
@@ -120,6 +120,8 @@ tokens {
 	import java.util.List;
 	import org.antlr.runtime.tree.Tree;
 	import org.antlr.runtime.CommonToken;
+
+    import net.cscott.sdr.calls.ast.Prim;
 }
 @parser::members {
     public CallFileParser(String s) {
@@ -574,15 +576,17 @@ in_out_num
 	: (IN | OUT)? number
 	;
 opt_prim_attrib!
-	: COMMA prim_attribs
-        -> ^(ATTRIBS prim_attribs)
+	: COMMA prim_flag+
+        -> ^(ATTRIBS prim_flag+)
     |
         -> ^(ATTRIBS)
 	;
-prim_attribs
-	: ARC ( prim_attribs )?
-	| LEFT ( prim_attribs )?
-	;
+fragment
+prim_flag
+    : {Prim.Flag.contains(Prim.Flag.canon(input.LT(1).getText()))}?
+        IDENT
+    ;
+
 number
 	@init { String nstr=null; }
 	: ( opt_sign (INTEGER)? INTEGER SLASH INTEGER ) =>
@@ -715,7 +719,6 @@ OUT:       {afterPrim}?=> 'out';
 LEFT:      {afterPrim}?=> 'left';
 RIGHT:     {afterPrim}?=> 'right';
 NONE:      {afterPrim}?=> 'none';
-ARC:       {afterPrim}?=> 'arc';
 
 IDENT
   : {afterIndent}?=>
