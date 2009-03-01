@@ -1,5 +1,10 @@
 package net.cscott.sdr.calls;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
+
 import net.cscott.sdr.util.Fraction;
 import org.apache.commons.lang.builder.*;
 
@@ -17,29 +22,74 @@ import org.apache.commons.lang.builder.*;
  *  modulus of 0.
  */
 public class Position implements Comparable<Position> {
+    /** Various flags describing boolean properties of a {@link Position}. */
+    public enum Flag {
+	/** A left-shoulder pass/collide to lefts is indicated. */
+	PASS_LEFT,
+	/** Roll direction was to the dancer's left. */
+	ROLL_LEFT,
+	/** Roll direction was to the dancer's right. */
+	ROLL_RIGHT,
+	/** Sweep direction was to the dancer's left. */
+	SWEEP_LEFT,
+	/** Sweep direction was to the dancer's right. */
+	SWEEP_RIGHT,
+    };
     /** Location. Always non-null. */
     public final Fraction x, y;
     /** Facing direction. Note that {@code facing} should always be an
      * {@link ExactRotation} for real (non-phantom) dancers. */
     public final Rotation facing;
-    /** Create a Position object from the given x and y coordinates
-     * and {@link Rotation}. */
-    public Position(Fraction x, Fraction y, Rotation facing) {
+    /** Flags describing the history of this {@link Position}. */
+    public final Set<Flag> flags;
+    /** Mutable set implementing the flags field, for efficiency. */
+    private final EnumSet<Flag> _flags;
+
+    /**
+     * Create a Position object from the given x and y coordinates,
+     * facing {@link Rotation}, and {@link Flag}s. */
+    public Position(Fraction x, Fraction y, Rotation facing, Flag... flags) {
 	assert x!=null; assert y!=null; assert facing!=null;
 	this.x = x; this.y = y; this.facing = facing;
-    }
-    /** Create a Position object with integer-valued x and y coordinates. */
-    public Position(int x, int y, Rotation facing) {
-        this(Fraction.valueOf(x),Fraction.valueOf(y),facing);
+	// somewhat awkward creation/encapsulation of an EnumSet
+	this._flags = EnumSet.noneOf(Flag.class);
+	this._flags.addAll(Arrays.asList(flags));
+	this.flags = Collections.unmodifiableSet(this._flags);
+	// ROLL_RIGHT and ROL
+	assert !(this._flags.contains(Flag.ROLL_RIGHT) &&
+		 this._flags.contains(Flag.ROLL_LEFT)) :
+	       "ROLL_RIGHT and ROLL_LEFT are exclusive.";
+	assert !(this._flags.contains(Flag.SWEEP_RIGHT) &&
+		 this._flags.contains(Flag.SWEEP_LEFT)):
+	       "SWEEP_RIGHT and SWEEP_LEFT are exclusive.";
     }
     /**
-     * Move the given distance in the facing direction.  Requires that
-     * the {@code facing} direction be an {@link ExactRotation}.  If
-     * {@code stepIn} is true, the distance is negated if the result
-     * would end up closer to the origin for positive distance
-     * (stepping "in" towards the center of the formation, or further
-     * to the origin for negative distance (stepping "out" away from
-     * the center).
+     * Create a Position object with integer-valued x and y coordinates,
+     * a {@link Rotation} and {@link Flag}s. */
+    public Position(int x, int y, Rotation facing, Flag... flags) {
+        this(Fraction.valueOf(x),Fraction.valueOf(y),facing, flags);
+    }
+    /**
+     * Create a Position object from the given x and y coordinates,
+     * facing {@link Rotation}, and the given {@link Set} of {@link Flag}s. */
+    protected Position(Fraction x,Fraction y,Rotation facing, Set<Flag> flags){
+	this(x, y, facing);
+	assert !(flags.contains(Flag.ROLL_RIGHT) &&
+		 flags.contains(Flag.ROLL_LEFT)) :
+	       "ROLL_RIGHT and ROLL_LEFT are exclusive.";
+	assert !(flags.contains(Flag.SWEEP_RIGHT) &&
+		 flags.contains(Flag.SWEEP_LEFT)):
+	       "SWEEP_RIGHT and SWEEP_LEFT are exclusive.";
+	this._flags.addAll(flags); // efficient if both are EnumSets.
+    }
+    /**
+     * Move the given distance in the facing direction, clearing any
+     * {@link Flag}s.  Requires that the {@code facing} direction be
+     * an {@link ExactRotation}.  If {@code stepIn} is true, the
+     * distance is negated if the result would end up closer to the
+     * origin for positive distance (stepping "in" towards the center
+     * of the formation, or further to the origin for negative
+     * distance (stepping "out" away from the center).
      *
      * @doc.test Move the couple #1 boy forward two steps:
      *  js> importPackage(net.cscott.sdr.util)
@@ -73,9 +123,17 @@ public class Position implements Comparable<Position> {
      *  js> importPackage(net.cscott.sdr.util)
      *  js> Position.getGrid(3,-1,"e").forwardStep(Fraction.TWO.negate(), true)
      *  5,-1,e
+     * @doc.test Any flags present are cleared.
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> p = new Position(Fraction.ZERO, Fraction.ZERO, ExactRotation.ZERO,
+     *    >                  Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT);
+     *  0,0,n,[PASS_LEFT, ROLL_RIGHT]
+     *  js> p.forwardStep(Fraction.ZERO, false)
+     *  0,0,n
      */
     public Position forwardStep(Fraction distance, boolean stepIn) {
-        if (distance.equals(Fraction.ZERO)) return this; // no op.
+        if (distance.equals(Fraction.ZERO) && this.flags.isEmpty())
+	    return this; // no op.
 	assert facing!=null : "rotation unspecified!";
 	Fraction dx = ((ExactRotation)facing).toX().multiply(distance);
 	Fraction dy = ((ExactRotation)facing).toY().multiply(distance);
@@ -92,13 +150,13 @@ public class Position implements Comparable<Position> {
             return (c>0) ? p1 : p2;
     }
     /**
-     * Move the given distance perpendicular to the facing direction.
-     * Requires that the {@code facing} direction be an {@link
-     * ExactRotation}.  If {@code stepIn} is true, the distance is
-     * negated if the result would end up closer to the origin for
-     * positive distance (stepping "in" towards the center of the
-     * formation, or further to the origin for negative distance
-     * (stepping "out" away from the center).
+     * Move the given distance perpendicular to the facing direction,
+     * clearing any {@link Flag}s.  Requires that the {@code facing}
+     * direction be an {@link ExactRotation}.  If {@code stepIn} is
+     * true, the distance is negated if the result would end up closer
+     * to the origin for positive distance (stepping "in" towards the
+     * center of the formation, or further to the origin for negative
+     * distance (stepping "out" away from the center).
      *
      * @doc.test Couple #2 girl move "right" two steps (truck):
      *  js> importPackage(net.cscott.sdr.util)
@@ -116,9 +174,17 @@ public class Position implements Comparable<Position> {
      *  js> importPackage(net.cscott.sdr.util)
      *  js> Position.getGrid(-1,-3,"w").sideStep(Fraction.TWO.negate(), true)
      *  -1,-5,w
+     * @doc.test Any flags present are cleared.
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> p = new Position(Fraction.ZERO, Fraction.ZERO, ExactRotation.ZERO,
+     *    >                  Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT);
+     *  0,0,n,[PASS_LEFT, ROLL_RIGHT]
+     *  js> p.sideStep(Fraction.ZERO, false)
+     *  0,0,n
      */
     public Position sideStep(Fraction distance, boolean stepIn) {
-        if (distance.equals(Fraction.ZERO)) return this; // no op.
+        if (distance.equals(Fraction.ZERO) && this.flags.isEmpty())
+	    return this; // no op.
         assert facing!=null : "rotation unspecified!";
         ExactRotation f = (ExactRotation) facing.add(Fraction.ONE_QUARTER);
         Fraction dx = f.toX().multiply(distance);
@@ -136,9 +202,10 @@ public class Position implements Comparable<Position> {
             return (c>0) ? p1 : p2;
     }
     /**
-     * Turn in place the given amount.  If {@code faceIn} is true, a positive
-     * amount will turn towards the origin; otherwise a positive amount turns
-     * clockwise.
+     * Turn in place the given amount, clearing any {@link Flag}s.  If
+     * {@code faceIn} is true, a positive amount will turn towards the
+     * origin; otherwise a positive amount turns clockwise.
+     *
      * @doc.test Exercise the turn method; amounts aren't normalized in order
      *  to preserve proper roll/sweep directions:
      *  js> ONE_HALF = net.cscott.sdr.util.Fraction.ONE_HALF
@@ -165,19 +232,27 @@ public class Position implements Comparable<Position> {
      *  js> importPackage(net.cscott.sdr.util)
      *  js> p = Position.getGrid(1,1,"n").turn(Fraction.ONE_QUARTER.negate(), true)
      *  1,1,e
+     * @doc.test Any flags present are cleared.
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> p = new Position(Fraction.ZERO, Fraction.ZERO, ExactRotation.ZERO,
+     *    >                  Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT);
+     *  0,0,n,[PASS_LEFT, ROLL_RIGHT]
+     *  js> p.turn(Fraction.ZERO, false)
+     *  0,0,n
      */
     public Position turn(Fraction amount, boolean faceIn) {
 	return this.turn(amount, faceIn, this);
     }
     /**
-     * Turn in place the given amount.  If {@code faceIn} is true, a positive
-     * amount will turn towards the origin; otherwise a positive amount turns
-     * clockwise.<p>
-     * This version of the method takes an additional argument specifying
-     * a point at which to evaluate the "in/out" direction.
+     * Turn in place the given amount, clearing any {@link Flag}s.  If
+     * {@code faceIn} is true, a positive amount will turn towards the
+     * origin; otherwise a positive amount turns clockwise.
+     *
+     * <p>This version of the method takes an additional argument
+     * specifying a point at which to evaluate the "in/out" direction.
      */
     public Position turn(Fraction amount, boolean faceIn, Position reference) {
-        if (amount.equals(Fraction.ZERO)) return this;
+        if (amount.equals(Fraction.ZERO) && this.flags.isEmpty()) return this;
 	assert facing!=null : "rotation unspecified!";
 	Position p1 = new Position(x, y, facing.add(amount));
         if (!faceIn) return p1; // simple case!
@@ -203,12 +278,120 @@ public class Position implements Comparable<Position> {
         else
             return p1; // "in" is cw.
     }
-    /** Rotate this position around the origin by the given amount.
+    /**
+     * Return a new {@link Position} identical to this one, except
+     * with exactly the given flags set.
+     *
+     * @doc.test Set the SWEEP_LEFT and ROLL_RIGHT flags:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> p = new Position(Fraction.ZERO, Fraction.ZERO, ExactRotation.ZERO,
+     *    >                  Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT);
+     *  0,0,n,[PASS_LEFT, ROLL_RIGHT]
+     *  js> p.setFlags(Position.Flag.ROLL_RIGHT, Position.Flag.SWEEP_LEFT)
+     *  0,0,n,[ROLL_RIGHT, SWEEP_LEFT]
+     */
+    public Position setFlags(Flag... flags) {
+	return new Position(this.x, this.y, this.facing, flags);
+    }
+    /**
+     * Return a new {@link Position} identical to this one, except
+     * with the given flags set.
+     *
+     * @doc.test Add the SWEEP_LEFT flag:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> p = new Position(Fraction.ZERO, Fraction.ZERO, ExactRotation.ZERO,
+     *    >                  Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT);
+     *  0,0,n,[PASS_LEFT, ROLL_RIGHT]
+     *  js> p.addFlags(Position.Flag.ROLL_RIGHT, Position.Flag.SWEEP_LEFT)
+     *  0,0,n,[PASS_LEFT, ROLL_RIGHT, SWEEP_LEFT]
+     */
+    public Position addFlags(Flag... flags) {
+	EnumSet<Flag> es = EnumSet.copyOf(this._flags);
+	es.addAll(Arrays.asList(flags));
+	if (es.equals(this._flags)) return this; // optimization
+	return new Position(this.x, this.y, this.facing, es);
+    }
+    /**
+     * Move a {@link Position}, preserving its flags.
+     *
+     * @doc.test Add the SWEEP_LEFT flag:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> p = new Position(Fraction.ZERO, Fraction.ZERO, ExactRotation.ZERO,
+     *    >                  Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT);
+     *  0,0,n,[PASS_LEFT, ROLL_RIGHT]
+     *  js> p = p.relocate(Fraction.ONE, Fraction.TWO, ExactRotation.ONE_QUARTER);
+     *  1,2,e,[PASS_LEFT, ROLL_RIGHT]
+     */
+    public Position relocate(Fraction x, Fraction y, Rotation facing) {
+	return new Position(x, y, facing, this._flags);
+    }
+    /**
+     * Return a roll amount from the {@link Flag#ROLL_LEFT} and
+     * {@link Flag#ROLL_RIGHT} {@link Flag}s set on this {@link Position}.
+     *
+     * @doc.test
+     *  js> p = Position.getGrid(0,0,"n");
+     *  0,0,n
+     *  js> p.roll();
+     *  0/1
+     *  js> p = p.addFlags(Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT, Position.Flag.SWEEP_LEFT); 
+     *  0,0,n,[PASS_LEFT, ROLL_RIGHT, SWEEP_LEFT]
+     *  js> p.roll()
+     *  1/4
+     *  js> p = p.setFlags(Position.Flag.SWEEP_RIGHT, Position.Flag.ROLL_LEFT)
+     *  0,0,n,[ROLL_LEFT, SWEEP_RIGHT]
+     *  js> p.roll()
+     *  -1/4
+     */
+    public Fraction roll() {
+	if (this._flags.contains(Flag.ROLL_RIGHT)) {
+	    assert !this._flags.contains(Flag.ROLL_LEFT);
+	    return ExactRotation.ONE_QUARTER.amount;
+	}
+	if (this._flags.contains(Flag.ROLL_LEFT)) {
+	    return ExactRotation.mONE_QUARTER.amount;
+	}
+	return ExactRotation.ZERO.amount;
+    }
+    /**
+     * Return a sweep amount from the {@link Flag#SWEEP_LEFT} and
+     * {@link Flag#SWEEP_RIGHT} {@link Flag}s set on this {@link Position}.
+     *
+     * @doc.test
+     *  js> p = Position.getGrid(0,0,"n");
+     *  0,0,n
+     *  js> p.roll();
+     *  0/1
+     *  js> p = p.addFlags(Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT, Position.Flag.SWEEP_LEFT); 
+     *  0,0,n,[PASS_LEFT, ROLL_RIGHT, SWEEP_LEFT]
+     *  js> p.sweep()
+     *  -1/4
+     *  js> p = p.setFlags(Position.Flag.SWEEP_RIGHT, Position.Flag.ROLL_LEFT)
+     *  0,0,n,[ROLL_LEFT, SWEEP_RIGHT]
+     *  js> p.sweep()
+     *  1/4
+     */
+    public Fraction sweep() {
+	if (this._flags.contains(Flag.SWEEP_RIGHT)) {
+	    assert !this._flags.contains(Flag.SWEEP_LEFT);
+	    return ExactRotation.ONE_QUARTER.amount;
+	}
+	if (this._flags.contains(Flag.SWEEP_LEFT)) {
+	    return ExactRotation.mONE_QUARTER.amount;
+	}
+	return ExactRotation.ZERO.amount;
+    }
+    /**
+     * Rotate this position around the origin by the given amount,
+     * preserving any {@link Flag}s.
+     *
      * @doc.test Rotating the #1 boy by 1/4 gives the #4 boy position:
      *  js> p = Position.getGrid(-1,-3,0)
      *  -1,-3,n
+     *  js> p = p.setFlags(Position.Flag.PASS_LEFT)
+     *  -1,-3,n,[PASS_LEFT]
      *  js> p.rotateAroundOrigin(ExactRotation.ONE_QUARTER)
-     *  -3,1,e
+     *  -3,1,e,[PASS_LEFT]
      */
     public Position rotateAroundOrigin(ExactRotation rot) {
         // x' =  x*cos(rot) + y*sin(rot)
@@ -217,9 +400,12 @@ public class Position implements Comparable<Position> {
         Fraction cos = rot.toY(), sin = rot.toX();
         Fraction nx = this.x.multiply(cos).add(this.y.multiply(sin));
         Fraction ny = this.y.multiply(cos).subtract(this.x.multiply(sin));
-        return new Position(nx, ny, facing.add(rot.amount));
+        return new Position(nx, ny, facing.add(rot.amount), this._flags);
     }
-    /** Normalize (restrict to 0-modulus) the rotation of the given position.
+    /**
+     * Normalize (restrict to 0-modulus) the rotation of the given position,
+     * preserving any {@link Flag}s.
+     *
      * @doc.test Show normalization after two 180-degree turns:
      *  js> importPackage(net.cscott.sdr.util)
      *  js> p = Position.getGrid(0,0,"e").turn(Fraction.ONE_HALF, false)
@@ -228,13 +414,15 @@ public class Position implements Comparable<Position> {
      *  0,0,e
      *  js> p.facing.amount.toProperString()
      *  1 1/4
+     *  js> p = p.setFlags(Position.Flag.PASS_LEFT)
+     *  0,0,e,[PASS_LEFT]
      *  js> p = p.normalize()
-     *  0,0,e
+     *  0,0,e,[PASS_LEFT]
      *  js> p.facing.amount.toProperString()
      *  1/4
      */
     public Position normalize() {
-        return new Position(x, y, facing.normalize());
+        return new Position(x, y, facing.normalize(), this._flags);
     }
 
     // positions in the standard 4x4 grid.
@@ -247,10 +435,11 @@ public class Position implements Comparable<Position> {
      *  js> Position.getGrid(-3,3,ExactRotation.WEST)
      *  -3,3,w
      */
-    public static Position getGrid(int x, int y, ExactRotation r) {
+    public static Position getGrid(int x, int y, ExactRotation r,
+				   Flag... flags) {
         assert r != null;
 	return new Position
-	    (Fraction.valueOf(x), Fraction.valueOf(y), r);
+	    (Fraction.valueOf(x), Fraction.valueOf(y), r, flags);
     }
     /** Returns a position corresponding to the standard square
      *  dance grid.  0,0 is the center of the set, and odd coordinates
@@ -263,8 +452,9 @@ public class Position implements Comparable<Position> {
      *  js> Position.getGrid(1,2,"e")
      *  1,2,e
      */
-    public static Position getGrid(int x, int y, String direction) {
-	return getGrid(x,y,ExactRotation.fromAbsoluteString(direction));
+    public static Position getGrid(int x, int y, String direction,
+				   Flag... flags) {
+	return getGrid(x,y,ExactRotation.fromAbsoluteString(direction), flags);
     }
 
     // utility functions.
@@ -276,29 +466,34 @@ public class Position implements Comparable<Position> {
 	    .append(x, p.x)
 	    .append(y, p.y)
 	    .append(facing, p.facing)
+	    .append(_flags, p._flags)
 	    .isEquals();
     }
     @Override
     public int hashCode() {
         if (hashCode==0)
             hashCode = new HashCodeBuilder()
-            .append(x).append(y).append(facing)
+	    .append(x).append(y).append(facing).append(_flags)
             .toHashCode();
         return hashCode;
     }
     private transient int hashCode = 0;
     @Override
     public String toString() {
-	return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
+	ToStringBuilder tsb = new ToStringBuilder
+	    (this, ToStringStyle.SIMPLE_STYLE)
 	    .append("x", x.toProperString())
 	    .append("y", y.toProperString())
-	    .append("facing", facing.toAbsoluteString())
-	    .toString();
+	    .append("facing", facing.toAbsoluteString());
+	if (!flags.isEmpty())
+	    tsb = tsb.append("flags", flags);
+	return tsb.toString();
     }
     /**
      * Compare two {@link Position}s.  We use reading order: top to bottom,
-     * then left to right.  Ties are broken by facing direction: first
+     * then left to right.  Ties are broken first by facing direction: first
      * the most specific rotation modulus, then by normalized direction.
+     * Remaining ties are broken by comparing the flag sets.
      * @doc.test Top to bottom:
      *  js> Position.getGrid(0,0,"n").compareTo(Position.getGrid(1,1,"n")) > 0
      *  true
@@ -306,7 +501,7 @@ public class Position implements Comparable<Position> {
      *  js> Position.getGrid(1,0,"n").compareTo(Position.getGrid(0,0,"n")) > 0
      *  true
      * @doc.test Most specific rotation modulus first:
-     *  js> new Position["(int,int,net.cscott.sdr.calls.Rotation)"](
+     *  js> new Position["(int,int,net.cscott.sdr.calls.Rotation,net.cscott.sdr.calls.Position$Flag[])"](
      *    >              0,0,Rotation.fromAbsoluteString("|")
      *    >              ).compareTo(Position.getGrid(0,0,"n")) > 0
      *  true
@@ -326,6 +521,12 @@ public class Position implements Comparable<Position> {
         if (c!=0) return c;
         c = this.facing.normalize().amount.compareTo
             (p.facing.normalize().amount);
-        return c;
+        if (c!=0) return c;
+	for (Flag f: Flag.values()) {
+	    c = Boolean.valueOf(this.flags.contains(f))
+		.compareTo(Boolean.valueOf(p.flags.contains(f)));
+	    if (c!=0) return c;
+	}
+	return c;
     }
 }
