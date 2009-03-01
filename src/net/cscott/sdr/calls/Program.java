@@ -11,6 +11,15 @@ public enum Program {
      * includes C1 and A2V, but C1 doesn't include A2V).   Best way to
      * implement this (again, eventually) is to have each class indicate
      * what the class directly below it is, and recursively define inclusion.
+     * @doc.test
+     *  js> Program.C3A.includes(Program.C1)
+     *  true
+     *  js> Program.MAINSTREAM.includes(Program.A1)
+     *  false
+     *  js> [Program.BASIC.includes(p) for each (p in Program.values())]
+     *  true,false,false,false,false,false,false,false,false,false
+     *  js> [Program.C3B.includes(p) for each (p in Program.values())]
+     *  true,true,true,true,true,true,true,true,true,false
      */
     public boolean includes(Program p) {
         return this.ordinal() >= p.ordinal();

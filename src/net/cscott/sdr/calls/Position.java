@@ -130,6 +130,13 @@ public class Position implements Comparable<Position> {
      *  0,0,n,[PASS_LEFT, ROLL_RIGHT]
      *  js> p.forwardStep(Fraction.ZERO, false)
      *  0,0,n
+     * @doc.test Can't step in if there's no clear in direction.
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> p = new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.ZERO);
+     *  1,0,n
+     *  js> try { p.forwardStep(Fraction.ONE, true); }
+     *    > catch(e) { print(e.javaException); }
+     *  net.cscott.sdr.calls.BadCallException: no clear 'in' direction
      */
     public Position forwardStep(Fraction distance, boolean stepIn) {
         if (distance.equals(Fraction.ZERO) && this.flags.isEmpty())
@@ -174,6 +181,10 @@ public class Position implements Comparable<Position> {
      *  js> importPackage(net.cscott.sdr.util)
      *  js> Position.getGrid(-1,-3,"w").sideStep(Fraction.TWO.negate(), true)
      *  -1,-5,w
+     * @doc.test Couple #1 boy facing east move "out" two steps:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> Position.getGrid(-1,-3,"e").sideStep(Fraction.TWO.negate(), true)
+     *  -1,-5,e
      * @doc.test Any flags present are cleared.
      *  js> importPackage(net.cscott.sdr.util)
      *  js> p = new Position(Fraction.ZERO, Fraction.ZERO, ExactRotation.ZERO,
@@ -181,6 +192,13 @@ public class Position implements Comparable<Position> {
      *  0,0,n,[PASS_LEFT, ROLL_RIGHT]
      *  js> p.sideStep(Fraction.ZERO, false)
      *  0,0,n
+     * @doc.test Can't step in if there's no clear in direction.
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> p = new Position(Fraction.ZERO, Fraction.ONE, ExactRotation.ZERO);
+     *  0,1,n
+     *  js> try { p.sideStep(Fraction.ONE, true); }
+     *    > catch(e) { print(e.javaException); }
+     *  net.cscott.sdr.calls.BadCallException: no clear 'in' direction
      */
     public Position sideStep(Fraction distance, boolean stepIn) {
         if (distance.equals(Fraction.ZERO) && this.flags.isEmpty())
@@ -239,6 +257,30 @@ public class Position implements Comparable<Position> {
      *  0,0,n,[PASS_LEFT, ROLL_RIGHT]
      *  js> p.turn(Fraction.ZERO, false)
      *  0,0,n
+     * @doc.test Can't face in if facing exactly into the center:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> p = new Position(Fraction.ONE, Fraction.ONE, ExactRotation.FIVE_EIGHTHS);
+     *  1,1,sw
+     *  js> try { p = p.turn(Fraction.ONE_QUARTER, true); }
+     *    > catch(e) { print(e.javaException); }
+     *  net.cscott.sdr.calls.BadCallException: no clear 'in' direction
+     * @doc.test Can't face in if facing exactly away from the center:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> p = new Position(Fraction.ZERO, Fraction.ONE, ExactRotation.ZERO);
+     *  0,1,n
+     *  js> try { p = p.turn(Fraction.ONE_QUARTER, true); }
+     *    > catch(e) { print(e.javaException); }
+     *  net.cscott.sdr.calls.BadCallException: no clear 'in' direction
+     * @doc.test We can face in from some inexact directions:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> p = new Position(Fraction.ONE, Fraction.ZERO, Rotation.fromAbsoluteString("|"));
+     *  1,0,|
+     *  js> p = p.turn(Fraction.ONE_QUARTER, true) // XXX: EXPECT FAIL
+     *  1,0,w
+     *  js> p = new Position(Fraction.ONE, Fraction.ZERO, Rotation.fromAbsoluteString("|"));
+     *  1,0,|
+     *  js> p = p.turn(Fraction.ONE_QUARTER.negate(), true) // XXX: EXPECT FAIL
+     *  1,0,e
      */
     public Position turn(Fraction amount, boolean faceIn) {
 	return this.turn(amount, faceIn, this);
@@ -269,9 +311,7 @@ public class Position implements Comparable<Position> {
         int czero = f.compareTo(Fraction.ZERO);
         int chalf = f.compareTo(Fraction.ONE_HALF);
         if (czero==0 || chalf==0)
-            throw new BadCallException
-            ("Can't face in/out when already facing exactly" +
-             " toward/away from the center");
+            throw new BadCallException("no clear 'in' direction");
         assert czero > 0;
         if (chalf > 0)
             return p2; // "in" is ccw here.
@@ -302,7 +342,9 @@ public class Position implements Comparable<Position> {
      *  js> p = new Position(Fraction.ZERO, Fraction.ZERO, ExactRotation.ZERO,
      *    >                  Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT);
      *  0,0,n,[PASS_LEFT, ROLL_RIGHT]
-     *  js> p.addFlags(Position.Flag.ROLL_RIGHT, Position.Flag.SWEEP_LEFT)
+     *  js> p=p.addFlags(Position.Flag.ROLL_RIGHT, Position.Flag.SWEEP_LEFT)
+     *  0,0,n,[PASS_LEFT, ROLL_RIGHT, SWEEP_LEFT]
+     *  js> p=p.addFlags(Position.Flag.ROLL_RIGHT, Position.Flag.SWEEP_LEFT)
      *  0,0,n,[PASS_LEFT, ROLL_RIGHT, SWEEP_LEFT]
      */
     public Position addFlags(Flag... flags) {
@@ -360,7 +402,7 @@ public class Position implements Comparable<Position> {
      * @doc.test
      *  js> p = Position.getGrid(0,0,"n");
      *  0,0,n
-     *  js> p.roll();
+     *  js> p.sweep();
      *  0/1
      *  js> p = p.addFlags(Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT, Position.Flag.SWEEP_LEFT); 
      *  0,0,n,[PASS_LEFT, ROLL_RIGHT, SWEEP_LEFT]
@@ -504,6 +546,9 @@ public class Position implements Comparable<Position> {
      *  js> new Position["(int,int,net.cscott.sdr.calls.Rotation,net.cscott.sdr.calls.Position$Flag[])"](
      *    >              0,0,Rotation.fromAbsoluteString("|")
      *    >              ).compareTo(Position.getGrid(0,0,"n")) > 0
+     *  true
+     * @doc.test Break ties by comparing position flags:
+     *  js> Position.getGrid(1,2,"e").compareTo(Position.getGrid(1,2,"e",Position.Flag.PASS_LEFT)) != 0
      *  true
      * @doc.test Normalized direction:
      *  js> Position.getGrid(0,0,"e").compareTo(Position.getGrid(0,0,"n")) > 0

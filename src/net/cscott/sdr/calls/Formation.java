@@ -83,7 +83,11 @@ public class Formation {
      *  js> f2 = f.select(new HashSet(Arrays.asList(sides))); undefined
      *  js> [f2.isSelected(d) for each (d in sides)]
      *  true,true,true,true
+     *  js> [f2.selectedDancers().contains(d) for each (d in sides)]
+     *  true,true,true,true
      *  js> [f2.isSelected(d) for each (d in heads)]
+     *  false,false,false,false
+     *  js> [f2.selectedDancers().contains(d) for each (d in heads)]
      *  false,false,false,false
      */
     public boolean isSelected(Dancer d) {

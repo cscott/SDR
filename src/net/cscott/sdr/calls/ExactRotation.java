@@ -108,7 +108,43 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
     /** Return the X offset of a one-unit step in the rotation direction.
      *  Zero indicates north (towards positive y).  Use a 'squared off'
      *  circle to avoid irrational numbers.  This is roughly equivalent to
-     *  sin(amount). */
+     *  sin(amount).
+     * @see ExactRotation#toY()
+     * @doc.test
+     *  js> importPackage(net.cscott.sdr.util);
+     *  js> for (n=-8; n<20; n++) {
+     *    >  er = new ExactRotation(Fraction.valueOf(n, 16));
+     *    >  print("toX("+er+")="+er.toX().toProperString());
+     *    > }; undefined
+     *  toX(-1/2)=0
+     *  toX(-7/16)=-1/2
+     *  toX(-3/8)=-1
+     *  toX(-5/16)=-1
+     *  toX(-1/4)=-1
+     *  toX(-3/16)=-1
+     *  toX(-1/8)=-1
+     *  toX(-1/16)=-1/2
+     *  toX(0)=0
+     *  toX(1/16)=1/2
+     *  toX(1/8)=1
+     *  toX(3/16)=1
+     *  toX(1/4)=1
+     *  toX(5/16)=1
+     *  toX(3/8)=1
+     *  toX(7/16)=1/2
+     *  toX(1/2)=0
+     *  toX(9/16)=-1/2
+     *  toX(5/8)=-1
+     *  toX(11/16)=-1
+     *  toX(3/4)=-1
+     *  toX(13/16)=-1
+     *  toX(7/8)=-1
+     *  toX(15/16)=-1/2
+     *  toX(1)=0
+     *  toX(1 1/16)=1/2
+     *  toX(1 1/8)=1
+     *  toX(1 3/16)=1
+     */
     public Fraction toX() {
 	Fraction EIGHT = Fraction.valueOf(8,1);
 	ExactRotation r = normalize();
@@ -130,7 +166,43 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
     /** Return the Y offset of a one-unit step in the rotation direction.
      *  Zero indicates north (towards positive y).  Use a 'squared off'
      *  circle to avoid irrational numbers. This is roughly equivalent to
-     *  cos(amt). */
+     *  cos(amt).
+     * @see ExactRotation#toX()
+     * @doc.test
+     *  js> importPackage(net.cscott.sdr.util);
+     *  js> for (n=-8; n<20; n++) {
+     *    >  er = new ExactRotation(Fraction.valueOf(n, 16));
+     *    >  print("toY("+er+")="+er.toY().toProperString());
+     *    > }; undefined
+     *  toY(-1/2)=-1
+     *  toY(-7/16)=-1
+     *  toY(-3/8)=-1
+     *  toY(-5/16)=-1/2
+     *  toY(-1/4)=0
+     *  toY(-3/16)=1/2
+     *  toY(-1/8)=1
+     *  toY(-1/16)=1
+     *  toY(0)=1
+     *  toY(1/16)=1
+     *  toY(1/8)=1
+     *  toY(3/16)=1/2
+     *  toY(1/4)=0
+     *  toY(5/16)=-1/2
+     *  toY(3/8)=-1
+     *  toY(7/16)=-1
+     *  toY(1/2)=-1
+     *  toY(9/16)=-1
+     *  toY(5/8)=-1
+     *  toY(11/16)=-1/2
+     *  toY(3/4)=0
+     *  toY(13/16)=1/2
+     *  toY(7/8)=1
+     *  toY(15/16)=1
+     *  toY(1)=1
+     *  toY(1 1/16)=1
+     *  toY(1 1/8)=1
+     *  toY(1 3/16)=1/2
+     */
     public Fraction toY() {
 	Fraction EIGHT = Fraction.valueOf(8,1);
 	ExactRotation r = normalize();
@@ -174,13 +246,15 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
         }
     }
     /** Return true if rotating from <code>from</code> to <code>to</code>
-     *  is a clockwise movement. */
+     *  is a clockwise movement.
+     * @deprecated don't really work on normalized rotations */
     // XXX careful: doesn't really work on normalized rotations
     static boolean isCW(ExactRotation from, ExactRotation to) {
 	return from.compareTo(to) < 0;
     }
     /** Return true if rotating from <code>from</code> to <code>to</code>
-     *  is a counter-clockwise movement. */
+     *  is a counter-clockwise movement.
+     * @deprecated don't really work on normalized rotations */
     // XXX careful: doesn't really work on normalized rotations
     static boolean isCCW(ExactRotation from, ExactRotation to) {
 	return from.compareTo(to) > 0;
