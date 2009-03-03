@@ -10,6 +10,8 @@ import static net.cscott.sdr.calls.StandardDancer.COUPLE_4_BOY;
 import static net.cscott.sdr.calls.StandardDancer.COUPLE_4_GIRL;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -54,7 +56,7 @@ public class Formation {
      *  js> f = Formation.SQUARED_SET ; undefined
      *  js> sides = [d for each (d in Iterator(f.dancers())) if (d.isSide())]
      *  COUPLE 2 BOY,COUPLE 2 GIRL,COUPLE 4 BOY,COUPLE 4 GIRL
-     *  js> f2 = f.select(new HashSet(Arrays.asList(sides))).onlySelected()
+     *  js> f2 = f.select(Arrays.asList(sides)).onlySelected()
      *  net.cscott.sdr.calls.Formation@4fce71[
      *    location={COUPLE 4 BOY=-3,1,e, COUPLE 2 GIRL=3,1,w, COUPLE 4 GIRL=-3,-1,e, COUPLE 2 BOY=3,-1,w}
      *    selected=[COUPLE 4 BOY, COUPLE 2 GIRL, COUPLE 4 GIRL, COUPLE 2 BOY]
@@ -80,7 +82,7 @@ public class Formation {
      *  COUPLE 1 BOY,COUPLE 1 GIRL,COUPLE 3 BOY,COUPLE 3 GIRL
      *  js> sides = [d for each (d in Iterator(f.dancers())) if (d.isSide())]
      *  COUPLE 2 BOY,COUPLE 2 GIRL,COUPLE 4 BOY,COUPLE 4 GIRL
-     *  js> f2 = f.select(new HashSet(Arrays.asList(sides))); undefined
+     *  js> f2 = f.select(Arrays.asList(sides)); undefined
      *  js> [f2.isSelected(d) for each (d in sides)]
      *  true,true,true,true
      *  js> [f2.selectedDancers().contains(d) for each (d in sides)]
@@ -149,16 +151,20 @@ public class Formation {
      *  js> f = Formation.SQUARED_SET ; undefined
      *  js> heads = [d for each (d in Iterator(f.dancers())) if (d.isHead())]
      *  COUPLE 1 BOY,COUPLE 1 GIRL,COUPLE 3 BOY,COUPLE 3 GIRL
-     *  js> f2 = f.select(new HashSet(Arrays.asList(heads)))
+     *  js> f2 = f.select(Arrays.asList(heads))
      *  net.cscott.sdr.calls.Formation@12a0f6c[
      *    location={COUPLE 3 GIRL=-1,3,s, COUPLE 3 BOY=1,3,s, COUPLE 4 BOY=-3,1,e, COUPLE 2 GIRL=3,1,w, COUPLE 4 GIRL=-3,-1,e, COUPLE 2 BOY=3,-1,w, COUPLE 1 BOY=-1,-3,n, COUPLE 1 GIRL=1,-3,n}
      *    selected=[COUPLE 3 GIRL, COUPLE 3 BOY, COUPLE 1 BOY, COUPLE 1 GIRL]
      *  ]
      */
-    public Formation select(Set<Dancer> s) {
-        Set<Dancer> nSel = new LinkedHashSet<Dancer>(s);
-        nSel.retainAll(dancers());
+    public Formation select(Collection<Dancer> d) {
+        Set<Dancer> nSel = new LinkedHashSet<Dancer>(dancers());
+        nSel.retainAll(d);
         return new Formation(location, Collections.unmodifiableSet(nSel));
+    }
+    /** Convenience method for {@link #select(Collection)}. */
+    public Formation select(Dancer... d) {
+        return this.select(Arrays.asList(d));
     }
     /**
      * Build a new formation, centered on 0,0.
@@ -166,7 +172,7 @@ public class Formation {
      *  js> importPackage(java.util)
      *  js> couple1 = [StandardDancer.COUPLE_1_BOY, StandardDancer.COUPLE_1_GIRL]
      *  COUPLE 1 BOY,COUPLE 1 GIRL
-     *  js> f = Formation.SQUARED_SET.select(new HashSet(Arrays.asList(couple1))).onlySelected()
+     *  js> f = Formation.SQUARED_SET.select(Arrays.asList(couple1)).onlySelected()
      *  net.cscott.sdr.calls.Formation@a31e1b[
      *    location={COUPLE 1 BOY=-1,-3,n, COUPLE 1 GIRL=1,-3,n}
      *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]

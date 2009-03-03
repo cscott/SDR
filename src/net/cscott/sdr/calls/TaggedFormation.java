@@ -68,9 +68,9 @@ public class TaggedFormation extends Formation {
         return copy;
     }
     @Override
-    public TaggedFormation select(Set<Dancer> s) {
-        Set<Dancer> nSel = new LinkedHashSet<Dancer>(s);
-        nSel.retainAll(dancers());
+    public TaggedFormation select(Collection<Dancer> d) {
+        Set<Dancer> nSel = new LinkedHashSet<Dancer>(dancers());
+        nSel.retainAll(d);
         return new TaggedFormation
         (location, Collections.unmodifiableSet(nSel), tags);
     }

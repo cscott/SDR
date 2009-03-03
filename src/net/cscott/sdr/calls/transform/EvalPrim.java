@@ -73,11 +73,8 @@ import net.cscott.sdr.util.Point;
  * @doc.test Check that roll/sweep work, even if you turn more than 360 degrees:
  *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
- *  js> s = java.util.LinkedHashSet()
- *  []
- *  js> s.add(StandardDancer.COUPLE_1_BOY); s.add(StandardDancer.COUPLE_1_GIRL)
- *  true
- *  js> f=Formation.SQUARED_SET.select(s).onlySelected(); f.toStringDiagram()
+ *  js> f=Formation.SQUARED_SET.select(StandardDancer.COUPLE_1_BOY,
+ *    >       StandardDancer.COUPLE_1_GIRL).onlySelected(); f.toStringDiagram()
  *  
  *  
  *  1B^  1G^
