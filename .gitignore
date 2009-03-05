@@ -4,6 +4,7 @@ sdr.jar*
 sdr-libs.jar*
 bin
 bin.cover
+bin.eclipse
 api
 research
 properties.cfg

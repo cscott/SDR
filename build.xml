@@ -69,6 +69,8 @@ Square Dance Revolution build file.
 	<delete file="${basedir}/${ant.project.name}.jar.MD5" />
 	<!-- coverage information -->
 	<delete dir="${instrumented_dir}" />
+	<!-- eclipse writes here, so as not to fight with ant -->
+	<delete dir="bin.eclipse" />
 	<!-- from dist targets -->
 	<delete>
 	  <fileset dir="${basedir}"
