@@ -413,7 +413,8 @@ public abstract class FormationList {
     private static TaggedFormation _xofy(Formation x, TaggedFormation y) {
         /* create an instance of 'y' for each dancer in 'x'. */
         Map<Dancer,Formation> sub = new LinkedHashMap<Dancer,Formation>();
-        MultiMap<Dancer,Tag> tags = new GenericMultiMap<Dancer,Tag>();
+        MultiMap<Dancer,Tag> tags = new GenericMultiMap<Dancer,Tag>
+                                        (Factories.enumSetFactory(Tag.class));
         for (Dancer d: x.dancers()) {
             Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
             for (Dancer dd : y.dancers()) {
