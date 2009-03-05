@@ -1,19 +1,17 @@
 package net.cscott.sdr.calls;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
-
+import java.util.NavigableMap;
+import java.util.TreeMap;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-import net.cscott.jutil.Factories;
-import net.cscott.jutil.GenericMultiMap;
-import net.cscott.jutil.MultiMap;
+import net.cscott.jutil.Default;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
@@ -150,111 +148,6 @@ public class FormationMapper {
                                      (ExactRotation) meta.location(d).facing));
         }
         return breathe(l);
-    }
-    // XXX: we're not using this at the moment; we adjust all boundaries now,
-    //      losing the idea of an "unbounded" formation.  I think this is
-    //      correct: an outside triangle should stay a triangle, even if the
-    //      point is "unbounded" on the outside.  But keeping this code here
-    //      for the moment in case this assumption is wrong.
-    private static Point computeCenter(Box naturalBounds, Fraction[] x, Fraction[] y) {
-        // compute the desired center of the formation.  if both bounds are
-        // given, then the center is the mean.  Otherwise, align edge to the
-        // known bound. If no bounds are given, put on the centerline.
-        Fraction cx, cy;
-        if (x[0]==null && x[1]==null)
-            cx = Fraction.ZERO;
-        else if (x[0]==null)
-            cx = x[1].subtract(naturalBounds.width().divide(Fraction.TWO));
-        else if (x[1]==null)
-            cx = x[0].add(naturalBounds.width().divide(Fraction.TWO));
-        else
-            cx = x[0].add(x[1]).divide(Fraction.TWO);
-        if (y[0]==null && y[1]==null)
-            cy = Fraction.ZERO;
-        else if (y[0]==null)
-            cy = y[1].subtract(naturalBounds.height().divide(Fraction.TWO));
-        else if (y[1]==null)
-            cy = y[0].add(naturalBounds.height().divide(Fraction.TWO));
-        else
-            cy = y[0].add(y[1]).divide(Fraction.TWO);
-        return new Point(cx, cy);
-    }
-    /** Compute the 'expanded' location of the given boundary value. */
-    private static Fraction warp(List<Fraction> expansion,
-                                 List<Fraction> boundary, Fraction val) {
-        if (val.compareTo(Fraction.ZERO) >= 0) {
-            Integer[] boundIndex = findNearest(boundary, Fraction.ZERO, val);
-            // this should be an exact match.
-            assert boundary.get(boundIndex[0]).compareTo(Fraction.ZERO)==0;
-            assert boundary.get(boundIndex[1]).compareTo(val)==0;
-            // okay, starting from zero, add up all the expansion.
-            // note that expansion[0] corresponds to boundary[0]-boundary[1], etc
-            for (int i=boundIndex[0]; i<boundIndex[1]; i++)
-                val = val.add(expansion.get(i));
-        } else {
-            Integer[] boundIndex = findNearest(boundary, val, Fraction.ZERO);
-            // this should be an exact match.
-            assert boundary.get(boundIndex[1]).compareTo(Fraction.ZERO)==0;
-            assert boundary.get(boundIndex[0]).compareTo(val)==0;
-            // okay, starting from zero, add up all the expansion.
-            // note that expansion[0] corresponds to boundary[0]-boundary[1], etc
-            for (int i=boundIndex[0]; i<boundIndex[1]; i++)
-                val = val.subtract(expansion.get(i));
-        }
-        return val; // done!
-    }
-    private static Box warp(List<Fraction> xExpand, List<Fraction> yExpand,
-                            List<Fraction> xBound, List<Fraction> yBound,
-                            Box bounds) {
-        Point ll = new Point(warp(xExpand, xBound, bounds.ll.x),
-                             warp(yExpand, yBound, bounds.ll.y));
-        Point ur = new Point(warp(xExpand, xBound, bounds.ur.x),
-                             warp(yExpand, yBound, bounds.ur.y));
-        return new Box(ll, ur);
-    }
-    private static void expand(List<Fraction> expansion, List<Fraction> boundary,
-                               Fraction dancerMin, Fraction dancerMax,
-                               Fraction newSize) {
-        Integer[] boundIndex = findNearest(boundary, dancerMin, dancerMax);
-        // if either of the boundIndices is null, then the formation is
-        // unconstrained and we don't need to expand anything.
-        if (boundIndex[0]==null || boundIndex[1]==null) return;
-        // otherwise, let's compute the (expanded) distance between boundIndices
-        // is it big enough?
-        assert boundIndex[0] < boundIndex[1];
-        assert boundary.get(boundIndex[0]).compareTo(dancerMin) <= 0;
-        assert boundary.get(boundIndex[1]).compareTo(dancerMax) >= 0;
-        Fraction dist = Fraction.ZERO;
-        for (int i=boundIndex[0]; i<boundIndex[1]; i++) {
-            // add 'native' distance
-            dist = dist.add(boundary.get(i+1).subtract(boundary.get(i)));
-            // add in expansion to date.
-            dist = dist.add(expansion.get(i));
-        }
-        if (dist.compareTo(newSize) >= 0) return; // no expansion needed
-        // figure out how much expansion is needed...
-        Fraction inc = newSize.subtract(dist).divide
-            (Fraction.valueOf(boundIndex[1]-boundIndex[0]));
-        // ... and add it into the expansion list
-        for (int i=boundIndex[0]; i<boundIndex[1]; i++)
-            expansion.set(i, expansion.get(i).add(inc));
-        // okay, we've done the necessary expansion, we're done!
-        return;
-    }
-    private static Integer[] findNearest(List<Fraction> boundary, Fraction dancerMin, Fraction dancerMax) {
-        Integer[] result = new Integer[2];
-        
-        int bottom = Collections.binarySearch(boundary, dancerMin);
-        if (bottom>=0) result[0]=bottom;
-        else if (bottom==-1) result[0]=null; // past bottom shared edge.
-        else result[0]=-bottom-2;
-        
-        int top = Collections.binarySearch(boundary, dancerMax);
-        if (top>=0) result[1]=top;
-        else if (top==(-boundary.size()-1)) result[1]=null; // past top shared edge.
-        else result[1]=-top-1;
-        
-        return result;
     }
 
     /*-----------------------------------------------------------------------*/
@@ -433,6 +326,56 @@ public class FormationMapper {
      * individual {@link FormationPiece} objects.)  We also resolve
      * collisions to right or left hands, depending on whether the
      * pass-left flag is set for the {@link Position}s involved.
+     * @doc.test Triangle point breathes to center of the base:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> f2 = new Formation(Tools.m(
+     *    >         Tools.p(StandardDancer.COUPLE_2_BOY, Position.getGrid(1,-1,"n")),
+     *    >         Tools.p(StandardDancer.COUPLE_2_GIRL, Position.getGrid(3,-1,"n"))))
+     *  net.cscott.sdr.calls.Formation@94e4f4[
+     *    location={COUPLE 2 BOY=1,-1,n, COUPLE 2 GIRL=3,-1,n}
+     *    selected=[COUPLE 2 BOY, COUPLE 2 GIRL]
+     *  ]
+     *  js> f2.toStringDiagram()
+     *   2B^  2G^
+     *  js> fp2 = new FormationMapper.FormationPiece(f2, FormationList.RH_MINIWAVE); undefined
+     *  js> // point on far side
+     *  js> f1 = new Formation(Tools.m(
+     *    >         Tools.p(StandardDancer.COUPLE_1_BOY, Position.getGrid(3,1,"e"))))
+     *  net.cscott.sdr.calls.Formation@c028cc[
+     *    location={COUPLE 1 BOY=3,1,e}
+     *    selected=[COUPLE 1 BOY]
+     *  ]
+     *  js> fp1 = new FormationMapper.FormationPiece(f1, FormationList.SINGLE_DANCER); undefined
+     *  js> FormationMapper.breathe(Tools.l(fp1, fp2)).toStringDiagram()
+     *      ^
+     *  
+     *     ^    v
+     *  js> // now just slightly off-center
+     *  js> f1 = new Formation(Tools.m(
+     *    >         Tools.p(StandardDancer.COUPLE_1_BOY, Position.getGrid(1,1,"e")
+     *    >                                    .forwardStep(Fraction.ONE_HALF, false))))
+     *  net.cscott.sdr.calls.Formation@c028cc[
+     *    location={COUPLE 1 BOY=1 1/2,1,e}
+     *    selected=[COUPLE 1 BOY]
+     *  ]
+     *  js> fp1 = new FormationMapper.FormationPiece(f1, FormationList.SINGLE_DANCER); undefined
+     *  js> FormationMapper.breathe(Tools.l(fp1, fp2)).toStringDiagram()
+     *      ^
+     *  
+     *     ^    v
+     *  js> // point butting up against centerline
+     *  js> // NOTE doesn't float to center.  Is this correct?
+     *  js> f1 = new Formation(Tools.m(
+     *    >         Tools.p(StandardDancer.COUPLE_1_BOY, Position.getGrid(1,1,"e"))))
+     *  net.cscott.sdr.calls.Formation@efae3b[
+     *    location={COUPLE 1 BOY=1,1,e}
+     *    selected=[COUPLE 1 BOY]
+     *  ]
+     *  js> fp1 = new FormationMapper.FormationPiece(f1, FormationList.SINGLE_DANCER); undefined
+     *  js> FormationMapper.breathe(Tools.l(fp1, fp2)).toStringDiagram()
+     *     ^
+     *  
+     *     ^    v
      */
     public static Formation breathe(List<FormationPiece> pieces) {
         // Locate collisions and resolve them to miniwaves.
@@ -440,65 +383,125 @@ public class FormationMapper {
         // Trim boundaries to resolve overlaps
         List<Box> inputBounds = trimOverlap(pieces);
 	// Find and sort boundaries of component formations.
-        TreeSet<Fraction> xBoundSet = new TreeSet<Fraction>();
-        TreeSet<Fraction> yBoundSet = new TreeSet<Fraction>();
-        for (Box bounds: inputBounds) {
-            xBoundSet.addAll(l(bounds.ll.x, bounds.ur.x));
-            yBoundSet.addAll(l(bounds.ll.y, bounds.ur.y));
+        Axis x = new Axis(), y = new Axis();
+        for (int i=0; i<pieces.size(); i++) {
+            FormationPiece fp = pieces.get(i);
+            Box inBound = inputBounds.get(i);
+            Box outBound = fp.output.bounds();
+            x.bounds.put(inBound.ll.x, Fraction.ZERO);
+            x.bounds.put(inBound.ur.x, Fraction.ZERO);
+            y.bounds.put(inBound.ll.y, Fraction.ZERO);
+            y.bounds.put(inBound.ur.y, Fraction.ZERO);
+            x.addBit(inBound.ll.x, inBound.ur.x, outBound.width());
+            y.addBit(inBound.ll.y, inBound.ur.y, outBound.height());
         }
         // make sure there's an entry for the centerline, even if no dancer
         // is adjacent.
-        xBoundSet.add(Fraction.ZERO); yBoundSet.add(Fraction.ZERO);
-        List<Fraction> xBound = new ArrayList<Fraction>(xBoundSet);
-        List<Fraction> yBound = new ArrayList<Fraction>(yBoundSet);
-        // initalize 'expansion' list so that there is 0 space between
-        // bounds.
-        // Note that expansion occurs *between* elements of the original
-        // boundary list, so it is 1 element shorter than the boundary list.
-        // expansion[0] is the expansion between boundary[0] and boundary[1].
-        List<Fraction> xExpand = new ArrayList<Fraction>(xBound.size()-1);
-        List<Fraction> yExpand = new ArrayList<Fraction>(yBound.size()-1);
-        for (int i=0; i<xBound.size()-1; i++)
-            xExpand.add(xBound.get(i+1).subtract(xBound.get(i)).negate());
-        for (int i=0; i<yBound.size()-1; i++)
-            yExpand.add(yBound.get(i+1).subtract(yBound.get(i)).negate());
-
-        // now expand bounds so that they are just big enough for the
-        // appropriate output formation.  Work from center out.
-        MultiMap<Fraction,Integer> xCenters =
-            new GenericMultiMap<Fraction,Integer>
-                (Factories.<Fraction,Collection<Integer>>treeMapFactory(),
-                 Factories.<Integer>arrayListFactory());
-        MultiMap<Fraction,Integer> yCenters =
-            new GenericMultiMap<Fraction,Integer>
-                (Factories.<Fraction,Collection<Integer>>treeMapFactory(),
-		 Factories.<Integer>arrayListFactory());
-        // sort input formations by absolute x and y
-        for (int i=0; i<pieces.size(); i++) {
-            Point center = inputBounds.get(i).center();
-            xCenters.add(center.x.abs(), i);
-            yCenters.add(center.y.abs(), i);
-        }
-        // expand the x bounds
-        for (Map.Entry<Fraction,Integer> me : xCenters.entrySet()) {
-            FormationPiece fp = pieces.get(me.getValue());
-            Box bounds = inputBounds.get(me.getValue());
-            expand(xExpand, xBound, bounds.ll.x, bounds.ur.x,
-                   fp.output.bounds().width());
-        }
-        // expand the y bounds
-        for (Map.Entry<Fraction,Integer> me : yCenters.entrySet()) {
-            FormationPiece fp = pieces.get(me.getValue());
-            Box bounds = inputBounds.get(me.getValue());
-            expand(yExpand, yBound, bounds.ll.y, bounds.ur.y,
-                   fp.output.bounds().height());
+        x.bounds.put(Fraction.ZERO, Fraction.ZERO);
+        y.bounds.put(Fraction.ZERO, Fraction.ZERO);
+        // okay, now expand our formations, until all our constraints are met
+        for (Axis axis: l(x, y)) {
+            for (boolean isPositive : l(true, false)) {
+                NavigableMap<Fraction,Fraction> bound =
+                    isPositive ? axis.bounds : axis.bounds.descendingMap();
+                boolean madeAdjustment;
+                do {
+                    madeAdjustment = false;
+                    Comparator<? super Fraction> c = bound.comparator();
+                    if (c==null) c = Default.<Fraction>comparator();
+                    // Constraint 1: Boundaries need to be strictly increasing
+                    Fraction last=Fraction.ZERO;
+                    for (Fraction f=Fraction.ZERO;f!=null;f=bound.higherKey(f)){
+                        // if this key isn't at least as large as the last,
+                        // make it equal.
+                        assert bound.containsKey(f);
+                        if (c.compare(last, bound.get(f)) > 0) {
+                            bound.put(f, last);
+                            madeAdjustment = true;
+                        }
+                        assert c.compare(last, bound.get(f)) <= 0;
+                        last = bound.get(f);
+                    }
+                    // Constraint 2: Increase outer boundary as little as
+                    // possible to fit formation (outer-inner >= size)
+                    for (Bit b : axis.bits) {
+                        Fraction curSize =
+                            bound.get(b.end).subtract(bound.get(b.start));
+                        if (b.size.compareTo(curSize) > 0) {
+                            // increase the 'higher' edge.
+                            Fraction outer = isPositive ? b.end : b.start;
+                            // skip this bit if it's on the wrong side of zero.
+                            if (c.compare(Fraction.ZERO, outer) >= 0)
+                                continue;
+                            // okay, adjust it
+                            Fraction amt = b.size.subtract(curSize);
+                            if (!isPositive) amt = amt.negate();
+                            bound.put(outer, bound.get(outer).add(amt));
+                            madeAdjustment = true;
+                        }
+                    }
+                    // Symmetry constraint: moving from edges in, gaps should
+                    // be equal.
+                    for (Bit b : axis.bits) {
+                        Fraction lastInner, lastOuter;
+                        if (isPositive) {
+                            lastInner = b.start; lastOuter = b.end;
+                            if (lastOuter.compareTo(Fraction.ZERO) <= 0)
+                                continue;
+                        } else {
+                            lastInner = b.end; lastOuter = b.start;
+                            if (lastOuter.compareTo(Fraction.ZERO) >= 0)
+                                continue;
+                        }
+                        while(true) {
+                            Fraction inner = bound.higherKey(lastInner);
+                            Fraction outer = bound.lowerKey(lastOuter);
+                            if (c.compare(inner, outer) >= 0) break; // done.
+                            // okay, compare size of inner gap (inner-lastInner)
+                            // to outer gap (lastOuter-outer).  We're going
+                            // to expand the outside edge of the smaller gap
+                            // "just enough" to make them equal
+                            // (note: if !isPositive, innerSize & outSize will
+                            //  both be negative)
+                            Fraction innerSize =
+				bound.get(inner).subtract(bound.get(lastInner));
+                            Fraction outerSize =
+				bound.get(lastOuter).subtract(bound.get(outer));
+                            Fraction adjAmt = outerSize.subtract(innerSize);
+                            int cc = adjAmt.compareTo(Fraction.ZERO);
+                            if (!isPositive) cc=-cc;
+                            //XXX: i'm not certain of the methodology here.
+			    //     we can adjust either the inner or outer
+			    //     gap, how do we know which?  we'll adjust
+			    //     both; hopefully that's the right thing.
+                            if (cc > 0) {
+                                // inner gap is smaller; adjust pos of 'inner'
+                                bound.put(inner, bound.get(inner)
+					  .add(adjAmt.divide(Fraction.TWO)));
+                                bound.put(outer, bound.get(outer)
+					  .add(adjAmt.divide(Fraction.TWO)));
+                            } else if (cc < 0) {
+                                // outer gap is smaller; adjust 'lastOuter'
+                                bound.put(lastOuter, bound.get(lastOuter)
+					.subtract(adjAmt.divide(Fraction.TWO)));
+                                bound.put(lastInner, bound.get(lastInner)
+					.subtract(adjAmt.divide(Fraction.TWO)));
+                            }
+                            lastInner = inner; lastOuter = outer;
+                        }
+                    }
+                } while (madeAdjustment);
+            }
         }
         // assemble meta formation.
         Map<Dancer,Position> nf = new LinkedHashMap<Dancer,Position>();
         for (int i=0; i<pieces.size(); i++) {
             FormationPiece fp = pieces.get(i);
             Box origBounds = inputBounds.get(i);
-            Box newBounds = warp(xExpand, yExpand, xBound, yBound, origBounds);
+            Box newBounds = new Box(new Point(x.bounds.get(origBounds.ll.x),
+                                              y.bounds.get(origBounds.ll.y)),
+                                    new Point(x.bounds.get(origBounds.ur.x),
+                                              y.bounds.get(origBounds.ur.y)));
             Point newCenter = newBounds.center();
             // translate the output formation to this center.
             for (Dancer d: fp.output.dancers()) {
@@ -509,6 +512,44 @@ public class FormationMapper {
             }
         }
         return new Formation(nf);
+    }
+    /** Abstract representation of one dimension of a formation, used
+     * for the expansion algorithm. */
+    private static class Bit {
+        /** Original boundary corresponding to the inner border of the
+         *  formation. */
+        final Fraction start;
+        /** Original boundary corresponding to the outer border of the
+         *  formation. */
+        final Fraction end;
+        /** Minimum size needed for this formation piece. */
+        final Fraction size;
+        public Bit(Fraction start, Fraction end, Fraction size) {
+            this.start = start;
+            this.end = end;
+            this.size = size;
+        }
+    }
+    /** State associated with the x or y axis; since we expand each axis
+     * separately, it's nice to abstract away exactly which one we're dealing
+     * with. */
+    private static class Axis {
+        final TreeMap<Fraction,Fraction> bounds =
+            new TreeMap<Fraction,Fraction>();
+        final List<Bit> bits =
+            new ArrayList<Bit>();
+        public Axis() {}
+        void addBit(Fraction start, Fraction end, Fraction size) {
+            // if this bit straddles zero, add two bits of half the size
+            if ((start.compareTo(Fraction.ZERO) >= 0) !=
+                (end.compareTo(Fraction.ZERO) > 0) ) {
+                addBit(start, Fraction.ZERO, size.divide(Fraction.TWO));
+                addBit(Fraction.ZERO, end, size.divide(Fraction.TWO));
+            } else {
+                // otherwise, just add the bit
+                bits.add(new Bit(start, end, size));
+            }
+        }
     }
     /** Locate collisions and resolve them to miniwaves. */
     private static List<FormationPiece> resolveCollisions(List<FormationPiece>
@@ -611,7 +652,7 @@ public class FormationMapper {
      * in the {@link FormationPiece}s.
      */
     private static List<Box> trimOverlap(List<FormationPiece> pieces) {
-        // stub this out for now
+        // XXX: stub this out for now
         List<Box> result = new ArrayList<Box>(pieces.size());
         for (FormationPiece fp: pieces)
             result.add(fp.input.bounds());
