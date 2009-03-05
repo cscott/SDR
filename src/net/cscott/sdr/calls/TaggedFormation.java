@@ -102,10 +102,8 @@ public class TaggedFormation extends Formation {
     }
     public String toString() {
 	// convert tags map to string in order by dancer
-	List<Dancer> dl = new ArrayList<Dancer>(dancers());
-	Collections.sort(dl, this.dancerComparator());
 	StringBuilder sb = new StringBuilder("{");
-	for (Dancer d: dl) {
+	for (Dancer d: this.sortedDancers()) {
 	    Collection<Tag> t = tags.getValues(d);
 	    if (t.size()==0) continue;
 	    if (sb.length() > 1) sb.append(", ");

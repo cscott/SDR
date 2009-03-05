@@ -42,12 +42,11 @@ public class FormationMatch {
 
     /** Pretty-print a {@link FormationMatch}. */
     public String toString() {
-	List<Dancer> phantoms = new ArrayList<Dancer>(meta.dancers());
-	// sort the phantoms to ensure a consistent string representation
-        Collections.sort(phantoms, meta.dancerComparator());
+        // sort the phantoms to ensure a consistent string representation
+	List<Dancer> phantoms = meta.sortedDancers();
         // now map phantoms to 'AA', 'BB', etc.
         Map<Dancer,String> metaDancerNames =
-            new HashMap<Dancer,String>(meta.dancers().size());
+            new HashMap<Dancer,String>(phantoms.size());
         char tag='A';
         for (Dancer d: phantoms) {
             metaDancerNames.put(d, new String(new char[] { tag, tag }));
@@ -66,10 +65,8 @@ public class FormationMatch {
                       ("   ", Formation.dancerNames));
             sb.append("\n");
             // inclue tags for tagged dancers
-            List<Dancer> sortedDancers = new ArrayList<Dancer>(tf.dancers());
-            Collections.sort(sortedDancers, tf.dancerComparator());
             boolean atLeastOne=false;
-            for (Dancer dd: sortedDancers) {
+            for (Dancer dd: tf.sortedDancers()) {
                 List<Tag> tags = new ArrayList<Tag>(tf.tags(dd));
                 Collections.sort(tags);
                 if (tags.isEmpty()) continue;

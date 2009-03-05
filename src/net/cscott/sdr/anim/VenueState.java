@@ -199,8 +199,7 @@ public class VenueState extends CameraGameState {
 		FormationList.PROMENADE,
 		FormationList.THAR,
 	    }) {
-	    List<Dancer> ld = new ArrayList<Dancer>(ff.dancers());
-	    Collections.sort(ld, ff.dancerComparator());
+	    List<Dancer> ld = ff.sortedDancers();
 	    for (AnimDancer ad: dancers) {
 		Position p = ff.location(ld.get(ad.dancer.ordinal()));
 		ad.addPosition(Fraction.valueOf(time), p);

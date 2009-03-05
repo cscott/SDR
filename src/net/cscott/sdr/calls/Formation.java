@@ -54,8 +54,8 @@ public class Formation {
      *  Create a formation containing only the sides from a squared set:
      *  js> importPackage(java.util)
      *  js> f = Formation.SQUARED_SET ; undefined
-     *  js> sides = [d for each (d in Iterator(f.dancers())) if (d.isSide())]
-     *  COUPLE 2 BOY,COUPLE 2 GIRL,COUPLE 4 BOY,COUPLE 4 GIRL
+     *  js> sides = [d for each (d in Iterator(f.sortedDancers())) if (d.isSide())]
+     *  COUPLE 4 BOY,COUPLE 2 GIRL,COUPLE 4 GIRL,COUPLE 2 BOY
      *  js> f2 = f.select(Arrays.asList(sides)).onlySelected()
      *  net.cscott.sdr.calls.Formation@4fce71[
      *    location={COUPLE 4 BOY=-3,1,e, COUPLE 2 GIRL=3,1,w, COUPLE 4 GIRL=-3,-1,e, COUPLE 2 BOY=3,-1,w}
@@ -78,10 +78,10 @@ public class Formation {
      *  the expected results:
      *  js> importPackage(java.util)
      *  js> f = Formation.SQUARED_SET ; undefined
-     *  js> heads = [d for each (d in Iterator(f.dancers())) if (d.isHead())]
-     *  COUPLE 1 BOY,COUPLE 1 GIRL,COUPLE 3 BOY,COUPLE 3 GIRL
-     *  js> sides = [d for each (d in Iterator(f.dancers())) if (d.isSide())]
-     *  COUPLE 2 BOY,COUPLE 2 GIRL,COUPLE 4 BOY,COUPLE 4 GIRL
+     *  js> heads = [d for each (d in Iterator(f.sortedDancers())) if (d.isHead())]
+     *  COUPLE 3 GIRL,COUPLE 3 BOY,COUPLE 1 BOY,COUPLE 1 GIRL
+     *  js> sides = [d for each (d in Iterator(f.sortedDancers())) if (d.isSide())]
+     *  COUPLE 4 BOY,COUPLE 2 GIRL,COUPLE 4 GIRL,COUPLE 2 BOY
      *  js> f2 = f.select(Arrays.asList(sides)); undefined
      *  js> [f2.isSelected(d) for each (d in sides)]
      *  true,true,true,true
@@ -149,8 +149,8 @@ public class Formation {
      * @doc.test
      *  js> importPackage(java.util)
      *  js> f = Formation.SQUARED_SET ; undefined
-     *  js> heads = [d for each (d in Iterator(f.dancers())) if (d.isHead())]
-     *  COUPLE 1 BOY,COUPLE 1 GIRL,COUPLE 3 BOY,COUPLE 3 GIRL
+     *  js> heads = [d for each (d in Iterator(f.sortedDancers())) if (d.isHead())]
+     *  COUPLE 3 GIRL,COUPLE 3 BOY,COUPLE 1 BOY,COUPLE 1 GIRL
      *  js> f2 = f.select(Arrays.asList(heads))
      *  net.cscott.sdr.calls.Formation@12a0f6c[
      *    location={COUPLE 3 GIRL=-1,3,s, COUPLE 3 BOY=1,3,s, COUPLE 4 BOY=-3,1,e, COUPLE 2 GIRL=3,1,w, COUPLE 4 GIRL=-3,-1,e, COUPLE 2 BOY=3,-1,w, COUPLE 1 BOY=-1,-3,n, COUPLE 1 GIRL=1,-3,n}
@@ -254,6 +254,13 @@ public class Formation {
             }
         };
     }
+    /** Return the dancers of {@link #dancers()}, in the order given by
+     * {@link #dancerComparator()}. */
+    public List<Dancer> sortedDancers() {
+        List<Dancer> result = new ArrayList<Dancer>(this.dancers());
+        Collections.sort(result, this.dancerComparator());
+        return Collections.unmodifiableList(result);
+    }
     // utility functions.
     @Override
     public boolean equals(Object o) {
@@ -328,7 +335,7 @@ public class Formation {
     public String toStringDiagram(String prefix,
                                   Map<Dancer,String> dancerNames) {
         GridString gs = new GridString(prefix);
-        for (Dancer d : dancers()) {
+        for (Dancer d : sortedDancers()) {
             Position p = location(d);
             int x = Math.round(p.x.multiply(Fraction.valueOf(5,2)).floatValue());
             int y = Math.round(p.y.floatValue());

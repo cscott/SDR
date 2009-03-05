@@ -40,9 +40,9 @@ public class FormationMapper {
      *  js> function xofy(meta, f) {
      *    >   var i=0
      *    >   var m=new java.util.LinkedHashMap()
-     *    >   for (d in Iterator(meta.dancers())) {
+     *    >   for (d in Iterator(meta.sortedDancers())) {
      *    >     var mm=new java.util.LinkedHashMap()
-     *    >     for (dd in Iterator(f.dancers())) {
+     *    >     for (dd in Iterator(f.sortedDancers())) {
      *    >       mm.put(dd, StandardDancer.values()[i++])
      *    >     }
      *    >     m.put(d, new Formation(f, mm))
@@ -58,7 +58,7 @@ public class FormationMapper {
      *  3B^  3G^
      *  4B^  4G^
      *  js> FormationMapper.insert(meta, m).toStringDiagram()
-     *  2B^  2G^  1Gv  1Bv  4B^  4G^  3Gv  3Bv
+     *  1B^  1G^  2Gv  2Bv  3B^  3G^  4Gv  4Bv
      *  js> m = xofy(meta, FormationList.TANDEM); undefined
      *  1B^
      *  
@@ -73,9 +73,9 @@ public class FormationMapper {
      *  
      *  4G^
      *  js> FormationMapper.insert(meta, m).toStringDiagram()
-     *  2B^  1Gv  4B^  3Gv
+     *  1B^  2Gv  3B^  4Gv
      *  
-     *  2G^  1Bv  4G^  3Bv
+     *  1G^  2Bv  3G^  4Bv
      *  js> meta = FormationList.RH_DIAMOND ; meta.toStringDiagram("|", Formation.dancerNames)
      *  |  >
      *  |

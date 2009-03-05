@@ -438,9 +438,7 @@ public abstract class FormationList {
     private static enum WhetherTagger { AUTO_TAGS, NO_AUTO_TAGS; }
     private static TaggedFormation addTags(final String name, final Formation f,
             WhetherTagger wt, NumAndTags... tags) {
-        List<Dancer> dancers = new ArrayList<Dancer>(f.dancers());
-        // sort them left to right, top to bottom.
-        Collections.sort(dancers, f.dancerComparator());
+        List<Dancer> dancers = f.sortedDancers();
         MultiMap<Dancer,Tag> tm = new GenericMultiMap<Dancer,Tag>
             (Factories.enumSetFactory(Tag.class));
         // add existing tags
