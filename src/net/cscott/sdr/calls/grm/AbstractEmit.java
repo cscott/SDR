@@ -11,16 +11,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.cscott.jutil.Factories;
-import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
+import static net.cscott.sdr.util.Tools.mml; //listmultimap constructor
 
 public class AbstractEmit extends ToStringVisitor {
     // collect all rules with the same LHS
     static MultiMap<String,RuleAndAction> collectLHS(List<RuleAndAction> l) {
-        MultiMap<String,RuleAndAction> mm = 
-            new GenericMultiMap<String,RuleAndAction>
-            (Factories.<RuleAndAction>arrayListFactory());
+        MultiMap<String,RuleAndAction> mm = mml();
         for (RuleAndAction ra : l)
             mm.add(ra.rule.lhs, ra);
         return mm;
