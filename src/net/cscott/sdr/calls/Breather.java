@@ -22,7 +22,7 @@ import static net.cscott.sdr.util.Tools.p;//pair constructor
 import static net.cscott.sdr.util.Tools.l;//list constructor
 
 /**
- * The {@link FormationMapper} class contains methods to reassemble and
+ * The {@link Breather} class contains methods to reassemble and
  * breathe formations.
  *
  * <p>The {@link #insert(Formation,Map) insert()} method pushes
@@ -57,10 +57,10 @@ import static net.cscott.sdr.util.Tools.l;//list constructor
  * relocated so that they are centered between their new boundaries.
  *
  * @author C. Scott Ananian
- * @version $Id: FormationMapper.java,v 1.10 2006-10-30 22:09:29 cananian Exp $
+ * @version $Id: Breather.java,v 1.10 2006-10-30 22:09:29 cananian Exp $
  */
-public class FormationMapper {
-    
+public class Breather {
+
     /**
      * Insert formations into a meta-formation.  This reassembles the
      * formation after we've decomposed it into (say) boxes to do a
@@ -88,7 +88,7 @@ public class FormationMapper {
      *  2B^  2G^
      *  3B^  3G^
      *  4B^  4G^
-     *  js> FormationMapper.insert(meta, m).toStringDiagram()
+     *  js> Breather.insert(meta, m).toStringDiagram()
      *  1B^  1G^  2Gv  2Bv  3B^  3G^  4Gv  4Bv
      *  js> m = xofy(meta, FormationList.TANDEM); undefined
      *  1B^
@@ -103,7 +103,7 @@ public class FormationMapper {
      *  4B^
      *  
      *  4G^
-     *  js> FormationMapper.insert(meta, m).toStringDiagram()
+     *  js> Breather.insert(meta, m).toStringDiagram()
      *  1B^  2Gv  3B^  4Gv
      *  
      *  1G^  2Bv  3G^  4Bv
@@ -128,7 +128,7 @@ public class FormationMapper {
      *  4B^
      *  
      *  4G^
-     *  js> FormationMapper.insert(meta, m).toStringDiagram()
+     *  js> Breather.insert(meta, m).toStringDiagram()
      *  1G>  1B>
      *  
      *  2B^  3Gv
@@ -151,7 +151,7 @@ public class FormationMapper {
     }
 
     /*-----------------------------------------------------------------------*/
-    
+
     public static class FormationPiece {
         /** Input formation piece. The original formation is a simple
          * superposition of these. */
@@ -211,7 +211,7 @@ public class FormationMapper {
      *  
      *  
      *  v    v
-     *  js> FormationMapper.breathe(f).toStringDiagram()
+     *  js> Breather.breathe(f).toStringDiagram()
      *  ^    ^
      *  
      *  v    v
@@ -227,7 +227,7 @@ public class FormationMapper {
      *  v    v
      *  ^    ^
      *  js> // EXPECT FAIL
-     *  js> FormationMapper.breathe(f).toStringDiagram()
+     *  js> Breather.breathe(f).toStringDiagram()
      *  v    v
      *  
      *  ^    ^
@@ -249,7 +249,7 @@ public class FormationMapper {
      *  
      *  
      *    v
-     *  js> FormationMapper.breathe(f).toStringDiagram()
+     *  js> Breather.breathe(f).toStringDiagram()
      *    ^
      *  
      *  ^    v
@@ -270,7 +270,7 @@ public class FormationMapper {
      *  ^    v
      *    ^
      *  js> // EXPECT FAIL
-     *  js> FormationMapper.breathe(f).toStringDiagram()
+     *  js> Breather.breathe(f).toStringDiagram()
      *    v
      *  
      *  ^    v
@@ -290,7 +290,7 @@ public class FormationMapper {
      *    selected=[<phantom@7f>, <phantom@7e>]
      *    tags={<phantom@7f>=TRAILER, <phantom@7e>=TRAILER}
      *  ]
-     *  js> FormationMapper.breathe(f).toStringDiagram()
+     *  js> Breather.breathe(f).toStringDiagram()
      *  ^    v
      * @doc.test Facing couples step forward with a left-shoulder pass;
      *  resolve collision and breathe.
@@ -302,7 +302,7 @@ public class FormationMapper {
      *  js> for (d in Iterator(f.dancers())) {
      *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE, false).addFlags(Position.Flag.PASS_LEFT));
      *    > }; undefined
-     *  js> FormationMapper.breathe(f).toStringDiagram()
+     *  js> Breather.breathe(f).toStringDiagram()
      *  v    ^    v    ^
      */
     public static Formation breathe(Formation f) {
@@ -337,7 +337,7 @@ public class FormationMapper {
      *  ]
      *  js> f2.toStringDiagram()
      *   2B^  2G^
-     *  js> fp2 = new FormationMapper.FormationPiece(f2, FormationList.RH_MINIWAVE); undefined
+     *  js> fp2 = new Breather.FormationPiece(f2, FormationList.RH_MINIWAVE); undefined
      *  js> // point on far side
      *  js> f1 = new Formation(Tools.m(
      *    >         Tools.p(StandardDancer.COUPLE_1_BOY, Position.getGrid(3,1,"e"))))
@@ -345,8 +345,8 @@ public class FormationMapper {
      *    location={COUPLE 1 BOY=3,1,e}
      *    selected=[COUPLE 1 BOY]
      *  ]
-     *  js> fp1 = new FormationMapper.FormationPiece(f1, FormationList.SINGLE_DANCER); undefined
-     *  js> FormationMapper.breathe(Tools.l(fp1, fp2)).toStringDiagram()
+     *  js> fp1 = new Breather.FormationPiece(f1, FormationList.SINGLE_DANCER); undefined
+     *  js> Breather.breathe(Tools.l(fp1, fp2)).toStringDiagram()
      *      ^
      *  
      *     ^    v
@@ -358,8 +358,8 @@ public class FormationMapper {
      *    location={COUPLE 1 BOY=1 1/2,1,e}
      *    selected=[COUPLE 1 BOY]
      *  ]
-     *  js> fp1 = new FormationMapper.FormationPiece(f1, FormationList.SINGLE_DANCER); undefined
-     *  js> FormationMapper.breathe(Tools.l(fp1, fp2)).toStringDiagram()
+     *  js> fp1 = new Breather.FormationPiece(f1, FormationList.SINGLE_DANCER); undefined
+     *  js> Breather.breathe(Tools.l(fp1, fp2)).toStringDiagram()
      *      ^
      *  
      *     ^    v
@@ -371,8 +371,8 @@ public class FormationMapper {
      *    location={COUPLE 1 BOY=1,1,e}
      *    selected=[COUPLE 1 BOY]
      *  ]
-     *  js> fp1 = new FormationMapper.FormationPiece(f1, FormationList.SINGLE_DANCER); undefined
-     *  js> FormationMapper.breathe(Tools.l(fp1, fp2)).toStringDiagram()
+     *  js> fp1 = new Breather.FormationPiece(f1, FormationList.SINGLE_DANCER); undefined
+     *  js> Breather.breathe(Tools.l(fp1, fp2)).toStringDiagram()
      *     ^
      *  
      *     ^    v

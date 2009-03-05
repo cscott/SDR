@@ -25,7 +25,7 @@ import net.cscott.sdr.util.Fraction;
  *  Diamonds are a special case.  There should be "expanded" diamonds and
  *  "compressed" diamonds.  (Also the case for quarter tags?)
  *  js> for (f in Iterator(FormationList.all)) {
- *    >   if (!FormationMapper.breathe(f).equals(f)) {
+ *    >   if (!Breather.breathe(f).equals(f)) {
  *    >     print("Unbreathed formation: "+f.getName());
  *    >   }
  *    > }
@@ -424,7 +424,7 @@ public abstract class FormationList {
             }
             sub.put(d, new Formation(m));
         }
-        Formation result = FormationMapper.insert(x,sub);
+        Formation result = Breather.insert(x,sub);
         // Transfer tags from formation y.
         return new TaggedFormation(result, tags);
     }

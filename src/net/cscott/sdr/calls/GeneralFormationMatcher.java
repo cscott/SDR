@@ -2,7 +2,7 @@ package net.cscott.sdr.calls;
 
 import java.util.*;
 
-import net.cscott.sdr.calls.FormationMapper.FormationPiece;
+import net.cscott.sdr.calls.Breather.FormationPiece;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.util.Fraction;
@@ -311,7 +311,7 @@ public abstract class GeneralFormationMatcher {
         // the canonical formations have the input dancers, and the formations
         // are unwarped and unrotated.  The key dancers in the canonical map
         // are the phantoms from the meta formation.
-        return new FormationMatch(FormationMapper.breathe(pieces), canonical);
+        return new FormationMatch(Breather.breathe(pieces), canonical);
     }
     private static class OneMatch {
         /** This input dancer is #1 in the goal formation. */
