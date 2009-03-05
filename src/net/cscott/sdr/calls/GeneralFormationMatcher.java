@@ -6,6 +6,8 @@ import net.cscott.sdr.calls.FormationMapper.FormationPiece;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.util.Fraction;
+import static net.cscott.sdr.util.Tools.m;
+import static net.cscott.sdr.util.Tools.p;
 import net.cscott.jutil.*;
 
 /**
@@ -283,8 +285,9 @@ public abstract class GeneralFormationMatcher {
 	    Dancer dd = new PhantomDancer();
 	    canonical.put(dd, tf);
 
-            Formation piece = input.select(tf.dancers()).onlySelected();
-	    pieces.add(new FormationPiece(piece, dd, rr));
+            Formation pieceI = input.select(tf.dancers()).onlySelected();
+            Formation pieceO = new Formation(m(p(dd, new Position(0,0,rr))));
+            pieces.add(new FormationPiece(pieceI, pieceO));
         }
         // add pieces for unmapped dancers (see spec for FormationMatch.meta)
         for (Dancer d : unmappedInputDancers) {
@@ -298,8 +301,10 @@ public abstract class GeneralFormationMatcher {
             TaggedFormation tf = new TaggedFormation
 		(new TaggedDancerInfo(d, goP));
             canonical.put(dd, tf);
-            Formation piece = input.select(tf.dancers()).onlySelected();
-            pieces.add(new FormationPiece(piece, dd, rr));
+
+            Formation pieceI = input.select(tf.dancers()).onlySelected();
+            Formation pieceO = new Formation(m(p(dd, new Position(0,0,rr))));
+            pieces.add(new FormationPiece(pieceI, pieceO));
         }
         // the components formations are the warped & rotated version.
         // the rotation in 'components' tells how much they were rotated.

@@ -1,8 +1,27 @@
 package net.cscott.sdr.calls;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
-import net.cscott.sdr.util.*;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import net.cscott.jutil.Factories;
+import net.cscott.jutil.GenericMultiMap;
+import net.cscott.jutil.MultiMap;
+import net.cscott.sdr.util.Box;
+import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.Point;
+import net.cscott.sdr.util.Tools.ListMultiMap;
+import static net.cscott.sdr.util.Tools.m;//map constructor
+import static net.cscott.sdr.util.Tools.mml;//listmultimap constructor
+import static net.cscott.sdr.util.Tools.p;//pair constructor
+import static net.cscott.sdr.util.Tools.l;//list constructor
 
 /**
  * The {@link FormationMapper} class contains methods to reassemble and
@@ -24,6 +43,20 @@ import net.cscott.sdr.util.*;
  * room for the resulting mini-wave in the center.  If the ends then
  * u-turn back and everyone extends again, the formation has to
  * squeeze in again to erase the space.</p>
+ *
+ * <h3>Theory of breathing</h3>
+ * <p>First: identify collisions.  Collided dancers are
+ * inserted into a miniwave which replaces them in the remainder of the
+ * algorithm.  Second: resolve overlaps.  Dancers which overlap have their
+ * boundaries adjusted so that they share a boundary at the midpoint of the
+ * overlap.  Order the resolution from "closest" overlapping dancers to
+ * "furthest apart" (smallest overlap), and secondarily from center out, so
+ * that extreme overlaps (ie, dancers spaced 1/4 apart) are handled sanely.
+ * Third: Sort and order the boundary coordinates, and then allocate space
+ * between boundaries so that it is "just enough" to fit the dancers between
+ * them.  If a dancer spans multiple boundary points, their allocation is
+ * divided equally between them.  Finally, the output formations are
+ * relocated so that they are centered between their new boundaries.
  *
  * @author C. Scott Ananian
  * @version $Id: FormationMapper.java,v 1.10 2006-10-30 22:09:29 cananian Exp $
@@ -107,85 +140,22 @@ public class FormationMapper {
      *  4B<  4G<
      */
     public static Formation insert(final Formation meta,
-            final Map<Dancer,Formation> components) {
-        // Rotate components to match orientations of meta dancers.
-        Map<Dancer,Formation> sub =
-            new HashMap<Dancer,Formation>(components.size());
-        for (Dancer d : meta.dancers())
-            sub.put(d, components.get(d).rotate
-                    ((ExactRotation)meta.location(d).facing));
-        // Find 'inner boundaries' of meta dancers.
-        Set<Fraction> xiB = new HashSet<Fraction>();
-        Set<Fraction> yiB = new HashSet<Fraction>();
-        for (Dancer d : meta.dancers())
-            addInner(meta.bounds(d), xiB, yiB);
-        xiB.add(Fraction.ZERO); yiB.add(Fraction.ZERO);
-        // sort boundaries.
-        List<Fraction> xBound = new ArrayList<Fraction>(xiB);
-        List<Fraction> yBound = new ArrayList<Fraction>(yiB);
-        Collections.sort(xBound); Collections.sort(yBound);
-        // for each dancer, find its boundaries & stretch to accomodate
-        // work from center out.
-        // Note that expansion occurs *between* elements of the original
-        // boundary list, so it is 1 element shorter than the boundary list.
-        // expansion[0] is the expansion between boundary[0] and boundary[1].
-        List<Fraction> xExpand = new ArrayList<Fraction>
-            (Collections.nCopies(xBound.size()-1,Fraction.ZERO));
-        List<Fraction> yExpand = new ArrayList<Fraction>
-            (Collections.nCopies(yBound.size()-1,Fraction.ZERO));
-        List<Dancer> dancers = new ArrayList<Dancer>(meta.dancers());
-        // sort dancers by absolute x
-        Collections.sort(dancers, new DancerLocComparator(meta,true,true)); 
+                                   final Map<Dancer,Formation> components) {
+        List<FormationPiece> l =
+            new ArrayList<FormationPiece>(meta.dancers().size());
         for (Dancer d : meta.dancers()) {
-            Formation f = sub.get(d);
-            Box b = meta.bounds(d);
-            expand(xExpand, xBound, b.ll.x, b.ur.x, f.bounds().width());
+            assert meta.location(d).facing.isExact();
+            l.add(new FormationPiece(meta.select(d).onlySelected(),
+                                     components.get(d),
+                                     (ExactRotation) meta.location(d).facing));
         }
-        // sort dancers by absolute y
-        Collections.sort(dancers, new DancerLocComparator(meta,false,true)); 
-        for (Dancer d : meta.dancers()) {
-            Formation f = sub.get(d);
-            Box b = meta.bounds(d);
-            expand(yExpand, yBound, b.ll.y, b.ur.y, f.bounds().height());
-        }
-        // now reassemble a new formation.
-        Map<Dancer,Position> nf = new HashMap<Dancer,Position>();
-        for (Dancer d : meta.dancers()) {
-            Formation f = sub.get(d);
-            // find the boundary this formation is going to hang off
-            Box b = meta.bounds(d);
-            Integer[] xb = findNearest(xBound, b.ll.x, b.ur.x);
-            Integer[] yb = findNearest(yBound, b.ll.y, b.ur.y);
-            place(nf, f, computeCenter(f.bounds(),
-                    warpPair(xExpand,xBound,xb[0],xb[1]),
-                    warpPair(yExpand,yBound,yb[0],yb[1])));
-        }
-        Formation result = new Formation(nf);
-        assert result.isCentered();
-        return result.recenter(); // belt & suspenders.
+        return breathe(l);
     }
-    private static class DancerLocComparator implements Comparator<Dancer> {
-        private final Formation f;
-        private final boolean isX;
-        private final boolean isAbs;
-        DancerLocComparator(Formation f, boolean isX, boolean isAbs) {
-            this.f = f; this.isX = isX; this.isAbs = isAbs;
-        }
-        public int compare(Dancer d1, Dancer d2) {
-            Position p1 = f.location(d1), p2 = f.location(d2);
-            Fraction xy1, xy2;
-            if (isX) { xy1=p1.x; xy2=p2.x; }
-            else { xy1=p1.y; xy2=p2.y; }
-            if (isAbs) { xy1=xy1.abs(); xy2=xy2.abs(); }
-            return xy1.compareTo(xy2);
-        }
-    }
-    private static Fraction[] warpPair(List<Fraction> expansion, List<Fraction> boundary, Integer low, Integer high) {
-        return new Fraction[] {
-                low==null ? null : warp(expansion, boundary, boundary.get(low)),
-                high==null ? null : warp(expansion, boundary, boundary.get(high))
-        };
-    }
+    // XXX: we're not using this at the moment; we adjust all boundaries now,
+    //      losing the idea of an "unbounded" formation.  I think this is
+    //      correct: an outside triangle should stay a triangle, even if the
+    //      point is "unbounded" on the outside.  But keeping this code here
+    //      for the moment in case this assumption is wrong.
     private static Point computeCenter(Box naturalBounds, Fraction[] x, Fraction[] y) {
         // compute the desired center of the formation.  if both bounds are
         // given, then the center is the mean.  Otherwise, align edge to the
@@ -208,13 +178,6 @@ public class FormationMapper {
         else
             cy = y[0].add(y[1]).divide(Fraction.TWO);
         return new Point(cx, cy);
-    }
-    private static void place(Map<Dancer,Position> nf, Formation f, Point center) {
-        for (Dancer d : f.dancers())
-            nf.put(d, offset(f.location(d), center));
-    }
-    private static Position offset(Position p, Point offset) {
-        return new Position(p.x.add(offset.x), p.y.add(offset.y), p.facing);
     }
     /** Compute the 'expanded' location of the given boundary value. */
     private static Fraction warp(List<Fraction> expansion,
@@ -239,6 +202,15 @@ public class FormationMapper {
                 val = val.subtract(expansion.get(i));
         }
         return val; // done!
+    }
+    private static Box warp(List<Fraction> xExpand, List<Fraction> yExpand,
+                            List<Fraction> xBound, List<Fraction> yBound,
+                            Box bounds) {
+        Point ll = new Point(warp(xExpand, xBound, bounds.ll.x),
+                             warp(yExpand, yBound, bounds.ll.y));
+        Point ur = new Point(warp(xExpand, xBound, bounds.ur.x),
+                             warp(yExpand, yBound, bounds.ur.y));
+        return new Box(ll, ur);
     }
     private static void expand(List<Fraction> expansion, List<Fraction> boundary,
                                Fraction dancerMin, Fraction dancerMax,
@@ -284,36 +256,47 @@ public class FormationMapper {
         
         return result;
     }
-    /** Add inner boundaries of the given box to the boundary sets. */
-    private static void addInner(Box b, Set<Fraction> xBounds,
-            Set<Fraction> yBounds) {
-        if (b.ll.x.compareTo(Fraction.ZERO)>0)
-            xBounds.add(b.ll.x);
-        if (b.ur.x.compareTo(Fraction.ZERO)<0)
-            xBounds.add(b.ur.x);
-        if (b.ll.y.compareTo(Fraction.ZERO)>0)
-            yBounds.add(b.ll.y);
-        if (b.ur.y.compareTo(Fraction.ZERO)<0)
-            yBounds.add(b.ur.y);
-    }
 
     /*-----------------------------------------------------------------------*/
     
     public static class FormationPiece {
-        /** Warped rotated formation. The input formation is a simple
+        /** Input formation piece. The original formation is a simple
          * superposition of these. */
-        public final Formation f;
-        /** The (typically {@link PhantomDancer Phantom}) dancer who will
-         * correspond to this in the output meta formation. */
-        public final Dancer d;
-        /** The rotation to use for this dancer in the output meta formation
-         * (typically this is the rotation of formation {@code f} from
-         * whatever the 'canonical' orientation is. */
-        public final Rotation r;
-        public FormationPiece(Formation f, Dancer d, Rotation r) {
-            this.f = f;
-            this.d = d;
-            this.r = r;
+        public final Formation input;
+        /** The formation which will correspond to {@link #input} in the output
+         * (meta) formation.  This might be a formation of a single
+         * {@link PhantomDancer Phantom}, for example.
+         * @see FormationList#SINGLE_DANCER
+         */
+        public final Formation output;
+        /**
+         * Prepare an argument to the {@link #breathe} method.
+         * @param input  Input formation piece.
+         * @param output Output formation piece.
+         * @param r
+         * The rotation to use for the output formation in the eventual
+         * result. Typically this is the rotation of formation {@link #input}
+         * from whatever the 'canonical' orientation of {@link #output} is.
+         * For example, if we are mapping single dancers to single dancers,
+         * then {@link #input} is the rotated offset result of
+         * {@link Formation#onlySelected()}, {@link #output} is
+         * {@link FormationList#SINGLE_DANCER} (which is facing north), and
+         * the rotation {@code imr} matches the rotation of the dancer in
+         * {@link #input}.
+         */
+        public FormationPiece(Formation input, Formation output, ExactRotation r) {
+            this(input, output.rotate(r));
+        }
+        public FormationPiece(Formation input, Formation output) {
+            this.input = input;
+            this.output = output;
+        }
+        @Override
+        public String toString() {
+            return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
+            .append("input", input)
+            .append("output", output)
+            .toString();
         }
     }
     /**
@@ -414,46 +397,60 @@ public class FormationMapper {
      *    selected=[<phantom@7f>, <phantom@7e>]
      *    tags={<phantom@7f>=TRAILER, <phantom@7e>=TRAILER}
      *  ]
-     *  js> // EXPECT FAIL
      *  js> FormationMapper.breathe(f).toStringDiagram()
      *  ^    v
+     * @doc.test Facing couples step forward with a left-shoulder pass;
+     *  resolve collision and breathe.
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> f = FormationList.FACING_COUPLES ; f.toStringDiagram()
+     *  v    v
+     *  
+     *  ^    ^
+     *  js> for (d in Iterator(f.dancers())) {
+     *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE, false).addFlags(Position.Flag.PASS_LEFT));
+     *    > }; undefined
+     *  js> FormationMapper.breathe(f).toStringDiagram()
+     *  v    ^    v    ^
      */
-    // XXX: add test case for left-hand collisions
     public static Formation breathe(Formation f) {
         List<FormationPiece> fpl = new ArrayList<FormationPiece>
             (f.dancers().size());
         for (Dancer d: f.dancers()) {
-            Formation nf = f.select(Collections.singleton(d)).onlySelected();
-            fpl.add(new FormationPiece(nf, d, f.location(d).facing));
+            Formation in = f.select(Collections.singleton(d)).onlySelected();
+            Position p = in.location(d);
+            p = p.relocate(Fraction.ZERO, Fraction.ZERO, p.facing);
+            Formation out = new Formation(m(p(d, p)));
+            fpl.add(new FormationPiece(in, out));
         }
         return breathe(fpl);
     }
-    /** Create canonical formation by compressing or expanding components of a given
-     * formation.  (The map giving the correspondence between dancers in
+    /**
+     * Take a set of input formation pieces and substitute the
+     * given output formation pieces for them, breathing the result
+     * together so that the formation is compact.  (The map giving the
+     * correspondence between dancers in
      * the new formation and the input formations is given by the
      * individual {@link FormationPiece} objects.)  We also resolve
      * collisions to right or left hands, depending on whether the
      * pass-left flag is set for the {@link Position}s involved.
      */
-    // XXX: compress() doesn't work for expansion yet; if you let the
-    //      beaus extend from facing couples, this function won't (yet)
-    //      expand to a proper single quarter tag.  needs a separate pass
-    //      to compute/adjust original dancer bounds so that they are
-    //      non-overlapping?  Maybe this could be the same routine that
-    //      handles "crashing to right hands" for dancers who end up on
-    //      the same spot...
     public static Formation breathe(List<FormationPiece> pieces) {
-        // Find 'inner boundaries' of component formations.
-        Set<Fraction> xiB = new HashSet<Fraction>();
-        Set<Fraction> yiB = new HashSet<Fraction>();
-        for (FormationPiece fp : pieces)
-            addInner(fp.f.bounds(), xiB, yiB);
-        xiB.add(Fraction.ZERO); yiB.add(Fraction.ZERO);
-        // sort boundaries.
-        List<Fraction> xBound = new ArrayList<Fraction>(xiB);
-        List<Fraction> yBound = new ArrayList<Fraction>(yiB);
-        Collections.sort(xBound); Collections.sort(yBound);
-        
+        // Locate collisions and resolve them to miniwaves.
+        pieces = resolveCollisions(pieces);
+        // Trim boundaries to resolve overlaps
+        List<Box> inputBounds = trimOverlap(pieces);
+	// Find and sort boundaries of component formations.
+        TreeSet<Fraction> xBoundSet = new TreeSet<Fraction>();
+        TreeSet<Fraction> yBoundSet = new TreeSet<Fraction>();
+        for (Box bounds: inputBounds) {
+            xBoundSet.addAll(l(bounds.ll.x, bounds.ur.x));
+            yBoundSet.addAll(l(bounds.ll.y, bounds.ur.y));
+        }
+        // make sure there's an entry for the centerline, even if no dancer
+        // is adjacent.
+        xBoundSet.add(Fraction.ZERO); yBoundSet.add(Fraction.ZERO);
+        List<Fraction> xBound = new ArrayList<Fraction>(xBoundSet);
+        List<Fraction> yBound = new ArrayList<Fraction>(yBoundSet);
         // initalize 'expansion' list so that there is 0 space between
         // bounds.
         // Note that expansion occurs *between* elements of the original
@@ -466,50 +463,158 @@ public class FormationMapper {
         for (int i=0; i<yBound.size()-1; i++)
             yExpand.add(yBound.get(i+1).subtract(yBound.get(i)).negate());
 
-        // now expand bounds so that they are just big enough for a single
-        // dancer.  Work from center out.
-        List<FormationPiece> fpSorted = new ArrayList<FormationPiece>(pieces);
-        // sort dancers by absolute x
-        Collections.sort(fpSorted, new FormationPieceComparator(true,true)); 
-        for (FormationPiece fp : fpSorted) {
-            Box b = fp.f.bounds();
-            expand(xExpand, xBound, b.ll.x, b.ur.x, Fraction.TWO);
+        // now expand bounds so that they are just big enough for the
+        // appropriate output formation.  Work from center out.
+        MultiMap<Fraction,Integer> xCenters =
+            new GenericMultiMap<Fraction,Integer>
+                (Factories.<Fraction,Collection<Integer>>treeMapFactory(),
+                 Factories.<Integer>arrayListFactory());
+        MultiMap<Fraction,Integer> yCenters =
+            new GenericMultiMap<Fraction,Integer>
+                (Factories.<Fraction,Collection<Integer>>treeMapFactory(),
+		 Factories.<Integer>arrayListFactory());
+        // sort input formations by absolute x and y
+        for (int i=0; i<pieces.size(); i++) {
+            Point center = inputBounds.get(i).center();
+            xCenters.add(center.x.abs(), i);
+            yCenters.add(center.y.abs(), i);
         }
-        // sort dancers by absolute y
-        Collections.sort(fpSorted, new FormationPieceComparator(false,true)); 
-        for (FormationPiece fp : fpSorted) {
-            Box b = fp.f.bounds();
-            expand(yExpand, yBound, b.ll.y, b.ur.y, Fraction.TWO);
+        // expand the x bounds
+        for (Map.Entry<Fraction,Integer> me : xCenters.entrySet()) {
+            FormationPiece fp = pieces.get(me.getValue());
+            Box bounds = inputBounds.get(me.getValue());
+            expand(xExpand, xBound, bounds.ll.x, bounds.ur.x,
+                   fp.output.bounds().width());
+        }
+        // expand the y bounds
+        for (Map.Entry<Fraction,Integer> me : yCenters.entrySet()) {
+            FormationPiece fp = pieces.get(me.getValue());
+            Box bounds = inputBounds.get(me.getValue());
+            expand(yExpand, yBound, bounds.ll.y, bounds.ur.y,
+                   fp.output.bounds().height());
         }
         // assemble meta formation.
-        Map<Dancer,Position> nf = new HashMap<Dancer,Position>();
-        Box dancerSize = new Box(new Point(Fraction.mONE,Fraction.mONE),
-                new Point(Fraction.ONE,Fraction.ONE));
-        for (FormationPiece fp : pieces) {
-            // find the boundary this piece is going to hang off
-            Box b = fp.f.bounds();
-            Integer[] xb = findNearest(xBound, b.ll.x, b.ur.x);
-            Integer[] yb = findNearest(yBound, b.ll.y, b.ur.y);
-            Point dancerLoc = computeCenter(dancerSize,
-                    warpPair(xExpand,xBound,xb[0],xb[1]),
-                    warpPair(yExpand,yBound,yb[0],yb[1]));
-            nf.put(fp.d, new Position(dancerLoc.x,dancerLoc.y,fp.r));
+        Map<Dancer,Position> nf = new LinkedHashMap<Dancer,Position>();
+        for (int i=0; i<pieces.size(); i++) {
+            FormationPiece fp = pieces.get(i);
+            Box origBounds = inputBounds.get(i);
+            Box newBounds = warp(xExpand, yExpand, xBound, yBound, origBounds);
+            Point newCenter = newBounds.center();
+            // translate the output formation to this center.
+            for (Dancer d: fp.output.dancers()) {
+                Position oldPos = fp.output.location(d);
+                nf.put(d, oldPos.relocate(oldPos.x.add(newCenter.x),
+                                          oldPos.y.add(newCenter.y),
+                                          oldPos.facing));
+            }
         }
-        Formation result = new Formation(nf);
-        return result.recenter();
+        return new Formation(nf);
     }
-    private static class FormationPieceComparator implements Comparator<FormationPiece> {
-        final boolean isX, isAbs; 
-        public FormationPieceComparator(boolean isX, boolean isAbs) {
-            this.isX = isX; this.isAbs = isAbs;
+    /** Locate collisions and resolve them to miniwaves. */
+    private static List<FormationPiece> resolveCollisions(List<FormationPiece>
+                                                          pieces) {
+        // hash to collect pieces with the same center
+        ListMultiMap<Point,FormationPiece> mm = mml();
+        for (FormationPiece fp : pieces)
+            mm.add(fp.input.bounds().center(), fp);
+        // now assemble result list of FormationPieces, merging collisions as
+        // we find them.
+        List<FormationPiece> result =
+            new ArrayList<FormationPiece>(pieces.size());
+        for (Point center: mm.keySet()) {
+            List<FormationPiece> l= mm.getValues(center);
+            switch(l.size()) {
+            case 1:
+                // no collision
+                result.add(l.get(0));
+                break;
+            case 2:
+                // collision!
+                result.add(collide(l.get(0), l.get(1)));
+                break;
+            default:
+                // illegal if more then 2 dancers collide on a spot
+                throw new BadCallException("more than two dancers colliding");
+            }
         }
-        public int compare(FormationPiece fp1, FormationPiece fp2) {
-            Point p1 = fp1.f.bounds().center(), p2=fp2.f.bounds().center();
-            Fraction xy1, xy2;
-            if (isX) { xy1=p1.x; xy2=p2.x; }
-            else { xy1=p1.y; xy2=p2.y; }
-            if (isAbs) { xy1=xy1.abs(); xy2=xy2.abs(); }
-            return xy1.compareTo(xy2);
+        return result;
+    }
+    /** Collide two formation pieces, creating a new FormationPiece
+     * with the resulting miniwave of pieces. */
+    private static FormationPiece collide(FormationPiece a, FormationPiece b) {
+        boolean passLeft = isLeft(a.input);
+        if (passLeft != isLeft(b.input))
+            throw new BadCallException("inconsistent passing shoulder");
+        Formation meta = passLeft ?
+                FormationList.LH_MINIWAVE : FormationList.RH_MINIWAVE ;
+        Dancer[] dd = meta.sortedDancers().toArray(new Dancer[2]);
+        // use rotation of a.input and b.input to determine
+        // how to rotate meta formation, such that 'a' maps to dd[0]
+        // and 'b' maps to dd[1]
+        ExactRotation[] rr = new ExactRotation[] {
+                formationFacing(a.input), formationFacing(b.input)
+        };
+        if (!rr[0].add(Fraction.ONE_HALF).equals(rr[1]))
+            throw new BadCallException("collision but not facing opposite");
+        meta = meta.rotate(rr[0].subtract(meta.location(dd[0]).facing.amount));
+        // this is a little odd; insert wants to rotate the output formations
+        // to match the facing directions in the meta formation.  But our
+        // output formations are already facing the right way, so force all
+        // the facing directions in the meta to 'north'
+        for (Dancer d : meta.dancers()) {
+            Position p = meta.location(d);
+            meta = meta.move(d, p.relocate(p.x, p.y, ExactRotation.ZERO));
         }
+        // okay, put the pieces together!
+        Formation f = insert(meta, m(p(dd[0],a.output),p(dd[1],b.output)));
+        return new FormationPiece(a/*pick one arbitrarily*/.input, f);
+    }
+    /** Check that the {@link Position.Flag#PASS_LEFT} flag is consistent
+     * on all dancers in {@code fp.input}, and return true if it is
+     * present.
+     */
+    private static boolean isLeft(Formation f) {
+        boolean sawRight = false, sawLeft = false;
+        for (Dancer d : f.dancers()) {
+            if (f.location(d).flags.contains(Position.Flag.PASS_LEFT))
+                sawLeft = true;
+            else
+                sawRight = true;
+        }
+        assert sawLeft || sawRight : "what, no dancers?";
+        if (sawLeft && sawRight)
+            throw new BadCallException("inconsistent passing shoulder");
+        return sawLeft;
+    }
+    /** Check that the facing direction of all dancers is consistent,
+     * and return that direction. */
+    private static ExactRotation formationFacing(Formation f) {
+        Rotation r = null;
+        for (Dancer d : f.dancers()) {
+            Rotation rr = f.location(d).facing;
+            if (r==null) { r = rr; continue; }
+            // swap r and rr so that r is exact if either is.
+            if (rr.isExact()) { Rotation swp=r; r=rr; rr=swp; }
+            // be generous towards inexact rotations
+            if (!r.includes(rr))
+                throw new BadCallException("inconsistent facing direction during collision");
+        }
+        assert r!=null : "what, no dancers?";
+        if (!r.isExact())
+            throw new BadCallException("colliding vague phantoms");
+        return (ExactRotation) r;
+    }
+    /**
+     * Create a list of trimmed bounding boxes <i>which do not overlap</i>
+     * from the given list of potentially-overlapping {@link FormationPiece}s.
+     * We are only concerned with the {@link FormationPiece#input} formations
+     * in the {@link FormationPiece}s.
+     */
+    private static List<Box> trimOverlap(List<FormationPiece> pieces) {
+        // stub this out for now
+        List<Box> result = new ArrayList<Box>(pieces.size());
+        for (FormationPiece fp: pieces)
+            result.add(fp.input.bounds());
+        return result;
     }
 }
