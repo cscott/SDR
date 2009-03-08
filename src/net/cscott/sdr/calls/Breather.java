@@ -3,6 +3,7 @@ package net.cscott.sdr.calls;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -226,7 +227,6 @@ public class Breather {
      *    > }; f.toStringDiagram()
      *  v    v
      *  ^    ^
-     *  js> // EXPECT FAIL
      *  js> Breather.breathe(f).toStringDiagram()
      *  v    v
      *  
@@ -269,13 +269,57 @@ public class Breather {
      *    v
      *  ^    v
      *    ^
-     *  js> // EXPECT FAIL
      *  js> Breather.breathe(f).toStringDiagram()
      *    v
      *  
      *  ^    v
      *  
      *    ^
+     * @doc.test From right-hand diamond, take a step and a half in; breathe out:
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> f = FormationList.RH_DIAMOND ; f.toStringDiagram("|", Formation.dancerNames)
+     *  |  >
+     *  |
+     *  |
+     *  |^    v
+     *  |
+     *  |
+     *  |  <
+     *  js> // XXX have to change this amount if we shrink diamonds
+     *  js> for (d in Iterator(f.tagged(TaggedFormation.Tag.POINT))) {
+     *    >   f=f.move(d,f.location(d).sideStep(Fraction.valueOf(3,2), true));
+     *    > }; f.toStringDiagram("|", Formation.dancerNames)
+     *  |  >
+     *  |
+     *  |^    v
+     *  |  <
+     *  js> Breather.breathe(f).toStringDiagram("|", Formation.dancerNames)
+     *  |  >
+     *  |
+     *  |^    v
+     *  |
+     *  |  <
+     * @doc.test From right-hand diamond, take 2 1/2 steps in; breathe out to stars:
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> f = FormationList.RH_DIAMOND ; f.toStringDiagram("|", Formation.dancerNames)
+     *  |  >
+     *  |
+     *  |
+     *  |^    v
+     *  |
+     *  |
+     *  |  <
+     *  js> // XXX have to change this amount if we shrink diamonds
+     *  js> for (d in Iterator(f.tagged(TaggedFormation.Tag.POINT))) {
+     *    >   f=f.move(d,f.location(d).sideStep(Fraction.valueOf(5,2), true));
+     *    > }; f.toStringDiagram("|", Formation.dancerNames)
+     *  |  >
+     *  |^ <  v
+     *  js> // EXPECT FAIL (we currently breathe all the way out to diamonds)
+     *  js> Breather.breathe(f).toStringDiagram("|", Formation.dancerNames)
+     *  |  >
+     *  |^    v
+     *  |  <
      * @doc.test Facing dancers step forward; resolve collision.
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
      *  js> f = FormationList.FACING_DANCERS ; f.toStringDiagram()
@@ -593,7 +637,8 @@ public class Breather {
         // how to rotate meta formation, such that 'a' maps to dd[0]
         // and 'b' maps to dd[1]
         ExactRotation[] rr = new ExactRotation[] {
-                formationFacing(a.input), formationFacing(b.input)
+                (ExactRotation) formationFacing(a.input, Fraction.ONE),
+                (ExactRotation) formationFacing(b.input, Fraction.ONE)
         };
         if (!rr[0].add(Fraction.ONE_HALF).equals(rr[1]))
             throw new BadCallException("collision but not facing opposite");
@@ -629,33 +674,231 @@ public class Breather {
     }
     /** Check that the facing direction of all dancers is consistent,
      * and return that direction. */
-    private static ExactRotation formationFacing(Formation f) {
+    private static Rotation formationFacing(Formation f, Fraction modulus){
         Rotation r = null;
+        // find "most exact" facing direction (largest modulus)
         for (Dancer d : f.dancers()) {
             Rotation rr = f.location(d).facing;
-            if (r==null) { r = rr; continue; }
-            // swap r and rr so that r is exact if either is.
-            if (rr.isExact()) { Rotation swp=r; r=rr; rr=swp; }
-            // be generous towards inexact rotations
-            if (!r.includes(rr))
-                throw new BadCallException("inconsistent facing direction during collision");
+            if (r==null || r.modulus.compareTo(rr.modulus) < 0)
+                r = rr;
         }
         assert r!=null : "what, no dancers?";
-        if (!r.isExact())
-            throw new BadCallException("colliding vague phantoms");
-        return (ExactRotation) r;
+        // normalize to the desired level of (in)exactness.
+        if (r.modulus.compareTo(modulus) < 0)
+            throw new BadCallException("formation direction is vague");
+        r = Rotation.create(r.amount, modulus);
+        // ensure all dancers are consistent with this.
+        for (Dancer d : f.dancers()) {
+            Rotation rr = f.location(d).facing;
+            if (!r.includes(rr))
+                throw new BadCallException("inconsistent facing direction");
+        }
+        return r;
     }
     /**
      * Create a list of trimmed bounding boxes <i>which do not overlap</i>
      * from the given list of potentially-overlapping {@link FormationPiece}s.
      * We are only concerned with the {@link FormationPiece#input} formations
-     * in the {@link FormationPiece}s.
+     * in the {@link FormationPiece}s.  This is a mess of heuristics and
+     * hacks.  Currently: we prefer to trim boundaries which are not shared
+     * (ie, don't break existing proper handholds), and then order by the
+     * size of the overlap, trimming smallest to largest overlap.  We also
+     * have a special "star" recognition algorithm, and don't attempt to
+     * trim edges involved in a star.  The goal is to ensure that as you move
+     * the points of a diamond inward, you never force the centers apart, until
+     * you get to the point where the points and centers are equidistant --
+     * at that point you have a star.  If you continue bringing the points
+     * in, you should really breathe out to a star (ie, still avoid breaking
+     * the centers' existing handhold), but at the moment we'll breathe out
+     * to a diamond instead: we only preserve stars if they already exist,
+     * we never make stars.
      */
+    // xxx test cases for all this
     private static List<Box> trimOverlap(List<FormationPiece> pieces) {
-        // XXX: stub this out for now
-        List<Box> result = new ArrayList<Box>(pieces.size());
-        for (FormationPiece fp: pieces)
-            result.add(fp.input.bounds());
-        return result;
+        List<Box> boundsList = new ArrayList<Box>(pieces.size());
+        List<TrimBit> trimX = new ArrayList<TrimBit>(pieces.size());
+        List<TrimBit> trimY = new ArrayList<TrimBit>(pieces.size());
+        BorderCountMap borderCountX = new BorderCountMap();
+        BorderCountMap borderCountY = new BorderCountMap();
+        for (int i=0; i<pieces.size(); i++) {
+            Box bounds = pieces.get(i).input.bounds();
+            boundsList.add(bounds);
+            trimX.add(new TrimBit(boundsList, i, bounds.center(),
+                                  true, borderCountX));
+            trimY.add(new TrimBit(boundsList, i, bounds.center(),
+                                  false, borderCountY));
+        }
+        // form all pairs
+        List<TrimBitPair> trims = new ArrayList<TrimBitPair>();
+        for (int i=0; i<pieces.size(); i++) {
+            for (int j=i+1; j<pieces.size(); j++) {
+                TrimBit aX = trimX.get(i), bX = trimX.get(j);
+                TrimBit aY = trimY.get(i), bY = trimY.get(j);
+                // special case!  recognize star, and don't try to
+                // push them apart (otherwise breathing thars gets to be a
+                // real problem!)
+                if (isStar(pieces.get(i).input, pieces.get(j).input))
+                    continue;
+                trims.add(new TrimBitPair(aX, bX, borderCountX));
+                trims.add(new TrimBitPair(aY, bY, borderCountY));
+            }
+        }
+        // sort the pairs by distance between them, closest first.
+        Collections.sort(trims);
+        // okay, now go through the pairs resolving the overlaps
+        for (TrimBitPair tbp: trims) {
+            // check that the formations actually overlap; may have already
+            // been resolved.
+            if (!tbp.a.bounds().overlaps(tbp.b.bounds())) continue;
+            // and that this dimension overlaps, in case it's been fixed
+            if (!tbp.a.overlaps(tbp.b)) continue;
+            // okay, a real problem!  Trim both sides back to the midpoint
+            // of the overlap.
+            tbp.trim();
+        }
+        // boundsList has been modified; return it now!
+        return boundsList;
+    }
+    /** Returns true if a and b are a 'star'; that is, their "left hands"
+     * or "right hands" meet at a point. Be conservative.
+     */
+    private static boolean isStar(Formation a, Formation b) {
+        Rotation aR, bR;
+        try {
+            aR = formationFacing(a, Fraction.ONE_HALF);
+            bR = formationFacing(b, Fraction.ONE_HALF);
+        } catch (BadCallException bce) {
+            return false; // inconsistent facing dirs, not a star
+        }
+        if ((!bR.add(Fraction.ONE_QUARTER).equals(aR)) &&
+            (!aR.add(Fraction.ONE_QUARTER).equals(bR)))
+            return false; // only a star if we're exactly 90 degrees off
+        HandPair aH = hands(a, aR), bH = hands(b, bR);
+        if (aH.right.equals(bH.right) || aH.right.equals(bH.left) ||
+            aH.left.equals(bH.right) || aH.left.equals(bH.left)) {
+            return true; // it's a perfect star!
+        }
+        return false;
+    }
+    private static class HandPair {
+        Point right, left;
+        HandPair(Point right, Point left) { this.right=right; this.left=left; }
+    }
+    private static HandPair hands(Formation f, Rotation facing) {
+        Box bounds = f.bounds();
+        ExactRotation er = new ExactRotation(facing.normalize().amount);
+        Point rightHand = boundaryPoint(bounds, er.add(Fraction.ONE_QUARTER));
+        Point leftHand = boundaryPoint(bounds, er.subtract(Fraction.ONE_QUARTER));
+        return new HandPair(rightHand, leftHand);
+    }
+    private static Point boundaryPoint(Box bounds, ExactRotation facing) {
+        Fraction x = facing.toX().multiply(bounds.width()).divide(Fraction.TWO);
+        Fraction y = facing.toY().multiply(bounds.height()).divide(Fraction.TWO);
+        Point center = bounds.center();
+        return new Point(center.x.add(x), center.y.add(y));
+    }
+    private static class TrimBitPair implements Comparable<TrimBitPair>{
+        final TrimBit a, b;
+        final Fraction overlap;
+        final int sharedEdges;
+        TrimBitPair(TrimBit a, TrimBit b, BorderCountMap bcm) {
+            this.a = a; this.b = b;
+            // min of the highs
+            Fraction minEnd = Collections.min(l(a.getEnd(),b.getEnd()));
+            Fraction maxStart = Collections.max(l(a.getStart(),b.getStart()));
+            // overlap is min of the highs minus max of the lows
+            this.overlap = minEnd.subtract(maxStart);
+            // now look at the borders which would be trimmed, and count
+            // how many dancers share this border exactly (try not to
+            // interfere with existing handholds)
+            this.sharedEdges = bcm.get(minEnd) + bcm.get(maxStart);
+        }
+        /** Compare pairs by (first) the number of dancers sharing the
+         * trimable edges (min first), and (second) by the amount of overlap
+         * between them (min first).
+         */
+        public int compareTo(TrimBitPair tbp) {
+            int c = this.sharedEdges - tbp.sharedEdges;
+            if (c!=0) return c;
+            c = this.overlap.compareTo(tbp.overlap);
+            return c;
+        }
+        /** Trim a pair down to the midpoint of their overlap. */
+        // XXX for potential stars, only trim down to the point at
+        //     which you have a star.
+        public void trim() {
+            // figure out which of a and b is the "low" one.
+            TrimBit lo, hi;
+            int c = a.getStart().compareTo(b.getStart());
+            if (c==0) c = a.getEnd().compareTo(b.getEnd());
+            assert c!=0: "can't trim when they're exactly overlapping!";
+            if (c < 0) { lo = a; hi = b; } else { lo = b; hi = a; }
+            // okay, now we're going to trim lo.end and hi.start to their avg
+            Fraction newEdge = lo.getEnd().add(hi.getStart())
+                .divide(Fraction.TWO);
+            lo.setEnd(newEdge);
+            hi.setStart(newEdge);
+            // ta-da!
+        }
+    }
+    private static class TrimBit {
+        /** The index of the FormationPiece corresponding to this. */
+        int idx;
+        /** Pointer to a shared copy of the bounds list. */
+        List<Box> boundsList;
+        /** Is this an X slice or a Y slice? */
+        boolean isX;
+        public Box bounds() { return boundsList.get(idx); }
+        void setBounds(Box newBounds) { boundsList.set(idx, newBounds); }
+        public Fraction getStart() {
+            return isX ? bounds().ll.x : bounds().ll.y;
+        }
+        public void setStart(Fraction f) {
+            Box oldBounds = bounds();
+            Point oldll = oldBounds.ll;
+            Point newll = isX ? new Point(f, oldll.y) : new Point(oldll.x, f);
+            setBounds(new Box(newll, oldBounds.ur));
+        }
+        public Fraction getEnd() {
+            return isX ? bounds().ur.x : bounds().ur.y;
+        }
+        public void setEnd(Fraction f) {
+            Box oldBounds = bounds();
+            Point oldur = oldBounds.ur;
+            Point newur = isX ? new Point(f, oldur.y) : new Point(oldur.x, f);
+            setBounds(new Box(oldBounds.ll, newur));
+        }
+        /** Returns true if these bits overlap on this axis; the full 2d
+         * boxes may not actually overlap. */
+        public boolean overlaps(TrimBit b) {
+            return this.getStart().compareTo(b.getEnd()) < 0 &&
+                   b.getStart().compareTo(this.getEnd()) < 0;
+        }
+        TrimBit(List<Box> boundsList, int idx, Point center, boolean isX,
+                BorderCountMap borderCount) {
+            this.boundsList = boundsList;
+            this.idx = idx;
+            this.isX = isX;
+            // xxx: only increment if this is a "hand-hold" edge, not a "nose"
+            //      edge.
+            borderCount.increment(getStart());
+            borderCount.increment(getEnd());
+        }
+        public String toString() {
+            return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+            .append("bounds", bounds())
+            .append("isX", isX)
+            .toString();
+        }
+    }
+    private static class BorderCountMap extends HashMap<Fraction,Integer> {
+            BorderCountMap() { super(); }
+            public void increment(Fraction f) {
+                this.put(f, this.get(f)+1);
+            }
+            public Integer get(Fraction f) {
+                Integer i = super.get(f);
+                return (i==null) ? Integer.valueOf(0) : i;
+            }
     }
 }

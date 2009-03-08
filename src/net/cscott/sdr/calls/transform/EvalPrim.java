@@ -163,8 +163,12 @@ import net.cscott.sdr.util.Point;
  *  3G^
  *  1B^  3Bv
  *       1Gv
- *  js> // xxx Breather.compress(f).toStringDiagram() should
- *  js> //     show proper right-hand z (but does not yet; spots are too close)
+ *  js> Breather.breathe(f).toStringDiagram() // show proper spacing
+ *  3G^
+ *  
+ *  1B^  3Bv
+ *  
+ *       1Gv
  *  js> // everyone start a trade
  *  js> p1 = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f, prim2)
  *  DancerPath[from=-1,0,n,to=0,1,e,[ROLL_RIGHT],arcCenter=0,0,time=1 1/2,pointOfRotation=FOUR_DANCERS]
