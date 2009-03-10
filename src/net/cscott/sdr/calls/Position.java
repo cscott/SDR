@@ -1,8 +1,10 @@
 package net.cscott.sdr.calls;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 import net.cscott.sdr.util.Fraction;
@@ -275,11 +277,11 @@ public class Position implements Comparable<Position> {
      *  js> importPackage(net.cscott.sdr.util)
      *  js> p = new Position(Fraction.ONE, Fraction.ZERO, Rotation.fromAbsoluteString("|"));
      *  1,0,|
-     *  js> p = p.turn(Fraction.ONE_QUARTER, true) // XXX: EXPECT FAIL
+     *  js> p = p.turn(Fraction.ONE_QUARTER, true)
      *  1,0,w
      *  js> p = new Position(Fraction.ONE, Fraction.ZERO, Rotation.fromAbsoluteString("|"));
      *  1,0,|
-     *  js> p = p.turn(Fraction.ONE_QUARTER.negate(), true) // XXX: EXPECT FAIL
+     *  js> p = p.turn(Fraction.ONE_QUARTER.negate(), true)
      *  1,0,e
      */
     public Position turn(Fraction amount, boolean faceIn) {
@@ -298,16 +300,23 @@ public class Position implements Comparable<Position> {
 	assert facing!=null : "rotation unspecified!";
 	Position p1 = new Position(x, y, facing.add(amount));
         if (!faceIn) return p1; // simple case!
-        if (!facing.isExact())
-            throw new BadCallException
-            ("face in from inexact directions not implemented");
+        if (!facing.isExact()) {
+            if (facing.modulus.compareTo(Fraction.ZERO)==0)
+                return this; // no change
+            // implement by iterating over the included ExactRotations,
+            // performing the turn, and then unioning the results.
+            List<Rotation> rl = new ArrayList<Rotation>();
+            for (ExactRotation er : facing.included())
+                rl.add(new Position(x, y, er).turn(amount, faceIn, reference)
+                        .facing);
+            return new Position(x, y, Rotation.union(rl));
+        }
         Position p2 = new Position(x, y, facing.subtract(amount));
         // don't allow in/out if facing direction toward the center
         // direction from dancer to center point
         ExactRotation awayCenter =
 	    ExactRotation.fromXY(reference.x, reference.y);
-        Fraction f = reference.facing
-	    .subtract(awayCenter.amount).normalize().amount;
+        Fraction f = facing.subtract(awayCenter.amount).normalize().amount;
         int czero = f.compareTo(Fraction.ZERO);
         int chalf = f.compareTo(Fraction.ONE_HALF);
         if (czero==0 || chalf==0)

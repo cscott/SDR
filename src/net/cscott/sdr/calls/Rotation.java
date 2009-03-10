@@ -1,6 +1,9 @@
 package net.cscott.sdr.calls;
 
+import java.util.AbstractCollection;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 
 import net.cscott.jutil.UnmodifiableIterator;
@@ -144,19 +147,28 @@ public class Rotation {
      *  js> [x for (x in Iterator(r.included()))]
      *  1/8,3/8,5/8,7/8
      */
-    public Iterator<ExactRotation> included() {
+    public Collection<ExactRotation> included() {
         final Fraction start = this.normalize().amount;
-        return new UnmodifiableIterator<ExactRotation>() {
-            Fraction next = start;
+        return new AbstractCollection<ExactRotation>() {
             @Override
-            public boolean hasNext() {
-                return next.compareTo(Fraction.ONE) < 0;
+            public Iterator<ExactRotation> iterator() {
+                return new UnmodifiableIterator<ExactRotation>() {
+                    Fraction next = start;
+                    @Override
+                    public boolean hasNext() {
+                        return next.compareTo(Fraction.ONE) < 0;
+                    }
+                    @Override
+                    public ExactRotation next() {
+                        ExactRotation er = new ExactRotation(next);
+                        next = next.add(Rotation.this.modulus);
+                        return er;
+                    }
+                };
             }
             @Override
-            public ExactRotation next() {
-                ExactRotation er = new ExactRotation(next);
-                next = next.add(Rotation.this.modulus);
-                return er;
+            public int size() {
+                return Rotation.this.modulus.getDenominator();
             }
         };
     }
@@ -209,6 +221,14 @@ public class Rotation {
                  second = rots.higher(first),
                  third = rots.higher(second);
         return create(first, third.subtract(second)).normalize();
+    }
+    public static Rotation union(List<Rotation> rots) {
+        Rotation r = null;
+        for (Rotation rr : rots) {
+            r = (r==null) ? rr : r.union(rr);
+        }
+        assert r!=null : "nothing to union";
+        return r;
     }
     /** Returns a human-readable description of the rotation.  The output
      *  is a valid input to <code>ExactRotation.valueOf(String)</code>. */
