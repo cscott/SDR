@@ -85,9 +85,9 @@ public class Prim extends SeqCall {
 	    return s.toUpperCase().replace('-','_');
 	}
     };
-    /** Amount of movement in the 'x' direction (dancer's right/left). */
+    /** Amount of movement in the 'sashay' direction (dancer's right/left). */
     public final Fraction x;
-    /** Amount of movement in the 'y' direction (dancer forward and back). */
+    /** Amount of movement in the 'walking' direction (dancer forward and back). */
     public final Fraction y;
     /** Amount of rotation. */
     public final ExactRotation rot;
