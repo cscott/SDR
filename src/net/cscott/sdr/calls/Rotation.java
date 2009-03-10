@@ -1,6 +1,11 @@
 package net.cscott.sdr.calls;
 
+import java.util.Iterator;
+import java.util.TreeSet;
+
+import net.cscott.jutil.UnmodifiableIterator;
 import net.cscott.sdr.util.Fraction;
+import static net.cscott.sdr.util.Tools.l;
 
 /** Rotations are represented as fractions, where '0' is facing north
  *  (that is, away from the caller),
@@ -125,6 +130,85 @@ public class Rotation {
         assert r1.modulus.compareTo(r2.modulus) <= 0;
         r2 = create(r2.amount, r1.modulus).normalize();
         return r1.equals(r2);
+    }
+    /**
+     * Returns an {@link Iterator} over the {@link ExactRotation}s included
+     * in this {@link Rotation}.
+     * @doc.test
+     *  js> r = Rotation.fromAbsoluteString('+')
+     *  0 mod 1/4
+     *  js> [x for (x in Iterator(r.included()))]
+     *  0,1/4,1/2,3/4
+     *  js> r = Rotation.fromAbsoluteString('x')
+     *  1/8 mod 1/4
+     *  js> [x for (x in Iterator(r.included()))]
+     *  1/8,3/8,5/8,7/8
+     */
+    public Iterator<ExactRotation> included() {
+        final Fraction start = this.normalize().amount;
+        return new UnmodifiableIterator<ExactRotation>() {
+            Fraction next = start;
+            @Override
+            public boolean hasNext() {
+                return next.compareTo(Fraction.ONE) < 0;
+            }
+            @Override
+            public ExactRotation next() {
+                ExactRotation er = new ExactRotation(next);
+                next = next.add(Rotation.this.modulus);
+                return er;
+            }
+        };
+    }
+    /**
+     * Return a {@link Rotation} which includes all the directions represented
+     * by {@code this} and the specified {@link Rotation}.  The operation may
+     * be inexact; that is, the result may include directions which are
+     * not included in either of the arguments.
+     * @doc.test Exact unions:
+     *  js> ExactRotation.EAST.union(ExactRotation.WEST)
+     *  1/4 mod 1/2
+     *  js> ExactRotation.NORTH.union(ExactRotation.SOUTH)
+     *  0 mod 1/2
+     *  js> Rotation.fromAbsoluteString('|').union(
+     *    > Rotation.fromAbsoluteString('-'))
+     *  0 mod 1/4
+     * @doc.test Inexact unions:
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> ExactRotation.NORTH.union(ExactRotation.EAST)
+     *  0 mod 1/4
+     *  js> Rotation.fromAbsoluteString('|').union(ExactRotation.EAST)
+     *  0 mod 1/4
+     *  js> Rotation.create(Fraction.ONE_QUARTER, Fraction.ONE_HALF).union(
+     *    >                 ExactRotation.SOUTH)
+     *  0 mod 1/4
+     *  js> Rotation.create(Fraction.ZERO, Fraction.ONE_HALF).union(
+     *    > Rotation.create(Fraction.ZERO, Fraction.ONE_THIRD))
+     *  0 mod 1/6
+     *  js> Rotation.create(Fraction.ZERO, Fraction.ONE_THIRD).union(
+     *    >                 ExactRotation.SOUTH)
+     *  0 mod 1/6
+     *  js> Rotation.create(Fraction.ZERO, Fraction.ONE_THIRD).union(
+     *    > Rotation.create(Fraction.ZERO, Fraction.ONE_QUARTER))
+     *  0 mod 1/12
+     *  js> Rotation.create(Fraction.ONE_EIGHTH, Fraction.ONE_QUARTER).union(
+     *    >                 ExactRotation.SOUTH)
+     *  0 mod 1/8
+     */
+    public Rotation union(Rotation r) {
+        // easy case!
+        if (this.includes(r))
+            return this;
+        // sort the first two ExactRotations in each Rotation
+        Rotation a = this.normalize(), b = r.normalize();
+        TreeSet<Fraction> rots =
+            new TreeSet<Fraction>(l(a.amount, a.amount.add(a.modulus),
+                                    b.amount, b.amount.add(b.modulus)));
+        // amount is first, modulus is diff of third and second.
+        Fraction first = rots.first(),
+                 second = rots.higher(first),
+                 third = rots.higher(second);
+        return create(first, third.subtract(second)).normalize();
     }
     /** Returns a human-readable description of the rotation.  The output
      *  is a valid input to <code>ExactRotation.valueOf(String)</code>. */
