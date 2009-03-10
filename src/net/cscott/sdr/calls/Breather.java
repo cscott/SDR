@@ -315,7 +315,6 @@ public class Breather {
      *    > }; f.toStringDiagram("|", Formation.dancerNames)
      *  |  >
      *  |^ <  v
-     *  js> // EXPECT FAIL (we currently breathe all the way out to diamonds)
      *  js> Breather.breathe(f).toStringDiagram("|", Formation.dancerNames)
      *  |  >
      *  |^    v
@@ -640,6 +639,8 @@ public class Breather {
                 (ExactRotation) formationFacing(a.input, Fraction.ONE),
                 (ExactRotation) formationFacing(b.input, Fraction.ONE)
         };
+        if (rr[0]==null || rr[1]==null)
+            throw new BadCallException("inconsistent facing direction");
         if (!rr[0].add(Fraction.ONE_HALF).equals(rr[1]))
             throw new BadCallException("collision but not facing opposite");
         meta = meta.rotate(rr[0].subtract(meta.location(dd[0]).facing.amount));
@@ -672,8 +673,8 @@ public class Breather {
             throw new BadCallException("inconsistent passing shoulder");
         return sawLeft;
     }
-    /** Check that the facing direction of all dancers is consistent,
-     * and return that direction. */
+    /** Return a consistent facing direction (modulo the modulus) if the
+     * formation f has one, or else return null. */
     private static Rotation formationFacing(Formation f, Fraction modulus){
         Rotation r = null;
         // find "most exact" facing direction (largest modulus)
@@ -685,13 +686,13 @@ public class Breather {
         assert r!=null : "what, no dancers?";
         // normalize to the desired level of (in)exactness.
         if (r.modulus.compareTo(modulus) < 0)
-            throw new BadCallException("formation direction is vague");
+            return null; // formation direction is vague
         r = Rotation.create(r.amount, modulus);
         // ensure all dancers are consistent with this.
         for (Dancer d : f.dancers()) {
             Rotation rr = f.location(d).facing;
             if (!r.includes(rr))
-                throw new BadCallException("inconsistent facing direction");
+                return null; // inconsistent facing direction
         }
         return r;
     }
@@ -721,11 +722,12 @@ public class Breather {
         BorderCountMap borderCountX = new BorderCountMap();
         BorderCountMap borderCountY = new BorderCountMap();
         for (int i=0; i<pieces.size(); i++) {
-            Box bounds = pieces.get(i).input.bounds();
+            Formation input = pieces.get(i).input;
+            Box bounds = input.bounds();
             boundsList.add(bounds);
-            trimX.add(new TrimBit(boundsList, i, bounds.center(),
+            trimX.add(new TrimBit(input, boundsList, i, bounds.center(),
                                   true, borderCountX));
-            trimY.add(new TrimBit(boundsList, i, bounds.center(),
+            trimY.add(new TrimBit(input, boundsList, i, bounds.center(),
                                   false, borderCountY));
         }
         // form all pairs
@@ -737,8 +739,7 @@ public class Breather {
                 // special case!  recognize star, and don't try to
                 // push them apart (otherwise breathing thars gets to be a
                 // real problem!)
-                if (isStar(pieces.get(i).input, pieces.get(j).input))
-                    continue;
+                assert aX.input == aY.input && bX.input == bY.input;
                 trims.add(new TrimBitPair(aX, bX, borderCountX));
                 trims.add(new TrimBitPair(aY, bY, borderCountY));
             }
@@ -752,6 +753,8 @@ public class Breather {
             if (!tbp.a.bounds().overlaps(tbp.b.bounds())) continue;
             // and that this dimension overlaps, in case it's been fixed
             if (!tbp.a.overlaps(tbp.b)) continue;
+            // maybe this has become a star; double check.
+            if (isStar(tbp.a, tbp.b)) continue;
             // okay, a real problem!  Trim both sides back to the midpoint
             // of the overlap.
             tbp.trim();
@@ -762,18 +765,15 @@ public class Breather {
     /** Returns true if a and b are a 'star'; that is, their "left hands"
      * or "right hands" meet at a point. Be conservative.
      */
-    private static boolean isStar(Formation a, Formation b) {
-        Rotation aR, bR;
-        try {
-            aR = formationFacing(a, Fraction.ONE_HALF);
-            bR = formationFacing(b, Fraction.ONE_HALF);
-        } catch (BadCallException bce) {
+    private static boolean isStar(TrimBit a, TrimBit b) {
+        Rotation aR = a.handholdDir;
+        Rotation bR = b.handholdDir;
+        if (aR==null || bR==null)
             return false; // inconsistent facing dirs, not a star
-        }
         if ((!bR.add(Fraction.ONE_QUARTER).equals(aR)) &&
             (!aR.add(Fraction.ONE_QUARTER).equals(bR)))
             return false; // only a star if we're exactly 90 degrees off
-        HandPair aH = hands(a, aR), bH = hands(b, bR);
+        HandPair aH = hands(a.bounds(), aR), bH = hands(b.bounds(), bR);
         if (aH.right.equals(bH.right) || aH.right.equals(bH.left) ||
             aH.left.equals(bH.right) || aH.left.equals(bH.left)) {
             return true; // it's a perfect star!
@@ -784,11 +784,12 @@ public class Breather {
         Point right, left;
         HandPair(Point right, Point left) { this.right=right; this.left=left; }
     }
-    private static HandPair hands(Formation f, Rotation facing) {
-        Box bounds = f.bounds();
-        ExactRotation er = new ExactRotation(facing.normalize().amount);
-        Point rightHand = boundaryPoint(bounds, er.add(Fraction.ONE_QUARTER));
-        Point leftHand = boundaryPoint(bounds, er.subtract(Fraction.ONE_QUARTER));
+    private static HandPair hands(Box bounds, Rotation handholdDir) {
+        ExactRotation er = new ExactRotation(handholdDir.normalize().amount);
+        // left and right labels are somewhat arbitrary, since we've normalized
+        // to a modulus of 1/2
+        Point rightHand = boundaryPoint(bounds, er);
+        Point leftHand = boundaryPoint(bounds, er.add(Fraction.ONE_HALF));
         return new HandPair(rightHand, leftHand);
     }
     private static Point boundaryPoint(Box bounds, ExactRotation facing) {
@@ -809,7 +810,7 @@ public class Breather {
             // overlap is min of the highs minus max of the lows
             this.overlap = minEnd.subtract(maxStart);
             // now look at the borders which would be trimmed, and count
-            // how many dancers share this border exactly (try not to
+            // how many input formations share this border exactly (try not to
             // interfere with existing handholds)
             this.sharedEdges = bcm.get(minEnd) + bcm.get(maxStart);
         }
@@ -824,8 +825,6 @@ public class Breather {
             return c;
         }
         /** Trim a pair down to the midpoint of their overlap. */
-        // XXX for potential stars, only trim down to the point at
-        //     which you have a star.
         public void trim() {
             // figure out which of a and b is the "low" one.
             TrimBit lo, hi;
@@ -843,11 +842,22 @@ public class Breather {
     }
     private static class TrimBit {
         /** The index of the FormationPiece corresponding to this. */
-        int idx;
+        final int idx;
         /** Pointer to a shared copy of the bounds list. */
-        List<Box> boundsList;
+        final List<Box> boundsList;
         /** Is this an X slice or a Y slice? */
-        boolean isX;
+        final boolean isX;
+        /** Original input {@link Formation}. */
+        final Formation input;
+        /**
+         * Formation "handhold" direction modulo 1/2, or {@code} null if it does
+         * not have a consistent handhold direction.  For a dancer facing
+         * north or south, the hand hold direction is "east and west"; for
+         * dancers facing east or west, the hand hold direction is "north and
+         * south", etc.
+         */
+        final Rotation handholdDir;
+
         public Box bounds() { return boundsList.get(idx); }
         void setBounds(Box newBounds) { boundsList.set(idx, newBounds); }
         public Fraction getStart() {
@@ -874,15 +884,29 @@ public class Breather {
             return this.getStart().compareTo(b.getEnd()) < 0 &&
                    b.getStart().compareTo(this.getEnd()) < 0;
         }
-        TrimBit(List<Box> boundsList, int idx, Point center, boolean isX,
-                BorderCountMap borderCount) {
+        TrimBit(Formation input, List<Box> boundsList, int idx, Point center,
+                boolean isX, BorderCountMap borderCount) {
+            this.input = input;
+            Rotation hhD = formationFacing(input, Fraction.ONE_HALF);
+            this.handholdDir = (hhD==null)?null:hhD.add(Fraction.ONE_QUARTER);
             this.boundsList = boundsList;
             this.idx = idx;
             this.isX = isX;
-            // xxx: only increment if this is a "hand-hold" edge, not a "nose"
-            //      edge.
             borderCount.increment(getStart());
             borderCount.increment(getEnd());
+            // give an extra bonus if this shared edge is in the
+            // "hand hold" direction (with some formations or phantoms we
+            // can't tell).  Note that non-orthogonal formations (45 off, say)
+            // will break handholds is either the X or Y edges are moved, so
+            // go ahead and give them the handhold bonus on all sides
+            if (handholdDir != null) {
+                boolean northHands = handholdDir.includes(ExactRotation.NORTH);
+                boolean eastHands = handholdDir.includes(ExactRotation.EAST);
+                if ((isX ? eastHands : northHands) || !(northHands || eastHands)) {
+                    borderCount.increment(getStart());
+                    borderCount.increment(getEnd());
+                }
+            }
         }
         public String toString() {
             return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
