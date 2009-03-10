@@ -6,7 +6,7 @@ Square Dance Revolution build file.
 </description>
 <property name="package" value="sdr" />
 <property name="package_topdir" value="net/cscott/sdr" />
-<property name="version" value="0.3" /> <!-- change version # here! -->
+<property name="version" value="0.4" /> <!-- change version # here! -->
 
     <taskdef resource="net/sf/antcontrib/antlib.xml"
 	     classpath="lib/dev/ant-contrib.jar" />
@@ -351,7 +351,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
     <!-- bundle up all files for distribution -->
     <target name="dist" depends="jar,javadoc">
       <delete file="ChangeLog" />
-      <exec executable="git-log" output="ChangeLog">
+      <exec executable="git" output="ChangeLog">
+	<arg value="log" />
 	<arg value="--stat" />
 	<arg value="-C" /> <!-- "-C -C" is nice, but it takes 2m to run! -->
       </exec>
@@ -368,6 +369,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
         <tarfileset dir="." prefix="${package}-${version}"
          includes="README AUTHORS COPYING ChangeLog NEWS sdr.Manifest
                    build.xml .antlr-eclipse .classpath .project .settings/**/*
+		   run-shell.sh upload.sh **/.gitignore images/*.svg
                    notes.txt sdr.jar sample.build.properties sdr.jnlp.in" />
       </tar>
     </target>
