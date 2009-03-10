@@ -11,8 +11,8 @@ import net.cscott.sdr.calls.ast.Apply;
  * @version $Id: ChoreoEngine.java,v 1.2 2006-11-10 00:56:07 cananian Exp $
  */
 public class ChoreoEngine {
-    private DanceState ds;
-    public ChoreoEngine(DanceState ds) {
+    private DanceProgram ds;
+    public ChoreoEngine(DanceProgram ds) {
         this.ds = ds;
     }
     

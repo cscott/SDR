@@ -10,7 +10,7 @@ import java.util.concurrent.BlockingQueue;
 
 import net.cscott.sdr.CommandInput;
 import net.cscott.sdr.CommandInput.PossibleCommand;
-import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.DanceProgram;
 import edu.cmu.sphinx.decoder.search.Token;
 import edu.cmu.sphinx.frontend.Data;
 import edu.cmu.sphinx.frontend.FloatData;
@@ -27,11 +27,11 @@ import edu.cmu.sphinx.util.props.PropertyException;
  * which automatically segments incoming audio into utterances and silences.
  */
 public class RecogThread extends Thread {
-    private final DanceState ds;
+    private final DanceProgram ds;
     private final CommandInput input;
     private final BlockingQueue<LevelMonitor> rendezvous;
 
-    public RecogThread(DanceState ds, CommandInput input,
+    public RecogThread(DanceProgram ds, CommandInput input,
             BlockingQueue<LevelMonitor> rendezvous) {
         this.ds = ds;
         this.input = input;

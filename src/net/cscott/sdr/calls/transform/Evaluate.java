@@ -17,28 +17,24 @@ import net.cscott.sdr.calls.ast.*;
 // XXX: should this be a TranformationVisitor<TaggedFormation> ?
 public class Evaluate extends TransformVisitor<Formation> {
     /** Static dance state (like program, etc). */
-    private final DanceState ds;
-    /** Should we evaluate all the way down to a simplified tree, or just
-     * do 'one step' of elaboration? */
-    private final boolean doFully;
-    private Evaluate(DanceState ds, boolean doFully) {
+    private final DanceProgram ds;
+
+    private Evaluate(DanceProgram ds) {
         this.ds = ds;
-        this.doFully = doFully;
     }
     /**
-     * Evaluate formations to eliminate {@link Opt} elements and identify the
-     * dancers in {@link Par}s.  It inserts {@link Warp} elements as needed.
-     * The result is a 'simplified tree'.
-     * @param ds current static {@link DanceState} (program, etc)
+     * Evaluate "one part" of a call.
+     * @param ds current static {@link DanceProgram} (program, etc)
      * @param f  current {@link Formation} (dynamic state)
      * @param c  the call component to elaborate
      * @param doFully if false, performs just one step of elaboration;
      *  otherwise, evaluate all the way down to a simplified tree.
      * @return the elaborated call component
      */
-    public static Comp evaluate(DanceState ds, Formation f, Comp c, boolean doFully) {
-        return c.accept(new Evaluate(ds, doFully), f);
+    public static Comp evaluate(DanceProgram ds, Formation f, Comp c, boolean doFully) {
+        return c.accept(new Evaluate(ds), f);
     }
+    private boolean doFully=false; // XXX REMOVE ME
     
     /** Expand any 'Apply' node we come to. */
     @Override

@@ -23,7 +23,7 @@ public abstract class Predicate {
      * {@link Condition#predicate predicate} field of {@code c} should
      * match @{link Predicate#getName(String) this.getName()}.
      */
-    public abstract boolean evaluate(DanceState ds, Formation f, Condition c);
+    public abstract boolean evaluate(DanceProgram ds, Formation f, Condition c);
     
     @Override
     public final String toString() {

@@ -3,7 +3,7 @@ package net.cscott.sdr;
 import net.cscott.jutil.UnmodifiableIterator;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.CallDB;
-import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.DanceProgram;
 import net.cscott.sdr.calls.ast.Apply;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -56,7 +56,7 @@ public class CommandInput {
      * 'next worst' PossibleCommand.  Does the parsing lazily, so that we
      * don't parse unless the "better" PossibleCommands don't work out. */
     public PossibleCommand commandFromUnparsed
-    (final DanceState ds, final String userInput,
+    (final DanceProgram ds, final String userInput,
      final long startTime, final long endTime, final PossibleCommand next) {
         PossibleCommand pc = new PossibleCommand() {
             @Override

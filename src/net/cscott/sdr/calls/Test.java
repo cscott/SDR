@@ -41,7 +41,7 @@ public class Test {
         def = a.expand();
         System.out.println(def);
         // create a dance state (ds, plus tagged formation)
-        DanceState ds = new DanceState(Program.MAINSTREAM);
+        DanceProgram ds = new DanceProgram(Program.MAINSTREAM);
         // associate real dancers with the TaggedFormation.
         TaggedFormation tf = m(FormationList.FACING_COUPLES, Formation.FOUR_SQUARE);
         System.out.println("ONE STEP ELABORATION FROM FACING COUPLES:");

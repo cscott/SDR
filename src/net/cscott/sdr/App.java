@@ -8,7 +8,7 @@ import java.util.concurrent.CyclicBarrier;
 import net.cscott.sdr.CommandInput.PossibleCommand;
 import net.cscott.sdr.anim.Game;
 import net.cscott.sdr.calls.BadCallException;
-import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.DanceProgram;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.TimedFormation;
@@ -39,7 +39,7 @@ public class App {
         // input method, and the choreography engine.
         CommandInput input = new CommandInput();
         // This is the choreography engine.
-        DanceState ds = new DanceState(Program.MAINSTREAM);
+        DanceProgram ds = new DanceProgram(Program.MAINSTREAM);
         ChoreoEngine choreo = new ChoreoEngine(ds);
         
         // Start the game thread.
