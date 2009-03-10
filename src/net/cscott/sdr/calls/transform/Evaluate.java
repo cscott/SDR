@@ -7,21 +7,21 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.*;
 
 /**
- * The {@link Elaborate} class does formation evaluation to eliminate
+ * The {@link Evaluate} class does formation evaluation to eliminate
  * {@link Opt} elements in the call tree and identify the dancers in
  * {@link Par}s.  It inserts {@link Warp} elements as needed.
  * The result is a 'simplified tree'.
  * @author C. Scott Ananian
- * @version $Id: Elaborate.java,v 1.6 2009-02-06 06:27:55 cananian Exp $
+ * @version $Id: Evaluate.java,v 1.6 2009-02-06 06:27:55 cananian Exp $
  */
 // XXX: should this be a TranformationVisitor<TaggedFormation> ?
-public class Elaborate extends TransformVisitor<Formation> {
+public class Evaluate extends TransformVisitor<Formation> {
     /** Static dance state (like program, etc). */
     private final DanceState ds;
     /** Should we evaluate all the way down to a simplified tree, or just
      * do 'one step' of elaboration? */
     private final boolean doFully;
-    private Elaborate(DanceState ds, boolean doFully) {
+    private Evaluate(DanceState ds, boolean doFully) {
         this.ds = ds;
         this.doFully = doFully;
     }
@@ -36,8 +36,8 @@ public class Elaborate extends TransformVisitor<Formation> {
      *  otherwise, evaluate all the way down to a simplified tree.
      * @return the elaborated call component
      */
-    public static Comp elaborate(DanceState ds, Formation f, Comp c, boolean doFully) {
-        return c.accept(new Elaborate(ds, doFully), f);
+    public static Comp evaluate(DanceState ds, Formation f, Comp c, boolean doFully) {
+        return c.accept(new Evaluate(ds, doFully), f);
     }
     
     /** Expand any 'Apply' node we come to. */

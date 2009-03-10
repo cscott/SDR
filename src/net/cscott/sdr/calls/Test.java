@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
-import net.cscott.sdr.calls.transform.Elaborate;
+import net.cscott.sdr.calls.transform.Evaluate;
 import net.cscott.sdr.calls.transform.RemoveIn;
 import net.cscott.sdr.util.Fraction;
 
@@ -45,10 +45,10 @@ public class Test {
         // associate real dancers with the TaggedFormation.
         TaggedFormation tf = m(FormationList.FACING_COUPLES, Formation.FOUR_SQUARE);
         System.out.println("ONE STEP ELABORATION FROM FACING COUPLES:");
-        def = Elaborate.elaborate(ds, tf, def, false);
+        def = Evaluate.evaluate(ds, tf, def, false);
         System.out.println(def);
         System.out.println("FULL ELABORATION FROM FACING COUPLES:");
-        def = Elaborate.elaborate(ds, tf, def, true);
+        def = Evaluate.evaluate(ds, tf, def, true);
         System.out.println(def);
         
         // test the RemoveIn module
