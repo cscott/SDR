@@ -11,20 +11,18 @@ import net.cscott.sdr.util.Fraction;
  * @author C. Scott Ananian
  * @version $Id: TimedAction.java,v 1.1 2006-10-26 18:33:19 cananian Exp $
  */
-public class TimedAction {
+public class TimedAction extends Timed<TimedAction> {
     /** The dancer action called for at the given time. */
     public final Action action;
-    /** If {@link TimedAction#isAbsolute isAbsolute} is true, then the
-     * absolute time at which this formation should appear.  Otherwise, the
-     * relative amount of time <i>after the previous {@code TimedAction}</i>
-     * at which this formation should appear. */
-    public final Fraction time;
-    /** Whether times are absolute, or relative to the previous
-     * {@code TimedAction}. */
-    public final boolean isAbsolute;
-
     public TimedAction(Action action, Fraction time, boolean isAbsolute) {
-        this.action = action; this.time = time;
-        this.isAbsolute = isAbsolute;
+        super(time, isAbsolute);
+        this.action = action;
+    }
+    @Override
+    public TimedAction makeAbsolute(Timed reference) {
+        if (this.isAbsolute) return this;
+        Fraction newTime = ((reference==null)?Fraction.ZERO:reference.time)
+            .add(this.time);
+        return new TimedAction(this.action, newTime, true);
     }
 }
