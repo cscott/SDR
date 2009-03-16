@@ -10,6 +10,7 @@ import net.cscott.sdr.calls.ast.*;
  */
 public abstract class ValueVisitor<RESULT, CLOSURE> {
     public abstract RESULT visit(Apply apply, CLOSURE t);
+    public abstract RESULT visit(Comp c, CLOSURE t);
     public abstract RESULT visit(Condition c, CLOSURE t);
     public abstract RESULT visit(If iff, CLOSURE t);
     public abstract RESULT visit(In in, CLOSURE t);
@@ -20,5 +21,6 @@ public abstract class ValueVisitor<RESULT, CLOSURE> {
     public abstract RESULT visit(Part p, CLOSURE t);
     public abstract RESULT visit(Prim p, CLOSURE t);
     public abstract RESULT visit(Seq s, CLOSURE t);
+    public abstract RESULT visit(SeqCall s, CLOSURE t);
     public abstract RESULT visit(Warped w, CLOSURE t);
 }
