@@ -9,6 +9,7 @@ import java.util.List;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.CallDB;
+import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
@@ -73,7 +74,12 @@ public class Apply extends SeqCall {
 
     public Comp expand() throws BadCallException {
         Call c = CallDB.INSTANCE.lookup(callName);
+        assert c.getEvaluator(this) == null; // don't blindly expand
         return c.apply(this);
+    }
+    public Evaluator evaluator() throws BadCallException {
+        Call c = CallDB.INSTANCE.lookup(callName);
+        return c.getEvaluator(this); // could be null.
     }
     
     public Apply getArg(int n) { return args.get(n); }

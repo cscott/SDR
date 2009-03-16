@@ -12,6 +12,7 @@ import net.cscott.sdr.calls.Warp;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
+import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.calls.transform.Fractional;
 import net.cscott.sdr.util.Fraction;
 
@@ -39,6 +40,10 @@ public abstract class BasicList {
         public final Program getProgram() { return Program.BASIC; }
         @Override
         public Rule getRule() { return null; }
+        @Override
+        public Evaluator getEvaluator(Apply ast) {
+            return null; // use standard evaluator
+        }
     }
     
     // simple combining concept.
@@ -76,6 +81,11 @@ public abstract class BasicList {
         }
         @Override
         public int getMinNumberOfArguments() { return 1; }
+        @Override
+        public Evaluator getEvaluator(Apply ast) {
+            assert false : "math calls can't be evaluated";
+            return null;
+        }
     }
     public static final Call _ADD_NUM = new MathCall("_add_num") {
         @Override
@@ -115,6 +125,8 @@ public abstract class BasicList {
             assert ast.callName.equals(getName());
             assert ast.args.size()==1;
             Apply a = ast.getArg(0);
+            // XXX: THIS SHOULD BE REWRITTEN AS A CUSTOM
+            //      EVALUATOR
             Warp warp = Warp.MIRROR;
             return new Warped(warp, new Seq(a));
         }

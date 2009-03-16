@@ -75,6 +75,9 @@ public class Fractional extends TransformVisitor<Fraction> {
         }
         // okay, we have to expand the call in order to fractionalize the
         // contents.
+        if (apply.evaluator()!=null)
+            throw new BadCallException("Can't fractionalize complex concept");
+        // okay, this concept can be simply expanded...
         Part result = new Part(true,apply.expand().accept(this, f));
         return result;
     }

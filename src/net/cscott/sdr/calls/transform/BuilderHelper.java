@@ -186,6 +186,10 @@ abstract class BuilderHelper {
             }
             @Override
             public Rule getRule() { return rule; }
+            @Override
+            public Evaluator getEvaluator(Apply ast) {
+                return null; // ok to apply standard evaluator on expansion.
+            }
         };
     }
 }

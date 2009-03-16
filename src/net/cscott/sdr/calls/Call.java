@@ -3,14 +3,16 @@ package net.cscott.sdr.calls;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.grm.Rule;
+import net.cscott.sdr.calls.transform.Evaluator;
 
-/** The <code>Call</code> class includes 'simple calls' (like HINGE) which
+/** The {@link Call} class includes 'simple calls' (like HINGE) which
  * take no arguments, 'complex calls' (like SQUARE THRU) which take a
  * numerical argument, and 'concepts' (like AS COUPLES) which take another
  * call or calls as arguments.  These are not distinguished here: the
  * important thing is that any call can be *applied* to zero or more
  * arguments (numbers, selectors, or other calls) to result in a
- * <code>Comp</code> AST tree.
+ * {@link Comp} AST tree.  Complex calls may also specify a
+ * custom {@link Evaluator} to use on the result of the application.
  * @author C. Scott Ananian
  * @version $Id: Call.java,v 1.7 2006-10-21 00:54:31 cananian Exp $
  */
@@ -43,6 +45,17 @@ public abstract class Call {
      * {@code null}, if there is none (ie, this is an internal call).
      */
     public abstract Rule getRule();
+    /**
+     * Returns the {@link Evaluator} to use on the result of an application,
+     * or {@code null} to use the
+     * {@link net.cscott.sdr.calls.transform.Evaluator.Standard} evaluator.
+     * (Call processors can determine that a call is safe to
+     * expand via application if the return value is null; otherwise, it
+     * should be considered 'opaque' and requires use of the custom
+     * {@link Evaluator}.)
+     * @param ast identical to the ast argument of {@link #apply(Apply)}
+     */
+    public abstract Evaluator getEvaluator(Apply ast);
     
     @Override
     public final String toString() {
@@ -70,6 +83,10 @@ public abstract class Call {
                 assert ast.callName.equals(name);
                 assert ast.args.isEmpty();
                 return def;
+            }
+            @Override
+            public Evaluator getEvaluator(Apply ast) {
+                 return null; // use Standard Evaluator.
             }
             @Override
             public int getMinNumberOfArguments() { return 0; }

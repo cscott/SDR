@@ -64,7 +64,9 @@ public class FormationMatch {
             sb.append(tf.toStringDiagram
                       ("   ", Formation.dancerNames));
             sb.append("\n");
-            // inclue tags for tagged dancers
+            // include tags for tagged dancers
+            // NOTE that this does not include "primitive" dancer tags
+            // such as HEAD/SIDE/BOY/GIRL, etc.
             boolean atLeastOne=false;
             for (Dancer dd: tf.sortedDancers()) {
                 List<Tag> tags = new ArrayList<Tag>(tf.tags(dd));
