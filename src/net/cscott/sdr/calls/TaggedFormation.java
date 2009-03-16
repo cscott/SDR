@@ -1,12 +1,10 @@
 package net.cscott.sdr.calls;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,18 +48,45 @@ public class TaggedFormation extends Formation {
         this.tags = tags;
     }
 
+    /** Returns true if the dancer is tagged by the given tag.  The tag can be
+     *  either a primitive dancer tag, or a formation-dependent tag.
+     */
     public boolean isTagged(Dancer d, Tag tag) {
         if (tag.isPrimitive()) return d.matchesTag(tag);
         return tags.contains(d,tag);
     }
+    /** Return true if the dancer is tagged by any tag in the given
+     *  set of tags */
+    public boolean isTagged(Dancer d, Set<Tag> tags) {
+        for (Tag t: tags)
+            if (isTagged(d, t)) return true;
+        return false;
+    }
+    /** Return the set of dancers tagged with the given tag.  The tag can be
+     *  either a primitive dancer tag or a formation-dependent tag.
+     */
     public Set<Dancer> tagged(Tag tag) {
+        return tagged(Collections.singleton(tag));
+    }
+    /** Return the set of dancers tagged by any of the given set of tags. */
+    public Set<Dancer> tagged(Set<Tag> tags) {
         Set<Dancer> dancers = dancers();
         Set<Dancer> s = new LinkedHashSet<Dancer>(dancers.size());
         for(Dancer d : dancers)
-            if (isTagged(d, tag))
+            if (isTagged(d, tags))
                 s.add(d);
         return s;
     }
+    /**
+     * Return the <b>non-primitive</b> tags attached to this dancer.
+     *
+     * WARNING: because this does not include primitive tags, you should use
+     * this method only to transfer tag information between
+     * {@link TaggedFormation}s, <i>not</i> to test whether a given dancer has
+     * a particular tag. Use
+     * {@link #isTagged(Dancer, net.cscott.sdr.calls.TaggedFormation.Tag)} if
+     * you want to check whether a dancer has a particular tag.
+     */
     public Set<Tag> tags(Dancer d) {
         EnumSet<Tag> copy = EnumSet.noneOf(Tag.class);
         copy.addAll(tags.getValues(d));
