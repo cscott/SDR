@@ -31,7 +31,6 @@ import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
-import net.cscott.sdr.calls.ast.Warped;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Tools;
 
@@ -223,11 +222,6 @@ public abstract class Evaluator {
                 }
                 // okay, do one step of this evaluation.
                 return e.evaluate(ds);
-            }
-            @Override
-            public Evaluator visit(Warped w, DanceState ds) {
-                assert false : "I don't believe in Warped any more";
-                return w.child.accept(this, ds);
             }
             @Override
             public Evaluator visit(Comp c, DanceState ds) {

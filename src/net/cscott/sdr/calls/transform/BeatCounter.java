@@ -95,10 +95,6 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
         return f;
     }
     @Override
-    public Fraction visit(Warped w, Void v) {
-        return r(w, w.child.accept(this, v));
-    }
-    @Override
     public Fraction visit(Comp c, Void t) {
         assert false : "Unhandled Comp";
         return null;

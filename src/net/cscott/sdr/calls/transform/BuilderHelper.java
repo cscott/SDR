@@ -8,7 +8,6 @@ import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Selector;
-import net.cscott.sdr.calls.Warp;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.calls.ast.Prim.Direction;
 import net.cscott.sdr.calls.grm.Rule;
@@ -155,13 +154,6 @@ abstract class BuilderHelper {
                 return new Seq(reduce(children, fargs));
             }
         }, isConstant(children));
-    }
-    static B<Warped> mkWarped(final Warp warp, final B<? extends Comp> child) {
-        return optimize(new B<Warped>() {
-            public Warped build(List<Apply> fargs) {
-                return new Warped(warp, child.build(fargs));
-            }
-        }, child.isConstant());
     }
     //////////////
     static Call makeCall(final String name, final Program program,

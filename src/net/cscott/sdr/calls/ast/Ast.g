@@ -30,7 +30,6 @@ import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Predicate;
 import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
-import net.cscott.sdr.calls.Warp;
 
 import net.cscott.sdr.util.Fraction;
 }
@@ -62,7 +61,6 @@ comp returns [Comp r]
     | opt { $r=$opt.r; }
     | par { $r=$par.r; }
     | seq { $r=$seq.r; }
-    | warped { $r=$warped.r; }
     ;
 condition returns [Condition r]
 @init { List<Condition> args = new ArrayList<Condition>(); }
@@ -143,11 +141,6 @@ seq returns [Seq r]
     : {input.LT(2).getText().equalsIgnoreCase("Seq")}?
         '(' IDENT (seqcall {sc.add($seqcall.r); })* ')'
         { $r = new Seq(sc); }
-    ;
-warped returns [Warped r]
-    : {input.LT(2).getText().equalsIgnoreCase("Warped")}?
-        '(' IDENT warp child=comp ')'
-        { $r = new Warped($warp.r, $child.r); }
     ;
 
 predicate returns [String r]
@@ -269,10 +262,6 @@ simple_words returns [String r]
     : w1=simple_word { sb.append($w1.r); }
         (w2=simple_word { sb.append(' '); sb.append($w2.r); } )*
         { $r = sb.toString(); }
-    ;
-
-warp returns [Warp r]
-    : 'xyzzy' // XXX UNIMPLEMENTED
     ;
 
 // lexer rules

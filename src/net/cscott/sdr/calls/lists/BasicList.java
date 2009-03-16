@@ -8,7 +8,6 @@ import java.util.List;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.Program;
-import net.cscott.sdr.calls.Warp;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
@@ -127,8 +126,10 @@ public abstract class BasicList {
             Apply a = ast.getArg(0);
             // XXX: THIS SHOULD BE REWRITTEN AS A CUSTOM
             //      EVALUATOR
-            Warp warp = Warp.MIRROR;
-            return new Warped(warp, new Seq(a));
+            assert false: "not implemented";
+            //Warp warp = Warp.MIRROR;
+            //return new Warped(warp, new Seq(a));
+            return new Seq(a);
         }
         @Override
         public int getMinNumberOfArguments() { return 1; }

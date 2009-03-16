@@ -96,7 +96,4 @@ public abstract class TransformVisitor<T> {
         return s.build(l);
     }
     //public SeqCall visit(SeqCall sc, T t) { }
-    public Comp visit(Warped w, T t) {
-        return w.build(w.warp, w.child.accept(this, t));
-    }
 }

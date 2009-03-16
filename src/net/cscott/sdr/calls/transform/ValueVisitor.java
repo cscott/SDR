@@ -22,5 +22,4 @@ public abstract class ValueVisitor<RESULT, CLOSURE> {
     public abstract RESULT visit(Prim p, CLOSURE t);
     public abstract RESULT visit(Seq s, CLOSURE t);
     public abstract RESULT visit(SeqCall s, CLOSURE t);
-    public abstract RESULT visit(Warped w, CLOSURE t);
 }

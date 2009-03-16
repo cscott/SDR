@@ -455,4 +455,42 @@ public abstract class GeneralFormationMatcher {
         }
         return s;
     }
+    /** @deprecated XXX: rewrite to remove dependency on old Warp class */
+    private static abstract class Warp {
+        public abstract Position warp(Position p, Fraction time);
+        /** A <code>Warp</code> which returns points unchanged. */
+        public static final Warp NONE = new Warp() {
+            public Position warp(Position p, Fraction time) { return p; }
+        };
+	/** Returns a <code>Warp</code> which will rotate and translate
+	 * points such that <code>from</code> is warped to <code>to</code>.
+	 * Requires that both {@code from.facing} and {@code to.facing} are
+	 * {@link ExactRotation}s.
+	 */
+	// XXX is this the right spec?  Should we allow general Rotations?
+	public static Warp rotateAndMove(Position from, Position to) {
+	    assert from.facing instanceof ExactRotation;
+	    assert to.facing instanceof ExactRotation;
+	    if (from.equals(to)) return NONE;
+	    ExactRotation rot = (ExactRotation) to.facing.add(from.facing.amount.negate());
+	    Position nFrom = rotateCWAroundOrigin(from,rot);
+	    final Position warp = new Position
+		(to.x.subtract(nFrom.x), to.y.subtract(nFrom.y),
+		 rot);
+	    Warp w = new Warp() {
+	        public Position warp(Position p, Fraction time) {
+		    p = rotateCWAroundOrigin(p, (ExactRotation) warp.facing);
+		    return new Position(p.x.add(warp.x), p.y.add(warp.y), p.facing);
+		}
+	    };
+	    assert to.equals(w.warp(from,Fraction.ZERO));
+	    return w;
+	}
+	// helper method for rotateAndMove
+	private static Position rotateCWAroundOrigin(Position p, ExactRotation amt) {
+	    Fraction x = p.x.multiply(amt.toY()).add(p.y.multiply(amt.toX()));
+	    Fraction y = p.y.multiply(amt.toY()).subtract(p.x.multiply(amt.toX()));
+	    return new Position(x, y, p.facing.add(amt.amount));
+	}
+    }
 }
