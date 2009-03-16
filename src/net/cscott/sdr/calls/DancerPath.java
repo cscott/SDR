@@ -72,7 +72,8 @@ public class DancerPath {
     /**
      * Create an immutable {@link DancerPath} object.
      */
-    public DancerPath(Position from, Position to, Point arcCenter, Fraction time, PointOfRotation pointOfRotation) {
+    public DancerPath(Position from, Position to, Point arcCenter,
+                      Fraction time, PointOfRotation pointOfRotation) {
         assert from != null && to != null && time != null;
         assert from.facing.isExact() && to.facing.isExact();
         assert time.compareTo(Fraction.ZERO) >= 0;
@@ -81,6 +82,14 @@ public class DancerPath {
         this.arcCenter = arcCenter;
         this.time = time;
         this.pointOfRotation = pointOfRotation;
+    }
+    /** Return an equivalent {@link DancerPath} that completes in an adjusted
+     * amount of time.
+     */
+    public DancerPath scaleTime(Fraction amount) {
+        if (amount.equals(Fraction.ONE)) return this; // easy case!
+        return new DancerPath
+            (from, to, arcCenter, time.multiply(amount), pointOfRotation);
     }
     @Override
     public String toString() {
