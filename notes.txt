@@ -526,5 +526,103 @@ with, so this can be a TaggedFormation.Tag, not a Position.Flag.
 Elaborate should do "one step" of the call at each invocation.
 -------
 Need a "as N steps" version of Part, to make square through, swing and
-mix, etc work right.
+mix, etc work right. (or an _expand concept, to make the parts of the
+subbits though through.  So, swing and mix is: swing, _expand(mix)
+which becomes: swing, centers cross run, new centers trade; ie three
+parts.  swing, mix would become two parts: part(swing), part(centers cross run,
+new centers trade).
 -----
+Evaluate has a stack of evaluators
+  each has a child elaborator (with its own call stack to work on)
+  and a continuation call stack.
+Ie:
+ "(tandem trade) and roll, then double pass through"
+StandardE -> Tandem -> trade (standardE?)
+                    \roll
+           \double pass thru
+"one part" of evaluation (assuming trade has two parts) yields:
+StandardE -> Tandem -> [finish a trade]
+                     \roll
+           \double pass thru
+"one more part":
+StandardE -> roll
+          \ double pass thru
+"one more part"
+StandardE -> double pass thru
+--
+Concepts can either: (a) apply a transformation to their arguments, and
+then disappear, or (b) install themselves in the evaluator stack, as
+an ongoing filter on the movements (like tandem would be).  Option
+(a) can also be implemented by doing the transformation and then
+invoking the standard evaluator on the result.
+--
+We have a special "_boring" call which is used as the continuation
+when it would otherwise be null.  It's defined something like:
+ call:
+   from: ANYTHING
+     if: _nothing_on_callstack
+     nothing
+     _expand(_boring)
+   from: ANYTHING
+     /* else */
+     nothing
+     /* fall off bottom here */
+
+This keeps the continuation non-null (by filling it as needed), and
+can be extended to have various placeholder actions performed by the
+dancers while they are "waiting" -- ie, california twirl with each
+other, swing, partner trade twice, scootback twice, etc.  We probably
+need a _random predicate to gate these behaviors.
+---
+Regular tick, at each tick add points according to the current
+flow/difficulty/etc meters and the current bonus multipliers.
+Bonus multipliers for "hard material" and "flowy material" --
+each dance floor is different, some may like the hard stuff and
+not care about flowy; some may want flowy and not care for hard
+stuff.
+"Hard sequence: 2x"
+Calls and concepts can get "difficulty" annotations, which probably
+multiply together to get the nested difficulty level.  ie "tandem as
+couples trade" is a little hard, "tandem as couples (single wheel and
+roll)" is pretty hard (since single wheel has higher intrinsic
+difficulty than trade).
+---
+For flow, we're going to compute scores for each dancer individually;
+the overall flow should be the "minimum of all the moving dancers".
+You only get good flow if it's good for everyone (but people standing
+still don't count for or against).
+--
+double pass through = <nothing> _atc
+_atc is a specially recognized call that is search-and-replaced by the
+various tagging modifiers; it means "double pass through" if
+unmodified.
+---
+special selectors for certain formations: diamond might also introduce
+a "points point in" action in addition to handling the different
+alternate diamond shapes.
+--
+"do your part" == split state into two, each with just the appropriate
+dancers selected.
+ Thought experiment: what if GeneralFormationMatcher always tried to match
+ against Formation.onlySelected() first; if that fails, it would
+ try matching with the whole formation.
+    a) The "partner trade" in a "CENTERS trade, ENDS circulate"
+       matches just the two centers, good, and
+    b) "BEAUS walk, BELLES dodge" from facing lines fails to match a box
+       against just the beaus or just the belles and uses the whole
+       formation, good, BUT
+    c) from two faced lines, all the belles could end up forming a box
+       of their own in the center.  That would be surprising.
+This isn't a good thought experiment, because in the walk/dodge case
+there isn't really an additional FROM operation after the SELECT
+BEAUS/BELLES.
+
+But for simplicity of the model, let's say that SELECT is *always* a
+"do your part" with the rest of the formation included (ie, dancers
+selected has no effect on FROM), so that acey deucey must be:
+  "CENTERS (centers trade), ENDS circulate"
+otherwise the centers would do their part of a partner trade with the ends.
+(We do "select" the interesting dancers, so that we can only apply
+prims to the selected dancers, but that's our only use of the
+selected set in Formation.)
+---
