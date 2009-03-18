@@ -169,8 +169,7 @@ public abstract class Evaluator {
                     new TaggedFormation(f, Tools.<Dancer,Tag>mml());
                 // we're going to want to ensure that every dancer matches
                 // some tag.
-                Set<Dancer> unmatched = new LinkedHashSet<Dancer>
-                    (ds.currentFormation().dancers());
+                Set<Dancer> unmatched = new LinkedHashSet<Dancer>(f.dancers());
                 PartsCombineEvaluator pce = new PartsCombineEvaluator();
                 for (ParCall pc : p.children) {
                     // find the dancers matched, adjusting unmatched set
@@ -179,7 +178,7 @@ public abstract class Evaluator {
                     unmatched.removeAll(matched);
                     // create a "do your part" evaluator.
                     if (!matched.isEmpty())
-                        pce.add(matched, pc.child);
+                        pce.add(matched, pc.child, ds);
                 }
                 // all dancers must match a part.
                 if (!unmatched.isEmpty())
@@ -279,20 +278,41 @@ public abstract class Evaluator {
     private static class PartsCombineEvaluator extends Evaluator {
         private static class SubPart {
             public final Set<Dancer> matched;
-            public final Comp subcall;
-            public SubPart(Set<Dancer> matched, Comp subcall) {
+            public final DanceState ds;
+            public final Evaluator eval;
+            public SubPart(Set<Dancer> matched, Evaluator eval, DanceState ds){
                 this.matched = matched;
-                this.subcall = subcall;
+                this.eval = eval;
+                this.ds = ds;
             }
         }
         private List<SubPart> parts = new ArrayList<SubPart>();
-        void add(Set<Dancer> matched, Comp subcall) {
-            this.parts.add(new SubPart(matched, subcall));
+        void add(Set<Dancer> matched, Comp subcall, DanceState ds) {
+            this.add(matched, new Standard(subcall), ds);
+        }
+        void add(Set<Dancer> matched, Evaluator eval, DanceState ds) {
+            // transform dance state in 'do your parts'
+            // xxx: maybe change unselected dancers to phantoms?
+            DanceState nds = ds.cloneAndClear
+                (ds.currentFormation().select(matched));
+            this.parts.add(new SubPart(matched, eval, ds));
         }
         @Override
         public Evaluator evaluate(DanceState ds) {
-            // TODO Auto-generated method stub
-            return null;
+            PartsCombineEvaluator pce = new PartsCombineEvaluator();
+            // do one part of each subcall
+            for (SubPart p: parts) {
+                Evaluator ne = p.eval.evaluate(p.ds);
+                // add only the selected dancer's actions
+                for (Dancer d: p.matched)
+                    for (DancerPath dp : p.ds.movements(d))
+                        ds.add(d, dp);
+                if (ne==null) continue;
+                // create an evaluator for the next part
+                pce.add(p.matched, ne, p.ds);
+            }
+            // is there a continuation?
+            return pce.parts.isEmpty() ? null : pce;
         }
     }
 }
