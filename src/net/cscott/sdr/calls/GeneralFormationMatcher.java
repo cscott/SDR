@@ -311,7 +311,8 @@ public abstract class GeneralFormationMatcher {
         // the canonical formations have the input dancers, and the formations
         // are unwarped and unrotated.  The key dancers in the canonical map
         // are the phantoms from the meta formation.
-        return new FormationMatch(Breather.breathe(pieces), canonical);
+        return new FormationMatch(Breather.breathe(pieces), canonical,
+                                  unmappedInputDancers);
     }
     private static class OneMatch {
         /** This input dancer is #1 in the goal formation. */

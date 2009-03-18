@@ -34,10 +34,16 @@ public class FormationMatch {
      * and recombined into the original setup.
      */
     public final Map<Dancer,TaggedFormation> matches;
+    /** Be explicit about unmatched dancers, just in case real matched dancers
+     * also map to {@link FormationList#SINGLE_DANCER}.
+     */
+    public final Set<Dancer> unmatched;
 
-    public FormationMatch(Formation meta, Map<Dancer,TaggedFormation> matches) {
+    public FormationMatch(Formation meta, Map<Dancer,TaggedFormation> matches,
+                          Set<Dancer> unmatched) {
         this.meta = meta;
         this.matches = Collections.unmodifiableMap(matches);
+        this.unmatched = Collections.unmodifiableSet(unmatched);
     }
 
     /** Pretty-print a {@link FormationMatch}. */
@@ -59,7 +65,10 @@ public class FormationMatch {
         // now one tagged formation per phantom
         for (Dancer d: phantoms) {
             sb.append(metaDancerNames.get(d));
-            sb.append(":\n");
+            sb.append(':');
+            if (unmatched.contains(d))
+                sb.append(" (unmatched)");
+            sb.append('\n');
             TaggedFormation tf = matches.get(d);
             sb.append(tf.toStringDiagram
                       ("   ", Formation.dancerNames));
