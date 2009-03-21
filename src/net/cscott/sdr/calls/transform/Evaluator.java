@@ -295,7 +295,7 @@ public abstract class Evaluator {
             // xxx: maybe change unselected dancers to phantoms?
             DanceState nds = ds.cloneAndClear
                 (ds.currentFormation().select(matched));
-            this.parts.add(new SubPart(matched, eval, ds));
+            this.parts.add(new SubPart(matched, eval, nds));
         }
         @Override
         public Evaluator evaluate(DanceState ds) {
