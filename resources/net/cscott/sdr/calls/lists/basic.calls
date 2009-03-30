@@ -25,6 +25,22 @@ def: _short_circle_left
   in: 8/5
   prim: -2,0,none
 
+def: heads start
+ from: STATIC SQUARE
+  in: 2
+  select: HEAD
+   prim: 0, 2, none // "press ahead"
+  select: OTHERS
+   prim: 0, 0, none // stay where they are
+
+def: sides start
+ from: STATIC SQUARE
+  in: 2
+  select: SIDE
+   prim: 0, 2, none // "press ahead"
+  select: OTHERS
+   prim: 0, 0, none // stay where they are
+
 def: trade
   from: COUPLE
     in: 6
@@ -303,7 +319,7 @@ def: run(sel)
       select: BELLE
         prim: -1,1,left
         prim: -1,1,left
-    select: ALL // ie, others
+    select: OTHERS
       select: BEAU
         prim: 1,0,none
         prim: 1,0,none
@@ -319,7 +335,7 @@ def: cross run(sel)
     select: [sel]
       prim: in 2, 1, in
       prim: in 1, 2, in
-    select: ALL // ie, others (same as run)
+    select: OTHERS
       select: BEAU
         prim: 1,0,none
         prim: 1,0,none
@@ -385,7 +401,7 @@ def: column circulate
   from: GENERAL COLUMNS
     select: NUMBER 1
       call: _lead circ
-    select: ALL // others
+    select: OTHERS
       call: _trail circ
 
 def: _lead circ // leaders part of a box/column circulate
@@ -424,7 +440,7 @@ def: walk others dodge(sel)
       condition: SELECTED ARE(TRAILER)
       prim: 0,1,none
       prim: 0,1,none
-    select: ALL // others
+    select: OTHERS
       select: BEAU
         prim: 1,0,none
         prim: 1,0,none
@@ -530,7 +546,7 @@ def: fold(sel)
     select: BELLE
       prim: -1,3,left
       prim: -1,1,left
-  select: ALL // others
+  select: OTHERS
     prim: 0,0,none
 
 def: cross fold(sel)
@@ -540,7 +556,7 @@ def: cross fold(sel)
     select: [sel]
       prim: in 2, 3, in
       prim: in 1, 2, in
-    select: ALL // others
+    select: OTHERS
       prim: 0,0,none
 
 def: square thru(n)

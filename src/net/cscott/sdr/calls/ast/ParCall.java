@@ -34,8 +34,9 @@ public class ParCall extends AstNode {
             s=s.toUpperCase().replace(' ','_').replace('-','_');
             if (s.equals("NONE"))
                 continue;
-            else
-                sels.add(Tag.valueOf(s));
+            if (s.equals("OTHERS"))
+                s = "ALL"; // human-friendly helper
+            sels.add(Tag.valueOf(s));
         }
         return sels;
     }
