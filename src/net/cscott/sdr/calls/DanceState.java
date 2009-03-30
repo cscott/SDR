@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import net.cscott.sdr.calls.ast.Prim;
+import net.cscott.sdr.calls.transform.EvalPrim;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Tools.ListMultiMap;
 import static net.cscott.sdr.util.Tools.mml;
@@ -23,21 +25,19 @@ import static net.cscott.sdr.util.Tools.mml;
 public class DanceState {
     public final DanceProgram dance;
     private final NavigableMap<Fraction, Formation> formations;
-    private final ListMultiMap<Dancer, DancerPath> movements;
     private final ListMultiMap<Dancer, TimedAction> actions; // XXX?
-    private final Map<Dancer, Fraction> timeOfLastMovement;
+    private final Map<Dancer, NavigableMap<Fraction, DancerPath>> movements;
 
     public DanceState(DanceProgram dance, Formation f) {
         this.dance = dance;
         this.formations = new TreeMap<Fraction,Formation>();
         this.formations.put(Fraction.ZERO, f);
-        this.movements = mml();
         this.actions = mml();
-        this.timeOfLastMovement =
-            new HashMap<Dancer,Fraction>(f.dancers().size());
-        // initialize timeOfLastMovement
+        // initialize movements
+        this.movements = new HashMap<Dancer,NavigableMap<Fraction,DancerPath>>
+            (f.dancers().size());
         for (Dancer d: f.dancers())
-            this.timeOfLastMovement.put(d, Fraction.ZERO);
+            this.movements.put(d, new TreeMap<Fraction,DancerPath>());
         // xxx: initialize actions?
     }
 
@@ -84,16 +84,13 @@ public class DanceState {
      * the {@link #currentFormation()}, and may create additional intermediate
      * formations, if the {@link DancerPath#time} falls in between existing
      * formations.
-     *
-     * @param d
-     * @param dp
      */
     public void add(Dancer d, DancerPath dp) {
         // add to list of dancer paths
-        this.movements.add(d, dp);
-        // adjust formations.
-        Fraction last = this.timeOfLastMovement.get(d);
+	NavigableMap<Fraction,DancerPath> dmove = this.movements.get(d);
+	Fraction last = dmove.isEmpty() ? Fraction.ZERO : dmove.lastKey();
         Fraction next = last.add(dp.time);
+        dmove.put(next, dp);
         // get formation with time == next, or "just before"
         if (!this.formations.containsKey(next)) {
             // clone the formation "just before"
@@ -108,8 +105,36 @@ public class DanceState {
         }
         // done!
     }
+
+    /**
+     * Add "do nothing" actions as necessary so that every dancer's next
+     * action will occur at the same time.
+     */
+    public void syncDancers() {
+        Fraction currentTime = this.currentTime();
+        for (Map.Entry<Dancer,NavigableMap<Fraction,DancerPath>> me :
+                this.movements.entrySet()) {
+            Dancer d = me.getKey();
+            NavigableMap<Fraction,DancerPath> dmove = me.getValue();
+            Fraction lastTime = dmove.lastKey();
+            assert lastTime.compareTo(currentTime) <= 0;
+            if (lastTime.equals(currentTime))
+                continue;
+            Prim nothingPrim =
+                Prim.STAND_STILL.scaleTime(currentTime.subtract(lastTime));
+            DancerPath nothingPath =
+                EvalPrim.apply(d, formations.get(lastTime), nothingPrim);
+            dmove.put(currentTime, nothingPath);
+        }
+    }
+
+    /**
+     * Return all the {@link DancerPath}s, in order, performed by the given
+     * {@link Dancer}.
+     */
     public List<DancerPath> movements(Dancer d) {
-        return Collections.unmodifiableList(this.movements.getValues(d));
+        return Collections.unmodifiableList
+            (new ArrayList<DancerPath>(this.movements.get(d).values()));
     }
 
     /**
