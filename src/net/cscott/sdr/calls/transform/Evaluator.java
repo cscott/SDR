@@ -1,9 +1,11 @@
 package net.cscott.sdr.calls.transform;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 
 import net.cscott.sdr.calls.BadCallException;
@@ -146,7 +148,7 @@ public abstract class Evaluator {
                 for (Selector s: oc.selectors) {
                     try {
                         FormationMatch fm = s.match(ds.currentFormation());
-                        return new MetaEvaluator(fm).evaluate(ds);
+                        return new MetaEvaluator(fm, oc.child).evaluate(ds);
                     } catch (NoMatchException nme) {
                         /* ignore; try the next selector */
                     }
@@ -261,14 +263,61 @@ public abstract class Evaluator {
     }
     /** Implements {@link Opt}: evaluates a call in a meta formation. */
     private static class MetaEvaluator extends Evaluator {
-        private final FormationMatch fm;
-        MetaEvaluator(FormationMatch fm) {
-            this.fm = fm;
+        private final int metaSize;
+        private final Formation meta;
+        private final Map<Dancer,? extends Formation> parts;
+        private final Map<Dancer,Evaluator> emap;
+        MetaEvaluator(Formation meta, Map<Dancer,? extends Formation> parts,
+                      Map<Dancer,Evaluator> emap) {
+            this.meta = meta;
+            this.parts = parts;
+            this.emap = emap;
+            this.metaSize = meta.dancers().size();
+        }
+        MetaEvaluator(FormationMatch fm, Comp child) {
+            this(fm.meta, fm.matches, _makeStandardEvaluators(fm, child));
+        }
+        private static Map<Dancer,Evaluator>
+        _makeStandardEvaluators(FormationMatch fm, Comp child) {
+            boolean matchedOne = false;
+            Map<Dancer,Evaluator> emap = new HashMap<Dancer,Evaluator>
+                (fm.meta.dancers().size());
+            for (Dancer d : fm.meta.dancers()) {
+                Evaluator e = fm.unmatched.contains(d)
+                        ? null : new Standard(child);
+                if (e!=null) matchedOne = true;
+                emap.put(d, e);
+            }
+            assert matchedOne;
+            return emap;
         }
         @Override
         public Evaluator evaluate(DanceState ds) {
-            // TODO Auto-generated method stub
-            return null;
+            Map<Dancer,Formation> components =
+                new HashMap<Dancer,Formation>(this.metaSize);
+            Map<Dancer,Evaluator> nemap =
+                new HashMap<Dancer,Evaluator>(this.metaSize);
+            boolean done = true;
+            // do a sub-evaluation in each part of the match
+            for (Dancer metaDancer : this.meta.dancers()) {
+                Formation sub = this.parts.get(metaDancer);
+                Evaluator e = emap.get(metaDancer);
+                if (e==null) {
+                    components.put(metaDancer, sub); // no movement here.
+                } else {
+                    DanceState nds = ds.cloneAndClear(sub);
+                    e = e.evaluate(nds);
+                    if (e!=null) done = false;
+                    // xxx: should really put all pieces, not just the last
+                    components.put(metaDancer, nds.currentFormation());
+                }
+                nemap.put(metaDancer, e);
+            }
+            // insert the results into a new formation, breathing as necessary
+            Formation result = Breather.insert(this.meta, components);
+            // xxx: now map the individual dancerpaths, and add then to ds
+            ds.syncDancers(); // ensure unmatched dancers are at same time step
+            return done ? null : new MetaEvaluator(this.meta, components, nemap);
         }
     }
     /**
@@ -280,7 +329,7 @@ public abstract class Evaluator {
             public final Set<Dancer> matched;
             public final DanceState ds;
             public final Evaluator eval;
-            public SubPart(Set<Dancer> matched, Evaluator eval, DanceState ds){
+            public SubPart(Set<Dancer> matched, Evaluator eval, DanceState ds) {
                 this.matched = matched;
                 this.eval = eval;
                 this.ds = ds;
