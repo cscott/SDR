@@ -91,6 +91,17 @@ public class DancerPath {
         return new DancerPath
             (from, to, arcCenter, time.multiply(amount), pointOfRotation);
     }
+    /** Return a {@link DancerPath} like this one, except with the 'to' and
+     * 'from' positions warped to those given.
+     */
+    public DancerPath translate(Position from, Position to) {
+        // FIXME: adjust arcCenter to correspond to new from/to!
+        //        or change how it is represented so it doesn't need to
+        //        be updated.
+        Point arcCenter = null; // XXX
+        return new DancerPath(from, to, arcCenter,
+                              this.time, this.pointOfRotation);
+    }
     @Override
     public String toString() {
 	return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)

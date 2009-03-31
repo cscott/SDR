@@ -626,3 +626,37 @@ otherwise the centers would do their part of a partner trade with the ends.
 prims to the selected dancers, but that's our only use of the
 selected set in Formation.)
 ---
+
+
+SELECT marks a "re-evaluation" point.  Take the *breathed* version of
+the formation at that point.
+
+DanceState might want to distinguish between the *breathed* formation
+(which is animated, and corresponds to where the dancers "really" are)
+and the *unbreathed* formation (which corresponds to where the dancers
+*think* they are).  For example, in facing star turns in a plenty, the
+dancers are thinking that they are in a box at all times, even though
+in actual practice they go through this weird crash state.  The PRIMs
+for pass thru and trade are written as if you don't crash; if you
+resolve the crash in the middle you'll end up someplace weird, even
+though you want to animate with the crash resolved.  It just doesn't
+affect your final position.
+
+In actuality, the facing star turns are an example of "DO YOUR PART"
+which consists of replacing all of the other dancers with
+directionless phantoms.  In this case, a SELECT will match the *first*
+of the formations possible.  So if you want "DO YOUR PART SPLIT
+CIRCULATE" to assume a rh-box in preference to facing couples or
+waves (since when you phantomize all but one dancer these are
+legit matches), then make sure the RH BOX is first in the SELECT.
+
+For evaluating SELECT, we should have a data structure which lists all
+the DancerPaths for a particular dancer in order.   Then to obtain the
+breathed dancer paths, we just iterate through them, replacing the
+to() and from() with BreathedFormationAtTime[to].location(d),
+BreathedFormationAtTime[from].location(d).
+
+(We probably don't have to actually keep the breathed formations
+around at all times: we can just create them on demand when the
+caller invokes breathedDancerPaths() or breathedCurrentFormation()
+(this latter call should be what SELECT matches on).

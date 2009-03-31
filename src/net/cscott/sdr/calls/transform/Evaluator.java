@@ -7,17 +7,22 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import net.cscott.sdr.calls.BadCallException;
+import net.cscott.sdr.calls.Breather;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.DancerPath;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationMatch;
 import net.cscott.sdr.calls.NoMatchException;
+import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Predicate;
 import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.TaggedFormation;
+import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.AstNode;
@@ -145,9 +150,11 @@ public abstract class Evaluator {
             /** Try all the selectors. */
             @Override
             public Evaluator visit(OptCall oc, DanceState ds) {
+                // Match from the breathed version of the formation.
+                Formation f = Breather.breathe(ds.currentFormation());
                 for (Selector s: oc.selectors) {
                     try {
-                        FormationMatch fm = s.match(ds.currentFormation());
+                        FormationMatch fm = s.match(f);
                         return new MetaEvaluator(fm, oc.child).evaluate(ds);
                     } catch (NoMatchException nme) {
                         /* ignore; try the next selector */
@@ -293,31 +300,58 @@ public abstract class Evaluator {
         }
         @Override
         public Evaluator evaluate(DanceState ds) {
-            Map<Dancer,Formation> components =
-                new HashMap<Dancer,Formation>(this.metaSize);
-            Map<Dancer,Evaluator> nemap =
-                new HashMap<Dancer,Evaluator>(this.metaSize);
-            boolean done = true;
+            List<Dancer> metaDancers=new ArrayList<Dancer>(this.meta.dancers());
+            Map<Dancer,DanceState> substates =
+                new HashMap<Dancer,DanceState>(this.metaSize);
+            // maintain a list of unique time values.
+            TreeSet<Fraction> moments = new TreeSet<Fraction>();
             // do a sub-evaluation in each part of the match
-            for (Dancer metaDancer : this.meta.dancers()) {
+            // use evaluateAll here because the subformations could
+            // have different #s of parts (for the same call) and we
+            // don't want to get them out of sync.
+            //  xxx: is this really a problem?
+            for (Dancer metaDancer : metaDancers) {
                 Formation sub = this.parts.get(metaDancer);
                 Evaluator e = emap.get(metaDancer);
-                if (e==null) {
-                    components.put(metaDancer, sub); // no movement here.
-                } else {
-                    DanceState nds = ds.cloneAndClear(sub);
-                    e = e.evaluate(nds);
-                    if (e!=null) done = false;
-                    // xxx: should really put all pieces, not just the last
-                    components.put(metaDancer, nds.currentFormation());
-                }
-                nemap.put(metaDancer, e);
+                DanceState nds = ds.cloneAndClear(sub);
+                if (e != null)
+                    e.evaluateAll(nds);
+                substates.put(metaDancer, nds);
+                for (TimedFormation tf: nds.formations())
+                    moments.add(tf.time);
             }
-            // insert the results into a new formation, breathing as necessary
-            Formation result = Breather.insert(this.meta, components);
-            // xxx: now map the individual dancerpaths, and add then to ds
-            ds.syncDancers(); // ensure unmatched dancers are at same time step
-            return done ? null : new MetaEvaluator(this.meta, components, nemap);
+            // go through all the moments in time, constructing an appropriately
+            // breathed formation.
+            TreeMap<Fraction,Formation> breathed =
+                new TreeMap<Fraction,Formation>();
+            for (Fraction t : moments) {
+                Map<Dancer,Formation> components =
+                    new HashMap<Dancer,Formation>();
+                for (Dancer metaDancer : metaDancers) {
+                    components.put(metaDancer,
+                                   substates.get(metaDancer).formationAt(t));
+                }
+                // insert the results into a new formation, breathing as necessary
+                breathed.put(t, Breather.insert(this.meta, components));
+            }
+            // okay, now go through the individual dancer paths, adjusting the
+            // 'to' and 'from' positions to match breathed.
+            for (Dancer metaDancer : metaDancers) {
+                DanceState nds = substates.get(metaDancer);
+                nds.syncDancers(moments.last());
+                for (Dancer d : nds.dancers()) {
+                    Fraction t = Fraction.ZERO;
+                    for (DancerPath dp : nds.movements(d)) {
+                        Position nfrom = breathed.get(t).location(d);
+                        t = t.add(dp.time);
+                        Position nto = breathed.get(t).location(d);
+                        DancerPath ndp = dp.translate(nfrom, nto);
+                        ds.add(d, ndp);
+                    }
+                }
+            }
+            // dancers should all be in sync at this point.
+            return null;
         }
     }
     /**
@@ -342,6 +376,7 @@ public abstract class Evaluator {
         void add(Set<Dancer> matched, Evaluator eval, DanceState ds) {
             // transform dance state in 'do your parts'
             // xxx: maybe change unselected dancers to phantoms?
+            //      consider "do your part star turns" in a facing plenty
             DanceState nds = ds.cloneAndClear
                 (ds.currentFormation().select(matched));
             this.parts.add(new SubPart(matched, eval, nds));

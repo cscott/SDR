@@ -3,9 +3,11 @@ package net.cscott.sdr.calls;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Set;
 import java.util.TreeMap;
 
 import net.cscott.sdr.calls.ast.Prim;
@@ -34,7 +36,7 @@ public class DanceState {
         this.formations.put(Fraction.ZERO, f);
         this.actions = mml();
         // initialize movements
-        this.movements = new HashMap<Dancer,NavigableMap<Fraction,DancerPath>>
+        this.movements = new LinkedHashMap<Dancer,NavigableMap<Fraction,DancerPath>>
             (f.dancers().size());
         for (Dancer d: f.dancers())
             this.movements.put(d, new TreeMap<Fraction,DancerPath>());
@@ -111,20 +113,26 @@ public class DanceState {
      * action will occur at the same time.
      */
     public void syncDancers() {
-        Fraction currentTime = this.currentTime();
+        this.syncDancers(this.currentTime());
+    }
+    /**
+     * Add "do nothing" actions as necessary so that every dancer's next
+     * action will occur at the given time.
+     */
+    public void syncDancers(Fraction time) {
         for (Map.Entry<Dancer,NavigableMap<Fraction,DancerPath>> me :
                 this.movements.entrySet()) {
             Dancer d = me.getKey();
             NavigableMap<Fraction,DancerPath> dmove = me.getValue();
             Fraction lastTime = dmove.lastKey();
-            assert lastTime.compareTo(currentTime) <= 0;
-            if (lastTime.equals(currentTime))
+            assert lastTime.compareTo(time) <= 0;
+            if (lastTime.equals(time))
                 continue;
             Prim nothingPrim =
-                Prim.STAND_STILL.scaleTime(currentTime.subtract(lastTime));
+                Prim.STAND_STILL.scaleTime(time.subtract(lastTime));
             DancerPath nothingPath =
                 EvalPrim.apply(d, formations.get(lastTime), nothingPrim);
-            dmove.put(currentTime, nothingPath);
+            dmove.put(time, nothingPath);
         }
     }
 
@@ -135,6 +143,11 @@ public class DanceState {
     public List<DancerPath> movements(Dancer d) {
         return Collections.unmodifiableList
             (new ArrayList<DancerPath>(this.movements.get(d).values()));
+    }
+
+    /** Return all the {@link Dancer}s in this {@link DanceState}. */
+    public Set<Dancer> dancers() {
+        return this.movements.keySet();
     }
 
     /**
@@ -160,5 +173,9 @@ public class DanceState {
             result.add(new TimedFormation(me.getValue(), me.getKey(), true));
         }
         return Collections.unmodifiableList(result);
+    }
+    /** Return the latest formation at or preceding the given time. */
+    public Formation formationAt(Fraction time) {
+        return this.formations.floorEntry(time).getValue();
     }
 }
