@@ -29,10 +29,10 @@ genders returns [Apply r]
 	: a=boys {r=a;} | a=girls {r=a;}
 	;
 boys returns [Apply a]
-@init { a = Apply.makeApply("BOYS"); }
+@init { a = Apply.makeApply("BOY"); }
 	: 'boys' | 'men' ;
 girls returns [Apply a]
-@init { a = Apply.makeApply("GIRLS"); }
+@init { a = Apply.makeApply("GIRL"); }
 	: 'girls' | 'ladies';
 all returns [Apply a]
 @init { a = Apply.makeApply("ALL"); }
@@ -50,6 +50,8 @@ a_number returns [Fraction f]
 	: f1=a_digit 'and' f2=a_fraction { f=f1.add(f2); }
 	| f1=a_digit {f=f1;}
 	| f1=a_fraction {f=f1;}
+	// hack for typing (not spoken)
+	| w=integer n=integer '/' d=integer { f=Fraction.valueOf(w, n, d); }
 	;
 a_digit returns [Fraction f]
 	: 'one' { f=Fraction.valueOf(1); }
@@ -61,7 +63,10 @@ a_digit returns [Fraction f]
 	| 'seven' { f=Fraction.valueOf(7); }
 	| 'eight' { f=Fraction.valueOf(8); }
 	| 'nine' { f=Fraction.valueOf(9); }
+	// hack for typing (not spoken)
+	| integer { f=Fraction.valueOf($integer.r); }
 	;
+
 fraction returns [Apply a]
 	: f=a_fraction { a = Apply.makeApply(f.toProperString()); }
 	;
@@ -71,7 +76,15 @@ a_fraction returns [Fraction f]
 	| ('a'|'one') 'quarter' { f=Fraction.valueOf("1/4"); }
 	| 'two' 'thirds' { f=Fraction.valueOf("2/3"); }
 	| 'three' 'quarters' { f=Fraction.valueOf("3/4"); }
+	// hack for typing (not spoken)
+	| n=integer '/' d=integer { f=Fraction.valueOf($n.r, $d.r); }
 	;
+fragment
+integer returns [Integer r]
+	: INT { $r = Integer.valueOf($INT.text); }
+	;
+INT	: ('0'..'9')+ ;
+
 cardinal returns [Apply a]
 	: f=a_cardinal { a=Apply.makeApply(f.toProperString()); }
 	;

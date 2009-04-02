@@ -87,12 +87,18 @@ public class CallDB {
     ///////////////////////////////////////////////
     /** Parse a natural-language string of calls.
      *
-     * @doc.test
+     * @doc.test Simple examples:
      * js> db = CallDB.INSTANCE
      * net.cscott.sdr.calls.CallDB@1d66e22
      * js> db.parse(Program.BASIC, "double pass thru")
      * (Apply double pass thru)
      * js> db.parse(Program.BASIC, "square thru three and a half")
+     * (Apply square thru (Apply 3 1/2))
+     * @doc.test As a convenience, we also allow numbers specified with digits
+     *  (even though this is never produced by the spoken language recognizer):
+     * js> db = CallDB.INSTANCE
+     * net.cscott.sdr.calls.CallDB@1d66e22
+     * js> db.parse(Program.BASIC, "square thru 3 1/2")
      * (Apply square thru (Apply 3 1/2))
      */
     public Apply parse(Program program, String s) {
