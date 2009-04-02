@@ -303,10 +303,36 @@ public class Formation {
      * "3B^  3Gv  "
      * </pre>
      * Note that the return value has no trailing \n.
+     *  js> Formation.SQUARED_SET.toStringDiagram()
+     *       3Gv  3Bv
+     *  
+     *  4B>            2G<
+     *  
+     *  4G>            2B<
+     *  
+     *       1B^  1G^
      */
     public String toStringDiagram() {
 	/* invoke the full toStringDiagram() with default dancer names*/
-	return toStringDiagram("", dancerNames);
+	return toStringDiagram("");
+    }
+    /**
+     * Return an ascii-art diagram of this formation with the specified
+     * prefix on each line.
+     * Note that the return value has no trailing \n.
+     * @see #toStringDiagram()
+     *  js> Formation.SQUARED_SET.toStringDiagram("!")
+     *  !     3Gv  3Bv
+     *  !
+     *  !4B>            2G<
+     *  !
+     *  !4G>            2B<
+     *  !
+     *  !     1B^  1G^
+     */
+    public String toStringDiagram(String prefix) {
+	/* invoke the full toStringDiagram() with default dancer names*/
+	return toStringDiagram(prefix, dancerNames);
     }
     /**
      * Return an ascii-art diagram of this formation, using a custom
