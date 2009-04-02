@@ -3,6 +3,7 @@ package net.cscott.sdr.calls;
 import java.util.*;
 
 import net.cscott.sdr.calls.Breather.FormationPiece;
+import net.cscott.sdr.calls.Position.Flag;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.util.Fraction;
@@ -481,17 +482,18 @@ public abstract class GeneralFormationMatcher {
 	    Warp w = new Warp() {
 	        public Position warp(Position p, Fraction time) {
 		    p = rotateCWAroundOrigin(p, (ExactRotation) warp.facing);
-		    return new Position(p.x.add(warp.x), p.y.add(warp.y), p.facing);
+		    return p.relocate
+                    (p.x.add(warp.x), p.y.add(warp.y), p.facing);
 		}
 	    };
-	    assert to.equals(w.warp(from,Fraction.ZERO));
+	    assert to.setFlags(from.flags.toArray(new Flag[0])).equals(w.warp(from,Fraction.ZERO)) : "bad warp "+to+" vs "+w.warp(from, Fraction.ZERO);
 	    return w;
 	}
 	// helper method for rotateAndMove
 	private static Position rotateCWAroundOrigin(Position p, ExactRotation amt) {
 	    Fraction x = p.x.multiply(amt.toY()).add(p.y.multiply(amt.toX()));
 	    Fraction y = p.y.multiply(amt.toY()).subtract(p.x.multiply(amt.toX()));
-	    return new Position(x, y, p.facing.add(amt.amount));
+	    return p.relocate(x, y, p.facing.add(amt.amount));
 	}
     }
 }
