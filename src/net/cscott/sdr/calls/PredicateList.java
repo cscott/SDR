@@ -1,7 +1,15 @@
 package net.cscott.sdr.calls;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Condition;
+import net.cscott.sdr.calls.ast.ParCall;
 import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.Tools;
+import static net.cscott.sdr.util.Tools.mms;
 
 /** This class contains all the predicates known to the system. */
 public abstract class PredicateList {
@@ -81,6 +89,22 @@ public abstract class PredicateList {
             assert c.args.size()==1;
             Program p = Program.valueOf(c.getStringArg(0).toUpperCase());
             return ds.getProgram().includes(p);
+        }
+    };
+    public final static Predicate SELECTED_ARE = new _Predicate("selected are") {
+        @Override
+        public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
+            List<String> args = new ArrayList<String>(c.args.size());
+            for (int i=0; i<c.args.size(); i++)
+                args.add(c.getStringArg(i));
+            Set<Tag> tags = ParCall.parseTags(args);
+            // each selected dancer must have all of these tags
+            TaggedFormation tf = TaggedFormation.coerce(f);
+            for (Dancer d: f.selectedDancers())
+                for (Tag t : tags)
+                    if (!tf.isTagged(d, t))
+                        return false;
+            return true;
         }
     };
 

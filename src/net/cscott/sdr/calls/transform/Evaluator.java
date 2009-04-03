@@ -172,10 +172,8 @@ public abstract class Evaluator {
             public Evaluator visit(Par p, DanceState ds) {
                 // get the current tagged formation
                 Formation f = ds.currentFormation();
-                TaggedFormation tf =
-                    (f instanceof TaggedFormation) ? (TaggedFormation) f :
-                    // hm, dynamically apply tags here?
-                    new TaggedFormation(f, Tools.<Dancer,Tag>mml());
+                // hm, dynamically apply tags here?
+                TaggedFormation tf = TaggedFormation.coerce(f);
                 // we're going to want to ensure that every dancer matches
                 // some tag.
                 Set<Dancer> unmatched = new LinkedHashSet<Dancer>(f.dancers());

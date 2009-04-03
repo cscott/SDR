@@ -12,6 +12,7 @@ import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
 import net.cscott.jutil.UnmodifiableMultiMap;
+import net.cscott.sdr.util.Tools;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -157,6 +158,11 @@ public class TaggedFormation extends Formation {
     public TaggedFormation(Formation f, MultiMap<Dancer,Tag> tags) {
         super(f.location,f.selected);
         this.tags = UnmodifiableMultiMap.proxy(tags);//tags can be changed
+    }
+    public static TaggedFormation coerce(Formation f) {
+        if (f instanceof TaggedFormation)
+            return (TaggedFormation) f;
+        return new TaggedFormation(f, Tools.<Dancer,Tag>mml());
     }
     
     TaggedFormation(TaggedDancerInfo... dis) {
