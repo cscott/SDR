@@ -12,6 +12,7 @@ import java.util.TreeSet;
 
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Breather;
+import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.DancerPath;
@@ -55,6 +56,52 @@ import net.cscott.sdr.util.Tools;
  * and actions in a {@link DanceState}.</p>
  *
  * @author C. Scott Ananian
+ * @doc.test Simplest invocation: "heads start" from squared set.
+ *  js> importPackage(net.cscott.sdr.calls);
+ *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET);
+ *  net.cscott.sdr.calls.DanceState@b2a2d8
+ *  js> ds.currentFormation().toStringDiagram();
+ *       3Gv  3Bv
+ *  
+ *  4B>            2G<
+ *  
+ *  4G>            2B<
+ *  
+ *       1B^  1G^
+ *  js> comp = CallDB.INSTANCE.parse(ds.dance.program, "heads start");
+ *  (Apply heads start)
+ *  js> comp = new net.cscott.sdr.calls.ast.Seq(comp);
+ *  (Seq (Apply heads start))
+ *  js> e = new Evaluator.Standard(comp);
+ *  net.cscott.sdr.calls.transform.Evaluator$Standard@166cb16
+ *  js> e.evaluateAll(ds);
+ *  js> ds.currentFormation().toStringDiagram();
+ *  4B>  3Gv  3Bv  2G<
+ *  
+ *  4G>  1B^  1G^  2B<
+ * @doc.test More complex calls from facing couples.
+ *  js> importPackage(net.cscott.sdr.calls);
+ *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.FOUR_SQUARE);
+ *  net.cscott.sdr.calls.DanceState@d26103
+ *  js> ds.currentFormation().toStringDiagram();
+ *  3Gv  3Bv
+ *  
+ *  1B^  1G^
+ *  js> Evaluator.parseAndEval(ds, "boys walk girls dodge");
+ *  js> ds.currentFormation().toStringDiagram()
+ *  1B^  3Gv
+ *  
+ *  1G^  3Bv
+ *  js> Evaluator.parseAndEval(ds, "girls walk others dodge");
+ *  js> ds.currentFormation().toStringDiagram()
+ *  1G^  1B^
+ *  
+ *  3Bv  3Gv
+ *  js> Evaluator.parseAndEval(ds, "trade", "roll");
+ *  js> ds.currentFormation().toStringDiagram('|')
+ *  |1B>  1G<
+ *  |
+ *  |3G>  3B<
  */
 public abstract class Evaluator {
     /**
@@ -71,6 +118,15 @@ public abstract class Evaluator {
     public final void evaluateAll(DanceState ds) {
         for(Evaluator e = this; e!=null; )
             e = e.evaluate(ds);
+    }
+
+    /** Convenience method for easy testing. */
+    public static void parseAndEval(DanceState ds, String... calls) {
+        List<Apply> l = new ArrayList<Apply>(calls.length);
+        for (String s : calls)
+            l.add(CallDB.INSTANCE.parse(ds.dance.getProgram(), s));
+        Comp c = new Seq(l.toArray(new SeqCall[l.size()]));
+        new Standard(c).evaluateAll(ds);
     }
 
     /**
@@ -145,7 +201,7 @@ public abstract class Evaluator {
                     }
                 }
                 /* Hmm, none of the options worked. */
-                throw new BadCallException("no matching formation");
+                throw new BadCallException("no matching formation: "+opt.children);
             }
             /** Try all the selectors. */
             @Override
