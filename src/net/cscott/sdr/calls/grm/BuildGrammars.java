@@ -206,9 +206,8 @@ public class BuildGrammars {
                 // nonterminal *if* it was 'anything'.
                  if (!nonterm.ruleName.equals("anything"))
                      return nonterm;
-                 // if leftmost, then use prec, else use
-                 // prec+1.
-                 int nprec = (isLeftmost) ? prec : (prec+1);
+                 // if leftmost, then use prec+1, else use prec
+                 int nprec = (isLeftmost) ? (prec+1) : prec;
                  String ruleName = nonterm.ruleName + "_" + nprec;
                  return new Nonterminal(ruleName, nonterm.param);
             }
