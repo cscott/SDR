@@ -83,6 +83,15 @@ public class DancerPath {
         this.time = time;
         this.pointOfRotation = pointOfRotation;
     }
+    /** Return true iff this {@link DancerPath} corresponds to
+     *  "standing still"; ie, it just syncs time and doesn't change any of
+     *  a dancer's state.
+     */
+    public boolean isStandStill() {
+        // xxx: are we going to have to remove position flags from this
+        //      comparison at some point?
+        return this.from.equals(this.to);
+    }
     /** Return an equivalent {@link DancerPath} that completes in an adjusted
      * amount of time.
      */

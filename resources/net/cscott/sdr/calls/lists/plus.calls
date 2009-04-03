@@ -1,5 +1,11 @@
 program: plus
 
+def: roll
+  call: _roll
+def: _and_roll(c)
+  spoken: [-10] <c=anything> and roll
+  call: _roll([c])
+
 def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
   optional: LEFT
   in: 4

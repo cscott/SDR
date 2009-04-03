@@ -3,6 +3,7 @@ package net.cscott.sdr.calls;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -133,6 +134,20 @@ public class DanceState {
             DancerPath nothingPath =
                 EvalPrim.apply(d, formations.get(lastTime), nothingPrim);
             dmove.put(time, nothingPath);
+        }
+    }
+    /**
+     * Remove any trailing "do nothing" actions so that the next action
+     * flows directly from the previous one.  This is used in "roll" --
+     * I don't know if it's useful for any other calls.
+     */
+    public void unsyncDancers() {
+        for (NavigableMap<Fraction,DancerPath> dmove : this.movements.values()){
+            Iterator<Fraction> it= dmove.navigableKeySet().descendingIterator();
+            while (it.hasNext()) {
+                if (dmove.get(it.next()).isStandStill())
+                    it.remove();
+            }
         }
     }
 

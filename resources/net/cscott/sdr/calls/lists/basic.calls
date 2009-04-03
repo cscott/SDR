@@ -50,7 +50,7 @@ def: trade
     select: BELLE
       prim: -1, 1, left
       prim: -1, 1, left
-  from: RH MINIWAVE, LH MINIWAVE
+  from: MINIWAVE
     in: 4
     prim: in 1,1,in
     prim: in 1,1,in
@@ -435,7 +435,7 @@ def: walk and dodge
 def: walk others dodge(sel)
   spoken: [10] <sel=anyone> walk (others|<anyone>) dodge
   in: 4
-  from: BOX
+  from: BOX, FACING COUPLES
     select: [sel]
       condition: SELECTED ARE(TRAILER)
       prim: 0,1,none
@@ -448,15 +448,24 @@ def: walk others dodge(sel)
         prim: -1,0,none
         prim: -1,0,none
 
-def: hinge
+def: _hinge
   optional: LEFT
   in: 2
   call: 1/2(trade)
+def: hinge
+  from: MINIWAVE
+    call: _hinge
+  from: COUPLE
+    condition: PROGRAM AT LEAST(A1)
+    call: _hinge
+
 def: couples hinge
   in: 3
-  call: as couples(hinge)
+  call: as couples(_hinge)
+
 def: couples left hinge
   call: left(couples hinge)
+
 def: _REAL recycle // xxx
   in: 4
   ipart:
@@ -571,3 +580,8 @@ def: square thru(n)
     in: 2
     ipart: // actually, square thru N probably has N distinct parts.
       call: pull by, quarter in, left(square thru(_subtract_num(n,1)))
+
+def: _full_square_thru
+  optional: LEFT
+  spoken: square thru
+  call: square thru(4)

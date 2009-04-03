@@ -253,12 +253,13 @@ public abstract class Evaluator {
             }
         }
     }
-    /** Implements {@link Seq}: chains multiple evaluators together.
+    /**
+     * Chains multiple evaluators together.  Used to implement {@link Seq}.
      */
-    private static class EvaluatorChain extends Evaluator {
+    public static class EvaluatorChain extends Evaluator {
         final Evaluator head;
         final Evaluator next;
-        EvaluatorChain(Evaluator head, Evaluator next) {
+        public EvaluatorChain(Evaluator head, Evaluator next) {
             this.head = head;
             this.next = next;
         }
