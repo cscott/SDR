@@ -78,11 +78,6 @@ public class BuildGrammars {
         // XXX remove left recursion
 
         String programName = program.toTitleCase();
-        /*
-        // emit as ANTLR v2 grammar
-        writeFile("src/net/cscott/sdr/calls/lists/"+programName+"Grammar.g",
-                EmitANTLR.emit(programName, rules));
-        */
         // emit as ANTLR v3 grammar
         writeFile("src/net/cscott/sdr/calls/lists/"+programName+"Grammar.g",
                 EmitANTLRv3.emit(programName, rules));
