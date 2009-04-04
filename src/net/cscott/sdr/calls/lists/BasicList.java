@@ -7,6 +7,10 @@ import java.util.List;
 
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;
+import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.Dancer;
+import net.cscott.sdr.calls.DancerPath;
+import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.calls.grm.Grm;
@@ -115,31 +119,78 @@ public abstract class BasicList {
         @Override
         public int getMinNumberOfArguments() { return 2; }
     };
-    // XXX: this is not completely accurate: LEFT means 'do each part LEFT'
-    // but collisions are still resolved to right hands. (opposed to MIRROR,
-    // where collisions are to left hands).
+    // LEFT means 'do each part LEFT' but collisions are still resolved to
+    // right hands. (opposed to MIRROR, where collisions are to left hands).
     public static final Call LEFT = new BasicCall("left") {
         @Override
         public Comp apply(Apply ast) {
-            assert ast.callName.equals(getName());
-            assert ast.args.size()==1;
-            Apply a = ast.getArg(0);
-            // XXX: THIS SHOULD BE REWRITTEN AS A CUSTOM
-            //      EVALUATOR
-            assert false: "not implemented";
-            //Warp warp = Warp.MIRROR;
-            //return new Warped(warp, new Seq(a));
-            return new Seq(a);
+            assert false; /* should use custom evaluator */
+            return null;
         }
         @Override
         public int getMinNumberOfArguments() { return 1; }
         @Override
         public Rule getRule() {
-            // XXX would be nice if this could deal with a sequence of ANDs 
             Grm g = Grm.parse("left <0=leftable_anything>");
             return new Rule("anything", g, Fraction.TWO); // bind tight
         }
+        @Override
+        public Evaluator getEvaluator(Apply ast) {
+            assert ast.callName.equals(getName());
+            return new LRMEvaluator(LRMType.LEFT, ast);
+        }
     };
+
+    public static final Call REVERSE = new BasicCall("reverse") {
+        @Override
+        public Comp apply(Apply ast) {
+            assert false; /* should use custom evaluator */
+            return null;
+        }
+        @Override
+        public int getMinNumberOfArguments() { return 1; }
+        @Override
+        public Rule getRule() {
+            Grm g = Grm.parse("reverse <0=reversable_anything>");
+            return new Rule("anything", g, Fraction.TWO); // bind tight
+        }
+        @Override
+        public Evaluator getEvaluator(Apply ast) {
+            assert ast.callName.equals(getName());
+            return new LRMEvaluator(LRMType.REVERSE, ast);
+        }
+    };
+
+    /** Enumeration: left, reverse, or mirror. */
+    public static enum LRMType { LEFT, MIRROR, REVERSE; }
+    /** Evaluator for left, reverse, and mirror. */
+    public static class LRMEvaluator extends Evaluator {
+        private final LRMType which;
+        private final Comp comp;
+        public LRMEvaluator(LRMType which, Apply ast) {
+            assert ast.args.size()==1;
+            this.which = which;
+            this.comp = new Seq(ast.getArg(0));
+        }
+        @Override
+        public Evaluator evaluate(DanceState ds) {
+            boolean mirrorShoulderPass = (which != LRMType.MIRROR);
+            // Mirror the current formation.
+            Formation nf = ds.currentFormation().mirror(mirrorShoulderPass);
+            DanceState nds = ds.cloneAndClear(nf);
+            // do the call in the mirrored formation
+            new Evaluator.Standard(this.comp).evaluateAll(nds);
+            // now re-mirror the resulting paths.
+            for (Dancer d : nds.dancers()) {
+                for (DancerPath dp : nds.movements(d)) {
+                    ds.add(d, dp.mirror(mirrorShoulderPass));
+                }
+            }
+            // no more to evaluate
+            return null;
+        }
+    };
+
     // complex concept -- not sure correct program here?
     // XXX: support further subdivision of DOSADO 1 1/2 by allowing an
     //      integer argument to Part which specifies how many parts

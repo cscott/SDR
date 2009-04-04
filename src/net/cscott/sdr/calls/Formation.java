@@ -536,12 +536,67 @@ public class Formation {
         }
     }
     /** Return a formation like this one, except that the given dancer is
-     *  moved to the specified position. */
+     *  moved to the specified position.
+     *  js> f = Formation.SQUARED_SET; f.toStringDiagram("|")
+     *  |     3Gv  3Bv
+     *  |
+     *  |4B>            2G<
+     *  |
+     *  |4G>            2B<
+     *  |
+     *  |     1B^  1G^
+     *  js> f.move(StandardDancer.COUPLE_1_BOY, Position.getGrid(-1,0,"e")).toStringDiagram("|")
+     *  |     3Gv  3Bv
+     *  |
+     *  |4B>            2G<
+     *  |     1B>
+     *  |4G>            2B<
+     *  |
+     *  |          1G^
+     */
     public Formation move(Dancer d, Position p) {
 	assert this.location.containsKey(d);
 	Map<Dancer,Position> nmap = new LinkedHashMap<Dancer,Position>
 	    (this.location);
 	nmap.put(d, p);
 	return new Formation(nmap, this.selected);
+    }
+    /** Return a formation like this one, except with all positions mirrored.
+     * @doc.test
+     *  js> f = Formation.SQUARED_SET; f.toStringDiagram("|");
+     *  |     3Gv  3Bv
+     *  |
+     *  |4B>            2G<
+     *  |
+     *  |4G>            2B<
+     *  |
+     *  |     1B^  1G^
+     *  js> f.mirror(false).toStringDiagram("|")
+     *  |     3Bv  3Gv
+     *  |
+     *  |2G>            4B<
+     *  |
+     *  |2B>            4G<
+     *  |
+     *  |     1G^  1B^
+     *  js> f.mirror(false).location(StandardDancer.COUPLE_1_BOY)
+     *  1,-3,n
+     *  js> f.mirror(true).toStringDiagram("|")
+     *  |     3Bv  3Gv
+     *  |
+     *  |2G>            4B<
+     *  |
+     *  |2B>            4G<
+     *  |
+     *  |     1G^  1B^
+     *  js> f.mirror(true).location(StandardDancer.COUPLE_1_BOY)
+     *  1,-3,n,[PASS_LEFT]
+     */
+    public Formation mirror(boolean mirrorShoulderPass) {
+        Map<Dancer,Position> nmap = new LinkedHashMap<Dancer,Position>();
+        for (Map.Entry<Dancer, Position> me: this.location.entrySet()) {
+            nmap.put(me.getKey(), me.getValue().mirror(mirrorShoulderPass));
+        }
+        return new Formation(nmap, this.selected);
     }
 }

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.lists.BasicList;
+import net.cscott.sdr.calls.lists.C3BList;
 import net.cscott.sdr.calls.lists.MainstreamList;
 import net.cscott.sdr.calls.lists.PlusList;
 import net.cscott.sdr.calls.transform.CallFileLoader;
@@ -68,6 +69,7 @@ public class CallDB {
         loadFromClass(BasicList.class);
         loadFromClass(MainstreamList.class);
         loadFromClass(PlusList.class);
+        loadFromClass(C3BList.class);
     }
     private static URL resource(String name) {
         return CallDB.class.getClassLoader().getResource("net/cscott/sdr/calls/lists/"+name+".calls");

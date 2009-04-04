@@ -453,6 +453,35 @@ public class Position implements Comparable<Position> {
         Fraction ny = this.y.multiply(cos).subtract(this.x.multiply(sin));
         return new Position(nx, ny, facing.add(rot.amount), this._flags);
     }
+
+    /**
+     * Return a new position, mirrored around the y-axis, including the
+     * pass, roll, and sweep flags.
+     * @doc.test
+     *  js> p=Position.getGrid(1,2,"e",Position.Flag.SWEEP_LEFT,Position.Flag.ROLL_RIGHT);
+     *  1,2,e,[ROLL_RIGHT, SWEEP_LEFT]
+     *  js> p.mirror(false);
+     *  -1,2,w,[ROLL_LEFT, SWEEP_RIGHT]
+     *  js> p.mirror(true);
+     *  -1,2,w,[PASS_LEFT, ROLL_LEFT, SWEEP_RIGHT]
+     */
+    public Position mirror(boolean mirrorShoulderPass) {
+        EnumSet<Flag> nflags = EnumSet.noneOf(Flag.class);
+        for (Flag f : this.flags) {
+            switch (f) {
+            case ROLL_LEFT: nflags.add(Flag.ROLL_RIGHT); break;
+            case ROLL_RIGHT: nflags.add(Flag.ROLL_LEFT); break;
+            case SWEEP_LEFT: nflags.add(Flag.SWEEP_RIGHT); break;
+            case SWEEP_RIGHT: nflags.add(Flag.SWEEP_LEFT); break;
+            case PASS_LEFT: /* we'll deal with this later */ break;
+            }
+        }
+        if (mirrorShoulderPass ^ this.flags.contains(Flag.PASS_LEFT))
+            nflags.add(Flag.PASS_LEFT);
+        return new Position(this.x.negate(), this.y,
+                            this.facing.negate().add(Fraction.ONE),
+                            nflags);
+    }
     /**
      * Normalize (restrict to 0-modulus) the rotation of the given position,
      * preserving any {@link Flag}s.

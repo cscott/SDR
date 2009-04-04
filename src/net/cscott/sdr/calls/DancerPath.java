@@ -111,6 +111,18 @@ public class DancerPath {
         return new DancerPath(from, to, arcCenter,
                               this.time, this.pointOfRotation);
     }
+    /** Return a {@link DancerPath} like this one, except with mirrored
+     *  position.
+     */
+    public DancerPath mirror(boolean mirrorShoulderPass) {
+        return new DancerPath(this.from.mirror(mirrorShoulderPass),
+                              this.to.mirror(mirrorShoulderPass),
+			      this.arcCenter == null ? null :
+                              new Point(this.arcCenter.x.negate(),
+                                        this.arcCenter.y),
+                              this.time, this.pointOfRotation);
+    }
+
     @Override
     public String toString() {
 	return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
