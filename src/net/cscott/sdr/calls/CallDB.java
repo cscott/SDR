@@ -90,18 +90,34 @@ public class CallDB {
     /** Parse a natural-language string of calls.
      *
      * @doc.test Simple examples:
-     * js> db = CallDB.INSTANCE
-     * net.cscott.sdr.calls.CallDB@1d66e22
-     * js> db.parse(Program.BASIC, "double pass thru")
-     * (Apply double pass thru)
-     * js> db.parse(Program.BASIC, "square thru three and a half")
-     * (Apply square thru (Apply 3 1/2))
+     *  js> db = CallDB.INSTANCE
+     *  net.cscott.sdr.calls.CallDB@1d66e22
+     *  js> db.parse(Program.BASIC, "double pass thru")
+     *  (Apply double pass thru)
+     *  js> db.parse(Program.BASIC, "square thru three and a half")
+     *  (Apply square thru (Apply 3 1/2))
      * @doc.test As a convenience, we also allow numbers specified with digits
      *  (even though this is never produced by the spoken language recognizer):
-     * js> db = CallDB.INSTANCE
-     * net.cscott.sdr.calls.CallDB@1d66e22
-     * js> db.parse(Program.BASIC, "square thru 3 1/2")
-     * (Apply square thru (Apply 3 1/2))
+     *  js> db = CallDB.INSTANCE ; undefined
+     *  js> db.parse(Program.BASIC, "square thru 3 1/2")
+     *  (Apply square thru (Apply 3 1/2))
+     * @doc.test We use a precedence grammar to resolve some ambiguities:
+     *  js> db = CallDB.INSTANCE ; undefined
+     *  js> db.parse(Program.BASIC, "do a half of a trade")
+     *  (Apply _fractional (Apply 1/2) (Apply trade))
+     *  js> db.parse(Program.PLUS, "do half of a trade and roll")
+     *  (Apply _and_roll (Apply _fractional (Apply 1/2) (Apply trade)))
+     *  js> db.parse(Program.PLUS, "trade twice and roll")
+     *  (Apply _and_roll (Apply _fractional (Apply 2) (Apply trade)))
+     *  js> db.parse(Program.PLUS, "trade and roll twice")
+     *  (Apply _fractional (Apply 2) (Apply _and_roll (Apply trade)))
+     * @doc.test Semicolon-separated calls are also used in the typed
+     *  (not the spoken) grammar:
+     *  js> db = CallDB.INSTANCE ; undefined
+     *  js> db.parse(Program.PLUS, "circulate and trade and u turn back")
+     *  (Apply and (Apply circulate) (Apply and (Apply trade) (Apply u turn back)))
+     *  js> db.parse(Program.PLUS, "circulate; trade; u turn back")
+     *  (Apply and (Apply circulate) (Apply trade) (Apply u turn back))
      */
     public Apply parse(Program program, String s) {
         program = Program.C4; // xxx: force C4 for now.
@@ -118,7 +134,7 @@ public class CallDB {
             tokens.discardOffChannelTokens(true);
             Parser parser = (Parser) Class.forName(pkgName+parserName)
                 .getConstructor(TokenStream.class).newInstance(tokens);
-            Method m = parser.getClass().getMethod("anything");
+            Method m = parser.getClass().getMethod("start");
             return (Apply) m.invoke(parser);
         } catch (Exception e) {
             throw new BadCallException("Parsing error: "+e);

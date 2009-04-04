@@ -1,8 +1,12 @@
 grammar @CLASSNAME@Grammar;
 
 options {
-  backtrack=true;
+  //backtrack=true;
   memoize=true;
+  // some phrases need a lot of lookahead:
+  //   'square' 'thru' 'two' 'and' 'a' 'half' 'times'
+  //   'dixie' 'style' 'to' 'a' 'wave'
+  k=10;
 /*
   charVocabulary = '\0'..'\177'; // ascii only
   testLiterals=true;
@@ -18,7 +22,16 @@ import net.cscott.sdr.util.*;
 package net.cscott.sdr.calls.lists;
 }
 
-start 	:	anything EOF ;
+start returns [Apply r]
+@init { List<Apply> l = new ArrayList<Apply>(); }
+	// semicolons are just for ease of typing (not spoken)
+	: a=anything { l.add(a); } (';' b=anything { l.add(b); } )* EOF
+	  {
+	    r = (l.size() > 1)
+                ? Apply.makeApply("and", l.toArray(new Apply[0]))
+	        : a;
+	  }
+	;
 
 @RULES@
 
@@ -45,53 +58,67 @@ anyone returns [Apply r]
 	: a=people {r=a;} | a=wave_select {r=a;} ;
 number returns [Apply a]
 	: f=a_number { a = Apply.makeApply(f.toProperString()); }
+	// hacks for typing (not spoken)
+	| ( INT? INT '/' INT ) =>
+	    w=integer? n=integer '/' d=integer
+	  { a = Apply.makeApply($n.f.divide($d.f).add($w.f==null?Fraction.ZERO:$w.f).toProperString()); }
+	| i=integer
+	  { a = Apply.makeApply($i.f.toProperString()); }
 	;
 a_number returns [Fraction f]
 	: f1=a_digit 'and' f2=a_fraction { f=f1.add(f2); }
 	| f1=a_digit {f=f1;}
 	| f1=a_fraction {f=f1;}
-	// hack for typing (not spoken)
-	| w=integer n=integer '/' d=integer { f=Fraction.valueOf(w, n, d); }
 	;
 a_digit returns [Fraction f]
 	: 'one' { f=Fraction.valueOf(1); }
 	| 'two' { f=Fraction.valueOf(2); }
-	| 'three' { f=Fraction.valueOf(3); }
+	| d=a_digit_greater_than_two { f=$d.f; }
+	;
+a_digit_greater_than_two returns [Fraction f]
+	: 'three' { f=Fraction.valueOf(3); }
 	| 'four' { f=Fraction.valueOf(4); }
 	| 'five' { f=Fraction.valueOf(5); }
 	| 'six' { f=Fraction.valueOf(6); }
 	| 'seven' { f=Fraction.valueOf(7); }
 	| 'eight' { f=Fraction.valueOf(8); }
 	| 'nine' { f=Fraction.valueOf(9); }
-	// hack for typing (not spoken)
-	| integer { f=Fraction.valueOf($integer.r); }
 	;
 
 fraction returns [Apply a]
 	: f=a_fraction { a = Apply.makeApply(f.toProperString()); }
+	// hack for typing (not spoken)
+	| n=integer '/' d=integer
+	{ a = Apply.makeApply($n.f.divide($d.f).toProperString()); }
 	;
 a_fraction returns [Fraction f]
-	: ('a'|'one') 'half' { f=Fraction.valueOf("1/2"); }
+	: ('a'|'one')? 'half' { f=Fraction.valueOf("1/2"); }
 	| ('a'|'one') 'third' { f=Fraction.valueOf("1/3"); }
 	| ('a'|'one') 'quarter' { f=Fraction.valueOf("1/4"); }
 	| 'two' 'thirds' { f=Fraction.valueOf("2/3"); }
 	| 'three' 'quarters' { f=Fraction.valueOf("3/4"); }
-	// hack for typing (not spoken)
-	| n=integer '/' d=integer { f=Fraction.valueOf($n.r, $d.r); }
 	;
 fragment
-integer returns [Integer r]
-	: INT { $r = Integer.valueOf($INT.text); }
+integer returns [Fraction f]
+	: INT { f = Fraction.valueOf(Integer.valueOf($INT.text)); }
 	;
 INT	: ('0'..'9')+ ;
 
 cardinal returns [Apply a]
 	: f=a_cardinal { a=Apply.makeApply(f.toProperString()); }
+	// hacks for typing (not spoken)
+	// COMMENTED OUT BECAUSE INTRODUCES AMBIGUITIES WITH
+	//  "square thru 3" / "breaker 3" etc.
+	/*
+	| ( INT? INT '/' INT ('times'|'time') ) =>
+	  w=integer? n=integer '/' d=integer ('times'|'time')
+	| i=integer ('times'|'time')
+	*/
 	;
 a_cardinal returns [Fraction f]
 	: 'once' ('and' f2=a_fraction)? { f=Fraction.valueOf(1); if (f2!=null) f=f.add(f2); }
 	| 'twice' ('and' f2=a_fraction)? { f=Fraction.valueOf(2); if (f2!=null) f=f.add(f2); }
-	| f1=a_number ('times'|'time') { f=f1; }
+	| f1=a_digit_greater_than_two ('and' f2=a_fraction)? 'times' { f=f1; }
 	;
 
 WS  :   (   ' '

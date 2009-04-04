@@ -19,12 +19,13 @@ grammar @CLASSNAME@;
 	| <digit>
 	| <fraction>
 	;
-<digit> = one | two | three | four | five | six | seven | eight | nine;
+<digit> = one | two | <digit_greater_than_two>;
+<digit_greater_than_two> = three | four | five | six | seven | eight | nine;
 <fraction> =
-	(a|one) (half|third|quarter) |
+	[(a|one)] half |
+	(a|one) (third|quarter) |
 	two thirds | three quarters ;
 <cardinal> =
 	once [and <fraction>] |
 	twice [and <fraction>] |
-	<number> (times | time) ;
-	
+	<digit_greater_than_two> [and <fraction>] times ;
