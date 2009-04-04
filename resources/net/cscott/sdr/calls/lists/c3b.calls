@@ -537,7 +537,7 @@ def: turnstyle
     ! d         C
 
 def: wave the(sel)
-  spoken: [10] wave the <sel=anyone>
+  spoken: wave the <sel=anyone>
   ipart:
     call: press ahead
   ipart:

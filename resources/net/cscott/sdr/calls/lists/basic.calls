@@ -5,10 +5,10 @@ def: nothing
  prim: 0,0,none
 
 def: circle left(n)
-  spoken: [10] circle left <n=fraction>
+  spoken: circle left <n=fraction>
   call: _fractional(_multiply_num([n],4), _circle left 1/4)
 def: circle right(n)
-  spoken: [10] circle right <n=fraction>
+  spoken: circle right <n=fraction>
   call: mirror(circle left([n]))
 
 def: _circle left 1/4
@@ -115,7 +115,7 @@ def: half sashay
 
 def: _roll away(sel)
   optional: REVERSE
-  spoken: [10] <sel=anyone> roll away
+  spoken: <sel=anyone> roll away
   condition: ARE(sel,BELLE)
   call: roll away // ignore the selector
 
@@ -139,7 +139,7 @@ def: roll away
         prim:  1, -1/2, left
 
 def: _u turn back(sel)
-  spoken: [10] <sel=anyone> u turn back
+  spoken: <sel=anyone> u turn back
   // get the turn direction correct if the selected
   // are parts of couples
   call: do your part([sel], u turn back) 
@@ -159,7 +159,7 @@ def: u turn back
   */
 
 def: courtesy turn(n)
-  spoken: [10] courtesy turn <n=fraction>
+  spoken: courtesy turn <n=fraction>
   call: _fractional(n, _courtesy turn 4/4)
 
 def: _courtesy turn 4/4
@@ -176,7 +176,7 @@ def: chain down the line
   call: centers(right arm turn 1/2, courtesy turn(3/4))
 
 def: two ladies chain(sel)
-  spoken: [10] two <sel=genders> chain // 'two ladies chain'
+  spoken: two <sel=genders> chain // 'two ladies chain'
   in: 8
   from: FACING COUPLES
     condition: ARE(sel, BELLE)
@@ -305,7 +305,7 @@ def: swing thru
 // NOTE THAT 'boys run' = 'IN YOUR COUPLES, boys run'
 // ie, we need to select a formation to get dancers tagged first.
 def: run(sel)
-  spoken: [10] <sel=anyone> run
+  spoken: <sel=anyone> run
   in: 4
   // XXX: this definition doesn't currently apply to T-boned formations.
   from: GENERAL LINE, BOX, COUPLE, RH MINIWAVE, LH MINIWAVE
@@ -328,7 +328,7 @@ def: run(sel)
         prim: -1,0,none
 
 def: cross run(sel)
-  spoken: [10] <sel=anyone> cross run
+  spoken: <sel=anyone> cross run
   in: 6
   // XXX: from other formations (t-bones, etc)
   from: GENERAL LINE
@@ -387,7 +387,7 @@ def: touch
   call: step to a wave
 
 def: _touch(n) // XXX: touch 3/4 is definitely mainstream, not basic
-  spoken: [10] touch <n=fraction>
+  spoken: touch <n=fraction>
   call: touch, cast([n])
 
 def: circulate // all-8
@@ -433,7 +433,7 @@ def: walk and dodge
   call: walk others dodge(TRAILER)
 
 def: walk others dodge(sel)
-  spoken: [10] <sel=anyone> walk (others|<anyone>) dodge
+  spoken: <sel=anyone> walk (others|<anyone>) dodge
   in: 4
   from: BOX, FACING COUPLES
     select: [sel]
@@ -520,7 +520,7 @@ def: tag the line
   call: _tag(_atc tag, 1)
 def: _tag the line(n)
   optional: LEFT
-  spoken: [10] tag the line <n=fraction>
+  spoken: tag the line <n=fraction>
   condition: GREATER(1, n)
   call: _tag(_atc tag, n)
   
@@ -546,7 +546,7 @@ def: face left
   prim: 0,0,left
 
 def: fold(sel)
-  spoken: [10] <sel=anyone> fold
+  spoken: <sel=anyone> fold
   in: 2
   select: [sel]
     select: BEAU
@@ -559,7 +559,7 @@ def: fold(sel)
     prim: 0,0,none
 
 def: cross fold(sel)
-  spoken: [10] <sel=anyone> cross fold
+  spoken: <sel=anyone> cross fold
   in: 4
   from: GENERAL LINE
     select: [sel]
@@ -570,7 +570,7 @@ def: cross fold(sel)
 
 def: square thru(n)
   optional: LEFT
-  spoken: [10] square thru <n=number> (hands (around|round)?)?
+  spoken: square thru <n=number> (hands (around|round)?)?
   from: FACING COUPLES
     condition: and(greater([n],0),not(greater([n],1)))
     in: 2
