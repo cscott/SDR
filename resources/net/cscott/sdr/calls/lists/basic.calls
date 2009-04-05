@@ -240,7 +240,7 @@ def: california twirl
 def: wheel around
   optional: REVERSE
   in: 4
-  call: 4(_quarter wheel)
+  call: 2(_quarter wheel)
 def: _quarter wheel
   from: COUPLE
     select: BEAU
