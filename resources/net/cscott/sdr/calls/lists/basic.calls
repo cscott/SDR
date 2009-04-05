@@ -579,7 +579,7 @@ def: square thru(n)
     condition: greater([n], 1)
     in: 2
     ipart: // actually, square thru N probably has N distinct parts.
-      call: pull by, quarter in, left(square thru(_subtract_num(n,1)))
+      call: pull by, quarter in, left(square thru(_subtract_num([n],1)))
 
 def: _full_square_thru
   optional: LEFT

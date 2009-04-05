@@ -88,7 +88,7 @@ public class Apply extends SeqCall {
         // special feature: support arithmetic evaluation by calling
         // 'expand' on this arg, if it isn't already a simple string.
         Apply a = getArg(n);
-        if (!a.args.isEmpty()) // typecasts show that this is kludgey...
+        while (!a.args.isEmpty()) // typecasts show that this is kludgey...
             a = (Apply) ((Seq)a.expand()).children.get(0); // do arithmetic!
         assert a.args.isEmpty();
         return Fraction.valueOf(a.callName);

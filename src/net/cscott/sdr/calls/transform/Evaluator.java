@@ -58,16 +58,15 @@ import net.cscott.sdr.util.Tools;
  * @author C. Scott Ananian
  * @doc.test Simplest invocation: "heads start" from squared set.
  *  js> importPackage(net.cscott.sdr.calls);
- *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET);
- *  net.cscott.sdr.calls.DanceState@b2a2d8
- *  js> ds.currentFormation().toStringDiagram();
- *       3Gv  3Bv
- *  
- *  4B>            2G<
- *  
- *  4G>            2B<
- *  
- *       1B^  1G^
+ *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+ *  js> ds.currentFormation().toStringDiagram("|");
+ *  |     3Gv  3Bv
+ *  |
+ *  |4B>            2G<
+ *  |
+ *  |4G>            2B<
+ *  |
+ *  |     1B^  1G^
  *  js> comp = CallDB.INSTANCE.parse(ds.dance.program, "heads start");
  *  (Apply heads start)
  *  js> comp = new net.cscott.sdr.calls.ast.Seq(comp);
@@ -75,33 +74,49 @@ import net.cscott.sdr.util.Tools;
  *  js> e = new Evaluator.Standard(comp);
  *  net.cscott.sdr.calls.transform.Evaluator$Standard@166cb16
  *  js> e.evaluateAll(ds);
- *  js> ds.currentFormation().toStringDiagram();
- *  4B>  3Gv  3Bv  2G<
- *  
- *  4G>  1B^  1G^  2B<
+ *  js> ds.currentFormation().toStringDiagram("|");
+ *  |4B>  3Gv  3Bv  2G<
+ *  |
+ *  |4G>  1B^  1G^  2B<
  * @doc.test More complex calls from facing couples.
  *  js> importPackage(net.cscott.sdr.calls);
- *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.FOUR_SQUARE);
- *  net.cscott.sdr.calls.DanceState@d26103
- *  js> ds.currentFormation().toStringDiagram();
- *  3Gv  3Bv
- *  
- *  1B^  1G^
+ *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.FOUR_SQUARE); undefined;
+ *  js> ds.currentFormation().toStringDiagram("|");
+ *  |3Gv  3Bv
+ *  |
+ *  |1B^  1G^
  *  js> Evaluator.parseAndEval(ds, "boys walk girls dodge");
- *  js> ds.currentFormation().toStringDiagram()
- *  1B^  3Gv
- *  
- *  1G^  3Bv
+ *  js> ds.currentFormation().toStringDiagram("|")
+ *  |1B^  3Gv
+ *  |
+ *  |1G^  3Bv
  *  js> Evaluator.parseAndEval(ds, "girls walk others dodge");
- *  js> ds.currentFormation().toStringDiagram()
- *  1G^  1B^
- *  
- *  3Bv  3Gv
+ *  js> ds.currentFormation().toStringDiagram("|")
+ *  |1G^  1B^
+ *  |
+ *  |3Bv  3Gv
  *  js> Evaluator.parseAndEval(ds, "trade", "roll");
  *  js> ds.currentFormation().toStringDiagram('|')
  *  |1B>  1G<
  *  |
  *  |3G>  3B<
+ * @doc.test Recursive evaluation with fractionalization, left concept,
+ *  breathing, etc:
+ *  js> importPackage(net.cscott.sdr.calls);
+ *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.FOUR_SQUARE); undefined;
+ *  js> ds.currentFormation().toStringDiagram("|");
+ *  |3Gv  3Bv
+ *  |
+ *  |1B^  1G^
+ *  js> Evaluator.parseAndEval(ds, "square thru three and a half");
+ *  js> ds.currentFormation().toStringDiagram("|");
+ *  |3G<
+ *  |
+ *  |3B>
+ *  |
+ *  |1B<
+ *  |
+ *  |1G>
  */
 public abstract class Evaluator {
     /**

@@ -297,6 +297,7 @@ call_body returns [B<Apply> ast]
 	  final List<B<Apply>> call_args = args;
 	  if (call_args.isEmpty()) {
 	  	// if no args, then substitute given Apply node wholesale.
+        // note: lazy evaluation here.
 	    $ast = new B<Apply>() {
 	    	public Apply build(List<Apply> args) {
 	    		return args.get(param);
@@ -339,8 +340,15 @@ cond_body returns [B<Condition> c]
 	  // use the given parameter as a string.
 	  $c = new B<Condition>() {
 	    	public Condition build(List<Apply> args) {
-				assert args.get(param).args.isEmpty();
-	    		String predicate = args.get(param).callName;
+                // here's a hack to support simple math: keep expanding the
+                // parameter until it doesn't have any arguments.
+                // (see similar hack in Apply.getNumberArg())
+                Apply a = args.get(param);
+                while (!a.args.isEmpty())
+                    // typecasts show that this is kludgey...
+                    a = (Apply) ((Seq)a.expand()).children.get(0);
+				assert a.args.isEmpty();
+                String predicate = a.callName;
 	    		return new Condition(predicate, reduce(cond_args, args));
 	    	}
 	  };
