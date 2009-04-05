@@ -286,8 +286,8 @@ simple_ref_body returns [List<B<String>> l]
 
 call_body returns [B<Apply> ast]
 	// shorthand: 3/4 (foo) = fractional(3/4, foo)
-	: ( ^(APPLY ^(ITEM number) (.)* ) ) =>
-	  ^(APPLY ^(ITEM n=number) args=call_args )
+	: ( ^(APPLY ^(ITEM number) call_args_plus ) ) =>
+	  ^(APPLY ^(ITEM n=number) args=call_args_plus )
 	{   args.add(0, mkConstant(Apply.makeApply(n.toString().intern())));
 		$ast = mkApply("_fractional", args); }
 	// parameter reference
@@ -325,6 +325,10 @@ ref returns [int v]
 call_args returns [List<B<Apply>> l]
 @init { $l = new ArrayList<B<Apply>>(); }
 	: (c=call_body {$l.add(c);} )*
+	;
+call_args_plus returns [List<B<Apply>> l]
+@init { $l = new ArrayList<B<Apply>>(); }
+	: (c=call_body {$l.add(c);} )+
 	;
 cond_body returns [B<Condition> c]
 	// parameter reference
