@@ -4,7 +4,7 @@
  *
  * @doc.test Test basic call database functionality:
  *  js> CallDB.INSTANCE.parse(Program.BASIC, "double pass thru").expand()
- *  (In 4 (If (Condition and (Condition PROGRAM AT LEAST (Condition basic)) (Condition true)) (Seq (Apply tandem (Apply pass thru)))))
+ *  (In 4 (Seq (Apply tandem (Apply pass thru))))
  *
  * @doc.test Calls with arguments:
  *  js> importPackage(net.cscott.sdr.util) // for Fraction

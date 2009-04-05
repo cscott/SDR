@@ -1,5 +1,9 @@
 package net.cscott.sdr.calls;
 
+import static net.cscott.sdr.util.Tools.m;
+import static net.cscott.sdr.util.Tools.p;
+
+import java.util.Collections;
 
 /**
  * The selector list creates selectors for various formations.
@@ -93,6 +97,16 @@ package net.cscott.sdr.calls;
  *   [ph: BEAU; ph: BEAU]
  */
 public abstract class SelectorList {
+    // universal selector
+    public static final Selector ANY = new Selector() {
+        public FormationMatch match(Formation f) throws NoMatchException {
+            TaggedFormation tf = TaggedFormation.coerce(f);
+            Formation meta = FormationList.SINGLE_DANCER;
+	    Dancer metaDancer = meta.dancers().iterator().next();
+	    return new FormationMatch(meta, m(p(metaDancer, tf)),
+				      Collections.<Dancer>emptySet());
+        }
+    };
     // 0-person selectors
     public static final Selector NONE = new Selector() {
         public FormationMatch match(Formation f) throws NoMatchException {
@@ -164,10 +178,14 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.RH_SINGLE_QUARTER_TAG);
     public static final Selector LH_SINGLE_QUARTER_TAG =
         GeneralFormationMatcher.makeSelector(FormationList.LH_SINGLE_QUARTER_TAG);
+    public static final Selector SINGLE_QUARTER_TAG =
+        OR(RH_SINGLE_QUARTER_TAG, LH_SINGLE_QUARTER_TAG);
     public static final Selector RH_SINGLE_THREE_QUARTER_TAG =
         GeneralFormationMatcher.makeSelector(FormationList.RH_SINGLE_THREE_QUARTER_TAG);
     public static final Selector LH_SINGLE_THREE_QUARTER_TAG =
         GeneralFormationMatcher.makeSelector(FormationList.LH_SINGLE_THREE_QUARTER_TAG);
+    public static final Selector SINGLE_THREE_QUARTER_TAG =
+        OR(RH_SINGLE_THREE_QUARTER_TAG, LH_SINGLE_THREE_QUARTER_TAG);
 
     // 8-person selectors
     public static final Selector STATIC_SQUARE =

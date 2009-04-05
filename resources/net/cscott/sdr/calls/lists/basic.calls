@@ -44,12 +44,8 @@ def: sides start
 def: trade
   from: COUPLE
     in: 6
-    select: BEAU
-      prim: 1, 3, right
-      prim: 3, 1, right
-    select: BELLE
-      prim: -1, 1, left
-      prim: -1, 1, left
+    prim: in 1,1,in
+    prim: in 1,1,in
   from: MINIWAVE
     in: 4
     prim: in 1,1,in
@@ -91,11 +87,11 @@ def: pass thru
   optional: LEFT
   in: 2
   from: FACING DANCERS
-    call: 1/2 (dosado) // untraditional =)
+    prim: 0, 1, none
+    prim: 0, 1, none
 
 def: double pass thru
   in: 4
-  condition: and(PROGRAM AT LEAST(basic), true) // for testing only
   call: tandem(pass thru)
 
 def: pull by
@@ -146,17 +142,15 @@ def: _u turn back(sel)
 
 def: u turn back
   in: 2
-  from: COUPLE, RH MINIWAVE, LH MINIWAVE
+  from: COUPLE, MINIWAVE
     prim: 0, 0, in
     prim: 0, 0, in
-  // XXX: we can u-turn back from other formations, too: turn toward
-  // the center in that case?
-  /*
-  from: ALL FORMATIONS
+  // we can u-turn back from other formations, too: turn toward
+  // the center in that case.
+  from: ANY
     call: quarter in, roll // is this right? fails for dancers on centerline.
   from: SINGLE DANCER
     call: quarter right, roll // if all else fails.
-  */
 
 def: courtesy turn(n)
   spoken: courtesy turn <n=fraction>
@@ -164,12 +158,13 @@ def: courtesy turn(n)
 
 def: _courtesy turn 4/4
   in: 8
-  call: wheel around // modulo hand hold
+  call: 2(wheel around) // modulo hand hold
 
 def: _right arm turn 1/2
   in: 4
   from: RH MINIWAVE
   call: trade // modulo hand hold
+
 def: chain down the line
   in: 8
   from: RH TWO-FACED LINE
@@ -191,17 +186,22 @@ def: flutter wheel
 def: lead right
   in: 4
   call: as couples(_single lead right)
+
 def: lead left
   call: left(lead right)
+
 def: _single lead right
   from: FACING DANCERS
   prim: 1, 1, right
+
 def: right and left thru
   in: 6
   from: FACING COUPLES
   call: right pull by, courtesy turn(1/2)
+
 def: left and right thru
   call: left(right and left thru)
+
 def: star thru
   in: 4
   from: FACING DANCERS
@@ -220,12 +220,15 @@ def: slide thru
       call: quarter right
     select: GIRL
       call: quarter left
+
 def: bend the line
   in: 4
   call: as couples(_single bend)
+
 def: _single bend
   from: COUPLE, RH MINIWAVE, LH MINIWAVE
     call: quarter in
+
 def: california twirl
   in: 4
   from: COUPLE
@@ -237,11 +240,13 @@ def: california twirl
       condition: ALL(GIRL) // girls must be belles
       prim: -1, 1, left // copied from partner trade
       prim: -1, 1, left
+
 def: wheel around
   optional: REVERSE
   in: 4
   call: 2(_quarter wheel)
 def: _quarter wheel
+  in: 2
   from: COUPLE
     select: BEAU
       prim: 1, -1, left
@@ -268,31 +273,46 @@ def: balance
   in: 4
   prim: 0, 1/2, none
   prim: 0,-1/2, none // modulo styling -- and breathing?
+
 def: pass the ocean
   in: 4
   call: pass thru, quarter in, _extend
+
 def: extend
   optional: LEFT
-  in: 2
-  // XXX level/formation restrictions
-  // XXX at basic/mainstream, extend is from 1/4 tag only
-  call: _extend
+    // at basic/mainstream, extend is from 1/4 tag only
+    from: QUARTER TAG
+      call: _extend
+    from: ANY
+      condition: PROGRAM AT LEAST(PLUS)
+      call: _extend
+
 def: _extend // the general case
+  in: 2
   from: SINGLE DOUBLE PASS THRU
     call: centers(extend)
-  from: LH BOX
+  from: LH BOX, LH MINIWAVE, LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG
     call: mirror(_extend)
   from: RH BOX
     select: LEADER
       prim: 1,1, none
     select: TRAILER
       prim: 0,1, none
-  from: LH MINIWAVE
-    call: mirror(_extend)
   from: RH MINIWAVE
     prim: 1,1, none
   from: FACING DANCERS
     prim: -1,1,none
+  from: RH SINGLE QUARTER TAG
+    select: CENTER
+      prim: 0, 1, none
+    select: END
+      prim: -1, 1, none
+  from: RH SINGLE THREE QUARTER TAG
+    select: CENTER
+      prim: 1, 1, none
+    select: END
+      prim: 0, 1, none
+
 def: swing thru
   optional: LEFT
   in: 6
@@ -369,8 +389,10 @@ def: _right single zoom
 def: veer left
   in: 2
   call: as couples(_single veer left)
+
 def: veer right
   call: mirror(veer left)
+
 def: _single veer left
   from: FACING DANCERS, LH MINIWAVE
   call: _extend
@@ -379,15 +401,16 @@ def: turn thru
   optional: LEFT
   in: 4 // from mini-wave; 6 from facing?
   from: FACING DANCERS
-  call: touch 1/2, extend
+  call: touch, trade, _extend
 
 def: touch
   optional: LEFT
   in: 2
   call: step to a wave
 
-def: _touch(n) // XXX: touch 3/4 is definitely mainstream, not basic
+def: _touch(n) // touch 3/4 is mainstream, not basic
   spoken: touch <n=fraction>
+  condition: or(equal([n],3/4), program at least(MAINSTREAM))
   call: touch, cast([n])
 
 def: circulate // all-8
@@ -478,6 +501,7 @@ def: recycle // xxx cheat definition, for the present
   in: 4
   ipart: // this definition isn't valid for fractionalization
     call: hinge, box circulate, quarter in
+
 def: scoot back
   optional: LEFT
   in: 6
@@ -491,10 +515,11 @@ def: scoot back
         prim: 0,1,none
     select: LEADER
       ipart:
-        prim: in 1,1,in
+        prim: in 1,2,in
       ipart:
-        prim: in 1,1,in
-  // XXX: scoot back from quarter tag
+        prim: in 2,1,in
+  from: SINGLE QUARTER TAG, QUARTER TAG
+    call: _extend, trade, _extend
 
 def: _tag(atc, n)
   ipart:
@@ -505,7 +530,7 @@ def: _finish_tag(n)
     call: nothing
   from: SINGLE DOUBLE PASS THRU
     condition: GREATER([n], 0)
-    call: _fractional(_multiply_num(4,[n]), extend)
+    call: _fractional(_multiply_num(4,[n]), _extend)
 // or else: n=0->atc; else fractional(n, part(atc,extend), part(extend), part(extend), part(extend))
 
 def: _atc_tag
