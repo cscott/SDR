@@ -52,7 +52,7 @@ public abstract class AstNode {
      */
     public static AstNode valueOf(String s) throws IllegalArgumentException {
 	try {
-	    return new AstParser(s).ast();
+	    return new AstParser(s).start();
 	} catch (org.antlr.runtime.RecognitionException e) {
 	    throw new IllegalArgumentException("Bad AST: "+s);
 	}

@@ -48,6 +48,11 @@ package net.cscott.sdr.calls.ast;
 }
 // parser rules
 // the ast production mirrors the java inheritance hierarchy.
+
+start returns [AstNode r]
+    : ast EOF { $r=$ast.r; }
+    ;
+
 ast returns [AstNode r]
     : comp { $r=$comp.r; }
     | condition { $r=$condition.r; }
