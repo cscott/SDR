@@ -51,10 +51,14 @@ public abstract class AstNode {
      * @throws IllegalArgumentException if the given string value doesn't parse
      */
     public static AstNode valueOf(String s) throws IllegalArgumentException {
+	AstNode result = null;
 	try {
-	    return new AstParser(s).start();
+	    result = new AstParser(s).start();
 	} catch (org.antlr.runtime.RecognitionException e) {
-	    throw new IllegalArgumentException("Bad AST: "+s);
+	    throw new IllegalArgumentException("Bad AST: "+e);
 	}
+	if (result==null)
+	    throw new IllegalArgumentException("Bad AST: "+s);
+	return result;
     }
 }

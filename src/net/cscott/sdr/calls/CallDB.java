@@ -127,6 +127,7 @@ public class CallDB {
         String baseName = program.toTitleCase()+"Grammar";
         String parserName = baseName+"Parser";
         String lexerName = baseName+"Lexer";
+	Apply result=null;
 
         try {
             Lexer lexer = (Lexer) Class.forName(pkgName+lexerName)
@@ -137,9 +138,12 @@ public class CallDB {
             Parser parser = (Parser) Class.forName(pkgName+parserName)
                 .getConstructor(TokenStream.class).newInstance(tokens);
             Method m = parser.getClass().getMethod("start");
-            return (Apply) m.invoke(parser);
+            result = (Apply) m.invoke(parser);
         } catch (Exception e) {
             throw new BadCallException("Parsing error: "+e);
         }
+	if (result==null)
+	    throw new BadCallException("Parsing error: "+s);
+	return result;
     }
 }
