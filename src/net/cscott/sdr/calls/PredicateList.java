@@ -15,6 +15,15 @@ import static net.cscott.sdr.util.Tools.mms;
 public abstract class PredicateList {
     
     // zero-arg operators
+    /**
+     * Always true.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition true)');
+     *  (Condition true)
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  true
+     */
     public final static Predicate TRUE = new _Predicate("true") {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
@@ -22,6 +31,15 @@ public abstract class PredicateList {
             return true;
         }        
     };
+    /**
+     * Always false.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition false)');
+     *  (Condition false)
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  false
+     */
     public final static Predicate FALSE = new _Predicate("false") {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
@@ -30,6 +48,19 @@ public abstract class PredicateList {
         }
     };
     // one-arg operators
+    /**
+     * Boolean negation.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition not (Condition false))');
+     *  (Condition not (Condition false))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  true
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition not (Condition true))');
+     *  (Condition not (Condition true))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  false
+     */
     public final static Predicate NOT = new _Predicate("not") {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
@@ -39,6 +70,19 @@ public abstract class PredicateList {
         }
     };
     // binary numerical operators
+    /**
+     * Numerical equality.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition equal (Condition "1 1/2") (Condition "1 1/2"))');
+     *  (Condition equal (Condition 1 1/2) (Condition 1 1/2))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  true
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition equal (Condition "1 1/2") (Condition 2))');
+     *  (Condition equal (Condition 1 1/2) (Condition 2))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  false
+     */
     public final static Predicate EQUAL = new _Predicate("equal") {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
@@ -48,6 +92,19 @@ public abstract class PredicateList {
             return f1.equals(f2);
         }
     };
+    /**
+     * Numerical comparison.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition greater (Condition "1 1/2") (Condition "1 1/2"))');
+     *  (Condition greater (Condition 1 1/2) (Condition 1 1/2))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  false
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition greater (Condition 2) (Condition "1 1/2"))');
+     *  (Condition greater (Condition 2) (Condition 1 1/2))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  true
+     */
     public final static Predicate GREATER = new _Predicate("greater") {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
@@ -58,6 +115,19 @@ public abstract class PredicateList {
         }
     };
     // n-ary operators.
+    /**
+     * Short-circuit boolean conjunction.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition and (Condition true) (Condition true) (Condition false))');
+     *  (Condition and (Condition true) (Condition true) (Condition false))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  false
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition and (Condition true) (Condition true) (Condition true))');
+     *  (Condition and (Condition true) (Condition true) (Condition true))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  true
+     */
     public final static Predicate AND = new _Predicate("and") {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
@@ -70,6 +140,19 @@ public abstract class PredicateList {
             return result;
         }
     };
+    /**
+     * Short-circuit boolean disjunction.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition or (Condition false) (Condition false) (Condition false))');
+     *  (Condition or (Condition false) (Condition false) (Condition false))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  false
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition or (Condition false) (Condition false) (Condition true))');
+     *  (Condition or (Condition false) (Condition false) (Condition true))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  true
+     */
     public final static Predicate OR = new _Predicate("or") {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
@@ -83,6 +166,19 @@ public abstract class PredicateList {
         }
     };
     // okay, square-dance-specific operators.
+    /**
+     * Check the current dance program level.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET); undefined;
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition program at least (Condition BASIC))');
+     *  (Condition program at least (Condition BASIC))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  true
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition program at least (Condition A2))');
+     *  (Condition program at least (Condition A2))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  false
+     */
     public final static Predicate PROGRAM_AT_LEAST = new _Predicate("program at least") {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
