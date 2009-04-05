@@ -86,28 +86,64 @@ public abstract class BasicList {
         public int getMinNumberOfArguments() { return 1; }
         @Override
         public Evaluator getEvaluator(Apply ast) {
-            assert false : "math calls can't be evaluated";
             return null;
         }
     }
+    /**
+     * Simple math: addition.
+     * @doc.test
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Apply _add_num (Apply 2) (Apply 1))")
+     *  (Apply _add_num (Apply 2) (Apply 1))
+     *  js> c.expand()
+     *  (Seq (Apply 3))
+     */
     public static final Call _ADD_NUM = new MathCall("_add_num") {
         @Override
         Fraction getIdentity() { return Fraction.ZERO; }
         @Override
         Fraction doOp(Fraction f1, Fraction f2) { return f1.add(f2); }
     };
-    public static final Call _SUBTRACT_NUM = new MathCall("_subtract_num") {
+    /**
+     * Simple math: subtraction.
+     * @doc.test
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Apply _subtract_num (Apply 3) (Apply 2))")
+     *  (Apply _subtract_num (Apply 3) (Apply 2))
+     *  js> c.expand()
+     *  (Seq (Apply 1))
+     */
+    public static final Call _SUBTRACT_NUM = new BasicCall("_subtract_num") {
         @Override
-        Fraction getIdentity() { return Fraction.ZERO; }
+        public final Comp apply(Apply ast) {
+            assert ast.args.size()==2;
+            Fraction result = ast.getNumberArg(0).subtract(ast.getNumberArg(1));
+            // here's the kludge
+            return new Seq(Apply.makeApply(result.toProperString()));
+        }
         @Override
-        Fraction doOp(Fraction f1, Fraction f2) { return f1.subtract(f2); }
+        public int getMinNumberOfArguments() { return 2; }
     };
+    /**
+     * Simple math: multiplication.
+     * @doc.test
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Apply _multiply_num (Apply 3) (Apply 2))")
+     *  (Apply _multiply_num (Apply 3) (Apply 2))
+     *  js> c.expand()
+     *  (Seq (Apply 6))
+     */
     public static final Call _MULTIPLY_NUM = new MathCall("_multiply_num") {
         @Override
         Fraction getIdentity() { return Fraction.ONE; }
         @Override
         Fraction doOp(Fraction f1, Fraction f2) { return f1.multiply(f2); }
     };
+    /**
+     * Simple math: division.
+     * @doc.test
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Apply _divide_num (Apply 3) (Apply 2))")
+     *  (Apply _divide_num (Apply 3) (Apply 2))
+     *  js> c.expand()
+     *  (Seq (Apply 1 1/2))
+     */
     public static final Call _DIVIDE_NUM = new BasicCall("_divide_num") {
         @Override
         public final Comp apply(Apply ast) {
