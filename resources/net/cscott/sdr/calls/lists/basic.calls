@@ -140,6 +140,9 @@ def: _u turn back(sel)
   // are parts of couples
   call: do your part([sel], u turn back) 
 
+// XXX: from a single quarter tag, currently no one can roll
+//      what should happen is that the miniwave rolls toward the
+//      handhold, and only the ends have an undefined roll
 def: u turn back
   in: 2
   from: COUPLE, MINIWAVE
@@ -258,7 +261,7 @@ def: box the gnat
   in: 4
   from: FACING DANCERS
     condition: not(or(ALL(BOYS), ALL(GIRLS)))
-    call: _and roll(touch 1/4) // modulo styling
+    call: _and roll(_touch(1/4)) // modulo styling
 
 def: step to a wave
   in: 2 // not official
@@ -291,7 +294,10 @@ def: extend
 def: _extend // the general case
   in: 2
   from: SINGLE DOUBLE PASS THRU
-    call: centers(extend)
+    select: LEADER
+      prim: -1,1, none
+    select: TRAILER
+      prim: 0,1, none
   from: LH BOX, LH MINIWAVE, LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG
     call: mirror(_extend)
   from: RH BOX
@@ -411,8 +417,8 @@ def: touch
 
 def: _touch(n) // touch 3/4 is mainstream, not basic
   spoken: touch <n=fraction>
-  condition: or(equal([n],3/4), program at least(MAINSTREAM))
-  call: touch, cast([n])
+  condition: or(equal([n],1/4), program at least(MAINSTREAM))
+  call: touch, _fractional([n], _cast 4/4)
 
 def: circulate // all-8
   spoken: (all eight)? circulate
@@ -562,7 +568,7 @@ def: dixie style
       prim: -2,1,none
       prim: 1,1,none
   ipart:
-    call: mirror(touch 1/4)
+    call: mirror(_touch(1/4))
 
 def: face right
   in: 2
