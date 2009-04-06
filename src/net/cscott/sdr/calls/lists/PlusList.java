@@ -76,7 +76,7 @@ public abstract class PlusList {
                         Position to = from.turn(from.roll(), false);
                         if (!from.equals(to))
                             ds.add(d, new DancerPath
-                                    (from, to, new Point(from.x, from.y),
+                                    (from, to,
                                      Fraction.TWO/* timing for roll */,
                                      PointOfRotation.SINGLE_DANCER));
                     }

@@ -16,9 +16,9 @@ import java.util.*;
  *  js> a = Apply.makeApply("_fractional", Apply.makeApply("1/2"), Apply.makeApply("dosado"))
  *  (Apply _fractional (Apply 1/2) (Apply dosado))
  *  js> def = a.expand()
- *  (In 3 (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1) (Prim 1, 1, none, 1)))))
+ *  (In 3 (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))
  *  js> RemoveIn.removeIn(def)
- *  (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1 1/2) (Prim 1, 1, none, 1 1/2))))
+ *  (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1 1/2, SASHAY_START) (Prim 1, 1, none, 1 1/2, SASHAY_FINISH))))
  */
 public class RemoveIn extends TransformVisitor<Fraction> {
     private final BeatCounter bc;

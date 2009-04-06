@@ -60,6 +60,19 @@ public class Prim extends SeqCall {
 	 */
 	FORCE_ROLL_LEFT,
 	/**
+	 * Set the roll direction to "none" after this Prim, even
+	 * if the movement seems to call for a roll.
+	 */
+	FORCE_ROLL_NONE,
+	/**
+	 * Begin the movement with a sashay (instead of stepping forward).
+	 */
+	SASHAY_START,
+	/**
+	 * Finish the movement with a sashay (instead of a forward step).
+	 */
+	SASHAY_FINISH,
+	/**
 	 * In a do-sa-do, you don't join hands at the 1/4 and 3/4
 	 * marks, even though you are adjacent.
 	 */
@@ -104,14 +117,15 @@ public class Prim extends SeqCall {
         super(PRIM);
         this.x = x; this.y = y; this.rot = rot; this.time = time;
         this.dirX = dirX; this.dirY = dirY; this.dirRot = dirRot;
-	// somewhat awkward initialization of read-only this.flags
-	Set<Flag> es = EnumSet.noneOf(Flag.class);
-	es.addAll(Arrays.asList(flags));
-	this.flags = Collections.unmodifiableSet(es);
+        // somewhat awkward initialization of read-only this.flags
+        Set<Flag> es = EnumSet.noneOf(Flag.class);
+        es.addAll(Arrays.asList(flags));
+        this.flags = Collections.unmodifiableSet(es);
 	// sanity-checking
-	assert !(this.flags.contains(Flag.FORCE_ROLL_RIGHT) &&
-		 this.flags.contains(Flag.FORCE_ROLL_LEFT)) :
-	       "FORCE_ROLL_RIGHT and FORCE_ROLL_LEFT are exclusive.";
+        assert ((this.flags.contains(Flag.FORCE_ROLL_RIGHT)?1:0)+
+                (this.flags.contains(Flag.FORCE_ROLL_LEFT)?1:0)+
+                (this.flags.contains(Flag.FORCE_ROLL_NONE)?1:0)) <= 1 :
+	"FORCE_ROLL_RIGHT, FORCE_ROLL_LEFT, and FORCE_ROLL_NONE are exclusive.";
     }
     public static final Prim STAND_STILL =
         new Prim(Direction.ASIS,Fraction.ZERO, Direction.ASIS,Fraction.ZERO,

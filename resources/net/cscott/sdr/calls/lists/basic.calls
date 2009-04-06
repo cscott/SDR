@@ -20,10 +20,10 @@ def: _circle left 1/4
        call: _short_circle_left, _long_circle_left
 def: _long_circle_left
   in: 12/5
-  prim: -2,2,right
+  prim: -2,2,right,sashay-start sashay-finish
 def: _short_circle_left
   in: 8/5
-  prim: -2,0,none
+  prim: -2,0,none,sashay-start sashay-finish
 
 def: heads start
  from: STATIC SQUARE
@@ -71,10 +71,10 @@ def: dosado
   optional: LEFT
   in: 6
   from: FACING DANCERS
-    prim: -1, 1,none
-    prim:  1, 1,none
-    prim:  1,-1,none
-    prim: -1,-1,none
+    prim: -1, 1,none,sashay-start
+    prim:  1, 1,none,sashay-finish
+    prim:  1,-1,none,sashay-start
+    prim: -1,-1,none,sashay-finish
 
 /*
 def: dosado to a wave
@@ -103,11 +103,11 @@ def: half sashay
   in: 4
   from: COUPLE
     select: BEAU
-      prim: 1, -1, none
-      prim: 1,  1, none
+      prim: 1, -1, none, sashay-start sashay-finish
+      prim: 1,  1, none, sashay-start sashay-finish
     select: BELLE
-      prim: -1, 1, none
-      prim: -1,-1, none
+      prim: -1, 1, none, sashay-start sashay-finish
+      prim: -1,-1, none, sashay-start sashay-finish
 
 def: _roll away(sel)
   optional: REVERSE
@@ -121,18 +121,18 @@ def: roll away
   from: COUPLE
     select: BEAU
       ipart:
-        prim: 1/2, 0, none
-        prim: 1/2, 0, none
+        prim: 1/2, 0, none, sashay-start sashay-finish
+        prim: 1/2, 0, none, sashay-start sashay-finish
       ipart:
-        prim: 1/2, 0, none
-        prim: 1/2, 0, none
+        prim: 1/2, 0, none, sashay-start sashay-finish
+        prim: 1/2, 0, none, sashay-start sashay-finish
     select: BELLE
       ipart:
         prim: -1/2, 1, left
-        prim:  1, 1/2, left
+        prim:  1, 1/2, left, sashay-finish
       ipart:
-        prim:  1/2,  1, left
-        prim:  1, -1/2, left
+        prim:  1/2,  1, left, sashay-start sashay-finish
+        prim:  1, -1/2, left, sashay-start
 
 def: _u turn back(sel)
   spoken: <sel=anyone> u turn back
@@ -149,8 +149,9 @@ def: u turn back
   // the center in that case.
   from: ANY
     call: quarter in, roll // is this right? fails for dancers on centerline.
-  from: SINGLE DANCER
-    call: quarter right, roll // if all else fails.
+  from: SINGLE DANCER // if all else fails
+    prim: 0, 0, right, force-roll-none
+    prim: 0, 0, right, force-roll-none
 
 def: courtesy turn(n)
   spoken: courtesy turn <n=fraction>
@@ -341,11 +342,11 @@ def: run(sel)
         prim: -1,1,left
     select: OTHERS
       select: BEAU
-        prim: 1,0,none
-        prim: 1,0,none
+        prim: 1,0,none,sashay-start sashay-finish
+        prim: 1,0,none,sashay-start sashay-finish
       select: BELLE
-        prim: -1,0,none
-        prim: -1,0,none
+        prim: -1,0,none,sashay-start sashay-finish
+        prim: -1,0,none,sashay-start sashay-finish
 
 def: cross run(sel)
   spoken: <sel=anyone> cross run
@@ -357,11 +358,11 @@ def: cross run(sel)
       prim: in 1, 2, in
     select: OTHERS
       select: BEAU
-        prim: 1,0,none
-        prim: 1,0,none
+        prim: 1,0,none,sashay-start sashay-finish
+        prim: 1,0,none,sashay-start sashay-finish
       select: BELLE
-        prim: -1,0,none
-        prim: -1,0,none
+        prim: -1,0,none,sashay-start sashay-finish
+        prim: -1,0,none,sashay-start sashay-finish
 
 def: zoom
   in: 4
@@ -465,11 +466,11 @@ def: walk others dodge(sel)
       prim: 0,1,none
     select: OTHERS
       select: BEAU
-        prim: 1,0,none
-        prim: 1,0,none
+        prim: 1,0,none,sashay-start sashay-finish
+        prim: 1,0,none,sashay-start sashay-finish
       select: BELLE
-        prim: -1,0,none
-        prim: -1,0,none
+        prim: -1,0,none,sashay-start sashay-finish
+        prim: -1,0,none,sashay-start sashay-finish
 
 def: _hinge
   optional: LEFT
