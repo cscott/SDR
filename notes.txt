@@ -660,3 +660,57 @@ BreathedFormationAtTime[from].location(d).
 around at all times: we can just create them on demand when the
 caller invokes breathedDancerPaths() or breathedCurrentFormation()
 (this latter call should be what SELECT matches on).
+---------
+Grammar ambiguities:
+* 'and' as a call joiner, and in calls such as:
+   scoot and dodge
+   scoot and weave
+   wheel and deal
+   wheel and <anything>
+   <anything> and roll
+   <anything> and circle n quarters
+   step and fold
+   step and step
+   step and slide
+* (square thru 3) 1/2 times
+  (square thru) 3 1/2 times
+
+To handle these:
+ * we don't allow 'and' as a call joiner.  It is only used in compound
+   calls.  Thus: "swing and mix" is only ever a compound call, never
+   (swing) and (mix).  "swing.  mix." (or "swing; mix") is the compound call.
+ * "do the following (n>1) times"
+   "do (n<1) of a <anything>"
+   "half trade"
+   "two-thirds recycle"
+   "<anything> (n>1) times"
+   is the grammar for fractional.
+   Thus "square thru 3 1/2 times" is only (square thru) 3 1/2 times.
+-------
+Need a 'left means mirror' flag, and translate some of the (eg)
+mirror(_touch(1/4)) uses in basic.list to left(_touch(1/4)).
+------
+U-turn back needs a "match with phantoms" operation which will match
+couple/miniwave and single dancers, so we can do:
+  from: GENERAL_COUPLE_AND_PHANTOMS
+    from: COUPLE
+     ...
+    from: MINIWAVE
+     ...
+    from: SINGLE_DANCER
+     call: face in and roll
+    from: SINGLE DANCER
+     ...face in, warn about roll direction
+---
+same for cast 1/4, which should match GENERAL_COUPLE
+---
+calls movements start/end in directions other than the facing
+direction.  Eg: half of a rollaway ends in sashay direction, and a
+full rollaway ends *walking backwards*.  I've added sashay tags to
+those movements involving sashay.  Calls involving walking backwards:
+  dosado, rollaway, half sasay, "back up walk, <others> dodge"
+Also note: "stable", where even though the facing direction changes,
+we must take care to preserve the dancer path tangents.  Hence add
+sashay tags as needed, and assert that either 'sashay' or 'not sashay'
+results in the same dancer path tangent as the unstable movement.
+---
