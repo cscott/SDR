@@ -714,3 +714,128 @@ we must take care to preserve the dancer path tangents.  Hence add
 sashay tags as needed, and assert that either 'sashay' or 'not sashay'
 results in the same dancer path tangent as the unstable movement.
 ---
+PMSD:
+sdr> /set formation = 2 couple
+3Gv 1Bv
+
+1B^ 1G^
+sdr> trade
+3B^ 3G^
+
+1Gv 1Bv
+sdr>
+
+also write doc tests like this.
+/set IDENT = (.*)
+maps to PMSD.setIDENT(str)
+we can use a very simple grammar then (or none at all); we don't need
+to teach the grammar about all the possible options one might set.
+(maybe even PMSD.cmdSet(line), which allows implementing /save as
+PMSB.cmdSave(__);
+ALTERnatively: /js <javascript expression>
+
+How 'bout: evaluate inside an implicit
+with(State) {
+}
+context in javascript.  exit/restart, etc can be property getters (!)
+on the State object, so:
+: exit
+: restart
+etc works -- ie, no parentheses for simple commands.
+
+Does javascript have a prompt mechanism?  How much of PMSD can we
+write in javascript?
+--
+Selectors should have two parts:
+ - "Apply adjustment()"
+    returns the adjustment call necessary to use this selector (if any)
+ - "Selector additional()"
+    an additional selector to try, after others have been tried
+    (that way they don't override user's custom selector ordering)
+
+Opts maintain a FIFO queue of the provided and additional() selectors.
+
+WAVE selector returns an additional() which has 'touch' as an initial
+adjustment.  (Note that left swing thru must be "left(swing thru)" in
+order to properly make the touch a left touch.)
+
+DIAMONDS, etc have "ends in" adjustments (maybe always).
+
+FACING COUPLES is tricky: the adjustment only applies if the call
+starts with a pass thru.  So we have a special:
+  FACING_COUPLES_WITH_PASS_THRU selector which returns the formation
+  after the touch, with an adjustment that does 'nothing' from
+  RH_WAVES and 'touch' from FACING COUPLES.  (Pass thru is tricky:
+  note that it's a FACING DANCERS call, not just a FACING COUPLES
+  call.  XXX: is the "step to a wave and" adjustment also from
+  FACING DANCERs?
+
+We're trying to be extra careful with RECYCLE, for which the "step to
+a wave and" and "rear back" adjustments don't apply.  That's why we
+have a FIFO queue, to allow the user's explicit selectors to override.
+But maybe we'd be better off just having explicit NO_ADJUST versions
+of the selectors, using the adjustment() method and ditching the
+additional() method?
+-----
+BadCallExceptions:
+  they should have messages and priorities.
+  The condition operator in the call definitions should take an
+  optional explanation parameter, such as "facing couple recycle is
+  not allowed below A2" or "only cast 1/4 is allowed at mainstream".
+
+These need priorities, so that ordinary "formation doesn't match"
+exceptions from a SELECT don't prevent the desired message from
+getting thru.  The SELECT should, if nothing matches, through a
+new exception with default priority that says, "Bad formation:
+requires MINIWAVE, FACING COUPLES"
+----
+
+call completion:
+add phase to BuildGrammars to build a repr() of the final Grm rules,
+since we don't want to have to redo the precendence and left recursion
+transformations.  Now match, but only expand nonterminals if there
+isn't already at least one terminal in the "string so far".  IE:
+   do 1/2 of a |<anything>
+(where | indicates the division between "typed so far" and the
+completion) would give some suggestons for the anything, and
+  |<anyone> run
+would give suggestions for anyone, but
+  boys wa|lk <anyone> dodge
+would leave anyone unexpanded, and just complete to "boys walk " if
+selected (and you'd then get suggestions for <anyone>.
+
+Add a "pretty name" to the nonterminals, so that the grammar
+transformations aren't exposed here.
+We'd probably want to collect all the alternatives for a nonterminal,
+so there was a simple <nonterminal name>-><Grm> mapping (not a multimap).
+
+Our input stream should be lexed into tokens (regexp, mostly just
+splitting on strings, but we might greedily assemble fractions).
+In addition to the left context of complete tokens, we might also have
+a unlexed right context (if the input stream doesn't end with a
+space); this is used as an additional filter when trying to match
+against terminals.  The final candidates can be applied to the
+formation to determine whether they are actually possible given the
+current formation -- if the candidate involves a nonterminal, we can
+either bail and assume its appplicable, determine whether we can
+generate *some* assignment to the nonterminal that would allow it to
+be applied, or (compromise) look briefly inside the call def to
+determine whether the nonterminal is involved in the outer SELECT;
+if not we can attempt to perform the SELECT to approximate
+applicability.
+
+repr() method on Grm.
+String,List<Integer> generate(List<Token> leftinput, String rightinput, List<Integer> last)
+in concat: we pop from last and use this as our starting index into
+seq. (if last.isEmpty() use 0)
+on return, we push our current index onto the vector.
+for ()*, we push 0/1 depending on whether we select or not (like ?).
+We recurse into ourselves iff (a) we were selected and (b) left/right
+input is not empty.  Otherwise, we just provide one continuation as an
+option.  ie:
+  trade -> "trade and roll"
+  trade a -> "trade and roll"
+  trade and roll -> "trade and roll and roll"
+  trade and roll a -> "trade and roll and roll"
+
+----
