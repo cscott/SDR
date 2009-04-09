@@ -8,6 +8,9 @@ grammar @CLASSNAME@;
 
 @RULES@
 	
+// no parentheses in speech
+<parenthesized_anything> = <VOID>;
+
 <people> = <genders> | <all>;
 <genders> = <boys> | <girls> ;
 <boys> = boys | men {boys};

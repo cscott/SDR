@@ -23,9 +23,13 @@ package net.cscott.sdr.calls.lists;
 }
 
 start returns [Apply r]
+	: a=anything_list EOF { r=a; }
+	;
+
+anything_list returns [Apply r]
 @init { List<Apply> l = new ArrayList<Apply>(); }
 	// semicolons are just for ease of typing (not spoken)
-	: a=anything { l.add(a); } (';' b=anything { l.add(b); } )* EOF
+	: a=anything { l.add(a); } (';' b=anything { l.add(b); } )*
 	  {
 	    r = (l.size() > 1)
                 ? Apply.makeApply("and", l.toArray(new Apply[0]))
@@ -34,6 +38,10 @@ start returns [Apply r]
 	;
 
 @RULES@
+
+parenthesized_anything returns [Apply r]
+	: '(' a=anything_list ')' { r=a; }
+	;
 
 people returns [Apply r]
 	: a=genders {r=a;} | a=all {r=a;}

@@ -101,6 +101,9 @@ public class BuildGrammars {
         for (String s : new String[] { "leftable", "reversable" })
             rules.add(new RuleAndAction(new Rule("anything_"+highestPrec,
                     new Nonterminal(s+"_anything",0),null),"r=a;"));
+        // add parenthesization rule
+        rules.add(new RuleAndAction(new Rule("anything_"+highestPrec,
+            new Nonterminal("parenthesized_anything", 0), null), "r=a;"));
         // start rule.
         rules.add(new RuleAndAction(new Rule("anything",
                 new Nonterminal("anything_0",0),null),"r=a;"));

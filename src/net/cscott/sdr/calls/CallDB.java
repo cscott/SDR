@@ -118,6 +118,12 @@ public class CallDB {
      *  js> db = CallDB.INSTANCE ; undefined
      *  js> db.parse(Program.PLUS, "circulate; trade; u turn back")
      *  (Apply and (Apply circulate) (Apply trade) (Apply u turn back))
+     * @doc.test Parentheses can be used in the typed (not spoken) grammar:
+     *  js> db = CallDB.INSTANCE ; undefined
+     *  js> db.parse(Program.PLUS, "do half of a trade and roll")
+     *  (Apply _and_roll (Apply _fractional (Apply 1/2) (Apply trade)))
+     *  js> db.parse(Program.PLUS, "do half of a ( trade and roll )")
+     *  (Apply _fractional (Apply 1/2) (Apply _and_roll (Apply trade)))
      */
     public Apply parse(Program program, String s) {
         program = Program.C4; // xxx: force C4 for now.
