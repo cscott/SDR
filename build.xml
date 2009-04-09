@@ -321,6 +321,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    depends="compile.base">
 	    <java classname="net.cscott.sdr.calls.grm.BuildGrammars"
 	          fork="true">
+		  <!-- enable assertions when building grammars -->
+		  <jvmarg value="-ea:net.cscott..." />
                   <classpath>
 		    <path refid="classpath.path"/>
                   </classpath>
