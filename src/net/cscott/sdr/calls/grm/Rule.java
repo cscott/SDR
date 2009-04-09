@@ -10,7 +10,6 @@ public class Rule {
     public final Fraction prec; // precedence level
     
     public Rule(String lhs, Grm rhs, Fraction prec) {
-	assert prec != null : "null precedence";
         this.lhs = lhs;
         this.rhs = rhs;
         this.prec = prec;

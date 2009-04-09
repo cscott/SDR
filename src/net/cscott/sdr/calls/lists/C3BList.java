@@ -34,6 +34,10 @@ public abstract class C3BList {
         public final Program getProgram() { return Program.C3B; }
     }
 
+    // note that precedence level makes "mirror swing thru and roll"
+    // equivalent to "mirror (swing thru and roll)"
+    // while "left swing thru and roll" is "(left swing thru) and roll".
+    // XXX: is this right?
     public static final Call MIRROR = new C3BCall("mirror") {
         @Override
         public Comp apply(Apply ast) {

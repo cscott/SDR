@@ -116,8 +116,6 @@ public class CallDB {
      * @doc.test Semicolon-separated calls are also used in the typed
      *  (not the spoken) grammar:
      *  js> db = CallDB.INSTANCE ; undefined
-     *  js> db.parse(Program.PLUS, "circulate and trade and u turn back")
-     *  (Apply and (Apply circulate) (Apply and (Apply trade) (Apply u turn back)))
      *  js> db.parse(Program.PLUS, "circulate; trade; u turn back")
      *  (Apply and (Apply circulate) (Apply trade) (Apply u turn back))
      */

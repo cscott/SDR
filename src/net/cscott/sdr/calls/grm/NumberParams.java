@@ -15,9 +15,14 @@ import net.cscott.sdr.calls.grm.Grm.Terminal;
 class NumberParams extends GrmVisitor<Void> {
     public final Map<Integer,Integer> paramToOrder =
         new HashMap<Integer,Integer>();
-    private int order = 0;
+    private int order;
     private boolean inMult=false;
-    NumberParams(Grm g) { g.accept(this); }
+    NumberParams(Grm g) { this(g, 0); }
+    NumberParams(Grm g, int start) {
+        this.order = start;
+        g.accept(this);
+    }
+
     @Override
     public Void visit(Alt alt) {
         int o = order;

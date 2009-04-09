@@ -11,6 +11,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import net.cscott.sdr.calls.grm.Grm.Mult;
 import net.cscott.sdr.calls.grm.Grm.Nonterminal;
 import net.cscott.sdr.calls.grm.Grm.Terminal;
 import net.cscott.sdr.util.Fraction;
+import static net.cscott.sdr.util.Tools.l;
 
 /** Build speech/plain-text grammars for the various programs. */
 public class BuildGrammars {
@@ -64,10 +66,37 @@ public class BuildGrammars {
             if (!hasNontermRefs(ra.rule.rhs)) prec = highestPrec;
             ra.rule = rewriteForPrec(ra.rule, prec); 
         }
+        // remove left recursion, step 1:
+        // pull out left recursive rules; rewrite them as 'suffix' rules
+        Set<String> leftRecursiveLHS = new HashSet<String>();
+        for (RuleAndAction ra : rules) {
+            if (!ra.rule.lhs.startsWith("anything_")) continue;
+            if (!(ra.rule.rhs instanceof Grm.Concat)) continue;
+            Grm.Concat c = (Grm.Concat) ra.rule.rhs;
+            assert c.sequence.size() > 1;
+            Grm first = c.sequence.get(0);
+            Grm tail = new Grm.Concat(c.sequence.subList(1, c.sequence.size()));
+            if (!(first instanceof Grm.Nonterminal)) continue;
+            Grm.Nonterminal nt = (Grm.Nonterminal) first;
+            if (!(ra.rule.lhs.equals(nt.ruleName))) continue;
+            // ok, this sure is left recursive!
+            leftRecursiveLHS.add(ra.rule.lhs);
+            ra.rule = new Rule(ra.rule.lhs+"_suffix", tail, ra.rule.prec);
+        }
         // add level-bridging rules
         for (int i=0; i<highestPrec; i++)
             rules.add(new RuleAndAction(new Rule("anything_"+i,
                     new Nonterminal("anything_"+(i+1),0),null),"r=a;"));
+        // left recursion removal, step 2: add 'suffix' rules at end of
+        // regular productions for these nonterminals
+        for (RuleAndAction ra : rules) {
+            if (!leftRecursiveLHS.contains(ra.rule.lhs)) continue;
+            Grm suffix = new Grm.Mult
+                               (new Grm.Nonterminal(ra.rule.lhs+"_suffix", -1),
+                                Grm.Mult.Type.STAR);
+            Grm nrule = new Grm.Concat(l(ra.rule.rhs, suffix));
+            ra.rule = new Rule(ra.rule.lhs, nrule, ra.rule.prec);
+        }
         // add leftable/reversable rules
         for (String s : new String[] { "leftable", "reversable" })
             rules.add(new RuleAndAction(new Rule("anything_"+highestPrec,
@@ -75,7 +104,6 @@ public class BuildGrammars {
         // start rule.
         rules.add(new RuleAndAction(new Rule("anything",
                 new Nonterminal("anything_0",0),null),"r=a;"));
-        // XXX remove left recursion
 
         String programName = program.toTitleCase();
         // emit as ANTLR v3 grammar
@@ -201,8 +229,8 @@ public class BuildGrammars {
                 // nonterminal *if* it was 'anything'.
                  if (!nonterm.ruleName.equals("anything"))
                      return nonterm;
-                 // if leftmost, then use prec+1, else use prec
-                 int nprec = (isLeftmost) ? (prec+1) : prec;
+                 // if leftmost, then use prec, else use prec+1
+                 int nprec = (isLeftmost) ? prec : (prec+1);
                  String ruleName = nonterm.ruleName + "_" + nprec;
                  return new Nonterminal(ruleName, nonterm.param);
             }

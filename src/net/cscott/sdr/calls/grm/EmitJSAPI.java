@@ -41,8 +41,7 @@ public class EmitJSAPI extends AbstractEmit {
         case QUESTION:
             return "["+mult.operand.accept(this)+"]";
         default:
-            assert false : "don't know how JSAPI expresses this";
-            return null;
+            return super.visit(mult);
         }
     }
     @Override

@@ -62,10 +62,11 @@ public abstract class BasicList {
         public int getMinNumberOfArguments() { return 1; }
         @Override
         public Rule getRule() {
-            if (true) return null; // we don't support left recursion yet
-            // XXX would be nice if this could deal with a sequence of ANDs 
+            // this introduces ambiguities into the grammar; ban 'and'
+            // as a simple connector.
+	    if (true) return null;
             Grm g = Grm.parse("<0=anything> and <1=anything>");
-            return new Rule("anything", g, Fraction.ONE);
+            return new Rule("anything", g, Fraction.valueOf(-30));
         }
     };
     // kludges for simple arithmetic.
@@ -291,9 +292,10 @@ public abstract class BasicList {
         public int getMinNumberOfArguments() { return 2; }
         @Override
         public Rule getRule() {
-            if (true) return null; // we don't support left recursion yet
-            Grm g = Grm.parse("<1=anything> <0=cardinal>|do <0=fraction> (of (a)?)? <1=anything>");
-            return new Rule("anything", g, Fraction.valueOf(-1)); // bind loosely
+	    String rule = "do <0=fraction> (of (a)?)? <1=anything>" +
+		"| <1=anything> <0=cardinal>";
+            Grm g = Grm.parse(rule);
+            return new Rule("anything", g, Fraction.valueOf(-10));
         }
     };
 }
