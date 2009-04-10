@@ -1,0 +1,20 @@
+package net.cscott.sdr.calls.lists;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import net.cscott.sdr.calls.grm.Grm;
+import net.cscott.sdr.calls.grm.GrmDB;
+import net.cscott.sdr.util.Tools;
+
+/** Post-processed grammar for @CLASSNAME@. */
+public class @CLASSNAME@Grm extends GrmDB {
+    public static final Map<String,Grm> NONTERMINALS;
+    static {
+	Map<String,Grm> m = new HashMap<String,Grm>();
+@RULES@
+	NONTERMINALS = Collections.unmodifiableMap(m);
+    }
+    public Map<String,Grm> grammar() { return NONTERMINALS; }
+}

@@ -126,7 +126,7 @@ public class CallDB {
      *  (Apply _fractional (Apply 1/2) (Apply _and_roll (Apply trade)))
      */
     public Apply parse(Program program, String s) {
-        program = Program.C4; // xxx: force C4 for now.
+        if (program!=Program.BASIC) program=Program.C4; // for debugging
         String pkgName = "net.cscott.sdr.calls.lists.";
         String baseName = program.toTitleCase()+"Grammar";
         String parserName = baseName+"Parser";

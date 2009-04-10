@@ -327,9 +327,10 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		    <path refid="classpath.path"/>
                   </classpath>
 	    </java>
-    <antlr3 target="src/net/cscott/sdr/calls/lists/C4Grammar.g">
-		<classpath refid="classpath.path" />
-    </antlr3>
+      <foreach target="build-one-grammar" param="grammar.file">
+        <fileset dir="src/net/cscott/sdr/calls/lists/"
+		 includes="*.g" />
+      </foreach>
 	    <!-- build newly-generated grammars -->
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
@@ -339,6 +340,12 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		   <classpath refid="classpath.path" />
 	    </javac>
     </target>
+    <target name="build-one-grammar" depends="init">
+        <antlr3 target="${grammar.file}">
+		<classpath refid="classpath.path" />
+        </antlr3>
+    </target>
+
     <target name="clean.grm" depends="init"
 	    description="Remove generated natural language grammars">
         <delete>
@@ -346,7 +353,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		   includes="*.gram" excludes="sdr.gram" />
 	  <fileset dir="src/net/cscott/sdr/calls/lists/"
 		   includes="*Grammar.g *Grammar__.g *.tokens
-			     *GrammarLexer.java *GrammarParser.java" />
+			     *GrammarLexer.java *GrammarParser.java
+                             *Grm.java" />
 	</delete>
     </target>
 

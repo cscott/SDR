@@ -36,7 +36,7 @@ public class BuildGrammars {
      */
     public static void main(String[] args) throws IOException {
         for (Program p : Program.values())
-            if (p==Program.C4) // FOR DEBUGGING
+            if (p==Program.C4 || p==Program.BASIC) // FOR DEBUGGING
                 build(p);
         System.err.println("Done.");
     }
@@ -115,6 +115,9 @@ public class BuildGrammars {
         // emit as JSAPI grammar.
         writeFile("resources/net/cscott/sdr/recog/"+programName+".gram",
                 EmitJSAPI.emit(programName, rules));
+        // emit as Java source for writing completion engines
+        writeFile("src/net/cscott/sdr/calls/lists/"+programName+"Grm.java",
+                EmitJava.emit(programName, rules));
     }
     
     private static List<RuleAndAction> mkAction(Call c) {

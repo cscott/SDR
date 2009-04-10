@@ -3,4 +3,5 @@
 *.tokens
 *Grammar.g
 *__.g
+*Grm.java
 doc-files

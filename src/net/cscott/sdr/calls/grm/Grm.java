@@ -3,6 +3,7 @@ package net.cscott.sdr.calls.grm;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import net.cscott.sdr.calls.ast.Apply;
@@ -15,7 +16,9 @@ import net.cscott.sdr.calls.transform.CallFileBuilder;
  * generates text strings.  The AST is also transformed into an ANTLR v3
  * grammar parsing those text strings, which creates {@link Apply} trees.
  * The raw rules from the call file need to be processed to remove
- * left recursion and to disambiguate using precedence levels.
+ * left recursion and to disambiguate using precedence levels.  These
+ * processed rules are written out as subclasses of {@link GrmDB} and used
+ * to drive the {@link CompletionEngine}.
  * 
  * @author C. Scott Ananian
  * @version $Id: Grm.java,v 1.3 2006-10-22 15:46:06 cananian Exp $
@@ -26,6 +29,13 @@ public abstract class Grm {
     public final String toString() {
         return accept(new ToStringVisitor());
     }
+    /** Return a Java phrase to reconstruct this Grm. */
+    public final String repr() {
+        StringBuilder sb = new StringBuilder();
+        this.repr(sb);
+        return sb.toString();
+    }
+    protected abstract void repr(StringBuilder sb);
     
     /** Alternation: a|b. */
     public static class Alt extends Grm {
@@ -39,6 +49,17 @@ public abstract class Grm {
         public <T> T accept(GrmVisitor<T> v) {
             return v.visit(this);
         }
+        public void repr(StringBuilder sb) {
+            sb.append("new Grm.Alt(Tools.<Grm>l(");
+            for (Iterator<Grm> it = this.alternates.iterator(); ; ) {
+                it.next().repr(sb);
+                if (it.hasNext())
+                    sb.append(",");
+                else
+                    break;
+            }
+            sb.append("))");
+        }
     }
     /** Concatanation: a b. */
     public static class Concat extends Grm {
@@ -51,6 +72,17 @@ public abstract class Grm {
         @Override
         public <T> T accept(GrmVisitor<T> v) {
             return v.visit(this);
+        }
+        public void repr(StringBuilder sb) {
+            sb.append("new Grm.Concat(Tools.<Grm>l(");
+            for (Iterator<Grm> it = this.sequence.iterator(); ; ) {
+                it.next().repr(sb);
+                if (it.hasNext())
+                    sb.append(",");
+                else
+                    break;
+            }
+            sb.append("))");
         }
     }
     /** Multiplicity marker: a*, a+, or a?. */
@@ -71,6 +103,13 @@ public abstract class Grm {
         public <T> T accept(GrmVisitor<T> v) {
             return v.visit(this);
         }
+        public void repr(StringBuilder sb) {
+            sb.append("new Grm.Mult(");
+            this.operand.repr(sb);
+            sb.append(",Grm.Mult.Type.");
+            sb.append(this.type.name());
+            sb.append(")");
+        }
     }
     /** A nonterminal reference to an external rule. */
     public static class Nonterminal extends Grm {
@@ -86,6 +125,13 @@ public abstract class Grm {
         public <T> T accept(GrmVisitor<T> v) {
             return v.visit(this);
         }
+        public void repr(StringBuilder sb) {
+            sb.append("new Grm.Nonterminal(");
+            sb.append(str_escape(this.ruleName));
+            sb.append(",");
+            sb.append(this.param);
+            sb.append(")");
+        }
     }
     /** A grammar terminal: a string literal to match. */
     public static class Terminal extends Grm {
@@ -97,6 +143,11 @@ public abstract class Grm {
         @Override
         public <T> T accept(GrmVisitor<T> v) {
             return v.visit(this);
+        }
+        public void repr(StringBuilder sb) {
+            sb.append("new Grm.Terminal(");
+            sb.append(str_escape(this.literal));
+            sb.append(")");
         }
     }
 
@@ -128,5 +179,21 @@ public abstract class Grm {
         } catch (Exception e) {
             throw new IllegalArgumentException("bad grammar rule: "+rule);
         }
+    }
+    /** Return the parameter as a properly-escaped Java string literal. */
+    static String str_escape(String s) {
+        StringBuilder sb = new StringBuilder();
+        sb.append('"');
+        for (int i=0; i<s.length(); i++) {
+            char c = s.charAt(i);
+            if (c < 128 && Character.isJavaIdentifierPart(c))
+                sb.append(c); // ASCII and alphanumeric-ish
+            else if (c<256) // this handles quotes, slashes, and other nasties
+                sb.append(String.format("\\\\%03o", (int) c));
+            else // make the world safe for unicode
+                sb.append(String.format("\\\\"+"u%04x", (int) c));
+        }
+        sb.append('"');
+        return sb.toString();
     }
 }
