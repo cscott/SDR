@@ -12,7 +12,7 @@ import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.util.Fraction;
 
 /**
- * The <code>C3BList</code> class contains complex call
+ * The <code>C3bList</code> class contains complex call
  * and concept definitions which are on the 'plus' program.
  * Note that "simple" calls and concepts are defined in
  * the resource file at
@@ -21,9 +21,9 @@ import net.cscott.sdr.util.Fraction;
  * executable component is required.
  * @author C. Scott Ananian
  */
-public abstract class C3BList {
+public abstract class C3bList {
     // hide constructor.
-    private C3BList() { }
+    private C3bList() { }
 
     private static abstract class C3BCall extends Call {
         private final String name;
