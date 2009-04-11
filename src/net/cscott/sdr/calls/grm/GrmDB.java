@@ -10,13 +10,13 @@ import net.cscott.sdr.calls.Program;
 public abstract class GrmDB {
     public abstract Map<String,Grm> grammar();
 
-    public static final Map<String,Grm> grammar(Program program) {
+    public static final GrmDB dbFor(Program program) {
         String pkgName = "net.cscott.sdr.calls.lists.";
         String baseName = program.toTitleCase()+"Grm";
         try {
             GrmDB gdb = (GrmDB) Class.forName(pkgName+baseName)
                 .getConstructor().newInstance();
-            return gdb.grammar();
+            return gdb;
         } catch (Exception e) {
             assert false : "should never get here!";
             return null;

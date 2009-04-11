@@ -35,6 +35,7 @@ public class EmitJava extends AbstractEmit {
         m.put("all", Grm.parse("all | every (one|body) | everyone"));
         m.put("wave_select", Grm.parse("centers | ends"));
         m.put("anyone", Grm.parse("<people> | <wave_select>"));
+        m.put("start", Grm.parse("<anything> <EOF>"));
         // emit all the grammars
         String NL = System.getProperty("line.separator");
         StringBuilder sb = new StringBuilder();
