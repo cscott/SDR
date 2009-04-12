@@ -86,13 +86,15 @@ public class BuildGrammars {
         // add level-bridging rules
         for (int i=0; i<highestPrec; i++)
             rules.add(new RuleAndAction(new Rule("anything_"+i,
-                    new Nonterminal("anything_"+(i+1),0),null),"r=a;"));
+                    new Nonterminal("anything_"+(i+1),null,0),null),"r=a;"));
         // left recursion removal, step 2: add 'suffix' rules at end of
         // regular productions for these nonterminals
         for (RuleAndAction ra : rules) {
             if (!leftRecursiveLHS.contains(ra.rule.lhs)) continue;
+            // the null for 'prettyName' here indicates that this nonterminal
+            // should never be shown to the user during call completion!
             Grm suffix = new Grm.Mult
-                               (new Grm.Nonterminal(ra.rule.lhs+"_suffix", -1),
+                               (new Grm.Nonterminal(ra.rule.lhs+"_suffix", null, -1),
                                 Grm.Mult.Type.STAR);
             Grm nrule = new Grm.Concat(l(ra.rule.rhs, suffix));
             ra.rule = new Rule(ra.rule.lhs, nrule, ra.rule.prec);
@@ -100,13 +102,13 @@ public class BuildGrammars {
         // add leftable/reversable rules
         for (String s : new String[] { "leftable", "reversable" })
             rules.add(new RuleAndAction(new Rule("anything_"+highestPrec,
-                    new Nonterminal(s+"_anything",0),null),"r=a;"));
+                    new Nonterminal(s+"_anything",null,0),null),"r=a;"));
         // add parenthesization rule
         rules.add(new RuleAndAction(new Rule("anything_"+highestPrec,
-            new Nonterminal("parenthesized_anything", 0), null), "r=a;"));
+            new Nonterminal("parenthesized_anything", null, 0), null), "r=a;"));
         // start rule.
         rules.add(new RuleAndAction(new Rule("anything",
-                new Nonterminal("anything_0",0),null),"r=a;"));
+                new Nonterminal("anything_0",null,0),null),"r=a;"));
 
         String programName = program.toTitleCase();
         // emit as ANTLR v3 grammar
@@ -238,7 +240,7 @@ public class BuildGrammars {
                  // if leftmost, then use prec, else use prec+1
                  int nprec = (isLeftmost) ? prec : (prec+1);
                  String ruleName = nonterm.ruleName + "_" + nprec;
-                 return new Nonterminal(ruleName, nonterm.param);
+                 return new Nonterminal(ruleName, nonterm.ruleName, nonterm.param);
             }
 
             @Override

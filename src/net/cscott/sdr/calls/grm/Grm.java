@@ -115,10 +115,18 @@ public abstract class Grm {
     public static class Nonterminal extends Grm {
         // Name of the grammar rule referenced.
         public final String ruleName;
+        // "Pretty" name, for display to the user during call completion
+        // May be null to indicate that you shouldn't show this to the user!
+        public final String prettyName;
         // If not -1, which parameter should get the value of this rule
         public final int param;
         public Nonterminal(String ruleName, int param) {
-            this.ruleName=ruleName; this.param=param;
+            this(ruleName, ruleName, param);
+        }
+        public Nonterminal(String ruleName, String prettyName, int param) {
+            this.ruleName=ruleName;
+            this.prettyName=prettyName;
+            this.param=param;
         }
         public int precedence() { return 3; }
         @Override
@@ -129,9 +137,15 @@ public abstract class Grm {
             sb.append("new Grm.Nonterminal(");
             sb.append(str_escape(this.ruleName));
             sb.append(",");
+            if (!this.ruleName.equals(this.prettyName)) {
+                sb.append((this.prettyName==null) ? "null" :
+                          str_escape(this.prettyName));
+                sb.append(",");
+            }
             sb.append(this.param);
             sb.append(")");
         }
+        // we don't use the prettyName in the hashCode or equality computations
         public int hashCode() { return ruleName.hashCode() * (param+2); }
         public boolean equals(Object o) {
             if (!(o instanceof Nonterminal)) return false;

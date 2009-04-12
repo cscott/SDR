@@ -241,8 +241,10 @@ public class CompletionEngine {
             // if "no terminals past partialInput yet" then we'll grab the
             // nt from the GrmDB and recurse; otherwise we'll return
             // "<"+nonterm.prettyname+">" in the completion string & true.
-            if (cs.matchedTerminal) {
-                cs.pushCompletion("<"+nonterm.ruleName+">"); //XXXpretty
+            // prettyName==null means "never show this nonterminal to the user
+            // in a completion"
+            if (cs.matchedTerminal && nonterm.prettyName!=null) {
+                cs.pushCompletion("<"+nonterm.prettyName+">");
                 return true;
             }
             Grm g = rules.grammar().get(nonterm.ruleName);
