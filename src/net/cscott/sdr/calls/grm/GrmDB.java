@@ -11,6 +11,7 @@ public abstract class GrmDB {
     public abstract Map<String,Grm> grammar();
 
     public static final GrmDB dbFor(Program program) {
+        if (program!=Program.BASIC) program=Program.C4; // for debugging
         String pkgName = "net.cscott.sdr.calls.lists.";
         String baseName = program.toTitleCase()+"Grm";
         try {
