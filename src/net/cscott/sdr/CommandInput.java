@@ -88,7 +88,10 @@ public class CommandInput {
     // XXX: is this really the interface we want?  seems cumbersome.
     public static abstract class PossibleCommand
     implements Iterable<PossibleCommand> {
-        /** Return the raw user input. */
+        /** A distinguished string used to indicate an error condition. */
+        public static final String UNCLEAR_UTTERANCE = "<unclear>";
+        /** Return the raw user input, or {@link #UNCLEAR_UTTERANCE} if
+         * the input mechanism wasn't able to decipher the input. */
         public abstract String getUserInput();
         /** Return the time the user input began, in milliseconds since the
          * epoch. */

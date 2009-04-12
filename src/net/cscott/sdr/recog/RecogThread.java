@@ -5,12 +5,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 import net.cscott.sdr.CommandInput;
 import net.cscott.sdr.CommandInput.PossibleCommand;
+import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.DanceProgram;
+import net.cscott.sdr.calls.ast.Apply;
 import edu.cmu.sphinx.decoder.search.Token;
 import edu.cmu.sphinx.frontend.Data;
 import edu.cmu.sphinx.frontend.FloatData;
@@ -85,6 +88,7 @@ public class RecogThread extends Thread {
             Result result = recognizer.recognize();
             if (result==null) {
                 // XXX: HUD: "I couldn't hear you"
+                input.addCommand(errorCmd());
                 continue;
             }
             
@@ -94,6 +98,7 @@ public class RecogThread extends Thread {
                 tokens.add((Token)t); // typecast; sphinx has a loose type
             if (tokens.isEmpty()) {
                 // XXX: HUD: "I couldn't hear you"
+                input.addCommand(errorCmd());
                 continue;
             }
             /* sort so the worst (lowest score) is first */
@@ -127,5 +132,22 @@ public class RecogThread extends Thread {
             input.addCommand(pc);
             System.err.println("---");
         }
+    }
+    private static PossibleCommand errorCmd() {
+        final long time = new Date().getTime();
+        return new PossibleCommand() {
+            @Override
+            public String getUserInput() { return UNCLEAR_UTTERANCE; }
+            @Override
+            public PossibleCommand next() { return null; }
+            @Override
+            public Apply getApply() throws BadCallException {
+                throw new BadCallException("unclear utterance");
+            }
+            @Override
+            public long getEndTime() { return time; }
+            @Override
+            public long getStartTime() { return time; }
+        };
     }
 }
