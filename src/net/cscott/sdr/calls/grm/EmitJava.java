@@ -43,7 +43,7 @@ public class EmitJava extends AbstractEmit {
             sb.append("        m.put(");
             sb.append(Grm.str_escape(me.getKey()));
             sb.append(",");
-            me.getValue().repr(sb);
+            SimplifyGrm.simplify(me.getValue()).repr(sb);
             sb.append(");");
             sb.append(NL);
         }

@@ -132,6 +132,12 @@ public abstract class Grm {
             sb.append(this.param);
             sb.append(")");
         }
+        public int hashCode() { return ruleName.hashCode() * (param+2); }
+        public boolean equals(Object o) {
+            if (!(o instanceof Nonterminal)) return false;
+            Nonterminal nt = (Nonterminal) o;
+            return this.ruleName.equals(nt.ruleName) && this.param == nt.param;
+        }
     }
     /** A grammar terminal: a string literal to match. */
     public static class Terminal extends Grm {
@@ -148,6 +154,12 @@ public abstract class Grm {
             sb.append("new Grm.Terminal(");
             sb.append(str_escape(this.literal));
             sb.append(")");
+        }
+        public int hashCode() { return literal.hashCode() + 42; }
+        public boolean equals(Object o) {
+            if (!(o instanceof Terminal)) return false;
+            Terminal t = (Terminal) o;
+            return this.literal.equals(t.literal);
         }
     }
 
