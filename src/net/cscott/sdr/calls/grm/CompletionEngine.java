@@ -19,6 +19,11 @@ import net.cscott.sdr.util.Tools;
 /**
  * Uses a {@link GrmDB} to compute possible completions for a partially-input
  * call.
+ * <p>
+ * We are careful about expanding "+" and "*" to avoid generating an
+ * infinite list of options.  We only expand once past the end of the
+ * given input.
+ *
  * @doc.test Get completions for partial phrases, based on the grammar:
  *  js> importPackage(net.cscott.sdr.calls);
  *  js> function c(txt) {
@@ -76,24 +81,18 @@ import net.cscott.sdr.util.Tools;
  *  trade and roll and roll <cardinal>
  *  trade and roll and roll and roll
  *  js> c("scoot back once a");
- *  scoot back once and roll
- *  scoot back once and roll <cardinal>
- *  scoot back once and roll and roll
- *  scoot back once and half
- *  scoot back once and half <cardinal>
- *  scoot back once and half and roll
  *  scoot back once and a half
  *  scoot back once and a half <cardinal>
  *  scoot back once and a half and roll
- *  scoot back once and one half
- *  scoot back once and one half <cardinal>
- *  scoot back once and one half and roll
  *  scoot back once and a third
  *  scoot back once and a third <cardinal>
  *  scoot back once and a third and roll
  *  scoot back once and a quarter
  *  scoot back once and a quarter <cardinal>
  *  scoot back once and a quarter and roll
+ *  scoot back once and one half
+ *  scoot back once and one half <cardinal>
+ *  scoot back once and one half and roll
  *  scoot back once and one third
  *  scoot back once and one third <cardinal>
  *  scoot back once and one third and roll
@@ -103,6 +102,9 @@ import net.cscott.sdr.util.Tools;
  *  scoot back once and two thirds
  *  scoot back once and two thirds <cardinal>
  *  scoot back once and two thirds and roll
+ *  scoot back once and two quarters
+ *  scoot back once and two quarters <cardinal>
+ *  scoot back once and two quarters and roll
  *  scoot back once and three quarters
  *  scoot back once and three quarters <cardinal>
  *  scoot back once and three quarters and roll
@@ -347,13 +349,15 @@ public class CompletionEngine {
         }
         @Override
         public Boolean visit(Nonterminal nonterm) {
-            // for <number> look also for <digit> (<digit> / <digit>)?
-            // for <fraction> look also for <digit> / <digit>
-            if (nonterm.ruleName.equals("number") &&
-                (!cs.partialInput.isEmpty()) &&
-                cs.partialInput.head.type==TokenType.FRACTION) {
-                matchterm(cs.partialInput.head.text);
-                return true;
+            // for <NUMBER> look also for <digit> (<digit> / <digit>)?
+	    // note that we don't try to match <number> or <fraction> or
+	    // <digit_greater_than_two> here; <NUMBER> is the only thing
+	    // which can match a TokenType.FRACTION
+	    if ((!cs.partialInput.isEmpty()) &&
+                cs.partialInput.head.type==TokenType.FRACTION &&
+		nonterm.ruleName.equals("NUMBER")) {
+		matchterm(cs.partialInput.head.text);
+		return true;
             }
             // special match for <digit>, <EOF> (others?)
             if (nonterm.ruleName.equals("EOF"))

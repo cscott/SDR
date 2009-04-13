@@ -8,10 +8,10 @@ import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.GrmDB;
 import net.cscott.sdr.util.Tools;
 
-/** Post-processed grammar for C4. */
-public class C4Grm extends GrmDB {
+/** Post-processed grammar for C3b. */
+public class C3bGrm extends GrmDB {
     /** Constructor. */
-    public C4Grm() { }
+    public C3bGrm() { }
     /** Map from nonterminal name to Grm representing its production. */
     public static final Map<String,Grm> NONTERMINALS;
     static {
