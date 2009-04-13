@@ -100,10 +100,11 @@ fraction returns [Apply a]
 	{ a = Apply.makeApply($n.f.divide($d.f).toProperString()); }
 	;
 a_fraction returns [Fraction f]
-	: ('a'|'one')? 'half' { f=Fraction.valueOf("1/2"); }
+	: ('a'|'one') 'half' { f=Fraction.valueOf("1/2"); }
 	| ('a'|'one') 'third' { f=Fraction.valueOf("1/3"); }
 	| ('a'|'one') 'quarter' { f=Fraction.valueOf("1/4"); }
 	| 'two' 'thirds' { f=Fraction.valueOf("2/3"); }
+	| 'two' 'quarters' { f=Fraction.valueOf("2/4"); }
 	| 'three' 'quarters' { f=Fraction.valueOf("3/4"); }
 	;
 fragment
@@ -124,7 +125,7 @@ cardinal returns [Apply a]
 	*/
 	;
 a_cardinal returns [Fraction f]
-	: 'once' ('and' f2=a_fraction)? { f=Fraction.valueOf(1); if (f2!=null) f=f.add(f2); }
+	: 'once' 'and' f2=a_fraction { f=Fraction.valueOf(1); if (f2!=null) f=f.add(f2); }
 	| 'twice' ('and' f2=a_fraction)? { f=Fraction.valueOf(2); if (f2!=null) f=f.add(f2); }
 	| f1=a_digit_greater_than_two ('and' f2=a_fraction)? 'times' { f=f1; }
 	;

@@ -35,11 +35,11 @@ public class EmitJava extends AbstractEmit {
         m.put("all", Grm.parse("all | every (one|body) | everyone"));
         m.put("wave_select", Grm.parse("centers | ends"));
         m.put("anyone", Grm.parse("<people> | <wave_select>"));
-        m.put("number", Grm.parse("<digit> and <fraction>|<digit>|<fraction>"));
+        m.put("number", Grm.parse("<digit> and <fraction>|<digit>|<fraction>|<NUMBER>"));
         m.put("digit", Grm.parse("one | two | <digit_greater_than_two>"));
         m.put("digit_greater_than_two", Grm.parse("three | four | five | six | seven | eight | nine"));
-        m.put("fraction", Grm.parse("(a|one)? half | (a|one) (third|quarter) | two thirds | three quarters"));
-        m.put("cardinal", Grm.parse("once (and <fraction>)? | twice (and <fraction>)? | <digit_greater_than_two> (and <fraction>)? times"));
+        m.put("fraction", Grm.parse("(a|one) (half|third|quarter) | two (thirds|quarters) | three quarters"));
+        m.put("cardinal", Grm.parse("once and <fraction> | twice (and <fraction>)? | <digit_greater_than_two> (and <fraction>)? times | <NUMBER> times"));
         m.put("start", Grm.parse("<anything> <EOF>"));
         // emit all the grammars
         String NL = System.getProperty("line.separator");

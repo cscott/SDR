@@ -292,8 +292,26 @@ public abstract class BasicList {
         public int getMinNumberOfArguments() { return 2; }
         @Override
         public Rule getRule() {
-	    String rule = "do <0=fraction> (of (a)?)? <1=anything>" +
-		"| <1=anything> <0=cardinal>";
+            String rule = "do <0=fraction> (of (a)?)? <1=anything>" +
+            "| <1=anything> <0=cardinal>";
+        Grm g = Grm.parse(rule);
+        return new Rule("anything", g, Fraction.valueOf(-10));
+        }
+    };
+    // grammar tweak: allow "do half of a ..." in addition to the
+    // longer-winded "do one half of a..." or "do a half of a..."
+    public static final Call _HALF = new BasicCall("_half") {
+        @Override
+        public Comp apply(Apply ast) {
+            return _FRACTIONAL.apply
+               (Apply.makeApply("_fractional", Fraction.ONE_HALF,
+                                ast.args.get(0)));
+        }
+        @Override
+        public int getMinNumberOfArguments() { return 1; }
+        @Override
+        public Rule getRule() {
+            String rule = "do half of (a)? <0=anything>";
             Grm g = Grm.parse(rule);
             return new Rule("anything", g, Fraction.valueOf(-10));
         }

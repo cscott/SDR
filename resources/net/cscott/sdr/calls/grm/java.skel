@@ -10,11 +10,15 @@ import net.cscott.sdr.util.Tools;
 
 /** Post-processed grammar for @CLASSNAME@. */
 public class @CLASSNAME@Grm extends GrmDB {
+    /** Constructor. */
+    public @CLASSNAME@Grm() { }
+    /** Map from nonterminal name to Grm representing its production. */
     public static final Map<String,Grm> NONTERMINALS;
     static {
 	Map<String,Grm> m = new HashMap<String,Grm>();
 @RULES@
 	NONTERMINALS = Collections.unmodifiableMap(m);
     }
+    /** Returns the static {@link #NONTERMINALS} field. */
     public Map<String,Grm> grammar() { return NONTERMINALS; }
 }

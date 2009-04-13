@@ -105,9 +105,9 @@ public class CallDB {
      *  (Apply square thru (Apply 3 1/2))
      * @doc.test We use a precedence grammar to resolve some ambiguities:
      *  js> db = CallDB.INSTANCE ; undefined
-     *  js> db.parse(Program.BASIC, "do a half of a trade")
+     *  js> db.parse(Program.BASIC, "do one half of a trade")
      *  (Apply _fractional (Apply 1/2) (Apply trade))
-     *  js> db.parse(Program.PLUS, "do half of a trade and roll")
+     *  js> db.parse(Program.PLUS, "do one half of a trade and roll")
      *  (Apply _and_roll (Apply _fractional (Apply 1/2) (Apply trade)))
      *  js> db.parse(Program.PLUS, "trade twice and roll")
      *  (Apply _and_roll (Apply _fractional (Apply 2) (Apply trade)))
@@ -120,9 +120,9 @@ public class CallDB {
      *  (Apply and (Apply circulate) (Apply trade) (Apply u turn back))
      * @doc.test Parentheses can be used in the typed (not spoken) grammar:
      *  js> db = CallDB.INSTANCE ; undefined
-     *  js> db.parse(Program.PLUS, "do half of a trade and roll")
+     *  js> db.parse(Program.PLUS, "do one half of a trade and roll")
      *  (Apply _and_roll (Apply _fractional (Apply 1/2) (Apply trade)))
-     *  js> db.parse(Program.PLUS, "do half of a ( trade and roll )")
+     *  js> db.parse(Program.PLUS, "do one half of a ( trade and roll )")
      *  (Apply _fractional (Apply 1/2) (Apply _and_roll (Apply trade)))
      */
     public Apply parse(Program program, String s) {
