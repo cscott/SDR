@@ -7,135 +7,132 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class SDRweb implements EntryPoint {
-    /**
-     * The message displayed to the user when the server cannot be reached or
-     * returns an error.
-     */
-    private static final String SERVER_ERROR = "An error occurred while "
-            + "attempting to contact the server. Please check your network "
-            + "connection and try again.";
-
-    /**
-     * Create a remote service proxy to talk to the server-side Greeting service.
-     */
-    private final GreetingServiceAsync greetingService = GWT
-        .create(GreetingService.class);
+    final TextBox callEntry = new TextBox();
+    final FlexTable callList = new FlexTable();
+    final Label currentCall = new Label();
 
     /**
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        final Button sendButton = new Button("Send");
-        final TextBox nameField = new TextBox();
-        nameField.setText("GWT User");
+        DockPanel layout = new DockPanel();
+        layout.setWidth("100%");
+        layout.setHeight("100%"); // XXX: not portable?
 
-        // We can add style names to widgets
-        sendButton.addStyleName("sendButton");
+        // Make a command that we will execute from all leaves.
+        // XXX: WRITE ME
+        Command cmd = new Command() {
+          public void execute() {
+            Window.alert("You selected a menu item!");
+          }
+        };
 
-        // Add the nameField and sendButton to the RootPanel
-        // Use RootPanel.get() to get the entire body element
-        RootPanel.get("nameFieldContainer").add(nameField);
-        RootPanel.get("sendButtonContainer").add(sendButton);
+        // Menu bar
+        MenuBar fileMenu = new MenuBar(true);
+        fileMenu.addItem("New", cmd);
+        fileMenu.addItem("Open", cmd);
+        fileMenu.addItem("Save", cmd);
+        fileMenu.addItem("Close", cmd);
 
-        // Focus the cursor on the name field when the app loads
-        nameField.setFocus(true);
-        nameField.selectAll();
+        MenuBar programMenu = new MenuBar(true);
+        programMenu.addItem("Basic", cmd);
+        programMenu.addItem("Mainstream", cmd);
+        programMenu.addItem("Plus", cmd);
 
-        // Create the popup dialog box
-        final DialogBox dialogBox = new DialogBox();
-        dialogBox.setText("Remote Procedure Call");
-        dialogBox.setAnimationEnabled(true);
-        final Button closeButton = new Button("Close");
-        // We can set the id of a widget by accessing its Element
-        closeButton.getElement().setId("closeButton");
-        final Label textToServerLabel = new Label();
-        final HTML serverResponseLabel = new HTML();
-        VerticalPanel dialogVPanel = new VerticalPanel();
-        dialogVPanel.addStyleName("dialogVPanel");
-        dialogVPanel.add(new HTML("<b>Sending name to the server:</b>"));
-        dialogVPanel.add(textToServerLabel);
-        dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
-        dialogVPanel.add(serverResponseLabel);
-        dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-        dialogVPanel.add(closeButton);
-        dialogBox.setWidget(dialogVPanel);
+        // Make a new menu bar, adding a few cascading menus to it.
+        MenuBar menu = new MenuBar();
+        menu.addItem("File", fileMenu);
+        menu.addItem("Program", programMenu);
+        layout.add(menu, DockPanel.NORTH);
 
-        // Add a handler to close the DialogBox
-        closeButton.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                dialogBox.hide();
-                sendButton.setEnabled(true);
-                sendButton.setFocus(true);
-            }
-        });
+        DockPanel callBar = new DockPanel();
+        callBar.setWidth("100%");
+        Label callLabel = new Label("Call: ");
+        callLabel.setHorizontalAlignment(Label.ALIGN_RIGHT);
+        Button callGo = new Button("Go");
+        callEntry.setWidth("100%");
+        callEntry.setStyleName("callEntry");
+        callBar.add(callLabel, DockPanel.LINE_START);
+        callBar.add(callGo, DockPanel.LINE_END);
+        callBar.add(callEntry, DockPanel.CENTER);
+        callBar.setCellVerticalAlignment(callLabel, DockPanel.ALIGN_MIDDLE);
+        callBar.setCellVerticalAlignment(callEntry, DockPanel.ALIGN_MIDDLE);
+        callBar.setCellVerticalAlignment(callGo, DockPanel.ALIGN_MIDDLE);
+        callBar.setCellWidth(callEntry, "100%");
+        callBar.setSpacing(5);
+        layout.add(callBar, DockPanel.NORTH);
 
-        // Create a handler for the sendButton and nameField
-        class MyHandler implements ClickHandler, KeyUpHandler {
-            /**
-             * Fired when the user clicks on the sendButton.
-             */
-            public void onClick(ClickEvent event) {
-                sendNameToServer();
-            }
+        callEntry.setText("Type a square dance call");
 
-            /**
-             * Fired when the user types in the nameField.
-             */
-            public void onKeyUp(KeyUpEvent event) {
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                    sendNameToServer();
-                }
-            }
+        callList.setText(0, 0, "Sequence");
+        callList.getFlexCellFormatter().setColSpan(0, 0, 2);
+        callList.getRowFormatter().setStyleName(0, "callListHeader");
+        callList.setStyleName("callList");
+        for (int i=1; i<5; i++)
+            callList.setText(i,0,"Call #"+i);
+        HorizontalPanel mainPanel = new HorizontalPanel();
+        mainPanel.setHeight("100%");
+        DecoratorPanel dp = new DecoratorPanel();
+        dp.add(callList);
+        dp.setHeight("100%");
+        dp.addStyleName("callListDecorator");
+        mainPanel.add(dp);
+        layout.add(mainPanel, DockPanel.CENTER);
+        layout.setCellHeight(mainPanel, "100%");
 
-            /**
-             * Send the name from the nameField to the server and wait for a response.
-             */
-            private void sendNameToServer() {
-                sendButton.setEnabled(false);
-                String textToServer = nameField.getText();
-                textToServerLabel.setText(textToServer);
-                serverResponseLabel.setText("");
-                greetingService.greetServer(textToServer,
-                        new AsyncCallback<String>() {
-                            public void onFailure(Throwable caught) {
-                                // Show the RPC error message to the user
-                                dialogBox
-                                    .setText("Remote Procedure Call - Failure");
-                                serverResponseLabel
-                                    .addStyleName("serverResponseLabelError");
-                                serverResponseLabel.setHTML(SERVER_ERROR);
-                                dialogBox.center();
-                                closeButton.setFocus(true);
-                            }
+        VerticalPanel canvasPanel = new VerticalPanel();
+        canvasPanel.add(currentCall);
 
-                            public void onSuccess(String result) {
-                                dialogBox.setText("Remote Procedure Call");
-                                serverResponseLabel
-                                    .removeStyleName("serverResponseLabelError");
-                                serverResponseLabel.setHTML(result);
-                                dialogBox.center();
-                                closeButton.setFocus(true);
-                            }
-                        });
-            }
-        }
+        DockPanel playBar = new DockPanel();
+        playBar.setWidth("100%");
+        Button playButton = new Button("Play"); // xxx replace with image
+        Label playSlider = new Label("Slider"); // xxx replace with slider
+        playBar.add(playButton, DockPanel.LINE_START);
+        playBar.add(playSlider, DockPanel.CENTER);
+        playBar.setCellWidth(playSlider, "100%");
 
-        // Add a handler to send the name to the server
-        MyHandler handler = new MyHandler();
-        sendButton.addClickHandler(handler);
-        nameField.addKeyUpHandler(handler);
+        // canvas takes up all the rest of the space
+        Label canvas = new Label("canvas");
+        canvasPanel.add(canvas);
+        canvasPanel.add(playBar);
+        canvas.setHeight("100%");
+        canvasPanel.setHeight("100%");
+        mainPanel.add(canvasPanel);
+        mainPanel.setHeight("100%");
+        layout.setCellWidth(mainPanel, "100%");
+        layout.setCellHeight(mainPanel, "100%"); // XXX: not portable?
+        mainPanel.setWidth("100%");
+        mainPanel.setCellWidth(canvasPanel, "100%");
+        canvasPanel.setWidth("100%");
+        canvasPanel.setCellHeight(canvas, "100%"); // XXX: not portable?
+        canvasPanel.setCellWidth(canvas, "100%");
+        layout.setSpacing(4);
+
+        RootPanel.get("app").add(layout);
+        // Get rid of scrollbars, and clear out the window's built-in margin,
+        // because we want to take advantage of the entire client area.
+        //Window.enableScrolling(false);
+        Window.setMargin("0px");
     }
 }
