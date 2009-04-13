@@ -1,0 +1,416 @@
+package net.cscott.sdr.calls.grm;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+//import java.util.regex.Matcher;
+//import java.util.regex.Pattern;
+
+import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.grm.Grm.Alt;
+import net.cscott.sdr.calls.grm.Grm.Concat;
+import net.cscott.sdr.calls.grm.Grm.Mult;
+import net.cscott.sdr.calls.grm.Grm.Nonterminal;
+import net.cscott.sdr.calls.grm.Grm.Terminal;
+import net.cscott.sdr.util.LL;
+import net.cscott.sdr.util.Tools;
+
+/**
+ * Uses a {@link GrmDB} to compute possible completions for a partially-input
+ * call.
+ * @doc.test Get completions for partial phrases, based on the grammar:
+ *  js> importPackage(net.cscott.sdr.calls);
+ *  js> function c(txt) {
+ *    >   for (s in Iterator(CompletionEngine.complete(Program.PLUS, txt, 100))) {
+ *    >     print(s);
+ *    >   }
+ *    > }
+ *  js> c("sq");
+ *  square thru
+ *  square thru <cardinal>
+ *  square thru and roll
+ *  square thru <number>
+ *  square thru <number> <cardinal>
+ *  square thru <number> and roll
+ *  square thru <number> hands
+ *  square thru <number> hands <cardinal>
+ *  square thru <number> hands and roll
+ *  square thru <number> hands around
+ *  square thru <number> hands around <cardinal>
+ *  square thru <number> hands around and roll
+ *  square thru <number> hands round
+ *  square thru <number> hands round <cardinal>
+ *  square thru <number> hands round and roll
+ *  js> c("square thru 1 1/2 h");
+ *  square thru 1 1/2 hands
+ *  square thru 1 1/2 hands <cardinal>
+ *  square thru 1 1/2 hands and roll
+ *  square thru 1 1/2 hands around
+ *  square thru 1 1/2 hands around <cardinal>
+ *  square thru 1 1/2 hands around and roll
+ *  square thru 1 1/2 hands round
+ *  square thru 1 1/2 hands round <cardinal>
+ *  square thru 1 1/2 hands round and roll
+ *  js> c("tr");
+ *  trade
+ *  trade <cardinal>
+ *  trade and roll
+ *  track <number>
+ *  track <number> <cardinal>
+ *  track <number> and roll
+ *  js> c("trade")
+ *  trade
+ *  trade <cardinal>
+ *  trade and roll
+ *  js> c("trade a");
+ *  trade and roll
+ *  trade and roll <cardinal>
+ *  trade and roll and roll
+ *  js> c("trade and roll");
+ *  trade and roll
+ *  trade and roll <cardinal>
+ *  trade and roll and roll
+ *  js> c("trade and roll a");
+ *  trade and roll and roll
+ *  trade and roll and roll <cardinal>
+ *  trade and roll and roll and roll
+ *  js> c("scoot back once a");
+ *  scoot back once and roll
+ *  scoot back once and roll <cardinal>
+ *  scoot back once and roll and roll
+ *  scoot back once and half
+ *  scoot back once and half <cardinal>
+ *  scoot back once and half and roll
+ *  scoot back once and a half
+ *  scoot back once and a half <cardinal>
+ *  scoot back once and a half and roll
+ *  scoot back once and one half
+ *  scoot back once and one half <cardinal>
+ *  scoot back once and one half and roll
+ *  scoot back once and a third
+ *  scoot back once and a third <cardinal>
+ *  scoot back once and a third and roll
+ *  scoot back once and a quarter
+ *  scoot back once and a quarter <cardinal>
+ *  scoot back once and a quarter and roll
+ *  scoot back once and one third
+ *  scoot back once and one third <cardinal>
+ *  scoot back once and one third and roll
+ *  scoot back once and one quarter
+ *  scoot back once and one quarter <cardinal>
+ *  scoot back once and one quarter and roll
+ *  scoot back once and two thirds
+ *  scoot back once and two thirds <cardinal>
+ *  scoot back once and two thirds and roll
+ *  scoot back once and three quarters
+ *  scoot back once and three quarters <cardinal>
+ *  scoot back once and three quarters and roll
+ */
+public class CompletionEngine {
+    /**
+     * Return an iterator over the possible completions for the input string
+     * at the given dance program.
+     */
+    public static Iterator<String> complete(Program program, String input) {
+        return new CompletionIterator(program, input);
+    }
+    /** Return a size-limited list of possible completions for the input string
+     * at the given dance program. */
+    public static List<String> complete(Program program, String input,
+                                        int limit) {
+        Iterator<String> it = complete(program, input);
+        List<String> result = new ArrayList<String>(limit);
+        for (int i=0; i<limit && it.hasNext(); i++)
+            result.add(it.next());
+        return result;
+    }
+    static class CompletionIterator implements Iterator<String>{
+        final Program program;
+        final List<Token> input;
+        List<Integer> lastState;
+        String next;
+        boolean needNext, hasNext;
+        public CompletionIterator(Program program, String partial) {
+            this.program = program;
+            this.input = tokenize(partial);
+            this.lastState = Collections.emptyList();
+            this.needNext = true;
+        }
+        /** This method does the real work, invoking a CompleteVisitor on the
+         *  nextState from last time. */
+        public boolean hasNext() {
+            if (needNext) {
+                this.needNext = false;
+                CompleteVisitor cv = new CompleteVisitor
+                    (GrmDB.dbFor(program), new CompleteState
+                        (LL.create(input), LL.create(lastState),
+                         LL.<Integer>NULL(), LL.<String>NULL(), false));
+                Grm g = cv.rules.grammar().get("start");
+                this.hasNext = g.accept(cv);
+                StringBuilder sb = new StringBuilder();
+                for (Iterator<String> it=cv.cs.completion.reverse().iterator();
+                     it.hasNext(); ) {
+                    sb.append(it.next());
+                    if (it.hasNext()) sb.append(' ');
+                }
+                this.next = sb.toString();
+                this.lastState = cv.cs.nextState.toList();
+            }
+            return this.hasNext;
+        }
+        /** This just returns the results of the call to {@link #hasNext()}. */
+        public String next() {
+            if (this.needNext) hasNext();
+            this.needNext = true;
+            return this.next;
+        }
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    /** Types of tokens we'll lex from the partial input string. */
+    private enum TokenType {
+        FRAGMENT, STRING, FRACTION;
+    }
+    private static class Token {
+        final String text;
+        final TokenType type;
+        Token(String text, TokenType type) { this.text=text; this.type=type; }
+        boolean matches(String literal) {
+            switch(type) {
+            case STRING:
+                return literal.equalsIgnoreCase(text);
+            case FRAGMENT:
+                return literal.toLowerCase().startsWith(text.toLowerCase());
+            case FRACTION:
+                return false;
+            }
+            assert false : "unmatched input";
+            return false;
+        }
+        public String toString() {
+            return "<"+this.text+","+this.type+">";
+        }
+    }
+
+    /** Return a list of {@link Token}s corresponding to the input string. */
+    private static List<Token> tokenize(String input) {
+        boolean lastFrag = !input.endsWith(" ");
+        String[] bits = input.split("\\s+");
+        List<Token> result = new ArrayList<Token>(bits.length);
+        for (int i=0; i<bits.length; i++) {
+            if (bits[i].matches("\\d+(/\\d+)?"))
+                result.add(new Token(bits[i], TokenType.FRACTION));
+            else if (i==(bits.length-1) && lastFrag)
+                result.add(new Token(bits[i], TokenType.FRAGMENT));
+            else
+                result.add(new Token(bits[i], TokenType.STRING));
+        }
+        // XXX post-process to join bits of fractions
+        return result;
+    }
+    /*
+    private static List<Token> tokenize(String input) {
+        List<Token> result = new ArrayList<Token>();
+        Matcher m = TOKPAT.matcher(input.replaceFirst("^\\s+", ""));
+        while (m.lookingAt()) {
+            if (m.group(1) != null) {
+                result.add(new Token(m.group(1), TokenType.FRACTION));
+            } else {
+                assert m.group(2) != null;
+                TokenType tt = (m.group(3).length()>0) ? TokenType.STRING :
+                    TokenType.FRAGMENT;
+                result.add(new Token(m.group(2), tt));
+            }
+            input = input.substring(m.end());
+            m = TOKPAT.matcher(input);
+        }
+        return result;
+    }
+    */
+    /** Match tokens and trailing space.  Note that the fraction pattern
+     *  precedes the word pattern, since digits count as word characters. */
+    //private static final Pattern TOKPAT = Pattern.compile
+    //  ("^(?:(\\d+(?:\\s+\\d+\\s*/\\s*\\d+)?)|(\\w+))(\\s*)");
+
+    /** Tracks the state of the grammar match. */
+    private static class CompleteState implements Cloneable {
+        LL<Token> partialInput;
+        LL<Integer> lastState;
+        LL<Integer> nextState;
+        LL<String> completion;
+        boolean matchedTerminal;
+        CompleteState(LL<Token> partialInput,
+                      LL<Integer> lastState, LL<Integer> nextState,
+                      LL<String> completion, boolean matchedTerminal) {
+            this.partialInput = partialInput;
+            this.lastState = lastState;
+            this.nextState = nextState;
+            this.completion = completion;
+            this.matchedTerminal = matchedTerminal;
+        }
+        public CompleteState clone() {
+            return new CompleteState(partialInput, lastState, nextState, completion, matchedTerminal);
+        }
+        void popInput() {
+            if (!partialInput.isEmpty())
+                partialInput = partialInput.pop();
+        }
+        int popState() {
+            if (lastState.isEmpty()) return 0;
+            int v = lastState.head;
+            lastState = lastState.pop();
+            // increment the state by one if this is the last state, that
+            // ensures that our invocation returns the 'next' completion, not
+            // the same completion as last time.
+            return (lastState.isEmpty()) ? (v+1) : v;
+        }
+        void pushState(int v) {
+            this.nextState = this.nextState.push(v);
+        }
+        void pushCompletion(String s) {
+            this.completion = this.completion.push(s);
+        }
+    }
+    /** Attempt to match the partial input against the call grammar. */
+    static final class CompleteVisitor extends GrmVisitor<Boolean> {
+        final GrmDB rules;
+        CompleteState cs;
+        CompleteVisitor(GrmDB rules, CompleteState cs) {
+            this.rules = rules;
+            this.cs = cs;
+        }
+
+        @Override
+        public Boolean visit(Alt alt) {
+            // try choices in order
+            int i=cs.popState();
+            CompleteState saved = this.cs.clone();
+            saved.lastState = LL.NULL(); // if we fail, don't try to use the
+                                         // rest of the saved state.
+            for ( ; i<alt.alternates.size(); i++) {
+                Grm g = alt.alternates.get(i);
+                if (g.accept(this)) {
+                    cs.pushState(i); // record where we were
+                    return true; // got one!
+                }
+                this.cs = saved.clone();
+            }
+            // none matched.
+            return false;
+        }
+        @Override
+        public Boolean visit(Concat concat) {
+            CompleteState saved = this.cs.clone();
+            List<Integer> n = new ArrayList<Integer>();
+            assert this.cs.nextState.isEmpty();
+            // no choices here, either we match or we don't.
+            AGAIN: while (true) {
+                for (Grm g : concat.sequence) {
+                    if (g.accept(this)) {
+                        // add nextState to n; clear n for next g
+                        transferNextTo(n);
+                    } else {
+                        this.cs = saved.clone();
+                        this.cs.lastState = LL.create(n);
+                        n.clear();
+                        if (!this.cs.lastState.isEmpty())
+                            // retry a different alternative
+                            continue AGAIN;
+                        // no chance this will work
+                        return false;
+                    }
+                }
+                // well, i guess this worked!
+                this.cs.nextState = LL.create(n);
+                return true;
+            }
+        }
+        @Override
+        public Boolean visit(Mult mult) {
+	    // desugar '+' into Concat(x, Mult(x, STAR))
+	    if (mult.type == Mult.Type.PLUS)
+	        return new Concat(Tools.l
+	                (mult.operand, new Mult(mult.operand, Mult.Type.STAR)))
+	                .accept(this);
+	    // desugar '?' into Alt(<NULL>, x)
+	    // also, make * into ? if partialInput.isEmpty()
+	    if (mult.type == Mult.Type.QUESTION || cs.partialInput.isEmpty())
+	        return new Alt(Tools.l(new Nonterminal("<NULL>", -1),
+	                               mult.operand)).accept(this);
+	    // otherwise, '*' desugars to Alt(<NULL>, Mult(x, PLUS))
+	    return new Alt(Tools.l(new Nonterminal("<NULL>", -1),
+	                           new Mult(mult.operand, Mult.Type.PLUS)))
+	                .accept(this);
+        }
+        @Override
+        public Boolean visit(Nonterminal nonterm) {
+            // for <number> look also for <digit> (<digit> / <digit>)?
+            // for <fraction> look also for <digit> / <digit>
+            if (nonterm.ruleName.equals("number") &&
+                (!cs.partialInput.isEmpty()) &&
+                cs.partialInput.head.type==TokenType.FRACTION) {
+                matchterm(cs.partialInput.head.text);
+                return true;
+            }
+            // special match for <digit>, <EOF> (others?)
+            if (nonterm.ruleName.equals("EOF"))
+                // <EOF> matches iff we've grabbed all the partial input.
+                return cs.partialInput.isEmpty();
+            if (nonterm.ruleName.equals("<NULL>"))
+                return true; // trivial match
+            // if "no terminals past partialInput yet" then we'll grab the
+            // nt from the GrmDB and recurse; otherwise we'll return
+            // "<"+nonterm.prettyname+">" in the completion string & true.
+            // prettyName==null means "never show this nonterminal to the user
+            // in a completion"
+            boolean expandNT = true;
+            // don't expand non terminal if we can make progress without it
+            if (cs.matchedTerminal) expandNT = false;
+            // don't expand non terminal if it's a number
+            if (cs.partialInput.isEmpty()) {
+                if (nonterm.ruleName.equals("number") ||
+                    //nonterm.ruleName.equals("cardinal") ||
+                    nonterm.ruleName.equals("digit_greater_than_two"))
+                    expandNT = false;
+            }
+            // always expand non terminal if the pretty name is null
+            if (nonterm.prettyName==null) expandNT = true;
+            // okay, what's the verdict?
+            if (!expandNT) {
+                cs.pushCompletion("<"+nonterm.prettyName+">");
+                return true;
+            }
+            Grm g = rules.grammar().get(nonterm.ruleName);
+            if (g==null) return false; // XXX MISSING RULE
+            return g.accept(this);
+        }
+        @Override
+        public Boolean visit(Terminal term) {
+            // do we match the nonterminal, or not?
+            if (cs.partialInput.isEmpty() ||
+                cs.partialInput.head.matches(term.literal)) {
+                // okay, we match.
+                matchterm(term.literal);
+                return true;
+            }
+            // not a match
+            return false;
+        }
+        // helper function for Concat (and for Mult, where + and * turns
+        // into Concat)
+        private void transferNextTo(List<Integer> n) {
+            for (Integer i: this.cs.nextState)
+                n.add(i);
+            this.cs.nextState = LL.NULL();
+        }
+        // helper function for Terminal/Nonterminal matches
+        private void matchterm(String s) {
+            if (cs.partialInput.isEmpty()) cs.matchedTerminal=true;
+            cs.popInput(); // safe even if cs.partialInput.isEmpty()
+            cs.pushCompletion(s);
+        }
+    }
+}

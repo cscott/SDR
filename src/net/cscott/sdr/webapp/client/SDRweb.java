@@ -7,6 +7,8 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -25,6 +27,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
@@ -33,7 +36,7 @@ import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class SDRweb implements EntryPoint {
-    final TextBox callEntry = new TextBox();
+    final SuggestBox callEntry = new SuggestBox(new CallOracle());
     final FlexTable callList = new FlexTable();
     final Label currentCall = new Label();
     final VerticalPanel topPanel = new VerticalPanel();
@@ -48,7 +51,7 @@ public class SDRweb implements EntryPoint {
         // XXX: WRITE ME
         Command cmd = new Command() {
           public void execute() {
-            Window.alert("You selected a menu item!");
+              Window.alert("You selected a menu item!");
           }
         };
 
@@ -140,8 +143,28 @@ public class SDRweb implements EntryPoint {
         resizeTimer.schedule(1);
 
         // set up default text and handlers for callEntry
+        /*
         callEntry.setText("Type a square dance call");
-        callEntry.setSelectionRange(0, callEntry.getText().length());
+        //callEntry.setSelectionRange(0, callEntry.getText().length());
+        // Listen for keyboard events in the input box.
+        callEntry.addKeyPressHandler(new KeyPressHandler() {
+          public void onKeyPress(KeyPressEvent event) {
+            if (event.getCharCode() == KeyCodes.KEY_ENTER) {
+              activate();
+            }
+          }
+        });
+        */
+        callEntry.setFocus(true);
+        // Listen for mouse events on the Add button.
+        callGo.addClickHandler(new ClickHandler() {
+          public void onClick(ClickEvent event) {
+            activate();
+          }
+        });
+    }
+    void activate() {
+        Window.alert("You entered a call");
     }
     void doResize() {
         doResize(Window.getClientWidth(), Window.getClientHeight());

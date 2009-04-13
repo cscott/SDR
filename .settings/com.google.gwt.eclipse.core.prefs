@@ -1,3 +1,5 @@
-#Sun Apr 12 14:04:27 EDT 2009
+#Mon Apr 13 03:31:52 EDT 2009
 eclipse.preferences.version=1
+entryPointModules=net.cscott.sdr.webapp.SDRweb
 filesCopiedToWebInfLib=gwt-servlet.jar
+gwtCompileSettings=PGd3dC1jb21waWxlLXNldHRpbmdzPjxsb2ctbGV2ZWw+SU5GTzwvbG9nLWxldmVsPjxvdXRwdXQtc3R5bGU+REVUQUlMRUQ8L291dHB1dC1zdHlsZT48ZXh0cmEtYXJncz48L2V4dHJhLWFyZ3M+PC9nd3QtY29tcGlsZS1zZXR0aW5ncz4\=

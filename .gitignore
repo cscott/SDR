@@ -1,2 +1,4 @@
 *.class
 war/sdrweb
+war/sdr
+war/WEB-INF/classes

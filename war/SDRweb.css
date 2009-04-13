@@ -22,7 +22,7 @@ body {
 #div-top {
   z-index: 3;
 }
-.gwt-MenuBarPopup { z-index: 4; }
+.gwt-MenuBarPopup, .gwt-SuggestBoxPopup { z-index: 4; }
 /* end layering */
 
 /* positioning */
