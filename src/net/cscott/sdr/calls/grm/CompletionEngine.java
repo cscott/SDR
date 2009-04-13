@@ -18,6 +18,7 @@ import net.cscott.sdr.calls.grm.Grm.Mult;
 import net.cscott.sdr.calls.grm.Grm.Nonterminal;
 import net.cscott.sdr.calls.grm.Grm.Terminal;
 import net.cscott.sdr.util.LL;
+import net.cscott.sdr.util.Tools;
 
 /**
  * Uses a {@link GrmDB} to compute possible completions for a partially-input
@@ -78,6 +79,37 @@ import net.cscott.sdr.util.LL;
  *  trade and roll and roll
  *  trade and roll and roll <cardinal>
  *  trade and roll and roll and roll
+ *  js> c("scoot back once a");
+ *  scoot back once and roll
+ *  scoot back once and roll <cardinal>
+ *  scoot back once and roll and roll
+ *  scoot back once and half
+ *  scoot back once and half <cardinal>
+ *  scoot back once and half and roll
+ *  scoot back once and a half
+ *  scoot back once and a half <cardinal>
+ *  scoot back once and a half and roll
+ *  scoot back once and one half
+ *  scoot back once and one half <cardinal>
+ *  scoot back once and one half and roll
+ *  scoot back once and a third
+ *  scoot back once and a third <cardinal>
+ *  scoot back once and a third and roll
+ *  scoot back once and a quarter
+ *  scoot back once and a quarter <cardinal>
+ *  scoot back once and a quarter and roll
+ *  scoot back once and one third
+ *  scoot back once and one third <cardinal>
+ *  scoot back once and one third and roll
+ *  scoot back once and one quarter
+ *  scoot back once and one quarter <cardinal>
+ *  scoot back once and one quarter and roll
+ *  scoot back once and two thirds
+ *  scoot back once and two thirds <cardinal>
+ *  scoot back once and two thirds and roll
+ *  scoot back once and three quarters
+ *  scoot back once and three quarters <cardinal>
+ *  scoot back once and three quarters and roll
  */
 public class CompletionEngine {
     /**
@@ -290,56 +322,21 @@ public class CompletionEngine {
             }
         }
         @Override
-        public Boolean visit(Mult mult) { return visit(mult, cs.partialInput.isEmpty()); }
-        public Boolean visit(Mult mult, boolean doneOnce) {
-            List<Integer> n = new ArrayList<Integer>();
-            assert this.cs.nextState.isEmpty();
-            CompleteState saved = this.cs.clone();
-            saved.lastState = LL.NULL();
-            if (mult.type==Mult.Type.PLUS) {
-                // match one, and then fall through to * processing
-                if (!mult.operand.accept(this)) {
-                    this.cs = saved; // restore old state
-                    return false;
-                }
-                // add nextState to n; clear n for next g
-                transferNextTo(n);
-            }
-            int i = this.cs.popState();
-            saved.popState(); // pop from the saved state, too.
-            n.add(i); // record where we were
-            switch (i) {
-            case 0: // try no match
-                this.cs.nextState = LL.create(n);
-                return true;
-            case 1: // okay, that didn't work.  Try matching once.
-                if (mult.operand.accept(this)) {
-                    // add nextState to n; clear n for next g
-                    transferNextTo(n);
-                    // if this was a ?, we're done
-                    if (mult.type==Mult.Type.QUESTION) {
-                        this.cs.nextState = LL.create(n);
-                        return true; // we're done! got one!
-                    }
-                    // plus or mult: recurse to match again
-                    // but ONLY if we either have: unmatched partialInput OR
-                    // we've only done this *once*
-                    if ((!cs.partialInput.isEmpty()) || (!doneOnce)) {
-                        assert this.cs.nextState.isEmpty();
-                        if (!visit(mult, cs.partialInput.isEmpty())) {
-                            this.cs = saved;
-                            return false;
-                        }
-                        transferNextTo(n);
-                    }
-                    this.cs.nextState = LL.create(n);
-                    return true;
-                }
-                // fall thru
-            default: // no way to match this
-                this.cs = saved;
-                return false;
-            }
+        public Boolean visit(Mult mult) {
+	    // desugar '+' into Concat(x, Mult(x, STAR))
+	    if (mult.type == Mult.Type.PLUS)
+	        return new Concat(Tools.l
+	                (mult.operand, new Mult(mult.operand, Mult.Type.STAR)))
+	                .accept(this);
+	    // desugar '?' into Alt(<NULL>, x)
+	    // also, make * into ? if partialInput.isEmpty()
+	    if (mult.type == Mult.Type.QUESTION || cs.partialInput.isEmpty())
+	        return new Alt(Tools.l(new Nonterminal("<NULL>", -1),
+	                               mult.operand)).accept(this);
+	    // otherwise, '*' desugars to Alt(<NULL>, Mult(x, PLUS))
+	    return new Alt(Tools.l(new Nonterminal("<NULL>", -1),
+	                           new Mult(mult.operand, Mult.Type.PLUS)))
+	                .accept(this);
         }
         @Override
         public Boolean visit(Nonterminal nonterm) {
@@ -355,6 +352,8 @@ public class CompletionEngine {
             if (nonterm.ruleName.equals("EOF"))
                 // <EOF> matches iff we've grabbed all the partial input.
                 return cs.partialInput.isEmpty();
+            if (nonterm.ruleName.equals("<NULL>"))
+                return true; // trivial match
             // if "no terminals past partialInput yet" then we'll grab the
             // nt from the GrmDB and recurse; otherwise we'll return
             // "<"+nonterm.prettyname+">" in the completion string & true.
