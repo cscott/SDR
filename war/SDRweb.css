@@ -76,3 +76,8 @@ body {
   background: white;
   border-width: 1px;
 }
+
+/* iphone hacks */
+#div-calllist .callList tbody {
+  overflow: auto;
+}

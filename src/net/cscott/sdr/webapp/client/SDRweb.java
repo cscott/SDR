@@ -2,6 +2,8 @@ package net.cscott.sdr.webapp.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -107,7 +109,6 @@ public class SDRweb implements EntryPoint {
 
         canvasPanel.add(currentCall);
 
-        //playBar.setWidth("100%");
         Button playButton = new Button("Play"); // xxx replace with image
         Label playSlider = new Label("Slider"); // xxx replace with slider
         playBar.add(playButton, DockPanel.LINE_START);
@@ -158,5 +159,12 @@ public class SDRweb implements EntryPoint {
         canvasPanel.getElement().setAttribute("style", style);
         playBar.getElement().setAttribute("style", style);
         canvasPanel.setHeight((height-panelBottom)+"px");
+        if (false) { // iphone hack
+            NodeList<Element> nodes = callList.getElement().getElementsByTagName("tbody");
+            for (int i=0; i<nodes.getLength(); i++) {
+                Element e = nodes.getItem(i);
+                if (e!=null) e.setAttribute("style", "height: "+(height-panelBottom-4)+"px;");
+            }
+        }
     }
 }
