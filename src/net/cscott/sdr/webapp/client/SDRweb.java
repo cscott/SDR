@@ -7,7 +7,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -31,15 +34,14 @@ public class SDRweb implements EntryPoint {
     final TextBox callEntry = new TextBox();
     final FlexTable callList = new FlexTable();
     final Label currentCall = new Label();
+    final VerticalPanel topPanel = new VerticalPanel();
+    final VerticalPanel canvasPanel = new VerticalPanel();
+    DockPanel playBar = new DockPanel();
 
     /**
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        DockPanel layout = new DockPanel();
-        layout.setWidth("100%");
-        layout.setHeight("100%"); // XXX: not portable?
-
         // Make a command that we will execute from all leaves.
         // XXX: WRITE ME
         Command cmd = new Command() {
@@ -48,6 +50,7 @@ public class SDRweb implements EntryPoint {
           }
         };
 
+        topPanel.setWidth("100%");
         // Menu bar
         MenuBar fileMenu = new MenuBar(true);
         fileMenu.addItem("New", cmd);
@@ -64,7 +67,7 @@ public class SDRweb implements EntryPoint {
         MenuBar menu = new MenuBar();
         menu.addItem("File", fileMenu);
         menu.addItem("Program", programMenu);
-        layout.add(menu, DockPanel.NORTH);
+        topPanel.add(menu);
 
         DockPanel callBar = new DockPanel();
         callBar.setWidth("100%");
@@ -81,58 +84,79 @@ public class SDRweb implements EntryPoint {
         callBar.setCellVerticalAlignment(callGo, DockPanel.ALIGN_MIDDLE);
         callBar.setCellWidth(callEntry, "100%");
         callBar.setSpacing(5);
-        layout.add(callBar, DockPanel.NORTH);
+        topPanel.add(callBar);
+        RootPanel.get("div-top").add(topPanel);
 
-        callEntry.setText("Type a square dance call");
-
+        // call list panel
         callList.setText(0, 0, "Sequence");
         callList.getFlexCellFormatter().setColSpan(0, 0, 2);
         callList.getRowFormatter().setStyleName(0, "callListHeader");
         callList.setStyleName("callList");
-        for (int i=1; i<5; i++)
+        for (int i=1; i<50; i++) {
             callList.setText(i,0,"Call #"+i);
-        HorizontalPanel mainPanel = new HorizontalPanel();
-        mainPanel.setHeight("100%");
-        DecoratorPanel dp = new DecoratorPanel();
-        dp.add(callList);
-        dp.setHeight("100%");
-        dp.addStyleName("callListDecorator");
-        mainPanel.add(dp);
-        layout.add(mainPanel, DockPanel.CENTER);
-        layout.setCellHeight(mainPanel, "100%");
+            Button removeButton = new Button("X");
+            removeButton.setStyleName("removeButton");
+            callList.setWidget(i, 1, removeButton);
+            if (i==25) {
+                i++;
+                callList.setHTML(i, 0, "<hr/>");
+                callList.getFlexCellFormatter().setColSpan(i, 0, 2);
+            }
+        }
+        RootPanel.get("div-calllist").add(callList);
 
-        VerticalPanel canvasPanel = new VerticalPanel();
         canvasPanel.add(currentCall);
 
-        DockPanel playBar = new DockPanel();
-        playBar.setWidth("100%");
+        //playBar.setWidth("100%");
         Button playButton = new Button("Play"); // xxx replace with image
         Label playSlider = new Label("Slider"); // xxx replace with slider
         playBar.add(playButton, DockPanel.LINE_START);
         playBar.add(playSlider, DockPanel.CENTER);
         playBar.setCellWidth(playSlider, "100%");
+        playBar.setCellHorizontalAlignment(playSlider, playBar.ALIGN_RIGHT);
+        RootPanel.get("div-playbar").add(playBar);
 
         // canvas takes up all the rest of the space
         Label canvas = new Label("canvas");
         canvasPanel.add(canvas);
-        canvasPanel.add(playBar);
-        canvas.setHeight("100%");
-        canvasPanel.setHeight("100%");
-        mainPanel.add(canvasPanel);
-        mainPanel.setHeight("100%");
-        layout.setCellWidth(mainPanel, "100%");
-        layout.setCellHeight(mainPanel, "100%"); // XXX: not portable?
-        mainPanel.setWidth("100%");
-        mainPanel.setCellWidth(canvasPanel, "100%");
-        canvasPanel.setWidth("100%");
-        canvasPanel.setCellHeight(canvas, "100%"); // XXX: not portable?
-        canvasPanel.setCellWidth(canvas, "100%");
-        layout.setSpacing(4);
+        canvasPanel.setCellHeight(canvas, "100%");
+        RootPanel.get("div-canvas").add(canvasPanel);
 
-        RootPanel.get("app").add(layout);
-        // Get rid of scrollbars, and clear out the window's built-in margin,
-        // because we want to take advantage of the entire client area.
-        //Window.enableScrolling(false);
+        // we want to take advantage of the entire client area
         Window.setMargin("0px");
+        // set a resize handler to keep all the dimensions in line.
+        doResize();
+        Window.addResizeHandler(new ResizeHandler() {
+            public void onResize(ResizeEvent event) {
+                doResize(event.getWidth(), event.getHeight());
+          }
+        });
+        // trigger this shortly after load
+        Timer resizeTimer = new Timer() {
+            @Override
+            public void run() { doResize(); }
+        };
+        resizeTimer.schedule(1);
+
+        // set up default text and handlers for callEntry
+        callEntry.setText("Type a square dance call");
+        callEntry.setSelectionRange(0, callEntry.getText().length());
+    }
+    void doResize() {
+        doResize(Window.getClientWidth(), Window.getClientHeight());
+    }
+    void doResize(int width, int height) {
+        int panelBottom = topPanel.getAbsoluteTop()+topPanel.getOffsetHeight();
+        String style = "padding-top: "+panelBottom+"px;";
+        RootPanel.get("div-calllist").getElement().setAttribute("style", style);
+        RootPanel.get("div-canvas").getElement().setAttribute("style", style);
+        // compensate for border of canvasPanel
+        //width-=2; height-=2;
+        int right = callList.getAbsoluteLeft()+callList.getOffsetWidth();
+        right += 5; // padding on right of call list
+        style = "padding-left: "+right+"px;";
+        canvasPanel.getElement().setAttribute("style", style);
+        playBar.getElement().setAttribute("style", style);
+        canvasPanel.setHeight((height-panelBottom)+"px");
     }
 }

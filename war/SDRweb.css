@@ -7,28 +7,72 @@ body {
   color: black;
   font-family: Helvetica, Arial, sans-serif;
   font-size: small;
+  margin:0; padding:0;
+}
+
+/* proper layering */
+#div-ztop {
+  z-index: 1;
+}
+.callList {
+  position: relative;
+  top: 0; left: 0;
+  z-index: 2;
+}
+#div-top {
+  z-index: 3;
+}
+.gwt-MenuBarPopup { z-index: 4; }
+/* end layering */
+
+/* positioning */
+#div-top {
+   position: fixed;
+   top: 0;
+   width: 100%;
+   background: white;
+   border-bottom: 1px solid #bbb;
+}
+#div-calllist {
+   padding-top: 50px;
+   position: relative;
+   top: 0; left: 0;
+}
+#div-canvas {
+   position: fixed;
+   bottom: 0;
+   top: 0;
+   width: 100%;
+}
+#div-playbar {
+   position: fixed;
+   bottom: 0;
+   left: 0;
+   width: 100%;
 }
 
 /* call list */
 .callList {
-  overflow: auto;
+   border-right: 3px solid #ddd;
 }
-.callListDecorator .topLeft, .callListDecorator .middleLeft,
-.callListDecorator .bottomLeft, .callListDecorator .bottomCenter,
-.callListDecorator .bottomRight { display: none; }
+
 /* call list header row */
 .callListHeader {
   background-color: #2062B8;
   color: white;
   font-weight: bold;
+  //position: fixed;
 }
 /* Call prompt */
 .callEntry {
   font-weight: bold;
+  padding-left: 3px;
+  padding-right: 3px;
 }
-.callListDecorator .middleCenter {
-   height: 100%;
-   width: 100%;
-   overflow: auto;
-   vertical-align: top;
+
+.removeButton {
+  padding: 0;
+  font-size: 50%;
+  background: white;
+  border-width: 1px;
 }
