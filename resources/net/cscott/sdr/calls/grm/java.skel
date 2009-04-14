@@ -1,24 +1,15 @@
 package net.cscott.sdr.calls.lists;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import net.cscott.sdr.calls.grm.Grm;
-import net.cscott.sdr.calls.grm.GrmDB;
 import net.cscott.sdr.util.Tools;
 
-/** Post-processed grammar for @CLASSNAME@. */
-public class @CLASSNAME@Grm extends GrmDB {
-    /** Constructor. */
-    public @CLASSNAME@Grm() { }
-    /** Map from nonterminal name to Grm representing its production. */
-    public static final Map<String,Grm> NONTERMINALS;
-    static {
-	Map<String,Grm> m = new HashMap<String,Grm>();
+/** Post-processed grammar for all dance programs. */
+public class AllGrm /*extends GrmDB*/ {
 @RULES@
-	NONTERMINALS = Collections.unmodifiableMap(m);
-    }
-    /** Returns the static {@link #NONTERMINALS} field. */
-    public Map<String,Grm> grammar() { return NONTERMINALS; }
 }

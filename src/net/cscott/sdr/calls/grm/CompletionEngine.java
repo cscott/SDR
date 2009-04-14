@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -150,10 +151,10 @@ public class CompletionEngine {
             if (needNext) {
                 this.needNext = false;
                 CompleteVisitor cv = new CompleteVisitor
-                    (GrmDB.dbFor(program), new CompleteState
+                    (Grm.grammar(program), new CompleteState
                         (LL.create(input), LL.create(lastState),
                          LL.<Integer>NULL(), LL.<String>NULL(), false));
-                Grm g = cv.rules.grammar().get("start");
+                Grm g = cv.rules.get("start");
                 this.hasNext = g.accept(cv);
                 StringBuilder sb = new StringBuilder();
                 for (Iterator<String> it=cv.cs.completion.reverse().iterator();
@@ -271,9 +272,9 @@ public class CompletionEngine {
     }
     /** Attempt to match the partial input against the call grammar. */
     static final class CompleteVisitor extends GrmVisitor<Boolean> {
-        final GrmDB rules;
+        final Map<String,Grm> rules;
         CompleteState cs;
-        CompleteVisitor(GrmDB rules, CompleteState cs) {
+        CompleteVisitor(Map<String,Grm> rules, CompleteState cs) {
             this.rules = rules;
             this.cs = cs;
         }
@@ -380,7 +381,7 @@ public class CompletionEngine {
                 cs.pushCompletion("<"+nonterm.prettyName+">");
                 return true;
             }
-            Grm g = rules.grammar().get(nonterm.ruleName);
+            Grm g = rules.get(nonterm.ruleName);
             if (g==null) return false; // XXX MISSING RULE
             return g.accept(this);
         }

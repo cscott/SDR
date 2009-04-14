@@ -5,9 +5,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
+import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.transform.CallFileBuilder;
+import net.cscott.sdr.util.Tools;
 
 /**
  * This class contains inner classes creating an AST for the 'natural language'
@@ -36,6 +40,55 @@ public abstract class Grm {
         return sb.toString();
     }
     protected abstract void repr(StringBuilder sb);
+    /*---- intern support: omit this in GWT version --- */
+    /* Return a string describing the type of this Grm, for equality testing */
+    protected abstract String getName();
+    /* Return a list of operands for this Grm, for equality and hashcode */
+    protected abstract List<Grm> getOperands();
+    /* Create an new Grm like this, but with intern'ed operands */
+    protected abstract Grm buildIntern();
+    /* Return a Grm for which == is the same as equals()
+     * @doc.test
+     *  js> g1 = Grm.parse("a b|c d+ e* f?")
+     *  a b|c d+ e* f?
+     *  js> g2 = Grm.parse("a b|c d+ e* f?")
+     *  a b|c d+ e* f?
+     *  js> g1===g2
+     *  false
+     *  js> g1.intern()===g2.intern()
+     *  true
+     */
+    public Grm intern() {
+        if (!internMap.containsKey(this)) {
+            Grm g = buildIntern();
+            internMap.put(g, g);
+        }
+        return internMap.get(this);
+    }
+    private static final Map<Grm,Grm> internMap = new WeakHashMap<Grm,Grm>();
+    public int hashCode() {
+        if (hashCache == 0) {
+            hashCache = getName().hashCode();
+            for (Grm g : getOperands())
+                hashCache = (hashCache*7)+g.hashCode();
+        }
+        return hashCache;
+    }
+    private transient int hashCache = 0;
+    public boolean equals(Object o) {
+        if (this==o) return true;
+        if (!(o instanceof Grm)) return false;
+        Grm g = (Grm) o;
+        if (!this.getName().equals(g.getName())) return false;
+        List<Grm> a = this.getOperands();
+        List<Grm> b = g.getOperands();
+        if (a.size()!=b.size()) return false;
+        for (int i=0; i<a.size(); i++)
+            if (a.get(i).intern() != b.get(i).intern())
+                return false;
+        return true;
+    }
+    /*--- end intern support --*/
     
     /** Alternation: a|b. */
     public static class Alt extends Grm {
@@ -60,6 +113,20 @@ public abstract class Grm {
             }
             sb.append("))");
         }
+        @Override
+        protected Alt buildIntern() {
+            List<Grm> l = new ArrayList<Grm>(this.alternates.size());
+            for (Grm g : this.alternates)
+                l.add(g.intern());
+            return new Alt(l) {
+                @Override
+                public Alt intern() { return this; }
+            };
+        }
+        @Override
+        protected String getName() { return "Alt"; }
+        @Override
+        protected List<Grm> getOperands() { return this.alternates; }
     }
     /** Concatanation: a b. */
     public static class Concat extends Grm {
@@ -84,6 +151,20 @@ public abstract class Grm {
             }
             sb.append("))");
         }
+        @Override
+        protected Concat buildIntern() {
+            List<Grm> l = new ArrayList<Grm>(this.sequence.size());
+            for (Grm g : this.sequence)
+                l.add(g.intern());
+            return new Concat(l) {
+                @Override
+                public Concat intern() { return this; }
+            };
+        }
+        @Override
+        protected String getName() { return "Concat"; }
+        @Override
+        protected List<Grm> getOperands() { return this.sequence; }
     }
     /** Multiplicity marker: a*, a+, or a?. */
     public static class Mult extends Grm {
@@ -110,6 +191,17 @@ public abstract class Grm {
             sb.append(this.type.name());
             sb.append(")");
         }
+        @Override
+        protected Mult buildIntern() {
+            return new Mult(this.operand.intern(), this.type) {
+                @Override
+                public Mult intern() { return this; }
+            };
+        }
+        @Override
+        protected String getName() { return this.type.name(); }
+        @Override
+        protected List<Grm> getOperands() { return Tools.l(this.operand); }
     }
     /** A nonterminal reference to an external rule. */
     public static class Nonterminal extends Grm {
@@ -146,12 +238,20 @@ public abstract class Grm {
             sb.append(")");
         }
         // we don't use the prettyName in the hashCode or equality computations
-        public int hashCode() { return ruleName.hashCode() * (param+2); }
-        public boolean equals(Object o) {
-            if (!(o instanceof Nonterminal)) return false;
-            Nonterminal nt = (Nonterminal) o;
-            return this.ruleName.equals(nt.ruleName) && this.param == nt.param;
+        @Override
+        protected Nonterminal buildIntern() {
+            return new Nonterminal
+            (this.ruleName.intern(),
+             (this.prettyName==null) ? null : this.prettyName.intern(),
+             this.param) {
+                @Override
+                public Nonterminal intern() { return this; }
+            };
         }
+        @Override
+        protected String getName() { return "NT/"+this.ruleName+"/"+this.param; }
+        @Override
+        protected List<Grm> getOperands() { return Tools.l(); }
     }
     /** A grammar terminal: a string literal to match. */
     public static class Terminal extends Grm {
@@ -169,12 +269,17 @@ public abstract class Grm {
             sb.append(str_escape(this.literal));
             sb.append(")");
         }
-        public int hashCode() { return literal.hashCode() + 42; }
-        public boolean equals(Object o) {
-            if (!(o instanceof Terminal)) return false;
-            Terminal t = (Terminal) o;
-            return this.literal.equals(t.literal);
+        @Override
+        protected Terminal buildIntern() {
+            return new Terminal(this.literal.intern()) {
+                @Override
+                public Terminal intern() { return this; }
+            };
         }
+        @Override
+        protected String getName() { return "T/"+this.literal; }
+        @Override
+        protected List<Grm> getOperands() { return Tools.l(); }
     }
 
     // helper functions on Grm
@@ -185,6 +290,28 @@ public abstract class Grm {
         for (String s : terminals)
             l.add(new Terminal(s));
         return new Concat(l);
+    }
+    /**
+     * Return a natural language grammar for the given square dance program.
+     * The grammar is expressed as a map from nonterminal names to
+     * {@link Grm}s. The start production is a nonterminal named 'start'.
+     * This grammar is generated by the {@link EmitJava} class,
+     * invoked from {@link BuildGrammars}.*/
+    @SuppressWarnings("unchecked")
+    public static Map<String,Grm> grammar(Program p) {
+        // use reflection to avoid a bootstrapping program.
+        try {
+            return (Map<String,Grm>)
+                Class.forName("net.cscott.sdr.calls.lists.AllGrm")
+                .getField(p.name()).get(null);
+        } catch (ClassNotFoundException e) {
+        } catch (SecurityException e) {
+        } catch (NoSuchFieldException e) {
+        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
+        }
+        assert false : "grammars not generated yet?";
+        return null;
     }
     /**
      * Parse a string representing a {@link Grm}.  Parameter

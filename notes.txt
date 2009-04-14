@@ -839,3 +839,50 @@ option.  ie:
   trade and roll a -> "trade and roll and roll"
 
 ----
+Eventually minify the *Grm by generating one file with shared Grm
+objects.
+  intern() {
+     if (!internMap.contains(this)) {
+       ci = new ConcatIntern([s.intern() for s in this.sequence]);
+       internMap.put(ci, ci);
+     }
+     return internMap.get(this);
+  }
+  hashCode() {
+    for (Grm g : this.sequence)
+      hashCode += g.intern().hashCode();
+    return hashCode;
+  }
+  equals(o) {
+     if (this==o) return true;
+     if (this.sequence.size() != o.sequence.size()) return false;
+     for (int i=0; i<this.sequence.size(); i++)
+       if (this.sequence.get(i).intern() != o.sequence.get(i).intern())
+         return false;
+     return true;
+  }
+class ConcatIntern extends Concat implements GrmIntern {
+  public ConcatIntern intern() { return this; }
+  public int hashCode() {
+    if (hashCode==0) hashCode=super.hashCode();
+    return hashCode;
+  }
+  private transient int hashCode;
+  public boolean equals(Object o) {
+    if (this==o) return true;
+    if (o instanceof GrmIntern) return false;
+    return super.equals(o);
+  }
+  int tableIndex; // XXX?
+}
+
+intern method takes an intern map as an argument?  then we can keep
+the WeakMap out of the GWT dependencies.
+
+List<Grm> table = new ArrayList<Grm>(size);
+table.add(new Terminal('xyz')); // 0
+table.add(new Terminal('pdq')); // 1
+table.add(new Concat(table.get(0), table.get(1))); // 2
+table.add(new Concat(table.get(0), table.get(2))); // 3
+// etc.
+BASIC.put('anyone_2', table.get(54));

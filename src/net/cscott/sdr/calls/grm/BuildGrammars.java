@@ -38,6 +38,8 @@ public class BuildGrammars {
         for (Program p : Program.values())
             if (p==Program.C4 || p==Program.BASIC) // FOR DEBUGGING
                 build(p);
+        writeFile("src/net/cscott/sdr/calls/lists/AllGrm.java",
+                  EmitJava.INSTANCE.emit());
         System.err.println("Done.");
     }
     public static void build(Program program) throws IOException {
@@ -118,8 +120,7 @@ public class BuildGrammars {
         writeFile("resources/net/cscott/sdr/recog/"+programName+".gram",
                 EmitJSAPI.emit(programName, rules));
         // emit as Java source for writing completion engines
-        writeFile("src/net/cscott/sdr/calls/lists/"+programName+"Grm.java",
-                EmitJava.emit(programName, rules));
+        EmitJava.INSTANCE.collect(program, rules);
     }
     
     private static List<RuleAndAction> mkAction(Call c) {
