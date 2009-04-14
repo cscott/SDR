@@ -12,18 +12,25 @@ public abstract class GrmDB {
     public abstract Map<String,Grm> grammar();
 
     public static final GrmDB dbFor(Program program) {
+        final Map<String,Grm> m = mapFor(program);
+        return new GrmDB() {
+            @Override
+            public Map<String, Grm> grammar() { return m; }
+        };
+    }
+    public static final Map<String,Grm> mapFor(Program program) {
         switch (program) {
         default: assert false;
-        case BASIC: return new BasicGrm();
-        case MAINSTREAM: return new MainstreamGrm();
-	case PLUS: return new PlusGrm();
-	case A1: return new A1Grm();
-	case A2: return new A2Grm();
-	case C1: return new C1Grm();
-	case C2: return new C2Grm();
-	case C3A: return new C3aGrm();
-	case C3B: return new C3bGrm();
-        case C4: return new C4Grm();
+        case BASIC: return AllGrm.BASIC;
+        case MAINSTREAM: return AllGrm.MAINSTREAM;
+	case PLUS: return AllGrm.PLUS;
+	case A1: return AllGrm.A1;
+	case A2: return AllGrm.A2;
+	case C1: return AllGrm.C1;
+	case C2: return AllGrm.C2;
+	case C3A: return AllGrm.C3A;
+	case C3B: return AllGrm.C3B;
+        case C4: return AllGrm.C4;
         }
     }
 }
