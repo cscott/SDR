@@ -75,7 +75,7 @@ public class CallDB {
     private static URL resource(String name) {
         return CallDB.class.getClassLoader().getResource("net/cscott/sdr/calls/lists/"+name+".calls");
     }
-    private void loadFromClass(Class c) {
+    private void loadFromClass(Class<?> c) {
         // iterate through all fields in class, and add fields of type 'Call'
         for (Field f : c.getFields()) {
             if (Call.class.isAssignableFrom(f.getType()) &&

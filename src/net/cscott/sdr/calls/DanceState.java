@@ -2,7 +2,6 @@ package net.cscott.sdr.calls;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,6 +27,7 @@ import static net.cscott.sdr.util.Tools.mml;
 public class DanceState {
     public final DanceProgram dance;
     private final NavigableMap<Fraction, Formation> formations;
+    @SuppressWarnings("unused")
     private final ListMultiMap<Dancer, TimedAction> actions; // XXX?
     private final Map<Dancer, NavigableMap<Fraction, DancerPath>> movements;
 

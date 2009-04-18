@@ -127,6 +127,7 @@ public class LL<T> implements Iterable<T> {
             return retval;
         }
     }
+    @SuppressWarnings("unchecked")
     private static final LL NULL = new LL<Object>(null,null);
     /**
      * Return a new empty list.

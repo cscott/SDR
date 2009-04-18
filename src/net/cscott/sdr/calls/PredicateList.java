@@ -8,8 +8,6 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Condition;
 import net.cscott.sdr.calls.ast.ParCall;
 import net.cscott.sdr.util.Fraction;
-import net.cscott.sdr.util.Tools;
-import static net.cscott.sdr.util.Tools.mms;
 
 /** This class contains all the predicates known to the system. */
 public abstract class PredicateList {

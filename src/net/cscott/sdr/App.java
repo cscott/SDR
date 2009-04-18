@@ -1,6 +1,5 @@
 package net.cscott.sdr;
 
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CyclicBarrier;
@@ -19,7 +18,6 @@ import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.recog.LevelMonitor;
 import net.cscott.sdr.recog.RecogThread;
 import net.cscott.sdr.sound.MidiThread;
-import net.cscott.sdr.util.Fraction;
 
 /**
  * This is the main class of the SDR application.

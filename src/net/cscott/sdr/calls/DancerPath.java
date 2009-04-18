@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
-import net.cscott.sdr.calls.ast.Prim.Flag;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
 

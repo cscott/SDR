@@ -1,7 +1,5 @@
 package net.cscott.sdr;
 
-import java.util.List;
-
 import net.cscott.jutil.MultiMap;
 import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.ast.Apply;
