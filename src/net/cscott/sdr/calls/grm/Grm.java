@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.transform.CallFileBuilder;
@@ -299,7 +300,8 @@ public abstract class Grm {
      * invoked from {@link BuildGrammars}.*/
     @SuppressWarnings("unchecked")
     public static Map<String,Grm> grammar(Program p) {
-        // use reflection to avoid a bootstrapping program.
+        if (p!=Program.C4 && DevSettings.ONLY_C4_GRAMMAR) p=Program.C4;
+        // use reflection to avoid a bootstrapping problem.
         try {
             return (Map<String,Grm>)
                 Class.forName("net.cscott.sdr.calls.lists.AllGrm")

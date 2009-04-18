@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.Program;
@@ -35,9 +36,11 @@ public class BuildGrammars {
      * @param args
      */
     public static void main(String[] args) throws IOException {
-        for (Program p : Program.values())
-            if (p==Program.C4 || p==Program.BASIC || p==Program.PLUS) // FOR DEBUGGING
-                build(p);
+        for (Program p : Program.values()) {
+            if (p!=Program.C4 && DevSettings.ONLY_C4_GRAMMAR) // FOR DEBUGGING
+                continue; // skip this grammar to speed up the compile
+            build(p);
+        }
         writeFile("src/net/cscott/sdr/calls/lists/AllGrm.java",
                   EmitJava.INSTANCE.emit());
         System.err.println("Done.");

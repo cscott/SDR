@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.lists.BasicList;
 import net.cscott.sdr.calls.lists.C3bList;
@@ -126,7 +127,8 @@ public class CallDB {
      *  (Apply _fractional (Apply 1/2) (Apply _and_roll (Apply trade)))
      */
     public Apply parse(Program program, String s) {
-        if (program!=Program.BASIC) program=Program.C4; // for debugging
+        if (program!=Program.C4 && DevSettings.ONLY_C4_GRAMMAR)
+            program=Program.C4; // speed up compilation during development
         String pkgName = "net.cscott.sdr.calls.lists.";
         String baseName = program.toTitleCase()+"Grammar";
         String parserName = baseName+"Parser";
