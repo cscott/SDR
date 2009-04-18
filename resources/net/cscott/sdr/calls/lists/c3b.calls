@@ -397,53 +397,8 @@ def: scramble
 /*sidetrack, single sidetrack, split sidetrack (different from single concept)*/
 
 /* ... */
-def: track(n)
-  spoken: track <n=number>
-  condition: not(or(less([n],0),greater([n],4)))
-  condition: or(PROGRAM AT LEAST(c3b),equal([n],2))
-  from: COMPLETED DOUBLE PASS THRU
-    call: _tag(tandem(partner trade), [n])
-  example: track(0)
-    before:
-    ! <a<b D>C>
-    ! <A<B d>c>
-    after:
-    ! B> A><c <d
-    ! b> a><C <D
-  example: track(1)
-    before:
-    ! <a<b D>C>
-    ! <A<B d>c>
-    after:
-    !    A>
-    ! B><c <d
-    ! b> a><D
-    !   <C
-  example: track(2)
-    before:
-    ! <a<b D>C>
-    ! <A<B d>c>
-    after:
-    ! B> A>
-    !<c <d
-    ! b> a>
-    !<C <D
-  example: track(3)
-    before:
-    ! <a<b D>C>
-    ! <A<B d>c>
-    after:
-    !     B>
-    ! <c <d  A>
-    ! <C  b> a>
-    !    <D
-  example: track(4)
-    before:
-    ! <a<b D>C>
-    ! <A<B d>c>
-    after:
-    ! <c <d  B> A>
-    ! <C <D  b> a>
+
+/* track(n) is defined at Plus */
 
 /* ... */
 

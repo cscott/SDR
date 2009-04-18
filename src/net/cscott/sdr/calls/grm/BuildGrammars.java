@@ -36,7 +36,7 @@ public class BuildGrammars {
      */
     public static void main(String[] args) throws IOException {
         for (Program p : Program.values())
-            if (p==Program.C4 || p==Program.BASIC) // FOR DEBUGGING
+            if (p==Program.C4 || p==Program.BASIC || p==Program.PLUS) // FOR DEBUGGING
                 build(p);
         writeFile("src/net/cscott/sdr/calls/lists/AllGrm.java",
                   EmitJava.INSTANCE.emit());
