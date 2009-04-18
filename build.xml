@@ -65,6 +65,7 @@ Square Dance Revolution build file.
 	<!-- classes and api docs -->
 	<delete dir="${classes_dir}" />
 	<delete dir="${api_dir}" />
+	<delete file="${basedir}/${ant.project.name}-src.jar" />
 	<delete file="${basedir}/${ant.project.name}.jar" />
 	<delete file="${basedir}/${ant.project.name}.jar.MD5" />
 	<!-- coverage information -->
@@ -236,6 +237,15 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	<jar destfile="${basedir}/${ant.project.name}.jar"
              update="true" manifest="${basedir}/${ant.project.name}.Manifest"> 
 		<fileset dir="${classes_dir}" />
+	</jar>
+    </target>
+    <target name="src-jar" depends="compile"
+            description="Exports the project's source code as a jar">
+        <!-- note that we depend on compile to ensure the grammars are
+             generated -->
+	<jar destfile="${basedir}/${ant.project.name}-src.jar"
+             update="true">
+		<fileset dir="${src_dir}" />
 	</jar>
     </target>
 

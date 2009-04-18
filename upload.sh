@@ -8,7 +8,7 @@ if [ build.xml -nt sdr.jnlp ]; then
   /bin/rm sdr.jnlp src/net/cscott/sdr/Version.java
 fi
 # build prerequisites
-ant dist sign-jars
+ant dist src-jar sign-jars
 if [ sdr-libs.jar -nt sdr-libs.jar.pack.gz ]; then
   echo "Packing..." # this saves about 4M of download (~16%)
   /bin/rm -f sdr-libs.jar.pack.gz
@@ -32,7 +32,7 @@ gunzip ${PACKAGE}-${VERSION}/${PACKAGE}-${VERSION}.tar.gz
 gzip --rsyncable ${PACKAGE}-${VERSION}/${PACKAGE}-${VERSION}.tar
 ( cd ${PACKAGE}-${VERSION} && \
     ln -s ${PACKAGE}-${VERSION}.tar.gz ${PACKAGE}.tar.gz )
-cp ${PACKAGE}.jar ${PACKAGE}-${VERSION}/
+cp ${PACKAGE}.jar ${PACKAGE}-src.jar ${PACKAGE}-${VERSION}/
 # Java web start stuff
 cp sdr.jnlp ${PACKAGE}-${VERSION}/
 mkdir -p ${PACKAGE}-${VERSION}/lib
