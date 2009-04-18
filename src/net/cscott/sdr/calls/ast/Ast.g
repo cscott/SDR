@@ -4,12 +4,18 @@
  * @doc.test Simple conversion:
  *  js> new AstParser("(Seq (Prim -1, in 1, none, 1))").ast()
  *  (Seq (Prim -1, in 1, none, 1))
+ *  js> new AstParser("(If (Condition true) (Seq (Apply nothing)))").ast()
+ *  (If (Condition true) (Seq (Apply nothing)))
  * @doc.test White space is ignored:
  *  js> new AstParser("( Seq\n (Prim\tin\r-1 ,  1 , out  1  / 4  ,1 ) ) ").ast()
  *  (Seq (Prim in -1, 1, in -1/4, 1))
  * @doc.test Call names, predicates, formations, etc can be quoted:
  *  js> new AstParser("(Condition \"Condition\" (Condition \"If\") (Condition \"Prim\"))").ast()
  *  (Condition Condition (Condition If) (Condition Prim))
+ *  js> new AstParser('(If (Condition true) (Seq (Apply nothing)) "Message!" 1/2)').ast()
+ *  (If (Condition true) (Seq (Apply nothing)) "Message!" 1/2)
+ *  js> new AstParser('(If (Condition true) (Seq (Apply nothing)) "Message!")').ast()
+ *  (If (Condition true) (Seq (Apply nothing)) "Message!")
  * @doc.test Keywords ought to be ignored in call names, etc.
  *  js> new AstParser("(Condition Condition (Condition If) (Condition Prim))").ast()
  *  (Condition Condition (Condition If) (Condition Prim))
@@ -121,8 +127,10 @@ prim_flag returns [Prim.Flag r]
 
 if_ returns [If r]
     : {input.LT(2).getText().equalsIgnoreCase("If")}?
-        '(' IDENT condition child=comp ')'
-        { $r = new If($condition.r, $child.r); }
+        '(' IDENT condition child=comp (msg=STRING (pri=number)?)? ')'
+        { $r = (msg==null) ? new If($condition.r, $child.r) :
+               (pri==null) ? new If($condition.r, $child.r, $msg.text) :
+               new If($condition.r, $child.r, $msg.text, $pri.r); }
     ;
 in returns [In r]
     : {input.LT(2).getText().equalsIgnoreCase("In")}?

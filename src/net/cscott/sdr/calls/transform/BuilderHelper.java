@@ -13,12 +13,11 @@ import net.cscott.sdr.calls.ast.Prim.Direction;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.util.Fraction;
 /** 
- * The {@link BuilderHelper} class helps with the generation of paramterized
- * calls.  It supports an abstraction which lets us treat ast trees as
- * "ast tree generation functions", while optimizing the case where the
+ * The {@link BuilderHelper} class helps with the generation of parameterized
+ * calls.  It supports an abstraction which lets us treat AST trees as
+ * "AST tree generation functions", while optimizing the case where the
  * function generates a constant.
  * @author C. Scott Ananian
- * @version $Id: BuilderHelper.java,v 1.8 2009-02-05 09:50:02 cananian Exp $
  */
 abstract class BuilderHelper {
     /** An enumeration of directions, as specified in the call file. */
@@ -88,10 +87,12 @@ abstract class BuilderHelper {
             }
         }, isConstant(args));
     }
-    static B<If> mkIf(final B<Condition> cond, final B<? extends Comp> child) {
+    static B<If> mkIf(final B<Condition> cond, final Fraction priority,
+                      final String msg, final B<? extends Comp> child) {
         return optimize(new B<If>() {
             public If build(List<Apply> fargs) {
-                return new If(cond.build(fargs), child.build(fargs));
+                return new If(cond.build(fargs), child.build(fargs),
+                              msg, priority);
             }
         }, cond.isConstant() && child.isConstant());
     }

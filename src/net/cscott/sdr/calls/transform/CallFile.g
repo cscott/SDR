@@ -474,8 +474,8 @@ fragment pieces_factor
 /// restrictions/timing
 res
     : IN^ COLON! number pieces
-    | CONDITION COLON cond_body pieces
-        -> ^(IF cond_body pieces)
+    | CONDITION COLON cond_body cond_msg pieces
+        -> ^(IF cond_body cond_msg pieces)
     ;
 
 // informational
@@ -489,7 +489,7 @@ endsin
     : ENDS^ IN! COLON! simple_body
     ;
 assertion
-    : ASSERT^ COLON! cond_body
+    : ASSERT^ COLON! cond_body cond_msg
     ;
 
 // options (exactly one of the list must be selected)
@@ -569,6 +569,12 @@ cond_body
 cond_args
 	: cond_body (COMMA! cond_body)*
 	;
+cond_msg
+    : COMMA! LBRACK! number^ RBRACK! QUOTED_STR
+    | COMMA QUOTED_STR -> ^(NUMBER["1"] QUOTED_STR)
+    | -> ^(NUMBER["0"])
+    ;
+
 prim_body
 	: in_out_num COMMA! in_out_num COMMA! (IN | OUT | RIGHT | LEFT | NONE) opt_prim_attrib
 	;
@@ -666,6 +672,11 @@ INTEGER
   : {afterIndent}?=>
     ('0'..'9')+
   ;
+QUOTED_STR
+  : {afterIndent}?=>
+    '"' (~('"'|'\\'))* '"'
+        { setText(getText().substring(1, getText().length()-1)); }
+  ;
   
 // newline processing
 fragment NL
@@ -685,7 +696,9 @@ WS
     { $channel=HIDDEN; }
     ;
 WSNL
-  : NL
+  : '\\' (' '|'\t')* ('\r\n' | '\r' | '\n' )
+    { $channel=HIDDEN; /* an escaped newline: no NL processing */ }
+    | NL
     { $channel=HIDDEN; }
   ;
 

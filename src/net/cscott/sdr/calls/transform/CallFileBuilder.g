@@ -243,8 +243,8 @@ one_par returns [B<ParCall> pc]
 res returns [B<? extends Comp> c]
     : ^(IN f=number p=pieces)
 	{ $c = mkIn(f, p); }
-    | ^(IF cd=cond_body p=pieces)
-	{ $c = mkIf(cd, p); }
+    | ^(IF cd=cond_body ^(n=NUMBER msg=QUOTED_STR?) p=pieces)
+	{ $c = mkIf(cd, Fraction.valueOf(n.getText()), msg==null?null:msg.getText(), p); }
     ;
 	
 simple_words returns [String r]
