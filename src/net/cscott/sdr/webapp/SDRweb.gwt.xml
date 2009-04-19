@@ -12,12 +12,12 @@
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
   <!-- Other module inherits                                      -->
-  <inherits name='net.cscott.sdr.SDR'/> <!-- for CompletionEngine -->
+  <inherits name='net.cscott.SDR'/> <!-- for CompletionEngine, etc -->
   <inherits name='com.google.gwt.widgetideas.GWTCanvas'/>
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='net.cscott.sdr.webapp.client.SDRweb'/>
 
   <!-- Source path -->
-  <!-- <source path="client" /> -->
+  <source path="client" />
 </module>
