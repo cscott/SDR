@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-//import java.util.regex.Matcher;
-//import java.util.regex.Pattern;
+import java.util.Map;
 
+import net.cscott.jutil.UnmodifiableIterator;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.grm.Grm.Alt;
 import net.cscott.sdr.calls.grm.Grm.Concat;
@@ -127,7 +127,7 @@ public class CompletionEngine {
             result.add(it.next());
         return result;
     }
-    static class CompletionIterator implements Iterator<String>{
+    static class CompletionIterator extends UnmodifiableIterator<String>{
         final Program program;
         final List<Token> input;
         List<Integer> lastState;
@@ -135,20 +135,21 @@ public class CompletionEngine {
         boolean needNext, hasNext;
         public CompletionIterator(Program program, String partial) {
             this.program = program;
-            this.input = tokenize(partial);
+            this.input = CompletionTokenizer.tokenize(partial);
             this.lastState = Collections.emptyList();
             this.needNext = true;
         }
         /** This method does the real work, invoking a CompleteVisitor on the
          *  nextState from last time. */
+        @Override
         public boolean hasNext() {
             if (needNext) {
                 this.needNext = false;
                 CompleteVisitor cv = new CompleteVisitor
-                    (GrmDB.dbFor(program), new CompleteState
+                    (Grm.grammar(program), new CompleteState
                         (LL.create(input), LL.create(lastState),
                          LL.<Integer>NULL(), LL.<String>NULL(), false));
-                Grm g = cv.rules.grammar().get("start");
+                Grm g = cv.rules.get("start");
                 this.hasNext = g.accept(cv);
                 StringBuilder sb = new StringBuilder();
                 for (Iterator<String> it=cv.cs.completion.reverse().iterator();
@@ -162,21 +163,19 @@ public class CompletionEngine {
             return this.hasNext;
         }
         /** This just returns the results of the call to {@link #hasNext()}. */
+        @Override
         public String next() {
             if (this.needNext) hasNext();
             this.needNext = true;
             return this.next;
         }
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
     }
 
     /** Types of tokens we'll lex from the partial input string. */
-    private enum TokenType {
-        FRAGMENT, STRING, FRACTION;
-    }
-    private static class Token {
+    static class Token {
+        enum TokenType {
+            FRAGMENT, STRING, FRACTION;
+        }
         final String text;
         final TokenType type;
         Token(String text, TokenType type) { this.text=text; this.type=type; }
@@ -197,46 +196,6 @@ public class CompletionEngine {
         }
     }
 
-    /** Return a list of {@link Token}s corresponding to the input string. */
-    private static List<Token> tokenize(String input) {
-        boolean lastFrag = !input.endsWith(" ");
-        String[] bits = input.split("\\s+");
-        List<Token> result = new ArrayList<Token>(bits.length);
-        for (int i=0; i<bits.length; i++) {
-            if (bits[i].matches("\\d+(/\\d+)?"))
-                result.add(new Token(bits[i], TokenType.FRACTION));
-            else if (i==(bits.length-1) && lastFrag)
-                result.add(new Token(bits[i], TokenType.FRAGMENT));
-            else
-                result.add(new Token(bits[i], TokenType.STRING));
-        }
-        // XXX post-process to join bits of fractions
-        return result;
-    }
-    /*
-    private static List<Token> tokenize(String input) {
-        List<Token> result = new ArrayList<Token>();
-        Matcher m = TOKPAT.matcher(input.replaceFirst("^\\s+", ""));
-        while (m.lookingAt()) {
-            if (m.group(1) != null) {
-                result.add(new Token(m.group(1), TokenType.FRACTION));
-            } else {
-                assert m.group(2) != null;
-                TokenType tt = (m.group(3).length()>0) ? TokenType.STRING :
-                    TokenType.FRAGMENT;
-                result.add(new Token(m.group(2), tt));
-            }
-            input = input.substring(m.end());
-            m = TOKPAT.matcher(input);
-        }
-        return result;
-    }
-    */
-    /** Match tokens and trailing space.  Note that the fraction pattern
-     *  precedes the word pattern, since digits count as word characters. */
-    //private static final Pattern TOKPAT = Pattern.compile
-    //  ("^(?:(\\d+(?:\\s+\\d+\\s*/\\s*\\d+)?)|(\\w+))(\\s*)");
-
     /** Tracks the state of the grammar match. */
     private static class CompleteState implements Cloneable {
         LL<Token> partialInput;
@@ -254,7 +213,8 @@ public class CompletionEngine {
             this.matchedTerminal = matchedTerminal;
         }
         public CompleteState clone() {
-            return new CompleteState(partialInput, lastState, nextState, completion, matchedTerminal);
+            return new CompleteState(partialInput, lastState, nextState,
+                                     completion, matchedTerminal);
         }
         void popInput() {
             if (!partialInput.isEmpty())
@@ -278,9 +238,9 @@ public class CompletionEngine {
     }
     /** Attempt to match the partial input against the call grammar. */
     static final class CompleteVisitor extends GrmVisitor<Boolean> {
-        final GrmDB rules;
+        final Map<String,Grm> rules;
         CompleteState cs;
-        CompleteVisitor(GrmDB rules, CompleteState cs) {
+        CompleteVisitor(Map<String,Grm> rules, CompleteState cs) {
             this.rules = rules;
             this.cs = cs;
         }
@@ -354,7 +314,7 @@ public class CompletionEngine {
 	    // <digit_greater_than_two> here; <NUMBER> is the only thing
 	    // which can match a TokenType.FRACTION
 	    if ((!cs.partialInput.isEmpty()) &&
-                cs.partialInput.head.type==TokenType.FRACTION &&
+                cs.partialInput.head.type==Token.TokenType.FRACTION &&
 		nonterm.ruleName.equals("NUMBER")) {
 		matchterm(cs.partialInput.head.text);
 		return true;
@@ -376,7 +336,7 @@ public class CompletionEngine {
             // don't expand non terminal if it's a number
             if (cs.partialInput.isEmpty()) {
                 if (nonterm.ruleName.equals("number") ||
-                    //nonterm.ruleName.equals("cardinal") ||
+                    nonterm.ruleName.equals("cardinal") ||
                     nonterm.ruleName.equals("digit_greater_than_two"))
                     expandNT = false;
             }
@@ -387,7 +347,7 @@ public class CompletionEngine {
                 cs.pushCompletion("<"+nonterm.prettyName+">");
                 return true;
             }
-            Grm g = rules.grammar().get(nonterm.ruleName);
+            Grm g = rules.get(nonterm.ruleName);
             if (g==null) return false; // XXX MISSING RULE
             return g.accept(this);
         }

@@ -9,7 +9,7 @@ import java.util.List;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.util.Tools;
 
-/** Post-processed grammar for All. */
+/** Post-processed grammar for all dance programs. */
 public class AllGrm /*extends GrmDB*/ {
     public static final Map<String,Grm> BASIC;
     public static final Map<String,Grm> MAINSTREAM;
@@ -336,14 +336,17 @@ public class AllGrm /*extends GrmDB*/ {
         l.add(new Grm.Concat(Tools.l(l.get(82),l.get(179)))); // 259
         l.add(new Grm.Alt(Tools.l(l.get(19),l.get(259)))); // 260
         _PLUS.put("anything_0_suffix",l.get(260));
-        _PLUS.put("anything_1",l.get(255));
+        l.add(new Grm.Terminal("track")); // 261
+        l.add(new Grm.Concat(Tools.l(l.get(261),l.get(141)))); // 262
+        l.add(new Grm.Alt(Tools.l(l.get(20),l.get(38),l.get(40),l.get(44),l.get(46),l.get(254),l.get(53),l.get(262)))); // 263
+        _PLUS.put("anything_1",l.get(263));
         _PLUS.put("anything_2",l.get(61));
-        l.add(new Grm.Alt(Tools.l(l.get(62),l.get(179),l.get(63),l.get(64),l.get(65),l.get(66),l.get(67),l.get(73),l.get(56),l.get(59),l.get(74),l.get(78),l.get(81),l.get(83),l.get(86),l.get(88),l.get(90),l.get(93),l.get(96),l.get(97),l.get(99),l.get(101),l.get(106),l.get(108),l.get(114),l.get(118),l.get(121),l.get(257),l.get(125),l.get(127),l.get(129),l.get(132),l.get(133),l.get(36)))); // 261
-        _PLUS.put("anything_3",l.get(261));
-        l.add(new Grm.Terminal("fan")); // 262
-        l.add(new Grm.Concat(Tools.l(l.get(262),l.get(76),l.get(167)))); // 263
-        l.add(new Grm.Alt(Tools.l(l.get(39),l.get(135),l.get(136),l.get(137),l.get(139),l.get(151),l.get(153),l.get(165),l.get(168),l.get(169),l.get(263),l.get(172)))); // 264
-        _PLUS.put("leftable_anything",l.get(264));
+        l.add(new Grm.Alt(Tools.l(l.get(62),l.get(179),l.get(63),l.get(64),l.get(65),l.get(66),l.get(67),l.get(73),l.get(56),l.get(59),l.get(74),l.get(78),l.get(81),l.get(83),l.get(86),l.get(88),l.get(90),l.get(93),l.get(96),l.get(97),l.get(99),l.get(101),l.get(106),l.get(108),l.get(114),l.get(118),l.get(121),l.get(257),l.get(125),l.get(127),l.get(129),l.get(132),l.get(133),l.get(36)))); // 264
+        _PLUS.put("anything_3",l.get(264));
+        l.add(new Grm.Terminal("fan")); // 265
+        l.add(new Grm.Concat(Tools.l(l.get(265),l.get(76),l.get(167)))); // 266
+        l.add(new Grm.Alt(Tools.l(l.get(39),l.get(135),l.get(136),l.get(137),l.get(139),l.get(151),l.get(153),l.get(165),l.get(168),l.get(169),l.get(266),l.get(172)))); // 267
+        _PLUS.put("leftable_anything",l.get(267));
         _PLUS.put("reversable_anything",l.get(184));
         _PLUS.put("parenthesized_anything",l.get(188));
         _PLUS.put("people",l.get(191));
@@ -364,15 +367,15 @@ public class AllGrm /*extends GrmDB*/ {
         _A1.put("anything",l.get(0));
         _A1.put("anything_0",l.get(18));
         _A1.put("anything_0_suffix",l.get(260));
-        _A1.put("anything_1",l.get(255));
+        _A1.put("anything_1",l.get(263));
         _A1.put("anything_2",l.get(61));
-        l.add(new Grm.Terminal("out")); // 265
-        l.add(new Grm.Terminal("in")); // 266
-        l.add(new Grm.Alt(Tools.l(l.get(265),l.get(266),l.get(50),l.get(48)))); // 267
-        l.add(new Grm.Concat(Tools.l(l.get(230),l.get(267)))); // 268
-        l.add(new Grm.Alt(Tools.l(l.get(62),l.get(179),l.get(63),l.get(64),l.get(65),l.get(66),l.get(67),l.get(73),l.get(56),l.get(59),l.get(74),l.get(78),l.get(81),l.get(83),l.get(86),l.get(268),l.get(88),l.get(90),l.get(93),l.get(96),l.get(97),l.get(99),l.get(101),l.get(106),l.get(108),l.get(114),l.get(118),l.get(121),l.get(257),l.get(125),l.get(127),l.get(129),l.get(132),l.get(133),l.get(36)))); // 269
-        _A1.put("anything_3",l.get(269));
-        _A1.put("leftable_anything",l.get(264));
+        l.add(new Grm.Terminal("out")); // 268
+        l.add(new Grm.Terminal("in")); // 269
+        l.add(new Grm.Alt(Tools.l(l.get(268),l.get(269),l.get(50),l.get(48)))); // 270
+        l.add(new Grm.Concat(Tools.l(l.get(230),l.get(270)))); // 271
+        l.add(new Grm.Alt(Tools.l(l.get(62),l.get(179),l.get(63),l.get(64),l.get(65),l.get(66),l.get(67),l.get(73),l.get(56),l.get(59),l.get(74),l.get(78),l.get(81),l.get(83),l.get(86),l.get(271),l.get(88),l.get(90),l.get(93),l.get(96),l.get(97),l.get(99),l.get(101),l.get(106),l.get(108),l.get(114),l.get(118),l.get(121),l.get(257),l.get(125),l.get(127),l.get(129),l.get(132),l.get(133),l.get(36)))); // 272
+        _A1.put("anything_3",l.get(272));
+        _A1.put("leftable_anything",l.get(267));
         _A1.put("reversable_anything",l.get(184));
         _A1.put("parenthesized_anything",l.get(188));
         _A1.put("people",l.get(191));
@@ -393,10 +396,10 @@ public class AllGrm /*extends GrmDB*/ {
         _A2.put("anything",l.get(0));
         _A2.put("anything_0",l.get(18));
         _A2.put("anything_0_suffix",l.get(260));
-        _A2.put("anything_1",l.get(255));
+        _A2.put("anything_1",l.get(263));
         _A2.put("anything_2",l.get(61));
-        _A2.put("anything_3",l.get(269));
-        _A2.put("leftable_anything",l.get(264));
+        _A2.put("anything_3",l.get(272));
+        _A2.put("leftable_anything",l.get(267));
         _A2.put("reversable_anything",l.get(184));
         _A2.put("parenthesized_anything",l.get(188));
         _A2.put("people",l.get(191));
@@ -417,10 +420,10 @@ public class AllGrm /*extends GrmDB*/ {
         _C1.put("anything",l.get(0));
         _C1.put("anything_0",l.get(18));
         _C1.put("anything_0_suffix",l.get(260));
-        _C1.put("anything_1",l.get(255));
+        _C1.put("anything_1",l.get(263));
         _C1.put("anything_2",l.get(61));
-        _C1.put("anything_3",l.get(269));
-        _C1.put("leftable_anything",l.get(264));
+        _C1.put("anything_3",l.get(272));
+        _C1.put("leftable_anything",l.get(267));
         _C1.put("reversable_anything",l.get(184));
         _C1.put("parenthesized_anything",l.get(188));
         _C1.put("people",l.get(191));
@@ -441,10 +444,10 @@ public class AllGrm /*extends GrmDB*/ {
         _C2.put("anything",l.get(0));
         _C2.put("anything_0",l.get(18));
         _C2.put("anything_0_suffix",l.get(260));
-        _C2.put("anything_1",l.get(255));
+        _C2.put("anything_1",l.get(263));
         _C2.put("anything_2",l.get(61));
-        _C2.put("anything_3",l.get(269));
-        _C2.put("leftable_anything",l.get(264));
+        _C2.put("anything_3",l.get(272));
+        _C2.put("leftable_anything",l.get(267));
         _C2.put("reversable_anything",l.get(184));
         _C2.put("parenthesized_anything",l.get(188));
         _C2.put("people",l.get(191));
@@ -465,10 +468,10 @@ public class AllGrm /*extends GrmDB*/ {
         _C3A.put("anything",l.get(0));
         _C3A.put("anything_0",l.get(18));
         _C3A.put("anything_0_suffix",l.get(260));
-        _C3A.put("anything_1",l.get(255));
+        _C3A.put("anything_1",l.get(263));
         _C3A.put("anything_2",l.get(61));
-        _C3A.put("anything_3",l.get(269));
-        _C3A.put("leftable_anything",l.get(264));
+        _C3A.put("anything_3",l.get(272));
+        _C3A.put("leftable_anything",l.get(267));
         _C3A.put("reversable_anything",l.get(184));
         _C3A.put("parenthesized_anything",l.get(188));
         _C3A.put("people",l.get(191));
@@ -487,61 +490,59 @@ public class AllGrm /*extends GrmDB*/ {
         C3A = Collections.unmodifiableMap(_C3A);
         Map<String,Grm> _C3B = new HashMap<String,Grm>();
         _C3B.put("anything",l.get(0));
-        l.add(new Grm.Terminal("mirror")); // 270
-        l.add(new Grm.Concat(Tools.l(l.get(270),l.get(6)))); // 271
-        l.add(new Grm.Alt(Tools.l(l.get(6),l.get(271)))); // 272
-        _C3B.put("anything_0",l.get(272));
-        l.add(new Grm.Nonterminal("anything_1_suffix",null,-1)); // 273
-        l.add(new Grm.Mult(l.get(273),Grm.Mult.Type.STAR)); // 274
-        l.add(new Grm.Concat(Tools.l(l.get(2),l.get(3),l.get(5),l.get(20),l.get(274)))); // 275
-        l.add(new Grm.Nonterminal("anything_2","anything",1)); // 276
-        l.add(new Grm.Concat(Tools.l(l.get(10),l.get(12),l.get(276),l.get(274)))); // 277
-        l.add(new Grm.Alt(Tools.l(l.get(275),l.get(277)))); // 278
-        l.add(new Grm.Concat(Tools.l(l.get(1),l.get(278)))); // 279
-        l.add(new Grm.Concat(Tools.l(l.get(20),l.get(274)))); // 280
-        l.add(new Grm.Alt(Tools.l(l.get(279),l.get(280)))); // 281
-        _C3B.put("anything_1",l.get(281));
+        l.add(new Grm.Terminal("mirror")); // 273
+        l.add(new Grm.Concat(Tools.l(l.get(273),l.get(6)))); // 274
+        l.add(new Grm.Alt(Tools.l(l.get(6),l.get(274)))); // 275
+        _C3B.put("anything_0",l.get(275));
+        l.add(new Grm.Nonterminal("anything_1_suffix",null,-1)); // 276
+        l.add(new Grm.Mult(l.get(276),Grm.Mult.Type.STAR)); // 277
+        l.add(new Grm.Concat(Tools.l(l.get(2),l.get(3),l.get(5),l.get(20),l.get(277)))); // 278
+        l.add(new Grm.Nonterminal("anything_2","anything",1)); // 279
+        l.add(new Grm.Concat(Tools.l(l.get(10),l.get(12),l.get(279),l.get(277)))); // 280
+        l.add(new Grm.Alt(Tools.l(l.get(278),l.get(280)))); // 281
+        l.add(new Grm.Concat(Tools.l(l.get(1),l.get(281)))); // 282
+        l.add(new Grm.Concat(Tools.l(l.get(20),l.get(277)))); // 283
+        l.add(new Grm.Alt(Tools.l(l.get(282),l.get(283)))); // 284
+        _C3B.put("anything_1",l.get(284));
         _C3B.put("anything_1_suffix",l.get(260));
-        l.add(new Grm.Concat(Tools.l(l.get(111),l.get(76),l.get(21)))); // 282
-        l.add(new Grm.Terminal("track")); // 283
-        l.add(new Grm.Concat(Tools.l(l.get(283),l.get(141)))); // 284
-        l.add(new Grm.Alt(Tools.l(l.get(55),l.get(38),l.get(40),l.get(44),l.get(46),l.get(282),l.get(254),l.get(53),l.get(284)))); // 285
-        _C3B.put("anything_2",l.get(285));
-        l.add(new Grm.Nonterminal("anything_4",null,0)); // 286
-        l.add(new Grm.Alt(Tools.l(l.get(286),l.get(57),l.get(60)))); // 287
-        _C3B.put("anything_3",l.get(287));
-        l.add(new Grm.Terminal("boomerang")); // 288
-        l.add(new Grm.Terminal("scramble")); // 289
-        l.add(new Grm.Terminal("bingo")); // 290
-        l.add(new Grm.Terminal("nobody")); // 291
-        l.add(new Grm.Terminal("everybody")); // 292
-        l.add(new Grm.Alt(Tools.l(l.get(291),l.get(292)))); // 293
-        l.add(new Grm.Concat(Tools.l(l.get(111),l.get(293)))); // 294
-        l.add(new Grm.Terminal("golly")); // 295
-        l.add(new Grm.Concat(Tools.l(l.get(171),l.get(295)))); // 296
-        l.add(new Grm.Terminal("split")); // 297
-        l.add(new Grm.Terminal("key")); // 298
-        l.add(new Grm.Concat(Tools.l(l.get(297),l.get(34),l.get(76),l.get(298)))); // 299
-        l.add(new Grm.Terminal("with")); // 300
-        l.add(new Grm.Terminal("confidence")); // 301
-        l.add(new Grm.Concat(Tools.l(l.get(300),l.get(301)))); // 302
-        l.add(new Grm.Concat(Tools.l(l.get(76),l.get(298)))); // 303
-        l.add(new Grm.Alt(Tools.l(l.get(123),l.get(303)))); // 304
-        l.add(new Grm.Concat(Tools.l(l.get(34),l.get(304)))); // 305
-        l.add(new Grm.Terminal("revolve")); // 306
-        l.add(new Grm.Concat(Tools.l(l.get(306),l.get(110),l.get(4),l.get(111)))); // 307
-        l.add(new Grm.Terminal("rip")); // 308
-        l.add(new Grm.Concat(Tools.l(l.get(308),l.get(252)))); // 309
-        l.add(new Grm.Terminal("explode")); // 310
-        l.add(new Grm.Terminal("diamond")); // 311
-        l.add(new Grm.Concat(Tools.l(l.get(310),l.get(76),l.get(311)))); // 312
-        l.add(new Grm.Alt(Tools.l(l.get(167),l.get(79)))); // 313
-        l.add(new Grm.Concat(Tools.l(l.get(76),l.get(313)))); // 314
-        l.add(new Grm.Alt(Tools.l(l.get(314)))); // 315
-        l.add(new Grm.Concat(Tools.l(l.get(58),l.get(315)))); // 316
-        l.add(new Grm.Alt(Tools.l(l.get(62),l.get(179),l.get(63),l.get(288),l.get(64),l.get(65),l.get(66),l.get(289),l.get(290),l.get(67),l.get(73),l.get(56),l.get(59),l.get(74),l.get(294),l.get(296),l.get(78),l.get(81),l.get(83),l.get(86),l.get(268),l.get(88),l.get(299),l.get(302),l.get(90),l.get(93),l.get(305),l.get(96),l.get(97),l.get(99),l.get(101),l.get(106),l.get(307),l.get(303),l.get(108),l.get(114),l.get(118),l.get(121),l.get(257),l.get(125),l.get(127),l.get(309),l.get(129),l.get(132),l.get(312),l.get(316),l.get(133),l.get(36)))); // 317
-        _C3B.put("anything_4",l.get(317));
-        _C3B.put("leftable_anything",l.get(264));
+        l.add(new Grm.Concat(Tools.l(l.get(111),l.get(76),l.get(21)))); // 285
+        l.add(new Grm.Alt(Tools.l(l.get(55),l.get(38),l.get(40),l.get(44),l.get(46),l.get(285),l.get(254),l.get(53),l.get(262)))); // 286
+        _C3B.put("anything_2",l.get(286));
+        l.add(new Grm.Nonterminal("anything_4",null,0)); // 287
+        l.add(new Grm.Alt(Tools.l(l.get(287),l.get(57),l.get(60)))); // 288
+        _C3B.put("anything_3",l.get(288));
+        l.add(new Grm.Terminal("boomerang")); // 289
+        l.add(new Grm.Terminal("scramble")); // 290
+        l.add(new Grm.Terminal("bingo")); // 291
+        l.add(new Grm.Terminal("nobody")); // 292
+        l.add(new Grm.Terminal("everybody")); // 293
+        l.add(new Grm.Alt(Tools.l(l.get(292),l.get(293)))); // 294
+        l.add(new Grm.Concat(Tools.l(l.get(111),l.get(294)))); // 295
+        l.add(new Grm.Terminal("golly")); // 296
+        l.add(new Grm.Concat(Tools.l(l.get(171),l.get(296)))); // 297
+        l.add(new Grm.Terminal("split")); // 298
+        l.add(new Grm.Terminal("key")); // 299
+        l.add(new Grm.Concat(Tools.l(l.get(298),l.get(34),l.get(76),l.get(299)))); // 300
+        l.add(new Grm.Terminal("with")); // 301
+        l.add(new Grm.Terminal("confidence")); // 302
+        l.add(new Grm.Concat(Tools.l(l.get(301),l.get(302)))); // 303
+        l.add(new Grm.Concat(Tools.l(l.get(76),l.get(299)))); // 304
+        l.add(new Grm.Alt(Tools.l(l.get(123),l.get(304)))); // 305
+        l.add(new Grm.Concat(Tools.l(l.get(34),l.get(305)))); // 306
+        l.add(new Grm.Terminal("revolve")); // 307
+        l.add(new Grm.Concat(Tools.l(l.get(307),l.get(110),l.get(4),l.get(111)))); // 308
+        l.add(new Grm.Terminal("rip")); // 309
+        l.add(new Grm.Concat(Tools.l(l.get(309),l.get(252)))); // 310
+        l.add(new Grm.Terminal("explode")); // 311
+        l.add(new Grm.Terminal("diamond")); // 312
+        l.add(new Grm.Concat(Tools.l(l.get(311),l.get(76),l.get(312)))); // 313
+        l.add(new Grm.Alt(Tools.l(l.get(167),l.get(79)))); // 314
+        l.add(new Grm.Concat(Tools.l(l.get(76),l.get(314)))); // 315
+        l.add(new Grm.Alt(Tools.l(l.get(315)))); // 316
+        l.add(new Grm.Concat(Tools.l(l.get(58),l.get(316)))); // 317
+        l.add(new Grm.Alt(Tools.l(l.get(62),l.get(179),l.get(63),l.get(289),l.get(64),l.get(65),l.get(66),l.get(290),l.get(291),l.get(67),l.get(73),l.get(56),l.get(59),l.get(74),l.get(295),l.get(297),l.get(78),l.get(81),l.get(83),l.get(86),l.get(271),l.get(88),l.get(300),l.get(303),l.get(90),l.get(93),l.get(306),l.get(96),l.get(97),l.get(99),l.get(101),l.get(106),l.get(308),l.get(304),l.get(108),l.get(114),l.get(118),l.get(121),l.get(257),l.get(125),l.get(127),l.get(310),l.get(129),l.get(132),l.get(313),l.get(317),l.get(133),l.get(36)))); // 318
+        _C3B.put("anything_4",l.get(318));
+        _C3B.put("leftable_anything",l.get(267));
         _C3B.put("reversable_anything",l.get(184));
         _C3B.put("parenthesized_anything",l.get(188));
         _C3B.put("people",l.get(191));
@@ -560,13 +561,13 @@ public class AllGrm /*extends GrmDB*/ {
         C3B = Collections.unmodifiableMap(_C3B);
         Map<String,Grm> _C4 = new HashMap<String,Grm>();
         _C4.put("anything",l.get(0));
-        _C4.put("anything_0",l.get(272));
-        _C4.put("anything_1",l.get(281));
+        _C4.put("anything_0",l.get(275));
+        _C4.put("anything_1",l.get(284));
         _C4.put("anything_1_suffix",l.get(260));
-        _C4.put("anything_2",l.get(285));
-        _C4.put("anything_3",l.get(287));
-        _C4.put("anything_4",l.get(317));
-        _C4.put("leftable_anything",l.get(264));
+        _C4.put("anything_2",l.get(286));
+        _C4.put("anything_3",l.get(288));
+        _C4.put("anything_4",l.get(318));
+        _C4.put("leftable_anything",l.get(267));
         _C4.put("reversable_anything",l.get(184));
         _C4.put("parenthesized_anything",l.get(188));
         _C4.put("people",l.get(191));

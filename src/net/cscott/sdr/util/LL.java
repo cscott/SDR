@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.cscott.jutil.UnmodifiableIterator;
+
 /** Persistent Linked List. */
 public class LL<T> implements Iterable<T> {
     /** Element at the start of the list */
@@ -110,18 +112,17 @@ public class LL<T> implements Iterable<T> {
         return new LLIterator<T>(this);
     }
     /** Helper class to implement the {@link Iterable} interface. */
-    private static class LLIterator<T> implements Iterator<T> {
+    private static class LLIterator<T> extends UnmodifiableIterator<T> {
         LL<T> next;
         LLIterator(LL<T> ll) { this.next = ll; }
+        @Override
         public boolean hasNext() { return next!=NULL(); }
+        @Override
         public T next() {
             assert hasNext();
             T retval = next.head;
             next = next.tail;
             return retval;
-        }
-        public void remove() {
-            throw new UnsupportedOperationException();
         }
     }
     @SuppressWarnings("unchecked")
@@ -155,20 +156,19 @@ public class LL<T> implements Iterable<T> {
         return result;
     }
     @Override
-    @SuppressWarnings("unchecked")
     public String toString() {
         return toList().toString();
     }
-    /*
+    /* REMOVED for GWT compatibility (GWT doesn't have java.lang.reflect.Array)
     @SuppressWarnings("unchecked")
     public T[] toArray(Class<T> type) {
-        T[] result = (T[]) Array.newInstance(type, this.size());
+        T[] result =(T[])java.lang.reflect.Array.newInstance(type, this.size());
         int i=0;
         for (T t : this)
             result[i++] = t;
         return result;
     }
-    */
+    * END REMOVAL */
     public List<T> toList() {
         List<T> result = new ArrayList<T>(this.size());
         for (T t : this)
