@@ -5,11 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 
 import net.cscott.jutil.UnmodifiableIterator;
 import net.cscott.sdr.calls.Program;
@@ -140,7 +135,7 @@ public class CompletionEngine {
         boolean needNext, hasNext;
         public CompletionIterator(Program program, String partial) {
             this.program = program;
-            this.input = tokenize(partial);
+            this.input = CompletionTokenizer.tokenize(partial);
             this.lastState = Collections.emptyList();
             this.needNext = true;
         }
@@ -177,10 +172,10 @@ public class CompletionEngine {
     }
 
     /** Types of tokens we'll lex from the partial input string. */
-    private enum TokenType {
-        FRAGMENT, STRING, FRACTION;
-    }
-    private static class Token {
+    static class Token {
+        enum TokenType {
+            FRAGMENT, STRING, FRACTION;
+        }
         final String text;
         final TokenType type;
         Token(String text, TokenType type) { this.text=text; this.type=type; }
@@ -197,35 +192,9 @@ public class CompletionEngine {
             return false;
         }
         public String toString() {
-            return "<"+new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
-                .append("text",this.text)
-                .append("type",this.type)
-                .toString()+">";
+            return "<"+this.text+","+this.type+">";
         }
     }
-
-    /** Return a list of {@link Token}s corresponding to the input string. */
-    private static List<Token> tokenize(String input) {
-        List<Token> result = new ArrayList<Token>();
-        Matcher m = TOKPAT.matcher(input.replaceFirst("^\\s+", ""));
-        while (m.lookingAt()) {
-            if (m.group(1) != null) {
-                result.add(new Token(m.group(1), TokenType.FRACTION));
-            } else {
-                assert m.group(2) != null;
-                TokenType tt = (m.group(3).length()>0) ? TokenType.STRING :
-                    TokenType.FRAGMENT;
-                result.add(new Token(m.group(2), tt));
-            }
-            input = input.substring(m.end());
-            m = TOKPAT.matcher(input);
-        }
-        return result;
-    }
-    /** Match tokens and trailing space.  Note that the fraction pattern
-     *  precedes the word pattern, since digits count as word characters. */
-    private static final Pattern TOKPAT = Pattern.compile
-      ("^(?:(\\d+(?:\\s+\\d+\\s*/\\s*\\d+)?)|(\\w+))(\\s*)");
 
     /** Tracks the state of the grammar match. */
     private static class CompleteState implements Cloneable {
@@ -244,11 +213,8 @@ public class CompletionEngine {
             this.matchedTerminal = matchedTerminal;
         }
         public CompleteState clone() {
-            try { return (CompleteState) super.clone(); }
-            catch (CloneNotSupportedException e) {
-                assert false : "can never happen";
-                return null;
-            }
+            return new CompleteState(partialInput, lastState, nextState,
+                                     completion, matchedTerminal);
         }
         void popInput() {
             if (!partialInput.isEmpty())
@@ -286,13 +252,13 @@ public class CompletionEngine {
             CompleteState saved = this.cs.clone();
             saved.lastState = LL.NULL(); // if we fail, don't try to use the
                                          // rest of the saved state.
-            for (Grm g : alt.alternates.subList(i, alt.alternates.size())) {
+            for ( ; i<alt.alternates.size(); i++) {
+                Grm g = alt.alternates.get(i);
                 if (g.accept(this)) {
                     cs.pushState(i); // record where we were
                     return true; // got one!
                 }
                 this.cs = saved.clone();
-                i++;
             }
             // none matched.
             return false;
@@ -348,7 +314,7 @@ public class CompletionEngine {
 	    // <digit_greater_than_two> here; <NUMBER> is the only thing
 	    // which can match a TokenType.FRACTION
 	    if ((!cs.partialInput.isEmpty()) &&
-                cs.partialInput.head.type==TokenType.FRACTION &&
+                cs.partialInput.head.type==Token.TokenType.FRACTION &&
 		nonterm.ruleName.equals("NUMBER")) {
 		matchterm(cs.partialInput.head.text);
 		return true;

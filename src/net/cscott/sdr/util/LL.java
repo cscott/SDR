@@ -1,8 +1,6 @@
 package net.cscott.sdr.util;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -158,18 +156,19 @@ public class LL<T> implements Iterable<T> {
         return result;
     }
     @Override
-    @SuppressWarnings("unchecked")
     public String toString() {
-        return Arrays.toString(((LL)this).toArray(Object.class));
+        return toList().toString();
     }
+    /* REMOVED for GWT compatibility (GWT doesn't have java.lang.reflect.Array)
     @SuppressWarnings("unchecked")
     public T[] toArray(Class<T> type) {
-        T[] result = (T[]) Array.newInstance(type, this.size());
+        T[] result =(T[])java.lang.reflect.Array.newInstance(type, this.size());
         int i=0;
         for (T t : this)
             result[i++] = t;
         return result;
     }
+    * END REMOVAL */
     public List<T> toList() {
         List<T> result = new ArrayList<T>(this.size());
         for (T t : this)
