@@ -2,6 +2,7 @@ ChangeLog
 sdr-*.tar.gz
 sdr.jar*
 sdr-libs.jar*
+sdr-src.jar
 bin
 bin.cover
 bin.eclipse
