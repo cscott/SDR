@@ -15,6 +15,18 @@
   <inherits name='net.cscott.SDR'/> <!-- for CompletionEngine, etc -->
   <inherits name='com.google.gwt.widgetideas.GWTCanvas'/>
 
+  <!-- Determine if canvas is supported. -->
+  <define-property name="canvas.support" values="yes,no"/>
+  <set-property name="canvas.support" value="no"/>
+  <!-- Replace canvas in hosted mode -->
+  <replace-with class="net.cscott.sdr.webapp.client.DanceFloorCanvas">
+    <when-type-is class="net.cscott.sdr.webapp.client.DanceFloor"/>
+  </replace-with>
+  <replace-with class="net.cscott.sdr.webapp.client.DanceFloorSimple">
+    <when-type-is class="net.cscott.sdr.webapp.client.DanceFloor"/>
+    <when-property-is name="canvas.support" value="no"/>
+  </replace-with>
+
   <!-- Specify the app entry point class.                         -->
   <entry-point class='net.cscott.sdr.webapp.client.SDRweb'/>
 

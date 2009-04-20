@@ -1,40 +1,26 @@
 package net.cscott.sdr.webapp.client;
 
 // incubator
-import com.google.gwt.widgetideas.graphics.client.Color;
-import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DecoratorPanel;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -46,7 +32,7 @@ public class SDRweb implements EntryPoint {
     final Label errorMsg = new Label();
     final VerticalPanel topPanel = new VerticalPanel();
     final VerticalPanel canvasPanel = new VerticalPanel();
-    final GWTCanvas canvas = new GWTCanvas();
+    final DanceFloor danceFloor = GWT.create(DanceFloor.class);
     DockPanel playBar = new DockPanel();
 
     /**
@@ -128,10 +114,11 @@ public class SDRweb implements EntryPoint {
         playBar.add(levelLabel, DockPanel.LINE_END);
         playBar.add(playSlider, DockPanel.CENTER);
         playBar.setCellWidth(playSlider, "100%");
-        playBar.setCellHorizontalAlignment(playSlider, playBar.ALIGN_RIGHT);
+        playBar.setCellHorizontalAlignment(playSlider, DockPanel.ALIGN_RIGHT);
         RootPanel.get("div-playbar").add(playBar);
 
         // canvas takes up all the rest of the space
+        Widget canvas = danceFloor.widget();
         canvasPanel.add(canvas);
         canvasPanel.setCellHeight(canvas, "100%");
         RootPanel.get("div-canvas").add(canvasPanel);
@@ -172,17 +159,6 @@ public class SDRweb implements EntryPoint {
             activate();
           }
         });
-        // draw some stuff
-        canvas.setLineWidth(1);
-        canvas.setStrokeStyle(Color.GREEN);
-
-        canvas.beginPath();
-          canvas.moveTo(1,1);
-          canvas.lineTo(1,50);
-          canvas.lineTo(50,50);
-          canvas.lineTo(50, 1);
-          canvas.closePath();
-        canvas.stroke();
     }
     void activate() {
         Window.alert("You entered a call");
