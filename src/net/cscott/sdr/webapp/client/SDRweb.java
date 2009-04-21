@@ -1,6 +1,7 @@
 package net.cscott.sdr.webapp.client;
 
-// incubator
+import net.cscott.sdr.calls.Program;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -21,6 +22,9 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+// incubator
+import com.google.gwt.widgetideas.client.SliderBar;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -53,12 +57,13 @@ public class SDRweb implements EntryPoint {
         fileMenu.addItem("New", cmd);
         fileMenu.addItem("Open", cmd);
         fileMenu.addItem("Save", cmd);
+        fileMenu.addItem("Print", cmd);
         fileMenu.addItem("Close", cmd);
 
         MenuBar programMenu = new MenuBar(true);
-        programMenu.addItem("Basic", cmd);
-        programMenu.addItem("Mainstream", cmd);
-        programMenu.addItem("Plus", cmd);
+        for (Program p: Program.values()) {
+            programMenu.addItem(p.toTitleCase(), cmd);
+        }
 
         // Make a new menu bar, adding a few cascading menus to it.
         MenuBar menu = new MenuBar();
@@ -108,13 +113,22 @@ public class SDRweb implements EntryPoint {
 	canvasPanel.add(errorMsg);
 
         Button playButton = new Button("Play"); // xxx replace with image
-        Label playSlider = new Label("Slider"); // xxx replace with slider
+        SliderBar playSlider = new SliderBar(0.0, 1.0);
+        playSlider.setStepSize(0.1);
+        playSlider.setCurrentValue(0.5);
+        playSlider.setNumTicks(10);
+        playSlider.setNumLabels(10);
+        playSlider.setWidth("100%");
         Label levelLabel = new Label("PLUS");
+        levelLabel.addStyleName("levelLabel");
         playBar.add(playButton, DockPanel.LINE_START);
         playBar.add(levelLabel, DockPanel.LINE_END);
         playBar.add(playSlider, DockPanel.CENTER);
         playBar.setCellWidth(playSlider, "100%");
-        playBar.setCellHorizontalAlignment(playSlider, DockPanel.ALIGN_RIGHT);
+        playBar.setCellHorizontalAlignment(playSlider, DockPanel.ALIGN_CENTER);
+        playBar.setCellVerticalAlignment(playButton, DockPanel.ALIGN_MIDDLE);
+        playBar.setCellVerticalAlignment(levelLabel, DockPanel.ALIGN_MIDDLE);
+        playBar.setCellVerticalAlignment(playSlider, DockPanel.ALIGN_MIDDLE);
         RootPanel.get("div-playbar").add(playBar);
 
         // canvas takes up all the rest of the space
