@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.6.4//EN" "http://google-web-toolkit.googlecode.com/svn/tags/1.6.4/distro-source/core/src/gwt-module.dtd">
+<!-- This GWT module exports only a small subset of the SDR classes,
+     sufficient for the client-server interface for SDRweb -->
+<module>
+  <!-- Inherit from JUtil -->
+  <inherits name='net.cscott.JUtil'/>
+  <!-- Source path -->
+  <source path="sdr/calls">
+    <include name="Program.java"/>
+  </source>
+  <source path="sdr/calls/grm">
+    <!--  GAH!  GWT doesn't support space- or comma-separated patterns
+          in include element -->
+    <include name="GrmVisitor.java"/>
+    <include name="ToStringVisitor.java"/>
+    <include name="CompletionEngine.java"/>
+  </source>
+  <source path="sdr/calls/lists">
+    <include name="AllGrm.java"/>
+  </source>
+  <source path="sdr/util">
+    <include name="LL.java"/>
+    <include name="Fraction.java"/>
+    <include name="Bezier.java"/>
+  </source>
+</module>
