@@ -17,8 +17,8 @@ import net.cscott.sdr.util.LL;
 import net.cscott.sdr.util.Tools;
 
 /**
- * Uses a {@link GrmDB} to compute possible completions for a partially-input
- * call.
+ * Uses {@link Grm#grammar(Program)} to compute possible completions for a
+ * partially-input call.
  * <p>
  * We are careful about expanding "+" and "*" to avoid generating an
  * infinite list of options.  We only expand once past the end of the

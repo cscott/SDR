@@ -22,8 +22,10 @@ import net.cscott.sdr.util.Tools;
  * grammar parsing those text strings, which creates {@link Apply} trees.
  * The raw rules from the call file need to be processed to remove
  * left recursion and to disambiguate using precedence levels.  These
- * processed rules are written out as subclasses of {@link GrmDB} and used
- * to drive the {@link CompletionEngine}.
+ * processed rules are written out as the
+ * {@link net.cscott.sdr.calls.lists.AllGrm} class, accessed via the
+ * {@link Grm#grammar(Program)} method, and used to drive the
+ * {@link CompletionEngine}.
  * 
  * @author C. Scott Ananian
  * @version $Id: Grm.java,v 1.3 2006-10-22 15:46:06 cananian Exp $
