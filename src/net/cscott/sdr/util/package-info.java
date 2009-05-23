@@ -5,6 +5,8 @@
  * as some classes using our rational numbers to represent
  * {@link net.cscott.sdr.util.Interval}s,
  * {@link net.cscott.sdr.util.Point}s, and 
- * {@link net.cscott.sdr.util.Box}es.
+ * {@link net.cscott.sdr.util.Box}es.  Some attempts to reduce the verbosity
+ * of map and list creation and manipulation are in
+ * {@link net.cscott.sdr.util.Tools} and {@link net.cscott.sdr.util.ListUtils}.
  */
 package net.cscott.sdr.util;
