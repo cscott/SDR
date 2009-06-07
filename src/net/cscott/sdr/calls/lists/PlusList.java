@@ -1,11 +1,5 @@
 package net.cscott.sdr.calls.lists;
 
-import static net.cscott.sdr.calls.transform.CallFileLexer.PART;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Dancer;
@@ -16,14 +10,9 @@ import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.DancerPath.PointOfRotation;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
-import net.cscott.sdr.calls.ast.Part;
-import net.cscott.sdr.calls.ast.Seq;
-import net.cscott.sdr.calls.ast.SeqCall;
-import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.util.Fraction;
-import net.cscott.sdr.util.Point;
 
 /**
  * The <code>PlusList</code> class contains complex call
