@@ -12,6 +12,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -177,19 +179,9 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
                 doResize(event.getWidth(), event.getHeight());
           }
         });
-        // trigger this shortly after load
-        Timer resizeTimer = new Timer() {
-            @Override
-            public void run() { doResize(); }
-        };
-        resizeTimer.schedule(1);
 
         // set up default text and handlers for callEntry
-        /*
-        callEntry.setText("Type a square dance call");
-        callEntry.getTextBox().setSelectionRange(0, callEntry.getText().length());
-        */
-        callEntry.setFocus(true);
+        //callEntry.setText("Type a square dance call");
         // Listen for keyboard events in the input box.
         callEntry.getTextBox().addKeyPressHandler(new KeyPressHandler() {
             public void onKeyPress(KeyPressEvent event) {
@@ -197,6 +189,10 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
                     !callEntry.isSuggestionListShowing()) {
                     activate();
                 }
+            }});
+        callEntry.getTextBox().addFocusHandler(new FocusHandler() {
+            public void onFocus(FocusEvent event) {
+                selectCall();
             }});
         // Listen for mouse events on the Add button.
         callGo.addClickHandler(new ClickHandler() {
@@ -212,12 +208,22 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
             }});
         // initialize all the model-dependent fields
         model.fireEvent(new SequenceChangeEvent());
+        // trigger resize & focus shortly after load
+        Timer postLoadTimer = new Timer() {
+            @Override
+            public void run() { doResize(); callEntry.setFocus(true); }
+        };
+        postLoadTimer.schedule(1);
     }
 
     void activate() {
         String newCall = callEntry.getText();
-        callEntry.getTextBox().setSelectionRange(0, newCall.length());
+        this.selectCall();
         this.model.addCallAtPoint(newCall);
+    }
+    void selectCall() {
+        callEntry.getTextBox()
+            .setSelectionRange(0, callEntry.getText().length());
     }
     void doResize() {
         doResize(Window.getClientWidth(), Window.getClientHeight());
