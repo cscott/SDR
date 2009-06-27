@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
@@ -27,8 +28,10 @@ import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -74,7 +77,9 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         fileMenu.addItem("Open", new Command() {
             public void execute() {
                 if (!confirmDiscard()) return;
-                Window.alert("Open not yet implemented."); }
+                doOpen();
+                //Window.alert("Open not yet implemented.");
+            }
         });
         fileMenu.addItem("Save", new Command() {
             public void execute() { Window.alert("Save not yet implemented."); }
@@ -215,6 +220,49 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         };
         postLoadTimer.schedule(1);
     }
+
+    void doOpen() {
+        final String loginUrl = /*"/closeme.html";*/"http://www.google.com/"; // XXX
+        // ensure we're logged in
+        final SdrPopup popup = new SdrPopup(loginUrl) {
+            @Override
+            void onLogin() {
+                Window.alert("we're logged in");
+            }
+        };
+        popup.center(); // and show
+    }
+    public static abstract class SdrPopup extends PopupPanel {
+        public SdrPopup(String loginUrl) {
+            final Frame frame = new Frame(loginUrl);
+            setTitle("Login with your Google ID");
+            setWidget(frame);
+            setWidth("200px");
+            setHeight("75%");
+            setPopup(this);
+        }
+        public final void closeMe() {
+            this.hide();
+            // okay, proceed.
+            onLogin();
+        }
+        /* called after login */
+        abstract void onLogin();
+    }
+    // --- complicated set of methods/static fields used to allow embedded
+    //     iframe to close itself after login.
+    private static SdrPopup popup;
+    public static void setPopup(SdrPopup p) {
+        _initPopup(); // be sure
+        popup = p;
+    }
+    // stash a reference to the static 'hidePopup' method in a place where the
+    // inner iframe can get to it.  Note that this doesn't work for non-static
+    // methods, due to how 'this' is handled in the translation.
+    public static native void _initPopup() /*-{
+        $wnd.hidePopup = @net.cscott.sdr.webapp.client.SDRweb::hidePopup();
+    }-*/;
+    public static void hidePopup() { popup.closeMe(); }
 
     void activate() {
         String newCall = callEntry.getText();
