@@ -34,8 +34,9 @@ public class Model implements HasHandlers {
     public boolean isDirty() { return this._isDirty; }
 
     // mutation methods
-    public void addCallAt(int index, String s) {
-        this._sequence.calls.add(index, s);
+    public void addCallAtPoint(String s) {
+        // XXX insert it at insertionPoint if set
+        this._sequence.calls.add(s);
         this._isDirty = true;
         // emit sequence changed
         this.fireEvent(new SequenceChangeEvent());

@@ -15,10 +15,6 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -34,7 +30,6 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
-import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 
 // incubator
 import com.google.gwt.widgetideas.client.SliderBar;
@@ -113,7 +108,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         callBar.setWidth("100%");
         Label callLabel = new Label("Call: ");
         callLabel.setHorizontalAlignment(Label.ALIGN_RIGHT);
-        Button callGo = new Button("Go");
+        Button callGo = new Button("Add");
         callEntry.setWidth("100%");
         callEntry.setStyleName("callEntry");
         callBar.add(callLabel, DockPanel.LINE_START);
@@ -193,27 +188,17 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         */
         callEntry.setFocus(true);
         // Listen for keyboard events in the input box.
-        callEntry.addKeyPressHandler(new KeyPressHandler() {
-          public void onKeyPress(KeyPressEvent event) {
-            if (event.getCharCode() == KeyCodes.KEY_ENTER) {
-              //activate();
-              System.out.println(event);
-            }
-          }
-        });
-        callEntry.addSelectionHandler(new SelectionHandler<Suggestion>() {
-            public void onSelection(SelectionEvent<Suggestion> event) {
-                //Window.alert("select!");
-            }});
-        callEntry.addValueChangeHandler(new ValueChangeHandler<String>() {
-            public void onValueChange(ValueChangeEvent<String> event) {
-                //Window.alert("change");
-                activate(event.getValue());
+        callEntry.getTextBox().addKeyPressHandler(new KeyPressHandler() {
+            public void onKeyPress(KeyPressEvent event) {
+                if (event.getCharCode() == KeyCodes.KEY_ENTER &&
+                    !callEntry.isSuggestionListShowing()) {
+                    activate();
+                }
             }});
         // Listen for mouse events on the Add button.
         callGo.addClickHandler(new ClickHandler() {
           public void onClick(ClickEvent event) {
-            activate(callEntry.getText());
+            activate();
           }
         });
         // hook up model
@@ -222,9 +207,9 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         model.fireEvent(new SequenceChangeEvent());
     }
 
-    void activate(String newCall) {
-        //Window.alert("You entered a call: "+callEntry.getText());
-        this.model.addCallAt(0, newCall);
+    void activate() {
+        String newCall = callEntry.getText();
+        this.model.addCallAtPoint(newCall);
     }
     void doResize() {
         doResize(Window.getClientWidth(), Window.getClientHeight());
