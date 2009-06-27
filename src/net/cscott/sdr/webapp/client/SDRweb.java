@@ -1,6 +1,8 @@
 package net.cscott.sdr.webapp.client;
 
 import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.webapp.client.Model.SequenceChangeEvent;
+import net.cscott.sdr.webapp.client.Model.SequenceChangeHandler;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -8,8 +10,15 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -22,6 +31,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 
 // incubator
 import com.google.gwt.widgetideas.client.SliderBar;
@@ -29,7 +40,7 @@ import com.google.gwt.widgetideas.client.SliderBar;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class SDRweb implements EntryPoint {
+public class SDRweb implements EntryPoint, SequenceChangeHandler {
     final SuggestBox callEntry = new SuggestBox(new CallOracle());
     final FlexTable callList = new FlexTable();
     final Label currentCall = new Label();
@@ -38,6 +49,8 @@ public class SDRweb implements EntryPoint {
     final VerticalPanel canvasPanel = new VerticalPanel();
     final DanceFloor danceFloor = GWT.create(DanceFloor.class);
     DockPanel playBar = new DockPanel();
+
+    final Model model = new Model();
 
     /**
      * This is the entry point method.
@@ -94,17 +107,9 @@ public class SDRweb implements EntryPoint {
         callList.getFlexCellFormatter().setColSpan(0, 0, 2);
         callList.getRowFormatter().setStyleName(0, "callListHeader");
         callList.setStyleName("callList");
-        for (int i=1; i<50; i++) {
-            callList.setText(i,0,"Call #"+i);
-            Button removeButton = new Button("X");
-            removeButton.setStyleName("removeButton");
-            callList.setWidget(i, 1, removeButton);
-            if (i==25) {
-                i++;
-                callList.setHTML(i, 0, "<hr/>");
-                callList.getFlexCellFormatter().setColSpan(i, 0, 2);
-            }
-        }
+        // add a place holder for the actual calls
+        callList.getFlexCellFormatter().setColSpan(1, 0, 2);
+        callList.setHTML(1, 0, "<i>&nbsp;(no calls yet)&nbsp;</i>");
         RootPanel.get("div-calllist").add(callList);
 
 	currentCall.setStyleName("currentCall");
@@ -156,26 +161,39 @@ public class SDRweb implements EntryPoint {
         // set up default text and handlers for callEntry
         /*
         callEntry.setText("Type a square dance call");
-        //callEntry.setSelectionRange(0, callEntry.getText().length());
+        callEntry.getTextBox().setSelectionRange(0, callEntry.getText().length());
+        */
+        callEntry.setFocus(true);
         // Listen for keyboard events in the input box.
         callEntry.addKeyPressHandler(new KeyPressHandler() {
           public void onKeyPress(KeyPressEvent event) {
             if (event.getCharCode() == KeyCodes.KEY_ENTER) {
-              activate();
+              //activate();
+              System.out.println(event);
             }
           }
         });
-        */
-        callEntry.setFocus(true);
+        callEntry.addSelectionHandler(new SelectionHandler<Suggestion>() {
+            public void onSelection(SelectionEvent<Suggestion> event) {
+                //Window.alert("select!");
+            }});
+        callEntry.addValueChangeHandler(new ValueChangeHandler<String>() {
+            public void onValueChange(ValueChangeEvent<String> event) {
+                //Window.alert("change");
+                activate(event.getValue());
+            }});
         // Listen for mouse events on the Add button.
         callGo.addClickHandler(new ClickHandler() {
           public void onClick(ClickEvent event) {
-            activate();
+            activate(callEntry.getText());
           }
         });
+        // hook up model
+        model.addSequenceChangeHandler(this);
     }
-    void activate() {
-        Window.alert("You entered a call");
+    void activate(String newCall) {
+        //Window.alert("You entered a call: "+callEntry.getText());
+        this.model.addCallAt(0, newCall);
     }
     void doResize() {
         doResize(Window.getClientWidth(), Window.getClientHeight());
@@ -200,5 +218,29 @@ public class SDRweb implements EntryPoint {
                 if (e!=null) e.setAttribute("style", "height: "+(height-panelBottom-4)+"px;");
             }
         }
+    }
+    public void onSequenceChange(SequenceChangeEvent sce) {
+        // build the call list from the model
+        Model model = sce.getSource();
+        FlexCellFormatter fcf = callList.getFlexCellFormatter();
+        int i=0; // row number
+        for (String call : model.sequence.calls) {
+            fcf.setColSpan(i+1, 0, 1);
+            callList.setText(i+1, 0, call);
+            Button removeButton = new Button("X");
+            removeButton.setStyleName("removeButton");
+            fcf.setColSpan(i+1, 1, 1);
+            callList.setWidget(i+1, 1, removeButton);
+            if (i == model.insertionPoint) {
+                i++;
+                fcf.setColSpan(i+1, 0, 2);
+                callList.setHTML(i+1, 0, "<hr/>");
+            }
+            i++;
+        }
+        // remove other rows
+        for (int j=callList.getRowCount()-1; j>i; j--)
+            callList.removeRow(j);
+        doResize();
     }
 }
