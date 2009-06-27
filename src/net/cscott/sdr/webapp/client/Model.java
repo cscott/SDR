@@ -19,30 +19,46 @@ import net.cscott.sdr.util.Fraction;
  * @author C. Scott Ananian
  */
 public class Model implements HasHandlers {
-    final Sequence sequence = new Sequence();
-    EngineResults results;
+    private Sequence _sequence;
+    private EngineResults _engineResults;
 
+    boolean _isDirty = false;
     boolean isPlaying;
     //Fraction sliderPos;
     int highlightedCall;
     int insertionPoint = -1;
 
+    // accessor methods
+    public Sequence getSequence() { return this._sequence; }
+    public EngineResults getEngineResults() { return this._engineResults; }
+    public boolean isDirty() { return this._isDirty; }
+
     // mutation methods
     public void addCallAt(int index, String s) {
-        this.sequence.calls.add(index, s);
+        this._sequence.calls.add(index, s);
+        this._isDirty = true;
         // emit sequence changed
         this.fireEvent(new SequenceChangeEvent());
     }
     public void setProgram(Program p) {
-        if (p == sequence.program) return;
-        sequence.program = p;
+        if (p == _sequence.program) return;
+        _sequence.program = p;
+        if (!this._sequence.calls.isEmpty())
+            // don't force save if new program is only state change
+            this._isDirty = true;
+        this.fireEvent(new SequenceChangeEvent());
+    }
+    public void newSequence() {
+        // throw away current sequence, start a new one.
+        this._sequence = new Sequence();
+        this._isDirty = false; // nothing to save yet
         this.fireEvent(new SequenceChangeEvent());
     }
 
     // --- event infrastructure ---
     // events: sequence changed, results changed?
     //         playState changed, sliderPos changed, highlight changed?
-    private HandlerManager handlerManager = new HandlerManager(this);
+    private final HandlerManager handlerManager = new HandlerManager(this);
     public void fireEvent(GwtEvent<?> event) {
         this.handlerManager.fireEvent(event);
     }
@@ -88,4 +104,6 @@ public class Model implements HasHandlers {
             return TYPE;
         }
     }
+    // initialize
+    { this.newSequence(); }
 }

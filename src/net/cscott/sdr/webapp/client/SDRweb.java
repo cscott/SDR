@@ -22,6 +22,8 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -52,26 +54,45 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
 
     final Model model = new Model();
 
+    public boolean confirmDiscard() {
+        if (!model.isDirty()) return true; // nothing to save
+        return Window.confirm("Are you sure you want to discard the "+
+                              "current unsaved sequence?");
+    }
     /**
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        // Make a command that we will execute from all leaves.
-        // XXX: WRITE ME
-        Command cmd = new Command() {
-          public void execute() {
-              Window.alert("You selected a menu item!");
-          }
-        };
-
         topPanel.setWidth("100%");
         // Menu bar
         MenuBar fileMenu = new MenuBar(true);
-        fileMenu.addItem("New", cmd);
-        fileMenu.addItem("Open", cmd);
-        fileMenu.addItem("Save", cmd);
-        fileMenu.addItem("Print", cmd);
-        fileMenu.addItem("Close", cmd);
+        fileMenu.addItem("New", new Command() {
+            public void execute() {
+                if (!confirmDiscard()) return;
+                model.newSequence();
+            }});
+        fileMenu.addItem("Open", new Command() {
+            public void execute() {
+                if (!confirmDiscard()) return;
+                Window.alert("Open not yet implemented."); }
+        });
+        fileMenu.addItem("Save", new Command() {
+            public void execute() { Window.alert("Save not yet implemented."); }
+        });
+        fileMenu.addItem("Print", new Command() {
+            public void execute() {
+                // XXX: in the future we'd open a window with a
+                // better-formatted version, and print *that*
+                Window.print();
+            }});
+        fileMenu.addItem("Close", new Command() {
+            public native void execute() /*-{ $wnd.close(); }-*/;
+            });
+        Window.addWindowClosingHandler(new ClosingHandler() {
+            public void onWindowClosing(ClosingEvent event) {
+                if (model.isDirty())
+                    event.setMessage("This will discard the current sequence.");
+            }});
 
         MenuBar programMenu = new MenuBar(true);
         for (Program p: Program.values()) {
@@ -130,7 +151,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         levelLabel.addStyleName("levelLabel");
         model.addSequenceChangeHandler(new SequenceChangeHandler() {
             public void onSequenceChange(SequenceChangeEvent sce) {
-                Program p = sce.getSource().sequence.program;
+                Program p = sce.getSource().getSequence().program;
                 String s = (p==Program.MAINSTREAM)?"MS":p.name().toUpperCase();
                 levelLabel.setText(s);
             }});
@@ -153,7 +174,6 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         // we want to take advantage of the entire client area
         Window.setMargin("0px");
         // set a resize handler to keep all the dimensions in line.
-        doResize();
         Window.addResizeHandler(new ResizeHandler() {
             public void onResize(ResizeEvent event) {
                 doResize(event.getWidth(), event.getHeight());
@@ -201,6 +221,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         // initialize all the model-dependent fields
         model.fireEvent(new SequenceChangeEvent());
     }
+
     void activate(String newCall) {
         //Window.alert("You entered a call: "+callEntry.getText());
         this.model.addCallAt(0, newCall);
@@ -234,7 +255,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         Model model = sce.getSource();
         FlexCellFormatter fcf = callList.getFlexCellFormatter();
         int i=0; // row number
-        for (String call : model.sequence.calls) {
+        for (String call : model.getSequence().calls) {
             fcf.setColSpan(i+1, 0, 1);
             callList.setText(i+1, 0, call);
             Button removeButton = new Button("X");
