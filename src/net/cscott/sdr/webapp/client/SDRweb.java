@@ -75,7 +75,11 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
 
         MenuBar programMenu = new MenuBar(true);
         for (Program p: Program.values()) {
-            programMenu.addItem(p.toTitleCase(), cmd);
+            final Program pp = p;
+            programMenu.addItem(p.toTitleCase(), new Command() {
+                public void execute() {
+                    model.setProgram(pp);
+                }});
         }
 
         // Make a new menu bar, adding a few cascading menus to it.
@@ -107,9 +111,6 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         callList.getFlexCellFormatter().setColSpan(0, 0, 2);
         callList.getRowFormatter().setStyleName(0, "callListHeader");
         callList.setStyleName("callList");
-        // add a place holder for the actual calls
-        callList.getFlexCellFormatter().setColSpan(1, 0, 2);
-        callList.setHTML(1, 0, "<i>&nbsp;(no calls yet)&nbsp;</i>");
         RootPanel.get("div-calllist").add(callList);
 
 	currentCall.setStyleName("currentCall");
@@ -124,8 +125,15 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         playSlider.setNumTicks(10);
         playSlider.setNumLabels(10);
         playSlider.setWidth("100%");
-        Label levelLabel = new Label("PLUS");
+        // level label
+        final Label levelLabel = new Label("--");
         levelLabel.addStyleName("levelLabel");
+        model.addSequenceChangeHandler(new SequenceChangeHandler() {
+            public void onSequenceChange(SequenceChangeEvent sce) {
+                Program p = sce.getSource().sequence.program;
+                String s = (p==Program.MAINSTREAM)?"MS":p.name().toUpperCase();
+                levelLabel.setText(s);
+            }});
         playBar.add(playButton, DockPanel.LINE_START);
         playBar.add(levelLabel, DockPanel.LINE_END);
         playBar.add(playSlider, DockPanel.CENTER);
@@ -190,6 +198,8 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         });
         // hook up model
         model.addSequenceChangeHandler(this);
+        // initialize all the model-dependent fields
+        model.fireEvent(new SequenceChangeEvent());
     }
     void activate(String newCall) {
         //Window.alert("You entered a call: "+callEntry.getText());
@@ -241,6 +251,11 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         // remove other rows
         for (int j=callList.getRowCount()-1; j>i; j--)
             callList.removeRow(j);
+        if (i==0) {
+            // add a place holder for the actual calls
+            callList.getFlexCellFormatter().setColSpan(1, 0, 2);
+            callList.setHTML(1, 0, "<i>&nbsp;(no calls yet)&nbsp;</i>");
+        }
         doResize();
     }
 }

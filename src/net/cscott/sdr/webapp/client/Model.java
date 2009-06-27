@@ -6,6 +6,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.HasHandlers;
 
+import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.util.Fraction;
 
 /**
@@ -30,6 +31,11 @@ public class Model implements HasHandlers {
     public void addCallAt(int index, String s) {
         this.sequence.calls.add(index, s);
         // emit sequence changed
+        this.fireEvent(new SequenceChangeEvent());
+    }
+    public void setProgram(Program p) {
+        if (p == sequence.program) return;
+        sequence.program = p;
         this.fireEvent(new SequenceChangeEvent());
     }
 

@@ -15,7 +15,7 @@ import net.cscott.sdr.calls.Program;
  */
 public class Sequence implements Serializable {
     /** The dance program our calls are supposed to belong to. */
-    //public Program program = Program.PLUS;
+    public Program program = Program.PLUS;
     /** Starting formation for the dance. */
     public StartingFormationType startingFormation =
         StartingFormationType.SQUARED_SET;
