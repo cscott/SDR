@@ -1,5 +1,7 @@
 package net.cscott.sdr.webapp.client;
 
+import java.util.List;
+
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.webapp.client.Model.SequenceChangeEvent;
 import net.cscott.sdr.webapp.client.Model.SequenceChangeHandler;
@@ -38,7 +40,8 @@ import com.google.gwt.widgetideas.client.SliderBar;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class SDRweb implements EntryPoint, SequenceChangeHandler {
-    final SuggestBox callEntry = new SuggestBox(new CallOracle());
+    final CallOracle callOracle = new CallOracle();
+    final SuggestBox callEntry = new SuggestBox(callOracle);
     final FlexTable callList = new FlexTable();
     final Label currentCall = new Label();
     final Label errorMsg = new Label();
@@ -203,12 +206,17 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         });
         // hook up model
         model.addSequenceChangeHandler(this);
+        model.addSequenceChangeHandler(new SequenceChangeHandler() {
+            public void onSequenceChange(SequenceChangeEvent sce) {
+                callOracle.setProgram(sce.getSource().getSequence().program);
+            }});
         // initialize all the model-dependent fields
         model.fireEvent(new SequenceChangeEvent());
     }
 
     void activate() {
         String newCall = callEntry.getText();
+        callEntry.getTextBox().setSelectionRange(0, newCall.length());
         this.model.addCallAtPoint(newCall);
     }
     void doResize() {
@@ -237,27 +245,34 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
     }
     public void onSequenceChange(SequenceChangeEvent sce) {
         // build the call list from the model
-        Model model = sce.getSource();
+        final Model model = sce.getSource();
         FlexCellFormatter fcf = callList.getFlexCellFormatter();
-        int i=0; // row number
-        for (String call : model.getSequence().calls) {
-            fcf.setColSpan(i+1, 0, 1);
-            callList.setText(i+1, 0, call);
+        int row=1; // row number
+        List<String> calls = model.getSequence().calls;
+        for (int callIndex=0; callIndex<calls.size(); callIndex++, row++) {
+            String call = calls.get(callIndex);
+            fcf.setColSpan(row, 0, 1);
+            callList.setText(row, 0, call);
             Button removeButton = new Button("X");
             removeButton.setStyleName("removeButton");
-            fcf.setColSpan(i+1, 1, 1);
-            callList.setWidget(i+1, 1, removeButton);
-            if (i == model.insertionPoint) {
-                i++;
-                fcf.setColSpan(i+1, 0, 2);
-                callList.setHTML(i+1, 0, "<hr/>");
+            final int ci = callIndex; // for use in click handler
+            removeButton.addClickHandler(new ClickHandler(){
+                public void onClick(ClickEvent event) {
+                    model.removeCallAt(ci);
+                }});
+            fcf.setColSpan(row, 1, 1);
+            callList.setWidget(row, 1, removeButton);
+            if (row == model.insertionPoint) {
+                row++;
+                callList.removeCell(row, 1);
+                fcf.setColSpan(row, 0, 2);
+                callList.setHTML(row, 0, "<hr/>");
             }
-            i++;
         }
         // remove other rows
-        for (int j=callList.getRowCount()-1; j>i; j--)
+        for (int j=callList.getRowCount()-1; j>=row; j--)
             callList.removeRow(j);
-        if (i==0) {
+        if (calls.isEmpty()) {
             // add a place holder for the actual calls
             callList.getFlexCellFormatter().setColSpan(1, 0, 2);
             callList.setHTML(1, 0, "<i>&nbsp;(no calls yet)&nbsp;</i>");

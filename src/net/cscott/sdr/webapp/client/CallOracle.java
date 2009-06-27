@@ -10,12 +10,16 @@ import net.cscott.sdr.calls.grm.CompletionEngine;
 import com.google.gwt.user.client.ui.SuggestOracle;
 
 public class CallOracle extends SuggestOracle {
+    private Program program = Program.PLUS;
+    public void setProgram(Program p) {
+        this.program = p;
+    }
 
     @Override
     public void requestSuggestions(Request request, Callback callback) {
         List<Suggestion> suggestions = new ArrayList<Suggestion>();
         String input = request.getQuery();
-        Iterator<String> it = CompletionEngine.complete(Program.C4, input);
+        Iterator<String> it = CompletionEngine.complete(program, input);
         for (int i=0; i<request.getLimit() && it.hasNext(); i++) {
             String option = it.next();
             String replace = option.replaceFirst("<.*", "");

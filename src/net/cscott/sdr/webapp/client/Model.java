@@ -38,7 +38,10 @@ public class Model implements HasHandlers {
         // XXX insert it at insertionPoint if set
         this._sequence.calls.add(s);
         this._isDirty = true;
-        // emit sequence changed
+        this.fireEvent(new SequenceChangeEvent());
+    }
+    public void removeCallAt(int index) {
+        this._sequence.calls.remove(index);
         this.fireEvent(new SequenceChangeEvent());
     }
     public void setProgram(Program p) {

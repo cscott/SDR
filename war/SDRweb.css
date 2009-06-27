@@ -54,6 +54,7 @@ body {
 /* call list */
 .callList {
    border-right: 3px solid #ddd;
+   border-bottom: 3px solid #ddd;
 }
 
 /* call list header row */
