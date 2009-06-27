@@ -13,6 +13,7 @@ import net.cscott.sdr.calls.Program;
  *
  * @author C. Scott Ananian
  */
+@SuppressWarnings("serial")
 public class Sequence implements Serializable {
     /** The dance program our calls are supposed to belong to. */
     public Program program = Program.PLUS;

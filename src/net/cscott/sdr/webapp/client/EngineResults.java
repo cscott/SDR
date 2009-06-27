@@ -12,6 +12,7 @@ import net.cscott.sdr.util.Fraction;
  * a {@link Sequence}.
  * @author C. Scott Ananian
  */
+@SuppressWarnings("serial")
 public class EngineResults implements java.io.Serializable {
     /** The sequence number helps pair up responses with requests. */
     public int sequenceNumber;
