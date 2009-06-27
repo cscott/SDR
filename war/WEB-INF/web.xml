@@ -22,6 +22,7 @@
   </servlet-mapping>
 
   <!-- from SDK -->
+  <!--
   <servlet>
     <servlet-name>remoteLoggingServiceImpl</servlet-name>
     <servlet-class>com.google.gwt.libideas.logging.server.RemoteLoggingServiceImpl</servlet-class>
@@ -30,5 +31,6 @@
     <servlet-name>remoteLoggingServiceImpl</servlet-name>
     <url-pattern>/sdrweb/logging</url-pattern>
   </servlet-mapping>
+  -->
 
 </web-app>
