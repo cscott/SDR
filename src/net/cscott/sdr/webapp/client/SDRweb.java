@@ -5,6 +5,8 @@ import java.util.List;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.webapp.client.Model.SequenceChangeEvent;
 import net.cscott.sdr.webapp.client.Model.SequenceChangeHandler;
+import net.cscott.sdr.webapp.client.Model.SequenceInfoChangeEvent;
+import net.cscott.sdr.webapp.client.Model.SequenceInfoChangeHandler;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -32,6 +34,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
@@ -54,6 +57,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
     final VerticalPanel topPanel = new VerticalPanel();
     final VerticalPanel canvasPanel = new VerticalPanel();
     final DanceFloor danceFloor = GWT.create(DanceFloor.class);
+    final MenuItem sequenceTitle = new MenuItem("Untitled", (Command)null);
     DockPanel playBar = new DockPanel();
 
     final Model model = new Model();
@@ -115,10 +119,17 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
                 }});
         }
 
+        model.addSequenceInfoChangeHandler(new SequenceInfoChangeHandler() {
+            public void onSequenceInfoChange(SequenceInfoChangeEvent sce) {
+                sequenceTitle.setText(sce.getSource().getSequenceInfo().title);
+            }});
+
         // Make a new menu bar, adding a few cascading menus to it.
         MenuBar menu = new MenuBar();
         menu.addItem("File", fileMenu);
         menu.addItem("Program", programMenu);
+        menu.addSeparator();
+        menu.addItem(sequenceTitle);
         topPanel.add(menu);
 
         DockPanel callBar = new DockPanel();
@@ -219,6 +230,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
                 callOracle.setProgram(sce.getSource().getSequence().program);
             }});
         // initialize all the model-dependent fields
+        model.fireEvent(new SequenceInfoChangeEvent());
         model.fireEvent(new SequenceChangeEvent());
         // trigger resize & focus shortly after load
         Timer postLoadTimer = new Timer() {
@@ -235,6 +247,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
             }});
     }
     void doSave() {
+        model.regenerateTags(); // ensure automatic tags are up-to-date
         ensureLogin(new Runnable(){
             public void run() {
                 Window.alert("now save sequence");
@@ -281,7 +294,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
                     // ok, need login.
                     final String loginUrl = result.getLoginUrl();
                     // ensure we're logged in
-                    final SdrPopup popup = new SdrPopup(loginUrl) {
+                    new SdrPopup(loginUrl) {
                         @Override
                         void onLogin() {
                             callback.run(); // xxx: pass in login info

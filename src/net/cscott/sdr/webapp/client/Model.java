@@ -1,5 +1,8 @@
 package net.cscott.sdr.webapp.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
@@ -19,6 +22,7 @@ import net.cscott.sdr.util.Fraction;
  * @author C. Scott Ananian
  */
 public class Model implements HasHandlers {
+    private SequenceInfo _sequenceInfo;
     private Sequence _sequence;
     private EngineResults _engineResults;
 
@@ -29,6 +33,7 @@ public class Model implements HasHandlers {
     int insertionPoint = -1;
 
     // accessor methods
+    public SequenceInfo getSequenceInfo() { return this._sequenceInfo; }
     public Sequence getSequence() { return this._sequence; }
     public EngineResults getEngineResults() { return this._engineResults; }
     public boolean isDirty() { return this._isDirty; }
@@ -46,17 +51,39 @@ public class Model implements HasHandlers {
     }
     public void setProgram(Program p) {
         if (p == _sequence.program) return;
+        // set new program
         _sequence.program = p;
         if (!this._sequence.calls.isEmpty())
             // don't force save if new program is only state change
             this._isDirty = true;
+        this.regenerateTags(); // may fire SequenceInfoChangeEvent
         this.fireEvent(new SequenceChangeEvent());
     }
     public void newSequence() {
         // throw away current sequence, start a new one.
         this._sequence = new Sequence();
+        this._sequenceInfo = new SequenceInfo("Untitled");
         this._isDirty = false; // nothing to save yet
+        this.regenerateTags(); // may fire SequenceInfoChangeEvent
+        this.fireEvent(new SequenceInfoChangeEvent());
         this.fireEvent(new SequenceChangeEvent());
+    }
+
+    // generate automatic tags from sequence
+    public void regenerateTags() {
+        // copy old tags, so we can compare them later to the new tags
+        List<String> oldTags = new ArrayList<String>
+            (_sequenceInfo.automaticTags);
+        // generate new automatic tag list.
+        _sequenceInfo.automaticTags.clear();
+        // 1) add tag based on program
+        _sequenceInfo.automaticTags.add(_sequence.program.name().toLowerCase());
+        // XXX: add tags based on starting level and resolution type
+        // ie: 4-couple singer, 4-couple reverse-singer, unresolved, etc.
+
+        // generate change event if tag list has changed
+        if (!oldTags.equals(_sequenceInfo.automaticTags))
+            this.fireEvent(new SequenceInfoChangeEvent());
     }
 
     // --- event infrastructure ---
@@ -65,6 +92,28 @@ public class Model implements HasHandlers {
     private final HandlerManager handlerManager = new HandlerManager(this);
     public void fireEvent(GwtEvent<?> event) {
         this.handlerManager.fireEvent(event);
+    }
+
+    // sequence info change event
+    public HandlerRegistration addSequenceInfoChangeHandler(SequenceInfoChangeHandler handler) {
+        return this.handlerManager.addHandler(SequenceInfoChangeEvent.TYPE, handler);
+    }
+    public static interface SequenceInfoChangeHandler extends EventHandler {
+        void onSequenceInfoChange(SequenceInfoChangeEvent sce);
+    }
+    static class SequenceInfoChangeEvent extends GwtEvent<SequenceInfoChangeHandler> {
+        public static final GwtEvent.Type<SequenceInfoChangeHandler> TYPE =
+            new GwtEvent.Type<SequenceInfoChangeHandler>();
+        @Override
+        public Model getSource() { return (Model) super.getSource(); }
+        @Override
+        protected void dispatch(SequenceInfoChangeHandler handler) {
+            handler.onSequenceInfoChange(this);
+        }
+        @Override
+        public GwtEvent.Type<SequenceInfoChangeHandler> getAssociatedType() {
+            return TYPE;
+        }
     }
 
     // sequence change event
