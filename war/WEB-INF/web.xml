@@ -22,13 +22,13 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>net.cscott.sdr.webapp.server.GreetingServiceImpl</servlet-class>
+    <servlet-name>storageServlet</servlet-name>
+    <servlet-class>net.cscott.sdr.webapp.server.SequenceStorageServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/sdrweb/greet</url-pattern>
+    <servlet-name>storageServlet</servlet-name>
+    <url-pattern>/sdrweb/storage</url-pattern>
   </servlet-mapping>
 
   <!-- from SDK -->

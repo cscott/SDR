@@ -248,10 +248,30 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
     }
     void doSave() {
         model.regenerateTags(); // ensure automatic tags are up-to-date
-        ensureLogin(new Runnable(){
-            public void run() {
-                Window.alert("now save sequence");
+        SequenceStorageServiceAsync storageService =
+            GWT.create(SequenceStorageService.class);
+        storageService.save(model.getSequenceInfo(), model.getSequence(),
+                            new AsyncCallback<Long>() {
+            public void onFailure(Throwable caught) {
+                handleError(caught, new Runnable() {
+                    public void run() { doSave(); /* try again */ }
+                });
+            }
+            public void onSuccess(Long result) {
+                model.getSequenceInfo().id = result;
+                Window.alert("Saved!");
             }});
+    }
+    private void handleError(Throwable error, final Runnable retry) {
+        if (error instanceof NotLoggedInException) {
+            NotLoggedInException nlie = (NotLoggedInException) error;
+            new SdrPopup(nlie.loginUrl) {
+                @Override
+                void onLogin() { retry.run(); }
+            };
+        } else {
+            Window.alert(error.getMessage());
+        }
     }
     void ensureLogout(final Runnable callback) {
         // ensure we're logged in
@@ -272,7 +292,6 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
                             callback.run(); // xxx: pass in login info
                         }
                     };
-                    popup.center(); // and show
                 } else {
                     callback.run(); // xxx: pass in login info
                 }

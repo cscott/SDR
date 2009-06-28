@@ -1,6 +1,7 @@
 package net.cscott.sdr.webapp.client;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventHandler;
@@ -72,17 +73,19 @@ public class Model implements HasHandlers {
     // generate automatic tags from sequence
     public void regenerateTags() {
         // copy old tags, so we can compare them later to the new tags
-        List<String> oldTags = new ArrayList<String>
-            (_sequenceInfo.automaticTags);
+        List<String> oldTags = new ArrayList<String>(_sequenceInfo.tags);
+        // clear all automatic tags from the list
+        _sequenceInfo.tags.clear();
         // generate new automatic tag list.
-        _sequenceInfo.automaticTags.clear();
-        // 1) add tag based on program
-        _sequenceInfo.automaticTags.add(_sequence.program.name().toLowerCase());
+        // 1) add manual tags
+        _sequenceInfo.tags.addAll(_sequenceInfo.manualTags);
+        // 2) add tag based on program
+        _sequenceInfo.tags.add(_sequence.program.name().toLowerCase());
         // XXX: add tags based on starting level and resolution type
         // ie: 4-couple singer, 4-couple reverse-singer, unresolved, etc.
 
         // generate change event if tag list has changed
-        if (!oldTags.equals(_sequenceInfo.automaticTags))
+        if (!oldTags.equals(_sequenceInfo.tags))
             this.fireEvent(new SequenceInfoChangeEvent());
     }
 
