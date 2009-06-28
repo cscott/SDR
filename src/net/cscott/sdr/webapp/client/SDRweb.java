@@ -20,12 +20,13 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Frame;
@@ -78,17 +79,23 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
             public void execute() {
                 if (!confirmDiscard()) return;
                 doOpen();
-                //Window.alert("Open not yet implemented.");
             }
         });
         fileMenu.addItem("Save", new Command() {
-            public void execute() { Window.alert("Save not yet implemented."); }
+            public void execute() { doSave(); }
         });
         fileMenu.addItem("Print", new Command() {
             public void execute() {
                 // XXX: in the future we'd open a window with a
                 // better-formatted version, and print *that*
                 Window.print();
+            }});
+        fileMenu.addItem("Logout", new Command() {
+            public void execute() {
+                ensureLogout(new Runnable() {
+                    public void run() {
+                        Window.alert("You are now logged out");
+                    }});
             }});
         fileMenu.addItem("Close", new Command() {
             public native void execute() /*-{ $wnd.close(); }-*/;
@@ -222,24 +229,84 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
     }
 
     void doOpen() {
-        final String loginUrl = /*"/closeme.html";*/"http://www.google.com/"; // XXX
-        // ensure we're logged in
-        final SdrPopup popup = new SdrPopup(loginUrl) {
-            @Override
-            void onLogin() {
-                Window.alert("we're logged in");
-            }
-        };
-        popup.center(); // and show
+        ensureLogin(new Runnable(){
+            public void run() {
+                Window.alert("now open sequence");
+            }});
     }
+    void doSave() {
+        ensureLogin(new Runnable(){
+            public void run() {
+                Window.alert("now save sequence");
+            }});
+    }
+    void ensureLogout(final Runnable callback) {
+        // ensure we're logged in
+        LoginServiceAsync loginService = GWT.create(LoginService.class);
+        loginService.login(GWT.getHostPageBaseURL()+"closeme.html", new AsyncCallback<LoginInfo>() {
+            public void onFailure(Throwable error) {
+                Window.alert("Can't logout");
+            }
+
+            public void onSuccess(LoginInfo result) {
+                if(result.isLoggedIn()) {
+                    // ok, need logout
+                    final String logoutUrl = result.getLogoutUrl();
+                    // ensure we're logged in
+                    final SdrPopup popup = new SdrPopup(logoutUrl) {
+                        @Override
+                        void onLogin() {
+                            callback.run(); // xxx: pass in login info
+                        }
+                    };
+                    popup.center(); // and show
+                } else {
+                    callback.run(); // xxx: pass in login info
+                }
+            }
+        });
+    }
+    void ensureLogin(final Runnable callback) {
+        // ensure we're logged in
+        LoginServiceAsync loginService = GWT.create(LoginService.class);
+        loginService.login(GWT.getHostPageBaseURL()+"closeme.html", new AsyncCallback<LoginInfo>() {
+            public void onFailure(Throwable error) {
+                Window.alert("Can't login");
+            }
+
+            public void onSuccess(LoginInfo result) {
+                if(result.isLoggedIn()) {
+                    callback.run(); // xxx: pass in login info
+                } else {
+                    // ok, need login.
+                    final String loginUrl = result.getLoginUrl();
+                    // ensure we're logged in
+                    final SdrPopup popup = new SdrPopup(loginUrl) {
+                        @Override
+                        void onLogin() {
+                            callback.run(); // xxx: pass in login info
+                        }
+                    };
+                }
+            }
+        });
+    }
+    /** Create a new popup which logs into Google and then closes. */
     public static abstract class SdrPopup extends PopupPanel {
         public SdrPopup(String loginUrl) {
-            final Frame frame = new Frame(loginUrl);
+            CaptionPanel cp = new CaptionPanel
+                ("Login to Google (<a href=\"javascript:hidePopup()\">close</a>)", true);
+            Frame frame = new Frame(loginUrl);
+            cp.add(frame);
             setTitle("Login with your Google ID");
-            setWidget(frame);
-            setWidth("200px");
-            setHeight("75%");
+            cp.setWidth((Window.getClientWidth()*3/4)+"px");
+            cp.setHeight((Window.getClientHeight()*3/4)+"px");
+            frame.setStyleName("login-popup-frame");
+            cp.addStyleName("login-popup-caption");
+            this.addStyleName("login-popup");
+            setWidget(cp);
             setPopup(this);
+            this.center(); // and show
         }
         public final void closeMe() {
             this.hide();
@@ -263,6 +330,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         $wnd.hidePopup = @net.cscott.sdr.webapp.client.SDRweb::hidePopup();
     }-*/;
     public static void hidePopup() { popup.closeMe(); }
+    // --- end popup support
 
     void activate() {
         String newCall = callEntry.getText();

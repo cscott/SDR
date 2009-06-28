@@ -12,6 +12,16 @@
   
   <!-- Servlets -->
   <servlet>
+    <servlet-name>loginService</servlet-name>
+    <servlet-class>net.cscott.sdr.webapp.server.LoginServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>loginService</servlet-name>
+    <url-pattern>/sdrweb/login</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>greetServlet</servlet-name>
     <servlet-class>net.cscott.sdr.webapp.server.GreetingServiceImpl</servlet-class>
   </servlet>
