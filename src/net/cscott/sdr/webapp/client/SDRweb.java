@@ -281,7 +281,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
     public static abstract class SdrPopup extends PopupPanel {
         public SdrPopup(String loginUrl) {
             CaptionPanel cp = new CaptionPanel
-                ("Login to Google (<a href=\"javascript:hidePopup()\">close</a>)", true);
+                ("Login to Google (<a href=\"javascript:cancelPopup()\">close</a>)", true);
             Frame frame = new Frame(loginUrl);
             cp.add(frame);
             setTitle("Login with your Google ID");
@@ -299,23 +299,23 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
             // okay, proceed.
             onClose();
         }
+        public final void cancelMe() {
+            this.hide();
+            // but don't call onClose
+        }
         /* called after login */
         protected abstract void onClose();
     }
-    // --- complicated set of methods/static fields used to allow embedded
-    //     iframe to close itself after login.
-    private static SdrPopup popup;
-    public static void setPopup(SdrPopup p) {
-        _initPopup(); // be sure
-        popup = p;
-    }
     // stash a reference to the static 'hidePopup' method in a place where the
-    // inner iframe can get to it.  Note that this doesn't work for non-static
-    // methods, due to how 'this' is handled in the translation.
-    public static native void _initPopup() /*-{
-        $wnd.hidePopup = @net.cscott.sdr.webapp.client.SDRweb::hidePopup();
+    // inner iframe can get to it.
+    public static native void setPopup(SdrPopup p) /*-{
+        $wnd.cancelPopup = function() {
+            p.@net.cscott.sdr.webapp.client.SDRweb.SdrPopup::cancelMe()();
+        };
+        $wnd.hidePopup = function() {
+            p.@net.cscott.sdr.webapp.client.SDRweb.SdrPopup::closeMe()();
+        };
     }-*/;
-    public static void hidePopup() { popup.closeMe(); }
     // --- end popup support
 
     void activate() {
@@ -387,12 +387,14 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         }
         doResize();
     }
+    /** Callback interface which handles errors (in a very simplistic way). */
     static abstract class EAsyncCallback<T> implements AsyncCallback<T> {
         public void onFailure(Throwable caught) {
             Window.alert(caught.getMessage());
         }
         public abstract void onSuccess(T result);
     }
+    /** Callback interface which retries if the user is not yet logged in. */
     abstract class LAsyncCallback<T> extends EAsyncCallback<T> {
         @Override
         public final void onFailure(Throwable error) {
