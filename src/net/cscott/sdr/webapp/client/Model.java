@@ -1,17 +1,15 @@
 package net.cscott.sdr.webapp.client;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+
+import net.cscott.sdr.calls.Program;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.HasHandlers;
-
-import net.cscott.sdr.calls.Program;
-import net.cscott.sdr.util.Fraction;
 
 /**
  * The {@link Model} for the UI marries a {@link Sequence} with corresponding
@@ -48,6 +46,7 @@ public class Model implements HasHandlers {
     }
     public void removeCallAt(int index) {
         this._sequence.calls.remove(index);
+        this._isDirty = true;
         this.fireEvent(new SequenceChangeEvent());
     }
     public void setProgram(Program p) {
@@ -60,14 +59,26 @@ public class Model implements HasHandlers {
         this.regenerateTags(); // may fire SequenceInfoChangeEvent
         this.fireEvent(new SequenceChangeEvent());
     }
+    public void setTitle(String title) {
+        if (_sequenceInfo.title.equals(title))
+            return; // no change
+        _sequenceInfo.title = title;
+        this.fireEvent(new SequenceInfoChangeEvent());
+    }
     public void newSequence() {
         // throw away current sequence, start a new one.
-        this._sequence = new Sequence();
-        this._sequenceInfo = new SequenceInfo("Untitled");
+        this.load(new SequenceInfo(SequenceInfo.UNTITLED), new Sequence());
+    }
+    public void load(SequenceInfo info, Sequence sequence) {
+        this._sequenceInfo = info;
+        this._sequence = sequence;
         this._isDirty = false; // nothing to save yet
         this.regenerateTags(); // may fire SequenceInfoChangeEvent
         this.fireEvent(new SequenceInfoChangeEvent());
         this.fireEvent(new SequenceChangeEvent());
+    }
+    public void clean() {
+        this._isDirty = false;
     }
 
     // generate automatic tags from sequence

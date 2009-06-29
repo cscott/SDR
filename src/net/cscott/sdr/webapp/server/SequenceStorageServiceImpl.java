@@ -54,9 +54,27 @@ public class SequenceStorageServiceImpl extends RemoteServiceServlet
     }
 
     public Sequence load(Long id) throws NotLoggedInException {
+        return loadOrDelete(id, false);
+    }
+    public void delete(Long id) throws NotLoggedInException {
+        loadOrDelete(id, true);
+    }
+
+    private Sequence loadOrDelete(Long id, boolean delete) throws NotLoggedInException {
         User user = checkLogin();
-        // TODO Auto-generated method stub
-        return null;
+        PersistenceManager pm = PMF.pmf.getPersistenceManager();
+        try {
+            SequenceInfoJDO sjdo = pm.getObjectById(SequenceInfoJDO.class, id);
+            // verify user matches
+            if (user.compareTo(sjdo.user) != 0 &&
+                !PMF.userService.isUserAdmin())
+                throw new Error("Not your sequence.  No biscuit.");
+            if (delete)
+                pm.deletePersistent(sjdo);
+            return sjdo.sequence;
+        } finally {
+            pm.close();
+        }
     }
 
     public Long save(SequenceInfo info, Sequence sequence)
@@ -67,17 +85,18 @@ public class SequenceStorageServiceImpl extends RemoteServiceServlet
         try {
             if (info.id==null) {
                 // create new persistent entity
-                sjdo = new SequenceInfoJDO(user, info);
+                sjdo = new SequenceInfoJDO(user, info, sequence);
             } else {
                 // update existing entity
                 sjdo = pm.getObjectById(SequenceInfoJDO.class, info.id);
-                sjdo.update(info);
+                sjdo.updateInfo(info);
+                sjdo.updateSequence(sequence);
             }
+            sjdo.updateModified();
             pm.makePersistent(sjdo);
         } finally {
             pm.close();
         }
-        // XXX: we're only saving the sequenceinfo!
         return sjdo.id;
     }
 
@@ -87,5 +106,10 @@ public class SequenceStorageServiceImpl extends RemoteServiceServlet
             throw new NotLoggedInException
                 (PMF.userService.createLoginURL("/closeme.html"));
         return user;
+    }
+
+    public String logout() throws NotLoggedInException {
+        checkLogin();
+        return PMF.userService.createLogoutURL("/closeme.html");
     }
 }

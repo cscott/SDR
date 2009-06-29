@@ -13,6 +13,8 @@ import net.cscott.sdr.webapp.server.SequenceInfoJDO;
  */
 @SuppressWarnings("serial")
 public class SequenceInfo implements Serializable {
+    /** String used as the title of new sequences. */
+    public static final String UNTITLED = "Untitled";
     /** Primary key of {@link SequenceInfoJDO} in database, or null if sequence
      *  has never been saved. */
     public Long id;
@@ -33,6 +35,6 @@ public class SequenceInfo implements Serializable {
     }
     // no-arg constructor for GWT serializability
     SequenceInfo() {
-        this("Untitled");
+        this(UNTITLED);
     }
 }

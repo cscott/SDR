@@ -57,10 +57,13 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
     final VerticalPanel topPanel = new VerticalPanel();
     final VerticalPanel canvasPanel = new VerticalPanel();
     final DanceFloor danceFloor = GWT.create(DanceFloor.class);
-    final MenuItem sequenceTitle = new MenuItem("Untitled", (Command)null);
+    final MenuItem sequenceTitle =
+        new MenuItem(SequenceInfo.UNTITLED, (Command)null);
     DockPanel playBar = new DockPanel();
 
     final Model model = new Model();
+    SequenceStorageServiceAsync storageService =
+        GWT.create(SequenceStorageService.class);
 
     public boolean confirmDiscard() {
         if (!model.isDirty()) return true; // nothing to save
@@ -96,9 +99,13 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
             }});
         fileMenu.addItem("Logout", new Command() {
             public void execute() {
-                ensureLogout(new Runnable() {
-                    public void run() {
-                        Window.alert("You are now logged out");
+                storageService.logout(new EAsyncCallback<String>() {
+                    public void onSuccess(String logoutURL) {
+                        new SdrPopup(logoutURL) {
+                            @Override
+                            public void onClose() {
+                                Window.alert("You are now logged out");
+                            }};
                     }});
             }});
         fileMenu.addItem("Close", new Command() {
@@ -240,90 +247,37 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         postLoadTimer.schedule(1);
     }
 
+    void selectSequence(AsyncCallback<SequenceInfo> cb) {
+        Window.alert("select one");
+    }
     void doOpen() {
-        ensureLogin(new Runnable(){
-            public void run() {
-                Window.alert("now open sequence");
+        selectSequence(new EAsyncCallback<SequenceInfo>() {
+            public void onSuccess(final SequenceInfo info) {
+                storageService.load(info.id, new EAsyncCallback<Sequence>(){
+                    public void onSuccess(Sequence sequence) {
+                        model.load(info, sequence);
+                    }});
             }});
     }
     void doSave() {
         model.regenerateTags(); // ensure automatic tags are up-to-date
-        SequenceStorageServiceAsync storageService =
-            GWT.create(SequenceStorageService.class);
+        if (model.getSequenceInfo().title.equals(SequenceInfo.UNTITLED))
+            model.setTitle(Window.prompt("Title for this sequence",
+                                         model.getSequenceInfo().title));
+        // XXX ask for tags; use nicer interface
         storageService.save(model.getSequenceInfo(), model.getSequence(),
-                            new AsyncCallback<Long>() {
-            public void onFailure(Throwable caught) {
-                handleError(caught, new Runnable() {
-                    public void run() { doSave(); /* try again */ }
-                });
-            }
+                            new LAsyncCallback<Long>() {
+            @Override
             public void onSuccess(Long result) {
                 model.getSequenceInfo().id = result;
+                model.clean();
                 Window.alert("Saved!");
-            }});
-    }
-    private void handleError(Throwable error, final Runnable retry) {
-        if (error instanceof NotLoggedInException) {
-            NotLoggedInException nlie = (NotLoggedInException) error;
-            new SdrPopup(nlie.loginUrl) {
-                @Override
-                void onLogin() { retry.run(); }
-            };
-        } else {
-            Window.alert(error.getMessage());
-        }
-    }
-    void ensureLogout(final Runnable callback) {
-        // ensure we're logged in
-        LoginServiceAsync loginService = GWT.create(LoginService.class);
-        loginService.login(GWT.getHostPageBaseURL()+"closeme.html", new AsyncCallback<LoginInfo>() {
-            public void onFailure(Throwable error) {
-                Window.alert("Can't logout");
             }
-
-            public void onSuccess(LoginInfo result) {
-                if(result.isLoggedIn()) {
-                    // ok, need logout
-                    final String logoutUrl = result.getLogoutUrl();
-                    // ensure we're logged in
-                    final SdrPopup popup = new SdrPopup(logoutUrl) {
-                        @Override
-                        void onLogin() {
-                            callback.run(); // xxx: pass in login info
-                        }
-                    };
-                } else {
-                    callback.run(); // xxx: pass in login info
-                }
-            }
+            @Override
+            public void retry() { doSave(); /* retry */ }
         });
     }
-    void ensureLogin(final Runnable callback) {
-        // ensure we're logged in
-        LoginServiceAsync loginService = GWT.create(LoginService.class);
-        loginService.login(GWT.getHostPageBaseURL()+"closeme.html", new AsyncCallback<LoginInfo>() {
-            public void onFailure(Throwable error) {
-                Window.alert("Can't login");
-            }
-
-            public void onSuccess(LoginInfo result) {
-                if(result.isLoggedIn()) {
-                    callback.run(); // xxx: pass in login info
-                } else {
-                    // ok, need login.
-                    final String loginUrl = result.getLoginUrl();
-                    // ensure we're logged in
-                    new SdrPopup(loginUrl) {
-                        @Override
-                        void onLogin() {
-                            callback.run(); // xxx: pass in login info
-                        }
-                    };
-                }
-            }
-        });
-    }
-    /** Create a new popup which logs into Google and then closes. */
+    /** Create a new popup which logs into/out of Google and then closes. */
     public static abstract class SdrPopup extends PopupPanel {
         public SdrPopup(String loginUrl) {
             CaptionPanel cp = new CaptionPanel
@@ -343,10 +297,10 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         public final void closeMe() {
             this.hide();
             // okay, proceed.
-            onLogin();
+            onClose();
         }
         /* called after login */
-        abstract void onLogin();
+        protected abstract void onClose();
     }
     // --- complicated set of methods/static fields used to allow embedded
     //     iframe to close itself after login.
@@ -432,5 +386,26 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
             callList.setHTML(1, 0, "<i>&nbsp;(no calls yet)&nbsp;</i>");
         }
         doResize();
+    }
+    static abstract class EAsyncCallback<T> implements AsyncCallback<T> {
+        public void onFailure(Throwable caught) {
+            Window.alert(caught.getMessage());
+        }
+        public abstract void onSuccess(T result);
+    }
+    abstract class LAsyncCallback<T> extends EAsyncCallback<T> {
+        @Override
+        public final void onFailure(Throwable error) {
+            if (error instanceof NotLoggedInException) {
+                NotLoggedInException nlie = (NotLoggedInException) error;
+                new SdrPopup(nlie.loginUrl) {
+                    @Override
+                    public void onClose() { retry(); }
+                };
+                return;
+            }
+            super.onFailure(error);
+        }
+        public abstract void retry();
     }
 }

@@ -10,6 +10,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import net.cscott.sdr.webapp.client.Sequence;
 import net.cscott.sdr.webapp.client.SequenceInfo;
 
 import com.google.appengine.api.users.User;
@@ -35,16 +36,27 @@ public class SequenceInfoJDO implements Serializable {
     /** Rest of the information */
     @Persistent(serialized="true")
     public SequenceInfo info;
+    /** The actual sequence (a separate entity in the datastore) */
+    public Sequence sequence;
 
-    public SequenceInfoJDO(User user, SequenceInfo info) {
+    public SequenceInfoJDO(User user, SequenceInfo info, Sequence sequence) {
         this.user = user;
-        this.lastModified = new Date();
         this.id = info.id;
-        this.update(info);
+        this.updateInfo(info);
+        this.updateSequence(sequence);
+        this.updateModified();
     }
-    void update(SequenceInfo info) {
+    void updateInfo(SequenceInfo info) {
         this.info = info;
         this.title = info.title;
         this.tags = info.tags;
+    }
+    void updateSequence(Sequence sequence) {
+        if (this.sequence!=null && this.sequence.key!=null)
+            sequence.key = this.sequence.key;
+        this.sequence = sequence;
+    }
+    void updateModified() {
+        this.lastModified = new Date();
     }
 }
