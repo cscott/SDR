@@ -625,6 +625,14 @@ otherwise the centers would do their part of a partner trade with the ends.
 (We do "select" the interesting dancers, so that we can only apply
 prims to the selected dancers, but that's our only use of the
 selected set in Formation.)
+
+YES -- Sue mentions that a strict definition would be CENTERS
+(concentric trade) while the ENDS circulate (or concentric circulate)
+
+It may be that CENTERS/ENDS (as opposed to other <anyone>/others)
+wants to try a "concentric" first, the regular evaluation if it
+doesn't work.  This way "centers trade, ends circulate" will Just
+Work, but "centers concentric trade, ends circulate" will also work.
 ---
 
 
@@ -824,6 +832,7 @@ determine whether the nonterminal is involved in the outer SELECT;
 if not we can attempt to perform the SELECT to approximate
 applicability.
 
+*DONE*
 repr() method on Grm.
 String,List<Integer> generate(List<Token> leftinput, String rightinput, List<Integer> last)
 in concat: we pop from last and use this as our starting index into
@@ -848,7 +857,7 @@ table.add(new Concat(table.get(0), table.get(1))); // 2
 table.add(new Concat(table.get(0), table.get(2))); // 3
 // etc.
 BASIC.put('anyone_2', table.get(54));
-
+ ** DONE **
 ----------------------------
 Events in the GWT UI:
  - add a call (at position X)
@@ -865,3 +874,11 @@ whole list of dancerpaths, but it might be worthwhile to keep a
 pointer at the first dancerpath for each dancer for a given call
 (place to start deleting/recomputing from; may actually belong to a
 subsequent call or point at the end of the list)
+---
+Rename 'cardinal' rule to "numeric_adverb" or "times"
+-----
+tag sequences in sdrweb.  automatic tags such as plus/ms/c3/c4 and
+also based on starting/ending formation:
+module/singer/reverse singer/resolved/unresolved
+(at home, 1/4 prom, 3/4 prom?)
+should be able to sort/search based on tags
