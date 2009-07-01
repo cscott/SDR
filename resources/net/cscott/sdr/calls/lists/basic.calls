@@ -619,8 +619,8 @@ def: tag the line
 def: _tag the line(n)
   optional: LEFT
   spoken: tag the line <n=fraction>
-  condition: GREATER(1, n)
-  call: _tag(_atc tag, n)
+  condition: GREATER(1, [n])
+  call: _tag(_atc tag, [n])
   
 def: dixie style
   spoken: dixie style (to a wave)?
