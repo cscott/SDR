@@ -78,7 +78,12 @@ public class Apply extends SeqCall {
         return c.apply(this);
     }
     public Evaluator evaluator() throws BadCallException {
-        Call c = CallDB.INSTANCE.lookup(callName);
+	Call c;
+	try {
+	    c = CallDB.INSTANCE.lookup(callName);
+	} catch (IllegalArgumentException e) {
+	    throw new BadCallException("Unknown call: "+callName);
+	}
         return c.getEvaluator(this); // could be null.
     }
     
