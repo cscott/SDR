@@ -78,6 +78,29 @@ import net.cscott.sdr.util.Tools;
  *  |4B>  3Gv  3Bv  2G<
  *  |
  *  |4G>  1B^  1G^  2B<
+ * @doc.test "Heads pair off" from squared set -- this is a bit of a hack, it
+ *  should eventually be "heads start, heads (pair off)" or some such.
+ *  js> importPackage(net.cscott.sdr.calls);
+ *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+ *  js> ds.currentFormation().toStringDiagram("|");
+ *  |     3Gv  3Bv
+ *  |
+ *  |4B>            2G<
+ *  |
+ *  |4G>            2B<
+ *  |
+ *  |     1B^  1G^
+ *  js> comp = CallDB.INSTANCE.parse(ds.dance.program, "heads pair off");
+ *  (Apply heads pair off)
+ *  js> comp = new net.cscott.sdr.calls.ast.Seq(comp);
+ *  (Seq (Apply heads pair off))
+ *  js> e = new Evaluator.Standard(comp);
+ *  net.cscott.sdr.calls.transform.Evaluator$Standard@166cb16
+ *  js> e.evaluateAll(ds);
+ *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
+ *  |4B>  3G<  3B>  2G<
+ *  |
+ *  |4G>  1B<  1G>  2B<
  * @doc.test More complex calls from facing couples.
  *  js> importPackage(net.cscott.sdr.calls);
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.FOUR_SQUARE); undefined;

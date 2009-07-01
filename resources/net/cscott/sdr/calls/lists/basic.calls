@@ -41,6 +41,24 @@ def: sides start
   select: OTHERS
    prim: 0, 0, none // stay where they are
 
+// XXX this is not actually on the basic list, but it gets us out of
+//     the squared set -- which is otherwise hard to do w/o centers/ends!
+def: heads pair off
+  from: STATIC SQUARE
+    in: 4
+    select: HEAD
+      prim: 0, 2, out
+    select: OTHERS
+      prim: 0, 0, none
+def: sides pair off
+  from: STATIC SQUARE
+    in: 4
+    select: SIDE
+      prim: 0, 2, out
+    select: OTHERS
+      prim: 0, 0, none
+// end pair off hack
+
 def: trade
   from: COUPLE
     in: 6
@@ -192,11 +210,39 @@ def: lead right
   call: as couples(_single lead right)
 
 def: lead left
-  call: left(lead right)
+  call: mirror(lead right)
 
 def: _single lead right
   from: FACING DANCERS
-  prim: 1, 1, right
+    // XXX: we should be able to do half of this
+    prim: 1, 1, right, pass-left
+
+// XXX: hack until we have heads/sides selectors working right
+def: heads lead right
+  from: STATIC SQUARE
+    in: 6
+    select: HEAD
+      select: BEAU
+        prim: 2, 4, right
+      select: BELLE
+        prim: 0, 2, right
+    select: OTHERS
+      prim: 0, 0, none
+def: heads lead left
+  call: mirror(heads lead right)
+def: sides lead right
+  from: STATIC SQUARE
+    in: 6
+    select: SIDE
+      select: BEAU
+        prim: 2, 4, right
+      select: BELLE
+        prim: 0, 2, right
+    select: OTHERS
+      prim: 0, 0, none
+def: sides lead left
+  call: mirror(side lead right)
+// --- end heads/sides hack ---
 
 def: right and left thru
   in: 6
