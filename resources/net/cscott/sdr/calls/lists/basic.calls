@@ -25,6 +25,24 @@ def: _short_circle_left
   in: 8/5
   prim: -2,0,none,sashay-start sashay-finish
 
+/* we could (should?) define heads start this way.  We'd have to jiggle
+ * the grammar to make 'heads start' low enough priority.  Better would
+ * be to define a formation adjustment from squared set to 2x4, so you
+ * could just say 'heads lead right' at the top of a tip. */
+/*
+def: _press ahead in 2
+  in: 2
+    prim: 0, 2, none
+def: _heads start(c)
+ spoken: heads start <c=anything>
+ from: STATIC SQUARE
+  select: HEAD
+    call: _press ahead in 2
+    call: [c]
+  select: OTHERS
+    call: nothing
+*/
+
 def: heads start
  from: STATIC SQUARE
   in: 2
@@ -218,6 +236,7 @@ def: _single lead right
     prim: 1, 1, right, pass-left
 
 // XXX: hack until we have heads/sides selectors working right
+//      or the static square -> 2x4 adjustment
 def: heads lead right
   from: STATIC SQUARE
     in: 6
