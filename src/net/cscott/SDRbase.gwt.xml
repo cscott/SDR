@@ -9,12 +9,6 @@
   <source path="sdr/calls">
     <include name="Program.java"/>
     <include name="Dancer.java"/>
-    <include name="DancerPath.java"/>
-    <include name="ExactRotation.java"/>
-    <include name="Formation.java"/>
-    <include name="Position.java"/>
-    <include name="Rotation.java"/>
-    <include name="TaggedFormation.java"/>
   </source>
   <source path="sdr/calls/grm">
     <!--  GAH!  GWT doesn't support space- or comma-separated patterns
@@ -30,6 +24,5 @@
     <include name="Bezier.java"/>
     <include name="Fraction.java"/>
     <include name="LL.java"/>
-    <include name="Point.java"/>
   </source>
 </module>
