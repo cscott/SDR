@@ -14,7 +14,7 @@ import com.google.gwt.event.shared.HasHandlers;
 /**
  * The {@link Model} for the UI marries a {@link Sequence} with corresponding
  * {@link EngineResults} (if any), and holds the event mechanisms to tie
- * everything together.  It also holds a few other non-savable bits of
+ * everything together.  It also holds a few other non-save-able bits of
  * UI state, such as whether the sequence is currently playing, what call
  * is currently highlighted, and where the slider is.
  *
@@ -27,7 +27,7 @@ public class Model implements HasHandlers {
 
     boolean _isDirty = false;
     boolean isPlaying;
-    //Fraction sliderPos;
+    double sliderPos;
     int highlightedCall;
     int insertionPoint = -1;
 
