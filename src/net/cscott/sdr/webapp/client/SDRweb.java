@@ -214,6 +214,8 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 int newRow = sce.newValue + 1;
                 if (newRow > 0 && newRow < callList.getRowCount())
                     rf.addStyleName(newRow, "highlight");
+                updateCurrentCall();
+                updateErrorMsg();
             }});
         model.addFirstInvalidCallChangeHandler(new FirstInvalidCallChangeHandler(){
             public void onFirstInvalidCallChange(FirstInvalidCallChangeEvent fic) {
@@ -230,8 +232,9 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
 
 	currentCall.setStyleName("currentCall");
 	errorMsg.setStyleName("errorMsg");
-        canvasPanel.add(currentCall);
+	canvasPanel.setStyleName("canvasPanel");
 	canvasPanel.add(errorMsg);
+        canvasPanel.add(currentCall);
 
         final Button playButton = new Button("<img />");
         model.addPlayStatusChangeHandler(new PlayStatusChangeHandler() {
@@ -280,6 +283,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 playSlider.setEnabled(enabled);
                 playButton.setEnabled(enabled);
                 playSlider.setNumLabels(enabled?1:0);
+                updateErrorMsg();
             }});
         // level label
         final Label levelLabel = new Label("--");
@@ -341,13 +345,6 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         model.addSequenceChangeHandler(new SequenceChangeHandler() {
             public void onSequenceChange(SequenceChangeEvent sce) {
                 callOracle.setProgram(sce.getSource().getSequence().program);
-            }});
-        // show errors!
-        model.addEngineResultsChangeHandler(new EngineResultsChangeHandler() {
-            public void onEngineResultsChange(EngineResultsChangeEvent sce) {
-                for (String message: model.getEngineResults().messages)
-                    if (message != null)
-                        Window.alert(message);
             }});
         // initialize all the model-dependent fields
         model.fireEvent(new SequenceInfoChangeEvent());
@@ -467,6 +464,28 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
             }
         }
     }
+    public void updateErrorMsg() {
+        String msg = null;
+        int highlight = model.highlightedCall();
+        EngineResults er = model.getEngineResults();
+        if (er != null && highlight >=0 && highlight < er.messages.size()) {
+            msg = er.messages.get(highlight);
+        }
+        if (msg==null)
+            errorMsg.setVisible(false);
+        else {
+            errorMsg.setText(msg);
+            errorMsg.setVisible(true);
+        }
+    }
+    public void updateCurrentCall() {
+        String msg = "";
+        int highlight = model.highlightedCall();
+        List<String> calls = model.getSequence().calls;
+        if (highlight>=0 && highlight < calls.size())
+            msg = calls.get(highlight);
+        currentCall.setText(msg);
+    }
     public void onPlayStatusChange(PlayStatusChangeEvent sce) {
         if (model.isPlaying()) {
             if (this.animation == null)
@@ -503,7 +522,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         final double totalMillis = (end-start)*(60*1000/*one minute*/)/BPM;
         if (totalMillis < 100) {
             model.setPlaying(false);
-            model.setHighlightedCall(model.getSequence().calls.size());
+            model.setHighlightedCall(model.getEngineResults().firstInvalidCall);
             return;
         }
         this.animation = new Animation() {
@@ -574,6 +593,8 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         // remove other rows
         for (int j=callList.getRowCount()-1; j>=row; j--)
             callList.removeRow(j);
+        // update current call to match new sequence
+        updateCurrentCall();
         doResize();
     }
     /** Callback interface which handles errors (in a very simplistic way). */

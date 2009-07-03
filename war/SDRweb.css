@@ -45,6 +45,9 @@ body {
    top: 0;
    width: 100%;
 }
+#div-canvas .canvasPanel {
+   width: 100%;
+}
 #div-playbar {
    position: fixed;
    bottom: 0;
@@ -196,3 +199,15 @@ table.callList {
         color: #888;
 }
 
+/* error message at top of dance floor */
+.errorMsg {
+        color: black;
+        background: #f88;
+        font-weight: bold;
+        border-bottom: 2px solid red;
+        padding: 2px;
+}
+/* the name of the current call */
+.currentCall {
+        font-size: 200%;
+}
