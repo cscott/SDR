@@ -27,9 +27,9 @@ public class Model implements HasHandlers {
     private EngineResults _engineResults;
     private int _sequenceChangeIndex = 0;
 
-    boolean _isDirty = false;
-    boolean isPlaying;
-    double sliderPos;
+    private boolean _isDirty = false;
+    private boolean _isPlaying = false;
+    private double _sliderPos = 0;
     int highlightedCall;
     int insertionPoint = -1;
 
@@ -64,6 +64,8 @@ public class Model implements HasHandlers {
     public Sequence getSequence() { return this._sequence; }
     public EngineResults getEngineResults() { return this._engineResults; }
     public boolean isDirty() { return this._isDirty; }
+    public boolean isPlaying() { return this._isPlaying; }
+    public double getSliderPos() { return this._sliderPos; }
 
     // mutation methods
     public void addCallAtPoint(String s) {
@@ -96,6 +98,9 @@ public class Model implements HasHandlers {
     public void newSequence() {
         // throw away current sequence, start a new one.
         this.load(new SequenceInfo(SequenceInfo.UNTITLED), new Sequence());
+        this._isPlaying = false;
+        this._sliderPos = 0;
+        this.fireEvent(new PlayStatusChangeEvent());
     }
     public void load(SequenceInfo info, Sequence sequence) {
         this._sequenceInfo = info;
@@ -107,6 +112,16 @@ public class Model implements HasHandlers {
     }
     public void clean() {
         this._isDirty = false;
+    }
+    public void setPlaying(boolean isPlaying) {
+        if (this._isPlaying == isPlaying)
+            return; /* no change */
+        this._isPlaying = isPlaying;
+        this.fireEvent(new PlayStatusChangeEvent());
+    }
+    public void setSliderPos(double sliderPos) {
+        this._sliderPos = sliderPos;
+        this.fireEvent(new PlayStatusChangeEvent());
     }
 
     // generate automatic tags from sequence
@@ -134,6 +149,28 @@ public class Model implements HasHandlers {
     private final HandlerManager handlerManager = new HandlerManager(this);
     public void fireEvent(GwtEvent<?> event) {
         this.handlerManager.fireEvent(event);
+    }
+
+    // play status change event
+    public HandlerRegistration addPlayStatusChangeHandler(PlayStatusChangeHandler handler) {
+        return this.handlerManager.addHandler(PlayStatusChangeEvent.TYPE, handler);
+    }
+    public static interface PlayStatusChangeHandler extends EventHandler {
+        void onPlayStatusChange(PlayStatusChangeEvent sce);
+    }
+    static class PlayStatusChangeEvent extends GwtEvent<PlayStatusChangeHandler> {
+        public static final GwtEvent.Type<PlayStatusChangeHandler> TYPE =
+            new GwtEvent.Type<PlayStatusChangeHandler>();
+        @Override
+        public Model getSource() { return (Model) super.getSource(); }
+        @Override
+        protected void dispatch(PlayStatusChangeHandler handler) {
+            handler.onPlayStatusChange(this);
+        }
+        @Override
+        public GwtEvent.Type<PlayStatusChangeHandler> getAssociatedType() {
+            return TYPE;
+        }
     }
 
     // sequence info change event

@@ -5,11 +5,14 @@ import java.util.List;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.webapp.client.Model.EngineResultsChangeEvent;
 import net.cscott.sdr.webapp.client.Model.EngineResultsChangeHandler;
+import net.cscott.sdr.webapp.client.Model.PlayStatusChangeEvent;
+import net.cscott.sdr.webapp.client.Model.PlayStatusChangeHandler;
 import net.cscott.sdr.webapp.client.Model.SequenceChangeEvent;
 import net.cscott.sdr.webapp.client.Model.SequenceChangeHandler;
 import net.cscott.sdr.webapp.client.Model.SequenceInfoChangeEvent;
 import net.cscott.sdr.webapp.client.Model.SequenceInfoChangeHandler;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -31,6 +34,7 @@ import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CaptionPanel;
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Frame;
@@ -50,7 +54,9 @@ import com.google.gwt.widgetideas.client.SliderBar;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class SDRweb implements EntryPoint, SequenceChangeHandler {
+public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChangeHandler {
+    public static final double BPM = 128;
+
     final CallOracle callOracle = new CallOracle();
     final SuggestBox callEntry = new SuggestBox(callOracle);
     final FlexTable callList = new FlexTable();
@@ -61,7 +67,9 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
     final DanceFloor danceFloor = GWT.create(DanceFloor.class);
     final MenuItem sequenceTitle =
         new MenuItem(SequenceInfo.UNTITLED, (Command)null);
+    final SliderBar playSlider = new SliderBar(0.0, 1.0);
     DockPanel playBar = new DockPanel();
+    Animation animation = null;
 
     final Model model = new Model(GWT.<DanceEngineServiceAsync>create
                                   (DanceEngineService.class)) {
@@ -177,13 +185,33 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         canvasPanel.add(currentCall);
 	canvasPanel.add(errorMsg);
 
-        Button playButton = new Button("Play"); // xxx replace with image
-        final SliderBar playSlider = new SliderBar(0.0, 1.0);
+        final Button playButton = new Button("");
+        model.addPlayStatusChangeHandler(new PlayStatusChangeHandler() {
+            public void onPlayStatusChange(PlayStatusChangeEvent sce) {
+                String icon = model.isPlaying() ? "Pause" : "Play";
+                playButton.setHTML("<img src=\"/icons/stock_media-"+
+                                   icon.toLowerCase()+".png\" "+
+                                   "alt=\""+icon+"\" title=\""+icon+"\" />");
+            }});
+        playButton.addStyleName("playButton");
+        playButton.addClickHandler(new ClickHandler(){
+            public void onClick(ClickEvent event) {
+                // if we pressed play, but were already at the end, jump to the start
+                if ((!model.isPlaying()) && model.getEngineResults()!=null &&
+                    model.getEngineResults().totalBeats - model.getSliderPos() < 0.5)
+                    model.setSliderPos(0);
+                // toggle play status
+                model.setPlaying(!model.isPlaying());
+            }});
         playSlider.setStepSize(0.1);
         playSlider.setCurrentValue(0);
         playSlider.setNumTicks(1);
         playSlider.setNumLabels(1);
         playSlider.setWidth("100%");
+        playSlider.addChangeListener(new ChangeListener() {
+            public void onChange(Widget sender) {
+                model.setSliderPos(playSlider.getCurrentValue());
+            }});
         model.addEngineResultsChangeHandler(new EngineResultsChangeHandler() {
             public void onEngineResultsChange(EngineResultsChangeEvent sce) {
                 double totalBeats = model.getEngineResults().totalBeats;
@@ -245,6 +273,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
           }
         });
         // hook up model
+        model.addPlayStatusChangeHandler(this);
         model.addSequenceChangeHandler(this);
         model.addSequenceChangeHandler(new SequenceChangeHandler() {
             public void onSequenceChange(SequenceChangeEvent sce) {
@@ -365,6 +394,59 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
                 if (e!=null) e.setAttribute("style", "height: "+(height-panelBottom-4)+"px;");
             }
         }
+    }
+    public void onPlayStatusChange(PlayStatusChangeEvent sce) {
+        if (model.isPlaying()) {
+            if (this.animation == null)
+                this.newAnimation();
+        } else {
+            if (this.animation != null)
+                this.animation.cancel();
+            this.animation = null;
+        }
+    }
+    private void newAnimation() {
+        if (this.animation!=null)
+            this.animation.cancel();
+        if (model.getEngineResults()==null) {
+            model.setPlaying(false);
+            return;
+        }
+        final double start = model.getSliderPos();
+        final double end = model.getEngineResults().totalBeats;
+        final double totalMillis = (end-start)*(60*1000/*one minute*/)/BPM;
+        if (totalMillis < 100) {
+            model.setPlaying(false);
+            return;
+        }
+        this.animation = new Animation() {
+            @Override
+            protected double interpolate(double progress) {
+                return start + progress * (end-start);
+            }
+            @Override
+            protected void onUpdate(double beat) {
+                boolean last = false;
+                if (beat > model.getEngineResults().totalBeats) {
+                    // whoops, sequence has shrunk!
+                    beat = model.getEngineResults().totalBeats;
+                    last = true;
+                }
+                playSlider.setCurrentValue(beat, false);
+                model.setSliderPos(beat);
+                // XXX: update the dancers (via playstatus event?)
+                if (last) newAnimation();
+            }
+            @Override
+            protected void onComplete() {
+                // keep playing, maybe the sequence has grown.
+                newAnimation();
+            }
+            @Override
+            protected void onCancel() {
+                /* do nothing, just stop */
+            }};
+        this.animation.run((int)totalMillis);
     }
     public void onSequenceChange(SequenceChangeEvent sce) {
         // build the call list from the model

@@ -157,3 +157,7 @@ body {
 .gwt-SliderBar-shell .gwt-SliderBar-line-sliding {
         cursor: pointer;
 }
+/* shrink wrap the play button around its icon */
+button.playButton {
+ padding: 2px 0 0 0;
+}
