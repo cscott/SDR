@@ -149,8 +149,13 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         }
 
         model.addSequenceInfoChangeHandler(new SequenceInfoChangeHandler() {
+            String lastTitle = null;
             public void onSequenceInfoChange(SequenceInfoChangeEvent sce) {
-                sequenceTitle.setText(sce.getSource().getSequenceInfo().title);
+                String title = sce.getSource().getSequenceInfo().title;
+                if (title.equals(lastTitle)) return; // no change
+                lastTitle = title;
+                sequenceTitle.setText(title);
+                Window.setTitle("Square Dance Revolution: "+title);
             }});
 
         // Make a new menu bar, adding a few cascading menus to it.
