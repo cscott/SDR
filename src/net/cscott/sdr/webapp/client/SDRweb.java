@@ -109,7 +109,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
             public void execute() {
                 storageService.logout(new EAsyncCallback<String>() {
                     public void onSuccess(String logoutURL) {
-                        new SdrPopup(logoutURL) {
+                        new SdrPopup("Logout from Google", logoutURL) {
                             @Override
                             public void onClose() {
                                 Window.alert("You are now logged out");
@@ -293,9 +293,10 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
     }
     /** Create a new popup which logs into/out of Google and then closes. */
     public static abstract class SdrPopup extends PopupPanel {
-        public SdrPopup(String loginUrl) {
+        public SdrPopup(String caption, String loginUrl) {
             CaptionPanel cp = new CaptionPanel
-                ("Login to Google (<a href=\"javascript:cancelPopup()\">close</a>)", true);
+                (caption+" (<a href=\"javascript:cancelPopup()\">close</a>)",
+                 true);
             Frame frame = new Frame(loginUrl);
             cp.add(frame);
             setTitle("Login with your Google ID");
@@ -414,7 +415,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         public final void onFailure(Throwable error) {
             if (error instanceof NotLoggedInException) {
                 NotLoggedInException nlie = (NotLoggedInException) error;
-                new SdrPopup(nlie.loginUrl) {
+                new SdrPopup("Login to Google", nlie.loginUrl) {
                     @Override
                     public void onClose() { retry(); }
                 };
