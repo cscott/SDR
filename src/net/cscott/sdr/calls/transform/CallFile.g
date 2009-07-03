@@ -757,7 +757,7 @@ STAR       : {afterIndent}?=> '*'   ;
 
 // real (stub) definitions for imaginary lexer tokens (blah)
 // synthetic tokens
-fragment INDENT : ;
-fragment DEDENT : ;
+fragment INDENT : {false}?=> '\t';
+fragment DEDENT : {false}?=> '\t';
 
 // that's all, folks!
