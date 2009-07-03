@@ -21,6 +21,13 @@ import net.cscott.sdr.util.*;
 @lexer::header {
 package net.cscott.sdr.calls.lists;
 }
+@lexer::members {
+  // make sure errors are reported!
+  @Override
+  public void reportError(RecognitionException e) {
+    throw new IllegalArgumentException(e);
+  }
+}
 
 start returns [Apply r]
 	: a=anything_list EOF { r=a; }

@@ -125,6 +125,27 @@ public class CallDB {
      *  (Apply _and_roll (Apply _fractional (Apply 1/2) (Apply trade)))
      *  js> db.parse(Program.PLUS, "do one half of a ( trade and roll )")
      *  (Apply _fractional (Apply 1/2) (Apply _and_roll (Apply trade)))
+     * @doc.test Ensure we throw an exception if the call is unrecognized or
+     *  not on level:
+     *  js> db = CallDB.INSTANCE ; undefined
+     *  js> try {
+     *    >   db.parse(Program.C4, "@trade")
+     *    > } catch (e) {
+     *    >   print(e.javaException)
+     *    > }
+     *  net.cscott.sdr.calls.BadCallException: Bad call: @trade
+     *  js> try {
+     *    >   db.parse(Program.C4, "foobar bat")
+     *    > } catch (e) {
+     *    >   print(e.javaException)
+     *    > }
+     *  net.cscott.sdr.calls.BadCallException: Bad call: foobar bat
+     *  js> try {
+     *    >   db.parse(Program.MAINSTREAM, "trade and roll")
+     *    > } catch (e) {
+     *    >   print(e.javaException)
+     *    > }
+     *  net.cscott.sdr.calls.BadCallException: Bad call: trade and roll
      */
     public Apply parse(Program program, String s) {
         if (program!=Program.C4 && DevSettings.ONLY_C4_GRAMMAR)
@@ -145,11 +166,13 @@ public class CallDB {
                 .getConstructor(TokenStream.class).newInstance(tokens);
             Method m = parser.getClass().getMethod("start");
             result = (Apply) m.invoke(parser);
+            if (lexer.getNumberOfSyntaxErrors() > 0 ||
+                parser.getNumberOfSyntaxErrors() > 0 ||
+                result == null)
+                throw new Exception();
         } catch (Exception e) {
-            throw new BadCallException("Parsing error: "+e);
+            throw new BadCallException("Bad call: "+s);
         }
-	if (result==null)
-	    throw new BadCallException("Parsing error: "+s);
 	return result;
     }
 }
