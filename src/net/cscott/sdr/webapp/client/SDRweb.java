@@ -221,11 +221,10 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 // we don't add one, because we're annotating the *last valid*
                 // call, but being given the *first invalid* call
                 int oldRow = fic.oldValue;
-                if (oldRow > 0 && oldRow < callList.getRowCount())
+                if (oldRow >= 0 && oldRow < callList.getRowCount())
                     rf.removeStyleName(oldRow, "last-valid");
                 int newRow = fic.newValue;
-                // note: don't highlight if all calls are valid
-                if (newRow > 0 && newRow < callList.getRowCount()-2)
+                if (newRow >= 0 && newRow < callList.getRowCount())
                     rf.addStyleName(newRow, "last-valid");
             }});
 
@@ -540,12 +539,14 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         final Model model = sce.getSource();
         FlexCellFormatter fcf = callList.getFlexCellFormatter();
         RowFormatter rf = callList.getRowFormatter();
+        rf.removeStyleName(0, "last-call");
         int row=1; // row number
         List<String> calls = model.getSequence().calls;
         for (int callIndex=0; callIndex<calls.size(); callIndex++, row++) {
             String call = calls.get(callIndex);
             callList.setText(row, 0, call);
             rf.removeStyleName(row, "not-a-call");
+            rf.removeStyleName(row, "last-call");
             fcf.setColSpan(row, 0, 1);
             Button removeButton = new Button
                 ("<img src=\""+GWT.getModuleBaseURL()+"close-button.png\" "+
@@ -559,6 +560,10 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
             fcf.setColSpan(row, 1, 1);
             callList.setWidget(row, 1, removeButton);
         }
+        // specially mark the last call, so we can suppress the red line if it
+        // is also the last valid call
+        rf.addStyleName(row-1, "last-call");
+        // add 'end of sequence' row
         if (row < callList.getRowCount() &&
             callList.getCellCount(row) > 1)
             callList.removeCell(row, 1);

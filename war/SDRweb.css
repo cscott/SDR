@@ -77,9 +77,6 @@ body {
   font-weight: bold;
   //position: fixed;
 }
-.callListHeader td {
-  border-bottom: 2px solid #ddd;
-}
 /* Call prompt */
 .callEntry {
   font-weight: bold;
@@ -183,8 +180,19 @@ table.callList {
 .callList .last-valid td {
         border-bottom: 3px solid red;
 }
+/* suppress red line if the last valid call is also the last call */
+.callList .last-valid.last-call td {
+        border-bottom: 0;
+}
+/* use a grey border if the last call is also the header (ie new sequence) */
+.callList .last-valid.last-call.callListHeader td,
+.callList .callListHeader td {
+        border-bottom: 2px solid #ddd;
+}
+
 /* bits of stuff in the call list which is not a call */
 .callList .not-a-call {
         font-style: italic;
         color: #888;
 }
+
