@@ -15,24 +15,27 @@
  */
 package net.cscott.sdr.webapp.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ChangeListenerCollection;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ImageBundle;
-import com.google.gwt.user.client.ui.KeyboardListener;
-import com.google.gwt.user.client.ui.SourcesChangeEvents;
 import com.google.gwt.widgetideas.client.ResizableWidget;
 import com.google.gwt.widgetideas.client.ResizableWidgetCollection;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A widget that allows the user to select a value within a range of possible
@@ -64,7 +67,7 @@ import java.util.List;
  * line }</li> </ul>
  */
 public class SliderBar extends FocusPanel implements ResizableWidget,
-    SourcesChangeEvents {
+    HasValueChangeHandlers<Double> {
   /**
    * The timer used to continue to shift the knob as the user holds down one of
    * the left/right arrow keys. Only IE auto-repeats, so we just keep catching
@@ -172,11 +175,6 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
      */
     AbstractImagePrototype sliderSliding();
   }
-
-  /**
-   * The change listeners.
-   */
-  private ChangeListenerCollection changeListeners;
 
   /**
    * The current value.
@@ -328,18 +326,6 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
   }
 
   /**
-   * Add a change listener to this SliderBar.
-   * 
-   * @param listener the listener to add
-   */
-  public void addChangeListener(ChangeListener listener) {
-    if (changeListeners == null) {
-      changeListeners = new ChangeListenerCollection();
-    }
-    changeListeners.add(listener);
-  }
-
-  /**
    * Return the current value.
    * 
    * @return the current value
@@ -472,22 +458,22 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
             }
 
             switch (DOM.eventGetKeyCode(event)) {
-              case KeyboardListener.KEY_HOME:
+              case KeyCodes.KEY_HOME:
                 DOM.eventPreventDefault(event);
                 setCurrentValue(minValue);
                 break;
-              case KeyboardListener.KEY_END:
+              case KeyCodes.KEY_END:
                 DOM.eventPreventDefault(event);
                 setCurrentValue(maxValue);
                 break;
-              case KeyboardListener.KEY_LEFT:
+              case KeyCodes.KEY_LEFT:
                 DOM.eventPreventDefault(event);
                 slidingKeyboard = true;
                 startSliding(false, true);
                 shiftLeft(multiplier);
                 keyTimer.schedule(400, false, multiplier);
                 break;
-              case KeyboardListener.KEY_RIGHT:
+              case KeyCodes.KEY_RIGHT:
                 DOM.eventPreventDefault(event);
                 slidingKeyboard = true;
                 startSliding(false, true);
@@ -566,15 +552,15 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
     }
   }
 
-  /**
-   * Remove a change listener from this SliderBar.
-   * 
-   * @param listener the listener to remove
-   */
-  public void removeChangeListener(ChangeListener listener) {
-    if (changeListeners != null) {
-      changeListeners.remove(listener);
-    }
+  // --- event infrastructure ---
+  // events: sequence changed, results changed?
+  //         playState changed, sliderPos changed, highlight changed?
+  private final HandlerManager handlerManager = new HandlerManager(this);
+  public void fireEvent(GwtEvent<?> event) {
+      this.handlerManager.fireEvent(event);
+  }
+  public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Double> handler) {
+      return this.handlerManager.addHandler(ValueChangeEvent.getType(), handler);
   }
 
   /**
@@ -593,24 +579,16 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
    * @param fireEvent fire the onValue change event if true
    */
   public void setCurrentValue(double curValue, boolean fireEvent) {
+    double oldValue = this.curValue;
     // Confine the value to the range
     this.curValue = Math.max(minValue, Math.min(maxValue, curValue));
-    double remainder = (this.curValue - minValue) % stepSize;
-    this.curValue -= remainder;
-
-    // Go to next step if more than halfway there
-    if ((remainder > (stepSize / 2))
-        && ((this.curValue + stepSize) <= maxValue)) {
-      this.curValue += stepSize;
-    }
 
     // Redraw the knob
     drawKnob();
 
-    // Fire the onValueChange event
-    if (fireEvent && (changeListeners != null)) {
-      changeListeners.fireChange(this);
-    }
+    // Fire the ValueChange event
+    if (fireEvent)
+        ValueChangeEvent.fireIfNotEqual(this, oldValue, curValue);
   }
 
   /**
@@ -711,7 +689,6 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
    */
   public void setStepSize(double stepSize) {
     this.stepSize = stepSize;
-    resetCurrentValue();
   }
 
   /**
@@ -957,6 +934,9 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
           "gwt-SliderBar-knob gwt-SliderBar-knob-sliding");
       images.sliderSliding().applyTo(knobImage);
     }
+    /* snap to a step position */
+    long numSteps = Math.round((curValue-minValue)/stepSize);
+    setCurrentValue(minValue+(numSteps*stepSize), fireEvent);
   }
 
   /**

@@ -30,6 +30,8 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -38,7 +40,6 @@ import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CaptionPanel;
-import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Frame;
@@ -258,14 +259,14 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 // toggle play status
                 model.setPlaying(!model.isPlaying());
             }});
-        playSlider.setStepSize(0.05);
+        playSlider.setStepSize(0.25);
         playSlider.setCurrentValue(0);
         playSlider.setNumTicks(1);
         playSlider.setNumLabels(1);
         playSlider.setWidth("100%");
-        playSlider.addChangeListener(new ChangeListener() {
-            public void onChange(Widget sender) {
-                model.setSliderPos(playSlider.getCurrentValue());
+        playSlider.addValueChangeHandler(new ValueChangeHandler<Double>(){
+            public void onValueChange(ValueChangeEvent<Double> event) {
+                model.setSliderPos(event.getValue());
             }});
         model.addPlayStatusChangeHandler(new PlayStatusChangeHandler(){
             public void onPlayStatusChange(PlayStatusChangeEvent sce) {
@@ -276,6 +277,10 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 double totalBeats = model.getEngineResults().totalBeats;
                 playSlider.setMaxValue(totalBeats);
                 playSlider.setNumTicks((int)Math.round(totalBeats));
+                boolean enabled = (totalBeats!=0);
+                playSlider.setEnabled(enabled);
+                playButton.setEnabled(enabled);
+                playSlider.setNumLabels(enabled?1:0);
             }});
         // level label
         final Label levelLabel = new Label("--");
