@@ -203,7 +203,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 // toggle play status
                 model.setPlaying(!model.isPlaying());
             }});
-        playSlider.setStepSize(0.1);
+        playSlider.setStepSize(0.05);
         playSlider.setCurrentValue(0);
         playSlider.setNumTicks(1);
         playSlider.setNumLabels(1);
@@ -211,6 +211,10 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         playSlider.addChangeListener(new ChangeListener() {
             public void onChange(Widget sender) {
                 model.setSliderPos(playSlider.getCurrentValue());
+            }});
+        model.addPlayStatusChangeHandler(new PlayStatusChangeHandler(){
+            public void onPlayStatusChange(PlayStatusChangeEvent sce) {
+                playSlider.setCurrentValue(model.getSliderPos(), false);
             }});
         model.addEngineResultsChangeHandler(new EngineResultsChangeHandler() {
             public void onEngineResultsChange(EngineResultsChangeEvent sce) {
@@ -432,9 +436,8 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                     beat = model.getEngineResults().totalBeats;
                     last = true;
                 }
-                playSlider.setCurrentValue(beat, false);
                 model.setSliderPos(beat);
-                // XXX: update the dancers (via playstatus event?)
+                // dancer and slider animation happens via playstatus listeners
                 if (last) newAnimation();
             }
             @Override
