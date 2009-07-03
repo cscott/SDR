@@ -3,6 +3,8 @@ package net.cscott.sdr.webapp.client;
 import java.util.List;
 
 import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.webapp.client.Model.EngineResultsChangeEvent;
+import net.cscott.sdr.webapp.client.Model.EngineResultsChangeHandler;
 import net.cscott.sdr.webapp.client.Model.SequenceChangeEvent;
 import net.cscott.sdr.webapp.client.Model.SequenceChangeHandler;
 import net.cscott.sdr.webapp.client.Model.SequenceInfoChangeEvent;
@@ -61,7 +63,13 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
         new MenuItem(SequenceInfo.UNTITLED, (Command)null);
     DockPanel playBar = new DockPanel();
 
-    final Model model = new Model();
+    final Model model = new Model(GWT.<DanceEngineServiceAsync>create
+                                  (DanceEngineService.class)) {
+        @Override
+        public void handleFailure(Throwable caught) {
+            Window.alert(caught.toString());
+        }
+    };
     SequenceStorageServiceAsync storageService =
         GWT.create(SequenceStorageService.class);
 
@@ -170,12 +178,18 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler {
 	canvasPanel.add(errorMsg);
 
         Button playButton = new Button("Play"); // xxx replace with image
-        SliderBar playSlider = new SliderBar(0.0, 1.0);
+        final SliderBar playSlider = new SliderBar(0.0, 1.0);
         playSlider.setStepSize(0.1);
-        playSlider.setCurrentValue(0.5);
-        playSlider.setNumTicks(10);
-        playSlider.setNumLabels(10);
+        playSlider.setCurrentValue(0);
+        playSlider.setNumTicks(1);
+        playSlider.setNumLabels(1);
         playSlider.setWidth("100%");
+        model.addEngineResultsChangeHandler(new EngineResultsChangeHandler() {
+            public void onEngineResultsChange(EngineResultsChangeEvent sce) {
+                double totalBeats = model.getEngineResults().totalBeats;
+                playSlider.setMaxValue(totalBeats);
+                playSlider.setNumTicks((int)Math.round(totalBeats));
+            }});
         // level label
         final Label levelLabel = new Label("--");
         levelLabel.addStyleName("levelLabel");

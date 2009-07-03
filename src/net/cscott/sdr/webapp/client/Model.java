@@ -10,6 +10,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.HasHandlers;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The {@link Model} for the UI marries a {@link Sequence} with corresponding
@@ -24,12 +25,39 @@ public class Model implements HasHandlers {
     private SequenceInfo _sequenceInfo;
     private Sequence _sequence;
     private EngineResults _engineResults;
+    private int _sequenceChangeIndex = 0;
 
     boolean _isDirty = false;
     boolean isPlaying;
     double sliderPos;
     int highlightedCall;
     int insertionPoint = -1;
+
+    // constructor
+    public Model(final DanceEngineServiceAsync danceEngine) {
+        // when the sequence changes, update the engine results
+        this.addSequenceChangeHandler(new SequenceChangeHandler() {
+            public void onSequenceChange(SequenceChangeEvent sce) {
+                _sequenceChangeIndex++;
+                danceEngine.dance(_sequence, _sequenceChangeIndex,
+                                  new AsyncCallback<EngineResults>() {
+                    public void onFailure(Throwable caught) {
+                        handleFailure(caught);
+                    }
+                    public void onSuccess(EngineResults result) {
+                        if (result.sequenceNumber != _sequenceChangeIndex)
+                            return; // stale results, discard
+                        Model.this._engineResults = result;
+                        fireEvent(new EngineResultsChangeEvent());
+                    }});
+            }});
+        // initialize
+        this.newSequence();
+    }
+    // implement this in a subclass to provide better (ie, any) error handling
+    public void handleFailure(Throwable caught) {
+        /* Do nothing. That's not very good error handling. */
+    }
 
     // accessor methods
     public SequenceInfo getSequenceInfo() { return this._sequenceInfo; }
@@ -171,6 +199,4 @@ public class Model implements HasHandlers {
             return TYPE;
         }
     }
-    // initialize
-    { this.newSequence(); }
 }

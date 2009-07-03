@@ -18,7 +18,7 @@ import com.google.appengine.api.users.User;
 @SuppressWarnings("serial")
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class SequenceInfoJDO implements Serializable {
-    /** Primary key, non-null for sequences already saved */
+    /** Primary key, non-null for sequences already saved. */
     @PrimaryKey
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
     public Long id;

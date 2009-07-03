@@ -1,5 +1,6 @@
 package net.cscott.sdr.webapp.client;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,5 +38,10 @@ public class EngineResults implements java.io.Serializable {
         this.messages = messages;
         this.timing = timing;
         this.totalBeats = totalBeats;
+    }
+    // needs no-arg constructor for GWT serializability
+    public EngineResults() {
+        this(0, 0, Collections.<String>emptyList(),
+             Collections.<Double>emptyList(), 0);
     }
 }
