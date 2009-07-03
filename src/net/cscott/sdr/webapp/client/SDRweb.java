@@ -189,8 +189,8 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         model.addPlayStatusChangeHandler(new PlayStatusChangeHandler() {
             public void onPlayStatusChange(PlayStatusChangeEvent sce) {
                 String icon = model.isPlaying() ? "Pause" : "Play";
-                playButton.setHTML("<img src=\"/icons/stock_media-"+
-                                   icon.toLowerCase()+".png\" "+
+                playButton.setHTML("<img src=\""+GWT.getModuleBaseURL()+
+                                   "stock_media-"+icon.toLowerCase()+".png\" "+
                                    "alt=\""+icon+"\" title=\""+icon+"\" />");
             }});
         playButton.addStyleName("playButton");
