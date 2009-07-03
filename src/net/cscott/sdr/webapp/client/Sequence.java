@@ -50,4 +50,10 @@ public class Sequence implements Serializable {
     public Sequence() {
         // create sequence with default settings
     }
+    /** Keep the given key, but copy every thing else from the given sequence.*/
+    public void copyFrom(Sequence s) {
+        this.program = s.program;
+        this.startingFormation = s.startingFormation;
+        this.calls = s.calls;
+    }
 }

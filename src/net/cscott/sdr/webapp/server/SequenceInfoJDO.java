@@ -52,9 +52,10 @@ public class SequenceInfoJDO implements Serializable {
         this.tags = info.tags;
     }
     void updateSequence(Sequence sequence) {
-        if (this.sequence!=null && this.sequence.key!=null)
-            sequence.key = this.sequence.key;
-        this.sequence = sequence;
+        if (this.sequence==null)
+            this.sequence = sequence;
+        else
+            this.sequence.copyFrom(sequence);
     }
     void updateModified() {
         this.lastModified = new Date();
