@@ -54,9 +54,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 
-// incubator
-import com.google.gwt.widgetideas.client.SliderBar;
-
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
