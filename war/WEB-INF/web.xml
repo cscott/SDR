@@ -12,13 +12,13 @@
   
   <!-- Servlets -->
   <servlet>
-    <servlet-name>loginService</servlet-name>
-    <servlet-class>net.cscott.sdr.webapp.server.LoginServiceImpl</servlet-class>
+    <servlet-name>danceService</servlet-name>
+    <servlet-class>net.cscott.sdr.webapp.server.DanceEngineServiceImpl</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>loginService</servlet-name>
-    <url-pattern>/sdrweb/login</url-pattern>
+    <servlet-name>danceService</servlet-name>
+    <url-pattern>/sdrweb/dance</url-pattern>
   </servlet-mapping>
 
   <servlet>

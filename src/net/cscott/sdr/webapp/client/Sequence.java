@@ -42,7 +42,9 @@ public class Sequence implements Serializable {
 
     /** Types of starting formations supported. */
     public enum StartingFormationType {
-        TWO_COUPLE, BIGON, SQUARED_SET, HEXAGON, OCTAGON
+        TWO_COUPLE, SQUARED_SET,
+        // future fun:
+        BIGON, HEXAGON, OCTAGON
     }
 
     public Sequence() {

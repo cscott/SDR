@@ -28,4 +28,14 @@ public class EngineResults implements java.io.Serializable {
     /** Total length of all valid calls in the {@link Sequence}'s call list.
      *  The sum of {@link #timing}; a convenience. */
     public double totalBeats;
+
+    public EngineResults(int sequenceNumber, int firstInvalidCall,
+                         List<String> messages, List<Double> timing,
+                         double totalBeats) {
+        this.sequenceNumber = sequenceNumber;
+        this.firstInvalidCall = firstInvalidCall;
+        this.messages = messages;
+        this.timing = timing;
+        this.totalBeats = totalBeats;
+    }
 }
