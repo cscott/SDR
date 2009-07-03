@@ -94,6 +94,8 @@ public class Model implements HasHandlers {
 
     // mutation methods
     public void addCallAtPoint(String s) {
+        // normalize call
+        s = s.toLowerCase().trim();
         // insertion point is just before highlighted call.
         int idx = this._highlightedCall;
         idx = (idx < 0) ? 0 : (idx <= this._sequence.calls.size()) ? idx :
