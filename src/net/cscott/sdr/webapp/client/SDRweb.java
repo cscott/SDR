@@ -5,6 +5,10 @@ import java.util.List;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.webapp.client.Model.EngineResultsChangeEvent;
 import net.cscott.sdr.webapp.client.Model.EngineResultsChangeHandler;
+import net.cscott.sdr.webapp.client.Model.FirstInvalidCallChangeEvent;
+import net.cscott.sdr.webapp.client.Model.FirstInvalidCallChangeHandler;
+import net.cscott.sdr.webapp.client.Model.HighlightChangeEvent;
+import net.cscott.sdr.webapp.client.Model.HighlightChangeHandler;
 import net.cscott.sdr.webapp.client.Model.PlayStatusChangeEvent;
 import net.cscott.sdr.webapp.client.Model.PlayStatusChangeHandler;
 import net.cscott.sdr.webapp.client.Model.SequenceChangeEvent;
@@ -38,6 +42,7 @@ import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
@@ -47,6 +52,7 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 
 // incubator
 import com.google.gwt.widgetideas.client.SliderBar;
@@ -179,19 +185,66 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         callList.getRowFormatter().setStyleName(0, "callListHeader");
         callList.setStyleName("callList");
         RootPanel.get("div-calllist").add(callList);
+        callList.addClickHandler(new ClickHandler(){
+            public void onClick(ClickEvent event) {
+                HTMLTable.Cell c = callList.getCellForEvent(event);
+                if (c==null) return; /* click in inactive area */
+                if (model.getEngineResults()==null) return; /*no valid timing*/
+                int row = c.getRowIndex();
+                int callNum = row-1;
+                model.setPlaying(false);
+                model.setHighlightedCall(callNum);
+                // move the slider position to correspond to this
+                // call (careful when moving past the invalid call marker!)
+                double when = 0;
+                int firstInvalidCall=model.getEngineResults().firstInvalidCall;
+                for (int i=0; i<callNum && i<firstInvalidCall; i++)
+                    when += model.getEngineResults().timing.get(i);
+                model.setSliderPos(when);
+            }});
+        model.addHighlightChangeHandler(new HighlightChangeHandler(){
+            public void onHighlightChange(HighlightChangeEvent sce) {
+                RowFormatter rf = callList.getRowFormatter();
+                int oldRow = sce.oldValue + 1;
+                if (oldRow > 0 && oldRow < callList.getRowCount())
+                    rf.removeStyleName(oldRow, "highlight");
+                int newRow = sce.newValue + 1;
+                if (newRow > 0 && newRow < callList.getRowCount())
+                    rf.addStyleName(newRow, "highlight");
+            }});
+        model.addFirstInvalidCallChangeHandler(new FirstInvalidCallChangeHandler(){
+            public void onFirstInvalidCallChange(FirstInvalidCallChangeEvent fic) {
+                RowFormatter rf = callList.getRowFormatter();
+                // we don't add one, because we're annotating the *last valid*
+                // call, but being given the *first invalid* call
+                int oldRow = fic.oldValue;
+                if (oldRow > 0 && oldRow < callList.getRowCount())
+                    rf.removeStyleName(oldRow, "last-valid");
+                int newRow = fic.newValue;
+                // note: don't highlight if all calls are valid
+                if (newRow > 0 && newRow < callList.getRowCount()-2)
+                    rf.addStyleName(newRow, "last-valid");
+            }});
 
 	currentCall.setStyleName("currentCall");
 	errorMsg.setStyleName("errorMsg");
         canvasPanel.add(currentCall);
 	canvasPanel.add(errorMsg);
 
-        final Button playButton = new Button("");
+        final Button playButton = new Button("<img />");
         model.addPlayStatusChangeHandler(new PlayStatusChangeHandler() {
+            String lastIcon = "nothing";
             public void onPlayStatusChange(PlayStatusChangeEvent sce) {
                 String icon = model.isPlaying() ? "Pause" : "Play";
-                playButton.setHTML("<img src=\""+GWT.getModuleBaseURL()+
-                                   "stock_media-"+icon.toLowerCase()+".png\" "+
-                                   "alt=\""+icon+"\" title=\""+icon+"\" />");
+                if (icon.equals(lastIcon)) return; // suppress extra updates
+                lastIcon = icon;
+                // updating just the image src/title/alt instead of replacing
+                // the entire <img> element causes less flashing on gecko
+                Element img = playButton.getElement().getFirstChildElement();
+                img.setAttribute("src", GWT.getModuleBaseURL() +
+                                 "stock_media-"+icon.toLowerCase()+".png");
+                img.setAttribute("alt", icon);
+                img.setAttribute("title", icon);
             }});
         playButton.addStyleName("playButton");
         playButton.addClickHandler(new ClickHandler(){
@@ -283,9 +336,18 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
             public void onSequenceChange(SequenceChangeEvent sce) {
                 callOracle.setProgram(sce.getSource().getSequence().program);
             }});
+        // show errors!
+        model.addEngineResultsChangeHandler(new EngineResultsChangeHandler() {
+            public void onEngineResultsChange(EngineResultsChangeEvent sce) {
+                for (String message: model.getEngineResults().messages)
+                    if (message != null)
+                        Window.alert(message);
+            }});
         // initialize all the model-dependent fields
         model.fireEvent(new SequenceInfoChangeEvent());
         model.fireEvent(new SequenceChangeEvent());
+        model.fireEvent(new HighlightChangeEvent(-1, model.highlightedCall()));
+        model.fireEvent(new PlayStatusChangeEvent());
         // trigger resize & focus shortly after load
         Timer postLoadTimer = new Timer() {
             @Override
@@ -408,6 +470,20 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 this.animation.cancel();
             this.animation = null;
         }
+        // highlight the call list row corresponding to the current slider pos
+        if (model.getEngineResults()!=null) {
+            int callNum = 0;
+            double time = 0;
+            // XXX: will need a more efficient data struct eventually
+            for (Double duration : model.getEngineResults().timing) {
+                time += duration;
+                if (model.getSliderPos() < time)
+                    break;
+                callNum++;
+            }
+            // note that callNum could be calls.size() (eg, if there are 0 calls)
+            model.setHighlightedCall(callNum);
+        }
     }
     private void newAnimation() {
         if (this.animation!=null)
@@ -421,6 +497,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         final double totalMillis = (end-start)*(60*1000/*one minute*/)/BPM;
         if (totalMillis < 100) {
             model.setPlaying(false);
+            model.setHighlightedCall(model.getSequence().calls.size());
             return;
         }
         this.animation = new Animation() {
@@ -455,13 +532,17 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         // build the call list from the model
         final Model model = sce.getSource();
         FlexCellFormatter fcf = callList.getFlexCellFormatter();
+        RowFormatter rf = callList.getRowFormatter();
         int row=1; // row number
         List<String> calls = model.getSequence().calls;
         for (int callIndex=0; callIndex<calls.size(); callIndex++, row++) {
             String call = calls.get(callIndex);
-            fcf.setColSpan(row, 0, 1);
             callList.setText(row, 0, call);
-            Button removeButton = new Button("X");
+            rf.removeStyleName(row, "not-a-call");
+            fcf.setColSpan(row, 0, 1);
+            Button removeButton = new Button
+                ("<img src=\""+GWT.getModuleBaseURL()+"close-button.png\" "+
+                      "alt=\"X\" />");
             removeButton.setStyleName("removeButton");
             final int ci = callIndex; // for use in click handler
             removeButton.addClickHandler(new ClickHandler(){
@@ -470,21 +551,17 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 }});
             fcf.setColSpan(row, 1, 1);
             callList.setWidget(row, 1, removeButton);
-            if (row == model.insertionPoint) {
-                row++;
-                callList.removeCell(row, 1);
-                fcf.setColSpan(row, 0, 2);
-                callList.setHTML(row, 0, "<hr/>");
-            }
         }
+        if (row < callList.getRowCount() &&
+            callList.getCellCount(row) > 1)
+            callList.removeCell(row, 1);
+        fcf.setColSpan(row, 0, 2);
+        callList.setHTML(row, 0, "&nbsp;(end of sequence)&nbsp;");
+        rf.addStyleName(row, "not-a-call");
+        row++;
         // remove other rows
         for (int j=callList.getRowCount()-1; j>=row; j--)
             callList.removeRow(j);
-        if (calls.isEmpty()) {
-            // add a place holder for the actual calls
-            callList.getFlexCellFormatter().setColSpan(1, 0, 2);
-            callList.setHTML(1, 0, "<i>&nbsp;(no calls yet)&nbsp;</i>");
-        }
         doResize();
     }
     /** Callback interface which handles errors (in a very simplistic way). */

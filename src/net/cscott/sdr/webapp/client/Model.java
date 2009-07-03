@@ -10,6 +10,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.HasHandlers;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -30,8 +31,7 @@ public class Model implements HasHandlers {
     private boolean _isDirty = false;
     private boolean _isPlaying = false;
     private double _sliderPos = 0;
-    int highlightedCall;
-    int insertionPoint = -1;
+    private int _highlightedCall = -1;
 
     // constructor
     public Model(final DanceEngineServiceAsync danceEngine) {
@@ -47,8 +47,33 @@ public class Model implements HasHandlers {
                     public void onSuccess(EngineResults result) {
                         if (result.sequenceNumber != _sequenceChangeIndex)
                             return; // stale results, discard
+                        int lastInvalid = (Model.this._engineResults==null) ? -1
+                                : Model.this._engineResults.firstInvalidCall;
                         Model.this._engineResults = result;
                         fireEvent(new EngineResultsChangeEvent());
+                        // fire 'invalid call change handler' if firstInvalid
+                        // call has changed.
+                        int newInvalid =
+                            Model.this._engineResults.firstInvalidCall;
+                        if (lastInvalid != newInvalid)
+                            fireEvent(new FirstInvalidCallChangeEvent
+                                      (lastInvalid, newInvalid));
+                        // reset slider position if it's past the end
+                        if (Model.this._sliderPos >
+                            Model.this._engineResults.totalBeats) {
+                            Model.this.setPlaying(false);
+                            Model.this.setSliderPos
+                                (Model.this._engineResults.totalBeats);
+                        }
+                        // if not playing, reset slider position to match
+                        // highlighted call
+                        if (!isPlaying()) {
+                            double beat = 0;
+                            for (int i=0; i<Model.this.highlightedCall() &&
+                                          i<Model.this._engineResults.firstInvalidCall; i++)
+                                beat += Model.this._engineResults.timing.get(i);
+                            Model.this.setSliderPos(beat);
+                        }
                     }});
             }});
         // initialize
@@ -66,15 +91,24 @@ public class Model implements HasHandlers {
     public boolean isDirty() { return this._isDirty; }
     public boolean isPlaying() { return this._isPlaying; }
     public double getSliderPos() { return this._sliderPos; }
+    public int highlightedCall() { return this._highlightedCall; }
 
     // mutation methods
     public void addCallAtPoint(String s) {
-        // XXX insert it at insertionPoint if set
-        this._sequence.calls.add(s);
+        // insertion point is just before highlighted call.
+        int idx = this._highlightedCall;
+        idx = (idx < 0) ? 0 : (idx <= this._sequence.calls.size()) ? idx :
+            this._sequence.calls.size();
+        this._sequence.calls.add(idx, s);
         this._isDirty = true;
         this.fireEvent(new SequenceChangeEvent());
+        // move the highlight to the new call
+        this.setHighlightedCall(idx+1);
     }
     public void removeCallAt(int index) {
+        // change highlighted call if it would be off the end
+        if (this._highlightedCall >= this._sequence.calls.size())
+            setHighlightedCall(this._sequence.calls.size()-1);
         this._sequence.calls.remove(index);
         this._isDirty = true;
         this.fireEvent(new SequenceChangeEvent());
@@ -98,11 +132,12 @@ public class Model implements HasHandlers {
     public void newSequence() {
         // throw away current sequence, start a new one.
         this.load(new SequenceInfo(SequenceInfo.UNTITLED), new Sequence());
-        this._isPlaying = false;
-        this._sliderPos = 0;
         this.fireEvent(new PlayStatusChangeEvent());
     }
     public void load(SequenceInfo info, Sequence sequence) {
+        this.setPlaying(false);
+        this.setHighlightedCall(0);
+        this.setSliderPos(0);
         this._sequenceInfo = info;
         this._sequence = sequence;
         this._isDirty = false; // nothing to save yet
@@ -120,8 +155,16 @@ public class Model implements HasHandlers {
         this.fireEvent(new PlayStatusChangeEvent());
     }
     public void setSliderPos(double sliderPos) {
+        if (this._sliderPos == sliderPos)
+            return; /* no change */
         this._sliderPos = sliderPos;
         this.fireEvent(new PlayStatusChangeEvent());
+    }
+    public void setHighlightedCall(int highlightedCall) {
+        int oldValue = this._highlightedCall;
+        if (oldValue == highlightedCall) return; /* nothing to do */
+        this._highlightedCall = highlightedCall;
+        this.fireEvent(new HighlightChangeEvent(oldValue, highlightedCall));
     }
 
     // generate automatic tags from sequence
@@ -169,6 +212,60 @@ public class Model implements HasHandlers {
         }
         @Override
         public GwtEvent.Type<PlayStatusChangeHandler> getAssociatedType() {
+            return TYPE;
+        }
+    }
+
+    // highlighted call value change event
+    public HandlerRegistration addHighlightChangeHandler(HighlightChangeHandler handler) {
+        return this.handlerManager.addHandler(HighlightChangeEvent.TYPE, handler);
+    }
+    public static interface HighlightChangeHandler extends EventHandler {
+        void onHighlightChange(HighlightChangeEvent sce);
+    }
+    static class HighlightChangeEvent extends GwtEvent<HighlightChangeHandler> {
+        public static final GwtEvent.Type<HighlightChangeHandler> TYPE =
+            new GwtEvent.Type<HighlightChangeHandler>();
+        public final int oldValue, newValue;
+        public HighlightChangeEvent(int oldValue, int newValue) {
+            this.oldValue = oldValue;
+            this.newValue = newValue;
+        }
+        @Override
+        public Model getSource() { return (Model) super.getSource(); }
+        @Override
+        protected void dispatch(HighlightChangeHandler handler) {
+            handler.onHighlightChange(this);
+        }
+        @Override
+        public GwtEvent.Type<HighlightChangeHandler> getAssociatedType() {
+            return TYPE;
+        }
+    }
+
+    // first invalid call value change event
+    public HandlerRegistration addFirstInvalidCallChangeHandler(FirstInvalidCallChangeHandler handler) {
+        return this.handlerManager.addHandler(FirstInvalidCallChangeEvent.TYPE, handler);
+    }
+    public static interface FirstInvalidCallChangeHandler extends EventHandler {
+        void onFirstInvalidCallChange(FirstInvalidCallChangeEvent sce);
+    }
+    static class FirstInvalidCallChangeEvent extends GwtEvent<FirstInvalidCallChangeHandler> {
+        public static final GwtEvent.Type<FirstInvalidCallChangeHandler> TYPE =
+            new GwtEvent.Type<FirstInvalidCallChangeHandler>();
+        public final int oldValue, newValue;
+        public FirstInvalidCallChangeEvent(int oldValue, int newValue) {
+            this.oldValue = oldValue;
+            this.newValue = newValue;
+        }
+        @Override
+        public Model getSource() { return (Model) super.getSource(); }
+        @Override
+        protected void dispatch(FirstInvalidCallChangeHandler handler) {
+            handler.onFirstInvalidCallChange(this);
+        }
+        @Override
+        public GwtEvent.Type<FirstInvalidCallChangeHandler> getAssociatedType() {
             return TYPE;
         }
     }

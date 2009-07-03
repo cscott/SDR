@@ -77,6 +77,9 @@ body {
   font-weight: bold;
   //position: fixed;
 }
+.callListHeader td {
+  border-bottom: 2px solid #ddd;
+}
 /* Call prompt */
 .callEntry {
   font-weight: bold;
@@ -89,6 +92,7 @@ body {
   font-size: 50%;
   background: white;
   border-width: 1px;
+  margin: 1px;
 }
 /* Label showing the level */
 .levelLabel {
@@ -159,5 +163,28 @@ body {
 }
 /* shrink wrap the play button around its icon */
 button.playButton {
- padding: 2px 0 0 0;
+        padding: 2px 0 0 0;
+}
+/* call list table styling */
+table.callList {
+        border-spacing: 0;
+}
+/* highlight the current call */
+.callList .highlight {
+        background: #e3e8f3;
+        font-weight: bold;
+        color: #444;
+}
+/* draw insertion point above highlighted shell */
+.callList .highlight td {
+        border-top: 3px solid #2062B8;
+}
+/* draw red line under last valid call */
+.callList .last-valid td {
+        border-bottom: 3px solid red;
+}
+/* bits of stuff in the call list which is not a call */
+.callList .not-a-call {
+        font-style: italic;
+        color: #888;
 }
