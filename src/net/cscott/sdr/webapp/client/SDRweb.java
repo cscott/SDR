@@ -38,12 +38,14 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTMLTable;
+import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
@@ -52,6 +54,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.AbstractImagePrototype.ImagePrototypeElement;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 
@@ -168,7 +171,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         callBar.setWidth("100%");
         Label callLabel = new Label("Call: ");
         callLabel.setHorizontalAlignment(Label.ALIGN_RIGHT);
-        Button callGo = new Button("Add");
+        Button callGo = new Button(imageBundle.icon_add().getHTML());
         callEntry.setWidth("100%");
         callEntry.setStyleName("callEntry");
         callBar.add(callLabel, DockPanel.LINE_START);
@@ -236,20 +239,23 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
 	canvasPanel.add(errorMsg);
         canvasPanel.add(currentCall);
 
-        final Button playButton = new Button("<img />");
+        final ImagePrototypeElement playElement =
+            imageBundle.icon_media_play().createElement();
+        final Button playButton = new Button();
+        playButton.getElement().appendChild(playElement);
         model.addPlayStatusChangeHandler(new PlayStatusChangeHandler() {
-            String lastIcon = "nothing";
+            boolean wasPlay = true;
             public void onPlayStatusChange(PlayStatusChangeEvent sce) {
-                String icon = model.isPlaying() ? "Pause" : "Play";
-                if (icon.equals(lastIcon)) return; // suppress extra updates
-                lastIcon = icon;
+                // should be the *opposite* of the current play status
+                boolean isPlay = !model.isPlaying();
+                if (wasPlay==isPlay) return; // suppress extra updates
+                wasPlay = isPlay;
                 // updating just the image src/title/alt instead of replacing
                 // the entire <img> element causes less flashing on gecko
-                Element img = playButton.getElement().getFirstChildElement();
-                img.setAttribute("src", GWT.getModuleBaseURL() +
-                                 "stock_media-"+icon.toLowerCase()+".png");
-                img.setAttribute("alt", icon);
-                img.setAttribute("title", icon);
+                AbstractImagePrototype p = isPlay ?
+                        imageBundle.icon_media_play() :
+                        imageBundle.icon_media_pause();
+                p.applyTo(playElement);
             }});
         playButton.addStyleName("playButton");
         playButton.addClickHandler(new ClickHandler(){
@@ -568,8 +574,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
             rf.removeStyleName(row, "last-call");
             fcf.setColSpan(row, 0, 1);
             Button removeButton = new Button
-                ("<img src=\""+GWT.getModuleBaseURL()+"close-button.png\" "+
-                      "alt=\"X\" />");
+                (imageBundle.icon_close_button().getHTML());
             removeButton.setStyleName("removeButton");
             final int ci = callIndex; // for use in click handler
             removeButton.addClickHandler(new ClickHandler(){
@@ -620,4 +625,11 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         }
         public abstract void retry();
     }
+    public interface SdrImageBundle extends ImageBundle {
+        public AbstractImagePrototype icon_add();
+        public AbstractImagePrototype icon_close_button();
+        public AbstractImagePrototype icon_media_pause();
+        public AbstractImagePrototype icon_media_play();
+    }
+    public final SdrImageBundle imageBundle = GWT.create(SdrImageBundle.class);
 }
