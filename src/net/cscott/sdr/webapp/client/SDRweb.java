@@ -23,8 +23,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -50,6 +48,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -172,7 +171,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         Label callLabel = new Label("Call: ");
         callLabel.setHorizontalAlignment(Label.ALIGN_RIGHT);
         Button callGo = new Button(imageBundle.icon_add().getHTML());
-        callEntry.setWidth("100%");
+        callEntry.setWidth("98%");
         callEntry.setStyleName("callEntry");
         callEntry.getElement().setAttribute("autocorrect", "off");
         callEntry.getElement().setAttribute("autocapitalize", "off");
@@ -328,7 +327,6 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         });
 
         // set up default text and handlers for callEntry
-        //callEntry.setText("Type a square dance call");
         // Listen for keyboard events in the input box.
         callEntry.getTextBox().addKeyPressHandler(new KeyPressHandler() {
             public void onKeyPress(KeyPressEvent event) {
@@ -336,10 +334,6 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                     !callEntry.isSuggestionListShowing()) {
                     activate();
                 }
-            }});
-        callEntry.getTextBox().addFocusHandler(new FocusHandler() {
-            public void onFocus(FocusEvent event) {
-                selectCall();
             }});
         // Listen for mouse events on the Add button.
         callGo.addClickHandler(new ClickHandler() {
@@ -441,12 +435,9 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
 
     void activate() {
         String newCall = callEntry.getText();
-        this.selectCall();
         this.model.addCallAtPoint(newCall);
-    }
-    void selectCall() {
-        callEntry.getTextBox()
-            .setSelectionRange(0, callEntry.getText().length());
+        // clear entry.
+        callEntry.setText("");
     }
     void doResize() {
         doResize(Window.getClientWidth(), Window.getClientHeight());
@@ -575,8 +566,8 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
             rf.removeStyleName(row, "not-a-call");
             rf.removeStyleName(row, "last-call");
             fcf.setColSpan(row, 0, 1);
-            Button removeButton = new Button
-                (imageBundle.icon_close_button().getHTML());
+            PushButton removeButton = new PushButton
+                (imageBundle.icon_close_button().createImage());
             removeButton.setStyleName("removeButton");
             final int ci = callIndex; // for use in click handler
             removeButton.addClickHandler(new ClickHandler(){

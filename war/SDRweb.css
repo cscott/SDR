@@ -86,17 +86,8 @@ body {
 /* Call prompt */
 .callEntry {
   font-weight: bold;
-  padding-left: 3px;
-  padding-right: 3px;
 }
 
-.removeButton {
-  padding: 0;
-  font-size: 50%;
-  background: white;
-  border-width: 1px;
-  margin: 1px;
-}
 /* Label showing the level */
 .levelLabel {
   padding: 3px;
@@ -212,5 +203,5 @@ table.callList {
 }
 /* the name of the current call */
 .currentCall {
-        font-size: 200%;
+        font-size: 150%;
 }
