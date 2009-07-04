@@ -18,7 +18,20 @@
 
   <!-- Determine if canvas is supported. -->
   <define-property name="canvas.support" values="yes,no"/>
-  <set-property name="canvas.support" value="no"/>
+  <property-provider name="canvas.support"><![CDATA[
+      try {
+        /* our test might fail on IE, but we actually support it */
+        var ua = navigator.userAgent.toLowerCase();
+        if (ua.indexOf("msie") != -1)
+                return "yes";
+        /* catch GWT's hosted mode browser, which doesn't support canvas */
+        var elem = document.createElement('canvas');
+        if (elem==null ||
+            elem.toString() == "[object HTMLUnknownElement]")
+                return "no";
+      } catch (e) { }
+      return "yes";
+  ]]></property-provider>
   <!-- Replace canvas in hosted mode -->
   <replace-with class="net.cscott.sdr.webapp.client.DanceFloorCanvas">
     <when-type-is class="net.cscott.sdr.webapp.client.DanceFloor"/>
