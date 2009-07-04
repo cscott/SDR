@@ -174,6 +174,8 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         Button callGo = new Button(imageBundle.icon_add().getHTML());
         callEntry.setWidth("100%");
         callEntry.setStyleName("callEntry");
+        callEntry.getElement().setAttribute("autocorrect", "off");
+        callEntry.getElement().setAttribute("autocapitalize", "off");
         callBar.add(callLabel, DockPanel.LINE_START);
         callBar.add(callGo, DockPanel.LINE_END);
         callBar.add(callEntry, DockPanel.CENTER);
