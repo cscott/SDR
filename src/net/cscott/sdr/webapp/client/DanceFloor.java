@@ -9,10 +9,19 @@ import com.google.gwt.user.client.ui.Grid;
 
 public class DanceFloor extends AbsolutePanel {
     public final int dancerSize = 40; /* pixels */
+    private int width, height;
 
     private List<CompositeDancer> dancers = new ArrayList<CompositeDancer>(8);
     public DanceFloor() {
         addStyleName("dance-floor");
+    }
+    void updateCenter() {
+        int oldWidth = width, oldHeight = height;
+        this.width = getOffsetWidth();
+        this.height = getOffsetHeight();
+        if (width!=oldWidth || height!=oldHeight)
+            for (CompositeDancer d: dancers)
+                updatePosition(d);
     }
 
     void setNumDancers(int n) {
@@ -27,11 +36,20 @@ public class DanceFloor extends AbsolutePanel {
         }
     }
     void update(int dancerNum, double x, double y, double rotation) {
+        // adjust x and y to dance floor coordinates, where
+        // 2 units == 1 dancer size
         CompositeDancer d = dancers.get(dancerNum);
         d.update(rotation);
+        d.x = x;
+        d.y = y;
+        updatePosition(d);
+    }
+    private void updatePosition(CompositeDancer d) {
+        double cx = (this.width + d.x*dancerSize)/2.;
+        double cy = (this.height - d.y*dancerSize)/2.;
         double offset = d.getSize()/2.;
-        setWidgetPosition(d, (int)Math.round(x-offset),
-                          (int)Math.round(y-offset));
+        setWidgetPosition(d, (int)Math.round(cx-offset),
+                          (int)Math.round(cy-offset));
     }
 
     static class CompositeDancer extends AbsolutePanel {
@@ -45,6 +63,8 @@ public class DanceFloor extends AbsolutePanel {
         final int coupleNum;
         /** Is this a boy? */
         final boolean isBoy;
+        /** Position in dance floor coordinates (not pixels) */
+        double x, y;
         CompositeDancer(int coupleNum, boolean isBoy) {
             this.coupleNum = coupleNum;
             this.isBoy = isBoy;
@@ -52,7 +72,7 @@ public class DanceFloor extends AbsolutePanel {
             this.add(dancer.widget(), 0, 0);
             // then the label
             this.add(label, 0, 0);
-            label.setHTML(0, 0, Integer.toString(coupleNum));
+            label.setHTML(0, 0, Integer.toString(coupleNum+1));
             label.addStyleName("dancer-number");
             this.addStyleName("dancer");
             this.setPixelSize(getSize(), getSize());

@@ -19,8 +19,6 @@ import net.cscott.sdr.webapp.client.Model.SequenceInfoChangeHandler;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -326,11 +324,10 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         canvasPanel.add(topMsgs, 0, 0);
         RootPanel.get("div-canvas-inner").add(canvasPanel);
         danceFloor.setNumDancers(4);
-        float off=50;
-        danceFloor.update(0, off-20, off-20, Math.toRadians(5));
-        danceFloor.update(1, off+20, off-20, Math.toRadians(-5));
-        danceFloor.update(2, off+20, off+20, Math.toRadians(180));
-        danceFloor.update(3, off-20, off+20, Math.toRadians(180));
+        danceFloor.update(0, -1, -1, Math.toRadians(5));
+        danceFloor.update(1, +1, -1, Math.toRadians(-5));
+        danceFloor.update(2, +1, +1, Math.toRadians(185));
+        danceFloor.update(3, -1, +1, Math.toRadians(175));
 
         // we want to take advantage of the entire client area
         Window.setMargin("0px");
@@ -472,13 +469,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         playBar.getElement().setAttribute("style", style);
         int playBarHeight = playBar.getOffsetHeight();
         canvasPanel.setHeight((height-panelBottom-playBarHeight)+"px");
-        if (false) { // iphone hack
-            NodeList<Element> nodes = callList.getElement().getElementsByTagName("tbody");
-            for (int i=0; i<nodes.getLength(); i++) {
-                Element e = nodes.getItem(i);
-                if (e!=null) e.setAttribute("style", "height: "+(height-panelBottom-4)+"px;");
-            }
-        }
+        danceFloor.updateCenter();
     }
     public void updateErrorMsg() {
         String msg = null;
