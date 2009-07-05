@@ -65,7 +65,7 @@ public class Rotation {
     public Rotation negate() {
         return create(this.amount.negate(), this.modulus);
     }
-    /** Normalize rotation to the range 0-modulus. */
+    /** Normalize rotation to the range [0, modulus). */
     public Rotation normalize() {
         if (this.modulus.compareTo(Fraction.ZERO)==0) return this;
         // make rotation positive.
