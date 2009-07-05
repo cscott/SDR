@@ -33,11 +33,11 @@
       return "yes";
   ]]></property-provider>
   <!-- Replace canvas in hosted mode -->
-  <replace-with class="net.cscott.sdr.webapp.client.DanceFloorCanvas">
-    <when-type-is class="net.cscott.sdr.webapp.client.DanceFloor"/>
+  <replace-with class="net.cscott.sdr.webapp.client.DancerCanvas">
+    <when-type-is class="net.cscott.sdr.webapp.client.Dancer"/>
   </replace-with>
-  <replace-with class="net.cscott.sdr.webapp.client.DanceFloorSimple">
-    <when-type-is class="net.cscott.sdr.webapp.client.DanceFloor"/>
+  <replace-with class="net.cscott.sdr.webapp.client.DancerSimple">
+    <when-type-is class="net.cscott.sdr.webapp.client.Dancer"/>
     <when-property-is name="canvas.support" value="no"/>
   </replace-with>
 

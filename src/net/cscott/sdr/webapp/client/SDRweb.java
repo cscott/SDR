@@ -70,7 +70,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
     final Label errorMsg = new Label();
     final VerticalPanel topPanel = new VerticalPanel();
     final VerticalPanel canvasPanel = new VerticalPanel();
-    final DanceFloor danceFloor = GWT.create(DanceFloor.class);
+    final Dancer danceFloor = GWT.create(Dancer.class);
     final MenuItem sequenceTitle =
         new MenuItem(SequenceInfo.UNTITLED, (Command)null);
     final SliderBar playSlider = new SliderBar(0.0, 1.0);
@@ -320,6 +320,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
 
         // canvas takes up all the rest of the space
         Widget canvas = danceFloor.widget();
+        danceFloor.drawDancer(1, false, Math.toRadians(5));
         canvasPanel.add(canvas);
         canvasPanel.setCellHeight(canvas, "100%");
         RootPanel.get("div-canvas").add(canvasPanel);
