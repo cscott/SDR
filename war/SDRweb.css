@@ -182,6 +182,11 @@ table.callList {
 .callList .highlight td {
         border-top: 3px solid #2062B8;
 }
+/* use a grey border if the last call is also the header (ie new sequence) */
+.callList .last-valid.last-call.callListHeader td,
+.callList .callListHeader td {
+        border-bottom: 2px solid #ddd;
+}
 /* draw red line under last valid call */
 .callList .last-valid td {
         border-bottom: 3px solid red;
@@ -189,11 +194,6 @@ table.callList {
 /* suppress red line if the last valid call is also the last call */
 .callList .last-valid.last-call td {
         border-bottom: 0;
-}
-/* use a grey border if the last call is also the header (ie new sequence) */
-.callList .last-valid.last-call.callListHeader td,
-.callList .callListHeader td {
-        border-bottom: 2px solid #ddd;
 }
 
 /* bits of stuff in the call list which is not a call */
