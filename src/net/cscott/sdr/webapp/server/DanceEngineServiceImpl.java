@@ -72,7 +72,7 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
         }
         // construct an EngineResults
         EngineResults results = new EngineResults
-            (sequenceNumber, currentCall, messages, timing,
+            (sequenceNumber, currentCall, messages, null/*XXX*/, timing,
              totalBeats.doubleValue());
         return results;
     }

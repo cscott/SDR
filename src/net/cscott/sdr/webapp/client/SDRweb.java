@@ -504,15 +504,8 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         }
         // highlight the call list row corresponding to the current slider pos
         if (model.getEngineResults()!=null) {
-            int callNum = 0;
-            double time = 0;
-            // XXX: will need a more efficient data struct eventually
-            for (Double duration : model.getEngineResults().timing) {
-                time += duration;
-                if (model.getSliderPos() < time)
-                    break;
-                callNum++;
-            }
+            int callNum =
+                model.getEngineResults().getCallNum(model.getSliderPos());
             // note that callNum could be calls.size() (eg, if there are 0 calls)
             model.setHighlightedCall(callNum);
         }
