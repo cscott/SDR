@@ -119,6 +119,13 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 // better-formatted version, and print *that*
                 Window.print();
             }});
+        fileMenu.addItem("Locate", new Command() {
+            public void execute() {
+                getLocation(new EAsyncCallback<GeoPt>(){
+                    public void onSuccess(GeoPt result) {
+                        Window.alert("Got location: "+result.latitude+","+result.longitude);
+                    }});
+            }});
         fileMenu.addItem("Logout", new Command() {
             public void execute() {
                 storageService.logout(new EAsyncCallback<String>() {
@@ -595,6 +602,50 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         updateCurrentCall();
         doResize();
     }
+    /** Support for geolocation. */
+    public static class GeoPt {
+        public final double latitude, longitude;
+        public GeoPt(double latitude, double longitude) {
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+    }
+    /** Helper function for native method getLocation() */
+    @SuppressWarnings("unused")
+    private static void invokeLocationCallback(double latitude,
+                                               double longitude,
+                                               AsyncCallback<GeoPt> async) {
+        async.onSuccess(new GeoPt(latitude, longitude));
+    }
+    /** Helper function for native method getLocation() */
+    @SuppressWarnings("unused")
+    private static void invokeLocationCallbackError(String message,
+                                                    AsyncCallback<GeoPt> async){
+        async.onFailure(new RuntimeException(message));
+    }
+    /** Ask for location.  Unfortunately, it looks like the async callback is
+     *  simply never invoked if permission to use the location is denied by
+     *  the user.
+     */
+    public static native void getLocation(AsyncCallback<GeoPt> async) /*-{
+        var cb = function(lat, lng) {
+          @net.cscott.sdr.webapp.client.SDRweb::invokeLocationCallback(DDLcom/google/gwt/user/client/rpc/AsyncCallback;)(lat, lng, async);
+        };
+        var err = function(msg) {
+          @net.cscott.sdr.webapp.client.SDRweb::invokeLocationCallbackError(Ljava/lang/String;Lcom/google/gwt/user/client/rpc/AsyncCallback;)(msg, async);
+        };
+        try {
+          navigator.geolocation.getCurrentPosition(function(position, perror) {
+            if (position)
+              cb(position.coords.latitude, position.coords.longitude);
+            else
+              err("Geolocation error");
+          });
+        } catch (e) {
+            err("Geolocation not supported");
+        }
+    }-*/;
+
     /** Callback interface which handles errors (in a very simplistic way). */
     static abstract class EAsyncCallback<T> implements AsyncCallback<T> {
         public void onFailure(Throwable caught) {
