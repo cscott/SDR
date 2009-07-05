@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- use the canvas to draw dancer outlines, and provide means to save -->
+<!-- them as pngs. -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<style type="text/css">
+#dance-floor {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 200px;
+   height: 200px;
+   background: #eee;
+   border: 2px solid blue;
+   overflow: hidden;
+}
+div.dancer {
+   position: absolute;
+   top: 10px;
+   width: 40px;
+   height: 40px;
+}
+#dancer1 {
+   left: 10px;
+}
+#dancer2 {
+   left: 45px;
+}
+   
+.dancer-background, .dancer-number {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+}
+.dancer-number {
+   /* only table cells can be vertically aligned */
+   text-align: center;
+   font-weight: bold;
+   vertical-align: middle;
+   font-size: 14px;
+}
+#form { padding-top: 210px; }
+</style>
+<script type="text/javascript">
+var x=0;
+var y=10;
+var rot = 0;
+function doMove() {
+ x += 2;
+ y += 1;
+ rot += 1;
+ if (x>200) x = -60;
+ if (y>200) y = -40;
+ if (rot>=360) rot = 0;
+ var elem1 = document.getElementById("dancer1");
+ var elem2 = document.getElementById("dancer2");
+ elem1.style.left = x+'px';
+ elem1.style.top = y+'px';
+ elem2.style.left = (x+35)+'px';
+ elem2.style.top = y+'px';
+ redrawCanvas(rot);
+}
+
+function drawCircle(ctx) {
+  var tw = 1.25;
+  ctx.fillStyle = 'white';
+  ctx.strokeStyle = 'black';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(70,50);
+  ctx.arc(50,50,20+tw,0,2*Math.PI,true);
+  ctx.fill();
+  ctx.stroke();
+}
+function drawBoy(ctx) {
+  ctx.fillStyle = 'red';
+  ctx.strokeStyle = 'black';
+  var tw = 1.25;
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(20+tw,20+tw);
+  ctx.lineTo(20+tw,80-tw);
+  ctx.lineTo(80-tw,80-tw);
+  ctx.lineTo(80-tw,20+tw);
+  ctx.lineTo(60-tw,20+tw);
+  ctx.lineTo(60-tw,5+tw);
+  ctx.lineTo(40+tw,5+tw);
+  ctx.lineTo(40+tw,20+tw);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  drawCircle(ctx);
+}
+function drawGirl(ctx) {
+  ctx.fillStyle = 'red';
+  ctx.strokeStyle = 'black';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  var tw = 1.25;
+  var nose = 17*2*Math.PI/360;
+  ctx.arc(50,50,30+tw,3*Math.PI/2+nose,3*Math.PI/2-nose,false);
+  ctx.lineTo(50,5+tw);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  drawCircle(ctx);
+}
+
+function redrawCanvas(rot) {
+  var ctx = document.getElementById("dancer1-canvas").getContext("2d");
+  ctx.save();
+  ctx.clearRect(0,0,100,100);
+  ctx.translate(20,20);
+  ctx.scale(40/100, 40/100);
+  ctx.rotate(rot*2*Math.PI/360);
+  ctx.translate(-50,-50);
+  drawBoy(ctx);
+  ctx.restore();
+
+  ctx = document.getElementById("dancer2-canvas").getContext("2d");
+  ctx.save();
+  ctx.clearRect(0,0,100,100);
+  ctx.translate(20,20);
+  ctx.scale(40/100, 40/100);
+  ctx.rotate(rot*2*Math.PI/360);
+  ctx.translate(-50,-50);
+  drawGirl(ctx);
+  ctx.restore();
+}
+
+function doSubmit() {
+  var text = document.getElementById("rotation").value;
+  redrawCanvas(parseFloat(text));
+  var canvas1 = document.getElementById("dancer1-canvas");
+  document.getElementById("image1").src = canvas1.toDataURL();
+  var canvas2 = document.getElementById("dancer2-canvas");
+  document.getElementById("image2").src = canvas2.toDataURL();
+}
+
+// first, draw dancer
+function onLoad() {
+  doSubmit();
+
+  // start animation
+  //setInterval(doMove, 100);
+}
+</script>
+</head>
+
+<body onLoad="javascript:onLoad();">
+
+<div id="dance-floor">
+
+  <div id="dancer1" class="dancer">
+    <canvas class="dancer-background" id="dancer1-canvas" width="40" height="40"></canvas>
+    <table class="dancer-number"><tr><td>1</td></tr></table>
+  </div>
+
+  <div id="dancer2" class="dancer">
+    <canvas class="dancer-background" id="dancer2-canvas" width="40" height="40"></canvas>
+    <table class="dancer-number"><tr><td>2</td></tr></table>
+  </div>
+  
+</div>
+
+<form id="form" onsubmit="doSubmit(); return false;">
+<input type="text" id="rotation" value="0" />
+</form>
+
+<img id="image1" />
+<img id="image2" />
+
+</body>
+
+</html>
