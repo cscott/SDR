@@ -7,6 +7,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 /** A 2D point, where x and y coordinate are {@link Fraction}s. */
 public class Point {
+    public static final Point ZERO = new Point(Fraction.ZERO, Fraction.ZERO);
     public final Fraction x, y;
     public Point(Fraction x, Fraction y) {
         this.x = x; this.y = y;

@@ -73,15 +73,20 @@ public class Bezier {
         public Bezier2D(Point... p) {
             this.p = p;
         }
-        public String toString() {
-            return Arrays.asList(p).toString();
-        }
+        /** Return the degree of the Bezier curve, which is one less than the
+         *  number of control points. */
         public int degree() {
             return p.length-1;
         }
+        /** Return the specified control point. */
+        public Point cp(int i) {
+            return this.p[i];
+        }
+        public String toString() {
+            return Arrays.asList(p).toString();
+        }
         /** Evaluate the given Bezier at the given time parameter, which should
-         *  be in the range [0, 1].
-         */
+         *  be in the range [0, 1]. */
         public Point evaluate(Fraction t) {
             switch (degree()) {
             case 0:
