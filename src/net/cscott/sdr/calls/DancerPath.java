@@ -332,19 +332,19 @@ public class DancerPath {
     public Bezier2D bezierPath() {
         /* Box pass through takes 2 beats, and travels 2 of our units;
          * therefore nominal dancer speed is 1 unit/beat.  Our output t
-         * corresponds to {@link #time} beats, so we scale down by that.
+         * corresponds to {@link #time} beats, so we scale by that.
          * Also, the derivative of a cubic bezier gets a '3' term, so
          * further multiply by one-third.
          */
-        Fraction scale = this.time.multiply(Fraction.valueOf(3));
+        Fraction scale = this.time.divide(Fraction.valueOf(3));
         Point p1 = new Point(this.from.x, this.from.y);
         Point p1tan = tangentStart();
-        Point p2 = new Point(this.from.x.add(p1tan.x.divide(scale)),
-                             this.from.y.add(p1tan.y.divide(scale)));
+        Point p2 = new Point(this.from.x.add(p1tan.x.multiply(scale)),
+                             this.from.y.add(p1tan.y.multiply(scale)));
         Point p4 = new Point(this.to.x, this.to.y);
         Point p4tan = tangentFinish();
-        Point p3 = new Point(this.to.x.subtract(p4tan.x.divide(scale)),
-                             this.to.y.subtract(p4tan.y.divide(scale)));
+        Point p3 = new Point(this.to.x.subtract(p4tan.x.multiply(scale)),
+                             this.to.y.subtract(p4tan.y.multiply(scale)));
         return new Bezier2D(p1, p2, p3, p4);
     }
     /** Return a 2D bezier describing the dancer's facing direction.  The 't'
