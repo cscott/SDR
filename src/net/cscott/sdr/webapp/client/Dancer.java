@@ -11,4 +11,6 @@ import com.google.gwt.user.client.ui.Widget;
 public interface Dancer {
     Widget widget();
     void drawDancer(int coupleNum, boolean isBoy, double rotation);
+    /** Return size, in pixels. */
+    int getSize();
 }

@@ -52,7 +52,6 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.AbstractImagePrototype.ImagePrototypeElement;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
@@ -70,7 +69,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
     final Label errorMsg = new Label();
     final VerticalPanel topPanel = new VerticalPanel();
     final VerticalPanel canvasPanel = new VerticalPanel();
-    final Dancer danceFloor = GWT.create(Dancer.class);
+    final DanceFloor danceFloor = new DanceFloor();
     final MenuItem sequenceTitle =
         new MenuItem(SequenceInfo.UNTITLED, (Command)null);
     final SliderBar playSlider = new SliderBar(0.0, 1.0);
@@ -319,11 +318,15 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         RootPanel.get("div-playbar").add(playBar);
 
         // canvas takes up all the rest of the space
-        Widget canvas = danceFloor.widget();
-        danceFloor.drawDancer(1, false, Math.toRadians(5));
-        canvasPanel.add(canvas);
-        canvasPanel.setCellHeight(canvas, "100%");
+        canvasPanel.add(danceFloor);
+        canvasPanel.setCellHeight(danceFloor, "100%");
         RootPanel.get("div-canvas").add(canvasPanel);
+        danceFloor.setNumDancers(4);
+        float off=50;
+        danceFloor.update(0, off-20, off-20, Math.toRadians(5));
+        danceFloor.update(1, off+20, off-20, Math.toRadians(-5));
+        danceFloor.update(2, off+20, off+20, Math.toRadians(180));
+        danceFloor.update(3, off-20, off+20, Math.toRadians(180));
 
         // we want to take advantage of the entire client area
         Window.setMargin("0px");
@@ -463,7 +466,8 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         style = "padding-left: "+right+"px;";
         canvasPanel.getElement().setAttribute("style", style);
         playBar.getElement().setAttribute("style", style);
-        canvasPanel.setHeight((height-panelBottom)+"px");
+        int playBarHeight = playBar.getOffsetHeight();
+        canvasPanel.setHeight((height-panelBottom-playBarHeight)+"px");
         if (false) { // iphone hack
             NodeList<Element> nodes = callList.getElement().getElementsByTagName("tbody");
             for (int i=0; i<nodes.getLength(); i++) {

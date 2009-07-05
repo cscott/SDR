@@ -15,6 +15,7 @@ public class DancerCanvas implements Dancer {
         canvas.addStyleName("dancer-background");
     }
     public Widget widget() { return canvas; }
+    public int getSize() { return size; }
     public void drawDancer(int coupleNum, boolean isBoy, double rotation) {
         Color c;
         switch (coupleNum % 4) {

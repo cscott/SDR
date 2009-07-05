@@ -12,6 +12,7 @@ public class DancerSimple implements Dancer {
     { image.addStyleName("dancer-background"); }
 
     public Widget widget() { return image; }
+    public int getSize() { return 40; /* fixed */}
     public void drawDancer(int coupleNum, boolean isBoy, double rotation) {
         boolean isBlue = (coupleNum % 2) == 0;
         int rot = (int) Math.round(8*rotation/(2*Math.PI));

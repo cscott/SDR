@@ -57,6 +57,11 @@ body {
    left: 0;
    width: 100%;
 }
+div.dance-floor {
+   height: 99%;
+   width: 99%;
+   overflow: visible !important;
+}
 
 /* login popup */
 .login-popup {
@@ -204,4 +209,16 @@ table.callList {
 /* the name of the current call */
 .currentCall {
         font-size: 150%;
+}
+/* ----- dancer styling ----- */
+.dancer-background, .dancer-number {
+   width: 100%;
+   height: 100%;
+}
+.dancer-number {
+   /* only table cells can be vertically aligned */
+   text-align: center;
+   font-weight: bold;
+   vertical-align: middle;
+   font-size: 14px;
 }
