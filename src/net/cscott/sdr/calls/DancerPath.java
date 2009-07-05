@@ -121,9 +121,43 @@ import org.apache.commons.lang.builder.ToStringStyle;
  *  js> dp.bezierPath()
  *  [0,0, 0,1/6, 2,1 5/6, 2,2]
  *  js> dp.bezierDirection()
- *  [0,1, 1,0]
+ *  [0,1, 1,1, 1,0]
+ * @doc.test Make sure "stand still" paths work:
+ *  js> importPackage(net.cscott.sdr.util);
+ *  js> dp = new DancerPath(Position.getGrid(0,0,"n"),
+ *    >                     Position.getGrid(0,0,"n"),
+ *    >                     Fraction.valueOf(2), null);
+ *  DancerPath[from=0,0,n,to=0,0,n,time=2,pointOfRotation=<null>]
+ *  js> dp.tangentStart()
+ *  0,0
+ *  js> dp.tangentFinish()
+ *  0,0
+ *  js> dp.bezierPath()
+ *  [0,0, 0,0, 0,0, 0,0]
+ *  js> dp.bezierDirection()
+ *  [0,1, 0,1]
  *  js> dp.bezierDirection().raise()
- *  [0,1, 1/2,1/2, 1,0]
+ *  [0,1, 0,1, 0,1]
+ * @doc.test "Turn in place" paths turn in the 'minimum sweep' direction:
+ *  js> importPackage(net.cscott.sdr.util);
+ *  js> dp = new DancerPath(Position.getGrid(0,0,"ne"),
+ *    >                     Position.getGrid(0,0,"nw"),
+ *    >                     Fraction.valueOf(2), null);
+ *  DancerPath[from=0,0,ne,to=0,0,nw,time=2,pointOfRotation=<null>]
+ *  js> dp.tangentStart()
+ *  0,0
+ *  js> dp.tangentFinish()
+ *  0,0
+ *  js> dp.bezierPath()
+ *  [0,0, 0,0, 0,0, 0,0]
+ *  js> dp.bezierDirection()
+ *  [1,1, 0,1, -1,1]
+ *  js> dp = new DancerPath(Position.getGrid(0,0,"nw"),
+ *    >                     Position.getGrid(0,0,"ne"),
+ *    >                     Fraction.valueOf(2), null);
+ *  DancerPath[from=0,0,nw,to=0,0,ne,time=2,pointOfRotation=<null>]
+ *  js> dp.bezierDirection()
+ *  [-1,1, 0,1, 1,1]
  */
 public class DancerPath {
     /**
@@ -236,7 +270,10 @@ public class DancerPath {
      * facing direction or reverse facing direction, whichever is closer.
      * If a sashay flag is set, rotate the dancer's facing direction 90-degrees
      * before doing the computation. */
-    private Point tangent(ExactRotation facing, Point motionDir, boolean isSashay) {
+    private static Point tangent(ExactRotation facing, Point motionDir,
+                                 boolean isSashay) {
+        // if standing still, return 0,0
+        if (motionDir.equals(Point.ZERO)) return Point.ZERO;
         // motionDir is the linear vector from start to finish
         ExactRotation option1 = facing.normalize();
         if (isSashay) option1 = option1.add(Fraction.ONE_QUARTER).normalize();
@@ -251,12 +288,42 @@ public class DancerPath {
         // convert the result into a "unit" vector.
         return new Point(result.toX(), result.toY());
     }
-    /** Compute the minimum angle between heading a and heading b. */
-    private Fraction minSweep(ExactRotation a, ExactRotation b) {
+    /** Compute the minimum angle between heading a and heading b.
+     * @doc.test
+     *  js> DancerPath.minSweep(ExactRotation.ONE_EIGHTH, ExactRotation.SEVEN_EIGHTHS);
+     *  1/4
+     *  js> DancerPath.minSweep(ExactRotation.SEVEN_EIGHTHS, ExactRotation.ONE_EIGHTH);
+     *  1/4
+     */
+    // only public so we can target it with doc tests
+    public static Fraction minSweep(ExactRotation a, ExactRotation b) {
         Fraction aa = a.normalize().amount, bb = b.normalize().amount;
         Fraction s1 = (aa.compareTo(bb)<0) ? bb.subtract(aa) : aa.subtract(bb);
         Fraction s2 = Fraction.ONE.subtract(s1);
         return s1.compareTo(s2) < 0 ? s1 : s2;
+    }
+    /** Compute midpoint between given exact rotations, in minimum sweep
+     *  direction.  Breaks ties in CCW direction.
+     * @doc.test
+     *  js> DancerPath.midPoint(ExactRotation.ONE_EIGHTH, ExactRotation.SEVEN_EIGHTHS).normalize();
+     *  0
+     *  js> DancerPath.midPoint(ExactRotation.SEVEN_EIGHTHS, ExactRotation.ONE_EIGHTH).normalize();
+     *  0
+     *  js> DancerPath.midPoint(ExactRotation.ONE_EIGHTH, ExactRotation.FIVE_EIGHTHS).normalize();
+     *  7/8
+     *  js> DancerPath.midPoint(ExactRotation.FIVE_EIGHTHS, ExactRotation.ONE_EIGHTH).normalize();
+     *  7/8
+     */
+    // only public so we can target it with doc tests
+    public static ExactRotation midPoint(ExactRotation a, ExactRotation b) {
+        Fraction aa = a.normalize().amount, bb = b.normalize().amount;
+        boolean aaSmaller = aa.compareTo(bb) < 0;
+        Fraction s1 = (aaSmaller) ? bb.subtract(aa) : aa.subtract(bb);
+        Fraction s2 = Fraction.ONE.subtract(s1);
+        boolean s1Smaller = s1.compareTo(s2) < 0;
+        boolean isCW = !(aaSmaller ^ s1Smaller);
+        Fraction minSweep = (s1Smaller ? s1 : s2).divide(Fraction.TWO);
+        return isCW ? a.add(minSweep) : a.subtract(minSweep);
     }
     /** Return a 2D bezier describing the dancer's complete path.  The 't'
      *  parameter of the bezier should vary from 0 to 1 over {@link #time}
@@ -289,10 +356,12 @@ public class DancerPath {
         // if tangentStart and tangentFinish are lined up with the path,
         // then just return bezierPath().
         Point startTan = tangentStart(), endTan = tangentFinish();
-        ExactRotation startRot = ExactRotation.fromXY(startTan.x, startTan.y);
-        ExactRotation endRot = ExactRotation.fromXY(endTan.x, endTan.y);
-        if (startRot.equals(from.facing) && endRot.equals(to.facing))
-            return bezierPath().tangent();
+        if (!(startTan.equals(Point.ZERO) || endTan.equals(Point.ZERO))) {
+            ExactRotation startRot=ExactRotation.fromXY(startTan.x, startTan.y);
+            ExactRotation endRot = ExactRotation.fromXY(endTan.x, endTan.y);
+            if (startRot.equals(from.facing) && endRot.equals(to.facing))
+                return bezierPath().tangent();
+        }
         // if facingStart == facingFinish, return a constant path for that
         // facing direction.
         if (from.facing.equals(to.facing)) {
@@ -302,11 +371,20 @@ public class DancerPath {
         }
         // otherwise return a bezier which just linearly transitions from
         // facingStart to facingFinish
-        startRot = (ExactRotation) from.facing;
-        endRot = (ExactRotation) to.facing;
+        // note that facingStart and facingFinish must not be directly opposed
+        // or the resulting bezier will travel through 0,0.
+        ExactRotation startRot = (ExactRotation) from.facing;
+        ExactRotation endRot = (ExactRotation) to.facing;
         Point start = new Point(startRot.toX(), startRot.toY());
         Point end = new Point(endRot.toX(), endRot.toY());
-        return new Bezier2D(start, end); // linear
+        // We'd really want the bezier approximation to a circular arc from
+        // start to end, but approximate it roughly by adding a midpoint.
+        // This also ensures that the resulting bezier doesn't travel though
+        // 0,0 if startRot and endRot are 180-degrees apart (but we'll
+        // arbitrarily decide to turn CCW in that case).
+        ExactRotation midRot = midPoint(startRot, endRot);
+        Point mid = new Point(midRot.toX(), midRot.toY());
+        return new Bezier2D(start, mid, end); // quasi-linear
     }
 
     /** Return true iff this {@link DancerPath} corresponds to
