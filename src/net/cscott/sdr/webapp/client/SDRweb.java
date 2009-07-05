@@ -443,6 +443,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
 
     void activate() {
         String newCall = callEntry.getText();
+        if (newCall.trim().length()==0) return; // nothing entered
         this.model.addCallAtPoint(newCall);
         // clear entry.
         callEntry.setText("");
