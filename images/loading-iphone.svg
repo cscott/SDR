@@ -1,0 +1,1132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="460"
+   height="320"
+   id="svg3727"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   version="1.0"
+   sodipodi:docbase="/home/cananian/Projects/SDR/images"
+   sodipodi:docname="loading-iphone.svg"
+   inkscape:export-filename="/home/cananian/Projects/SDR/images/loading-iphone.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs3729">
+    <linearGradient
+       id="linearGradient5107">
+      <stop
+         id="stop5109"
+         offset="0"
+         style="stop-color:#00ff00;stop-opacity:1;" />
+      <stop
+         id="stop5111"
+         offset="1"
+         style="stop-color:#009901;stop-opacity:0.40669855;" />
+    </linearGradient>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 256 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="512 : 256 : 1"
+       inkscape:persp3d-origin="256 : 170.66667 : 1"
+       id="perspective4299" />
+    <linearGradient
+       id="linearGradient4155">
+      <stop
+         style="stop-color:green;stop-opacity:0;"
+         offset="0"
+         id="stop4157" />
+      <stop
+         style="stop-color:lime;stop-opacity:0.6981132;"
+         offset="1"
+         id="stop4159" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3262">
+      <stop
+         style="stop-color:black;stop-opacity:0;"
+         offset="0"
+         id="stop3264" />
+      <stop
+         style="stop-color:black;stop-opacity:1;"
+         offset="1"
+         id="stop3266" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient19181">
+      <stop
+         style="stop-color:#ffeec3;stop-opacity:1"
+         offset="0"
+         id="stop19183" />
+      <stop
+         id="stop19189"
+         offset="0.85915494"
+         style="stop-color:#fad069;stop-opacity:1;" />
+      <stop
+         style="stop-color:#f4c34e;stop-opacity:1;"
+         offset="1"
+         id="stop19185" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient17403">
+      <stop
+         style="stop-color:blue;stop-opacity:1;"
+         offset="0"
+         id="stop17405" />
+      <stop
+         style="stop-color:#000072;stop-opacity:1"
+         offset="1"
+         id="stop17407" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient11126">
+      <stop
+         style="stop-color:#12ff12;stop-opacity:1;"
+         offset="0"
+         id="stop11128" />
+      <stop
+         style="stop-color:#00e100;stop-opacity:1"
+         offset="1"
+         id="stop11130" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient11108">
+      <stop
+         style="stop-color:#fcff90;stop-opacity:0.82464457;"
+         offset="0"
+         id="stop11110" />
+      <stop
+         id="stop11124"
+         offset="0.85211265"
+         style="stop-color:#fcee5e;stop-opacity:0.82464457;" />
+      <stop
+         style="stop-color:#ffde58;stop-opacity:0.86274511;"
+         offset="1"
+         id="stop11112" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient11126"
+       id="linearGradient11132"
+       x1="256"
+       y1="0"
+       x2="256"
+       y2="512"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient17403"
+       id="linearGradient17409"
+       x1="255.28912"
+       y1="312.60593"
+       x2="255.01437"
+       y2="419.84207"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.86344,0,0,0.8634401,1.0277995,-41.407056)" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient19187"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2271"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2273"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2275"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2277"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2279"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2281"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2283"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2285"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2287"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2289"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2291"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2293"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2295"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2297"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2299"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2301"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2303"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2305"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2307"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2309"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2311"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2313"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2315"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2317"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2319"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2321"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2323"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2325"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2327"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2329"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2331"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2333"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2335"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2337"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2339"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2341"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2343"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2345"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2347"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2349"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2351"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2353"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2355"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2357"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2359"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2361"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19181"
+       id="radialGradient2363"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.849423,8.070954e-7,-2.969606e-7,0.68204,-212.7075,57.8073)"
+       cx="250.41425"
+       cy="181.808"
+       fx="250.41425"
+       fy="181.808"
+       r="210.40974" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient11108"
+       id="linearGradient2369"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="pad"
+       x1="256.02991"
+       y1="7.9302173"
+       x2="256.02991"
+       y2="506.60376" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient11108"
+       id="linearGradient2373"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="pad"
+       x1="256.02991"
+       y1="7.9302173"
+       x2="256.02991"
+       y2="506.60376" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient11108"
+       id="linearGradient2375"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="pad"
+       x1="256.02991"
+       y1="7.9302173"
+       x2="256.02991"
+       y2="506.60376" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5107"
+       id="radialGradient5105"
+       cx="229.4417"
+       cy="160.10329"
+       fx="229.4417"
+       fy="160.10329"
+       r="229.25754"
+       gradientTransform="matrix(1,0,0,0.6972822,0,48.46612)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient11108"
+       id="linearGradient5135"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="pad"
+       x1="256.02991"
+       y1="7.9302173"
+       x2="256.02991"
+       y2="506.60376"
+       gradientTransform="matrix(0.659491,-0.1619739,0.1619739,0.659491,-40.037817,-55.473935)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient11108"
+       id="linearGradient5140"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="pad"
+       x1="256.02991"
+       y1="7.9302173"
+       x2="256.02991"
+       y2="506.60376"
+       gradientTransform="translate(-26.417846,-143.28133)" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="50"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.3313495"
+     inkscape:cx="256"
+     inkscape:cy="175.34105"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer3"
+     width="512px"
+     height="512px"
+     showgrid="true"
+     inkscape:grid-bbox="false"
+     inkscape:window-width="1012"
+     inkscape:window-height="687"
+     inkscape:window-x="0"
+     inkscape:window-y="26"
+     borderlayer="true">
+    <inkscape:grid
+       id="GridFromPre046Settings"
+       type="xygrid"
+       originx="0px"
+       originy="0px"
+       spacingx="16px"
+       spacingy="16px"
+       color="#0000ff"
+       empcolor="#0000ff"
+       opacity="0.2"
+       empopacity="0.4"
+       empspacing="4"
+       visible="true"
+       enabled="true" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata3732">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Background"
+     sodipodi:insensitive="true">
+    <rect
+       style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:3.54330707;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:inline"
+       id="rect4321"
+       width="460"
+       height="320"
+       x="0"
+       y="0" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Back"
+     style="display:inline">
+    <rect
+       style="opacity:1;fill:url(#radialGradient5105);fill-opacity:1;fill-rule:evenodd;stroke:#008000;stroke-width:3.70227194;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:inline"
+       id="rect5097"
+       width="454.81281"
+       height="316.01212"
+       x="2.0352957"
+       y="2.0972311"
+       rx="27.618256"
+       ry="27.618261" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#00ff00;stroke-width:12.64285851;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.62777776;display:inline"
+       id="rect5048"
+       width="445.53705"
+       height="307.39459"
+       x="6.673171"
+       y="6.4059868"
+       rx="27.618256"
+       ry="27.618261" />
+    <path
+       style="opacity:1;fill:url(#linearGradient5135);fill-opacity:1;fill-rule:evenodd;stroke:#feb400;stroke-width:3.05590725;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 29.65625,2.09375 C 14.355736,2.09375 2.03125,14.418233 2.03125,29.71875 L 2.03125,70.1875 L 4.96875,69.875 L 32.28125,101.8125 L 41,60.6875 L 79.84375,44.59375 L 43.4375,23.5625 L 41.75,2.09375 L 29.65625,2.09375 z"
+       id="path3751" />
+    <path
+       style="opacity:1;fill:url(#linearGradient5140);fill-opacity:1;fill-rule:evenodd;stroke:#feb400;stroke-width:4.50000000000000000;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 416.40625 2.09375 L 415.3125 15.3125 L 374.84375 38.46875 L 417.84375 56.5 L 427.375 102.15625 L 456.84375 68 L 456.84375 29.71875 C 456.84375 14.418233 444.51925 2.09375 429.21875 2.09375 L 416.40625 2.09375 z "
+       id="path3755" />
+    <path
+       sodipodi:type="star"
+       style="opacity:1;fill:url(#linearGradient2375);fill-opacity:1;fill-rule:evenodd;stroke:#feb400;stroke-width:4.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path3757"
+       sodipodi:sides="5"
+       sodipodi:cx="249.22751"
+       sodipodi:cy="429.37567"
+       sodipodi:r1="175.58905"
+       sodipodi:r2="87.794525"
+       sodipodi:arg1="-2.2961574"
+       sodipodi:arg2="-1.6678389"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 132.74074,297.98942 L 240.72107,341.99421 L 338.18687,277.98959 L 329.70358,394.28321 L 420.69419,467.20018 L 307.4709,495.0688 L 266.24038,604.13859 L 204.74783,505.06872 L 88.275367,499.56059 L 163.49417,410.46342 L 132.74074,297.98942 z"
+       transform="matrix(0.8713009,-0.4814473,0.5182206,0.8094727,-209.25357,-51.08897)" />
+    <text
+       xml:space="preserve"
+       style="font-size:124.33535767px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:url(#linearGradient17409);fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Vanilla Whale"
+       x="225.37801"
+       y="314.46838"
+       id="text3735"
+       sodipodi:linespacing="100%"
+       transform="scale(1.0374877,0.9638668)"><tspan
+         sodipodi:role="line"
+         id="tspan3745"
+         x="225.37801"
+         y="314.46838"
+         style="fill:url(#linearGradient17409);fill-opacity:1">RevolutioN</tspan></text>
+  </g>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Text"
+     style="display:inline">
+    <g
+       style="display:inline"
+       id="g2166"
+       transform="matrix(0.6360257,0,0,0.5908929,69.87442,-41.882813)">
+      <g
+         style="fill:url(#radialGradient19187);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline"
+         id="g8398">
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2271);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 92.268501,88.496 C 87.948449,85.136084 83.052454,83.456085 77.580501,83.456 C 69.420467,83.456085 62.124475,86.672082 55.692501,93.104 C 49.356487,99.536069 46.188491,106.83206 46.188501,114.992 C 46.188491,121.13605 47.916489,126.17604 51.372501,130.112 C 53.292483,132.32004 56.55648,134.67203 61.164501,137.168 C 64.620472,139.08803 66.34847,140.62403 66.348501,141.776 C 66.34847,143.12003 65.388471,144.60802 63.468501,146.24 C 61.548475,147.77602 59.916477,148.54402 58.572501,148.544 C 55.596481,148.54402 52.572484,147.34402 49.500501,144.944 L 48.060501,147.536 C 49.404487,149.45602 52.284484,151.80802 56.700501,154.592 C 51.708485,153.63202 48.156489,152.43202 46.044501,150.992 L 44.028501,154.592 C 45.468491,156.80001 49.260487,158.96001 55.404501,161.072 C 53.580483,160.68801 51.420485,160.20801 48.924501,159.632 C 46.42849,159.05601 44.268492,158.24001 42.444501,157.184 L 41.004501,159.488 C 44.076493,160.54401 47.19649,161.60001 50.364501,162.656 C 54.012483,163.808 57.18048,164.384 59.868501,164.384 C 66.78047,164.384 73.308463,161.88801 79.452501,156.896 C 85.692451,151.80802 88.812448,145.85602 88.812501,139.04 C 88.812448,134.24003 86.65245,130.68804 82.332501,128.384 C 79.644457,127.42404 75.564461,125.93604 70.092501,123.92 C 65.772471,122.19205 63.612473,119.36005 63.612501,115.424 C 63.612473,107.26406 67.692469,103.18407 75.852501,103.184 C 80.460456,103.18407 82.764454,103.95206 82.764501,105.488 C 83.820453,104.04806 84.348452,103.13607 84.348501,102.752 C 84.348452,101.50407 82.332454,99.536069 78.300501,96.848 L 78.732501,96.704 C 79.596457,96.704072 81.948455,98.096071 85.788501,100.88 L 88.092501,97.28 C 88.092449,96.320072 86.028451,94.400074 81.900501,91.52 C 81.996455,91.232078 82.140455,91.088078 82.332501,91.088 C 83.964453,91.088078 86.50845,92.096077 89.964501,94.112 C 90.732446,92.864076 91.500445,90.992078 92.268501,88.496"
+           id="path7494" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2273);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 154.157,126.08 C 154.15694,118.20805 152.33295,111.00806 148.685,104.48 C 144.36495,96.704072 138.55696,92.816076 131.261,92.816 C 122.62098,92.816076 115.66098,97.568071 110.381,107.072 C 105.86899,115.13605 103.61299,123.77605 103.613,132.992 C 103.61299,140.19203 105.05299,146.09602 107.933,150.704 C 111.38899,156.17601 116.52498,158.91201 123.341,158.912 C 127.08497,158.91201 131.16497,158.04801 135.581,156.32 C 134.42896,155.26401 133.66096,154.25601 133.277,153.296 C 131.93297,154.54401 130.54097,155.16801 129.101,155.168 C 128.04497,155.16801 126.89297,154.88001 125.645,154.304 C 126.79697,154.30401 128.09297,153.87201 129.533,153.008 C 131.06897,152.14402 132.17297,151.66402 132.845,151.568 L 131.693,149.264 C 129.86897,150.89602 127.61297,151.71202 124.925,151.712 C 122.42898,151.71202 120.70098,150.56002 119.741,148.256 C 121.18098,149.12002 123.05298,149.55202 125.357,149.552 C 128.23697,149.55202 129.96497,148.83202 130.541,147.392 L 128.381,145.088 C 127.32497,145.18402 126.26897,145.23202 125.213,145.232 C 117.34098,145.23202 113.40498,141.48803 113.405,134 C 113.40498,129.39204 114.94098,125.12004 118.013,121.184 C 121.18098,117.15205 124.97297,115.13605 129.389,115.136 C 133.32496,115.13605 136.20496,116.52805 138.029,119.312 L 142.061,128.24 L 143.789,122.048 C 144.36495,122.81605 144.55695,125.60004 144.365,130.4 L 146.669,134 C 148.49295,130.35204 149.40495,126.41604 149.405,122.192 C 149.40495,120.46405 149.16495,118.78405 148.685,117.152 C 150.31695,119.74405 151.13295,122.48005 151.133,125.36 C 151.13295,126.51204 150.17295,130.16004 148.253,136.304 L 150.989,140.912 C 153.10094,136.88003 154.15694,131.93604 154.157,126.08"
+           id="path7482" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2275);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 162.509,163.088 L 139.181,129.68 L 135.437,131.264 C 136.20496,132.99204 137.21296,135.15203 138.461,137.744 C 137.11696,136.68803 135.19696,134.96003 132.701,132.56 L 130.973,133.28 C 131.45297,134.72003 132.17297,136.30403 133.133,138.032 C 130.92497,136.59203 129.29297,135.39203 128.237,134.432 L 126.797,135.152 L 151.133,172.88 L 153.293,170.72 L 150.125,160.928 L 155.885,169.136 L 154.301,158.48 L 159.485,165.968 L 162.509,163.088"
+           id="path7478" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2277);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 240.19925,102.464 C 240.19918,99.392069 240.10318,96.608072 239.91125,94.112 L 237.46325,94.112 C 236.50318,98.048071 235.30318,103.04007 233.86325,109.088 L 234.00725,94.544 C 233.43118,94.832074 232.95118,94.976074 232.56725,94.976 C 232.08718,94.976074 231.75119,94.832074 231.55925,94.544 C 230.31119,96.560072 229.20719,100.30407 228.24725,105.776 C 227.57519,100.68807 227.33519,97.040072 227.52725,94.832 L 222.19925,95.696 C 222.48719,99.05607 222.63119,102.75207 222.63125,106.784 C 222.63119,136.73603 217.3032,151.71202 206.64725,151.712 C 198.19922,151.71202 193.97522,143.40803 193.97525,126.8 C 193.97522,124.11204 194.11922,120.03205 194.40725,114.56 C 194.69522,109.08806 194.83922,105.00806 194.83925,102.32 C 194.83922,100.30407 194.74322,98.67207 194.55125,97.424 C 194.16722,97.328071 193.63922,97.280072 192.96725,97.28 C 191.33523,97.280072 189.41523,97.568071 187.20725,98.144 L 186.77525,113.12 L 183.89525,99.152 L 180.87125,99.296 L 182.02325,113.696 L 178.99925,99.44 L 177.84725,100.16 C 177.94324,103.04007 177.89524,107.21606 177.70325,112.688 C 177.51124,118.16005 177.41524,122.24005 177.41525,124.928 C 177.41524,137.69603 178.61524,147.48802 181.01525,154.304 C 184.95123,165.344 192.05522,170.864 202.32725,170.864 C 212.7912,170.864 220.5672,168.896 225.65525,164.96 C 230.83919,160.92801 234.34318,153.87201 236.16725,143.792 C 238.85518,128.72004 240.19918,114.94405 240.19925,102.464"
+           id="path7468" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2279);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 278.204,97.568 L 272.3,99.584 L 274.604,105.056 L 278.204,97.568"
+           id="path7460" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2281);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 316.94,143.936 L 312.764,143.936 L 316.652,155.456 L 316.94,143.936"
+           id="path7458" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2283);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 316.508,161.36 L 296.06,116.288 C 291.35595,123.29605 289.00396,128.52804 289.004,131.984 C 289.00396,135.82403 291.25995,142.25603 295.772,151.28 C 300.57194,160.88001 304.55594,165.728 307.724,165.824 L 304.124,159.056 L 311.18,162.944 C 310.60393,161.50401 310.36394,160.40001 310.46,159.632 L 310.46,158.48 C 312.18793,160.59201 313.81993,162.08001 315.356,162.944 L 316.508,161.36"
+           id="path7456" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2285);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 289.148,143.936 L 286.556,136.736 L 283.964,142.64 L 289.148,143.936"
+           id="path7454" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2287);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 296.348,101.744 C 296.34795,100.11207 295.91595,98.76807 295.052,97.712 C 292.65195,98.67207 290.15596,100.49607 287.564,103.184 C 288.13996,100.68807 289.29196,98.240071 291.02,95.84 L 287.276,93.968 L 281.66,102.032 C 282.52396,100.01607 283.81996,97.040072 285.548,93.104 L 283.82,92.24 C 278.73197,103.28007 273.69197,115.56805 268.7,129.104 C 265.72398,137.45603 261.16398,149.98402 255.02,166.688 L 258.044,167.408 L 263.66,156.608 C 263.75598,159.39201 263.41998,163.37601 262.652,168.56 L 268.268,159.344 L 267.116,171.008 L 268.988,172.16 C 270.90797,166.688 280.02797,143.21603 296.348,101.744"
+           id="path7452" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2289);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 295.484,158.192 L 295.484,156.032 C 293.27595,155.74401 289.96396,155.12001 285.548,154.16 C 287.27596,153.87201 289.86796,153.34402 293.324,152.576 C 291.97995,151.52002 289.81996,150.65602 286.844,149.984 C 289.05196,149.40802 290.15596,148.54402 290.156,147.392 C 290.15596,147.00802 289.29196,146.67202 287.564,146.384 C 285.83596,146.09602 284.63596,146.00002 283.964,146.096 L 283.676,146.096 C 280.89196,151.66402 279.01997,156.27201 278.06,159.92 C 283.24396,159.92001 289.05196,159.34401 295.484,158.192"
+           id="path7450" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2291);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 257.756,147.104 L 253.004,147.68 C 253.67599,153.63202 253.96399,156.94401 253.868,157.616 L 257.756,147.104"
+           id="path7448" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2293);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 378.12875,117.296 C 378.1287,111.72806 376.3527,107.12006 372.80075,103.472 C 369.3447,99.728069 364.83271,97.904071 359.26475,98 L 358.11275,98.144 L 357.53675,110.096 C 364.54471,110.09606 368.04871,112.64006 368.04875,117.728 C 368.04871,121.37605 364.16071,124.40004 356.38475,126.8 L 356.09675,129.104 C 362.52871,128.62404 366.32071,127.52004 367.47275,125.792 C 367.56871,125.98404 367.61671,126.17604 367.61675,126.368 C 367.61671,128.38404 363.77671,130.11204 356.09675,131.552 L 355.95275,133.424 C 361.52071,133.13604 365.74471,132.27204 368.62475,130.832 C 367.95271,132.84804 363.58471,134.33603 355.52075,135.296 C 355.90472,135.48803 356.09672,135.82403 356.09675,136.304 C 356.09672,136.59203 355.95272,137.02403 355.66475,137.6 L 358.54475,137.744 C 364.30471,138.03203 369.0087,136.16003 372.65675,132.128 C 376.3047,128.00004 378.1287,123.05605 378.12875,117.296"
+           id="path7438" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2295);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 364.30475,117.872 C 364.30471,114.89605 362.04871,113.40806 357.53675,113.408 L 356.09675,123.056 C 361.56871,122.86405 364.30471,121.13605 364.30475,117.872"
+           id="path7436" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2297);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 338.52875,98 L 330.60875,98.72 L 330.32075,103.904 L 336.08075,105.488 L 330.32075,106.784 L 330.46475,108.8 L 335.93675,108.8 L 330.46475,111.248 L 330.46475,113.408 L 337.80875,112.976 C 338.28874,106.83206 338.52874,101.84007 338.52875,98"
+           id="path7434" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2299);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 355.08875,94.832 L 352.64075,94.832 L 350.33675,107.936 L 350.62475,94.976 L 347.45675,94.544 L 345.44075,106.064 L 344.00075,94.256 L 342.12875,93.968 L 335.07275,159.776 L 338.52875,159.344 L 340.40075,147.968 L 340.83275,158.768 L 343.85675,158.768 L 345.44075,149.984 L 346.16075,157.76 L 350.62475,158.624 L 355.08875,94.832"
+           id="path7432" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2301);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 388.35275,163.088 C 380.00069,152.14402 373.4727,144.08002 368.76875,138.896 C 368.19271,138.89603 365.88871,139.23203 361.85675,139.904 C 358.97671,140.38403 356.72072,140.62403 355.08875,140.624 L 354.94475,146.096 L 378.84875,170.576 L 381.44075,168.704 L 378.12875,163.52 L 383.02475,167.552 L 384.75275,166.256 L 381.00875,162.512 L 386.19275,164.528 L 388.35275,163.088"
+           id="path7430" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2303);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 335.64875,126.8 L 331.47275,127.808 L 334.92875,138.32 L 335.64875,126.8"
+           id="path7428" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2305);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 459.824,114.992 L 458.672,111.68 L 451.184,110.528 L 458.096,108.512 L 457.808,106.352 L 449.744,105.92 L 457.376,102.032 L 433.472,102.176 L 433.616,117.44 L 459.824,114.992"
+           id="path7420" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2307);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 448.592,139.76 L 442.112,137.6 L 448.448,135.872 L 448.448,129.536 L 433.616,129.536 L 433.616,143.648 L 447.008,144.224 L 440.96,142.064 L 448.592,139.76"
+           id="path7418" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2309);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 409.568,119.456 L 408.56,103.328 L 404.24,103.472 L 402.8,119.456 L 409.568,119.456"
+           id="path7416" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2311);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 429.008,100.592 L 426.272,108.08 L 423.68,99.296 L 421.088,99.296 L 418.208,102.752 L 413.888,98.72 L 414.32,166.256 L 417.056,154.016 L 418.352,166.688 L 420.944,166.544 L 423.248,155.6 L 424.832,166.256 L 428.576,163.808 L 429.008,100.592"
+           id="path7414" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2313);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 452.192,158.768 L 432.896,155.168 L 430.16,168.128 L 449.312,171.296 C 446.91195,169.568 445.66395,168.224 445.568,167.264 L 445.856,166.976 C 446.23995,166.976 446.76795,167.12 447.44,167.408 C 448.11195,167.6 448.59195,167.696 448.88,167.696 L 450.32,167.408 C 449.74394,166.736 447.72795,165.584 444.272,163.952 L 444.416,163.952 C 447.00795,163.952 448.73595,163.66401 449.6,163.088 C 450.55994,162.41601 451.42394,160.97601 452.192,158.768"
+           id="path7412" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2315);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 408.992,149.264 L 401.216,149.12 L 398.192,162.8 L 408.272,166.4 L 408.992,149.264"
+           id="path7410" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2317);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 140.45788,236.816 C 140.45779,227.40805 138.20179,218.81606 133.68988,211.04 C 128.6978,202.30407 121.97781,196.78408 113.52988,194.48 C 112.37782,202.83207 111.80182,209.02407 111.80188,213.056 C 111.80182,215.55206 111.94582,217.85606 112.23388,219.968 C 119.72181,223.90405 123.46581,229.18405 123.46588,235.808 C 123.46581,239.55204 122.26581,242.91203 119.86588,245.888 C 117.46581,248.86403 114.44182,250.97603 110.79388,252.224 L 110.64988,273.824 C 120.05781,271.904 127.3538,267.68001 132.53788,261.152 C 137.81779,254.52802 140.45779,246.41603 140.45788,236.816"
+           id="path7402" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2319);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 118.13788,235.52 C 118.13781,233.12004 117.60981,230.91205 116.55388,228.896 C 115.30582,226.49605 113.57782,225.20005 111.36988,225.008 L 110.64988,246.752 C 115.64182,245.02403 118.13781,241.28004 118.13788,235.52"
+           id="path7400" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2321);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 82.713876,220.112 L 82.713876,207.44 L 80.841876,207.584 C 79.305853,207.68007 78.105854,207.29607 77.241876,206.432 C 77.625854,205.76007 78.489853,204.89607 79.833876,203.84 C 81.177851,202.68807 81.99385,201.82407 82.281876,201.248 C 81.80185,200.96008 81.65785,200.14408 81.849876,198.8 L 69.465876,200.384 L 68.745876,211.184 C 70.473861,211.47207 72.825859,212.28806 75.801876,213.632 C 73.977858,214.20806 71.57786,215.26406 68.601876,216.8 C 69.177863,217.08806 69.465862,217.71206 69.465876,218.672 C 69.465862,219.44006 69.273863,220.44806 68.889876,221.696 C 75.033857,220.25606 79.641852,219.72806 82.713876,220.112"
+           id="path7398" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2323);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 107.62588,194.912 C 107.62582,189.82409 106.04183,187.47209 102.87388,187.856 C 102.29783,188.72009 101.81783,190.97609 101.43388,194.624 C 101.04983,198.17608 100.37783,200.81608 99.417876,202.544 L 99.417876,201.248 C 99.417832,199.80808 99.033833,197.88808 98.265876,195.488 C 97.593834,193.08808 97.257835,191.36009 97.257876,190.304 L 95.097876,190.16 L 93.945876,201.248 L 91.929876,190.448 C 90.201842,190.64009 88.713843,191.07209 87.465876,191.744 C 87.081845,196.25608 86.889845,201.63208 86.889876,207.872 C 86.889845,212.67206 87.033845,219.87206 87.321876,229.472 C 87.609844,239.07204 87.753844,246.27203 87.753876,251.072 C 87.753844,261.24802 87.273845,269.50401 86.313876,275.84 L 87.897876,275.84 L 90.777876,265.616 L 90.777876,275.696 L 96.681876,275.264 L 100.13788,259.136 L 100.56988,275.12 L 105.75388,274.688 C 105.36983,270.08001 105.17783,265.08801 105.17788,259.712 C 105.17783,252.51202 105.56183,241.71204 106.32988,227.312 C 107.19382,212.91206 107.62582,202.11207 107.62588,194.912"
+           id="path7396" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2325);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 83.145876,266.912 C 82.569849,267.10401 81.94585,267.20001 81.273876,267.2 C 79.161853,267.20001 77.145855,266.24001 75.225876,264.32 C 77.529854,263.93601 78.825853,263.64801 79.113876,263.456 C 79.977852,263.07201 80.937851,262.11201 81.993876,260.576 L 83.001876,256.544 C 82.04185,257.02402 80.889851,257.26402 79.545876,257.264 C 78.201854,257.26402 76.953855,256.97602 75.801876,256.4 C 78.489853,255.34402 80.601851,253.47202 82.137876,250.784 L 71.769876,250.64 L 73.065876,274.688 L 82.857876,274.688 L 83.145876,266.912"
+           id="path7394" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2327);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 179.90713,205.568 L 174.00313,207.584 L 176.30713,213.056 L 179.90713,205.568"
+           id="path7382" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2329);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 218.64313,251.936 L 214.46713,251.936 L 218.35513,263.456 L 218.64313,251.936"
+           id="path7380" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2331);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 218.21113,269.36 L 197.76313,224.288 C 193.05908,231.29605 190.70708,236.52804 190.70713,239.984 C 190.70708,243.82403 192.96308,250.25603 197.47513,259.28 C 202.27507,268.88001 206.25907,273.728 209.42713,273.824 L 205.82713,267.056 L 212.88313,270.944 C 212.30706,269.50401 212.06706,268.40001 212.16313,267.632 L 212.16313,266.48 C 213.89106,268.59201 215.52306,270.08001 217.05913,270.944 L 218.21113,269.36"
+           id="path7378" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2333);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 190.85113,251.936 L 188.25913,244.736 L 185.66713,250.64 L 190.85113,251.936"
+           id="path7376" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2335);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 198.05113,209.744 C 198.05107,208.11207 197.61907,206.76807 196.75513,205.712 C 194.35508,206.67207 191.85908,208.49607 189.26713,211.184 C 189.84308,208.68807 190.99508,206.24007 192.72313,203.84 L 188.97913,201.968 L 183.36313,210.032 C 184.22709,208.01607 185.52309,205.04007 187.25113,201.104 L 185.52313,200.24 C 180.43509,211.28007 175.3951,223.56805 170.40313,237.104 C 167.4271,245.45603 162.86711,257.98402 156.72313,274.688 L 159.74713,275.408 L 165.36313,264.608 C 165.45911,267.39201 165.12311,271.37601 164.35513,276.56 L 169.97113,267.344 L 168.81913,279.008 L 170.69113,280.16 C 172.6111,274.688 181.73109,251.21603 198.05113,209.744"
+           id="path7374" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2337);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 197.18713,266.192 L 197.18713,264.032 C 194.97908,263.74401 191.66708,263.12001 187.25113,262.16 C 188.97908,261.87201 191.57108,261.34402 195.02713,260.576 C 193.68308,259.52002 191.52308,258.65602 188.54713,257.984 C 190.75508,257.40802 191.85908,256.54402 191.85913,255.392 C 191.85908,255.00802 190.99508,254.67202 189.26713,254.384 C 187.53908,254.09602 186.33909,254.00002 185.66713,254.096 L 185.37913,254.096 C 182.59509,259.66402 180.72309,264.27201 179.76313,267.92 C 184.94709,267.92001 190.75508,267.34401 197.18713,266.192"
+           id="path7372" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2339);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 159.45913,255.104 L 154.70713,255.68 C 155.37912,261.63202 155.66712,264.94401 155.57113,265.616 L 159.45913,255.104"
+           id="path7370" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2341);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 307.47988,209.888 L 299.27188,207.296 L 299.12788,220.544 L 296.67988,207.728 L 294.37588,218.672 L 292.64788,207.728 L 288.32788,206.864 L 288.75988,273.536 L 291.35188,273.968 L 292.35988,265.616 L 294.80788,274.544 L 298.11988,274.976 L 298.83988,264.032 L 301.71988,274.976 L 306.61588,275.552 L 307.47988,209.888"
+           id="path7360" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2343);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 312.37588,261.152 L 309.06388,258.128 L 309.78388,263.024 L 312.37588,261.152"
+           id="path7358" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2345);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 285.87988,269.648 L 285.30388,242.72 L 262.40788,218.528 L 262.40788,227.168 L 270.32788,239.552 L 262.26388,232.208 L 262.40788,236.096 L 270.03988,244.304 L 261.83188,239.84 L 261.68788,245.456 L 285.87988,269.648"
+           id="path7356" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2347);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 236.05588,225.44 L 235.91188,216.944 L 231.30388,220.976 L 236.05588,225.44"
+           id="path7354" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2349);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 259.38388,273.536 C 259.38384,255.96802 259.33584,244.16003 259.23988,238.112 C 258.95184,219.96806 257.84784,208.92807 255.92788,204.992 L 251.03188,204.416 L 249.44788,216.224 L 247.86388,205.568 L 246.42388,205.424 L 244.69588,219.68 L 241.67188,204.992 L 239.79988,205.568 L 244.83988,273.104 L 246.85588,272.96 L 248.43988,260.288 L 250.16788,272.096 L 252.18388,264.032 L 254.05588,273.392 L 259.38388,273.536"
+           id="path7352" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2351);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 368.65288,262.448 L 368.36488,262.448 C 368.07682,262.44801 366.49283,263.26401 363.61288,264.896 C 360.73283,266.52801 358.95683,267.44001 358.28488,267.632 C 360.30083,266.38401 362.26883,263.60001 364.18888,259.28 C 360.73283,261.68002 357.70883,262.83201 355.11688,262.736 L 353.96488,262.592 C 355.78884,261.82401 357.46883,260.43202 359.00488,258.416 C 360.63683,256.30402 361.45283,254.33602 361.45288,252.512 L 361.30888,252.08 C 358.71683,255.92002 355.98084,257.84002 353.10088,257.84 C 348.97284,257.84002 345.61285,254.72002 343.02088,248.48 C 341.00485,243.58403 339.99685,238.73604 339.99688,233.936 C 339.99685,222.80005 344.31685,217.23206 352.95688,217.232 C 354.97284,217.23206 357.13283,217.56806 359.43688,218.24 C 358.47683,217.66406 356.94083,216.27206 354.82888,214.064 C 352.90884,212.24006 351.13284,210.99207 349.50088,210.32 C 350.07684,210.22407 350.65284,210.17607 351.22888,210.176 C 352.38084,210.17607 353.82084,210.65607 355.54888,211.616 C 357.37283,212.57606 358.71683,213.10406 359.58088,213.2 C 357.37283,210.60807 354.92484,208.20807 352.23688,206 C 352.71684,205.90407 353.19684,205.85607 353.67688,205.856 C 354.34884,205.85607 355.35684,206.09607 356.70088,206.576 C 358.14083,207.05607 359.19683,207.29607 359.86888,207.296 C 360.15683,207.29607 360.39683,207.20007 360.58888,207.008 C 356.07684,203.16807 351.66084,201.24808 347.34088,201.248 C 340.14085,201.24808 334.42886,205.76007 330.20488,214.784 C 326.84486,221.98405 325.16487,229.66405 325.16488,237.824 C 325.16487,247.32803 327.32486,255.05602 331.64488,261.008 C 336.44486,267.72801 343.45285,271.08801 352.66888,271.088 C 355.35684,271.08801 358.38083,270.22401 361.74088,268.496 C 365.10083,266.67201 367.40482,264.65601 368.65288,262.448"
+           id="path7344" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2353);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 439.71463,222.992 L 438.56263,219.68 L 431.07463,218.528 L 437.98663,216.512 L 437.69863,214.352 L 429.63463,213.92 L 437.26663,210.032 L 413.36263,210.176 L 413.50663,225.44 L 439.71463,222.992"
+           id="path7336" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2355);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 428.48263,247.76 L 422.00263,245.6 L 428.33863,243.872 L 428.33863,237.536 L 413.50663,237.536 L 413.50663,251.648 L 426.89863,252.224 L 420.85063,250.064 L 428.48263,247.76"
+           id="path7334" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2357);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 389.45863,227.456 L 388.45063,211.328 L 384.13063,211.472 L 382.69063,227.456 L 389.45863,227.456"
+           id="path7332" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2359);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 408.89863,208.592 L 406.16263,216.08 L 403.57063,207.296 L 400.97863,207.296 L 398.09863,210.752 L 393.77863,206.72 L 394.21063,274.256 L 396.94663,262.016 L 398.24263,274.688 L 400.83463,274.544 L 403.13863,263.6 L 404.72263,274.256 L 408.46663,271.808 L 408.89863,208.592"
+           id="path7330" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2361);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 432.08263,266.768 L 412.78663,263.168 L 410.05063,276.128 L 429.20263,279.296 C 426.80257,277.568 425.55457,276.224 425.45863,275.264 L 425.74663,274.976 C 426.13057,274.976 426.65857,275.12 427.33063,275.408 C 428.00257,275.6 428.48257,275.696 428.77063,275.696 L 430.21063,275.408 C 429.63457,274.736 427.61857,273.584 424.16263,271.952 L 424.30663,271.952 C 426.89857,271.952 428.62657,271.66401 429.49063,271.088 C 430.45057,270.41601 431.31457,268.97601 432.08263,266.768"
+           id="path7328" />
+        <path
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:url(#radialGradient2363);fill-opacity:1;stroke:#ffd570;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Burnstown Dam"
+           d="M 388.88263,257.264 L 381.10663,257.12 L 378.08263,270.8 L 388.16263,274.4 L 388.88263,257.264"
+           id="path7326" />
+      </g>
+      <text
+         xml:space="preserve"
+         style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:75%;writing-mode:lr-tb;text-anchor:middle;fill:#ff0000;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline;font-family:Burnstown Dam"
+         x="249.65065"
+         y="168.40576"
+         id="text6430"
+         sodipodi:linespacing="75%"><tspan
+           sodipodi:role="line"
+           id="tspan6432"
+           x="249.65065"
+           y="168.40576">Square</tspan><tspan
+           sodipodi:role="line"
+           id="tspan6434"
+           x="249.65065"
+           y="276.40576">Dance</tspan></text>
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer6"
+     inkscape:label="Outer Frame"
+     sodipodi:insensitive="true">
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#008000;stroke-width:3.70227194;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:inline"
+       id="rect5119"
+       width="454.81281"
+       height="316.01212"
+       x="2.0352957"
+       y="2.0972311"
+       rx="27.618256"
+       ry="27.618261" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="Original Stars"
+     sodipodi:insensitive="true"
+     style="display:none">
+    <path
+       sodipodi:type="star"
+       style="opacity:1;fill:url(#linearGradient2369);fill-opacity:1;fill-rule:evenodd;stroke:#feb400;stroke-width:4.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:inline"
+       id="path5114"
+       sodipodi:sides="5"
+       sodipodi:cx="47.407406"
+       sodipodi:cy="157.12169"
+       sodipodi:r1="93.214615"
+       sodipodi:r2="46.607307"
+       sodipodi:arg1="-0.95054684"
+       sodipodi:arg2="-0.32222831"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 101.5873,81.269837 L 91.615934,142.36204 L 136.28931,185.21032 L 75.105851,194.60552 L 48.159551,250.33327 L 20.317459,195.04761 L -41.00965,186.64098 L 2.9664527,143.07737 L -7.9894842,82.154036 L 47.031333,110.5159 L 101.5873,81.269837 z"
+       transform="matrix(0.659491,-0.1619739,0.1619739,0.659491,-40.037817,-55.473935)" />
+    <path
+       sodipodi:type="star"
+       style="opacity:1;fill:url(#linearGradient2373);fill-opacity:1;fill-rule:evenodd;stroke:#feb400;stroke-width:4.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:inline"
+       id="path5116"
+       sodipodi:sides="5"
+       sodipodi:cx="471.36508"
+       sodipodi:cy="177.43915"
+       sodipodi:r1="70.238228"
+       sodipodi:r2="35.119118"
+       sodipodi:arg1="-0.68980004"
+       sodipodi:arg2="-0.061481514"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 525.54497,132.74074 L 506.41785,175.28133 L 530.6183,215.15472 L 484.24919,210.10951 L 453.80569,245.44706 L 444.27513,199.78836 L 401.25956,181.75478 L 441.73847,158.58136 L 445.59687,112.09844 L 480.14478,143.43519 L 525.54497,132.74074 z"
+       transform="translate(-26.417846,-143.28133)" />
+  </g>
+</svg>
