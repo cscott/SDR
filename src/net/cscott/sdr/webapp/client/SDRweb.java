@@ -323,11 +323,6 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         // but put it behind the call name/error message panel
         canvasPanel.add(topMsgs, 0, 0);
         RootPanel.get("div-canvas-inner").add(canvasPanel);
-        danceFloor.setNumDancers(4);
-        danceFloor.update(0, -1, -1, Math.toRadians(5));
-        danceFloor.update(1, +1, -1, Math.toRadians(-5));
-        danceFloor.update(2, +1, +1, Math.toRadians(185));
-        danceFloor.update(3, -1, +1, Math.toRadians(175));
 
         // we want to take advantage of the entire client area
         Window.setMargin("0px");
@@ -359,6 +354,11 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         model.addSequenceChangeHandler(new SequenceChangeHandler() {
             public void onSequenceChange(SequenceChangeEvent sce) {
                 callOracle.setProgram(sce.getSource().getSequence().program);
+            }});
+        model.addEngineResultsChangeHandler(new EngineResultsChangeHandler() {
+            public void onEngineResultsChange(EngineResultsChangeEvent sce) {
+                // ensure that animation is updated
+                onPlayStatusChange(null);
             }});
         // initialize all the model-dependent fields
         model.fireEvent(new SequenceInfoChangeEvent());
@@ -502,12 +502,18 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 this.animation.cancel();
             this.animation = null;
         }
-        // highlight the call list row corresponding to the current slider pos
-        if (model.getEngineResults()!=null) {
-            int callNum =
-                model.getEngineResults().getCallNum(model.getSliderPos());
+        EngineResults er = model.getEngineResults();
+        if (er!=null) {
+            double time = model.getSliderPos();
+            // highlight the call list row corresponding to the current slider pos
+            int callNum = er.getCallNum(time);
             // note that callNum could be calls.size() (eg, if there are 0 calls)
             model.setHighlightedCall(callNum);
+            // update the dance floor
+            int n = er.getNumDancers();
+            this.danceFloor.setNumDancers(n);
+            for (int i=0; i<n; i++)
+                this.danceFloor.update(i, er.getPosition(i, time));
         }
     }
     private void newAnimation() {

@@ -1,9 +1,9 @@
 package net.cscott.sdr.webapp.client;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * This class encapsulates the returned data from the server, when given
@@ -40,6 +40,7 @@ public class EngineResults implements Serializable {
         this.movements = movements;
         this.timing = timing;
         this.totalBeats = totalBeats;
+        Collections.sort(movements); // should always be sorted
     }
     /** No-arg constructor for GWT serializability. */
     public EngineResults() {
@@ -47,41 +48,79 @@ public class EngineResults implements Serializable {
              Collections.<DancerPath>emptyList(),
              Collections.<Double>emptyList(), 0);
     }
-    // caches for fast lookup!
+    // --- caches for fast lookup! ---
     public int getCallNum(double time) {
-        if (this.timingCache==null) {
-            // rebuild cache
-            TreeMap<Double,Integer> _timingCache = new TreeMap<Double,Integer>();
-            double start=0;
-            int i=0;
-            for (Double duration : timing) {
-                _timingCache.put(start, i);
-                start+=duration;
-                i++;
-            }
-            // add final sentinel at end.
-            _timingCache.put(start, i);
-            // ensure that exceptions don't leave us with an invalid cache
-            this.timingCache = _timingCache;
-        }
-        return timingCache.floorEntry(time).getValue();
+        ensureTimingCache();
+        return lookupFloor(this.timingCache, time);
     }
     // this should be a SortedMap<Double,Integer>, but GWT doesn't support
     // TreeMap.floorEntry() (yet?)
-    private transient TreeMap<Double,Integer> timingCache=null;
+    private transient List<Double> timingCache=null;
+    private void ensureTimingCache() {
+        if (this.timingCache != null) return; // already got it.
+        // rebuild cache
+        List<Double> _timingCache = new ArrayList<Double>();
+        double start=0;
+        for (Double duration : timing) {
+            _timingCache.add(start);
+            start += duration;
+        }
+        // add final sentinel at end.
+        _timingCache.add(start);
+        // ensure that exceptions don't leave us with an invalid cache
+        this.timingCache = _timingCache;
+    }
 
-    static class Point implements Serializable {
+    public Position getPosition(int dancerNum, double time) {
+        ensurePathCache();
+        // binary search through movements for the given dancer list.
+        List<DancerPath> someMoves = this.pathCache.get(dancerNum);
+        int i = lookupFloor(someMoves, new DancerPath(dancerNum, time));
+        return someMoves.get(i).evaluate(time);
+    }
+    public int getNumDancers() {
+        ensurePathCache();
+        return this.pathCache.size();
+    }
+    private transient List<List<DancerPath>> pathCache = null;
+    private void ensurePathCache() {
+        if (this.pathCache!=null) return; // we've already got it
+        // rebuild cache
+        List<List<DancerPath>> _pathCache = new ArrayList<List<DancerPath>>();
+        Collections.sort(this.movements);
+        for (DancerPath dp: this.movements) {
+            while (dp.dancerNum >= _pathCache.size())
+                _pathCache.add(new ArrayList<DancerPath>());
+            _pathCache.get(dp.dancerNum).add(dp);
+        }
+        // ensure that exceptions don't leave us with an invalid cache
+        this.pathCache = _pathCache;
+    }
+
+    /** Helper function: return the index of the last entry in the list
+     *  less than or equal to the given key. */
+    private static <T extends Comparable<? super T>>
+    int lookupFloor(List<T> list, T key) {
+        // we want the equivalent of SortedMap.floorEntry(time), but
+        // GWT doesn't support that (yet!)
+        int i = Collections.binarySearch(list, key);
+        if (i>=0) return i; // exact match
+        if (i==-1) return 0; // hm, time is less than the first start time.
+        return -2-i; // should be 'insertion point - 1'
+    }
+
+    public static class Point implements Serializable {
         double x, y;
         /** No-arg constructor for GWT serializability. */
         Point() { this(0,0); }
-        Point(double x, double y) { this.x=x; this.y=y; }
+        public Point(double x, double y) { this.x=x; this.y=y; }
         private static final Point ZERO = new Point(0,0);
     }
-    static class Bezier implements Serializable {
+    public static class Bezier implements Serializable {
         Point p0, p1, p2, p3;
         /** No-arg constructor for GWT serializability. */
         Bezier() { this(Point.ZERO,Point.ZERO,Point.ZERO,Point.ZERO); }
-        Bezier(Point p0, Point p1, Point p2, Point p3) {
+        public Bezier(Point p0, Point p1, Point p2, Point p3) {
             this.p0=p0; this.p1=p1; this.p2=p2; this.p3=p3;
         }
         Point evaluate(double t) {
@@ -97,19 +136,38 @@ public class EngineResults implements Serializable {
             return p0*mt*mt*mt + 3*p1*t*mt*mt + 3*p2*t*t*mt + p3*t*t*t;
         }
     }
-    static class DancerPath implements Serializable {
+    public static class DancerPath implements Serializable, Comparable<DancerPath> {
         int dancerNum;
         double startTime, duration;
         Bezier location, direction;
         /** No-arg constructor for GWT serializability. */
         DancerPath() { this(-1,0,0,new Bezier(),new Bezier()); }
-        DancerPath(int dancerNum, double startTime, double duration,
-                   Bezier location, Bezier direction) {
+        /** Stub constructor used to create keys for comparison. */
+        DancerPath(int dancerNum, double time) {
+            this(dancerNum, time, 0, null, null);
+        }
+        /** Full constructor. */
+        public DancerPath(int dancerNum, double startTime, double duration,
+                          Bezier location, Bezier direction) {
             this.dancerNum = dancerNum;
             this.startTime = startTime;
             this.duration = duration;
             this.location = location;
             this.direction = direction;
+        }
+        Position evaluate(double time) {
+            double t = (time-startTime)/duration;
+            Point locP = location.evaluate(t);
+            Point dirP = direction.evaluate(t);
+            // compute atan2 of dirP to get direction in radians
+            return new Position(locP.x, locP.y, Math.atan2(dirP.x, dirP.y));
+        }
+        public int compareTo(DancerPath dp) {
+            // first compare dancerNum
+            if (this.dancerNum != dp.dancerNum)
+                return (this.dancerNum < dp.dancerNum) ? -1 : +1;
+            // then compare start time
+            return Double.compare(this.startTime, dp.startTime);
         }
     }
 }

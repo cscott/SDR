@@ -35,6 +35,9 @@ public class DanceFloor extends AbsolutePanel {
             dancers.remove(dancers.size()-1).removeFromParent();
         }
     }
+    void update(int dancerNum, Position pos) {
+        update(dancerNum, pos.x, pos.y, pos.rot);
+    }
     void update(int dancerNum, double x, double y, double rotation) {
         // adjust x and y to dance floor coordinates, where
         // 2 units == 1 dancer size
