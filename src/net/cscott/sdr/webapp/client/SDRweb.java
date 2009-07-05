@@ -36,6 +36,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CaptionPanel;
@@ -68,7 +69,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
     final Label currentCall = new Label();
     final Label errorMsg = new Label();
     final VerticalPanel topPanel = new VerticalPanel();
-    final VerticalPanel canvasPanel = new VerticalPanel();
+    final AbsolutePanel canvasPanel = new AbsolutePanel();
     final DanceFloor danceFloor = new DanceFloor();
     final MenuItem sequenceTitle =
         new MenuItem(SequenceInfo.UNTITLED, (Command)null);
@@ -243,8 +244,10 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
 	currentCall.setStyleName("currentCall");
 	errorMsg.setStyleName("errorMsg");
 	canvasPanel.setStyleName("canvasPanel");
-	canvasPanel.add(errorMsg);
-        canvasPanel.add(currentCall);
+	VerticalPanel topMsgs = new VerticalPanel();
+	topMsgs.add(errorMsg);
+        topMsgs.add(currentCall);
+        topMsgs.setStyleName("messagePanel");
 
         final ImagePrototypeElement playElement =
             imageBundle.icon_media_play().createElement();
@@ -318,9 +321,10 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         RootPanel.get("div-playbar").add(playBar);
 
         // canvas takes up all the rest of the space
-        canvasPanel.add(danceFloor);
-        canvasPanel.setCellHeight(danceFloor, "100%");
-        RootPanel.get("div-canvas").add(canvasPanel);
+        canvasPanel.add(danceFloor, 0, 0);
+        // but put it behind the call name/error message panel
+        canvasPanel.add(topMsgs, 0, 0);
+        RootPanel.get("div-canvas-inner").add(canvasPanel);
         danceFloor.setNumDancers(4);
         float off=50;
         danceFloor.update(0, off-20, off-20, Math.toRadians(5));
@@ -464,7 +468,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         int right = callList.getAbsoluteLeft()+callList.getOffsetWidth();
         right += 5; // padding on right of call list
         style = "padding-left: "+right+"px;";
-        canvasPanel.getElement().setAttribute("style", style);
+        RootPanel.get("div-canvas-inner").getElement().setAttribute("style", style);
         playBar.getElement().setAttribute("style", style);
         int playBarHeight = playBar.getOffsetHeight();
         canvasPanel.setHeight((height-panelBottom-playBarHeight)+"px");

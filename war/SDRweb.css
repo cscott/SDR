@@ -48,6 +48,10 @@ body {
    top: 0;
    width: 100%;
 }
+#div-canvas-inner {
+   /* provides anchoring point for absolute panel inside */
+   position: relative;
+}
 #div-canvas .canvasPanel {
    width: 100%;
 }
@@ -205,10 +209,18 @@ table.callList {
         font-weight: bold;
         border-bottom: 2px solid red;
         padding: 2px;
+        /* for those browsers that understand opacity */
+        background-color: rgba(255,128,128,0.9);
 }
 /* the name of the current call */
 .currentCall {
         font-size: 150%;
+        /* for browsers that understand opacity */
+        background-color: rgba(255,255,255,0.8);
+        border-bottom: 2px solid rgba(0,0,0,0.1);
+}
+.messagePanel {
+        width: 100%;
 }
 /* ----- dancer styling ----- */
 .dancer-background, .dancer-number {
