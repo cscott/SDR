@@ -21,7 +21,6 @@
     <include name="AllGrm.java"/>
   </source>
   <source path="sdr/util">
-    <include name="Bezier.java"/>
     <include name="Fraction.java"/>
     <include name="LL.java"/>
   </source>
