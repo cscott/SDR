@@ -292,7 +292,7 @@ public abstract class BasicList {
         public int getMinNumberOfArguments() { return 2; }
         @Override
         public Rule getRule() {
-            String rule = "do <0=fraction> (of (a)?)? <1=anything>" +
+            String rule = "do <0=fraction> (of (a|an)?)? <1=anything>" +
             "| <1=anything> <0=cardinal>";
         Grm g = Grm.parse(rule);
         return new Rule("anything", g, Fraction.valueOf(-10));
@@ -311,7 +311,7 @@ public abstract class BasicList {
         public int getMinNumberOfArguments() { return 1; }
         @Override
         public Rule getRule() {
-            String rule = "do half of (a)? <0=anything>";
+            String rule = "do half of (a|an)? <0=anything>";
             Grm g = Grm.parse(rule);
             return new Rule("anything", g, Fraction.valueOf(-10));
         }
