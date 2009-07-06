@@ -671,13 +671,24 @@ def: square thru(n)
   spoken: square thru <n=number> (hands (around|round)?)?
   from: FACING COUPLES
     condition: and(greater([n],0),not(greater([n],1)))
-    in: 2
-    call: _fractional([n], pull by)
+    call: _fractional([n], _sq_thr_part_a)
   from: FACING COUPLES
     condition: greater([n], 1)
-    in: 2
-    ipart: // actually, square thru N probably has N distinct parts.
-      call: pull by, quarter in, left(square thru(_subtract_num([n],1)))
+    ipart: // does square thru N have N distinct parts?
+      call: _sq_thr_part_b, left(square thru(_subtract_num([n],1)))
+
+// timing of square thru is "2 beats per hand"
+def: _sq_thr_part_a
+  in: 2
+  call: pull by
+def: _sq_thr_part_b
+  in: 2
+   ipart:
+    // definition is:
+    //  call: pull by, quarter in
+    // but looks better if we blend the quarter in
+    prim: 0, 1, none
+    prim: 0, 1, in
 
 def: _full_square_thru
   optional: LEFT
