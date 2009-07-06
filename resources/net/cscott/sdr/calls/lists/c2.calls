@@ -1,0 +1,7 @@
+program: c2
+
+def: _catch(n)
+  spoken: catch <n=number>
+  call: square thru(_subtract_num([n],1/2))
+  call: slip
+  call: step and fold
