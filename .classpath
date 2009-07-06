@@ -6,7 +6,7 @@
 	<classpathentry kind="lib" path="lib/gwt-incubator-march-02-2009.jar"/>
 	<classpathentry kind="lib" path="lib/sdr-src.jar"/>
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/sdr.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/sdr.jar" sourcepath="lib/sdr-src.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/antlr-3.1.1-runtime.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jutil.jar"/>
