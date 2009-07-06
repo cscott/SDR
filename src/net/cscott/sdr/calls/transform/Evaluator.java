@@ -24,7 +24,6 @@ import net.cscott.sdr.calls.Predicate;
 import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TimedFormation;
-import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.AstNode;
 import net.cscott.sdr.calls.ast.Comp;
@@ -40,7 +39,7 @@ import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.util.Fraction;
-import net.cscott.sdr.util.Tools;
+import net.cscott.sdr.util.ListUtils;
 
 /**
  * An {@link Evaluator} represents a current dance context.
@@ -204,7 +203,7 @@ public abstract class Evaluator {
                 // evaluate the predicate
                 Predicate p = iff.condition.getPredicate();
                 if (!p.evaluate(ds.dance, ds.currentFormation(), iff.condition)) 
-                    throw new BadCallException("condition failed");
+                    throw new BadCallException(iff.message, iff.priority);
                 Comp c = iff.child;
                 return c.accept(this, ds); // keep going
             }
@@ -239,7 +238,15 @@ public abstract class Evaluator {
                     }
                 }
                 /* Hmm, none of the options worked. */
-                throw new BadCallException("no matching formation: "+opt.children);
+		List<String> l = new ArrayList<String>();
+		for (OptCall oc: opt.children) {
+		    for (Selector s: oc.selectors) {
+			l.add(s.toString());
+		    }
+		}
+		String msg = "Invalid formation: requires " +
+		                    ListUtils.join(l, ", ", " or ");
+                throw new BadCallException(msg, Fraction.mONE);
             }
             /** Try all the selectors. */
             @Override
