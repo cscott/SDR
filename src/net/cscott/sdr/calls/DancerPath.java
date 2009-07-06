@@ -37,15 +37,15 @@ import org.apache.commons.lang.builder.ToStringStyle;
  *  js> dp.tangentFinish()
  *  0,1
  *  js> dp.bezierPath()
- *  [-1,-3, -1,-2 5/6, -1,-1 1/6, -1,-1]
+ *  [-1,-3, -1,-2 1/3, -1,-1 2/3, -1,-1]
  *  js> dp.bezierDirection()
- *  [0,1/2, 0,5, 0,1/2]
+ *  [0,2, 0,2, 0,2]
  *  js> dp.isStandStill()
  *  false
  *  js> dp.scaleTime(Fraction.valueOf(2));
  *  DancerPath[from=-1,-3,n,to=-1,-1,n,time=4,pointOfRotation=<null>]
  *  js> dp.scaleTime(Fraction.valueOf(2)).bezierPath()
- *  [-1,-3, -1,-2 11/12, -1,-1 1/12, -1,-1]
+ *  [-1,-3, -1,-1 2/3, -1,-2 1/3, -1,-1]
  *  js> dp.mirror(false)
  *  DancerPath[from=1,-3,n,to=1,-1,n,time=2,pointOfRotation=<null>]
  *  js> dp.mirror(true)
@@ -62,7 +62,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  *  js> dp1.tangentFinish()
  *  1,0
  *  js> dp1.bezierPath()
- *  [-1,-3, -1,-3 1/6, -1/6,-4, 0,-4]
+ *  [-1,-3, -1,-3 2/3, -2/3,-4, 0,-4]
  *  js> dp1.bezierDirection()
  *  [0,1, 0,1]
  *  js> dp1.isStandStill()
@@ -77,7 +77,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  *  js> dp2.tangentFinish()
  *  0,1
  *  js> dp2.bezierPath()
- *  [0,-4, 1/6,-4, 1,-3 1/6, 1,-3]
+ *  [0,-4, 2/3,-4, 1,-3 2/3, 1,-3]
  *  js> dp2.bezierDirection()
  *  [0,1, 0,1]
  *  js> dp3 = new DancerPath(Position.getGrid(1, -3, "n"),
@@ -90,7 +90,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  *  js> dp3.tangentFinish()
  *  -1,0
  *  js> dp3.bezierPath()
- *  [1,-3, 1,-2 5/6, 1/6,-2, 0,-2]
+ *  [1,-3, 1,-2 1/3, 2/3,-2, 0,-2]
  *  js> dp3.bezierDirection()
  *  [0,1, 0,1]
  *  js> dp4 = new DancerPath(Position.getGrid(0, -2, "n"),
@@ -103,7 +103,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  *  js> dp4.tangentFinish()
  *  0,-1
  *  js> dp4.bezierPath()
- *  [0,-2, -1/6,-2, -1,-2 5/6, -1,-3]
+ *  [0,-2, -2/3,-2, -1,-2 1/3, -1,-3]
  *  js> dp4.bezierDirection()
  *  [0,1, 0,1]
  * @doc.test An path with an unusual combination of sashay; facing direction
@@ -119,7 +119,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  *  js> dp.tangentFinish()
  *  0,1
  *  js> dp.bezierPath()
- *  [0,0, 0,1/6, 2,1 5/6, 2,2]
+ *  [0,0, 0,2/3, 2,1 1/3, 2,2]
  *  js> dp.bezierDirection()
  *  [0,1, 1,1, 1,0]
  * @doc.test Make sure "stand still" paths work:
