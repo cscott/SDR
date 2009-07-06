@@ -133,19 +133,19 @@ public class CallDB {
      *    > } catch (e) {
      *    >   print(e.javaException)
      *    > }
-     *  net.cscott.sdr.calls.BadCallException: Bad call: @trade
+     *  net.cscott.sdr.calls.BadCallException: Not on list: @trade
      *  js> try {
      *    >   db.parse(Program.C4, "foobar bat")
      *    > } catch (e) {
      *    >   print(e.javaException)
      *    > }
-     *  net.cscott.sdr.calls.BadCallException: Bad call: foobar bat
+     *  net.cscott.sdr.calls.BadCallException: Not on list: foobar bat
      *  js> try {
      *    >   db.parse(Program.MAINSTREAM, "trade and roll")
      *    > } catch (e) {
      *    >   print(e.javaException)
      *    > }
-     *  net.cscott.sdr.calls.BadCallException: Bad call: trade and roll
+     *  net.cscott.sdr.calls.BadCallException: Not on list: trade and roll
      */
     public Apply parse(Program program, String s) {
         if (program!=Program.C4 && DevSettings.ONLY_C4_GRAMMAR)
@@ -171,7 +171,7 @@ public class CallDB {
                 result == null)
                 throw new Exception();
         } catch (Exception e) {
-            throw new BadCallException("Bad call: "+s);
+            throw new BadCallException("Not on list: "+s);
         }
 	return result;
     }
