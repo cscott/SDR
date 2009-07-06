@@ -882,3 +882,25 @@ also based on starting/ending formation:
 module/singer/reverse singer/resolved/unresolved
 (at home, 1/4 prom, 3/4 prom?)
 should be able to sort/search based on tags
+----
+Use 'square expansion factor' (horiz and vertical) to smooth
+animations so it doesn't look like we're always maximally breathed,
+which makes trade from a tidal wave look weird, for example.
+The idea is to keep the horiz & vertical dimensions of the square
+constant (or decaying very slowly) by multiplying all x/y dimensions
+by a scale factor.  So if we start out in a squared set (vert dim 8)
+and do a 'heads lead right' (vert dim 4), we apply a vertical scaling
+factor of 1.5 so that we end up in a breathed out setup with vertical
+dimension 6.  A pass thru from here would go through a horizontal
+setup of dimension 4, but we'd breathe that out to 6, and end up in an
+8 horizontal by 5 vertical setup (halving the vertical scaling factor
+again to approach 'true' 4.
+This could even be entirely post-processing in the animation code so
+that a formation gradually breathed inward to 'true scale' as you
+let it sit. (ie, animation code keep 'true width' and 'expanded width',
+setting expanded width to true width if true width is larger,
+otherwise gradually letting expanded width decay towards true width,
+halving the difference every second.
+   diff = diff * (1/2)^(seconds since last update)
+Halt anim loop when diff < epsilon.
+----
