@@ -133,9 +133,11 @@ public abstract class FormationList {
     public static final TaggedFormation TANDEM_COUPLES =
         xofy("TANDEM COUPLES", TANDEM, COUPLE);
     public static final TaggedFormation RH_OCEAN_WAVE = // callerlab #8
-        xofy("RH OCEAN WAVE", COUPLE, RH_MINIWAVE); // XXX label centers/end
+        xofy("RH OCEAN WAVE", COUPLE, RH_MINIWAVE,
+                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END));
     public static final TaggedFormation LH_OCEAN_WAVE = // callerlab #9
-        xofy("LH OCEAN WAVE", COUPLE, LH_MINIWAVE);
+        xofy("LH OCEAN WAVE", COUPLE, LH_MINIWAVE,
+                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END));
     public static final TaggedFormation RH_BOX = // callerlab #10
         xofy("RH BOX", RH_MINIWAVE, TANDEM);
     public static final TaggedFormation LH_BOX = // callerlab #11
