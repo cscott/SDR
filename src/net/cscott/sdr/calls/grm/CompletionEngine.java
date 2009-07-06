@@ -115,7 +115,7 @@ public class CompletionEngine {
      * at the given dance program.
      */
     public static Iterator<String> complete(Program program, String input) {
-        return new CompletionIterator(program, input);
+        return new CompletionIterator(program, input.replace('-',' '));
     }
     /** Return a size-limited list of possible completions for the input string
      * at the given dance program. */

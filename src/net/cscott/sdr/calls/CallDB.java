@@ -159,7 +159,7 @@ public class CallDB {
         try {
             Lexer lexer = (Lexer) Class.forName(pkgName+lexerName)
                 .getConstructor(CharStream.class).newInstance
-                (new ANTLRStringStream(s));
+                (new ANTLRStringStream(s.replace('-',' ')));
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             tokens.discardOffChannelTokens(true);
             Parser parser = (Parser) Class.forName(pkgName+parserName)
