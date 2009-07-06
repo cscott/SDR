@@ -6,7 +6,7 @@ Square Dance Revolution build file.
 </description>
 <property name="package" value="sdr" />
 <property name="package_topdir" value="net/cscott/sdr" />
-<property name="version" value="0.4" /> <!-- change version # here! -->
+<property name="version" value="0.5" /> <!-- change version # here! -->
 
     <taskdef resource="net/sf/antcontrib/antlib.xml"
 	     classpath="lib/dev/ant-contrib.jar" />
