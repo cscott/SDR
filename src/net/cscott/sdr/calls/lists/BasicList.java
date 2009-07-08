@@ -49,7 +49,7 @@ public abstract class BasicList {
         }
     }
     
-    // simple combining concept.
+    /** Simple combining concept. */
     public static final Call AND = new BasicCall("and") {
         @Override
         public Comp apply(Apply ast) {
@@ -69,6 +69,20 @@ public abstract class BasicList {
             return new Rule("anything", g, Fraction.valueOf(-30));
         }
     };
+
+    /** Time readjustment. */
+    public static final Call IN = new BasicCall("_in") {
+        @Override
+        public Comp apply(Apply ast) {
+            Fraction time = ast.getNumberArg(0);
+            return new In(time, ast.getArg(1).expand());
+        }
+        @Override
+        public int getMinNumberOfArguments() {
+            return 2;
+        }
+    };
+
     // kludges for simple arithmetic.
     private static abstract class MathCall extends BasicCall {
         MathCall(String name) { super(name); }

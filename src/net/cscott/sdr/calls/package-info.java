@@ -11,8 +11,8 @@
  *  js> importPackage(net.cscott.sdr.calls.ast) // for Apply
  *  js> sqthr = CallDB.INSTANCE.lookup("square thru")
  *  square thru[basic]
- *  js> sqthr.apply(Apply.makeApply("square thru", Fraction.valueOf("1 1/2")))
- *  (Opt (From [FACING COUPLES] (If (Condition and (Condition greater (Condition 3/2) (Condition 0)) (Condition not (Condition greater (Condition 3/2) (Condition 1)))) (Seq (Apply _fractional (Apply 3/2) (Apply _sq_thr_part_a))))) (From [FACING COUPLES] (If (Condition greater (Condition 3/2) (Condition 1)) (Seq (Part false (Seq (Apply and (Apply _sq_thr_part_b) (Apply left (Apply square thru (Apply _subtract_num (Apply 3/2) (Apply 1)))))))))))
+ *  js> def = sqthr.apply(Apply.makeApply("square thru", Fraction.valueOf("1 1/2")))
+ *  (Opt (From [FACING COUPLES] (If (Condition and (Condition greater (Condition 3/2) (Condition 0)) (Condition not (Condition greater (Condition 3/2) (Condition 1)))) (Seq (Apply _fractional (Apply 3/2) (Apply _in (Apply 2) (Apply pull by)))))) (From [FACING COUPLES] (If (Condition greater (Condition 3/2) (Condition 1)) (Seq (Part false (Seq (Apply and (Apply _in (Apply 2) (Apply _sq_thru_part)) (Apply left (Apply square thru (Apply _subtract_num (Apply 3/2) (Apply 1)))))))))))
  *
  * @doc.test Call fractionalization:
  *  js> importPackage(net.cscott.sdr.util) // for Fraction

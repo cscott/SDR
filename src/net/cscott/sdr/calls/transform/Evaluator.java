@@ -213,6 +213,11 @@ public abstract class Evaluator {
              */
             @Override
             public Evaluator visit(In in, DanceState ds) {
+                Comp inRemoved = RemoveIn.removeIn(in);
+                // if inRemoved is not an in, then just evaluate it
+                if (inRemoved != in)
+                    return inRemoved.accept(this, ds);
+                // otherwise:
                 DanceState nds = ds.cloneAndClear();
                 new Standard(in.child).evaluateAll(nds);
                 // figure out how much we have to adjust the timing

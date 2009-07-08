@@ -666,24 +666,20 @@ def: cross fold(sel)
     select: OTHERS
       prim: 0,0,none
 
+// timing of square thru is "2 beats per hand"
 def: square thru(n)
   optional: LEFT
   spoken: square thru <n=number> (hands (around|round)?)?
   from: FACING COUPLES
     condition: and(greater([n],0),not(greater([n],1)))
-    call: _fractional([n], _sq_thr_part_a)
+    call: _fractional([n], _in(2, pull by))
   from: FACING COUPLES
     condition: greater([n], 1)
     ipart: // does square thru N have N distinct parts?
-      call: _sq_thr_part_b, left(square thru(_subtract_num([n],1)))
+      call: _in(2, _sq_thru_part), left(square thru(_subtract_num([n],1)))
 
-// timing of square thru is "2 beats per hand"
-def: _sq_thr_part_a
-  in: 2
-  call: pull by
-def: _sq_thr_part_b
-  in: 2
-   ipart:
+def: _sq_thru_part
+  ipart:
     // definition is:
     //  call: pull by, quarter in
     // but looks better if we blend the quarter in
