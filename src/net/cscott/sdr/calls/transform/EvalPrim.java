@@ -245,6 +245,17 @@ import net.cscott.sdr.util.Point;
  *  DancerPath[from=-1,0,w,[ROLL_LEFT],to=-1,0,w,[ROLL_LEFT],time=3,pointOfRotation=<null>]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1b.to); f.toStringDiagram()
  *  1B<  1G^
+ * @doc.test Tricky 45-degree off Prim.  This is the outsides part of a fan the
+ *  top, broken in halves.
+ *  js> importPackage(net.cscott.sdr.calls)
+ *  js> importPackage(net.cscott.sdr.calls.ast)
+ *  js> f = FormationList.SINGLE_DANCER; d = f.dancers().iterator().next();
+ *  <phantom@7b>
+ *  js> p = EvalPrim.apply(d, f, AstNode.valueOf('(Prim 0, 3, -1/8, 1 1/2)'))
+ *  DancerPath[from=0,0,n,to=0,3,nw,[ROLL_LEFT],time=1 1/2,pointOfRotation=SINGLE_DANCER]
+ *  js> f = f.move(d, p.to) ; undefined
+ *  js> p = EvalPrim.apply(d, f, AstNode.valueOf('(Prim -1 1/2, 1 1/2, -1/8, 1 1/2)'))
+ *  DancerPath[from=0,3,nw,[ROLL_LEFT],to=-3,3,w,[ROLL_LEFT],time=1 1/2,pointOfRotation=SINGLE_DANCER]
  */
 // xxx should test circle left & check roll
 //     add "force roll" flags to Prim (only print if set)
@@ -300,7 +311,7 @@ public abstract class EvalPrim {
             rollDir = (ExactRotation) to.facing.subtract(from.facing.amount);
         else
             rollDir = ExactRotation.ZERO;
-        
+
         // sweep dir is set based on angle swept through center from 'from' to
         // 'to', although of course remember the 'sweep' call is only valid
         // if we end up 'as couples'

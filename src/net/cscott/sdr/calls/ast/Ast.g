@@ -247,7 +247,8 @@ rotation
         input.LT(1).getText().equalsIgnoreCase("left") ||
         input.LT(1).getText().equalsIgnoreCase("none") }?
         IDENT
-    | fraction ;
+    | opt_sign fraction
+    ;
 
 fragment
 in_out returns [boolean in, boolean out]

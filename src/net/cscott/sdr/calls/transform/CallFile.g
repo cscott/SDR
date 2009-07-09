@@ -75,11 +75,13 @@
  * @doc.test PRIMs with numbers:
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cp("def:foo\n prim: 1 1/2, 1/2, left")
- *  (def (APPLY (ITEM foo)) (SEQ (prim 1 1/2 1/2 left ATTRIBS)))
- *  js> cp("def:foo\n prim: 1 1/2, 1/2, left, force-arc pass-left")
- *  (def (APPLY (ITEM foo)) (SEQ (prim 1 1/2 1/2 left (ATTRIBS force-arc pass-left))))
- *  js> cp("def:foo\n prim: -1 1/2, -1/2, left, pass-left")
- *  (def (APPLY (ITEM foo)) (SEQ (prim -1 1/2 -1/2 left (ATTRIBS pass-left))))
+ *  (def (APPLY (ITEM foo)) (SEQ (prim 1 1/2 1/2 left 1/4 ATTRIBS)))
+ *  js> cp("def:foo\n prim: 1 1/2, 1/2, left 1/8, force-arc pass-left")
+ *  (def (APPLY (ITEM foo)) (SEQ (prim 1 1/2 1/2 left 1/8 (ATTRIBS force-arc pass-left))))
+ *  js> cp("def:foo\n prim: -1 1/2, -1/2, none, pass-left")
+ *  (def (APPLY (ITEM foo)) (SEQ (prim -1 1/2 -1/2 none 0 (ATTRIBS pass-left))))
+ *  js> cp("def:foo\n prim: in -1 1/2, out -1/2, in, pass-left")
+ *  (def (APPLY (ITEM foo)) (SEQ (prim in -1 1/2 out -1/2 in 1/4 (ATTRIBS pass-left))))
  * @doc.test Spoken language grammar rules, w/ precedence:
  *  js> function g(s) { return new CallFileParser(s).grm_rule().getTree().toStringTree() }
  *  js> g("foo bar|bat? baz")
@@ -576,11 +578,20 @@ cond_msg
     ;
 
 prim_body
-	: in_out_num COMMA! in_out_num COMMA! (IN | OUT | RIGHT | LEFT | NONE) opt_prim_attrib
+	: in_out_num COMMA! in_out_num COMMA! turn opt_prim_attrib
 	;
 in_out_num
 	: (IN | OUT)? number
 	;
+turn
+    : (IN | OUT | RIGHT | LEFT) opt_turn_amt
+    | NONE -> NONE ^(NUMBER["0"])
+    ;
+opt_turn_amt
+    // default amount is one-quarter
+    : -> ^(NUMBER["1/4"])
+    | number
+    ;
 opt_prim_attrib!
 	: COMMA prim_flag+
         -> ^(ATTRIBS prim_flag+)

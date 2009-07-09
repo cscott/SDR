@@ -206,8 +206,8 @@ seq returns [B<Seq> s]
 	;
 one_seq returns [B<? extends SeqCall> sc]
 @init { EnumSet<Prim.Flag> a=EnumSet.noneOf(Prim.Flag.class); }
-	: ^(PRIM (dx=direction)? x=number (dy=direction)? y=number (dr=direction | r=rotation) ^(ATTRIBS ( prim_flag[a] )* ) )
-	{ $sc=mkPrim(d(dx), x, d(dy), y, d(dr), ifNull(r,ExactRotation.ONE_QUARTER), a); }
+	: ^(PRIM (dx=direction)? x=number (dy=direction)? y=number (dr=direction | r=rotation) rotamt=number ^(ATTRIBS ( prim_flag[a] )* ) )
+	{ $sc=mkPrim(d(dx), x, d(dy), y, d(dr), new ExactRotation(ifNull(r,Fraction.ONE).multiply(rotamt)), a); }
 	| ^(CALL call_body) { $sc=$call_body.ast; }
 	| ^(PART p=pieces)
 	{ $sc = mkPart(true, p); /* divisible part */}
@@ -219,10 +219,10 @@ direction returns [BDirection d]
 	: IN { $d=BDirection.IN; }
 	| OUT { $d=BDirection.OUT; }
 	;
-rotation returns [ExactRotation r]
-	: RIGHT { $r = ExactRotation.ONE_QUARTER; }
-	| LEFT { $r = ExactRotation.mONE_QUARTER; }
-	| NONE { $r = ExactRotation.ZERO; }
+rotation returns [Fraction r]
+	: RIGHT { $r = Fraction.ONE; }
+	| LEFT { $r = Fraction.mONE; }
+	| NONE { $r = Fraction.ZERO; }
 	;
 fragment
 prim_flag[Set<Prim.Flag> s]

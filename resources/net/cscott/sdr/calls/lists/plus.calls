@@ -10,14 +10,23 @@ def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
   optional: LEFT
   in: 4
   from: RH OCEAN WAVE, LH OCEAN WAVE
+    // this definition lets us do "1/2 a fan the top", and also animates
+    // nicely, since it provides an intermediate animation point for the
+    // ends which lets us breathe properly in the middle (instead of all
+    // at the end)
     select: CENTER
       //call: cast off 3/4 // it's "concentric" cast off 3/4, use a prim for now
-      prim: in 1,1,in
-      prim: in 1,1,in
-      prim: in 1,1,in
+      part:
+       prim: in 1,1,in
+      part:
+       prim: 0,1,in 1/8
+       prim: in 1/2, 1/2, in 1/8
+      part:
+       prim: in 1,1,in
     select: END
       //call: counter rotate 1/4   // we'll use a primitive for simplicity
-      prim: in 3,3,in
+      prim: 0, 3, in 1/8
+      prim: in 1 1/2, 1 1/2, in 1/8
 
 // track(n) is c3b, but track(2) is plus.
 def: track(n)
