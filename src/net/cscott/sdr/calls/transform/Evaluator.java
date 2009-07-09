@@ -1,6 +1,7 @@
 package net.cscott.sdr.calls.transform;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.DancerPath;
 import net.cscott.sdr.calls.Formation;
+import net.cscott.sdr.calls.FormationList;
 import net.cscott.sdr.calls.FormationMatch;
 import net.cscott.sdr.calls.NoMatchException;
 import net.cscott.sdr.calls.Position;
@@ -164,6 +166,17 @@ public abstract class Evaluator {
             l.add(CallDB.INSTANCE.parse(ds.dance.getProgram(), s));
         Comp c = new Seq(l.toArray(new SeqCall[l.size()]));
         new Standard(c).evaluateAll(ds);
+    }
+    /** Create an evaluator which breathes each formation to resolve
+     *  collisions.  Good to use as a top-level evaluator. */
+    public static Evaluator breathedEval(Formation f, Comp c) {
+        Formation meta = FormationList.SINGLE_DANCER;
+        Dancer rep = meta.dancers().iterator().next();
+        TaggedFormation tf = TaggedFormation.coerce(f);
+        FormationMatch fm = new FormationMatch
+            (meta, Collections.singletonMap(rep, tf),
+                   Collections.<Dancer>emptySet());
+        return new MetaEvaluator(fm, c);
     }
 
     /**
@@ -433,8 +446,8 @@ public abstract class Evaluator {
                 Map<Dancer,Formation> components =
                     new HashMap<Dancer,Formation>();
                 for (Dancer metaDancer : metaDancers) {
-                    components.put(metaDancer,
-                                   substates.get(metaDancer).formationAt(t));
+                    components.put(metaDancer, Breather.breathe
+                                   (substates.get(metaDancer).formationAt(t)));
                 }
                 // insert the results into a new formation, breathing as necessary
                 breathed.put(t, Breather.insert(this.meta, components));
