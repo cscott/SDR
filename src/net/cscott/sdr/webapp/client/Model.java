@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.webapp.client.Sequence.StartingFormationType;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -118,6 +119,16 @@ public class Model implements HasHandlers {
         if (p == _sequence.program) return;
         // set new program
         _sequence.program = p;
+        if (!this._sequence.calls.isEmpty())
+            // don't force save if new program is only state change
+            this._isDirty = true;
+        this.regenerateTags(); // may fire SequenceInfoChangeEvent
+        this.fireEvent(new SequenceChangeEvent());
+    }
+    public void setStartingFormation(StartingFormationType sft) {
+        if (sft == _sequence.startingFormation) return;
+        // set new starting formation
+        _sequence.startingFormation = sft;
         if (!this._sequence.calls.isEmpty())
             // don't force save if new program is only state change
             this._isDirty = true;

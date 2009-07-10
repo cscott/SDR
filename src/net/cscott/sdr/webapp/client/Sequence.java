@@ -42,9 +42,11 @@ public class Sequence implements Serializable {
 
     /** Types of starting formations supported. */
     public enum StartingFormationType {
-        TWO_COUPLE, SQUARED_SET,
+        TWO_COUPLE("Two couple"), SQUARED_SET("Four couple"),
         // future fun:
-        BIGON, HEXAGON, OCTAGON
+        BIGON("Bigon"), HEXAGON("Hexagon"), OCTAGON("Octagon");
+        public final String humanName;
+        StartingFormationType(String humanName) { this.humanName = humanName; }
     }
 
     public Sequence() {

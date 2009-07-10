@@ -2,7 +2,9 @@ package net.cscott.sdr.webapp.server;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Breather;
@@ -34,9 +36,14 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
     public EngineResults dance(Sequence s, final int sequenceNumber) {
         // okay, first create the starting formation.
         Formation startF;
+        Map<Dancer, Integer> dancerNumMap = new HashMap<Dancer,Integer>();
         switch (s.startingFormation) {
         case TWO_COUPLE:
             startF = Formation.FOUR_SQUARE;
+            dancerNumMap.put(StandardDancer.COUPLE_1_BOY,  0);
+            dancerNumMap.put(StandardDancer.COUPLE_1_GIRL, 1);
+            dancerNumMap.put(StandardDancer.COUPLE_3_BOY,  2);
+            dancerNumMap.put(StandardDancer.COUPLE_3_GIRL, 3);
             break;
         case BIGON:
         case HEXAGON:
@@ -46,6 +53,8 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
             // fall through.
         case SQUARED_SET:
             startF = Formation.SQUARED_SET;
+            for (StandardDancer d : StandardDancer.values())
+                dancerNumMap.put(d, d.ordinal());
             break;
         default:
             throw new Error("Unknown starting formation");
@@ -73,13 +82,12 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
                 for (Dancer d : ds.dancers()) {
                     Fraction startTime = totalBeats;
                     for (DancerPath dp : ds.movements(d)) {
-                        someMoves.add(convert(d, startTime, dp));
+                        someMoves.add(convert(d, dancerNumMap, startTime, dp));
                         startTime = startTime.add(dp.time);
                     }
                 }
                 ds = ds.cloneAndClear(ds.currentFormation());
-                if (!s.calls.isEmpty())
-                    totalBeats = totalBeats.add(duration);
+                totalBeats = totalBeats.add(duration);
                 // make sure timing and movements don't get set unless all of
                 // the above succeeded.
                 if (!s.calls.isEmpty())
@@ -92,6 +100,10 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
         } catch (Throwable t) {
             messages.set(currentCall, t.toString());
         }
+        if (s.calls.isEmpty()) {
+            totalBeats = Fraction.ZERO;
+            currentCall = 0;
+        }
         // construct an EngineResults
         EngineResults results = new EngineResults
             (sequenceNumber, currentCall, messages, movements, timing,
@@ -100,11 +112,11 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
     }
     /** Convert a {@link DancerPath} to a simplified JavaScript-friendly
      *  version. */
-    private static EngineResults.DancerPath convert(Dancer d, Fraction startTime, DancerPath dp) {
+    private static EngineResults.DancerPath convert(Dancer d, Map<Dancer,Integer> dancerNumMap, Fraction startTime, DancerPath dp) {
         // eventually we'll construct a dancer->dancernum map including
         // phantoms, but XXX we don't support phantoms yet.
         assert d.primitiveTag() != null;
-        int dancerNum = ((StandardDancer)d).ordinal();
+        int dancerNum = dancerNumMap.get(d);
         // ok, now...
         return new EngineResults.DancerPath
             (dancerNum, startTime.doubleValue(), dp.time.doubleValue(),

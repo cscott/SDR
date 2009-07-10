@@ -15,6 +15,7 @@ import net.cscott.sdr.webapp.client.Model.SequenceChangeEvent;
 import net.cscott.sdr.webapp.client.Model.SequenceChangeHandler;
 import net.cscott.sdr.webapp.client.Model.SequenceInfoChangeEvent;
 import net.cscott.sdr.webapp.client.Model.SequenceInfoChangeHandler;
+import net.cscott.sdr.webapp.client.Sequence.StartingFormationType;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.EntryPoint;
@@ -152,6 +153,14 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                     model.setProgram(pp);
                 }});
         }
+        MenuBar formationMenu = new MenuBar(true);
+        for (StartingFormationType sft : StartingFormationType.values()) {
+            final StartingFormationType ty = sft;
+            formationMenu.addItem(sft.humanName, new Command() {
+                public void execute() {
+                    model.setStartingFormation(ty);
+                }});
+        }
 
         model.addSequenceInfoChangeHandler(new SequenceInfoChangeHandler() {
             String lastTitle = null;
@@ -167,6 +176,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         MenuBar menu = new MenuBar();
         menu.addItem("File", fileMenu);
         menu.addItem("Program", programMenu);
+        menu.addItem("Dancers", formationMenu); // better name for this?
         menu.addSeparator();
         menu.addItem(sequenceTitle);
         topPanel.add(menu);
