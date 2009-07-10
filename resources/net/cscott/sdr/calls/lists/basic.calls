@@ -241,10 +241,16 @@ def: heads lead right
   from: STATIC SQUARE
     in: 6
     select: HEAD
+      // use a definition which lets us do half a lead right
+      // this also ensures we don't animate a wheel thru!
       select: BEAU
-        prim: 2, 4, right
+        //prim: 2, 4, right
+        prim: 2, 2, right 1/8
+        prim: -1, 1, right 1/8
       select: BELLE
-        prim: 0, 2, right
+        //prim: 0, 2, right
+        prim:  2, 0, right 1/8
+        prim: -2, 0, right 1/8
     select: OTHERS
       prim: 0, 0, none
 def: heads lead left
@@ -253,10 +259,16 @@ def: sides lead right
   from: STATIC SQUARE
     in: 6
     select: SIDE
+      // use a definition which lets us do half a lead right
+      // this also ensures we don't animate a wheel thru!
       select: BEAU
-        prim: 2, 4, right
+        //prim: 2, 4, right
+        prim: 2, 2, right 1/8
+        prim: -1, 1, right 1/8
       select: BELLE
-        prim: 0, 2, right
+        //prim: 0, 2, right
+        prim:  2, 0, right 1/8
+        prim: -2, 0, right 1/8
     select: OTHERS
       prim: 0, 0, none
 def: sides lead left
