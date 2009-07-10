@@ -61,7 +61,9 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
             (Collections.nCopies(s.calls.size(), Double.valueOf(0)));
         Fraction totalBeats = Fraction.ZERO;
         try {
-            for (String call: s.calls) {
+            List<String> calls = s.calls;
+            if (calls.isEmpty()) calls = Collections.singletonList("nothing");
+            for (String call: calls) {
                 Seq callAst = new Seq(CallDB.INSTANCE.parse(ds.dance.getProgram(), call));
                 Evaluator.breathedEval(ds.currentFormation(), callAst)
                     .evaluateAll(ds);
@@ -78,10 +80,12 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
                 // breathe (XXX: should be breathing the DanceState)
                 Formation f = Breather.breathe(ds.currentFormation());
                 ds = ds.cloneAndClear(f);
-                totalBeats = totalBeats.add(duration);
+                if (!s.calls.isEmpty())
+                    totalBeats = totalBeats.add(duration);
                 // make sure timing and movements don't get set unless all of
                 // the above succeeded.
-                timing.set(currentCall, duration.doubleValue());
+                if (!s.calls.isEmpty())
+                    timing.set(currentCall, duration.doubleValue());
                 movements.addAll(someMoves);
                 currentCall++;
             }
