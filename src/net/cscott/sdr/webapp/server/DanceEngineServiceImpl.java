@@ -63,7 +63,8 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
         try {
             for (String call: s.calls) {
                 Seq callAst = new Seq(CallDB.INSTANCE.parse(ds.dance.getProgram(), call));
-                new Evaluator.Standard(callAst).evaluateAll(ds);
+                Evaluator.breathedEval(ds.currentFormation(), callAst)
+                    .evaluateAll(ds);
                 List<EngineResults.DancerPath> someMoves =
                     new ArrayList<EngineResults.DancerPath>();
                 Fraction duration = ds.currentTime();
