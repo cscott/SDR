@@ -77,9 +77,7 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
                         startTime = startTime.add(dp.time);
                     }
                 }
-                // breathe (XXX: should be breathing the DanceState)
-                Formation f = Breather.breathe(ds.currentFormation());
-                ds = ds.cloneAndClear(f);
+                ds = ds.cloneAndClear(ds.currentFormation());
                 if (!s.calls.isEmpty())
                     totalBeats = totalBeats.add(duration);
                 // make sure timing and movements don't get set unless all of
