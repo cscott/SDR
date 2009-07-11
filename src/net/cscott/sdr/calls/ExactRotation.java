@@ -39,6 +39,26 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
     public int compareTo(ExactRotation r) {
 	return this.amount.compareTo(r.amount);
     }
+    /** Compute the minimum angle (in absolute value) between {@code this}
+     *  heading and the given heading {@code er}.  The result is positive or
+     *  negative, and can be added to this heading to yield a rotation
+     *  equivalent to the given heading {@code er}.
+     * @doc.test
+     *  js> ExactRotation.ONE_EIGHTH.minSweep(ExactRotation.SEVEN_EIGHTHS);
+     *  -1/4
+     *  js> ExactRotation.SEVEN_EIGHTHS.minSweep(ExactRotation.ONE_EIGHTH);
+     *  1/4
+     */
+    public Fraction minSweep(ExactRotation er) {
+        Fraction aa = this.normalize().amount, bb = er.normalize().amount;
+        boolean aaSmaller = aa.compareTo(bb) < 0;
+        Fraction s1 = (aaSmaller) ? bb.subtract(aa) : aa.subtract(bb);
+        Fraction s2 = Fraction.ONE.subtract(s1);
+        boolean s1Smaller = s1.compareTo(s2) < 0;
+        boolean isCW = !(aaSmaller ^ s1Smaller);
+        Fraction minSweep = (s1Smaller ? s1 : s2);
+        return isCW ? minSweep : minSweep.negate();
+    }
     /** Returns a human-readable description of the rotation.  The output
      *  is a valid input to <code>ExactRotation.fromAbsoluteString(String)</code>. */
     @Override

@@ -281,26 +281,13 @@ public class DancerPath {
         ExactRotation motion = ExactRotation.fromXY(motionDir.x, motionDir.y);
         ExactRotation result;
         // pick the option which is "closer" to the motionDir
-        if (minSweep(option1, motion).compareTo(minSweep(option2, motion)) < 0)
+        if (option1.minSweep(motion).abs().compareTo
+                (option2.minSweep(motion).abs()) < 0)
             result = option1;
         else
             result = option2;
         // convert the result into a "unit" vector.
         return new Point(result.toX(), result.toY());
-    }
-    /** Compute the minimum angle between heading a and heading b.
-     * @doc.test
-     *  js> DancerPath.minSweep(ExactRotation.ONE_EIGHTH, ExactRotation.SEVEN_EIGHTHS);
-     *  1/4
-     *  js> DancerPath.minSweep(ExactRotation.SEVEN_EIGHTHS, ExactRotation.ONE_EIGHTH);
-     *  1/4
-     */
-    // only public so we can target it with doc tests
-    public static Fraction minSweep(ExactRotation a, ExactRotation b) {
-        Fraction aa = a.normalize().amount, bb = b.normalize().amount;
-        Fraction s1 = (aa.compareTo(bb)<0) ? bb.subtract(aa) : aa.subtract(bb);
-        Fraction s2 = Fraction.ONE.subtract(s1);
-        return s1.compareTo(s2) < 0 ? s1 : s2;
     }
     /** Compute midpoint between given exact rotations, in minimum sweep
      *  direction.  Breaks ties in CCW direction.
@@ -316,14 +303,7 @@ public class DancerPath {
      */
     // only public so we can target it with doc tests
     public static ExactRotation midPoint(ExactRotation a, ExactRotation b) {
-        Fraction aa = a.normalize().amount, bb = b.normalize().amount;
-        boolean aaSmaller = aa.compareTo(bb) < 0;
-        Fraction s1 = (aaSmaller) ? bb.subtract(aa) : aa.subtract(bb);
-        Fraction s2 = Fraction.ONE.subtract(s1);
-        boolean s1Smaller = s1.compareTo(s2) < 0;
-        boolean isCW = !(aaSmaller ^ s1Smaller);
-        Fraction minSweep = (s1Smaller ? s1 : s2).divide(Fraction.TWO);
-        return isCW ? a.add(minSweep) : a.subtract(minSweep);
+        return a.add(a.minSweep(b).divide(Fraction.TWO));
     }
     /** Return a 2D bezier describing the dancer's complete path.  The 't'
      *  parameter of the bezier should vary from 0 to 1 over {@link #time}
