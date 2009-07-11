@@ -305,7 +305,7 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
 	// we have special character for exact rotations aligned to eighths
 	Fraction f = normalize().amount.multiply(Fraction.valueOf(8));
 	if (f.getProperNumerator() == 0)
-	    switch (f.getProperWhole()) {
+	    switch (f.floor()) {
 	    case 0: return '^'; // north
 	    case 1: return '7'; // northeast
 	    case 2: return '>'; // east

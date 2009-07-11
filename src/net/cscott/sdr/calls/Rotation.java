@@ -71,12 +71,12 @@ public class Rotation {
         // make rotation positive.
         Fraction abs = this.amount;
         if (abs.compareTo(Fraction.ZERO) < 0)
-            abs = abs.add(Fraction.valueOf(1-abs.getProperWhole()));
+	    abs = abs.subtract(Fraction.valueOf(abs.floor()));
         assert abs.compareTo(Fraction.ZERO) >= 0;
         // now reduce by modulus.
         Fraction f = abs.divide(this.modulus);
         // just want the fractional part.
-        f = Fraction.valueOf(f.getProperNumerator(), f.getDenominator())
+	f = f.subtract(Fraction.valueOf(f.floor()))
                     .multiply(this.modulus);
         return create(f, this.modulus);
     }

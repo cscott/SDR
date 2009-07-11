@@ -273,8 +273,8 @@ public abstract class BasicList {
             Fraction n = ast.getNumberArg(0);
             Apply a = ast.getArg(1);
             if (n.compareTo(Fraction.ZERO) <= 0)
-                throw new BadCallException("0 fractions are not legal");
-            int whole = n.getProperWhole();
+                throw new BadCallException("Non-positive fractions are not allowed");
+            int whole = n.floor();
             List<SeqCall> l = new ArrayList<SeqCall>(whole+1);
             // easy case: do the whole repetitions of the
             // call.
@@ -284,8 +284,7 @@ public abstract class BasicList {
             // note this does not get wrapped in a PART:
             // we can't further fractionalize (say)
             // swing thru 1 1/2.
-            n=Fraction.valueOf(n.getProperNumerator(),
-                    n.getDenominator());
+	    n=n.subtract(Fraction.valueOf(whole));
             if (!Fraction.ZERO.equals(n)) {
                 l.add(fv.visit(a, n));
                 if (whole!=0)

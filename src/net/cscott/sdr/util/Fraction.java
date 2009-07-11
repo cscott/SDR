@@ -602,10 +602,25 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      * <p>If the fraction is negative such as -7/4, it can be resolved into
      * -1 3/4, so this method returns the positive whole part -1.</p>
      *
+     * @deprecated Returns unexpected values for numbers between -1 and 0
      * @return the whole fraction part of a proper fraction, that includes the sign
      */
+    @Deprecated
     public int getProperWhole() {
         return numerator / denominator;
+    }
+    /** Return the largest integer less than or equal to this fraction. */
+    public int floor() {
+        int n = numerator, d = denominator;
+        // we're careful about overflow here.
+        if (n<0)
+            return ((n+1)/d)-1;
+        return n/d;
+    }
+    /** Quantize the given fraction to the nearest x/nDenom. */
+    public Fraction quantize(int nDenom) {
+        int n = this.multiply(Fraction.valueOf(nDenom)).add(ONE_HALF).floor();
+        return Fraction.valueOf(n, nDenom);
     }
 
     // Number methods
