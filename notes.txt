@@ -904,3 +904,12 @@ halving the difference every second.
    diff = diff * (1/2)^(seconds since last update)
 Halt anim loop when diff < epsilon.
 ----
+"_blend(x,y)" concept which fractional knows it can discard; it just
+discards an intermediate point in the dancer path between x-start and
+y-end so that we do the action "in one fluid motion".
+e.g. pass the ocean is usually animated as:
+  _blend(pass thru, quarter in), extend
+and square thru as:
+  _blend(pass thru, quarter in), left sq thr N-1
+and even cross trail thru as:
+  _blend(pass thru, half-sashay)
