@@ -11,7 +11,7 @@ import net.cscott.sdr.util.Fraction;
  * {@link Formation} with a specific time at which it occurs.
  * @author C. Scott Ananian
  */
-public abstract class Timed<T extends Timed> implements Comparable<T> {
+public abstract class Timed<T extends Timed<T>> implements Comparable<T> {
 
     /** If {@link Timed#isAbsolute isAbsolute} is true, then the
      * absolute time at which this formation should appear.  Otherwise, the
@@ -44,7 +44,7 @@ public abstract class Timed<T extends Timed> implements Comparable<T> {
      * reference should be treated as one with an absolute time of zero.
      * @param reference The previous {@link Timed} (must be absolute)
      */
-    public abstract T makeAbsolute(Timed reference);
+    public abstract T makeAbsolute(Timed<?> reference);
     /**
      * Take a list of possibly-relative times and make them all absolute.
      * If the first element of the list is not absolute, all times will

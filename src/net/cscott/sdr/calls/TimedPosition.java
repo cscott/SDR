@@ -17,7 +17,7 @@ public class TimedPosition extends Timed<TimedPosition>  {
         this.position = position;
     }
     @Override
-    public TimedPosition makeAbsolute(Timed reference) {
+    public TimedPosition makeAbsolute(Timed<?> reference) {
         if (this.isAbsolute) return this;
         Fraction newTime = ((reference==null)?Fraction.ZERO:reference.time)
             .add(this.time);

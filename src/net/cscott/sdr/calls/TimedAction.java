@@ -19,7 +19,7 @@ public class TimedAction extends Timed<TimedAction> {
         this.action = action;
     }
     @Override
-    public TimedAction makeAbsolute(Timed reference) {
+    public TimedAction makeAbsolute(Timed<?> reference) {
         if (this.isAbsolute) return this;
         Fraction newTime = ((reference==null)?Fraction.ZERO:reference.time)
             .add(this.time);

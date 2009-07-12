@@ -17,7 +17,7 @@ public class TimedFormation extends Timed<TimedFormation> {
         this.formation = formation;
     }
     @Override
-    public TimedFormation makeAbsolute(Timed reference) {
+    public TimedFormation makeAbsolute(Timed<?> reference) {
         if (this.isAbsolute) return this;
         Fraction newTime = ((reference==null)?Fraction.ZERO:reference.time)
             .add(this.time);
