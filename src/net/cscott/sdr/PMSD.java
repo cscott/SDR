@@ -35,6 +35,7 @@ public class PMSD {
     public static class State {
         public DanceState ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET);
         boolean _isDone = false;
+        public String test = "abc";
         public void exit() { _isDone = true; }
     }
 
@@ -51,11 +52,8 @@ public class PMSD {
             global.init(cx);
             cr.addCompletor(new JavascriptCompletor(global));
             // add the 'State' object to the scope chain
-            /*
-            Scriptable newScope = cx.newObject(sharedScope);
-            newScope.setPrototype(sharedScope);
-            newScope.setParentScope(null);
-             */
+            Scriptable jsState = Context.toObject(s, global);
+            jsState.setParentScope(global);
             // main loop
             while (!s._isDone) {
                 String line = cr.readLine("sdr> ");
@@ -67,7 +65,7 @@ public class PMSD {
                         line = line + "\n" + cr.readLine("   > ");
                     }
                     try {
-                        Object result = cx.evaluateString(global, line, "<stdin>", 1, null);
+                        Object result = cx.evaluateString(jsState, line, "<stdin>", 1, null);
                         if (result != Context.getUndefinedValue() &&
                                 !(result instanceof Function &&
                                         line.trim().startsWith("function"))) {
