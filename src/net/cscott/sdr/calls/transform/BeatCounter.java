@@ -21,6 +21,7 @@ import java.util.*;
  *  3
  */
 class BeatCounter extends ValueVisitor<Fraction,Void> {
+    static class CantCountBeatsException extends RuntimeException {}
     public BeatCounter() { }
     private final Map<AstNode,Fraction> inherent = new HashMap<AstNode,Fraction>();
     // Math.max for Fractions.
@@ -35,6 +36,8 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     @Override
     public Fraction visit(Apply apply, Void v) {
         // careful with recursive calls here!
+        if (apply.evaluator()!=null)
+            throw new CantCountBeatsException(); // can't expand fancy-pants calls
         return getBeats(apply.expand());
     }
     @Override

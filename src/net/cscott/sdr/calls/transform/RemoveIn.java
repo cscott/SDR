@@ -38,7 +38,11 @@ public class RemoveIn extends TransformVisitor<Fraction> {
      *  without {@link In} nodes. */
     public static Comp removeIn(In in) {
         RemoveIn ri = new RemoveIn();
-        return in.child.accept(ri,in.count);
+        try {
+            return in.child.accept(ri,in.count);
+        } catch (BeatCounter.CantCountBeatsException ccbe) {
+            return in; // bail!
+        }
     }
 
     // f is target # of beats
@@ -63,6 +67,9 @@ public class RemoveIn extends TransformVisitor<Fraction> {
     public Apply visit(Apply a, Fraction f) {
         // Use the 'in' pseudo-concept; this will add an 'In' node when 'a'
         // gets expanded.
+        // if this already has an 'in', then just alter the existing _in
+        if (a.callName.equals("_in"))
+            a = a.getArg(1);
         return Apply.makeApply("_in", f, a);
     }
     // pass timing straight down Par: this will cause all sections of the

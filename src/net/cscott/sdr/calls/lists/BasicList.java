@@ -75,7 +75,12 @@ public abstract class BasicList {
         @Override
         public Comp apply(Apply ast) {
             Fraction time = ast.getNumberArg(0);
-            return new In(time, ast.getArg(1).expand());
+            Apply arg = ast.getArg(1);
+            // if this is a simple call, expand it directly
+            if (arg.evaluator()==null)
+                return new In(time, arg.expand());
+            // for complicated calls, use a Seq(Apply(...))
+            return new In(time, new Seq(ast.getArg(1)));
         }
         @Override
         public int getMinNumberOfArguments() {

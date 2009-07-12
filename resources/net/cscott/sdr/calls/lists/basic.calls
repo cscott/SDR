@@ -183,7 +183,7 @@ def: u turn back
   in: 2
   from: COUPLE, MINIWAVE
     prim: 0, 0, in
-    prim: 0, 0, in
+    call: _in(1, roll) // ie, continue in the same direction
   // we can u-turn back from other formations, too: turn toward
   // the center in that case.
   from: ANY
