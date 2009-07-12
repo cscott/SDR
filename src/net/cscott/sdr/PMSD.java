@@ -32,40 +32,87 @@ import org.mozilla.javascript.tools.shell.Global;
 public class PMSD {
     private PMSD() {}
     /** Class holding properties accessible from the front-end. */
-    public static class State {
-        public DanceState ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET);
+    public static class State extends ScriptableObject {
+        // rhino bookkeeping.
+        public State() {}
+        @Override
+        public String getClassName() { return "State"; }
+
+        // private/internal state
+        DanceState ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET);
         boolean _isDone = false;
-        public String test = "abc";
-        public void exit() { _isDone = true; }
+
+        // javascript api.
+        public Object jsGet_ds() {
+            return Context.javaToJS(ds, this);
+        }
+        public Object jsGet_exit() {
+            // abuse the getter mechanism by using it to perform a side-effect
+            _isDone = true;
+            return Context.getUndefinedValue();
+        }
+        public Object jsGet_program() {
+            return Context.javaToJS(ds.dance.getProgram(), this);
+            //return ds.dance.getProgram().toString();
+        }
+        public void jsSet_program(Object val) {
+            Program p;
+            if (val instanceof String)
+                p = Program.valueOf((String)val);
+            else
+                p = (Program) Context.jsToJava(val, Program.class);
+            if (p==ds.dance.getProgram()) return;
+            ds = new DanceState(new DanceProgram(p), ds.currentFormation());
+        }
+        public void jsSet_formation(Object val) {
+            Formation f = (Formation) Context.jsToJava(val, Formation.class);
+            ds = new DanceState(ds.dance, f);
+        }
+        // this is just a workaround to prevent javascript from echoing the
+        // value of the formation.
+        public String jsFunction_setFormation(Object val) {
+            jsSet_formation(val);
+            return jsGet_printFormation();
+        }
+        public String jsGet_printFormation() {
+            return ds.currentFormation().toStringDiagram("| ");
+        }
     }
 
     public static void main(String[] args) throws Exception {
-        State s = new State();
         PrintWriter pw = new PrintWriter(System.out, true);
         // initialize JLine
         jline.ConsoleReader cr = new jline.ConsoleReader();
-        cr.addCompletor(new SDRCallCompletor(s));
         // initialize Rhino
         Context cx = Context.enter();
         try {
             Global global = new Global();
             global.init(cx);
+            cx.evaluateString(global, "importPackage(net.cscott.sdr.calls)",
+                              "<init>", 0, null);
             cr.addCompletor(new JavascriptCompletor(global));
             // add the 'State' object to the scope chain
-            Scriptable jsState = Context.toObject(s, global);
-            jsState.setParentScope(global);
+            ScriptableObject.defineClass(global, State.class);
+            State s = (State) cx.newObject(global, "State");
+            s.setParentScope(global);
+            cr.addCompletor(new SDRCallCompletor(s));
             // main loop
+            String sourceName = "<stdin>";
+            int lineNum = 1;
             while (!s._isDone) {
-                String line = cr.readLine("sdr> ");
+                final int initialLineNum = lineNum;
+                String line = cr.readLine("sdr> "); lineNum++;
                 if (line==null) break;
                 if (line.startsWith("/")) {
                     line = line.substring(1);
                     // accumulate until we've got a complete javascript statement
                     while (!cx.stringIsCompilableUnit(line)) {
                         line = line + "\n" + cr.readLine("   > ");
+                        lineNum++;
                     }
                     try {
-                        Object result = cx.evaluateString(jsState, line, "<stdin>", 1, null);
+                        Object result = cx.evaluateString(s, line, sourceName,
+                                                          initialLineNum, null);
                         if (result != Context.getUndefinedValue() &&
                                 !(result instanceof Function &&
                                         line.trim().startsWith("function"))) {
@@ -75,6 +122,12 @@ public class PMSD {
                         pw.println("* Javascript exception: "+rex.getMessage());
                     }
                 } else {
+                    // accumulate while there's a trailing backslash
+                    while (line.trim().endsWith("\\")) {
+                        line = line.replaceFirst("\\\\", "") +
+                               cr.readLine("   > ");
+                        lineNum++;
+                    }
                     try {
                         Comp c = new Seq(CallDB.INSTANCE.parse(s.ds.dance.getProgram(), line));
                         Evaluator.breathedEval(s.ds.currentFormation(), c).evaluateAll(s.ds);
@@ -110,7 +163,8 @@ public class PMSD {
             SortedSet<String> results = new TreeSet<String>();
             Program p = state.ds.dance.getProgram();
             for (String s : CompletionEngine.complete(p, start, 50)) {
-                s = s.replaceFirst("<.*", ""); // XXX suboptimal
+                // XXX: do we need to filter out the <foo> nonterminals?
+                //s = s.replaceFirst("<.*", "");
                 results.add(s);
             }
             candidates.addAll(results);
