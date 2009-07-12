@@ -209,6 +209,12 @@ public abstract class FormationList {
                d(-1, 0,"s",BELLE,CENTER),
                d(+1, 0,"n",BELLE,CENTER),
                d( 0,-2,"s",END));
+    public static final TaggedFormation SINGLE_DOUBLE_PASS_THRU =
+        xofy("SINGLE DOUBLE PASS THRU", FACING_DANCERS, TANDEM,
+                t(0,END),t(1,CENTER),t(2,CENTER),t(3,END));
+    public static final TaggedFormation COMPLETED_SINGLE_DOUBLE_PASS_THRU =
+        xofy("COMPLETED SINGLE DOUBLE PASS THRU", BACK_TO_BACK_DANCERS, TANDEM,
+                t(0,END),t(1,CENTER),t(2,CENTER),t(3,END));
     // 8-person formations. ///////////////////////////////
     public static final TaggedFormation STATIC_SQUARE = // callerlab #14
         create("STATIC SQUARE", f(" ss ","e  w","e  w"," nn "),
@@ -225,41 +231,65 @@ public abstract class FormationList {
     public static final TaggedFormation WRONG_WAY_THAR =
         xofy("WRONG WAY THAR", LH_SINGLE_PROMENADE, RH_MINIWAVE);
     public static final TaggedFormation FACING_LINES = // callerlab #22
-        xofy("FACING LINES", FACING_COUPLES, COUPLE);
+        xofy("FACING LINES", FACING_COUPLES, COUPLE,
+                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),
+                t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
     public static final TaggedFormation EIGHT_CHAIN_THRU = // callerlab #23
-        xofy("EIGHT CHAIN THRU", FACING_COUPLES, FACING_DANCERS);
+        xofy("EIGHT CHAIN THRU", FACING_COUPLES, FACING_DANCERS,
+                t(0,END   ),t(1,END),
+                t(2,CENTER),t(3,CENTER),
+                t(4,CENTER),t(5,CENTER),
+                t(6,END   ),t(7,END));
     public static final TaggedFormation TRADE_BY = // callerlab #24
-        xofy("TRADE BY", FACING_COUPLES, BACK_TO_BACK_DANCERS);
+        xofy("TRADE BY", FACING_COUPLES, BACK_TO_BACK_DANCERS,
+                t(0,END   ),t(1,END),
+                t(2,CENTER),t(3,CENTER),
+                t(4,CENTER),t(5,CENTER),
+                t(6,END   ),t(7,END));
     public static final TaggedFormation DOUBLE_PASS_THRU = // callerlab #25
-        xofy("DOUBLE PASS THRU", FACING_COUPLES, TANDEM);
-    public static final TaggedFormation SINGLE_DOUBLE_PASS_THRU =
-        xofy("SINGLE DOUBLE PASS THRU", FACING_DANCERS, TANDEM);
+        xofy("DOUBLE PASS THRU", FACING_COUPLES, TANDEM,
+                t(0,END   ),t(1,END),
+                t(2,CENTER),t(3,CENTER),
+                t(4,CENTER),t(5,CENTER),
+                t(6,END   ),t(7,END));
     public static final TaggedFormation COMPLETED_DOUBLE_PASS_THRU = // callerlab #26
-        xofy("COMPLETED DOUBLE PASS THRU", BACK_TO_BACK_COUPLES, TANDEM);
-    public static final TaggedFormation COMPLETED_SINGLE_DOUBLE_PASS_THRU =
-        xofy("COMPLETED SINGLE DOUBLE PASS THRU", BACK_TO_BACK_DANCERS, TANDEM);
+        xofy("COMPLETED DOUBLE PASS THRU", BACK_TO_BACK_COUPLES, TANDEM,
+                t(0,END   ),t(1,END),
+                t(2,CENTER),t(3,CENTER),
+                t(4,CENTER),t(5,CENTER),
+                t(6,END   ),t(7,END));
     public static final TaggedFormation LINES_FACING_OUT = // callerlab #27
-        xofy("LINES FACING OUT", BACK_TO_BACK_COUPLES, COUPLE);
+        xofy("LINES FACING OUT", BACK_TO_BACK_COUPLES, COUPLE,
+                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),
+                t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
     public static final TaggedFormation PARALLEL_RH_WAVES = // callerlab #28(a)
-        xofy("PARALLEL RH WAVES", RH_OCEAN_WAVE, TANDEM);
+        xofy("PARALLEL RH WAVES", RH_OCEAN_WAVE, TANDEM,
+                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),
+                t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
     public static final TaggedFormation PARALLEL_LH_WAVES = // callerlab #28(b)
-        xofy("PARALLEL LH WAVES", LH_OCEAN_WAVE, TANDEM);
+        xofy("PARALLEL LH WAVES", LH_OCEAN_WAVE, TANDEM,
+                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),
+                t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
     public static final TaggedFormation PARALLEL_RH_TWO_FACED_LINES = // callerlab #29(a)
-        xofy("PARALLEL RH TWO-FACED LINES", RH_BOX, COUPLE);
+        xofy("PARALLEL RH TWO-FACED LINES", RH_BOX, COUPLE,
+                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),
+                t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
     public static final TaggedFormation PARALLEL_LH_TWO_FACED_LINES = // callerlab #29(b)
-        xofy("PARALLEL LH TWO-FACED LINES", LH_BOX, COUPLE);
+        xofy("PARALLEL LH TWO-FACED LINES", LH_BOX, COUPLE,
+                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),
+                t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
     public static final TaggedFormation RH_COLUMN = // callerlab #30
         xofy("RH COLUMN", RH_BOX, TANDEM,
-                t(0,NUMBER_1),t(1,NUMBER_4),
-                t(2,NUMBER_2),t(3,NUMBER_3),
-                t(4,NUMBER_3),t(5,NUMBER_2),
-                t(6,NUMBER_4),t(7,NUMBER_1));
+                t(0,NUMBER_1,END   ),t(1,NUMBER_4,END),
+                t(2,NUMBER_2,CENTER),t(3,NUMBER_3,CENTER),
+                t(4,NUMBER_3,CENTER),t(5,NUMBER_2,CENTER),
+                t(6,NUMBER_4,END   ),t(7,NUMBER_1,END));
     public static final TaggedFormation LH_COLUMN = // callerlab #31
         xofy("LH COLUMN", LH_BOX, TANDEM,
-                t(0,NUMBER_4),t(1,NUMBER_1),
-                t(2,NUMBER_3),t(3,NUMBER_2),
-                t(4,NUMBER_2),t(5,NUMBER_3),
-                t(6,NUMBER_1),t(7,NUMBER_4));
+                t(0,NUMBER_4,END   ),t(1,NUMBER_1,END),
+                t(2,NUMBER_3,CENTER),t(3,NUMBER_2,CENTER),
+                t(4,NUMBER_2,CENTER),t(5,NUMBER_3,CENTER),
+                t(6,NUMBER_1,END   ),t(7,NUMBER_4,END));
     // XXX 3-and-1 lines, 8 possible, callerlab #32
     public static final TaggedFormation ENDS_IN_INVERTED_LINES = // callerlab #33
         xofy("ENDS IN INVERTED LINES", BACK_TO_BACK_DANCERS, SINGLE_INVERTED_LINE);
