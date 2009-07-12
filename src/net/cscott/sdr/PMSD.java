@@ -1,5 +1,6 @@
 package net.cscott.sdr;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,10 +80,38 @@ public class PMSD {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        PrintWriter pw = new PrintWriter(System.out, true);
-        // initialize JLine
-        jline.ConsoleReader cr = new jline.ConsoleReader();
+    /** Abstract class to allow using repl look with console or file input. */
+    static abstract class ReaderWriter {
+        abstract String sourceName();
+        abstract String readLine(State s, String prompt) throws IOException;
+        abstract PrintWriter writer();
+    }
+
+    /** Console front end entry point. */
+    public static void main(String[] args) throws IOException {
+        final PrintWriter pw = new PrintWriter(System.out, true);
+        // console i/o
+        repl(new ReaderWriter() {
+            jline.ConsoleReader cr = null;
+            @Override
+            String sourceName() { return "<stdin>"; }
+            @Override
+            String readLine(State state, String prompt) throws IOException {
+                if (cr==null) {
+                    // initialize JLine!
+                    cr = new jline.ConsoleReader();
+                    cr.addCompletor(new SDRCallCompletor(state));
+                    cr.addCompletor(new JavascriptCompletor(state));
+                }
+                return cr.readLine(prompt);
+            }
+            @Override
+            PrintWriter writer() { return pw; }
+            });
+    }
+    /** The main read-eval-print loop. */
+    public static void repl(ReaderWriter rw) throws IOException {
+        PrintWriter pw = rw.writer();
         // initialize Rhino
         Context cx = Context.enter();
         try {
@@ -90,28 +119,26 @@ public class PMSD {
             global.init(cx);
             cx.evaluateString(global, "importPackage(net.cscott.sdr.calls)",
                               "<init>", 0, null);
-            cr.addCompletor(new JavascriptCompletor(global));
             // add the 'State' object to the scope chain
             ScriptableObject.defineClass(global, State.class);
             State s = (State) cx.newObject(global, "State");
             s.setParentScope(global);
-            cr.addCompletor(new SDRCallCompletor(s));
             // main loop
-            String sourceName = "<stdin>";
             int lineNum = 1;
             while (!s._isDone) {
                 final int initialLineNum = lineNum;
-                String line = cr.readLine("sdr> "); lineNum++;
+                String line = rw.readLine(s, "sdr> "); lineNum++;
                 if (line==null) break;
                 if (line.startsWith("/")) {
                     line = line.substring(1);
                     // accumulate until we've got a complete javascript statement
                     while (!cx.stringIsCompilableUnit(line)) {
-                        line = line + "\n" + cr.readLine("   > ");
+                        line = line + "\n" + rw.readLine(s, "   > ");
                         lineNum++;
                     }
                     try {
-                        Object result = cx.evaluateString(s, line, sourceName,
+                        Object result = cx.evaluateString(s, line,
+                                                          rw.sourceName(),
                                                           initialLineNum, null);
                         if (result != Context.getUndefinedValue() &&
                                 !(result instanceof Function &&
@@ -125,7 +152,7 @@ public class PMSD {
                     // accumulate while there's a trailing backslash
                     while (line.trim().endsWith("\\")) {
                         line = line.replaceFirst("\\\\", "") +
-                               cr.readLine("   > ");
+                               rw.readLine(s, "   > ");
                         lineNum++;
                     }
                     try {
@@ -140,13 +167,14 @@ public class PMSD {
                     }
                 }
             }
+        } catch (Throwable t) {
+            pw.println("* Unhandled exception: "+t.getMessage());
         } finally {
             Context.exit();
-            if (cr.getTerminal() instanceof jline.UnixTerminal)
-                ((jline.UnixTerminal)cr.getTerminal()).restoreTerminal();
         }
 
     }
+    /** JLine completion engine for call names. */
     static class SDRCallCompletor implements jline.Completor {
         final State state;
         SDRCallCompletor(State state) { this.state = state; }
