@@ -6,5 +6,10 @@ package net.cscott.sdr.calls;
  * @version $Id: NoMatchException.java,v 1.2 2006-10-17 20:03:41 cananian Exp $
  */
 public class NoMatchException extends BadCallException {
-    public NoMatchException(String msg) { super(msg); }
+    public final String target, reason;
+    public NoMatchException(String target, String reason) {
+        super("No match for "+target+(reason.length()==0 ? "" : (": "+reason)));
+        this.target=target;
+        this.reason=reason;
+    }
 }

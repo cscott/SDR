@@ -281,22 +281,26 @@ public abstract class Evaluator {
             /** Try all the options, keeping the first one which works. */
             @Override
             public Evaluator visit(Opt opt, DanceState ds) {
+                List<String> reasons=new ArrayList<String>(opt.children.size());
                 for (OptCall oc: opt.children) {
                     try {
                         return oc.accept(this, ds);
-                    } catch (BadCallException bce) {
+                    } catch (NoMatchException bce) {
                         /* ignore; try the next one */
+                        reasons.add(bce.reason);
                     }
                 }
                 /* Hmm, none of the options worked. */
-		List<String> l = new ArrayList<String>();
-		for (OptCall oc: opt.children) {
-		    for (Selector s: oc.selectors) {
-			l.add(s.toString());
-		    }
-		}
-		String msg = "Invalid formation: requires " +
-		                    ListUtils.join(l, ", ", " or ");
+		// XXX: this only reports outermost formations
+		//  if requires OCEAN WAVES and then within that
+		//    requires BOYS ARE ENDS (or whatever) will only
+		//  report that OCEAN WAVES is invalid.  We need to
+		//  percolate information out from inner matches.
+		//  Something like:
+		//    couldn't evaluate from ocean waves (boys are not ends) or
+		//    from lines (not found)
+		String msg = "Invalid formation";
+		msg += " ("+ListUtils.join(reasons, ", ")+")";
                 throw new BadCallException(msg, Fraction.mONE);
             }
             /** Try all the selectors. */
@@ -304,16 +308,28 @@ public abstract class Evaluator {
             public Evaluator visit(OptCall oc, DanceState ds) {
                 // Match from the breathed version of the formation.
                 Formation f = Breather.breathe(ds.currentFormation());
+                List<String> reasons = new ArrayList<String>(oc.selectors.size());
                 for (Selector s: oc.selectors) {
+                    FormationMatch fm;
                     try {
-                        FormationMatch fm = s.match(f);
-                        return new MetaEvaluator(fm, oc.child).evaluate(ds);
+                        fm = s.match(f);
                     } catch (NoMatchException nme) {
                         /* ignore; try the next selector */
+                        reasons.add(nme.target+" ("+nme.reason+")");
+                        continue;
+                    }
+                    // we distinguish call errors from match errors:
+                    try {
+                        return new MetaEvaluator(fm, oc.child).evaluate(ds);
+                    } catch (BadCallException bce) {
+                        reasons.add(s.toString()+" ("+bce.getMessage()+")");
+                        /* continue with the next selector */
                     }
                 }
                 /* Hmm, none of the selectors matched. */
-                throw new BadCallException("no matching selectors");
+		// this exception should only be seen internally
+                throw new NoMatchException(oc.selectors.toString(),
+                                           ListUtils.join(reasons, ", "));
             }
             /**
              * Evaluate multiple "do your parts" against particularly-tagged

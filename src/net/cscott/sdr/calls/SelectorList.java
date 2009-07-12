@@ -3,7 +3,11 @@ package net.cscott.sdr.calls;
 import static net.cscott.sdr.util.Tools.m;
 import static net.cscott.sdr.util.Tools.p;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
+import net.cscott.sdr.util.ListUtils;
 
 /**
  * The selector list creates selectors for various formations.
@@ -106,12 +110,14 @@ public abstract class SelectorList {
 	    return new FormationMatch(meta, m(p(metaDancer, tf)),
 				      Collections.<Dancer>emptySet());
         }
+        public String toString() { return "ANY"; }
     };
     // 0-person selectors
     public static final Selector NONE = new Selector() {
         public FormationMatch match(Formation f) throws NoMatchException {
-            throw new NoMatchException("NONE selector used");
+            throw new NoMatchException("NONE", "NONE selector used");
         }
+        public String toString() { return "NONE"; }
     };
     // 1-person selectors
     public static final Selector SINGLE_DANCER =
@@ -130,7 +136,7 @@ public abstract class SelectorList {
     public static final Selector LH_MINIWAVE =
         GeneralFormationMatcher.makeSelector(FormationList.LH_MINIWAVE);
     public static final Selector MINIWAVE =
-        OR(RH_MINIWAVE, LH_MINIWAVE);
+        OR("MINIWAVE", RH_MINIWAVE, LH_MINIWAVE);
     // 4-person selectors
     public static final Selector GENERAL_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.GENERAL_LINE);
@@ -149,19 +155,19 @@ public abstract class SelectorList {
     public static final Selector LH_OCEAN_WAVE =
         GeneralFormationMatcher.makeSelector(FormationList.LH_OCEAN_WAVE);
     public static final Selector OCEAN_WAVE =
-        OR(RH_OCEAN_WAVE, LH_OCEAN_WAVE);
+        OR("OCEAN WAVE", RH_OCEAN_WAVE, LH_OCEAN_WAVE);
     public static final Selector RH_BOX =
         GeneralFormationMatcher.makeSelector(FormationList.RH_BOX);
     public static final Selector LH_BOX =
         GeneralFormationMatcher.makeSelector(FormationList.LH_BOX);
     public static final Selector BOX =
-        OR(RH_BOX, LH_BOX);
+        OR("BOX", RH_BOX, LH_BOX);
     public static final Selector RH_TWO_FACED_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.RH_TWO_FACED_LINE);
     public static final Selector LH_TWO_FACED_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.LH_TWO_FACED_LINE);
     public static final Selector TWO_FACED_LINE =
-        OR(RH_TWO_FACED_LINE, LH_TWO_FACED_LINE);
+        OR("TWO-FACED LINE", RH_TWO_FACED_LINE, LH_TWO_FACED_LINE);
     public static final Selector RH_DIAMOND =
         GeneralFormationMatcher.makeSelector(FormationList.RH_DIAMOND);
     public static final Selector RH_FACING_DIAMOND =
@@ -179,13 +185,13 @@ public abstract class SelectorList {
     public static final Selector LH_SINGLE_QUARTER_TAG =
         GeneralFormationMatcher.makeSelector(FormationList.LH_SINGLE_QUARTER_TAG);
     public static final Selector SINGLE_QUARTER_TAG =
-        OR(RH_SINGLE_QUARTER_TAG, LH_SINGLE_QUARTER_TAG);
+        OR("SINGLE 1/4 TAG", RH_SINGLE_QUARTER_TAG, LH_SINGLE_QUARTER_TAG);
     public static final Selector RH_SINGLE_THREE_QUARTER_TAG =
         GeneralFormationMatcher.makeSelector(FormationList.RH_SINGLE_THREE_QUARTER_TAG);
     public static final Selector LH_SINGLE_THREE_QUARTER_TAG =
         GeneralFormationMatcher.makeSelector(FormationList.LH_SINGLE_THREE_QUARTER_TAG);
     public static final Selector SINGLE_THREE_QUARTER_TAG =
-        OR(RH_SINGLE_THREE_QUARTER_TAG, LH_SINGLE_THREE_QUARTER_TAG);
+        OR("SINGLE 3/4 TAG", RH_SINGLE_THREE_QUARTER_TAG, LH_SINGLE_THREE_QUARTER_TAG);
 
     // 8-person selectors
     public static final Selector STATIC_SQUARE =
@@ -219,92 +225,98 @@ public abstract class SelectorList {
     public static final Selector PARALLEL_LH_WAVES =
         GeneralFormationMatcher.makeSelector(FormationList.PARALLEL_LH_WAVES);
     public static final Selector PARALLEL_WAVES =
-        OR(PARALLEL_RH_WAVES, PARALLEL_LH_WAVES);
+        OR("PARALLEL WAVES", PARALLEL_RH_WAVES, PARALLEL_LH_WAVES);
     public static final Selector PARALLEL_RH_TWO_FACED_LINES =
         GeneralFormationMatcher.makeSelector(FormationList.PARALLEL_RH_TWO_FACED_LINES);
     public static final Selector PARALLEL_LH_TWO_FACED_LINES =
         GeneralFormationMatcher.makeSelector(FormationList.PARALLEL_LH_TWO_FACED_LINES);
     public static final Selector PARALLEL_TWO_FACED_LINES =
-        OR(PARALLEL_RH_TWO_FACED_LINES, PARALLEL_LH_TWO_FACED_LINES);
+        OR("PARALLEL TWO-FACED LINES", PARALLEL_RH_TWO_FACED_LINES, PARALLEL_LH_TWO_FACED_LINES);
     public static final Selector RH_COLUMN =
         GeneralFormationMatcher.makeSelector(FormationList.RH_COLUMN);
     public static final Selector LH_COLUMN =
         GeneralFormationMatcher.makeSelector(FormationList.LH_COLUMN);
     public static final Selector COLUMN =
-        OR(RH_COLUMN, LH_COLUMN);
+        OR("COLUMN", RH_COLUMN, LH_COLUMN);
     public static final Selector ENDS_IN_INVERTED_LINES =
         GeneralFormationMatcher.makeSelector(FormationList.ENDS_IN_INVERTED_LINES);
     public static final Selector ENDS_OUT_INVERTED_LINES =
         GeneralFormationMatcher.makeSelector(FormationList.ENDS_OUT_INVERTED_LINES);
     public static final Selector INVERTED_LINES =
-	OR(ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES);
+	OR("INVERTED LINES", ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES);
     public static final Selector RH_QUARTER_TAG =
         GeneralFormationMatcher.makeSelector(FormationList.RH_QUARTER_TAG);
     public static final Selector LH_QUARTER_TAG =
         GeneralFormationMatcher.makeSelector(FormationList.LH_QUARTER_TAG);
     public static final Selector QUARTER_TAG =
-        OR(RH_QUARTER_TAG, LH_QUARTER_TAG);
+        OR("1/4 TAG", RH_QUARTER_TAG, LH_QUARTER_TAG);
     public static final Selector RH_THREE_QUARTER_TAG =
         GeneralFormationMatcher.makeSelector(FormationList.RH_THREE_QUARTER_TAG);
     public static final Selector LH_THREE_QUARTER_TAG =
         GeneralFormationMatcher.makeSelector(FormationList.LH_THREE_QUARTER_TAG);
     public static final Selector THREE_QUARTER_TAG =
-        OR(RH_THREE_QUARTER_TAG, LH_THREE_QUARTER_TAG);
+        OR("3/4 TAG", RH_THREE_QUARTER_TAG, LH_THREE_QUARTER_TAG);
     public static final Selector RH_QUARTER_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.RH_QUARTER_LINE);
     public static final Selector LH_QUARTER_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.LH_QUARTER_LINE);
     public static final Selector QUARTER_LINE =
-        OR(RH_QUARTER_LINE, LH_QUARTER_LINE);
+        OR("1/4 LINE", RH_QUARTER_LINE, LH_QUARTER_LINE);
+    public static final Selector RH_THREE_QUARTER_LINE =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_THREE_QUARTER_LINE);
+    public static final Selector LH_THREE_QUARTER_LINE =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_THREE_QUARTER_LINE);
+    public static final Selector THREE_QUARTER_LINE =
+        OR("3/4 LINE", RH_THREE_QUARTER_LINE, LH_THREE_QUARTER_LINE);
     public static final Selector RH_TWIN_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.RH_TWIN_DIAMONDS);
     public static final Selector LH_TWIN_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.LH_TWIN_DIAMONDS);
     public static final Selector TWIN_DIAMONDS =
-        OR(RH_TWIN_DIAMONDS, LH_TWIN_DIAMONDS);
+        OR("TWIN DIAMONDS", RH_TWIN_DIAMONDS, LH_TWIN_DIAMONDS);
     public static final Selector RH_POINT_TO_POINT_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.RH_POINT_TO_POINT_DIAMONDS);
     public static final Selector LH_POINT_TO_POINT_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.LH_POINT_TO_POINT_DIAMONDS);
     public static final Selector POINT_TO_POINT_DIAMONDS =
-        OR(RH_POINT_TO_POINT_DIAMONDS, LH_POINT_TO_POINT_DIAMONDS);
+        OR("POINT-TO-POINT DIAMONDS", RH_POINT_TO_POINT_DIAMONDS, LH_POINT_TO_POINT_DIAMONDS);
     public static final Selector RH_POINT_TO_POINT_FACING_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.RH_POINT_TO_POINT_FACING_DIAMONDS);
     public static final Selector LH_POINT_TO_POINT_FACING_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.LH_POINT_TO_POINT_FACING_DIAMONDS);
     public static final Selector POINT_TO_POINT_FACING_DIAMONDS =
-        OR(RH_POINT_TO_POINT_FACING_DIAMONDS, LH_POINT_TO_POINT_FACING_DIAMONDS);
+        OR("POINT-TO-POINT FACING DIAMONDS", RH_POINT_TO_POINT_FACING_DIAMONDS, LH_POINT_TO_POINT_FACING_DIAMONDS);
     public static final Selector RH_TWIN_FACING_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.RH_TWIN_FACING_DIAMONDS);
     public static final Selector LH_TWIN_FACING_DIAMONDS =
         GeneralFormationMatcher.makeSelector(FormationList.LH_TWIN_FACING_DIAMONDS);
     public static final Selector TWIN_FACING_DIAMONDS =
-        OR(RH_TWIN_FACING_DIAMONDS, LH_TWIN_FACING_DIAMONDS);
+        OR("TWIN FACING DIAMONDS", RH_TWIN_FACING_DIAMONDS, LH_TWIN_FACING_DIAMONDS);
     public static final Selector RH_TIDAL_WAVE =
         GeneralFormationMatcher.makeSelector(FormationList.RH_TIDAL_WAVE);
     public static final Selector LH_TIDAL_WAVE =
         GeneralFormationMatcher.makeSelector(FormationList.LH_TIDAL_WAVE);
     public static final Selector TIDAL_WAVE =
-        OR(RH_TIDAL_WAVE, LH_TIDAL_WAVE);
+        OR("TIDAL WAVE", RH_TIDAL_WAVE, LH_TIDAL_WAVE);
     public static final Selector RH_TIDAL_TWO_FACED_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.RH_TIDAL_TWO_FACED_LINE);
     public static final Selector LH_TIDAL_TWO_FACED_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.LH_TIDAL_TWO_FACED_LINE);
     public static final Selector TIDAL_TWO_FACED_LINE =
-        OR(RH_TIDAL_TWO_FACED_LINE, LH_TIDAL_TWO_FACED_LINE);
+        OR("TIDAL TWO-FACED LINE", RH_TIDAL_TWO_FACED_LINE, LH_TIDAL_TWO_FACED_LINE);
     public static final Selector RH_TIDAL_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.RH_TIDAL_LINE);
     public static final Selector LH_TIDAL_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.LH_TIDAL_LINE);
     public static final Selector TIDAL_LINE =
-        OR(RH_TIDAL_LINE, LH_TIDAL_LINE);
+        OR("TIDAL LINE", RH_TIDAL_LINE, LH_TIDAL_LINE);
 
     // selector combinator
     /**
      * The {@link #OR} function creates a Selector which matches any one of
      * the given alternatives.
      * @doc.test Diamonds or quarter tag:
-     *  js> sel = SelectorList.OR(SelectorList.RH_BOX, SelectorList.RH_DIAMOND)
+     *  js> sel = SelectorList.OR("OR(RH BOX,RH DIAMOND)", SelectorList.RH_BOX, SelectorList.RH_DIAMOND)
      *  OR(RH BOX,RH DIAMOND)
      *  js> sel.match(FormationList.RH_BOX)                                    
      *  AA^
@@ -325,22 +337,26 @@ public abstract class SelectorList {
      *       <
      *   [ph: POINT; ph: BEAU,CENTER; ph: BEAU,CENTER; ph: POINT]
      */
-    public static Selector OR(final Selector... alternatives) {
+    public static Selector OR(final String name, final Selector... alternatives) {
         return new Selector() {
             @Override
             public FormationMatch match(Formation f) throws NoMatchException {
+                List<String> reasons = new ArrayList<String>(3);
                 for (Selector s : alternatives) {
                     try {
                         return s.match(f);
                     } catch (NoMatchException e) {
                         /* try next selector */
+                        reasons.add(e.target+"("+e.reason+")");
                     }
                 }
                 // no matches in any selector
-                throw new NoMatchException("Couldn't match " + this);
+                throw new NoMatchException(name, ListUtils.join(reasons, ", "));
             }
             @Override
-            public String toString() {
+            public String toString() { return name; }
+            @SuppressWarnings("unused")
+            public String repr() {
                 StringBuilder sb = new StringBuilder("OR(");
                 for (int i=0; i<alternatives.length; i++) {
                     sb.append(alternatives[i].toString());
@@ -357,8 +373,7 @@ public abstract class SelectorList {
     private static final Selector _STUB_ = new Selector() {
         @Override
         public FormationMatch match(Formation f) throws NoMatchException {
-            assert false : "unimplemented";
-            throw new RuntimeException("unimplemented");
+            throw new NoMatchException(f.toString(), "Unimplemented");
         }
         @Override
         public String toString() { return "*STUB*"; }
@@ -367,6 +382,12 @@ public abstract class SelectorList {
     public static final Selector LH_SPLIT_3_AND_1 = _STUB_;
     public static final Selector RH_3_AND_1 = _STUB_;
     public static final Selector RH_SPLIT_3_AND_1 = _STUB_;
-    public static final Selector PARALLEL_GENERAL_LINES = _STUB_;
-    public static final Selector GENERAL_COLUMNS = _STUB_;
+    public static final Selector PARALLEL_GENERAL_LINES =
+	// XXX: 3-and-1 lines, t-bones of various kinds
+        OR("PARALLEL GENERAL LINES", FACING_LINES, LINES_FACING_OUT, PARALLEL_WAVES,
+	   PARALLEL_TWO_FACED_LINES, INVERTED_LINES);
+    public static final Selector GENERAL_COLUMNS =
+	// XXX: magic columns of various kinds, t-bones
+	OR("GENERAL COLUMNS", COLUMN, EIGHT_CHAIN_THRU, TRADE_BY, DOUBLE_PASS_THRU,
+	   COMPLETED_DOUBLE_PASS_THRU);
 }

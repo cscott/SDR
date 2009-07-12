@@ -28,9 +28,9 @@ public abstract class GeneralFormationMatcher {
             }
             public String toString() {
 		// special case for "standard" formations.
-		if (goal instanceof NamedTaggedFormation)
-		    return ((NamedTaggedFormation)goal).getName();
-		return goal.toString();
+                if (goal instanceof NamedTaggedFormation)
+                    return ((NamedTaggedFormation)goal).getName();
+                return goal.toString();
 	    }
         };
     }
@@ -128,6 +128,13 @@ public abstract class GeneralFormationMatcher {
             boolean usePhantoms)
     throws NoMatchException {
         assert !usePhantoms : "matching with phantoms is not implemented";
+        // get an appropriate formation name
+        String target;
+        if (goal instanceof NamedTaggedFormation)
+            target = ((NamedTaggedFormation)goal).getName();
+        else
+            target = goal.toString();
+
         // okay, try to perform match by trying to use each dancer in turn
         // as dancer #1 in the goal formation.  We then validate the match:
         // make sure that there is a dancer in each position, that no dancer
@@ -143,7 +150,7 @@ public abstract class GeneralFormationMatcher {
         // (note that we ignore unselected dancers in formation f)
         // (note that 'dancer #1' is really 'dancer #0' below)
         if (goal.dancers().size() > input.dancers().size())
-            throw new NoMatchException("goal is too large");
+            throw new NoMatchException(target, "goal is too large");
 
         // Make a canonical ordering for the goal dancers.
         List<Dancer> goalDancers=new ArrayList<Dancer>(goal.dancers());
@@ -233,7 +240,7 @@ public abstract class GeneralFormationMatcher {
         // Do the match
         tryOne(mi, 0, initialAssignment, inputEmpty, allowUnmatchedDancers);
         if (mi.matches.isEmpty())
-            throw new NoMatchException("no matches");
+            throw new NoMatchException(target, "no matches");
         
         // Filter out the max
         int max = 0;
@@ -245,7 +252,7 @@ public abstract class GeneralFormationMatcher {
         for (PersistentSet<OneMatch> match: mi.matches)
             if (match.size()==max)
                 if (found) // ambiguous match.
-                    throw new NoMatchException("ambiguous");
+                    throw new NoMatchException(target, "ambiguous");
                 else {
                     bestMatch = match;
                     found = true;

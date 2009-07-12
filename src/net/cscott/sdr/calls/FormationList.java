@@ -145,7 +145,7 @@ public abstract class FormationList {
     public static final TaggedFormation RH_TWO_FACED_LINE = // callerlab #12
         xofy("RH TWO-FACED LINE", RH_MINIWAVE, COUPLE);
     public static final TaggedFormation LH_TWO_FACED_LINE = // callerlab #13
-        xofy("LH_TWO_FACED_LINE", LH_MINIWAVE, COUPLE);
+        xofy("LH TWO-FACED LINE", LH_MINIWAVE, COUPLE);
     public static final TaggedFormation SINGLE_INVERTED_LINE =
         create("SINGLE INVERTED LINE", f("snns"), WhetherTagger.AUTO_TAGS,
                 t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
@@ -380,7 +380,7 @@ public abstract class FormationList {
         return new PositionAndTag(Position.getGrid(x,y,facing),
                 TaggedFormation.mkTags(tags));
     }
-    private static TaggedFormation create(final String name, PositionAndTag... ptl) {
+    private static NamedTaggedFormation create(final String name, PositionAndTag... ptl) {
 	List<TaggedDancerInfo> dil = new ArrayList<TaggedDancerInfo>(ptl.length);
 	for (PositionAndTag pt: ptl)
 	    dil.add(new TaggedDancerInfo(new PhantomDancer(), pt.position, pt.tags, true));
@@ -388,7 +388,7 @@ public abstract class FormationList {
     }
     // first string is 'top' of diagram (closest to caller)
     // dancers are numbered left to right, top to bottom. (reading order)
-    private static TaggedFormation create(String name, String[] sa, WhetherTagger wt, NumAndTags... tags) {
+    private static NamedTaggedFormation create(String name, String[] sa, WhetherTagger wt, NumAndTags... tags) {
         Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
 	// check validity
 	assert sa.length>0;
@@ -434,11 +434,11 @@ public abstract class FormationList {
      * are numbered left to right, top to bottom.  A null indicates
      * "no additional tags".
      */
-    private static TaggedFormation xofy(final String name, Formation x, TaggedFormation y, NumAndTags... tags){
+    private static NamedTaggedFormation xofy(final String name, Formation x, TaggedFormation y, NumAndTags... tags){
         return addTags(name, _xofy(x,y), WhetherTagger.AUTO_TAGS, tags);
     }
     private static enum WhetherTagger { AUTO_TAGS, NO_AUTO_TAGS; }
-    private static TaggedFormation addTags(final String name, final Formation f,
+    private static NamedTaggedFormation addTags(final String name, final Formation f,
             WhetherTagger wt, NumAndTags... tags) {
         List<Dancer> dancers = f.sortedDancers();
         MultiMap<Dancer,Tag> tm = new GenericMultiMap<Dancer,Tag>
@@ -468,7 +468,8 @@ public abstract class FormationList {
         return new NumAndTags(dancerNum, t);
     }
     // tweak ends of a quarter tag or diamond on "diamond spots" in.
-    private static TaggedFormation _ends_in(TaggedFormation tf) {
+    private static NamedTaggedFormation _ends_in(NamedTaggedFormation tf) {
+        String name = tf.getName();
 	Rotation ew = Rotation.fromAbsoluteString("|");
 	TaggedFormation result=tf;
 	for (Dancer d: tf.tagged(END)) {
@@ -480,7 +481,8 @@ public abstract class FormationList {
 		p = p.forwardStep(Fraction.ONE, true);
 	    result = result.move(d, p);
 	}
-	return result;
+	// transfer name
+	return new NamedTaggedFormation(name, result);
     }
 
     public static void main(String[] args) throws Exception {
