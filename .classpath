@@ -57,5 +57,7 @@
 			<attribute name="javadoc_location" value="http://junit.org/junit/javadoc/4.5/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/dev/jline-0.9.94.jar"/>
+	<classpathentry kind="lib" path="lib/dev/jdoctest/rhino-1.7r2-rc3.jar"/>
 	<classpathentry kind="output" path="bin.eclipse"/>
 </classpath>
