@@ -1,0 +1,44 @@
+Simple test of miniwave hinge.
+
+sdr> /program=Program.PLUS; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> heads lead left
+| 4B>  1G<  3B>  2G<
+| 
+| 4G>  1B<  3G>  2B<
+sdr> pass the ocean
+| 1B^  1Gv  4G^  4Bv  2B^  2Gv  3G^  3Bv
+sdr> /start = ds.currentTime(); undefined
+sdr> hinge
+| 1B>  4G>  2B>  3G>
+| 
+| 1G<  4B<  2G<  3B<
+sdr> /ds.currentTime().subtract(start)
+2/1
+sdr> /start = ds.currentTime(); undefined
+sdr> do half of a trade
+| 1G^  1Bv  4B^  4Gv  2G^  2Bv  3B^  3Gv
+sdr> /ds.currentTime().subtract(start)   
+2/1
+
+sdr> boys run
+| 1B^  1G^  4Gv  4Bv  2B^  2G^  3Gv  3Bv
+sdr> hinge
+* Partner hinge not allowed below A1
+sdr> /program = Program.PLUS
+PLUS
+sdr> hinge
+* Partner hinge not allowed below A1
+sdr> /program = Program.A1
+A1
+sdr> / "Some tricky breathing here." ; undefined
+sdr> hinge
+| 1B>  4G>  2B>  3G>
+| 
+| 1G<  4B<  2G<  3B<

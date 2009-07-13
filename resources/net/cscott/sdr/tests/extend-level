@@ -1,0 +1,55 @@
+Only extend from a quarter tag should be allowed below plus.
+
+sdr> /program = "BASIC" ; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> heads lead right
+| 4B>  3G<  1B>  2G<
+| 
+| 4G>  3B<  1G>  2B<
+sdr> extend
+* Not allowed below Plus
+sdr> /program = "MAINSTREAM"
+MAINSTREAM
+sdr> extend
+* Not allowed below Plus
+sdr> do half of a pass thru
+| 4B>  1B>
+| 
+| 3G<  2G<
+| 
+| 4G>  1G>
+| 
+| 3B<  2B<
+sdr> extend
+* Not allowed below Plus
+sdr> /program = "BASIC"
+BASIC
+sdr> extend
+* Not allowed below Plus
+sdr> /program = "PLUS";
+PLUS
+sdr> extend ; u turn back
+|      4B<
+| 
+| 3G>  2G>  1B<
+| 
+| 3B>  4G<  1G<
+| 
+|      2B>
+sdr> /program="BASIC";
+BASIC
+sdr> extend
+| 4B<  1B<
+| 
+| 3G>  2G>
+| 
+| 4G<  1G<
+| 
+| 3B>  2B>
+sdr> /exit

@@ -1,0 +1,63 @@
+sdr> /program = Program.PLUS; setFormation(Formation.SQUARED_SET);
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> heads lead right ; extend
+| 4B>  1B>
+| 
+| 3G<  2G<
+| 
+| 4G>  1G>
+| 
+| 3B<  2B<
+sdr> fan the top
+| 3B^  4Gv  3G^  4Bv  2B^  1Gv  2G^  1Bv
+sdr> fan the top
+| 3B>  2B>
+| 
+| 4G<  1G<
+| 
+| 3G>  2G>
+| 
+| 4B<  1B<
+sdr> boys run
+| 4G<  1G<
+| 
+| 3B<  2B<
+| 
+| 4B>  1B>
+| 
+| 3G>  2G>
+sdr> fan the top
+| 4Gv  4Bv  3B^  3G^  1Gv  1Bv  2B^  2G^
+sdr> fan the top
+| 3G<  2G<
+| 
+| 4B<  1B<
+| 
+| 3B>  2B>
+| 
+| 4G>  1G>
+sdr> girls run
+| 4B<  1B<
+| 
+| 3G>  2G>
+| 
+| 4G<  1G<
+| 
+| 3B>  2B>
+sdr> fan the top
+| 4Bv  3G^  4Gv  3B^  1Bv  2G^  1Gv  2B^
+sdr> do half of a fan the top
+|                3B`                 2B`
+| 
+|           3GQ                 2GQ
+| 
+|      4G`                 1G`
+| 
+| 4BQ                 1BQ
+sdr> /exit
