@@ -9,7 +9,7 @@ def: _and_roll(c)
 def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
   optional: LEFT
   in: 4
-  from: RH OCEAN WAVE, LH OCEAN WAVE
+  from: OCEAN WAVE, TWO-FACED LINE
     // this definition lets us do "1/2 a fan the top", and also animates
     // nicely, since it provides an intermediate animation point for the
     // ends which lets us breathe properly in the middle (instead of all

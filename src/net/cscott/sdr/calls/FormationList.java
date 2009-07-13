@@ -145,9 +145,11 @@ public abstract class FormationList {
     public static final TaggedFormation LH_BOX = // callerlab #11
         xofy("LH BOX", LH_MINIWAVE, TANDEM);
     public static final TaggedFormation RH_TWO_FACED_LINE = // callerlab #12
-        xofy("RH TWO-FACED LINE", RH_MINIWAVE, COUPLE);
+        xofy("RH TWO-FACED LINE", RH_MINIWAVE, COUPLE,
+                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END));
     public static final TaggedFormation LH_TWO_FACED_LINE = // callerlab #13
-        xofy("LH TWO-FACED LINE", LH_MINIWAVE, COUPLE);
+        xofy("LH TWO-FACED LINE", LH_MINIWAVE, COUPLE,
+                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END));
     public static final TaggedFormation SINGLE_INVERTED_LINE =
         create("SINGLE INVERTED LINE", f("snns"), WhetherTagger.AUTO_TAGS,
                 t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
