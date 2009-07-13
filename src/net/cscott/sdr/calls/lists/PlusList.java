@@ -3,14 +3,14 @@ package net.cscott.sdr.calls.lists;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Dancer;
-import net.cscott.sdr.calls.DancerPath;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Program;
-import net.cscott.sdr.calls.DancerPath.PointOfRotation;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
+import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.grm.Rule;
+import net.cscott.sdr.calls.transform.EvalPrim;
 import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.util.Fraction;
 
@@ -38,6 +38,8 @@ public abstract class PlusList {
     }
 
     public static final Call ROLL = new PlusCall("_roll") {
+        final Prim rightRoll = Prim.valueOf("(Prim 0, 0, right, 2)");
+        final Prim leftRoll = Prim.valueOf("(Prim 0, 0, left, 2)");
         @Override
         public Comp apply(Apply ast) {
             assert false : "This call uses a custom Evaluator";
@@ -62,12 +64,11 @@ public abstract class PlusList {
                     Formation f = ds.currentFormation();
                     for (Dancer d : f.dancers()) {
                         Position from = f.location(d);
-                        Position to = from.turn(from.roll(), false);
-                        if (!from.equals(to))
-                            ds.add(d, new DancerPath
-                                    (from, to,
-                                     Fraction.TWO/* timing for roll */,
-                                     PointOfRotation.SINGLE_DANCER));
+                        int rollDir = from.roll().compareTo(Fraction.ZERO);
+                        if (rollDir < 0)
+                            ds.add(d, EvalPrim.apply(leftRoll, from, 1));
+                        else if (rollDir > 0)
+                            ds.add(d, EvalPrim.apply(rightRoll, from, 1));
                     }
                     return null; /* ta-da! */
                 }

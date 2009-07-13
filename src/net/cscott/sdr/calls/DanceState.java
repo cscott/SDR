@@ -125,7 +125,7 @@ public class DanceState {
                 this.movements.entrySet()) {
             Dancer d = me.getKey();
             NavigableMap<Fraction,DancerPath> dmove = me.getValue();
-            Fraction lastTime = dmove.lastKey();
+            Fraction lastTime = dmove.isEmpty()? Fraction.ZERO: dmove.lastKey();
             assert lastTime.compareTo(time) <= 0;
             if (lastTime.equals(time))
                 continue;
