@@ -1,8 +1,12 @@
 package net.cscott.sdr;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -29,6 +33,61 @@ import org.mozilla.javascript.tools.shell.Global;
  * Poor Man's SD is a very simple text-based front-end for debugging
  * and testing.
  * @author C. Scott Ananian
+ * @doc.test Perform basic calls
+ *  js> PMSD.runTest("<stdio>", "sdr> /setFormation(Formation.SQUARED_SET)\n"+
+ *    >                         "sdr> u turn back\n"+
+ *    >                         "sdr> /program = Program.PLUS; setFormation(Formation.SQUARED_SET)\n"+
+ *    >                         "sdr> do half of a u turn back\n"
+ *    >                         ).replaceAll("(?m)^","|")
+ *  |sdr> /setFormation(Formation.SQUARED_SET)
+ *  ||      3Gv  3Bv
+ *  || 
+ *  || 4B>            2G<
+ *  || 
+ *  || 4G>            2B<
+ *  || 
+ *  ||      1B^  1G^
+ *  |sdr> u turn back
+ *  ||      3G^  3B^
+ *  || 
+ *  || 4B<            2G>
+ *  || 
+ *  || 4G<            2B>
+ *  || 
+ *  ||      1Bv  1Gv
+ *  |sdr> /program = Program.PLUS; setFormation(Formation.SQUARED_SET)
+ *  ||      3Gv  3Bv
+ *  || 
+ *  || 4B>            2G<
+ *  || 
+ *  || 4G>            2B<
+ *  || 
+ *  ||      1B^  1G^
+ *  |sdr> do half of a u turn back
+ *  ||      3G>  3B<
+ *  || 
+ *  || 4Bv            2Gv
+ *  || 
+ *  || 4G^            2B^
+ *  || 
+ *  ||      1B>  1G<
+ * @doc.test Special slash commands to access dance state:
+ *  js> PMSD.runTest("<stdio>", "sdr> /printFormation").replaceAll("(?m)^","|")
+ *  |sdr> /printFormation
+ *  ||      3Gv  3Bv
+ *  || 
+ *  || 4B>            2G<
+ *  || 
+ *  || 4G>            2B<
+ *  || 
+ *  ||      1B^  1G^
+ *  js> PMSD.runTest("<stdio>", "sdr> /ds.currentTime()").replaceAll("(?m)^","|")
+ *  |sdr> /ds.currentTime()
+ *  |0/1
+ * @doc.test Slash commands can actually be any javascript statement:
+ *  js> PMSD.runTest("<stdio>", "sdr> /1+2").replaceAll("(?m)^","|")
+ *  |sdr> /1+2
+ *  |3
  */
 public class PMSD {
     private PMSD() {}
@@ -86,10 +145,58 @@ public class PMSD {
         abstract String readLine(State s, String prompt) throws IOException;
         abstract PrintWriter writer();
     }
+    /** Run a test transcript, returning the output. */
+    public static String runTest(final String sourceName, String transcript) {
+        StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw);
+        // very simple regexp to find input lines
+        List<String> input = new ArrayList<String>();
+        for (String line: transcript.split("(\\r\\n?|\\n)")) {
+            if (line.startsWith("sdr> ")||line.startsWith("   > "))
+                input.add(line.substring(5));
+        }
+        final Iterator<String> inputIterator = input.iterator();
+        ReaderWriter rw = new ReaderWriter() {
+            @Override
+            String readLine(State s, String prompt) throws IOException {
+                if (!inputIterator.hasNext()) return null;
+                String line = inputIterator.next();
+                pw.print(prompt);
+                pw.println(line);
+                return line;
+            }
+            @Override
+            String sourceName() { return sourceName; }
+            @Override
+            PrintWriter writer() { return pw; }
+        };
+        try {
+            repl(rw);
+        } catch (IOException ioe) {
+            pw.println("UNEXPECTED ERROR: "+ioe.getMessage());
+        }
+        pw.flush();
+        return sw.toString();
+    }
 
     /** Console front end entry point. */
     public static void main(String[] args) throws IOException {
         final PrintWriter pw = new PrintWriter(System.out, true);
+        if (args.length > 0) {
+            // ooh, got an argument!
+            Reader r = new FileReader(args[0]);
+            StringBuffer sb = new StringBuffer();
+            char[] cbuf = new char[1024];
+            while (true) {
+                int st = r.read(cbuf);
+                if (st<0) break;
+                sb.append(cbuf, 0, st);
+            }
+            String result = runTest(args[0], sb.toString());
+            pw.print(result);
+            pw.flush();
+            return;
+        }
         // console i/o
         repl(new ReaderWriter() {
             jline.ConsoleReader cr = null;
