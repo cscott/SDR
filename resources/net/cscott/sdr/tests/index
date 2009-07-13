@@ -1,4 +1,9 @@
-sdr> /" This file is generated automatically to list test cases "; undefined
+sdr> /// This file is GENERATED AUTOMATICALLY --- do not edit!
+sdr> ///
+sdr> /// The command below lists tests cases; the output from this
+sdr> /// "test case" is used as input by runAllTests() to enumerate
+sdr> /// all the tests to run.
+sdr> ///
 sdr> /listTests("resources/net/cscott/sdr/tests")
 extend-basic
 extend-level

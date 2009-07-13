@@ -140,7 +140,7 @@ public class PMSD {
             ds = new DanceState(ds.dance, f);
         }
         // this is just a workaround to prevent javascript from echoing the
-        // value of the formation.
+        // ugly toString() value of the formation.
         public String jsFunction_setFormation(Object val) {
             jsSet_formation(val);
             return jsGet_printFormation();
