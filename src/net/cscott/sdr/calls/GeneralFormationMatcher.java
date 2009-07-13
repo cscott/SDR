@@ -398,17 +398,27 @@ public abstract class GeneralFormationMatcher {
             // is he free to be assigned to this formation?
             if (inFormation.contains(iDan))
                 return false; // this dancer is already in some match
-            // check for symmetry: if this goal position is 'eq0' (ie,
-            // symmetric with the 0 dancer's position), then this dancer #
-            // must be >= the 0 dancer's input # (ie, dancerNum)
-            if (eq0.contains(mi.goalDancers.get(gNum)))
-                    if (iNum < dancerNum)
-                        return false; // symmetric to some other canonical formation
             // is his facing direction consistent?
             Position ip = mi.inputPositions.get(iNum);
             assert ip.x.equals(gp.x) && ip.y.equals(gp.y);
             if (!gp.facing.includes(ip.facing))
                 return false; // rotations aren't correct.
+            // check for symmetry: if this goal position is 'eq0' (ie,
+            // symmetric with the 0 dancer's position), then this dancer #
+            // must be >= the 0 dancer's input # (ie, dancerNum)
+            if (eq0.contains(mi.goalDancers.get(gNum)))
+                if (iNum < dancerNum) {
+                    // check that our matching rotation is really symmetric,
+                    // since the goal dancer may have a vague direction which
+                    // includes an asymmetric alternative (ie, "n|" as a target)
+                    for (Position gp0 : rotated(mi.goalPositions.get(0))) {
+                        gp0 = warp.warp(gp0, Fraction.ZERO);
+                        if (ip.x.equals(gp0.x) &&
+                            ip.y.equals(gp0.y) &&
+                            gp0.facing.includes(ip.facing))
+                            return false; // symmetric to some other canonical formation
+                    }
+                }
             // update 'in formation' and 'gNum'
             inFormation = inFormation.add(iDan);
             gNum++;
