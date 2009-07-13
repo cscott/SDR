@@ -913,3 +913,42 @@ and square thru as:
   _blend(pass thru, quarter in), left sq thr N-1
 and even cross trail thru as:
   _blend(pass thru, half-sashay)
+---
+to do:
+ a) finish hexagon transform: rework so that winding # is exact, and
+    always exactly equal (mod 1) to ExactRotation.from(X,Y)
+    Keep separate "rotation offset" as well to account for initial
+    rotation (don't try to combine in winding #)
+    Then adjust *both* the winding number *and* the facing direction
+    adjustment to "real" angles (radians) before requantizing for
+    display.
+ b) implement square expansion as a dancerpath transformation too
+    (these are vaguely like concepts, but maintain persistent state)
+    width/2, height/2 should remain constant.  this transform applies
+    *before* hexagon transform (since properly expanding a hexagon
+    in its three axes is much harder!)
+ c) settle the SELECT/FROM question.  I think that *select* selects
+    dancers, and only the selected dancers move, but that *from*
+    *ignores* the selected status of the dancers.  Use a separate
+    concept for "ignore non-selected"
+ d) fix breathing: we seem to be letting dancers bounding boxes
+    overlap during insert, and trade from a two-faced tidal line
+    should *not* create triple boxes (ie, the formations should
+    remain centered during the insert)
+ e) fix whatever I broke with the RemoveIn transformation recently
+ f) use priority sensibly when displaying error messages
+    I think the rule should be to display all the priority N messages,
+    where N is the highest priority encountered?  Probably just
+    passing up the single high-priority message would be sufficient.
+    Maybe an ErrorAccumulator class, where you shove a
+    BadCallException in and it takes care of formatting the "cause
+    tree"?
+ g) centers/ends.  heads/sides
+ h) concentric
+ i) tandem
+ j) test circle left/right, test run (in all its glory), test trade
+    from quarter tag
+ k) separate insertion point and playback cursor.  have a 'keep
+    playing' flag that is set when you press play but cleared when you
+    manually scrub to a point. if you receive more call data and were
+    stopped at the end but the 'keep playing' bit is set, start playing.
