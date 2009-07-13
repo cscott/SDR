@@ -935,7 +935,7 @@ to do:
     overlap during insert, and trade from a two-faced tidal line
     should *not* create triple boxes (ie, the formations should
     remain centered during the insert)
- e) fix whatever I broke with the RemoveIn transformation recently
+ x) fix whatever I broke with the RemoveIn transformation recently
  f) use priority sensibly when displaying error messages
     I think the rule should be to display all the priority N messages,
     where N is the highest priority encountered?  Probably just
