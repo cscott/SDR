@@ -49,11 +49,22 @@ public class RemoveIn extends TransformVisitor<Fraction> {
     @Override
     public Seq visit(Seq s, Fraction f) {
         List<SeqCall> l = new ArrayList<SeqCall>(s.children.size());
-        Fraction old = bc.getBeats(s);
-        Fraction scale = f.divide(old);
-        // can't put an in down directly here, 'cuz an In isn't a SeqCall
-        for (SeqCall sc : s.children)
-            l.add(sc.accept(this, bc.getBeats(sc).multiply(scale)));
+        // simple but common case
+        if (s.children.size()==1) {
+            // weird special case: make sure we don't get caught in a loop:
+            // In(f, Seq(Apply(x))) <-> Seq(Apply(_in, f, x))
+            if (s.children.get(0) instanceof Apply &&
+                ((Apply)s.children.get(0)).evaluator() != null)
+                throw new BeatCounter.CantCountBeatsException();
+            // otherwise, just push the target # f beats down the tree
+            l.add(s.children.get(0).accept(this, f));
+        } else {
+            Fraction old = bc.getBeats(s);
+            Fraction scale = f.divide(old);
+            // can't put an in down directly here, 'cuz an In isn't a SeqCall
+            for (SeqCall sc : s.children)
+                l.add(sc.accept(this, bc.getBeats(sc).multiply(scale)));
+        }
         return s.build(l);
     }
     // f is target # of beats
