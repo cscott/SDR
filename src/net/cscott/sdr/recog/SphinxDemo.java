@@ -97,9 +97,6 @@ public class SphinxDemo {
         } catch (PropertyException e) {
             System.err.println("Problem configuring SphinxDemo: " + e);
             e.printStackTrace();
-        } catch (InstantiationException e) {
-            System.err.println("Problem creating SphinxDemo: " + e);
-            e.printStackTrace();
         }
     }
 }
