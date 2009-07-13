@@ -179,11 +179,13 @@ def: _u turn back(sel)
 // XXX: from a single quarter tag, currently no one can roll
 //      what should happen is that the miniwave rolls toward the
 //      handhold, and only the ends have an undefined roll
+// XXX: same general idea holds for t-boned formations.
 def: u turn back
   in: 2
-  from: COUPLE, MINIWAVE
-    prim: 0, 0, in
-    call: _in(1, roll) // ie, continue in the same direction
+  from: GENERAL PARTNERS
+    from: COUPLE, MINIWAVE
+      prim: 0, 0, in
+      call: _in(1, roll) // ie, continue in the same direction
   // we can u-turn back from other formations, too: turn toward
   // the center in that case.
   from: ANY
@@ -307,7 +309,7 @@ def: bend the line
   call: as couples(_single bend)
 
 def: _single bend
-  from: COUPLE, RH MINIWAVE, LH MINIWAVE
+  from: COUPLE, MINIWAVE
     call: quarter in
 
 def: california twirl
@@ -347,7 +349,7 @@ def: step to a wave
 
 def: step thru
   in: 2 // not official
-  from: RH MINIWAVE, LH MINIWAVE
+  from: MINIWAVE
     call: _extend // the general case
 
 def: balance
@@ -412,7 +414,7 @@ def: run(sel)
   spoken: <sel=anyone> run
   in: 4
   // XXX: this definition doesn't currently apply to T-boned formations.
-  from: GENERAL LINE, BOX, COUPLE, RH MINIWAVE, LH MINIWAVE
+  from: GENERAL LINE, BOX, COUPLE, MINIWAVE
     // we can't use in/out in primitives here because (1) centers of waves
     // run out, while ends of waves run in, and (2) the "run-around" dancer
     // stands on the centerline of the formation at one point.

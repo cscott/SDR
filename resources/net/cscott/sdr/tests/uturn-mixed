@@ -1,0 +1,42 @@
+Test of U turn direction in mixed couple/miniwave formations.
+
+sdr> /program = Program.PLUS; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> heads lead right ; extend ; extend
+|      4B>
+| 
+| 3G<  2G<  1B>
+| 
+| 3B<  4G>  1G>
+| 
+|      2B<
+sdr> do half of a u turn back
+|      4Bv
+| 
+| 3Gv  2G^  1Bv
+| 
+| 3B^  4Gv  1G^
+| 
+|      2B^
+sdr> roll
+|      4B<
+| 
+| 3G>  2G>  1B<
+| 
+| 3B>  4G<  1G<
+| 
+|      2B>
+sdr> u turn back and roll
+|      4B^
+| 
+| 3G^  2Gv  1B^
+| 
+| 3Bv  4G^  1Gv
+| 
+|      2Bv

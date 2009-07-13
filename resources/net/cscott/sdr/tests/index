@@ -2,3 +2,4 @@ sdr> /" This file is generated automatically to list test cases "; undefined
 sdr> /listTests("resources/net/cscott/sdr/tests")
 extend-basic
 uturn-basic
+uturn-mixed

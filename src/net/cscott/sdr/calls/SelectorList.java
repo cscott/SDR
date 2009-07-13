@@ -123,6 +123,8 @@ public abstract class SelectorList {
     public static final Selector SINGLE_DANCER =
         GeneralFormationMatcher.makeSelector(FormationList.SINGLE_DANCER);
     // 2-person selectors
+    public static final Selector GENERAL_PARTNERS =
+        GeneralFormationMatcher.makeSelector(FormationList.GENERAL_PARTNERS);
     public static final Selector COUPLE = 
         GeneralFormationMatcher.makeSelector(FormationList.COUPLE);
     public static final Selector FACING_DANCERS =

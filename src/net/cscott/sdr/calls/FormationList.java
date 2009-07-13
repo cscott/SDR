@@ -96,6 +96,9 @@ public abstract class FormationList {
         create("SINGLE DANCER",
                 d(0,0,"n"));
     // 2-person formations
+    public static final TaggedFormation GENERAL_PARTNERS =
+        create("GENERAL PARTNERS", f("n|"),
+                WhetherTagger.NO_AUTO_TAGS, t(0, BEAU));
     public static final TaggedFormation COUPLE = // callerlab #1
         create("COUPLE",
                 d(-1,0,"n",BEAU),
