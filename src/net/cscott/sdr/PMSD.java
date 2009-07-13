@@ -99,6 +99,15 @@ import org.mozilla.javascript.tools.shell.Global;
  *  js> PMSD.scrub(PMSD.runTest("<stdio>", "sdr> /function f(x) { return x*2 } ; f(4)"))
  *  |sdr> /function f(x) { return x*2 } ; f(4)
  *  |8
+ * @doc.test We can even nest invocations of PMSD:
+ *  js> PMSD.scrub(PMSD.runTest("<outer>",
+ *    >                         "sdr> /const PMSD=net.cscott.sdr.PMSD;",
+ *    >                         "sdr> /PMSD.scrub(PMSD.runTest('<inner>',"+
+ *    >                                                       "'sdr> /\"whee!\"'))"))
+ *  |sdr> /const PMSD=net.cscott.sdr.PMSD;
+ *  |sdr> /PMSD.scrub(PMSD.runTest('<inner>','sdr> /"whee!"'))
+ *  ||sdr> /"whee!"
+ *  ||whee!
  */
 public class PMSD {
     private PMSD() {}
@@ -148,6 +157,23 @@ public class PMSD {
         public String jsGet_printFormation() {
             return ds.currentFormation().toStringDiagram("| ");
         }
+
+	public String jsFunction_runTest(String testName) throws IOException {
+            List<String> testCase =
+                readLines(PMSD.class.getResourceAsStream("tests/"+testName));
+            if (testCase==null)
+		return "* " + testName + " not found";
+            // execute it!
+            return runTest(testName, testCase);
+	}
+
+	public String jsGet_runAllTests() {
+	    try {
+		return runAllTests();
+	    } catch (IOException e) {
+		return e.getMessage();
+	    }
+	}
 
         // special helper to list test cases
         public String jsFunction_listTests(String basedir) {
