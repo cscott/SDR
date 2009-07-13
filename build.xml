@@ -253,7 +253,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
     <!-- most ant scripts have a build target -->
     <target name="build" depends="jar" description="Alias for jar target"/>
     <!-- build classes and grammars -->
-    <target name="compile" depends="compile.base,compile.grm" />
+    <target name="compile" depends="compile.base,compile.index,compile.grm" />
 
     <!-- create instrumented binaries for cobertura -->
     <target name="instrument" depends="compile,clean.cobertura"
@@ -325,6 +325,21 @@ window['JAVADOC_BASE'] = '{@docRoot}';
       </java>
     </target>
 
+
+    <!-- ********* Assemble the index of tests ********* -->
+    <target name="compile.index"
+	    description="Assemble the index of tests."
+	    depends="compile.base">
+      <java classname="net.cscott.sdr.PMSD"
+	    output="resources/net/cscott/sdr/tests/index~" >
+	<arg value="resources/net/cscott/sdr/tests/index" />
+	<classpath>
+	  <path refid="classpath.path"/>
+        </classpath>
+      </java>
+      <move file="resources/net/cscott/sdr/tests/index~"
+	    tofile="resources/net/cscott/sdr/tests/index" />
+    </target>
 
     <!-- ********* Build the natural-language grammars. ********* -->
     <target name="compile.grm"

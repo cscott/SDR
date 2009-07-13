@@ -1,11 +1,16 @@
 package net.cscott.sdr;
 
-import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
@@ -21,6 +26,7 @@ import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.grm.CompletionEngine;
 import net.cscott.sdr.calls.transform.Evaluator;
+import net.cscott.sdr.util.ListUtils;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
@@ -34,10 +40,10 @@ import org.mozilla.javascript.tools.shell.Global;
  * and testing.
  * @author C. Scott Ananian
  * @doc.test Perform basic calls
- *  js> PMSD.runTest("<stdio>", "sdr> /setFormation(Formation.SQUARED_SET)\n"+
- *    >                         "sdr> u turn back\n"+
- *    >                         "sdr> /program = Program.PLUS; setFormation(Formation.SQUARED_SET)\n"+
- *    >                         "sdr> do half of a u turn back\n"
+ *  js> PMSD.runTest("<stdio>", "sdr> /setFormation(Formation.SQUARED_SET)",
+ *    >                         "sdr> u turn back",
+ *    >                         "sdr> /program = Program.PLUS; setFormation(Formation.SQUARED_SET)",
+ *    >                         "sdr> do half of a u turn back"
  *    >                         ).replaceAll("(?m)^","|")
  *  |sdr> /setFormation(Formation.SQUARED_SET)
  *  ||      3Gv  3Bv
@@ -91,7 +97,7 @@ import org.mozilla.javascript.tools.shell.Global;
  */
 public class PMSD {
     private PMSD() {}
-    /** Class holding properties accessible from the front-end. */
+    /** Class holding properties accessible from the {@link PMSD} front-end. */
     public static class State extends ScriptableObject {
         // rhino bookkeeping.
         public State() {}
@@ -137,6 +143,18 @@ public class PMSD {
         public String jsGet_printFormation() {
             return ds.currentFormation().toStringDiagram("| ");
         }
+
+        // special helper to list test cases
+        public String jsFunction_listTests(String basedir) {
+            StringBuffer sb = new StringBuffer();
+            for (String f : new File(basedir).list()) {
+                if (f.endsWith("~")) continue; // very simple filter
+                if (f.equals("index")) continue; // don't include self
+                sb.append(f);
+                sb.append("\n");
+            }
+            return sb.toString();
+        }
     }
 
     /** Abstract class to allow using repl look with console or file input. */
@@ -145,14 +163,72 @@ public class PMSD {
         abstract String readLine(State s, String prompt) throws IOException;
         abstract PrintWriter writer();
     }
+    /** Run all tests from the {@code net.cscott.sdr.tests.index} resource. */
+    public static String runAllTests() throws IOException {
+        List<String> failedTests = new ArrayList<String>();
+        List<String> resources =
+            readLines(PMSD.class.getResourceAsStream("tests/index"));
+        if (resources==null)
+            throw new IOException("index resource not found");
+        for (String resource : resources) {
+            resource = resource.trim();
+            if (resource.startsWith("sdr>")) continue;
+            if (resource.length()==0) continue;
+            // okay, read the given test case
+            List<String> testCase =
+                readLines(PMSD.class.getResourceAsStream("tests/"+resource));
+            if (testCase==null) {
+                failedTests.add(" "+resource+" not found");
+                continue;
+            }
+            // execute it!
+            String testResult = runTest(resource, testCase);
+            // resplit and compare
+            int i = 0, mismatch = -1;
+            for (String outLine: testResult.split("(\\r\\n?|\\n)")) {
+                String inLine = (i < testCase.size()) ? testCase.get(i) : "";
+                if (!inLine.trim().equals(outLine.trim())) {
+                    mismatch = i;
+                    break;
+                }
+                i++;
+            }
+            for ( ; mismatch<0 && i < testCase.size(); i++)
+                if (testCase.get(i).trim().length() != 0)
+                    mismatch = i;
+
+            if (mismatch != -1)
+                failedTests.add(" "+resource+" at line "+(mismatch+1));
+        }
+        if (failedTests.isEmpty()) return "";
+        // oops, something failed
+        return "FAILED TESTS:\n"+ListUtils.join(failedTests, "\n");
+    }
+    /** Read a file fully, returning as an list of lines. */
+    private static List<String> readLines(InputStream is) throws IOException {
+        if (is == null) return null; // pass up the error
+        List<String> result = new ArrayList<String>();
+        Reader r = new InputStreamReader(is, "utf-8");
+        BufferedReader br = new BufferedReader(r);
+        while (true) {
+            String line = br.readLine();
+            if (line==null) break;
+            result.add(line);
+        }
+        br.close();
+        return result;
+    }
     /** Run a test transcript, returning the output. */
-    public static String runTest(final String sourceName, String transcript) {
+    public static String runTest(String sourceName, String... transcript) {
+        return runTest(sourceName, Arrays.asList(transcript));
+    }
+    public static String runTest(final String sourceName, List<String> lines) {
         StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);
         // very simple regexp to find input lines
         List<String> input = new ArrayList<String>();
-        for (String line: transcript.split("(\\r\\n?|\\n)")) {
-            if (line.startsWith("sdr> ")||line.startsWith("   > "))
+        for (String line: lines) {
+            if (line.startsWith("sdr> ") || line.startsWith("   > "))
                 input.add(line.substring(5));
         }
         final Iterator<String> inputIterator = input.iterator();
@@ -184,15 +260,8 @@ public class PMSD {
         final PrintWriter pw = new PrintWriter(System.out, true);
         if (args.length > 0) {
             // ooh, got an argument!
-            Reader r = new FileReader(args[0]);
-            StringBuffer sb = new StringBuffer();
-            char[] cbuf = new char[1024];
-            while (true) {
-                int st = r.read(cbuf);
-                if (st<0) break;
-                sb.append(cbuf, 0, st);
-            }
-            String result = runTest(args[0], sb.toString());
+            String result =
+                runTest(args[0], readLines(new FileInputStream(args[0])));
             pw.print(result);
             pw.flush();
             return;

@@ -1,0 +1,3 @@
+sdr> /listTests("resources/net/cscott/sdr/tests")
+extend-basic
+
