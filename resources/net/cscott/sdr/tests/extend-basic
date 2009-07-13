@@ -1,3 +1,5 @@
+This test case tests the call "extend" from various places.
+
 sdr> /program = Program.PLUS; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 | 

@@ -40,11 +40,12 @@ import org.mozilla.javascript.tools.shell.Global;
  * and testing.
  * @author C. Scott Ananian
  * @doc.test Perform basic calls
- *  js> PMSD.runTest("<stdio>", "sdr> /setFormation(Formation.SQUARED_SET)",
+ *  js> PMSD.scrub(PMSD.runTest("<stdio>",
+ *    >                         "Comment or title lines at the top are ignored",
+ *    >                         "sdr> /setFormation(Formation.SQUARED_SET)",
  *    >                         "sdr> u turn back",
  *    >                         "sdr> /program = Program.PLUS; setFormation(Formation.SQUARED_SET)",
- *    >                         "sdr> do half of a u turn back"
- *    >                         ).replaceAll("(?m)^","|")
+ *    >                         "sdr> do half of a u turn back"))
  *  |sdr> /setFormation(Formation.SQUARED_SET)
  *  ||      3Gv  3Bv
  *  || 
@@ -78,7 +79,7 @@ import org.mozilla.javascript.tools.shell.Global;
  *  || 
  *  ||      1B>  1G<
  * @doc.test Special slash commands to access dance state:
- *  js> PMSD.runTest("<stdio>", "sdr> /printFormation").replaceAll("(?m)^","|")
+ *  js> PMSD.scrub(PMSD.runTest("<stdio>", "sdr> /printFormation"))
  *  |sdr> /printFormation
  *  ||      3Gv  3Bv
  *  || 
@@ -87,13 +88,16 @@ import org.mozilla.javascript.tools.shell.Global;
  *  || 4G>            2B<
  *  || 
  *  ||      1B^  1G^
- *  js> PMSD.runTest("<stdio>", "sdr> /ds.currentTime()").replaceAll("(?m)^","|")
+ *  js> PMSD.scrub(PMSD.runTest("<stdio>", "sdr> /ds.currentTime()"))
  *  |sdr> /ds.currentTime()
  *  |0/1
  * @doc.test Slash commands can actually be any javascript statement:
- *  js> PMSD.runTest("<stdio>", "sdr> /1+2").replaceAll("(?m)^","|")
+ *  js> PMSD.scrub(PMSD.runTest("<stdio>", "sdr> /1+2"))
  *  |sdr> /1+2
  *  |3
+ *  js> PMSD.scrub(PMSD.runTest("<stdio>", "sdr> /function f(x) { return x*2 } ; f(4)"))
+ *  |sdr> /function f(x) { return x*2 } ; f(4)
+ *  |8
  */
 public class PMSD {
     private PMSD() {}
@@ -170,10 +174,11 @@ public class PMSD {
             readLines(PMSD.class.getResourceAsStream("tests/index"));
         if (resources==null)
             throw new IOException("index resource not found");
+        boolean seenSDR = false;
         for (String resource : resources) {
             resource = resource.trim();
-            if (resource.startsWith("sdr>")) continue;
-            if (resource.length()==0) continue;
+            if (resource.startsWith("sdr>")) { seenSDR=true; continue; }
+            if (resource.length()==0 || !seenSDR) continue;
             // okay, read the given test case
             List<String> testCase =
                 readLines(PMSD.class.getResourceAsStream("tests/"+resource));
@@ -183,8 +188,12 @@ public class PMSD {
             }
             // execute it!
             String testResult = runTest(resource, testCase);
-            // resplit and compare
+            // resplit and compare.
             int i = 0, mismatch = -1;
+            for ( ; i < testCase.size(); i++)
+                // we ignore input in the test case before the first sdr> prompt
+                if (testCase.get(i).trim().startsWith("sdr>"))
+                    break;
             for (String outLine: testResult.split("(\\r\\n?|\\n)")) {
                 String inLine = (i < testCase.size()) ? testCase.get(i) : "";
                 if (!inLine.trim().equals(outLine.trim())) {
@@ -218,10 +227,28 @@ public class PMSD {
         br.close();
         return result;
     }
-    /** Run a test transcript, returning the output. */
+    /** Run a test transcript, returning the output. Helper class for use from
+     *  JavaScript. */
     public static String runTest(String sourceName, String... transcript) {
         return runTest(sourceName, Arrays.asList(transcript));
     }
+    /** Helper function from doctests to tweak output of {@link #runTest}. */
+    public static String scrub(String input) {
+        StringBuffer result = new StringBuffer();
+        boolean seenSDR = false;
+        for (String line : input.split("(\\r\\n?|\\n)")) {
+            // drop lines before the first sdr>
+            if (line.trim().startsWith("sdr>"))
+                seenSDR = true;
+            if (seenSDR) {
+                result.append("|");
+                result.append(line);
+                result.append("\n");
+            }
+        }
+        return result.toString().trim();
+    }
+    /** Run a test transcript, returning the output. */
     public static String runTest(final String sourceName, List<String> lines) {
         StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);
@@ -252,7 +279,7 @@ public class PMSD {
             pw.println("UNEXPECTED ERROR: "+ioe.getMessage());
         }
         pw.flush();
-        return sw.toString();
+        return sw.toString().trim();
     }
 
     /** Console front end entry point. */
@@ -267,6 +294,7 @@ public class PMSD {
             return;
         }
         // console i/o
+        pw.println("Welcome to "+Version.PACKAGE_STRING);
         repl(new ReaderWriter() {
             jline.ConsoleReader cr = null;
             @Override
