@@ -25,11 +25,11 @@ import java.util.TreeMap;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
+import net.cscott.sdr.util.SdrToString;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 
 /** A Formation is a set of dancers and positions for them.
  * Certain dancers in the formation can be selected. 
@@ -57,7 +57,7 @@ public class Formation {
      *  js> sides = [d for each (d in Iterator(f.sortedDancers())) if (d.isSide())]
      *  COUPLE 4 BOY,COUPLE 2 GIRL,COUPLE 4 GIRL,COUPLE 2 BOY
      *  js> f2 = f.select(Arrays.asList(sides)).onlySelected()
-     *  net.cscott.sdr.calls.Formation@4fce71[
+     *  net.cscott.sdr.calls.Formation[
      *    location={COUPLE 4 BOY=-3,1,e, COUPLE 2 GIRL=3,1,w, COUPLE 4 GIRL=-3,-1,e, COUPLE 2 BOY=3,-1,w}
      *    selected=[COUPLE 4 BOY, COUPLE 2 GIRL, COUPLE 4 GIRL, COUPLE 2 BOY]
      *  ]
@@ -152,7 +152,7 @@ public class Formation {
      *  js> heads = [d for each (d in Iterator(f.sortedDancers())) if (d.isHead())]
      *  COUPLE 3 GIRL,COUPLE 3 BOY,COUPLE 1 BOY,COUPLE 1 GIRL
      *  js> f2 = f.select(Arrays.asList(heads))
-     *  net.cscott.sdr.calls.Formation@12a0f6c[
+     *  net.cscott.sdr.calls.Formation[
      *    location={COUPLE 3 GIRL=-1,3,s, COUPLE 3 BOY=1,3,s, COUPLE 4 BOY=-3,1,e, COUPLE 2 GIRL=3,1,w, COUPLE 4 GIRL=-3,-1,e, COUPLE 2 BOY=3,-1,w, COUPLE 1 BOY=-1,-3,n, COUPLE 1 GIRL=1,-3,n}
      *    selected=[COUPLE 3 GIRL, COUPLE 3 BOY, COUPLE 1 BOY, COUPLE 1 GIRL]
      *  ]
@@ -173,14 +173,14 @@ public class Formation {
      *  js> couple1 = [StandardDancer.COUPLE_1_BOY, StandardDancer.COUPLE_1_GIRL]
      *  COUPLE 1 BOY,COUPLE 1 GIRL
      *  js> f = Formation.SQUARED_SET.select(Arrays.asList(couple1)).onlySelected()
-     *  net.cscott.sdr.calls.Formation@a31e1b[
+     *  net.cscott.sdr.calls.Formation[
      *    location={COUPLE 1 BOY=-1,-3,n, COUPLE 1 GIRL=1,-3,n}
      *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
      *  ]
      *  js> f.isCentered()
      *  false
      *  js> f = f.recenter()
-     *  net.cscott.sdr.calls.Formation@1b3f829[
+     *  net.cscott.sdr.calls.Formation[
      *    location={COUPLE 1 BOY=-1,0,n, COUPLE 1 GIRL=1,0,n}
      *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
      *  ]
@@ -287,7 +287,7 @@ public class Formation {
 	List<Dancer> selected = new ArrayList<Dancer>(this.selected);
 	Collections.sort(selected, this.dancerComparator());
 	// build the result string
-	return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+	return new ToStringBuilder(this, SdrToString.STYLE)
 	    .append("location", location)
 	    .append("selected", selected)
 	    .toString();

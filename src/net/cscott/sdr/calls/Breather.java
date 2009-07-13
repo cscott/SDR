@@ -328,7 +328,7 @@ public class Breather {
      *  js> for (d in Iterator(f.dancers())) {
      *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE, false));
      *    > }; f
-     *  net.cscott.sdr.calls.TaggedFormation@1db3e20[
+     *  net.cscott.sdr.calls.TaggedFormation[
      *    location={<phantom@7f>=0,0,n, <phantom@7e>=0,0,s}
      *    selected=[<phantom@7f>, <phantom@7e>]
      *    tags={<phantom@7f>=TRAILER, <phantom@7e>=TRAILER}
@@ -374,7 +374,7 @@ public class Breather {
      *  js> f2 = new Formation(Tools.m(
      *    >         Tools.p(StandardDancer.COUPLE_2_BOY, Position.getGrid(1,-1,"n")),
      *    >         Tools.p(StandardDancer.COUPLE_2_GIRL, Position.getGrid(3,-1,"n"))))
-     *  net.cscott.sdr.calls.Formation@94e4f4[
+     *  net.cscott.sdr.calls.Formation[
      *    location={COUPLE 2 BOY=1,-1,n, COUPLE 2 GIRL=3,-1,n}
      *    selected=[COUPLE 2 BOY, COUPLE 2 GIRL]
      *  ]
@@ -384,7 +384,7 @@ public class Breather {
      *  js> // point on far side
      *  js> f1 = new Formation(Tools.m(
      *    >         Tools.p(StandardDancer.COUPLE_1_BOY, Position.getGrid(3,1,"e"))))
-     *  net.cscott.sdr.calls.Formation@c028cc[
+     *  net.cscott.sdr.calls.Formation[
      *    location={COUPLE 1 BOY=3,1,e}
      *    selected=[COUPLE 1 BOY]
      *  ]
@@ -397,7 +397,7 @@ public class Breather {
      *  js> f1 = new Formation(Tools.m(
      *    >         Tools.p(StandardDancer.COUPLE_1_BOY, Position.getGrid(1,1,"e")
      *    >                                    .forwardStep(Fraction.ONE_HALF, false))))
-     *  net.cscott.sdr.calls.Formation@c028cc[
+     *  net.cscott.sdr.calls.Formation[
      *    location={COUPLE 1 BOY=1 1/2,1,e}
      *    selected=[COUPLE 1 BOY]
      *  ]
@@ -410,7 +410,7 @@ public class Breather {
      *  js> // NOTE doesn't float to center.  Is this correct?
      *  js> f1 = new Formation(Tools.m(
      *    >         Tools.p(StandardDancer.COUPLE_1_BOY, Position.getGrid(1,1,"e"))))
-     *  net.cscott.sdr.calls.Formation@efae3b[
+     *  net.cscott.sdr.calls.Formation[
      *    location={COUPLE 1 BOY=1,1,e}
      *    selected=[COUPLE 1 BOY]
      *  ]

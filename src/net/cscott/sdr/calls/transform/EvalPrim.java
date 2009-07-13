@@ -20,7 +20,7 @@ import net.cscott.sdr.util.Point;
  *  js> fm = SelectorList.COUPLE.match(Formation.FOUR_SQUARE); undefined
  *  js> f=[ff for (ff in Iterator(fm.matches.values()))
  *    >    if (ff.dancers().contains(StandardDancer.COUPLE_1_BOY))][0]
- *  net.cscott.sdr.calls.TaggedFormation@1e6612c[
+ *  net.cscott.sdr.calls.TaggedFormation[
  *    location={COUPLE 1 BOY=-1,0,n, COUPLE 1 GIRL=1,0,n}
  *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
  *    tags={COUPLE 1 BOY=BEAU, COUPLE 1 GIRL=BELLE}

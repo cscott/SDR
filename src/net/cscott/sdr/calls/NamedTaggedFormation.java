@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 import net.cscott.jutil.MultiMap;
+import net.cscott.sdr.util.SdrToString;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * Helper class to associate a standard name with a canonical
@@ -38,7 +38,7 @@ public class NamedTaggedFormation extends TaggedFormation {
     }
     public String getName() { return this.name; }
     public String toString() {
-	return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+	return new ToStringBuilder(this, SdrToString.STYLE)
 	    .append("name", getName())
 	    .appendSuper(super.toString())
 	    .toString();

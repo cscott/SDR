@@ -12,12 +12,12 @@ import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
 import net.cscott.jutil.UnmodifiableMultiMap;
+import net.cscott.sdr.util.SdrToString;
 import net.cscott.sdr.util.Tools;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 
 /** A Formation is a set of dancers and positions for them.
  * Certain dancers in the formation can be selected. 
@@ -141,7 +141,7 @@ public class TaggedFormation extends Formation {
 		sb.append(tags.getValues(d));
 	}
 	sb.append("}");
-	return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+	return new ToStringBuilder(this, SdrToString.STYLE)
 	    .appendSuper(super.toString())
 	    .append("tags", sb.toString())
             .toString();
