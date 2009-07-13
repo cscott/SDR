@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
@@ -151,7 +152,10 @@ public class PMSD {
         // special helper to list test cases
         public String jsFunction_listTests(String basedir) {
             StringBuffer sb = new StringBuffer();
-            for (String f : new File(basedir).list()) {
+            List<String> files = new ArrayList<String>
+                (Arrays.asList(new File(basedir).list()));
+            Collections.sort(files);
+            for (String f : files) {
                 if (f.endsWith("~")) continue; // very simple filter
                 if (f.equals("index")) continue; // don't include self
                 sb.append(f);
