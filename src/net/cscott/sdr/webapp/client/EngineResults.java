@@ -110,14 +110,14 @@ public class EngineResults implements Serializable {
     }
 
     public static class Point implements Serializable {
-        double x, y;
+        public double x, y;
         /** No-arg constructor for GWT serializability. */
         Point() { this(0,0); }
         public Point(double x, double y) { this.x=x; this.y=y; }
         private static final Point ZERO = new Point(0,0);
     }
     public static class Bezier implements Serializable {
-        Point p0, p1, p2, p3;
+        public Point p0, p1, p2, p3;
         /** No-arg constructor for GWT serializability. */
         Bezier() { this(Point.ZERO,Point.ZERO,Point.ZERO,Point.ZERO); }
         public Bezier(Point p0, Point p1, Point p2, Point p3) {
