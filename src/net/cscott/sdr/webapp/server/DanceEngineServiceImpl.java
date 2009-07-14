@@ -116,11 +116,12 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
         Map<Dancer,Double> correction = new HashMap<Dancer,Double>();
         for (Dancer d : ds.dancers()) {
             // Winding number (modulo 1) always points to the current position
+            //  (note that we rotate 180-degrees so couple #1 is at zero)
             Position p = startF.location(d);
-            Fraction w = ExactRotation.fromXY(p.x, p.y).amount;
+            Fraction w = ExactRotation.fromXY(p.x.negate(),p.y.negate()).amount;
             // make winding numbers continuously decreasing as we go around
             // the square CCW from couple #1
-            if (w.compareTo(Fraction.FIVE_EIGHTHS) > 0)
+            if (w.compareTo(Fraction.ONE_EIGHTH) > 0)
                 w = w.subtract(Fraction.ONE);
             winding.put(d, w);
             // The original rotation is "facing towards the center" (but
@@ -253,7 +254,9 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
         // add whole rotations for shadow dancers
         winding = winding.add(Fraction.valueOf(shadow));
         // invariant: winding must always exactly point to position (modulo 1)
-        assert ExactRotation.fromXY(p.x,p.y).equals(new ExactRotation(winding));
+        //  (note also that we rotate the winding 180-deg so that couple #1
+        //   sits at zero winding #)
+        assert ExactRotation.fromXY(p.x.negate(),p.y.negate()).equals(new ExactRotation(winding));
         // compute distance
         double x = p.x.doubleValue(), y = p.y.doubleValue();
         double r = Math.hypot(x, y);
@@ -261,8 +264,8 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
         double theta = circular(winding);
         double thetaPrime = theta * angleMult(sft).doubleValue();
         r *= expansion(sft);
-        double nx = Math.sin(thetaPrime) * r;
-        double ny = Math.cos(thetaPrime) * r;
+        double nx = -Math.sin(thetaPrime) * r;
+        double ny = -Math.cos(thetaPrime) * r;
         // adjust our facing direction based on the accumulated winding angle
         double nr = ((ExactRotation) p.facing).amount.doubleValue() +
             (theta * headingMult(sft).doubleValue() + correction)/ (2*Math.PI);
