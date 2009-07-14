@@ -45,10 +45,14 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
     /** The heading multiplier.  This is probably related to the angle
      *  multiplier, but I can't figure out the exact relation at the moment. */
     public static Fraction headingMult(StartingFormationType sft) {
+        //   bend = w*headingMult --> headingMult = bend / w
         switch(sft) {
-        case BIGON: return Fraction.TWO;
-        case HEXAGON: return Fraction.TWO_THIRDS.negate();
-        case OCTAGON: return Fraction.mONE;
+        // bend -90 deg (-1/4) on "heads press ahead" w/ winding angle -1/4
+        case BIGON: return Fraction.ONE;
+        // bend +30-deg (1/12) on "heads press ahead" w/ winding angle -1/4
+        case HEXAGON: return Fraction.ONE_THIRD.negate();
+        // bend +45-deg (1/8) on a "heads press ahead", winding angle is -1/4
+        case OCTAGON: return Fraction.ONE_HALF.negate();
         default: return Fraction.ONE;
         }
     }
@@ -109,18 +113,31 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
         List<Double> timing = new ArrayList<Double>
             (Collections.nCopies(s.calls.size(), Double.valueOf(0)));
         Map<Dancer,Fraction> winding = new HashMap<Dancer,Fraction>();
+        Map<Dancer,Double> correction = new HashMap<Dancer,Double>();
         for (Dancer d : ds.dancers()) {
-            Fraction f = headingMult(s.startingFormation);
-            Fraction w = updateWinding(Fraction.ZERO,
-                                       Position.getGrid(0, -3, "n"),
-                                       startF.location(d));
-            // we look for x, such that
-            //  -w + fx = -fw
-            // where -w is the original rotation for the dancer, and
-            // -fw is the desired rotated direction, and fx (for the initial
-            // x we compute here) is what the transformation will add.
-            Fraction x = (f.negate().subtract(Fraction.ONE)).divide(f).multiply(w);
-            winding.put(d, x);
+            // Winding number (modulo 1) always points to the current position
+            Position p = startF.location(d);
+            Fraction w = ExactRotation.fromXY(p.x, p.y).amount;
+            // make winding numbers continuously decreasing as we go around
+            // the square CCW from couple #1
+            if (w.compareTo(Fraction.FIVE_EIGHTHS) > 0)
+                w = w.subtract(Fraction.ONE);
+            winding.put(d, w);
+            // The original rotation is "facing towards the center" (but
+            // quantized to quarters, this also makes the angle exact)
+            Fraction origFacing = w.quantize(4).add(Fraction.ONE_HALF);
+            // The desired rotation is "towards the center" from the
+            // transformed position.
+            Fraction desiredFacing = w.quantize(4)
+                .multiply(angleMult(s.startingFormation))
+                .add(Fraction.ONE_HALF);
+            // Now compute an appropriate correction factor so that we start
+            // facing the right direction, given the initial winding:
+            //  desiredFacing = originalFacing + w * headingMult + correction
+            // Use angle circularization so we don't square off desiredFacing
+            double cc = circular(desiredFacing) - circular(origFacing) -
+                (circular(w) * headingMult(s.startingFormation).doubleValue());
+            correction.put(d, cc);
         }
         Fraction totalBeats = Fraction.ZERO;
         try {
@@ -138,7 +155,8 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
                     for (DancerPath dp : ds.movements(d)) {
                         Fraction windingStart = winding.get(d);
                         Fraction windingEnd = updateWinding(windingStart, dp);
-                        someMoves.addAll(convert(d, s.startingFormation, startTime, dp, windingStart, windingEnd));
+                        double c = correction.get(d);
+                        someMoves.addAll(convert(d, s.startingFormation, startTime, dp, c, windingStart, windingEnd));
                         startTime = startTime.add(dp.time);
                         winding.put(d, windingEnd);
                     }
@@ -171,7 +189,8 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
      *  version. */
     private static List<EngineResults.DancerPath>
     convert(Dancer d, StartingFormationType sft, Fraction startTime,
-            DancerPath dp, Fraction windingStart, Fraction windingEnd) {
+            DancerPath dp, double correction,
+            Fraction windingStart, Fraction windingEnd) {
         // eventually we'll construct a dancer->dancernum map including
         // phantoms, but XXX we don't support phantoms yet.
         assert d.primitiveTag() != null;
@@ -186,7 +205,7 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
         // ok, now...
         List<EngineResults.DancerPath> result = new ArrayList<EngineResults.DancerPath>(3);
         for (int i=0; i < numShadows(sft); i++) {
-            DancerPath dpp = useNgon(sft) ? Ngon(dp, sft, windingStart, windingEnd, i) : dp;
+            DancerPath dpp = useNgon(sft) ? Ngon(dp, sft, correction, windingStart, windingEnd, i) : dp;
             EngineResults.DancerPath dpath = new EngineResults.DancerPath
                 (dancerNum(sft, dancerNum, i),
                  startTime.doubleValue(), dpp.time.doubleValue(),
@@ -220,41 +239,49 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
         return start.add(from.minSweep(to));
     }
     public static DancerPath Ngon(DancerPath dp, StartingFormationType sft,
-                                   Fraction windStart, Fraction windEnd,
-                                   int shadow) {
-        return new DancerPath(Ngon(dp.from, sft, windStart, shadow),
-                              Ngon(dp.to, sft, windEnd, shadow),
+                                  double correction,
+                                  Fraction windStart, Fraction windEnd,
+                                  int shadow) {
+        return new DancerPath(Ngon(dp.from, sft, correction, windStart, shadow),
+                              Ngon(dp.to, sft, correction, windEnd, shadow),
                               dp.time, dp.pointOfRotation,
                               dp.flags.toArray(new DancerPath.Flag[0]));
     }
-    public static Position Ngon(Position p, StartingFormationType sft, Fraction winding, int shadow) {
+    public static Position Ngon(Position p, StartingFormationType sft,
+                                double correction, Fraction winding,
+                                int shadow) {
+        // add whole rotations for shadow dancers
         winding = winding.add(Fraction.valueOf(shadow));
+        // invariant: winding must always exactly point to position (modulo 1)
+        assert ExactRotation.fromXY(p.x,p.y).equals(new ExactRotation(winding));
+        // compute distance
         double x = p.x.doubleValue(), y = p.y.doubleValue();
-        double theta = Math.atan2(-x, -y); // zero is towards #1 couple
-        if (theta<0) theta+=2*Math.PI; // theta in [0,2*PI)
         double r = Math.hypot(x, y);
         // okay, here's the key to the transformation
-        theta += 2*Math.PI*floor(winding);
-        System.err.println(p+" winding "+winding+" theta "+theta);
-        theta *= angleMult(sft).doubleValue();
+        double theta = circular(winding);
+        double thetaPrime = theta * angleMult(sft).doubleValue();
         r *= expansion(sft);
-        double nx = -Math.sin(theta) * r;
-        double ny = -Math.cos(theta) * r;
-        // according to Justin, we adjust our facing direction by factor*
-        // the winding angle
-        ExactRotation nr = ((ExactRotation) p.facing)
-            .add(winding.multiply(headingMult(sft)));
-        return new Position(val(nx), val(ny), nr,
+        double nx = Math.sin(thetaPrime) * r;
+        double ny = Math.cos(thetaPrime) * r;
+        // adjust our facing direction based on the accumulated winding angle
+        double nr = ((ExactRotation) p.facing).amount.doubleValue() +
+            (theta * headingMult(sft).doubleValue() + correction)/ (2*Math.PI);
+        return new Position(val(nx), val(ny), new ExactRotation(val(nr)),
                             p.flags.toArray(new Position.Flag[0]));
     }
-    public static int floor(Fraction f) {
-        int n = f.getNumerator(), d = f.getDenominator();
-        if (n<0) n-=(d-1);
-        return n/d;
+    /** Take a "squared off" angle and convert to a "circular" angle in
+     *  radians. */
+    public static double circular(Fraction w) {
+        int whole = w.floor();
+        ExactRotation er = new ExactRotation(w).normalize();
+        Fraction x = er.toX(), y = er.toY();
+        double theta = Math.atan2(x.doubleValue(), y.doubleValue());
+        if (theta<0) theta += 2*Math.PI; // [0, 2*PI)
+        // add back in the whole part
+        return whole*2*Math.PI + theta;
     }
     public static Fraction val(double v) {
-        Fraction f = Fraction.valueOf(v);
         // quantize to 32nds to avoid overflow.
-        return Fraction.valueOf(floor(f.multiply(Fraction.valueOf(32).add(Fraction.ONE_HALF))), 32);
+        return Fraction.valueOf(v).quantize(64);
     }
 }
