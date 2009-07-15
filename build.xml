@@ -48,6 +48,7 @@ Square Dance Revolution build file.
 	<fileset refid="jar.set" />
         <fileset dir="lib/dev"> <!-- for development only -->
           <include name="*.jar" />
+          <include name="jdoctest/jdoctest*.jar" />
           <include name="jdoctest/rhino*.jar" />
         </fileset>
       </path>
