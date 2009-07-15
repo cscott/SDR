@@ -1,19 +1,21 @@
 package net.cscott.sdr;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 
+@RunWith(value = Parameterized.class)
 public class JUnitDocTests extends net.cscott.jdoctest.JDocJUnitTest {
-    @BeforeClass
-    public static void setup() {
-        /* Make sure JDocJUnitTest looks in the right place for our tests */
-        testDir = "api/tests";
-    }
-    // no op: should automatically run our doc tests
-    @Test
-    @Override
-    public void runAllDoctests() {
-        super.runAllDoctests();
+    public JUnitDocTests(String testFile) { super(testFile); assertTrue(testFile!=null); }
+
+    @Parameters
+    public static Collection<Object[]> listTests() {
+        /* give the correct directory for our tests */
+        return net.cscott.jdoctest.JDocJUnitTest.listTests("api/tests");
     }
 }
