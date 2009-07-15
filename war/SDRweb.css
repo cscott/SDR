@@ -178,8 +178,8 @@ table.callList {
         font-weight: bold;
         color: #444;
 }
-/* draw insertion point above highlighted shell */
-.callList .highlight td {
+/* draw insertion point above appropriate call */
+.callList .insertionPoint td {
         border-top: 3px solid #2062B8;
 }
 /* use a grey border if the last call is also the header (ie new sequence) */

@@ -9,6 +9,8 @@ import net.cscott.sdr.webapp.client.Model.FirstInvalidCallChangeEvent;
 import net.cscott.sdr.webapp.client.Model.FirstInvalidCallChangeHandler;
 import net.cscott.sdr.webapp.client.Model.HighlightChangeEvent;
 import net.cscott.sdr.webapp.client.Model.HighlightChangeHandler;
+import net.cscott.sdr.webapp.client.Model.InsertionPointChangeEvent;
+import net.cscott.sdr.webapp.client.Model.InsertionPointChangeHandler;
 import net.cscott.sdr.webapp.client.Model.PlayStatusChangeEvent;
 import net.cscott.sdr.webapp.client.Model.PlayStatusChangeHandler;
 import net.cscott.sdr.webapp.client.Model.SequenceChangeEvent;
@@ -215,6 +217,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 int row = c.getRowIndex();
                 int callNum = row-1;
                 model.setPlaying(false);
+                model.setInsertionPoint(callNum);
                 model.setHighlightedCall(callNum);
                 // move the slider position to correspond to this
                 // call (careful when moving past the invalid call marker!)
@@ -223,6 +226,17 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 for (int i=0; i<callNum && i<firstInvalidCall; i++)
                     when += model.getEngineResults().timing.get(i);
                 model.setSliderPos(when);
+            }});
+        model.addInsertionPointChangeHandler(new InsertionPointChangeHandler(){
+            public void onInsertionPointChange(InsertionPointChangeEvent sce) {
+                RowFormatter rf = callList.getRowFormatter();
+                int oldRow = sce.oldValue + 1;
+                if (oldRow > 0 && oldRow < callList.getRowCount())
+                    rf.removeStyleName(oldRow, "insertionPoint");
+                int newRow = sce.newValue + 1;
+                if (newRow > 0 && newRow < callList.getRowCount())
+                    rf.addStyleName(newRow, "insertionPoint");
+                updateErrorMsg();
             }});
         model.addHighlightChangeHandler(new HighlightChangeHandler(){
             public void onHighlightChange(HighlightChangeEvent sce) {
@@ -234,7 +248,6 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 if (newRow > 0 && newRow < callList.getRowCount())
                     rf.addStyleName(newRow, "highlight");
                 updateCurrentCall();
-                updateErrorMsg();
             }});
         model.addFirstInvalidCallChangeHandler(new FirstInvalidCallChangeHandler(){
             public void onFirstInvalidCallChange(FirstInvalidCallChangeEvent fic) {
@@ -373,6 +386,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         // initialize all the model-dependent fields
         model.fireEvent(new SequenceInfoChangeEvent());
         model.fireEvent(new SequenceChangeEvent());
+        model.fireEvent(new InsertionPointChangeEvent(-1, model.insertionPoint()));
         model.fireEvent(new HighlightChangeEvent(-1, model.highlightedCall()));
         model.fireEvent(new PlayStatusChangeEvent());
         // trigger resize & focus shortly after load
@@ -483,10 +497,10 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
     }
     public void updateErrorMsg() {
         String msg = null;
-        int highlight = model.highlightedCall();
+        int insertionPoint = model.insertionPoint();
         EngineResults er = model.getEngineResults();
-        if (er != null && highlight >=0 && highlight < er.messages.size()) {
-            msg = er.messages.get(highlight);
+        if (er != null && insertionPoint >=0 && insertionPoint < er.messages.size()) {
+            msg = er.messages.get(insertionPoint);
         }
         if (msg==null)
             errorMsg.setVisible(false);

@@ -32,6 +32,7 @@ public class Model implements HasHandlers {
     private boolean _isPlaying = false;
     private double _sliderPos = 0;
     private int _highlightedCall = -1;
+    private int _insertionPoint = -1;
 
     // constructor
     public Model(final DanceEngineServiceAsync danceEngine) {
@@ -92,25 +93,27 @@ public class Model implements HasHandlers {
     public boolean isPlaying() { return this._isPlaying; }
     public double getSliderPos() { return this._sliderPos; }
     public int highlightedCall() { return this._highlightedCall; }
+    public int insertionPoint() { return this._insertionPoint; }
 
     // mutation methods
     public void addCallAtPoint(String s) {
         // normalize call
         s = s.toLowerCase().trim();
-        // insertion point is just before highlighted call.
-        int idx = this._highlightedCall;
+        // new call will be at "insertionPoint" -- ie, 0 makes a new first call
+        int idx = this._insertionPoint;
         idx = (idx < 0) ? 0 : (idx <= this._sequence.calls.size()) ? idx :
             this._sequence.calls.size();
         this._sequence.calls.add(idx, s);
         this._isDirty = true;
         this.fireEvent(new SequenceChangeEvent());
-        // move the highlight to the new call
-        this.setHighlightedCall(idx+1);
+        // move the insertion point after the new call
+        this.setInsertionPoint(idx+1);
     }
     public void removeCallAt(int index) {
-        // change highlighted call if it would be off the end
-        if (this._highlightedCall >= this._sequence.calls.size())
-            setHighlightedCall(this._sequence.calls.size()-1);
+        // if insertion point was after the removed call, move it up one
+        // so it seems to stay in the same place.
+        if (this._insertionPoint > index)
+            setInsertionPoint(this._insertionPoint-1);
         this._sequence.calls.remove(index);
         this._isDirty = true;
         this.fireEvent(new SequenceChangeEvent());
@@ -148,6 +151,7 @@ public class Model implements HasHandlers {
     }
     public void load(SequenceInfo info, Sequence sequence) {
         this.setPlaying(false);
+        this.setInsertionPoint(0);
         this.setHighlightedCall(0);
         this.setSliderPos(0);
         this._sequenceInfo = info;
@@ -156,6 +160,8 @@ public class Model implements HasHandlers {
         this.regenerateTags(); // may fire SequenceInfoChangeEvent
         this.fireEvent(new SequenceInfoChangeEvent());
         this.fireEvent(new SequenceChangeEvent());
+        // default insertion point is at the end of the sequence
+        this.setInsertionPoint(this._sequence.calls.size());
     }
     public void clean() {
         this._isDirty = false;
@@ -177,6 +183,12 @@ public class Model implements HasHandlers {
         if (oldValue == highlightedCall) return; /* nothing to do */
         this._highlightedCall = highlightedCall;
         this.fireEvent(new HighlightChangeEvent(oldValue, highlightedCall));
+    }
+    public void setInsertionPoint(int insertionPoint) {
+        int oldValue = this._insertionPoint;
+        if (oldValue == insertionPoint) return; /* nothing to do */
+        this._insertionPoint = insertionPoint;
+        this.fireEvent(new InsertionPointChangeEvent(oldValue, insertionPoint));
     }
 
     // generate automatic tags from sequence
@@ -205,6 +217,10 @@ public class Model implements HasHandlers {
     public void fireEvent(GwtEvent<?> event) {
         this.handlerManager.fireEvent(event);
     }
+    static abstract class ModelEvent<T extends EventHandler> extends GwtEvent<T> {
+        @Override
+        public final Model getSource() { return (Model) super.getSource(); }
+    }
 
     // play status change event
     public HandlerRegistration addPlayStatusChangeHandler(PlayStatusChangeHandler handler) {
@@ -213,11 +229,9 @@ public class Model implements HasHandlers {
     public static interface PlayStatusChangeHandler extends EventHandler {
         void onPlayStatusChange(PlayStatusChangeEvent sce);
     }
-    static class PlayStatusChangeEvent extends GwtEvent<PlayStatusChangeHandler> {
+    static class PlayStatusChangeEvent extends ModelEvent<PlayStatusChangeHandler> {
         public static final GwtEvent.Type<PlayStatusChangeHandler> TYPE =
             new GwtEvent.Type<PlayStatusChangeHandler>();
-        @Override
-        public Model getSource() { return (Model) super.getSource(); }
         @Override
         protected void dispatch(PlayStatusChangeHandler handler) {
             handler.onPlayStatusChange(this);
@@ -235,7 +249,7 @@ public class Model implements HasHandlers {
     public static interface HighlightChangeHandler extends EventHandler {
         void onHighlightChange(HighlightChangeEvent sce);
     }
-    static class HighlightChangeEvent extends GwtEvent<HighlightChangeHandler> {
+    static class HighlightChangeEvent extends ModelEvent<HighlightChangeHandler> {
         public static final GwtEvent.Type<HighlightChangeHandler> TYPE =
             new GwtEvent.Type<HighlightChangeHandler>();
         public final int oldValue, newValue;
@@ -244,13 +258,36 @@ public class Model implements HasHandlers {
             this.newValue = newValue;
         }
         @Override
-        public Model getSource() { return (Model) super.getSource(); }
-        @Override
         protected void dispatch(HighlightChangeHandler handler) {
             handler.onHighlightChange(this);
         }
         @Override
         public GwtEvent.Type<HighlightChangeHandler> getAssociatedType() {
+            return TYPE;
+        }
+    }
+
+    // insertion point value change event
+    public HandlerRegistration addInsertionPointChangeHandler(InsertionPointChangeHandler handler) {
+        return this.handlerManager.addHandler(InsertionPointChangeEvent.TYPE, handler);
+    }
+    public static interface InsertionPointChangeHandler extends EventHandler {
+        void onInsertionPointChange(InsertionPointChangeEvent sce);
+    }
+    static class InsertionPointChangeEvent extends ModelEvent<InsertionPointChangeHandler> {
+        public static final GwtEvent.Type<InsertionPointChangeHandler> TYPE =
+            new GwtEvent.Type<InsertionPointChangeHandler>();
+        public final int oldValue, newValue;
+        public InsertionPointChangeEvent(int oldValue, int newValue) {
+            this.oldValue = oldValue;
+            this.newValue = newValue;
+        }
+        @Override
+        protected void dispatch(InsertionPointChangeHandler handler) {
+            handler.onInsertionPointChange(this);
+        }
+        @Override
+        public GwtEvent.Type<InsertionPointChangeHandler> getAssociatedType() {
             return TYPE;
         }
     }
@@ -262,7 +299,7 @@ public class Model implements HasHandlers {
     public static interface FirstInvalidCallChangeHandler extends EventHandler {
         void onFirstInvalidCallChange(FirstInvalidCallChangeEvent sce);
     }
-    static class FirstInvalidCallChangeEvent extends GwtEvent<FirstInvalidCallChangeHandler> {
+    static class FirstInvalidCallChangeEvent extends ModelEvent<FirstInvalidCallChangeHandler> {
         public static final GwtEvent.Type<FirstInvalidCallChangeHandler> TYPE =
             new GwtEvent.Type<FirstInvalidCallChangeHandler>();
         public final int oldValue, newValue;
@@ -270,8 +307,6 @@ public class Model implements HasHandlers {
             this.oldValue = oldValue;
             this.newValue = newValue;
         }
-        @Override
-        public Model getSource() { return (Model) super.getSource(); }
         @Override
         protected void dispatch(FirstInvalidCallChangeHandler handler) {
             handler.onFirstInvalidCallChange(this);
@@ -289,11 +324,9 @@ public class Model implements HasHandlers {
     public static interface SequenceInfoChangeHandler extends EventHandler {
         void onSequenceInfoChange(SequenceInfoChangeEvent sce);
     }
-    static class SequenceInfoChangeEvent extends GwtEvent<SequenceInfoChangeHandler> {
+    static class SequenceInfoChangeEvent extends ModelEvent<SequenceInfoChangeHandler> {
         public static final GwtEvent.Type<SequenceInfoChangeHandler> TYPE =
             new GwtEvent.Type<SequenceInfoChangeHandler>();
-        @Override
-        public Model getSource() { return (Model) super.getSource(); }
         @Override
         protected void dispatch(SequenceInfoChangeHandler handler) {
             handler.onSequenceInfoChange(this);
@@ -311,11 +344,9 @@ public class Model implements HasHandlers {
     public static interface SequenceChangeHandler extends EventHandler {
         void onSequenceChange(SequenceChangeEvent sce);
     }
-    static class SequenceChangeEvent extends GwtEvent<SequenceChangeHandler> {
+    static class SequenceChangeEvent extends ModelEvent<SequenceChangeHandler> {
         public static final GwtEvent.Type<SequenceChangeHandler> TYPE =
             new GwtEvent.Type<SequenceChangeHandler>();
-        @Override
-        public Model getSource() { return (Model) super.getSource(); }
         @Override
         protected void dispatch(SequenceChangeHandler handler) {
             handler.onSequenceChange(this);
@@ -333,7 +364,7 @@ public class Model implements HasHandlers {
     public static interface EngineResultsChangeHandler extends EventHandler {
         void onEngineResultsChange(EngineResultsChangeEvent sce);
     }
-    static class EngineResultsChangeEvent extends GwtEvent<EngineResultsChangeHandler> {
+    static class EngineResultsChangeEvent extends ModelEvent<EngineResultsChangeHandler> {
         public static final GwtEvent.Type<EngineResultsChangeHandler> TYPE =
             new GwtEvent.Type<EngineResultsChangeHandler>();
         @Override
