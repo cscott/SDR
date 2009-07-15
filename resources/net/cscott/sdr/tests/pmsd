@@ -1,0 +1,29 @@
+Exercise the various debugging features of the PMSD front end.
+
+sdr> /// Direct access to DanceState object:
+sdr> /ds.currentTime()
+0/1
+sdr> ///
+sdr> /// Recursive invocation:
+sdr> /const PMSD=net.cscott.sdr.PMSD;
+sdr> /PMSD.scrub(PMSD.runTest("<inner>", "sdr> /'whee!'"))
+|sdr> /'whee!'
+|whee!
+sdr> ///
+sdr> /// Passing state down to nested invocations
+sdr> /this
+[object State]
+sdr> /a="shared state";
+shared state
+sdr> /list=java.util.Arrays.asList; undefined;
+sdr> /PMSD.scrub(PMSD.runTest(this, "<inner>", list("sdr> /a")));
+|sdr> /a
+|shared state
+sdr> ///
+sdr> /// Careful about /exit commands in nested invocations!
+sdr> /PMSD.scrub(PMSD.runTest(this, "<inner>", list("sdr> /exit")));
+|sdr> /exit
+sdr> ///
+sdr> /// We shouldn't have exited above.
+sdr> /// *Now* exit:
+sdr> /exit

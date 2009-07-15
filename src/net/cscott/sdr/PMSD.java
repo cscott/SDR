@@ -121,6 +121,7 @@ public class PMSD {
         // private/internal state
         DanceState ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET);
         boolean _isDone = false;
+        boolean _errorDetails = false;
 
         // javascript api.
         public Object jsGet_ds() {
@@ -133,7 +134,6 @@ public class PMSD {
         }
         public Object jsGet_program() {
             return Context.javaToJS(ds.dance.getProgram(), this);
-            //return ds.dance.getProgram().toString();
         }
         public void jsSet_program(Object val) {
             Program p;
@@ -143,6 +143,13 @@ public class PMSD {
                 p = (Program) Context.jsToJava(val, Program.class);
             if (p==ds.dance.getProgram()) return;
             ds = new DanceState(new DanceProgram(p), ds.currentFormation());
+        }
+        public boolean jsGet_errorDetails() {
+            return this._errorDetails;
+        }
+        public void jsSet_errorDetails(Object val) {
+            Boolean b = (Boolean) Context.jsToJava(val, Boolean.TYPE);
+            this._errorDetails = b.booleanValue();
         }
         public void jsSet_formation(Object val) {
             Formation f = (Formation) Context.jsToJava(val, Formation.class);
@@ -158,15 +165,22 @@ public class PMSD {
             return ds.currentFormation().toStringDiagram("| ");
         }
 
+        /** Runs the test in this same context, so that we can (for example)
+         *  set {@code /errorDetails=true} and then run the test to get more
+         *  information about the failure.
+         */
 	public String jsFunction_runTest(String testName) throws IOException {
             List<String> testCase =
                 readLines(PMSD.class.getResourceAsStream("tests/"+testName));
             if (testCase==null)
 		return "* " + testName + " not found";
-            // execute it!
-            return runTest(testName, testCase);
+            // execute it!  (reusing current state)
+            return runTest(this, testName, testCase);
 	}
 
+	/** Runs each test in its own javascript context, to ensure
+	 *  independence between tests.
+	 */
 	public String jsGet_runAllTests() {
 	    try {
 		return runAllTests();
@@ -216,8 +230,8 @@ public class PMSD {
                 failedTests.add(" "+resource+" not found");
                 continue;
             }
-            // execute it!
-            String testResult = runTest(resource, testCase);
+            // execute it! (each test in a new JavaScript context)
+            String testResult = runTest(null, resource, testCase);
             // resplit and compare.
             int i = 0, mismatch = -1;
             for ( ; i < testCase.size(); i++)
@@ -258,9 +272,10 @@ public class PMSD {
         return result;
     }
     /** Run a test transcript, returning the output. Helper class for use from
-     *  JavaScript. */
+     *  JavaScript doctests. */
     public static String runTest(String sourceName, String... transcript) {
-        return runTest(sourceName, Arrays.asList(transcript));
+        // create new javascript context in which to run test
+        return runTest(null, sourceName, Arrays.asList(transcript));
     }
     /** Helper function from doctests to tweak output of {@link #runTest}. */
     public static String scrub(String input) {
@@ -278,8 +293,12 @@ public class PMSD {
         }
         return result.toString().trim();
     }
-    /** Run a test transcript, returning the output. */
-    public static String runTest(final String sourceName, List<String> lines) {
+    /** Run a test transcript, returning the output.
+     *  The context and state parameters can be null, in which case a new
+     *  javascript context will be created.
+     */
+    public static String runTest(State s,
+                                 final String sourceName, List<String> lines) {
         StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);
         // very simple regexp to find input lines
@@ -304,9 +323,12 @@ public class PMSD {
             PrintWriter writer() { return pw; }
         };
         try {
-            repl(rw);
+            if (s==null)
+                repl(rw);
+            else
+                repl(Context.getCurrentContext(), s, rw);
         } catch (IOException ioe) {
-            pw.println("UNEXPECTED ERROR: "+ioe.getMessage());
+            pw.println("* Unexpected IO error: "+ioe.getMessage());
         }
         pw.flush();
         return sw.toString().trim();
@@ -317,8 +339,9 @@ public class PMSD {
         final PrintWriter pw = new PrintWriter(System.out, true);
         if (args.length > 0) {
             // ooh, got an argument!
+            // run test in its own javascript context
             String result =
-                runTest(args[0], readLines(new FileInputStream(args[0])));
+                runTest(null, args[0], readLines(new FileInputStream(args[0])));
             pw.print(result);
             pw.flush();
             return;
@@ -343,9 +366,9 @@ public class PMSD {
             PrintWriter writer() { return pw; }
             });
     }
-    /** The main read-eval-print loop. */
+    /** The main read-eval-print loop.
+     *  Creates a new JavaScript score/context. */
     public static void repl(ReaderWriter rw) throws IOException {
-        PrintWriter pw = rw.writer();
         // initialize Rhino
         Context cx = Context.enter();
         try {
@@ -357,56 +380,69 @@ public class PMSD {
             ScriptableObject.defineClass(global, State.class);
             State s = (State) cx.newObject(global, "State");
             s.setParentScope(global);
-            // main loop
-            int lineNum = 1;
-            while (!s._isDone) {
-                final int initialLineNum = lineNum;
-                String line = rw.readLine(s, "sdr> "); lineNum++;
-                if (line==null) break;
-                if (line.startsWith("/")) {
-                    line = line.substring(1);
-                    // accumulate until we've got a complete javascript statement
-                    while (!cx.stringIsCompilableUnit(line)) {
-                        line = line + "\n" + rw.readLine(s, "   > ");
-                        lineNum++;
-                    }
-                    try {
-                        Object result = cx.evaluateString(s, line,
-                                                          rw.sourceName(),
-                                                          initialLineNum, null);
-                        if (result != Context.getUndefinedValue() &&
-                                !(result instanceof Function &&
-                                        line.trim().startsWith("function"))) {
-                            pw.println(Context.toString(result));
-                        }
-                    } catch (RhinoException rex) {
-                        pw.println("* Javascript exception: "+rex.getMessage());
-                    }
-                } else {
-                    // accumulate while there's a trailing backslash
-                    while (line.trim().endsWith("\\")) {
-                        line = line.replaceFirst("\\\\", "") +
-                               rw.readLine(s, "   > ");
-                        lineNum++;
-                    }
-                    try {
-                        Comp c = new Seq(CallDB.INSTANCE.parse(s.ds.dance.getProgram(), line));
-                        Evaluator.breathedEval(s.ds.currentFormation(), c).evaluateAll(s.ds);
-                        pw.println(s.ds.currentFormation().toStringDiagram("| "));
-                    } catch (BadCallException bce) {
-                        pw.println("* "+bce.getMessage());
-                    } catch (Throwable t) {
-                        pw.println("* "+t.getMessage());
-                        t.printStackTrace(pw);
-                    }
-                }
-            }
+            repl(cx, s, rw);
         } catch (Throwable t) {
-            pw.println("* Unhandled exception: "+t.getMessage());
+            rw.writer().println("* Unhandled exception: "+t.getMessage());
         } finally {
             Context.exit();
         }
 
+    }
+    /** Read-evaluate-print loop reusing an existing context and state.
+     * @param cx JavaScript context
+     * @param s JavaScript scope and state
+     * @param rw ReaderWriter object for interaction
+     * @throws IOException if interaction object can't read/write
+     */
+    public static void repl(Context cx, State s, ReaderWriter rw)
+            throws IOException {
+        // main loop
+        PrintWriter pw = rw.writer();
+        int lineNum = 1;
+        boolean wasDone = s._isDone;
+        for (s._isDone = false; !s._isDone; ) {
+            final int initialLineNum = lineNum;
+            String line = rw.readLine(s, "sdr> "); lineNum++;
+            if (line==null) break;
+            if (line.startsWith("/")) {
+                line = line.substring(1);
+                // accumulate until we've got a complete javascript statement
+                while (!cx.stringIsCompilableUnit(line)) {
+                    line = line + "\n" + rw.readLine(s, "   > ");
+                    lineNum++;
+                }
+                try {
+                    Object result = cx.evaluateString(s, line,
+                                                      rw.sourceName(),
+                                                      initialLineNum, null);
+                    if (result != Context.getUndefinedValue() &&
+                            !(result instanceof Function &&
+                                    line.trim().startsWith("function"))) {
+                        pw.println(Context.toString(result));
+                    }
+                } catch (RhinoException rex) {
+                    pw.println("* Javascript exception: "+rex.getMessage());
+                }
+            } else {
+                // accumulate while there's a trailing backslash
+                while (line.trim().endsWith("\\")) {
+                    line = line.replaceFirst("\\\\", "") +
+                           rw.readLine(s, "   > ");
+                    lineNum++;
+                }
+                try {
+                    Comp c = new Seq(CallDB.INSTANCE.parse(s.ds.dance.getProgram(), line));
+                    Evaluator.breathedEval(s.ds.currentFormation(), c).evaluateAll(s.ds);
+                    pw.println(s.ds.currentFormation().toStringDiagram("| "));
+                } catch (BadCallException bce) {
+                    pw.println("* "+bce.getMessage());
+                } catch (Throwable t) {
+                    pw.println("* "+t.getMessage());
+                    t.printStackTrace(pw);
+                }
+            }
+        }
+        s._isDone = wasDone; // support nested invocations.
     }
     /** JLine completion engine for call names. */
     static class SDRCallCompletor implements jline.Completor {
