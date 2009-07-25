@@ -19,11 +19,16 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-/** A Formation is a set of dancers and positions for them.
+/** A {@link TaggedFormation} is a set of dancers and positions for them.
  * Certain dancers in the formation can be selected. 
  * In addition, all dancers can be tagged with modifiers
  * such as 'BEAU', 'BELLE', 'LEADER', 'TRAILER', etc.
- * */
+ * @doc.test Fetch tagged dancers from a TaggedFormation:
+ *  js> f = FormationList.STATIC_SQUARE ; f.getClass()
+ *  class net.cscott.sdr.calls.NamedTaggedFormation
+ *  js> [ f.location(d) for each (d in Iterator(f.tagged(TaggedFormation.Tag.BEAU)))]
+ *  1,3,s,-3,1,e,3,-1,w,-1,-3,n
+ */
 public class TaggedFormation extends Formation {
     public enum Tag {
         // "primitive" dancer tags

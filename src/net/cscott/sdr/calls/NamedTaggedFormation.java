@@ -13,6 +13,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * Helper class to associate a standard name with a canonical
  * formation.  This makes string representations more compact!
+ * @doc.test Fetch tagged dancers from a TaggedFormation:
+ *  js> f = FormationList.STATIC_SQUARE ; f.getClass()
+ *  class net.cscott.sdr.calls.NamedTaggedFormation
+ *  js> f.getName()
+ *  STATIC SQUARE
  */
 public class NamedTaggedFormation extends TaggedFormation {
     private final String name;

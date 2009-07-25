@@ -31,7 +31,7 @@ import net.cscott.sdr.util.Fraction;
  * proper types); for example "twice (trade and roll)" is:
  * 
  * <pre>
- *  #(APPLY["_fractional"] #(APPLY["2"]) #(APPLY["roll"] #(APPLY["trade"])))
+ *  #(APPLY["_fractional"] #(APPLY["2"]) #(APPLY["_roll"] #(APPLY["trade"])))
  * </pre>
  * 
  * Convenience methods are provided to convert numerical or string arguments
@@ -39,6 +39,13 @@ import net.cscott.sdr.util.Fraction;
  * 
  * @author C. Scott Ananian
  * @version $Id: Apply.java,v 1.9 2006-10-19 21:00:09 cananian Exp $
+ * @doc.test Actual code for examples in the class description:
+ *  js> Apply.makeApply("and", Apply.makeApply("slip"), Apply.makeApply("slide"))
+ *  (Apply and (Apply slip) (Apply slide))
+ *  js> importPackage(net.cscott.sdr.util)
+ *  js> Apply.makeApply("_fractional", Fraction.TWO,
+ *    >                 Apply.makeApply("_roll", Apply.makeApply("trade")))
+ *  (Apply _fractional (Apply 2/1) (Apply _roll (Apply trade)))
  */
 public class Apply extends SeqCall {
     public final String callName;
