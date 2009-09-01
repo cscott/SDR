@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.ast.*;
 import static net.cscott.sdr.calls.ast.TokenTypes.PART;
@@ -37,6 +40,7 @@ import net.cscott.sdr.util.Fraction;
  *    > }
  *  net.cscott.sdr.calls.BadCallException: No formation options left: Primitives cannot be subdivided: 1/3
  */
+@RunWith(value=JDoctestRunner.class)
 public class Fractional extends TransformVisitor<Fraction> {
     @Override
     public In visit(In in, Fraction f) {

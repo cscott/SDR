@@ -11,6 +11,9 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Breather;
 import net.cscott.sdr.calls.CallDB;
@@ -175,6 +178,7 @@ import net.cscott.sdr.util.ListUtils;
  *  js> ds.movements(StandardDancer.COUPLE_3_GIRL)
  *  [DancerPath[from=-1,1,s,to=-1,0,s,time=1,pointOfRotation=<null>], DancerPath[from=-1,0,s,to=-1,-1,s,time=1,pointOfRotation=<null>]]
  */
+@RunWith(value=JDoctestRunner.class)
 public abstract class Evaluator {
     /**
      * Do "one part" of the continuation, and return an {@link Evaluator}

@@ -2,7 +2,12 @@ package net.cscott.sdr.util;
 
 import java.util.Arrays;
 
+import net.cscott.jdoctest.JDoctestRunner;
+
+import org.junit.runner.RunWith;
+
 /** Utility methods for efficiently evaluating bezier curves. */
+@RunWith(value=JDoctestRunner.class)
 public class Bezier {
     private Bezier() { }
 

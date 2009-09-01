@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Condition;
 import net.cscott.sdr.calls.ast.ParCall;
 import net.cscott.sdr.util.Fraction;
 
 /** This class contains all the predicates known to the system. */
+@RunWith(value=JDoctestRunner.class)
 public abstract class PredicateList {
     
     // zero-arg operators

@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.lists.BasicList;
@@ -23,12 +24,14 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.Parser;
 import org.antlr.runtime.TokenStream;
+import org.junit.runner.RunWith;
 
 /** CallDB holds all the calls and concepts we know about.
  * It is a singleton class; its static constructor loads
  * all the call definitions from files and other classes.
  * @author C. Scott Ananian
  */
+@RunWith(value=JDoctestRunner.class)
 public class CallDB {
     public static final CallDB INSTANCE = new CallDB();
     private Map<String, Call> db = new HashMap<String,Call>();

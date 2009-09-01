@@ -1,5 +1,8 @@
 package net.cscott.sdr.calls;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 
 /**
@@ -79,6 +82,7 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
  *  js> d.matchesTag(Tag.ALL)
  *  true
  */
+@RunWith(value=JDoctestRunner.class)
 public enum StandardDancer implements Dancer {
     COUPLE_1_BOY, COUPLE_1_GIRL, COUPLE_2_BOY, COUPLE_2_GIRL,
 	COUPLE_3_BOY, COUPLE_3_GIRL, COUPLE_4_BOY, COUPLE_4_GIRL;

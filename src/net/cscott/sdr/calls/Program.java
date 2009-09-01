@@ -1,5 +1,10 @@
 package net.cscott.sdr.calls;
 
+import net.cscott.jdoctest.JDoctestRunner;
+
+import org.junit.runner.RunWith;
+
+@RunWith(value=JDoctestRunner.class)
 public enum Program {
     // There are probably other programs that could be used here:
     // Vic Cedar's "variant" lists, the different C4/C4X lists, etc.

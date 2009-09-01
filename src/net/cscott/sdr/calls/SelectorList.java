@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.util.ListUtils;
 
 /**
@@ -100,6 +103,7 @@ import net.cscott.sdr.util.ListUtils;
  *     ^    v
  *   [ph: BEAU; ph: BEAU]
  */
+@RunWith(value=JDoctestRunner.class)
 public abstract class SelectorList {
     // universal selector
     public static final Selector ANY = new Selector() {

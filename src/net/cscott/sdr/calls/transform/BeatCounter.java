@@ -3,10 +3,13 @@
 //         to proportionally allocate the number of beats we will be given.
 package net.cscott.sdr.calls.transform;
 
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.util.*;
 
 import java.util.*;
+
+import org.junit.runner.RunWith;
 
 /**
  * Propagate 'inherent' time bottom-up: where prim and part = 1, and IN resets
@@ -20,6 +23,7 @@ import java.util.*;
  *  js> bc.getBeats(s)
  *  3
  */
+@RunWith(value=JDoctestRunner.class)
 class BeatCounter extends ValueVisitor<Fraction,Void> {
     static class CantCountBeatsException extends RuntimeException {}
     public BeatCounter() { }

@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.UnmodifiableIterator;
 import net.cscott.sdr.util.Fraction;
 import static net.cscott.sdr.util.Tools.l;
@@ -17,6 +20,7 @@ import static net.cscott.sdr.util.Tools.l;
  *  facing east or west (but not north, south, or any other direction).
  *  A rotation modulo 0 matches any direction.  A rotation modulo 1
  *  indicates an 'exact' rotation; the modulus can not exceed 1. */
+@RunWith(value=JDoctestRunner.class)
 public class Rotation {
     /** The amount of the rotation. */
     public final Fraction amount;

@@ -51,6 +51,7 @@ Square Dance Revolution build file.
           <include name="jdoctest/jdoctest*.jar" />
           <include name="jdoctest/rhino*.jar" />
         </fileset>
+	<pathelement path="${jdk.home}/lib/tools.jar"/>
       </path>
     </target>
 
@@ -72,6 +73,10 @@ Square Dance Revolution build file.
 	<delete file="${basedir}/${ant.project.name}.jar.MD5" />
 	<!-- coverage information -->
 	<delete dir="${instrumented_dir}" />
+	<!-- test output -->
+	<delete>
+	  <fileset dir="${basedir}" includes="TEST-*.txt" />
+	</delete>
 	<!-- eclipse writes here, so as not to fight with ant -->
 	<delete dir="bin.eclipse" />
 	<!-- from dist targets -->
@@ -301,6 +306,35 @@ window['JAVADOC_BASE'] = '{@docRoot}';
                   </classpath>
 	    </java>
     </target>
+    <target name="run.retest"
+	    description="Reruns all doctests from the last javadoc
+	    run.  This is faster than run.junit, if you know you
+	    haven't changed any tests."
+	    depends="compile">
+      <junit>
+	<formatter type="plain"/>
+	<test name="net.cscott.jdoctest.RerunJDoctests" />
+	<classpath refid="classpath.path" />
+	<assertions>
+	  <enable package="net.cscott"/>
+	</assertions>
+      </junit>
+    </target>
+    <target name="run.junit"
+	    description="Runs all doctests."
+	    depends="compile">
+      <!-- fork="yes" is required in order to get the classpath right -->
+      <junit printsummary="yes" fork="yes" forkmode="once" haltonfailure="yes">
+	<formatter type="plain"/>
+	<test name="net.cscott.sdr.PMSD" />
+	<test name="net.cscott.sdr.calls.Breather" />
+	<classpath refid="classpath.path" />
+	<assertions>
+	  <enable package="net.cscott"/>
+	</assertions>
+      </junit>
+    </target>
+
     <!-- runs a javascript shell for interactive debugging -->
     <!-- however, ant insists on redirecting stdin/out, which is unpleasant-->
     <target name="run.shell"

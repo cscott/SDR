@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.UnmodifiableIterator;
 
 /** Persistent Linked List. */
+@RunWith(value=JDoctestRunner.class)
 public class LL<T> implements Iterable<T> {
     /** Element at the start of the list */
     public final T head;

@@ -55,6 +55,7 @@
 	<classpathentry kind="lib" path="lib/dev/jline-0.9.94.jar"/>
 	<classpathentry kind="lib" path="lib/dev/jdoctest/rhino-1.7r2-rc3.jar"/>
 	<classpathentry kind="lib" path="lib/dev/junit-4.6.jar"/>
-	<classpathentry kind="lib" path="lib/dev/jdoctest/jdoctest-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/dev/jdoctest/jdoctest-1.5.jar" sourcepath="/JDoctest/src"/>
+	<classpathentry kind="lib" path="/home/cananian/jdk1.6.0_11/lib/tools.jar"/>
 	<classpathentry kind="output" path="bin.eclipse"/>
 </classpath>

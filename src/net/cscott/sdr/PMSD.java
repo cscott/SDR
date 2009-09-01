@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.DanceProgram;
@@ -29,6 +30,7 @@ import net.cscott.sdr.calls.grm.CompletionEngine;
 import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.util.ListUtils;
 
+import org.junit.runner.RunWith;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.RhinoException;
@@ -109,6 +111,7 @@ import org.mozilla.javascript.tools.shell.Global;
  *  ||sdr> /"whee!"
  *  ||whee!
  */
+@RunWith(value=JDoctestRunner.class)
 public class PMSD {
     private PMSD() {}
     /** Class holding properties accessible from the {@link PMSD} front-end. */

@@ -3,6 +3,9 @@ package net.cscott.sdr.calls.transform;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.DancerPath.PointOfRotation;
 import net.cscott.sdr.calls.ast.*;
@@ -259,6 +262,7 @@ import net.cscott.sdr.util.Point;
  */
 // xxx should test circle left & check roll
 //     add "force roll" flags to Prim (only print if set)
+@RunWith(value=JDoctestRunner.class)
 public abstract class EvalPrim {
 
     /** "Dance" the given primitive for the given dancer in the given

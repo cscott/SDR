@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
@@ -63,6 +66,7 @@ import net.cscott.sdr.util.Fraction;
  *  js> // note no output from the above.
  */
 // can use SelectorList to associate phantoms with real dancers.
+@RunWith(value=JDoctestRunner.class)
 public abstract class FormationList {
 
 

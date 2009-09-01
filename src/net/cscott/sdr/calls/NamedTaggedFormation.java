@@ -5,10 +5,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.MultiMap;
 import net.cscott.sdr.util.SdrToString;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.junit.runner.RunWith;
 
 /**
  * Helper class to associate a standard name with a canonical
@@ -19,6 +21,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  *  js> f.getName()
  *  STATIC SQUARE
  */
+@RunWith(value=JDoctestRunner.class)
 public class NamedTaggedFormation extends TaggedFormation {
     private final String name;
     public NamedTaggedFormation(String name, TaggedDancerInfo... tdi) {

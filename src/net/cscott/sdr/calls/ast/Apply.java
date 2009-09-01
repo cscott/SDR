@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.CallDB;
@@ -47,6 +50,7 @@ import net.cscott.sdr.util.Fraction;
  *    >                 Apply.makeApply("_roll", Apply.makeApply("trade")))
  *  (Apply _fractional (Apply 2/1) (Apply _roll (Apply trade)))
  */
+@RunWith(value=JDoctestRunner.class)
 public class Apply extends SeqCall {
     public final String callName;
     public final List<Apply> args;

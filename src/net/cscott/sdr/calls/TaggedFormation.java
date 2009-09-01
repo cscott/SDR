@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
@@ -18,6 +19,7 @@ import net.cscott.sdr.util.Tools;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.junit.runner.RunWith;
 
 /** A {@link TaggedFormation} is a set of dancers and positions for them.
  * Certain dancers in the formation can be selected. 
@@ -29,6 +31,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  *  js> [ f.location(d) for each (d in Iterator(f.tagged(TaggedFormation.Tag.BEAU)))]
  *  1,3,s,-3,1,e,3,-1,w,-1,-3,n
  */
+@RunWith(value=JDoctestRunner.class)
 public class TaggedFormation extends Formation {
     public enum Tag {
         // "primitive" dancer tags

@@ -5,9 +5,13 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Map;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.Call;
 
 /** This class contains the code to parse and load a call list. */
+@RunWith(value=JDoctestRunner.class)
 public abstract class CallFileLoader {
     // This does the load
     /**

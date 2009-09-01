@@ -1,6 +1,10 @@
 package net.cscott.sdr.calls.ast;
 
 import static net.cscott.sdr.calls.transform.AstTokenTypes.IF;
+
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
@@ -19,6 +23,7 @@ import net.cscott.sdr.util.Fraction;
  *  js> iff = new If(Condition.makeCondition("true"), new Seq(Apply.makeApply("nothing")), "Message!", Fraction.ONE_HALF);
  *  (If (Condition true) (Seq (Apply nothing)) "Message!" 1/2)
  */
+@RunWith(value=JDoctestRunner.class)
 public class If extends Comp {
     /** The condition to evaluate */
     public final Condition condition;

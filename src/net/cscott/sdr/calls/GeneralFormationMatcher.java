@@ -2,6 +2,8 @@ package net.cscott.sdr.calls;
 
 import java.util.*;
 
+import org.junit.runner.RunWith;
+
 import net.cscott.sdr.calls.Breather.FormationPiece;
 import net.cscott.sdr.calls.Position.Flag;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
@@ -9,6 +11,7 @@ import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.util.Fraction;
 import static net.cscott.sdr.util.Tools.m;
 import static net.cscott.sdr.util.Tools.p;
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.*;
 
 /**
@@ -19,6 +22,7 @@ import net.cscott.jutil.*;
  *
  * @author C. Scott Ananian
  */
+@RunWith(value=JDoctestRunner.class)
 public abstract class GeneralFormationMatcher {
     // currying, oh, my
     public static Selector makeSelector(final TaggedFormation goal) {

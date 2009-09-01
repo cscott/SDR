@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.Factories;
 import net.cscott.jutil.FilterIterator;
 import net.cscott.jutil.GenericMultiMap;
@@ -21,6 +24,7 @@ import net.cscott.jutil.MultiMap;
  * Utility functions to facilitate map and list creation.
  * @author C. Scott Ananian
  */
+@RunWith(value=JDoctestRunner.class)
 public abstract class Tools {
     /** Don't try to instantiate this class. */
     private Tools() { }

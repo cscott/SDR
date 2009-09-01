@@ -5,6 +5,9 @@ import static net.cscott.sdr.calls.transform.AstTokenTypes.PART;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
@@ -30,6 +33,7 @@ import net.cscott.sdr.util.Fraction;
  * @author C. Scott Ananian
  * @version $Id: BasicList.java,v 1.20 2009-02-05 06:13:31 cananian Exp $
  */
+@RunWith(value=JDoctestRunner.class)
 public abstract class BasicList {
     // hide constructor.
     private BasicList() { }

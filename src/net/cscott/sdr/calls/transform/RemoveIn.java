@@ -3,9 +3,12 @@
 //         allocate beats top-down.
 package net.cscott.sdr.calls.transform;
 
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.util.*;
 import java.util.*;
+
+import org.junit.runner.RunWith;
 /**
  * Push {@link In}s down a call tree and adjust
  * {@link Prim} timing where possible.  Only push the {@link In} down one level,
@@ -30,6 +33,7 @@ import java.util.*;
  *  js> RemoveIn.removeIn(a)
  *  (Seq (Part false (Seq (Prim 0, 1, none, 1/2) (Prim 0, 1, in 1/4, 1/2))))
  */
+@RunWith(value=JDoctestRunner.class)
 public class RemoveIn extends TransformVisitor<Fraction> {
     private final BeatCounter bc = new BeatCounter();
     private RemoveIn() { }

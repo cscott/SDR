@@ -6,12 +6,14 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
 import net.cscott.sdr.util.Bezier.Bezier2D;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.junit.runner.RunWith;
 
 /** A {@link DancerPath} is the result of evaluating a call for a specific
  * dancer in a formation.  Unlike a {@link net.cscott.sdr.calls.ast.Prim},
@@ -159,6 +161,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  *  js> dp.bezierDirection()
  *  [-1,1, 0,1, 1,1]
  */
+@RunWith(value=JDoctestRunner.class)
 public class DancerPath {
     /**
      * In order to have a method of discussing the various motions encountered

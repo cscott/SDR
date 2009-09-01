@@ -1,5 +1,8 @@
 package net.cscott.sdr.calls.ast;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 
@@ -9,6 +12,7 @@ import net.cscott.sdr.calls.transform.ValueVisitor;
  * @author C. Scott Ananian
  * @version $Id: AstNode.java,v 1.1 2006-10-17 16:29:05 cananian Exp $
  */
+@RunWith(value=JDoctestRunner.class)
 public abstract class AstNode {
     private final String name;
     public final int type;

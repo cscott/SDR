@@ -1,6 +1,12 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.transform.AstTokenTypes.PRIM;
+import static net.cscott.sdr.calls.transform.CallFileLexer.PRIM;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
+
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
@@ -8,11 +14,6 @@ import net.cscott.sdr.util.Fraction;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
 
 /**
  * A Prim represents a primitive action: a certain distance travelled

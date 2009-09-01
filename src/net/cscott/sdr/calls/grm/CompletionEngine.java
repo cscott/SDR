@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.UnmodifiableIterator;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.grm.Grm.Alt;
@@ -109,6 +112,7 @@ import net.cscott.sdr.util.Tools;
  *  scoot back once and three quarters <cardinal>
  *  scoot back once and three quarters and roll
  */
+@RunWith(value=JDoctestRunner.class)
 public class CompletionEngine {
     /**
      * Return an iterator over the possible completions for the input string

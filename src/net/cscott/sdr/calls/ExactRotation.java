@@ -1,10 +1,14 @@
 package net.cscott.sdr.calls;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.util.Fraction;
 
 /** Rotations are represented as fractions, where '0' is facing north
  *  (away from the caller),
  *  and '1/4' is facing east.  Positive denotes clockwise rotation. */
+@RunWith(value=JDoctestRunner.class)
 public class ExactRotation extends Rotation implements Comparable<ExactRotation> {
     /** Constructor from a <code>Fraction</code> object. */
     public ExactRotation(Fraction amount) {

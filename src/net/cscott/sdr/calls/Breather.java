@@ -11,7 +11,9 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.junit.runner.RunWith;
 
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.Default;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
@@ -60,6 +62,7 @@ import static net.cscott.sdr.util.Tools.l;//list constructor
  * @author C. Scott Ananian
  * @version $Id: Breather.java,v 1.10 2006-10-30 22:09:29 cananian Exp $
  */
+@RunWith(value=JDoctestRunner.class)
 public class Breather {
 
     /**
