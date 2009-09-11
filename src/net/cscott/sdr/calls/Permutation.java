@@ -1,7 +1,9 @@
 package net.cscott.sdr.calls;
 
+import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.WeakHashMap;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.UnmodifiableIterator;
@@ -26,16 +28,6 @@ public class Permutation {
         assert isValid();
     }
 
-    /** The identity permutation for 8 dancers.
-     * @doc.test
-     *  js> Permutation.IDENTITY8.toString()
-     *  01234567
-     *  js> Permutation.IDENTITY8.inverse().toString()
-     *  01234567
-     */
-    public static Permutation IDENTITY8 =
-        new Permutation(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 });
-
     /** Return a permutation corresponding to the given string.
      * @doc.test
      *  js> Permutation.valueOf("01234567").equals(Permutation.IDENTITY8)
@@ -54,8 +46,33 @@ public class Permutation {
             else
                 b[i] = (byte) (10 + c - 'A');
         }
-        return new Permutation(b);
+        return valueOf(b);
     }
+    /**
+     * Hash-cons to get a Permutation object.
+     * @doc.test Object equality can be used to compare Permutations:
+     *  js> Permutation.valueOf("0123") === Permutation.valueOf("0123")
+     *  true
+     *  js> Permutation.valueOf("0123") === Permutation.valueOf("3210")
+     *  false
+     *  js> Permutation.IDENTITY8.inverse() === Permutation.IDENTITY8
+     *  true
+     */
+    public static Permutation valueOf(byte... b) {
+        Permutation p = new Permutation(b);
+        // hash-cons!
+        WeakReference<Permutation> r = hashConsMap.get(p);
+        if (r!=null) {
+            Permutation pp = r.get();
+            if (pp!=null)
+                return pp;
+        }
+        hashConsMap.put(p, new WeakReference<Permutation>(p));
+        return p;
+    }
+    private static WeakHashMap<Permutation,WeakReference<Permutation>> hashConsMap =
+        new WeakHashMap<Permutation,WeakReference<Permutation>>();
+
     /** Invert a permutation.
      * @doc.test The identity transform is its own inverse.
      *  js> Permutation.IDENTITY8.inverse().equals(Permutation.IDENTITY8)
@@ -74,7 +91,7 @@ public class Permutation {
         for (int i=0; i<this.p.length; i++) {
             b[this.p[i]] = (byte) i;
         }
-        return new Permutation(b);
+        return valueOf(b);
     }
 
     /** Compose a permutation.  We use Knuth's order of operations
@@ -108,26 +125,35 @@ public class Permutation {
         for (int i=0; i<this.p.length; i++) {
             b[i] = other.p[this.p[i]];
         }
-        return new Permutation(b);
+        return valueOf(b);
     }
     public Permutation divide(Permutation p) {
         return this.multiply(p.inverse());
     }
     public boolean equals(Object o) {
+        // even though we use hash consing, we need to implement equals
+        // the "slow way", so that the hash cons map itself works
+        // properly.
         if (!(o instanceof Permutation)) return false;
-        Permutation pp = (Permutation) o;
-        if (this.p.length != pp.p.length) return false;
-        for (int i=0; i<this.p.length; i++)
-            if (this.p[i] != pp.p[i])
+        Permutation p1 = this;
+        Permutation p2 = (Permutation) o;
+        if (p1.p.length != p2.p.length) return false;
+        for (int i=0; i<p1.p.length; i++)
+            if (p1.p[i] != p2.p[i])
                 return false;
         return true;
     }
     public int hashCode() {
-        int h = 0;
-        for (int i=0; i<this.p.length; i++)
-            h = (h * this.p.length) + this.p[i];
-        return h;
+        if (this.hash == 0) {
+            int h = 1;
+            for (int i=0; i<this.p.length; i++)
+                h = (h * this.p.length) + this.p[i];
+            this.hash = h;
+        }
+        return this.hash;
     }
+    private transient int hash=0;
+
     private boolean isValid() {
         boolean[] seen = new boolean[this.p.length];
         for (int i=0; i<this.p.length; i++) {
@@ -137,6 +163,15 @@ public class Permutation {
         }
         return true;
     }
+
+    /** The identity permutation for 8 dancers.
+     * @doc.test
+     *  js> Permutation.IDENTITY8.toString()
+     *  01234567
+     *  js> Permutation.IDENTITY8.inverse().toString()
+     *  01234567
+     */
+    public static Permutation IDENTITY8 = Permutation.valueOf("01234567");
 
     /* --- square dance-specific methods --- */
     public static Permutation fromFormation(FormationMatch fm) {
@@ -194,7 +229,7 @@ public class Permutation {
                     b[4] = b[s];
                     b[s] = t;
                 }
-                next = new Permutation(b);
+                next = Permutation.valueOf(b);
                 if (i==4)
                     next = null; // we're done!
                 return result;
@@ -226,7 +261,7 @@ public class Permutation {
                 byte[] b = next.p.clone();
                 for (int i=0; i<b.length; i++)
                     b[i] = (byte) ((b[i]+2) % 8);
-                next = new Permutation(b);
+                next = Permutation.valueOf(b);
                 if (next.equals(first))
                     next = null;
                 return result;
