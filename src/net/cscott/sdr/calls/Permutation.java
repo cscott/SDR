@@ -190,8 +190,45 @@ public class Permutation implements Comparable<Permutation> {
      *  01234567
      *  js> Permutation.IDENTITY8.inverse().toString()
      *  01234567
+     *  js> Permutation.identity(8) === Permutation.IDENTITY8
+     *  true
      */
-    public static Permutation IDENTITY8 = Permutation.valueOf("01234567");
+    public static Permutation IDENTITY8 = Permutation.identity(8);
+
+    /** The identity permutation for an arbitrary number of dancers.
+     * @doc.test
+     *  js> Permutation.identity(2)
+     *  01
+     *  js> Permutation.identity(4)
+     *  0123
+     *  js> Permutation.identity(8)
+     *  01234567
+     *  js> Permutation.identity(16)
+     *  0123456789ABCDEF
+     */
+    public static Permutation identity(int size) {
+        byte[] b = new byte[size];
+        for (int i=0; i<b.length; i++)
+            b[i] = (byte) i;
+        return Permutation.valueOf(b);
+    }
+
+    /** Permute the given list according to this permutation.
+     * @doc.test Reverse a list:
+     *  js> importPackage(java.util);
+     *  js> l = Arrays.asList("A","B","C","D","E");
+     *  [A, B, C, D, E]
+     *  js> p = Permutation.valueOf("43210");
+     *  43210
+     *  js> p.permute(l)
+     *  js> l
+     *  [E, D, C, B, A]
+     */
+    public <T> void permute(List<T> l) {
+        List<T> orig = new ArrayList<T>(l);
+        for (int i=0; i<orig.size(); i++)
+            l.set(i, orig.get(this.p[i]));
+    }
 
     /* --- square dance-specific methods --- */
     public static Permutation fromFormation(FormationMatch fm) {
