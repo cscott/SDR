@@ -1,7 +1,11 @@
 package net.cscott.sdr.calls;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.WeakHashMap;
 
@@ -12,7 +16,7 @@ import org.junit.runner.RunWith;
 
 /** A {@link Permutation} represents a reordering of dancers. */
 @RunWith(value=JDoctestRunner.class)
-public class Permutation {
+public class Permutation implements Comparable<Permutation> {
     /** Internal representation: if dancer #0 becomes dancer #3 in the
      *  new formation, then <code>p[0] == 3</code>. */
     private byte[] p;
@@ -135,24 +139,40 @@ public class Permutation {
         // the "slow way", so that the hash cons map itself works
         // properly.
         if (!(o instanceof Permutation)) return false;
-        Permutation p1 = this;
-        Permutation p2 = (Permutation) o;
-        if (p1.p.length != p2.p.length) return false;
-        for (int i=0; i<p1.p.length; i++)
-            if (p1.p[i] != p2.p[i])
-                return false;
-        return true;
+        return Arrays.equals(this.p, ((Permutation)o).p);
     }
     public int hashCode() {
-        if (this.hash == 0) {
-            int h = 1;
-            for (int i=0; i<this.p.length; i++)
-                h = (h * this.p.length) + this.p[i];
-            this.hash = h;
-        }
+        if (this.hash == 0)
+            this.hash = Arrays.hashCode(this.p);
         return this.hash;
     }
     private transient int hash=0;
+
+    /**
+     * Compare two permutations lexicographically.
+     * @doc.test Permutations of shorter sequences are smaller.
+     *  js> importPackage(java.util);
+     *  js> l=Arrays.asList(Permutation.valueOf("01"), Permutation.valueOf("0"), Permutation.valueOf("012"))
+     *  [01, 0, 012]
+     *  js> Collections.sort(l)
+     *  js> l
+     *  [0, 01, 012]
+     * @doc.test Permutations of the same length are compared left to right:
+     *  js> importPackage(java.util)
+     *  js> l=Arrays.asList(Permutation.valueOf("012"), Permutation.valueOf("201"), Permutation.valueOf("120"))
+     *  [012, 201, 120]
+     *  js> Collections.sort(l)
+     *  js> l
+     *  [012, 120, 201]
+     */
+    public int compareTo(Permutation p) {
+        if (this.p.length != p.p.length)
+            return this.p.length - p.p.length;
+        for (int i=0; i<this.p.length; i++)
+            if (this.p[i] != p.p[i])
+                return this.p[i] - p.p[i];
+        return 0;
+    }
 
     private boolean isValid() {
         boolean[] seen = new boolean[this.p.length];
@@ -191,13 +211,19 @@ public class Permutation {
      *  js> i=0
      *  0
      *  js> for each (pp in Iterator(Permutation.generate(Permutation.valueOf("01234567")))) {
-     *    >   for each (rp in Iterator(Permutation.rotated(pp))) {
+     *    >   for each (rp in Iterator(pp.rotated())) {
      *    >     if (rp.toString() in o) throw new Error(i+" "+rp+" not unique!");
      *    >     o[rp.toString()] = rp;
      *    >   }
      *    >   i++;
      *    > }; i
      *  96
+     * @doc.test Ensure that each permutation returned is canonical
+     *  js> for each (pp in Iterator(Permutation.generate(Permutation.valueOf("01234567")))) {
+     *    >   if (pp.canonical() !== pp)
+     *    >     throw new Error("Not canonical! "+pp);
+     *    > }; "OK";
+     *  OK
      */
     public static Iterator<Permutation> generate(final Permutation first) {
         return new UnmodifiableIterator<Permutation>() {
@@ -232,7 +258,7 @@ public class Permutation {
                 next = Permutation.valueOf(b);
                 if (i==4)
                     next = null; // we're done!
-                return result;
+                return result.canonical();
             }
         };
     }
@@ -245,10 +271,11 @@ public class Permutation {
     };
     /** Generate the four rotated versions of the given permutation.
      * @doc.test
-     *  js> [p for each (p in Iterator(Permutation.rotated(Permutation.valueOf("01234567"))))]
+     *  js> [p for each (p in Iterator(Permutation.valueOf("01234567").rotated()))]
      *  01234567,23456701,45670123,67012345
      */
-    public static Iterator<Permutation> rotated(final Permutation first) {
+    public Iterator<Permutation> rotated() {
+        final Permutation first = this;
         return new UnmodifiableIterator<Permutation>() {
             private Permutation next = first;
             @Override
@@ -267,5 +294,21 @@ public class Permutation {
                 return result;
             }
         };
+    }
+    /**
+     * The canonical form of a formation permutation is the smallest
+     * lexicographically among the four rotational equivalents.
+     * @doc.test
+     *  js> Permutation.valueOf("23456701").canonical()
+     *  01234567
+     *  js> [p.canonical() for each (p in Iterator(Permutation.valueOf("23456701").rotated()))]
+     *  01234567,01234567,01234567,01234567
+     */
+    public Permutation canonical() {
+        // XXX: this could be more efficient, but I'm lazy.
+        List<Permutation> r = new ArrayList<Permutation>(4);
+        for (Iterator<Permutation> it = this.rotated(); it.hasNext(); )
+            r.add(it.next());
+        return Collections.min(r);
     }
 }
