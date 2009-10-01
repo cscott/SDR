@@ -1,21 +1,28 @@
 package net.cscott.sdr.calls.transform;
 
+import static net.cscott.sdr.calls.transform.CallFileLexer.PART;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.runner.RunWith;
-
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
-import net.cscott.sdr.calls.ast.*;
-import static net.cscott.sdr.calls.ast.TokenTypes.PART;
+import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.ast.Comp;
+import net.cscott.sdr.calls.ast.In;
+import net.cscott.sdr.calls.ast.Part;
+import net.cscott.sdr.calls.ast.Prim;
+import net.cscott.sdr.calls.ast.Seq;
+import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.util.Fraction;
 
+import org.junit.runner.RunWith;
+
 /**
- * Tranformation implementing
+ * Transformation implementing
  * {@link net.cscott.sdr.calls.lists.BasicList#_FRACTIONAL}.
  * This only handles the case where the fraction is less than one;
  * {@link net.cscott.sdr.calls.lists.BasicList#_FRACTIONAL} handles
