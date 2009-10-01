@@ -80,7 +80,7 @@ public class Breather {
      *    >     for (dd in Iterator(f.sortedDancers())) {
      *    >       mm.put(dd, StandardDancer.values()[i++])
      *    >     }
-     *    >     m.put(d, new Formation(f, mm))
+     *    >     m.put(d, f.map(mm))
      *    >     print(m.get(d).toStringDiagram())
      *    >   }
      *    >   return m

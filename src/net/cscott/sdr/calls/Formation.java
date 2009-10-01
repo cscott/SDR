@@ -504,7 +504,7 @@ public class Formation {
                 Position.getGrid(-1,+1,ExactRotation.ONE_HALF))
         );
 
-    public Formation(Formation f, Map<Dancer,Dancer> map) {
+    protected Formation(Formation f, Map<Dancer,Dancer> map) {
         Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
         Set<Dancer> s = new LinkedHashSet<Dancer>();
         for (Map.Entry<Dancer,Position> me : f.location.entrySet())
@@ -513,6 +513,9 @@ public class Formation {
             s.add(map.get(d));
         this.location = Collections.unmodifiableMap(m);
         this.selected = Collections.unmodifiableSet(s);
+    }
+    public Formation map(Map<Dancer,Dancer> map) {
+        return new Formation(this, map);
     }
     
     Formation(DancerInfo... dis) {

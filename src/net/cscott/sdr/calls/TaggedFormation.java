@@ -155,13 +155,16 @@ public class TaggedFormation extends Formation {
             .toString();
     }
 
-    public TaggedFormation(TaggedFormation tf, Map<Dancer,Dancer> map) {
+    protected TaggedFormation(TaggedFormation tf, Map<Dancer,Dancer> map) {
         super(tf, map);
         MultiMap<Dancer,Tag> t = new GenericMultiMap<Dancer,Tag>
         (Factories.enumSetFactory(Tag.class));
         for (Dancer d : tf.dancers())
             t.addAll(map.get(d), tf.tags.getValues(d));
         this.tags = UnmodifiableMultiMap.proxy(t);
+    }
+    public TaggedFormation map(Map<Dancer,Dancer> map) {
+        return new TaggedFormation(this, map);
     }
     public TaggedFormation(Formation f, MultiMap<Dancer,Tag> tags) {
         super(f.location,f.selected);
