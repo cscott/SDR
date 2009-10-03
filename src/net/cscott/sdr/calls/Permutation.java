@@ -236,8 +236,8 @@ public class Permutation implements Comparable<Permutation> {
 
     /* --- square dance-specific methods --- */
     /** Generate a Permutation corresponding to the given formation.
-     * @doc.test We define the permutation corresponding to a squared
-     *  set to be the identity permutation.
+     * @doc.test The permutation corresponding to a squared
+     *  set is almost the identity permutation:
      *  js> Permutation.fromFormation(Formation.SQUARED_SET);
      *  12345670
      */
@@ -300,7 +300,7 @@ public class Permutation implements Comparable<Permutation> {
      * There are 96, if we rule out permutations where the heads and sides
      * can be swapped.  Dancer n's opposite is Dancer 4+n.
      * @doc.test Count the number of permutations
-     *  js> p = Permutation.valueOf('01234567')
+     *  js> p = Permutation.IDENTITY8
      *  01234567
      *  js> [pp for each (pp in Iterator(Permutation.generate(p)))].length
      *  96
@@ -323,6 +323,31 @@ public class Permutation implements Comparable<Permutation> {
      *    >     throw new Error("Not canonical! "+pp);
      *    > }; "OK";
      *  OK
+     * @doc.test Generate permutations of normal in-sequence RH ocean waves:
+     *  js> const SD = StandardDancer;
+     *  js> f = FormationList.PARALLEL_RH_WAVES; undefined
+     *  js> f = f.map(SD.COUPLE_2_BOY,SD.COUPLE_2_GIRL,SD.COUPLE_1_GIRL,SD.COUPLE_1_BOY
+     *    >           ); f.toStringDiagram()
+     *  2B^  2Gv  1G^  1Bv
+     *  
+     *  3B^  3Gv  4G^  4Bv
+     *  js> p = Permutation.IDENTITY8;
+     *  01234567
+     *  js> fs = [pp.applyToFormation(f) for each
+     *    >       (pp in Iterator(Permutation.generate(p)))]; fs.length
+     *  96
+     *  js> fs[0].toStringDiagram()
+     *  2B^  2Gv  1G^  1Bv
+     *  
+     *  3B^  3Gv  4G^  4Bv
+     *  js> fs[1].toStringDiagram()
+     *  2G^  2Bv  1G^  1Bv
+     *  
+     *  3B^  3Gv  4B^  4Gv
+     *  js> fs[95].toStringDiagram()
+     *  3G^  3Bv  2B^  2Gv
+     *  
+     *  4G^  1Bv  4B^  1Gv
      */
     public static Iterator<Permutation> generate(final Permutation first) {
         return new UnmodifiableIterator<Permutation>() {

@@ -163,9 +163,62 @@ public class TaggedFormation extends Formation {
             t.addAll(map.get(d), tf.tags.getValues(d));
         this.tags = UnmodifiableMultiMap.proxy(t);
     }
+    @Override
     public TaggedFormation map(Map<Dancer,Dancer> map) {
         return new TaggedFormation(this, map);
     }
+    /**
+     * {@inheritDoc}
+     * @doc.test Demonstrate usage of call in scripts:
+     *  js> const SD = StandardDancer;
+     *  js> f = FormationList.TRADE_BY; f.toStringDiagram();
+     *  ^    ^
+     *  
+     *  v    v
+     *  
+     *  ^    ^
+     *  
+     *  v    v
+     *  js> f.map(SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
+     *    >       SD.COUPLE_2_GIRL, SD.COUPLE_2_BOY,
+     *    >       SD.COUPLE_4_BOY, SD.COUPLE_4_GIRL,
+     *    >       SD.COUPLE_3_GIRL, SD.COUPLE_3_BOY).toStringDiagram();
+     *  1B^  1G^
+     *  
+     *  2Gv  2Bv
+     *  
+     *  4B^  4G^
+     *  
+     *  3Gv  3Bv
+     */
+    @Override
+    public TaggedFormation map(Dancer... dancers) {
+        // we know the superclass definition is in terms of this.map,
+        // so the result will be a TaggedFormation.
+        return (TaggedFormation) super.map(dancers);
+    }
+    /**
+     * {@inheritDoc}
+     * @doc.test Demonstrate usage of call in scripts:
+     *  js> const SD = StandardDancer;
+     *  js> f = FormationList.TRADE_BY; undefined;
+     *  js> f.map(SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
+     *    >       SD.COUPLE_2_GIRL, SD.COUPLE_2_BOY).toStringDiagram();
+     *  1B^  1G^
+     *  
+     *  2Gv  2Bv
+     *  
+     *  4B^  4G^
+     *  
+     *  3Gv  3Bv
+     */
+    @Override
+    public TaggedFormation map(StandardDancer... dancers) {
+        // we know the superclass definition is in terms of this.map,
+        // so the result will be a TaggedFormation.
+        return (TaggedFormation) super.map(dancers);
+    }
+
     public TaggedFormation(Formation f, MultiMap<Dancer,Tag> tags) {
         super(f.location,f.selected);
         this.tags = UnmodifiableMultiMap.proxy(tags);//tags can be changed
