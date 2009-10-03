@@ -4,13 +4,17 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.WeakHashMap;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.UnmodifiableIterator;
+import net.cscott.sdr.util.Fraction;
 
 import org.junit.runner.RunWith;
 
@@ -62,7 +66,7 @@ public class Permutation implements Comparable<Permutation> {
      *  js> Permutation.IDENTITY8.inverse() === Permutation.IDENTITY8
      *  true
      */
-    public static Permutation valueOf(byte... b) {
+    private static Permutation valueOf(byte... b) {
         Permutation p = new Permutation(b);
         // hash-cons!
         WeakReference<Permutation> r = hashConsMap.get(p);
@@ -231,9 +235,67 @@ public class Permutation implements Comparable<Permutation> {
     }
 
     /* --- square dance-specific methods --- */
-    public static Permutation fromFormation(FormationMatch fm) {
-        return null; // XXX
+    /** Generate a Permutation corresponding to the given formation.
+     * @doc.test We define the permutation corresponding to a squared
+     *  set to be the identity permutation.
+     *  js> Permutation.fromFormation(Formation.SQUARED_SET);
+     *  12345670
+     */
+    public static Permutation fromFormation(final Formation f) {
+        List<Dancer> dancers = new ArrayList<Dancer>(f.dancers());
+        Collections.sort(dancers, new DancerComparator(f));
+        byte[] b = new byte[dancers.size()];
+        for (int i=0; i<b.length; i++)
+            b[i] = (byte) ((StandardDancer) dancers.get(i)).ordinal();
+        return Permutation.valueOf(b);
     }
+    /**
+     * Permute the given formation according to the specified permutation.
+     * @doc.test
+     *  js> p = Permutation.valueOf("23456701") // rotate 1/4
+     *  23456701
+     *  js> f = Formation.SQUARED_SET; f.toStringDiagram()
+     *       3Gv  3Bv
+     *  
+     *  4B>            2G<
+     *  
+     *  4G>            2B<
+     *  
+     *       1B^  1G^
+     *  js> p.applyToFormation(f).toStringDiagram()
+     *       4Gv  4Bv
+     *  
+     *  1B>            3G<
+     *  
+     *  1G>            3B<
+     *  
+     *       2B^  2G^
+     */
+    public Formation applyToFormation(Formation f) {
+        List<Dancer> dancers = new ArrayList<Dancer>(f.dancers());
+        Collections.sort(dancers, new DancerComparator(f));
+        Map<Dancer,Dancer> map = new LinkedHashMap<Dancer,Dancer>();
+        for (int i=0; i < this.p.length; i++) {
+            map.put(dancers.get(i), dancers.get(this.p[i]));
+        }
+        return f.map(map);
+    }
+
+    private static class DancerComparator implements Comparator<Dancer> {
+        private final Formation f;
+        DancerComparator(Formation f) { this.f = f; }
+        public int compare(Dancer d1, Dancer d2) {
+            Position p1 = f.location(d1), p2 = f.location(d2);
+            ExactRotation a1 = ExactRotation.fromXY(p1.x, p1.y);
+            ExactRotation a2 = ExactRotation.fromXY(p2.x, p2.y);
+            // Rejigger so we measure CCW from south
+            // (rather than CW from north)
+            a1 = a1.negate().add(Fraction.ONE_HALF).normalize();
+            a2 = a2.negate().add(Fraction.ONE_HALF).normalize();
+            return a1.compareTo(a2);
+        }
+    }
+
     /** Generate all symmetric permutations.
      * There are 96, if we rule out permutations where the heads and sides
      * can be swapped.  Dancer n's opposite is Dancer 4+n.
