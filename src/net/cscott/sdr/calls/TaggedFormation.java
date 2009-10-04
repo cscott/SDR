@@ -179,10 +179,10 @@ public class TaggedFormation extends Formation {
      *  ^    ^
      *  
      *  v    v
-     *  js> f.map(SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
-     *    >       SD.COUPLE_2_GIRL, SD.COUPLE_2_BOY,
-     *    >       SD.COUPLE_4_BOY, SD.COUPLE_4_GIRL,
-     *    >       SD.COUPLE_3_GIRL, SD.COUPLE_3_BOY).toStringDiagram();
+     *  js> f.map([SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
+     *    >        SD.COUPLE_2_GIRL, SD.COUPLE_2_BOY,
+     *    >        SD.COUPLE_4_BOY, SD.COUPLE_4_GIRL,
+     *    >        SD.COUPLE_3_GIRL, SD.COUPLE_3_BOY]).toStringDiagram();
      *  1B^  1G^
      *  
      *  2Gv  2Bv
@@ -202,8 +202,8 @@ public class TaggedFormation extends Formation {
      * @doc.test Demonstrate usage of call in scripts:
      *  js> const SD = StandardDancer;
      *  js> f = FormationList.TRADE_BY; undefined;
-     *  js> f.map(SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
-     *    >       SD.COUPLE_2_GIRL, SD.COUPLE_2_BOY).toStringDiagram();
+     *  js> f.mapStd([SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
+     *    >           SD.COUPLE_2_GIRL, SD.COUPLE_2_BOY]).toStringDiagram();
      *  1B^  1G^
      *  
      *  2Gv  2Bv
@@ -213,10 +213,10 @@ public class TaggedFormation extends Formation {
      *  3Gv  3Bv
      */
     @Override
-    public TaggedFormation map(StandardDancer... dancers) {
+    public TaggedFormation mapStd(StandardDancer... dancers) {
         // we know the superclass definition is in terms of this.map,
         // so the result will be a TaggedFormation.
-        return (TaggedFormation) super.map(dancers);
+        return (TaggedFormation) super.mapStd(dancers);
     }
 
     public TaggedFormation(Formation f, MultiMap<Dancer,Tag> tags) {

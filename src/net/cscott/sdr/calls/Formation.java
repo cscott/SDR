@@ -528,11 +528,11 @@ public class Formation {
             m.put(sortedDancers.get(i), dancers[i]);
         return this.map(m);
     }
-    /** Special case of {@link Formation.map} which allows you to specify
+    /** Special case of {@link Formation#map(Dancer...)} which allows you to specify
      *  half the dancers, and fills in the rest with their opposites to
      *  result in a symmetric formation.
      */
-    public Formation map(StandardDancer... dancers) {
+    public Formation mapStd(StandardDancer... dancers) {
         if (dancers.length==4 && this.dancers().size()==8) {
             StandardDancer[] ndancers = new StandardDancer[8];
             for (int i=0; i<dancers.length; i++) {
