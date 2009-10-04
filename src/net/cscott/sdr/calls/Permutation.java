@@ -235,6 +235,28 @@ public class Permutation implements Comparable<Permutation> {
     }
 
     /* --- square dance-specific methods --- */
+    /**
+     * @doc.test
+     * js> Permutation.valueOf("01234567").isSymmetric()
+     * true
+     * js> Permutation.fromFormation(Formation.SQUARED_SET).isSymmetric()
+     * true
+     * js> Permutation.valueOf("10234567").isSymmetric()
+     * false
+     */
+    public boolean isSymmetric() {
+        int len = p.length;
+        if (0 != (len%2)) return false;
+        for (int i=0; i<(len/2); i++) {
+            int j = i + (len/2);
+            int x = (len + p[i] - i) % len;
+            int y = (len + p[j] - j) % len;
+            if (x != y)
+                return false;
+        }
+        return true;
+    }
+
     /** Generate a Permutation corresponding to the given formation.
      * @doc.test The permutation corresponding to a squared
      *  set is almost the identity permutation:
@@ -317,6 +339,13 @@ public class Permutation implements Comparable<Permutation> {
      *    >   i++;
      *    > }; i
      *  96
+     * @doc.test Ensure they are symmetric:
+     *  js> p = Permutation.IDENTITY8
+     *  01234567
+     *  js> p = [pp for each (pp in Iterator(Permutation.generate(p)))]; p.length
+     *  96
+     *  js> p.every(function(pp) { return pp.isSymmetric(); })
+     *  true
      * @doc.test Ensure that each permutation returned is canonical
      *  js> for each (pp in Iterator(Permutation.generate(Permutation.valueOf("01234567")))) {
      *    >   if (pp.canonical() !== pp)
@@ -345,9 +374,9 @@ public class Permutation implements Comparable<Permutation> {
      *  
      *  3B^  3Gv  4B^  4Gv
      *  js> fs[95].toStringDiagram()
-     *  3G^  3Bv  2B^  2Gv
+     *  3G^  2Gv  2B^  3Bv
      *  
-     *  4G^  1Bv  4B^  1Gv
+     *  1B^  4Bv  4G^  1Gv
      */
     public static Iterator<Permutation> generate(final Permutation first) {
         return new UnmodifiableIterator<Permutation>() {
@@ -373,14 +402,14 @@ public class Permutation implements Comparable<Permutation> {
                 byte t = b[0];
                 b[0] = b[s];
                 b[s] = t;
-                if (s!=7) {
+                if (s!=4) {
                     s = (4+s) % 8;
                     t = b[4];
                     b[4] = b[s];
                     b[s] = t;
                 }
                 next = Permutation.valueOf(b);
-                if (i==4)
+                if (i==2)
                     next = null; // we're done!
                 return result.canonical();
             }
@@ -388,10 +417,14 @@ public class Permutation implements Comparable<Permutation> {
     }
     /** Adapted from Knuth, */
     private static byte[] swapTable = new byte[] {
-            1,2,1,2,1,3,
-            2,1,2,1,2,3,
-            1,2,1,2,1,3,
-            2,1,2,1,2,7
+        1,2,1,2,1,3,
+        2,1,2,1,2,3,
+        1,2,1,2,1,3,
+        2,1,2,1,2,4,
+        1,2,1,2,1,3,
+        2,1,2,1,2,3,
+        1,2,1,2,1,3,
+        2,1,2,1,2,6
     };
     /** Generate the four rotated versions of the given permutation.
      * @doc.test
