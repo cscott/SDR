@@ -284,7 +284,7 @@ public class Permutation implements Comparable<Permutation> {
      *  4G>            2B<
      *  
      *       1B^  1G^
-     *  js> p.applyToFormation(f).toStringDiagram()
+     *  js> p.permute(f).toStringDiagram()
      *       4Gv  4Bv
      *  
      *  1B>            3G<
@@ -293,7 +293,7 @@ public class Permutation implements Comparable<Permutation> {
      *  
      *       2B^  2G^
      */
-    public Formation applyToFormation(Formation f) {
+    public Formation permute(Formation f) {
         List<Dancer> dancers = new ArrayList<Dancer>(f.dancers());
         Collections.sort(dancers, new DancerComparator(f));
         Map<Dancer,Dancer> map = new LinkedHashMap<Dancer,Dancer>();
@@ -362,7 +362,7 @@ public class Permutation implements Comparable<Permutation> {
      *  3B^  3Gv  4G^  4Bv
      *  js> p = Permutation.IDENTITY8;
      *  01234567
-     *  js> fs = [pp.applyToFormation(f) for each
+     *  js> fs = [pp.permute(f) for each
      *    >       (pp in Iterator(Permutation.generate(p)))]; fs.length
      *  96
      *  js> fs[0].toStringDiagram()
