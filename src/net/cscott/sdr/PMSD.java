@@ -24,6 +24,7 @@ import net.cscott.sdr.calls.DanceProgram;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.StandardDancer;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.grm.CompletionEngine;
@@ -32,6 +33,7 @@ import net.cscott.sdr.util.ListUtils;
 
 import org.junit.runner.RunWith;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
@@ -48,7 +50,8 @@ import org.mozilla.javascript.tools.shell.Global;
  *    >                         "sdr> /setFormation(Formation.SQUARED_SET)",
  *    >                         "sdr> u turn back",
  *    >                         "sdr> /program = Program.PLUS; setFormation(Formation.SQUARED_SET)",
- *    >                         "sdr> do half of a u turn back"))
+ *    >                         "sdr> do half of a u turn back",
+ *    >                         "sdr> /setFormationWithDancers(FormationList.RH_COLUMN, 0, 1, 2, 3)"))
  *  |sdr> /setFormation(Formation.SQUARED_SET)
  *  ||      3Gv  3Bv
  *  || 
@@ -81,6 +84,14 @@ import org.mozilla.javascript.tools.shell.Global;
  *  || 4G^            2B^
  *  || 
  *  ||      1B>  1G<
+ *  |sdr> /setFormationWithDancers(FormationList.RH_COLUMN, 0, 1, 2, 3)
+ *  || 1B^  1Gv
+ *  || 
+ *  || 2B^  2Gv
+ *  || 
+ *  || 4G^  4Bv
+ *  || 
+ *  || 3G^  3Bv
  * @doc.test Special slash commands to access dance state:
  *  js> PMSD.scrub(PMSD.runTest("<stdio>", "sdr> /printFormation"))
  *  |sdr> /printFormation
@@ -163,6 +174,29 @@ public class PMSD {
         public String jsFunction_setFormation(Object val) {
             jsSet_formation(val);
             return jsGet_printFormation();
+        }
+        // overloaded method to allow easy substitution of real dancers into
+        // abstract formations from FormationList.
+        public String jsFunction_setFormationWithDancers(Object formation,
+                                              Object dancer1, Object dancer2,
+                                              Object dancer3, Object dancer4) {
+            Formation f = (Formation) Context.jsToJava(formation, Formation.class);
+            StandardDancer d1 = jsToDancer(dancer1);
+            StandardDancer d2 = jsToDancer(dancer2);
+            StandardDancer d3 = jsToDancer(dancer3);
+            StandardDancer d4 = jsToDancer(dancer4);
+            ds = new DanceState(ds.dance, f.mapStd(d1, d2, d3, d4));
+            return jsGet_printFormation();
+        }
+        private StandardDancer jsToDancer(Object val) {
+            // try to convert directly
+            try {
+                return (StandardDancer) Context.jsToJava(val, StandardDancer.class);
+            } catch (EvaluatorException e) {
+                // coerce to numeric arg
+                double ordinal = Context.toNumber(val);
+                return StandardDancer.values()[(int)ordinal];
+            }
         }
         public String jsGet_printFormation() {
             return ds.currentFormation().toStringDiagram("| ");
