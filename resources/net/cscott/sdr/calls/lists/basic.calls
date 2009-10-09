@@ -620,11 +620,13 @@ def: _finish_tag(n)
     call: _fractional(_multiply_num(4,[n]), _extend)
 // or else: n=0->atc; else fractional(n, part(atc,extend), part(extend), part(extend), part(extend))
 
-def: _atc_tag
+def: _atc tag
   in: 2
   from: GENERAL LINE
     prim: 0, 0, in
         
+// half tag = mainstream
+// 3/4 tag = plus
 def: tag the line
   optional: LEFT
   spoken: tag the line (all the way (through)?)?

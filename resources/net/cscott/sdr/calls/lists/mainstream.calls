@@ -53,3 +53,7 @@ def: ferris wheel
     !  C c
     !  ^ ^
     !  D d
+
+def: half tag
+  optional: LEFT
+  call: _tag the line(1/2)
