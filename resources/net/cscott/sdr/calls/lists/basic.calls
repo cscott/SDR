@@ -210,7 +210,7 @@ def: _right arm turn 1/2
 def: chain down the line
   in: 8
   from: RH TWO-FACED LINE
-  call: centers(right arm turn 1/2, courtesy turn(3/4))
+  call: centers(_right arm turn 1/2, courtesy turn(3/4))
 
 def: two ladies chain(sel)
   spoken: two <sel=genders> chain // 'two ladies chain'
@@ -223,7 +223,7 @@ def: flutter wheel
   optional: REVERSE
   in: 8
   from: FACING COUPLES
-  call: 1/4(wheel around), centers(right arm turn 1/2), 2(split counter rotate)
+  call: 1/4(wheel around), centers(_right arm turn 1/2), 2(split counter rotate)
 
 def: lead right
   in: 4
@@ -403,9 +403,9 @@ def: swing thru
   optional: LEFT
   in: 6
   from: RH OCEAN WAVE
-    call: right arm turn 1/2, centers(left(right arm turn 1/2))
+    call: _right arm turn 1/2, centers(left(_right arm turn 1/2))
   from: LH OCEAN WAVE
-    call: centers(right arm turn 1/2), left(right arm turn 1/2)
+    call: centers(_right arm turn 1/2), left(_right arm turn 1/2)
 
 // NOTE THAT 'leads run' = 'IN YOUR BOX, leads run'
 // NOTE THAT 'boys run' = 'IN YOUR COUPLES, boys run'
