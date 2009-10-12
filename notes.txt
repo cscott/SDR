@@ -915,7 +915,7 @@ and even cross trail thru as:
   _blend(pass thru, half-sashay)
 ---
 to do:
- a) finish hexagon transform: rework so that winding # is exact, and
+ x) finish hexagon transform: rework so that winding # is exact, and
     always exactly equal (mod 1) to ExactRotation.from(X,Y)
     Keep separate "rotation offset" as well to account for initial
     rotation (don't try to combine in winding #)
@@ -931,7 +931,7 @@ to do:
     dancers, and only the selected dancers move, but that *from*
     *ignores* the selected status of the dancers.  Use a separate
     concept for "ignore non-selected"
- d) fix breathing: we seem to be letting dancers bounding boxes
+ d) fix breathing: we seem to be letting dancers' bounding boxes
     overlap during insert, and trade from a two-faced tidal line
     should *not* create triple boxes (ie, the formations should
     remain centered during the insert)
@@ -948,7 +948,64 @@ to do:
  i) tandem
  j) test circle left/right, test run (in all its glory), test trade
     from quarter tag
- k) separate insertion point and playback cursor.  have a 'keep
-    playing' flag that is set when you press play but cleared when you
-    manually scrub to a point. if you receive more call data and were
-    stopped at the end but the 'keep playing' bit is set, start playing.
+ xx) separate insertion point and playback cursor.
+ k2) have a 'keep playing' flag that is set when you press play but
+    cleared when you manually scrub to a point. if you receive more
+    call data and were stopped at the end but the 'keep playing' bit
+    is set, start playing. (see git e5f9f473b591a678d71ee6b385596034cd61833f)
+-------
+heads x:
+  from squared_set:
+    heads start
+    centers x
+  from: any
+    select: heads
+      call: ignore(sides, x)
+centers x:
+  // try to do the call concentric if possible.
+  from: with_centers
+    select: centers
+      call: concentric(x)
+  from: with_centers
+    select: centers
+      call: ignore(ends, x)
+
+-------
+FROM: <selector>
+  usually a formation, but may be things like "with_centers"
+  match results in: (a) subformations and a meta-formation which shows
+  how to combine them, (b) subformations are tagged, which gives
+  dancers tags.
+SELECT: <tag>
+  the specified dancers "do their part" *not ignoring others*
+there's also an "ignore" concept, which gets rid of the specified
+dancers from the formation.
+
+e.g.
+ from: RH_OCEAN_WAVE
+  select: centers
+   call: trade
+  select: ends
+   call: circulate
+---> results in same place as "center run"
+
+ from: RH_OCEAN_WAVE
+  select: centers
+   call: walk and dodge
+  select: ends
+   call: split circulate
+--> 3 and 1 lines
+
+ from: RH_OCEAN_WAVE
+  select: centers
+   call: concentric(trade)
+  select: ends
+   call: concentric(circulate) // or just circulate
+--> acey deucey
+
+ from: RH_OCEAN_WAVE
+  select: centers
+   call: ignore(ends, trade)
+  select: ends
+   call: circulate
+--> acey deucey
