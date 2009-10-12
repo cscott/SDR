@@ -194,6 +194,8 @@ public class Formation {
         Box bounds = bounds();
         Fraction ox = bounds.ll.x.add(bounds.ur.x).divide(Fraction.TWO);
         Fraction oy = bounds.ll.y.add(bounds.ur.y).divide(Fraction.TWO);
+        if (ox.equals(Fraction.ZERO) && oy.equals(Fraction.ZERO))
+            return this; // efficiency
         Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>(location.size());
         for (Map.Entry<Dancer,Position> me : location.entrySet())
             m.put(me.getKey(), new Position(me.getValue().x.subtract(ox),

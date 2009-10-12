@@ -19,6 +19,8 @@ import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
 import net.cscott.sdr.util.Tools.ListMultiMap;
+import static net.cscott.sdr.util.Tools.F; // list comprehension helper
+import static net.cscott.sdr.util.Tools.foreach; // list comprehension
 import static net.cscott.sdr.util.Tools.m;//map constructor
 import static net.cscott.sdr.util.Tools.mml;//listmultimap constructor
 import static net.cscott.sdr.util.Tools.p;//pair constructor
@@ -426,6 +428,8 @@ public class Breather {
     public static Formation breathe(List<FormationPiece> pieces) {
         // Locate collisions and resolve them to miniwaves.
         pieces = resolveCollisions(pieces);
+        // center all output formations
+        pieces = centerOutputPieces(pieces);
         // Trim boundaries to resolve overlaps
         List<Box> inputBounds = trimOverlap(pieces);
 	// Find and sort boundaries of component formations.
@@ -625,6 +629,16 @@ public class Breather {
             }
         }
         return result;
+    }
+    /* Ensure that fp.output is centered, for every formation pieces. */
+    private static List<FormationPiece> centerOutputPieces(List<FormationPiece>
+                                                           pieces) {
+        return foreach(pieces, new F<FormationPiece,FormationPiece>() {
+            @Override
+            public FormationPiece map(FormationPiece fp) {
+                return new FormationPiece(fp.input, fp.output.recenter());
+            }
+        });
     }
     /** Collide two formation pieces, creating a new FormationPiece
      * with the resulting miniwave of pieces. */

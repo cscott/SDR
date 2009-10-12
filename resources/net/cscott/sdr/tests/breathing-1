@@ -1,0 +1,43 @@
+Test breathing.
+
+sdr> heads lead right
+| 4B>  3G<  1B>  2G<
+| 
+| 4G>  3B<  1G>  2B<
+sdr> extend
+| 4B>  1B>
+| 
+| 3G<  2G<
+| 
+| 4G>  1G>
+| 
+| 3B<  2B<
+sdr> fan the top
+| 3B^  4Gv  3G^  4Bv  2B^  1Gv  2G^  1Bv
+sdr> girls run
+| 4G^  3B^  4Bv  3Gv  1G^  2B^  1Bv  2Gv
+sdr> trade
+| 3Bv  4Gv  3G^  4B^  2Bv  1Gv  2G^  1B^
+sdr> do half of a trade
+| 3B>  3G>  2B>  2G>
+| 
+| 4G<  4B<  1G<  1B<
+sdr> boys run
+| 4G<  4B>  1G<  1B>
+| 
+| 3B<  3G>  2B<  2G>
+sdr> trade and roll
+| 3Bv  3Gv  2Bv  2Gv
+| 
+| 4G^  4B^  1G^  1B^
+sdr> touch 1/4
+| 4G>  4B>  1G>  1B>
+| 
+| 3B<  3G<  2B<  2G<
+sdr> girls run
+| 3B<  3G>  2B<  2G>
+| 
+| 4G<  4B>  1G<  1B>
+sdr> do half of a trade
+| 4G^  3Bv  4B^  3Gv  1G^  2Bv  1B^  2Gv
+sdr> /exit

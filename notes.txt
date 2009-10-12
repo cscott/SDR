@@ -931,7 +931,7 @@ to do:
     dancers, and only the selected dancers move, but that *from*
     *ignores* the selected status of the dancers.  Use a separate
     concept for "ignore non-selected"
- d) fix breathing: we seem to be letting dancers' bounding boxes
+ x) fix breathing: we seem to be letting dancers' bounding boxes
     overlap during insert, and trade from a two-faced tidal line
     should *not* create triple boxes (ie, the formations should
     remain centered during the insert)
