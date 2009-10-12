@@ -45,7 +45,7 @@ import org.junit.runner.RunWith;
  *    > } catch (e) {
  *    >   print(e.javaException)
  *    > }
- *  net.cscott.sdr.calls.BadCallException: No formation options left: Primitives cannot be subdivided: 1/3
+ *  net.cscott.sdr.calls.BadCallException: No formation options left: Primitives cannot be subdivided
  */
 @RunWith(value=JDoctestRunner.class)
 public class Fractional extends TransformVisitor<Fraction> {
@@ -57,7 +57,7 @@ public class Fractional extends TransformVisitor<Fraction> {
     public Prim visit(Prim p, Fraction f) {
         if (Fraction.ONE.equals(f))
             return p;
-        throw new BadCallException("Primitives cannot be subdivided: "+f);
+        throw new BadCallException("Primitives cannot be subdivided");
     }
     @Override
     public Part visit(Part p, Fraction f) {
@@ -65,7 +65,7 @@ public class Fractional extends TransformVisitor<Fraction> {
             return p;
         if (p.isDivisible)
             return (Part) super.visit(p, f);
-        throw new BadCallException("Can't divide indivisible part: "+f);
+        throw new BadCallException("Can't divide indivisible part");
     }
     @Override
     public SeqCall visit(Apply apply, Fraction f) {
