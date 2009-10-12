@@ -59,7 +59,7 @@ public class RemoveIn extends TransformVisitor<Fraction> {
             // In(f, Seq(Apply(x))) <-> Seq(Apply(_in, f, x))
             if (s.children.get(0) instanceof Apply &&
                 ((Apply)s.children.get(0)).evaluator() != null)
-                throw new BeatCounter.CantCountBeatsException();
+                throw new BeatCounter.CantCountBeatsException("avoid loops");
             // otherwise, just push the target # f beats down the tree
             l.add(s.children.get(0).accept(this, f));
         } else {

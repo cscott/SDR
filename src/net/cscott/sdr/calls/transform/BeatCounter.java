@@ -25,7 +25,9 @@ import org.junit.runner.RunWith;
  */
 @RunWith(value=JDoctestRunner.class)
 class BeatCounter extends ValueVisitor<Fraction,Void> {
-    static class CantCountBeatsException extends RuntimeException {}
+    static class CantCountBeatsException extends RuntimeException {
+        CantCountBeatsException(String msg) { super(msg); }
+    }
     public BeatCounter() { }
     private final Map<AstNode,Fraction> inherent = new HashMap<AstNode,Fraction>();
     // Math.max for Fractions.
@@ -41,13 +43,12 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     public Fraction visit(Apply apply, Void v) {
         // careful with recursive calls here!
         if (apply.evaluator()!=null)
-            throw new CantCountBeatsException(); // can't expand fancy-pants calls
+            throw new CantCountBeatsException("can't expand fancy-pants calls");
         return getBeats(apply.expand());
     }
     @Override
     public Fraction visit(Condition c, Void v) {
-        assert false : "Shouldn't traverse conditions";
-        return null;
+        throw new CantCountBeatsException("shouldn't traverse conditions");
     }
     @Override
     public Fraction visit(If iff, Void v) {
@@ -65,7 +66,8 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
             Fraction f = getBeats(oc);
             if (oneBranch==null)
                 oneBranch = f;
-            else assert oneBranch.equals(f);
+            else if (!oneBranch.equals(f))
+                throw new CantCountBeatsException("options differ in duration");
         }
         return oneBranch;
     }
