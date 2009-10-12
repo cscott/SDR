@@ -29,6 +29,7 @@ import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.grm.CompletionEngine;
 import net.cscott.sdr.calls.transform.Evaluator;
+import net.cscott.sdr.toolbox.DWResolver;
 import net.cscott.sdr.util.ListUtils;
 
 import org.junit.runner.RunWith;
@@ -200,6 +201,14 @@ public class PMSD {
         }
         public String jsGet_printFormation() {
             return ds.currentFormation().toStringDiagram("| ");
+        }
+
+        /** Prints out one step of a resolve from here. Currently uses
+         *  Dave Wilson's ocean wave resolution method.
+         *  @see net.cscott.sdr.toolbox.DWResolver
+         */
+        public String jsGet_resolveStep() {
+            return DWResolver.resolveStep(ds.currentFormation());
         }
 
         /** Runs the test in this same context, so that we can (for example)

@@ -5,6 +5,7 @@ sdr> /// "test case" is used as input by runAllTests() to enumerate
 sdr> /// all the tests to run.
 sdr> ///
 sdr> /listTests("resources/net/cscott/sdr/tests")
+dw-resolve
 extend-basic
 extend-level
 fan-the-top

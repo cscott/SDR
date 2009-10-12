@@ -1,0 +1,37 @@
+Test the calls needed by Dave Wilson's Wave Resolution method.
+(The actual resolver is tested using doctests in the DWResolver class.)
+
+sdr> /program = Program.PLUS;
+PLUS
+sdr> /setFormationWithDancers(FormationList.PARALLEL_RH_WAVES, 0, 1, 2, 3)
+| 1B^  1Gv  2B^  2Gv
+| 
+| 4G^  4Bv  3G^  3Bv
+sdr> half tag
+sdr> centers trade
+sdr> acey deucey
+sdr> swing thru
+sdr> trade
+sdr> /// now actually resolve!
+sdr> /resolveStep
+Half Tag
+sdr> half tag
+sdr> /resolveStep
+Acey Deucey
+sdr> acey deucey
+sdr> /resolveStep
+Swing Thru
+sdr> swing thru
+sdr> /resolveStep
+Trade
+sdr> trade
+sdr> /resolveStep
+Swing Thru
+sdr> swing thru
+sdr> /resolveStep
+Swing Thru
+sdr> swing thru
+sdr> /resolveStep
+Right and Left Grand
+sdr> right and left grand
+sdr> /exit

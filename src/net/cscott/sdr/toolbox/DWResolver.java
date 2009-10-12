@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationMatch;
@@ -15,10 +18,52 @@ import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import static net.cscott.sdr.util.Tools.*;
 
-/** Resolve a square using a modified version of Dave Wilson's ocean wave
- *  resolution technique.
+/**
+ * Resolve a square using a modified version of Dave Wilson's ocean wave
+ * resolution technique.
  * @author C. Scott Ananian
+ * @doc.test Show that this resolves from all RH ocean waves, and compute
+ *  statistics. (EXPECT FAIL: centers/ends not yet implemented)
+ *  js> importPackage(net.cscott.sdr.calls);
+ *  js> // create all possible RH ocean waves (modulo rotation)
+ *  js> const SD = StandardDancer;
+ *  js> f = FormationList.PARALLEL_RH_WAVES; undefined
+ *  js> f = f.mapStd([SD.COUPLE_2_BOY, SD.COUPLE_2_GIRL,
+ *    >               SD.COUPLE_1_GIRL, SD.COUPLE_1_BOY]
+ *    >              ); f.toStringDiagram()
+ *  2B^  2Gv  1G^  1Bv
+ *  
+ *  3B^  3Gv  4G^  4Bv
+ *  js> fs = [pp.permute(f) for each (pp in Iterator
+ *    >       (Permutation.generate(Permutation.IDENTITY8)))]; fs.length
+ *  96
+ *  js> dss = [new DanceState(new DanceProgram(Program.PLUS), f)
+ *    >        for each (f in fs)]; undefined;
+ *  js> // look at first step from each formation
+ *  js> s = [DWResolver.resolveStep(ff) for each (ff in fs)]; s.slice(0,5)
+ *  Trade,Centers Trade,Centers Trade,Acey Deucey,Half Tag
+ *  js> // compute number of calls until resolve for each starting formation
+ *  js> // we could memoize intermediate results, but we're lazy.
+ *  js> function dance(ds, steps) {
+ *    >   if (steps > 30) throw new Error("Doesn't resolve!");
+ *    >   // get next call from current formation
+ *    >   let nextCall = DWResolver.resolveStep(ds.currentFormation());
+ *    >   if (nextCall == "Right and Left Grand") return (steps+1);
+ *    >   net.cscott.sdr.calls.transform.Evaluator.parseAndEval(ds, nextCall);
+ *    >   // keep dancing.
+ *    >   return dance(ds, steps+1);
+ *    > }
+ *  js> nums = [dance(ds) for each (ds in dss)]; nums.slice(0,5)
+ *  js> // the minimum ought to be one: from some formation, a RLG is possible
+ *  js> Math.min.apply(null, nums)
+ *  1
+ *  js> // and the largest number of calls to resolve is:
+ *  js> Math.max.apply(null, nums)
+ *  js> // average:
+ *  js> let [sum,count] = [0,0]
+ *  js> nums.map(function(e) { sum+=e; count+=1; }); sum/count;
  */
+@RunWith(value=JDoctestRunner.class)
 public class DWResolver {
     private DWResolver() { }
 
@@ -26,7 +71,10 @@ public class DWResolver {
         // step 1: are we in RH waves?  if no, half tag
         FormationMatch fm;
         try {
-            fm = SelectorList.PARALLEL_RH_WAVES.match(f);
+            // we want parallel waves
+            SelectorList.PARALLEL_RH_WAVES.match(f);
+            // ok, we've got them, match each wave separately
+            fm = SelectorList.RH_OCEAN_WAVE.match(f);
         } catch (NoMatchException e) {
             return "Half Tag";
         }
@@ -43,6 +91,7 @@ public class DWResolver {
             wave0.get(0).isBoy() != wave0.get(3).isBoy())
             return "Centers Trade";
         // step 3: boys or girls together in center? if no, half tag
+        // XXX: awkward for centers?
         if (wave0.get(1).isBoy() != wave0.get(2).isBoy())
             return "Half Tag";
         // at this point: RH BGGB or GBBG waves
