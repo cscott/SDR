@@ -253,9 +253,17 @@ public class Formation {
     public Comparator<Dancer> dancerComparator() {
         return new Comparator<Dancer>() {
             public int compare(Dancer d1, Dancer d2) {
+                if (d1.equals(d2)) return 0; // easy out
                 Position p1 = Formation.this.location(d1);
                 Position p2 = Formation.this.location(d2);
-                return p1.compareTo(p2);
+                int c = p1.compareTo(p2);
+                if (c!=0) return c;
+                // break dancer ties.
+                if (d1 instanceof StandardDancer && d2 instanceof StandardDancer) {
+                    return ((StandardDancer)d1).ordinal() - ((StandardDancer)d2).ordinal();
+                }
+                // ugly, but workable.
+                return d1.hashCode() - d2.hashCode();
             }
         };
     }
