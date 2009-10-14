@@ -20,10 +20,10 @@
  *  js> a = Apply.makeApply("run", Apply.makeApply("boy"))
  *  (Apply run (Apply boy))
  *  js> a.expand()
- *  (In 4 (Opt (From [GENERAL LINE, BOX, COUPLE, MINIWAVE] (Par (Select [BOY] (Par (Select [BEAU] (Seq (Prim 1, 1, right, 1) (Prim 1, 1, right, 1))) (Select [BELLE] (Seq (Prim -1, 1, left, 1) (Prim -1, 1, left, 1))))) (Select [ALL] (Par (Select [BEAU] (Seq (Prim 1, 0, none, 1, SASHAY_START, SASHAY_FINISH) (Prim 1, 0, none, 1, SASHAY_START, SASHAY_FINISH))) (Select [BELLE] (Seq (Prim -1, 0, none, 1, SASHAY_START, SASHAY_FINISH) (Prim -1, 0, none, 1, SASHAY_START, SASHAY_FINISH)))))))))
+ *  (In 4 (Opt (From [GENERAL LINE, BOX, COUPLE, MINIWAVE] (Par (Select [BOY] (Opt (From [COUPLE, MINIWAVE] (Par (Select [BEAU] (Seq (Prim 1, 1, right, 1) (Prim 1, 1, right, 1))) (Select [BELLE] (Seq (Prim -1, 1, left, 1) (Prim -1, 1, left, 1))))))) (Select [ALL] (Opt (From [COUPLE, MINIWAVE] (Par (Select [BEAU] (Seq (Prim 1, 0, none, 1, SASHAY_START, SASHAY_FINISH) (Prim 1, 0, none, 1, SASHAY_START, SASHAY_FINISH))) (Select [BELLE] (Seq (Prim -1, 0, none, 1, SASHAY_START, SASHAY_FINISH) (Prim -1, 0, none, 1, SASHAY_START, SASHAY_FINISH)))))))))))
  *  js> a = Apply.makeApply("_fractional", Apply.makeApply("1/2"), a)
  *  (Apply _fractional (Apply 1/2) (Apply run (Apply boy)))
  *  js> a.expand()
- *  (In 2 (Opt (From [GENERAL LINE, BOX, COUPLE, MINIWAVE] (Par (Select [BOY] (Par (Select [BEAU] (Seq (Prim 1, 1, right, 1))) (Select [BELLE] (Seq (Prim -1, 1, left, 1))))) (Select [ALL] (Par (Select [BEAU] (Seq (Prim 1, 0, none, 1, SASHAY_START, SASHAY_FINISH))) (Select [BELLE] (Seq (Prim -1, 0, none, 1, SASHAY_START, SASHAY_FINISH)))))))))
+ *  (In 2 (Opt (From [GENERAL LINE, BOX, COUPLE, MINIWAVE] (Par (Select [BOY] (Opt (From [COUPLE, MINIWAVE] (Par (Select [BEAU] (Seq (Prim 1, 1, right, 1))) (Select [BELLE] (Seq (Prim -1, 1, left, 1))))))) (Select [ALL] (Opt (From [COUPLE, MINIWAVE] (Par (Select [BEAU] (Seq (Prim 1, 0, none, 1, SASHAY_START, SASHAY_FINISH))) (Select [BELLE] (Seq (Prim -1, 0, none, 1, SASHAY_START, SASHAY_FINISH)))))))))))
  */
 package net.cscott.sdr.calls;

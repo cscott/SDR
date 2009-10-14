@@ -66,8 +66,8 @@ all returns [Apply a]
 @init { a = Apply.makeApply("ALL"); }
 	: 'all' | 'everyone' | 'every' 'one' | 'every' 'body';
 wave_select returns [Apply a]
-	: 'centers' { a = Apply.makeApply("centers"); }
-	| 'ends' { a = Apply.makeApply("ends"); }
+	: 'centers' { a = Apply.makeApply("CENTER"); }
+	| 'ends' { a = Apply.makeApply("END"); }
 	;
 anyone returns [Apply r]
 	: a=people {r=a;} | a=wave_select {r=a;} ;

@@ -6,6 +6,7 @@ sdr> /// all the tests to run.
 sdr> ///
 sdr> /listTests("resources/net/cscott/sdr/tests")
 breathing-1
+centers
 dw-resolve
 extend-basic
 extend-level

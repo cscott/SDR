@@ -419,19 +419,21 @@ def: run(sel)
     // run out, while ends of waves run in, and (2) the "run-around" dancer
     // stands on the centerline of the formation at one point.
     select: [sel]
-      select: BEAU
-        prim: 1,1,right
-        prim: 1,1,right
-      select: BELLE
-        prim: -1,1,left
-        prim: -1,1,left
+      from: COUPLE, MINIWAVE
+        select: BEAU
+          prim: 1,1,right
+          prim: 1,1,right
+        select: BELLE
+          prim: -1,1,left
+          prim: -1,1,left
     select: OTHERS
-      select: BEAU
-        prim: 1,0,none,sashay-start sashay-finish
-        prim: 1,0,none,sashay-start sashay-finish
-      select: BELLE
-        prim: -1,0,none,sashay-start sashay-finish
-        prim: -1,0,none,sashay-start sashay-finish
+      from: COUPLE, MINIWAVE
+        select: BEAU
+          prim: 1,0,none,sashay-start sashay-finish
+          prim: 1,0,none,sashay-start sashay-finish
+        select: BELLE
+          prim: -1,0,none,sashay-start sashay-finish
+          prim: -1,0,none,sashay-start sashay-finish
 
 def: cross run(sel)
   spoken: <sel=anyone> cross run
@@ -442,12 +444,13 @@ def: cross run(sel)
       prim: in 2, 1, in
       prim: in 1, 2, in
     select: OTHERS
-      select: BEAU
-        prim: 1,0,none,sashay-start sashay-finish
-        prim: 1,0,none,sashay-start sashay-finish
-      select: BELLE
-        prim: -1,0,none,sashay-start sashay-finish
-        prim: -1,0,none,sashay-start sashay-finish
+      from: COUPLE, MINIWAVE
+        select: BEAU
+          prim: 1,0,none,sashay-start sashay-finish
+          prim: 1,0,none,sashay-start sashay-finish
+        select: BELLE
+          prim: -1,0,none,sashay-start sashay-finish
+          prim: -1,0,none,sashay-start sashay-finish
 
 def: zoom
   in: 4
