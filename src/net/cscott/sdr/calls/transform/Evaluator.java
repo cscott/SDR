@@ -29,6 +29,7 @@ import net.cscott.sdr.calls.Predicate;
 import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TimedFormation;
+import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.AstNode;
 import net.cscott.sdr.calls.ast.Comp;
@@ -349,8 +350,10 @@ public abstract class Evaluator {
                 // we're going to want to ensure that every dancer matches
                 // some tag.
                 Set<Dancer> unmatched = new LinkedHashSet<Dancer>(f.dancers());
+                Set<Tag> allTags = new LinkedHashSet<Tag>();
                 PartsCombineEvaluator pce = new PartsCombineEvaluator();
                 for (ParCall pc : p.children) {
+                    allTags.addAll(pc.tags);
                     // find the dancers matched, adjusting unmatched set
                     Set<Dancer> matched = tf.tagged(pc.tags);
                     matched.retainAll(unmatched);
@@ -361,7 +364,9 @@ public abstract class Evaluator {
                 }
                 // all dancers must match a part.
                 if (!unmatched.isEmpty())
-                    throw new BadCallException("unmatched dancers");
+                    throw new BadCallException
+                        ("Some dancers are not " +
+                         ListUtils.join(allTags, ", ", " or "));
                 // ok, now do one step of the evaluation.
                 return pce.evaluate(ds);
             }
