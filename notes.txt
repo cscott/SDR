@@ -1009,3 +1009,28 @@ e.g.
   select: ends
    call: circulate
 --> acey deucey
+--------
+http://www.lynette.org/dconcepts.html
+---
+do your part -- tricky, should ignore illegal collisions (or all
+  collisions) with the 'phantoms' who aren't doing your part.
+  needs thought, especially for 'do your part of half a trade' from
+  couples, where we're depending on collision to result in miniwaves?
+  "do your part pass thru" do you dodge out of the way of the phantom?
+  "do your part 1/2 a pass thru" -- clearly you expect waves here.
+so i guess it's just "illegal" collisions with phantoms which we'll ignore?
+OR ELSE, we should do "ignore(others, your part)" which will make the
+  others go away, which is okay for absolute actions? (need flag for
+  these to suppress breathing on press ahead, eg).
+
+"Do your part" isn't exactly <Par>, since in some cases you have to
+replace "everyone else" with a directionless phantom in order to do
+the call; eg,
+  > V
+  ^ <    "everyone do your part, partner trade"
+
+Importantly here, we should probably suppress matches which consist
+entirely on phantoms?  Which might mean that the 'corporeal' bit may
+need to make a comeback, so we know what to complain about?
+The GeneralFormationMatcher needs to add a facing direction to the
+phantom when it makes a match.
