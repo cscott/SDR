@@ -170,7 +170,7 @@ public class TaggedFormation extends Formation {
     /**
      * {@inheritDoc}
      * @doc.test Demonstrate usage of call in scripts:
-     *  js> const SD = StandardDancer;
+     *  js> const SD = StandardDancer; const l = net.cscott.sdr.util.Tools.l;
      *  js> f = FormationList.TRADE_BY; f.toStringDiagram();
      *  ^    ^
      *  
@@ -179,10 +179,13 @@ public class TaggedFormation extends Formation {
      *  ^    ^
      *  
      *  v    v
-     *  js> f.map([SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
-     *    >        SD.COUPLE_2_GIRL, SD.COUPLE_2_BOY,
-     *    >        SD.COUPLE_4_BOY, SD.COUPLE_4_GIRL,
-     *    >        SD.COUPLE_3_GIRL, SD.COUPLE_3_BOY]).toStringDiagram();
+     *  js> // infinitest doesn't like overloaded methods in Rhino...
+     *  js> f.map(l(SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
+     *    >         SD.COUPLE_2_GIRL, SD.COUPLE_2_BOY,
+     *    >         SD.COUPLE_4_BOY, SD.COUPLE_4_GIRL,
+     *    >         SD.COUPLE_3_GIRL, SD.COUPLE_3_BOY)
+     *    >         .toArray(java.lang.reflect.Array.newInstance(Dancer,0))
+     *    >      ).toStringDiagram();
      *  1B^  1G^
      *  
      *  2Gv  2Bv
