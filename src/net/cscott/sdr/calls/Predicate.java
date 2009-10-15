@@ -1,6 +1,7 @@
 package net.cscott.sdr.calls;
 
 import net.cscott.sdr.calls.ast.Condition;
+import net.cscott.sdr.util.Fraction;
 
 /** A {@link Predicate} is a boolean test on the current formation and dance
  * state, or else an operator on such boolean tests.  For example, there
@@ -24,6 +25,21 @@ public abstract class Predicate {
      * match @{link Predicate#getName(String) this.getName()}.
      */
     public abstract boolean evaluate(DanceProgram ds, Formation f, Condition c);
+    /** Evaluates this predicate with the arguments given in the
+     *  {@link Condition} node to yield a String.  Not all predicates can be
+     *  evaluated as strings; throws IllegalArgumentException if this one
+     *  cannot. */
+    public String evaluateAsString(DanceProgram ds, Formation f, Condition c) {
+        throw new IllegalArgumentException("Type mismatch");
+    }
+    /** Evaluates this predicate with the arguments given in the
+     *  {@link Condition} node to yield a {@link Fraction}.  Not all predicates
+     *  can be evaluated as numbers; throws IllegalArgumentException if this
+     *  one cannot. */
+    public Fraction evaluateAsNumber(DanceProgram ds, Formation f, Condition c) {
+        return Fraction.valueOf(evaluateAsString(ds, f, c));
+    }
+    // XXX asTag, etc?
     
     @Override
     public final String toString() {

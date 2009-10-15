@@ -71,17 +71,31 @@ public abstract class PredicateList {
             return !arg.getPredicate().evaluate(ds,f,arg);
         }
     };
+    // string/numeric literals
+    public final static Predicate LITERAL = new _Predicate("literal") {
+        @Override
+        public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
+            throw new IllegalArgumentException("type mismatch");
+        }
+        @Override
+        public String evaluateAsString(DanceProgram ds, Formation f, Condition c) {
+            assert c.args.size()==1;
+            Condition arg = c.getArg(0);
+            assert arg.args.size()==0;
+            return arg.predicate;
+        }
+    };
     // binary numerical operators
     /**
      * Numerical equality.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition equal (Condition "1 1/2") (Condition "1 1/2"))');
-     *  (Condition equal (Condition 1 1/2) (Condition 1 1/2))
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition equal (Condition literal (Condition "1 1/2")) (Condition literal (Condition "1 1/2")))');
+     *  (Condition equal (Condition literal (Condition 1 1/2)) (Condition literal (Condition 1 1/2)))
      *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
      *  true
-     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition equal (Condition "1 1/2") (Condition 2))');
-     *  (Condition equal (Condition 1 1/2) (Condition 2))
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition equal (Condition literal (Condition "1 1/2")) (Condition literal (Condition 2)))');
+     *  (Condition equal (Condition literal (Condition 1 1/2)) (Condition literal (Condition 2)))
      *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
      *  false
      */
@@ -89,8 +103,8 @@ public abstract class PredicateList {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
             assert c.args.size()==2;
-            Fraction f1 = Fraction.valueOf(c.getArg(0).predicate);
-            Fraction f2 = Fraction.valueOf(c.getArg(1).predicate);
+            Fraction f1 = c.getNumberArg(0, ds, f);
+            Fraction f2 = c.getNumberArg(1, ds, f);
             return f1.equals(f2);
         }
     };
@@ -98,12 +112,12 @@ public abstract class PredicateList {
      * Numerical comparison.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition greater (Condition "1 1/2") (Condition "1 1/2"))');
-     *  (Condition greater (Condition 1 1/2) (Condition 1 1/2))
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition greater (Condition literal (Condition "1 1/2")) (Condition literal (Condition "1 1/2")))');
+     *  (Condition greater (Condition literal (Condition 1 1/2)) (Condition literal (Condition 1 1/2)))
      *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
      *  false
-     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition greater (Condition 2) (Condition "1 1/2"))');
-     *  (Condition greater (Condition 2) (Condition 1 1/2))
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition greater (Condition literal (Condition 2)) (Condition literal (Condition "1 1/2")))');
+     *  (Condition greater (Condition literal (Condition 2)) (Condition literal (Condition 1 1/2)))
      *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
      *  true
      */
@@ -111,8 +125,8 @@ public abstract class PredicateList {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
             assert c.args.size()==2;
-            Fraction f1 = Fraction.valueOf(c.getArg(0).predicate);
-            Fraction f2 = Fraction.valueOf(c.getArg(1).predicate);
+            Fraction f1 = c.getNumberArg(0, ds, f);
+            Fraction f2 = c.getNumberArg(1, ds, f);
             return f1.compareTo(f2) > 0;
         }
     };
@@ -129,6 +143,11 @@ public abstract class PredicateList {
      *  (Condition and (Condition true) (Condition true) (Condition true))
      *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
      *  true
+     *  js> // short-circuits
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition and (Condition false) (Condition bogus))');
+     *  (Condition and (Condition false) (Condition bogus))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  false
      */
     public final static Predicate AND = new _Predicate("and") {
         @Override
@@ -154,6 +173,11 @@ public abstract class PredicateList {
      *  (Condition or (Condition false) (Condition false) (Condition true))
      *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
      *  true
+     *  js> // short-circuits
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition or (Condition true) (Condition bogus))');
+     *  (Condition or (Condition true) (Condition bogus))
+     *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
+     *  true
      */
     public final static Predicate OR = new _Predicate("or") {
         @Override
@@ -172,12 +196,12 @@ public abstract class PredicateList {
      * Check the current dance program level.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET); undefined;
-     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition program at least (Condition BASIC))');
-     *  (Condition program at least (Condition BASIC))
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition program at least (Condition literal (Condition BASIC)))');
+     *  (Condition program at least (Condition literal (Condition BASIC)))
      *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
      *  true
-     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition program at least (Condition A2))');
-     *  (Condition program at least (Condition A2))
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Condition program at least (Condition literal (Condition A2)))');
+     *  (Condition program at least (Condition literal (Condition A2)))
      *  js> c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c)
      *  false
      */
@@ -185,7 +209,7 @@ public abstract class PredicateList {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
             assert c.args.size()==1;
-            Program p = Program.valueOf(c.getStringArg(0).toUpperCase());
+            Program p = Program.valueOf(c.getStringArg(0, ds, f).toUpperCase());
             return ds.getProgram().includes(p);
         }
     };
@@ -194,7 +218,7 @@ public abstract class PredicateList {
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
             List<String> args = new ArrayList<String>(c.args.size());
             for (int i=0; i<c.args.size(); i++)
-                args.add(c.getStringArg(i));
+                args.add(c.getStringArg(i, ds, f));
             Set<Tag> tags = ParCall.parseTags(args);
             // each selected dancer must have all of these tags
             TaggedFormation tf = TaggedFormation.coerce(f);

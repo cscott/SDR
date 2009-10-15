@@ -349,16 +349,25 @@ cond_body returns [B<Condition> c]
                     a = (Apply) ((Seq)a.expand()).children.get(0);
 				assert a.args.isEmpty();
                 String predicate = a.callName;
-	    		return new Condition(predicate, reduce(cond_args, args));
+                if (cond_args==null)
+                    return Condition.makeCondition
+                        ("literal", Condition.makeCondition(predicate));
+	    	return new Condition(predicate, reduce(cond_args, args));
 	    	}
 	  };
 	}
 	| ^(CONDITION s=simple_words args=cond_args )
-	{ $c = mkCondition(s.intern(), args); }
-	;
+	{  if (args == null) {
+	     args = Collections.<B<Condition>>singletonList
+	       (mkCondition(s.intern(), Collections.<B<Condition>>emptyList()));
+	     s = "literal";
+	   }
+	   $c = mkCondition(s.intern(), args);
+	};
 cond_args returns [List<B<Condition>> l]
 @init { $l = new ArrayList<B<Condition>>(); }
-	: (c=cond_body {$l.add(c);} )*
+	: LPAREN (c=cond_body {$l.add(c);} )*
+	| { $l = null; }
 	;
 
 number returns [Fraction r]

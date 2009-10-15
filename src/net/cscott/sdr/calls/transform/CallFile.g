@@ -565,8 +565,8 @@ call_body_seq
     | call_body
 	;
 cond_body
-	: words_or_ref ( LPAREN cond_args RPAREN )?
-        -> ^(CONDITION words_or_ref cond_args?)
+        : words_or_ref (LPAREN cond_args? RPAREN)?
+        -> ^(CONDITION words_or_ref LPAREN? cond_args?)
 	;
 cond_args
 	: cond_body (COMMA! cond_body)*

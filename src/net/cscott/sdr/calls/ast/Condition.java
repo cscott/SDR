@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import net.cscott.sdr.calls.DanceProgram;
+import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Predicate;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
@@ -52,11 +54,13 @@ public class Condition extends AstNode {
     
     public Condition getArg(int n) { return args.get(n); }
 
-    public Fraction getNumberArg(int n) {
-        return Fraction.valueOf(getArg(n).predicate);
+    public Fraction getNumberArg(int n, DanceProgram dp, Formation f) {
+        Condition arg = getArg(n);
+        return arg.getPredicate().evaluateAsNumber(dp, f, arg);
     }
-    public String getStringArg(int n) {
-        return getArg(n).predicate;
+    public String getStringArg(int n, DanceProgram dp, Formation f) {
+        Condition arg = getArg(n);
+        return arg.getPredicate().evaluateAsString(dp, f, arg);
     }
     // XXX getSelectorArg, etc?
     
