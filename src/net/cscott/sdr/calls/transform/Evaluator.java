@@ -149,8 +149,7 @@ import net.cscott.sdr.util.ListUtils;
  *  js> importPackage(net.cscott.sdr.calls);
  *  js> ds = new DanceState(new DanceProgram(Program.A1), Formation.SQUARED_SET); undefined;
  *  js> Evaluator.parseAndEval(ds, "heads pair off; do half of a pass thru");
- *  js> ds = ds.cloneAndClear(Breather.breathe(ds.currentFormation()))
- *  net.cscott.sdr.calls.DanceState@831e35
+ *  js> ds = ds.cloneAndClear(Breather.breathe(ds.currentFormation())); undefined
  *  js> ds.currentFormation().toStringDiagram("|");
  *  |4B>  3B>
  *  |

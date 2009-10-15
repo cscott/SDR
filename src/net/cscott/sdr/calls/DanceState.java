@@ -10,9 +10,12 @@ import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.transform.EvalPrim;
 import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.SdrToString;
 import net.cscott.sdr.util.Tools.ListMultiMap;
 import static net.cscott.sdr.util.Tools.mml;
 
@@ -42,6 +45,15 @@ public class DanceState {
         for (Dancer d: f.dancers())
             this.movements.put(d, new TreeMap<Fraction,DancerPath>());
         // xxx: initialize actions?
+    }
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, SdrToString.STYLE)
+        .append("dance", dance)
+        .append("formations", formations)
+        .append("actions", actions)
+        .append("movements", movements)
+        .toString();
     }
 
     /** Return the last in the list of timed formations. */
