@@ -1,6 +1,9 @@
 package net.cscott.sdr.calls;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.SdrToString;
 
 /**
  * A {@link TimedFormation} combines a {@link Formation} with a timestamp
@@ -22,5 +25,13 @@ public class TimedFormation extends Timed<TimedFormation> {
         Fraction newTime = ((reference==null)?Fraction.ZERO:reference.time)
             .add(this.time);
         return new TimedFormation(this.formation, newTime, true);
+    }
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, SdrToString.STYLE)
+        .appendSuper(formation.toString())
+        .append("time", time)
+        .append("isAbsolute", isAbsolute)
+        .toString();
     }
 }
