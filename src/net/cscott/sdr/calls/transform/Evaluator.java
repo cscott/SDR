@@ -76,8 +76,7 @@ import net.cscott.sdr.util.ListUtils;
  *  (Apply heads start)
  *  js> comp = new net.cscott.sdr.calls.ast.Seq(comp);
  *  (Seq (Apply heads start))
- *  js> e = new Evaluator.Standard(comp);
- *  net.cscott.sdr.calls.transform.Evaluator$Standard@166cb16
+ *  js> e = new Evaluator.Standard(comp); undefined
  *  js> e.evaluateAll(ds);
  *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
  *  |4B>  3Gv  3Bv  2G<
@@ -99,8 +98,7 @@ import net.cscott.sdr.util.ListUtils;
  *  (Apply heads pair off)
  *  js> comp = new net.cscott.sdr.calls.ast.Seq(comp);
  *  (Seq (Apply heads pair off))
- *  js> e = new Evaluator.Standard(comp);
- *  net.cscott.sdr.calls.transform.Evaluator$Standard@166cb16
+ *  js> e = new Evaluator.Standard(comp); undefined
  *  js> e.evaluateAll(ds);
  *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
  *  |4B>  3G<  3B>  2G<
@@ -164,7 +162,7 @@ import net.cscott.sdr.util.ListUtils;
  *  js> ds.movements(StandardDancer.COUPLE_1_BOY)
  *  [DancerPath[from=-1,-3,w,to=-7,-3,nw,[ROLL_RIGHT],time=2,pointOfRotation=FOUR_DANCERS], DancerPath[from=-7,-3,nw,[ROLL_RIGHT],to=-7,0,n,[ROLL_RIGHT],time=2,pointOfRotation=FOUR_DANCERS]]
  *  js> ds.movements(StandardDancer.COUPLE_4_GIRL)
- *  [DancerPath[from=-1,-1,e,to=-1,0,n,[ROLL_LEFT],time=1 1/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-1,0,n,[ROLL_LEFT],to=-3,1,nw,[ROLL_LEFT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-3,1,nw,[ROLL_LEFT],to=-3,1,w,[ROLL_LEFT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-3,1,w,[ROLL_LEFT],to=-5,0,s,[ROLL_LEFT],time=1 1/3,pointOfRotation=FOUR_DANCERS]]
+ *  [DancerPath[from=-1,-1,e,to=-1,0,n,[ROLL_LEFT],time=1 1/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-1,0,n,[ROLL_LEFT],to=-3,1,nw,[ROLL_LEFT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-3,1,nw,[ROLL_LEFT],to=-4,1,w,[ROLL_LEFT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-4,1,w,[ROLL_LEFT],to=-5,0,s,[ROLL_LEFT],time=1 1/3,pointOfRotation=FOUR_DANCERS]]
  * @doc.test Four-person "pass thru":
  *  js> importPackage(net.cscott.sdr.calls);
  *  js> ds = new DanceState(new DanceProgram(Program.BASIC), Formation.FOUR_SQUARE); undefined;
@@ -174,7 +172,7 @@ import net.cscott.sdr.util.ListUtils;
  *  |
  *  |3Gv  3Bv
  *  js> ds.movements(StandardDancer.COUPLE_1_BOY)
- *  [DancerPath[from=-1,-1,n,to=-3,0,n,time=1,pointOfRotation=<null>], DancerPath[from=-3,0,n,to=-1,1,n,time=1,pointOfRotation=<null>]]
+ *  [DancerPath[from=-1,-1,n,to=-1,0,n,time=1,pointOfRotation=<null>], DancerPath[from=-1,0,n,to=-1,1,n,time=1,pointOfRotation=<null>]]
  *  js> ds.movements(StandardDancer.COUPLE_3_GIRL)
  *  [DancerPath[from=-1,1,s,to=-1,0,s,time=1,pointOfRotation=<null>], DancerPath[from=-1,0,s,to=-1,-1,s,time=1,pointOfRotation=<null>]]
  */
@@ -205,7 +203,11 @@ public abstract class Evaluator {
         new Standard(c).evaluateAll(ds);
     }
     /** Create an evaluator which breathes each formation to resolve
-     *  collisions.  Good to use as a top-level evaluator. */
+     *  collisions.  Good to use as a top-level evaluator, but note
+     *  that phantom concepts will have to return all the phantoms
+     *  up to this step in order for them not to be breathed away. */
+    // XXX: probably want a top-level breather which resolves collisions
+    //      but does *not* screw with absolute position if there aren't collisions?
     public static Evaluator breathedEval(Formation f, Comp c) {
         Formation meta = FormationList.SINGLE_DANCER;
         Dancer rep = meta.dancers().iterator().next();
@@ -213,7 +215,11 @@ public abstract class Evaluator {
         FormationMatch fm = new FormationMatch
             (meta, Collections.singletonMap(rep, tf),
                    Collections.<Dancer>emptySet());
-        return new MetaEvaluator(fm, c);
+        return new MetaEvaluator(fm, c) {
+            // crazy hack to reuse code -- I'm so lazy!
+            @Override
+            protected boolean breatheParts() { return true; }
+        };
     }
 
     /**
@@ -232,6 +238,10 @@ public abstract class Evaluator {
         @Override
         public Evaluator evaluate(DanceState ds) {
             return this.continuation.accept(new StandardVisitor(),ds);
+        }
+        @Override
+        public String toString() {
+            return "StandardEvaluator("+continuation+")";
         }
         private class StandardVisitor extends ValueVisitor<Evaluator,DanceState> {
             /**
@@ -473,6 +483,7 @@ public abstract class Evaluator {
             assert matchedOne;
             return emap;
         }
+        protected boolean breatheParts() { return false; }
         @Override
         public Evaluator evaluate(DanceState ds) {
             List<Dancer> metaDancers=new ArrayList<Dancer>(this.meta.dancers());
@@ -503,8 +514,16 @@ public abstract class Evaluator {
                 Map<Dancer,Formation> components =
                     new HashMap<Dancer,Formation>();
                 for (Dancer metaDancer : metaDancers) {
-                    components.put(metaDancer, Breather.breathe
-                                   (substates.get(metaDancer).formationAt(t)));
+                    Formation subF = substates.get(metaDancer).formationAt(t);
+                    // in general, don't breathe subformations here!
+                    // this would screw things up if (eg) this is a one-match
+                    // 'from' intended only to tag dancers, and the subcall is
+                    // a space-invader.
+                    // But I'm lazy, and the top-level breathedEval can share
+                    // 99% of this code if only I allow it to breathe here.
+                    // So this is a HACK!
+                    if (breatheParts()) subF = Breather.breathe(subF); // HACK!
+                    components.put(metaDancer, subF);
                 }
                 // insert the results into a new formation, breathing as necessary
                 breathed.put(t, Breather.insert(this.meta, components));
@@ -564,8 +583,13 @@ public abstract class Evaluator {
                 Evaluator ne = p.eval.evaluate(p.ds);
                 // add only the selected dancer's actions
                 for (Dancer d: p.matched)
-                    for (DancerPath dp : p.ds.movements(d))
-                        ds.add(d, dp);
+                    // sometimes phantoms introduced by a par can match a
+                    // subsidiary par.  So make sure that this dancer actually
+                    // belonged to the parent DanceState before we add its
+                    // movements.
+                    if (ds.dancers().contains(d))
+                        for (DancerPath dp : p.ds.movements(d))
+                            ds.add(d, dp);
                 if (ne==null) continue;
                 // create an evaluator for the next part
                 pce.add(p.matched, ne, p.ds);

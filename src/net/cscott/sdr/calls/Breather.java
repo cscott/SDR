@@ -424,7 +424,33 @@ public class Breather {
      *     ^
      *  
      *     ^    v
+     * @doc.test Middle of a run, runner breathes out slightly to make room:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> f = new Formation(Tools.m(
+     *    >         Tools.p(StandardDancer.COUPLE_2_BOY, Position.getGrid(0,0,"n")),
+     *    >         Tools.p(StandardDancer.COUPLE_2_GIRL, Position.getGrid(0,1,"e"))))
+     *  net.cscott.sdr.calls.Formation[
+     *    location={COUPLE 2 GIRL=0,1,e, COUPLE 2 BOY=0,0,n}
+     *    selected=[COUPLE 2 GIRL, COUPLE 2 BOY]
+     *  ]
+     *  js> f.toStringDiagram()
+     *  2G>
+     *  2B^
+     *  js> f = Breather.breathe(f)
+     *  net.cscott.sdr.calls.Formation[
+     *    location={COUPLE 2 GIRL=0,2,e, COUPLE 2 BOY=0,0,n}
+     *    selected=[COUPLE 2 GIRL, COUPLE 2 BOY]
+     *  ]
+     *  js> f.toStringDiagram()
+     *  2G>
+     *  
+     *  2B^
      */
+    // note that we resolve collisions in input formation, but ignore any
+    // present in output formation.  That ensures that we don't unnecessarily
+    // breathe space-invader calls, esp if the input formation is a single
+    // dancer giving the orientation only (or the match was used solely
+    // to assign tags).
     public static Formation breathe(List<FormationPiece> pieces) {
         // Locate collisions and resolve them to miniwaves.
         pieces = resolveCollisions(pieces);

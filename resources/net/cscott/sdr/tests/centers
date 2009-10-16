@@ -34,4 +34,6 @@ sdr> fan the top
 | 3B^  4Gv  3G^  4Bv  2B^  1Gv  2G^  1Bv
 sdr> centers run
 | 4G^  3B^  4Bv  3Gv  1G^  2B^  1Bv  2Gv
+sdr> centers cross run
+| 4B^  4G^  3Gv  3Bv  1B^  1G^  2Gv  2Bv
 sdr> /exit
