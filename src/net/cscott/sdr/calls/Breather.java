@@ -446,6 +446,34 @@ public class Breather {
      *  2G>
      *  
      *  2B^
+     * @doc.test Same thing with more dancers:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> f = new Formation(Tools.m(
+     *    >         Tools.p(StandardDancer.COUPLE_3_BOY, Position.getGrid(-3,1,"n")),
+     *    >         Tools.p(StandardDancer.COUPLE_4_GIRL,Position.getGrid(-3,0,"w")),
+     *    >         Tools.p(StandardDancer.COUPLE_3_GIRL,Position.getGrid(-1,1,"e")),
+     *    >         Tools.p(StandardDancer.COUPLE_4_BOY, Position.getGrid(-1,0,"s")),
+     *    >         Tools.p(StandardDancer.COUPLE_2_BOY, Position.getGrid(1,1,"n")),
+     *    >         Tools.p(StandardDancer.COUPLE_1_GIRL,Position.getGrid(1,0,"w")),
+     *    >         Tools.p(StandardDancer.COUPLE_2_GIRL,Position.getGrid(3,1,"e")),
+     *    >         Tools.p(StandardDancer.COUPLE_1_BOY, Position.getGrid(3,0,"s")))
+     *    >     ).recenter();
+     *  net.cscott.sdr.calls.Formation[
+     *    location={COUPLE 3 BOY=-3,1/2,n, COUPLE 3 GIRL=-1,1/2,e, COUPLE 2 BOY=1,1/2,n, COUPLE 2 GIRL=3,1/2,e, COUPLE 4 GIRL=-3,-1/2,w, COUPLE 4 BOY=-1,-1/2,s, COUPLE 1 GIRL=1,-1/2,w, COUPLE 1 BOY=3,-1/2,s}
+     *    selected=[COUPLE 3 BOY, COUPLE 3 GIRL, COUPLE 2 BOY, COUPLE 2 GIRL, COUPLE 4 GIRL, COUPLE 4 BOY, COUPLE 1 GIRL, COUPLE 1 BOY]
+     *  ]
+     *  js> f.toStringDiagram()
+     *  3B^  3G>  2B^  2G>
+     *  4G<  4Bv  1G<  1Bv
+     *  js> f = Breather.breathe(f)
+     *  net.cscott.sdr.calls.Formation[
+     *    location={COUPLE 3 BOY=-3,1,n, COUPLE 3 GIRL=-1,1,e, COUPLE 2 BOY=1,1,n, COUPLE 2 GIRL=3,1,e, COUPLE 4 GIRL=-3,-1,w, COUPLE 4 BOY=-1,-1,s, COUPLE 1 GIRL=1,-1,w, COUPLE 1 BOY=3,-1,s}
+     *    selected=[COUPLE 3 BOY, COUPLE 3 GIRL, COUPLE 2 BOY, COUPLE 2 GIRL, COUPLE 4 GIRL, COUPLE 4 BOY, COUPLE 1 GIRL, COUPLE 1 BOY]
+     *  ]
+     *  js> f.toStringDiagram()
+     *  3B^  3G>  2B^  2G>
+     *
+     *  4G<  4Bv  1G<  1Bv
      */
     // note that we resolve collisions in input formation, but ignore any
     // present in output formation.  That ensures that we don't unnecessarily
@@ -867,15 +895,24 @@ public class Breather {
                 .toString();
         }
 
-        /** Compare pairs by (first) the number of dancers sharing the
-         * trimable edges (min first), and (second) by the amount of overlap
-         * between them (min first).
+        /** Compare pairs by (first) whether it's a complete overlap (try to
+         * resolve all other conflicts first, (second) the number of dancers
+         * sharing the trimable edges (min first), and (third) by the amount of
+         * overlap between them (min first).
          */
         public int compareTo(TrimBitPair tbp) {
+            if (this.isComplete() && !tbp.isComplete())
+                return 1;
+            if (tbp.isComplete() && !this.isComplete())
+                return -1;
             int c = this.sharedEdges - tbp.sharedEdges;
             if (c!=0) return c;
             c = this.overlap.compareTo(tbp.overlap);
             return c;
+        }
+        public boolean isComplete() {
+            return a.getStart().equals(b.getStart()) &&
+                   a.getEnd().equals(b.getEnd());
         }
         /** Trim a pair down to the midpoint of their overlap. */
         public void trim() {
