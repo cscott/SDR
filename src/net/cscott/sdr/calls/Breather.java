@@ -18,6 +18,7 @@ import net.cscott.jutil.Default;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
+import net.cscott.sdr.util.SdrToString;
 import net.cscott.sdr.util.Tools.ListMultiMap;
 import static net.cscott.sdr.util.Tools.F; // list comprehension helper
 import static net.cscott.sdr.util.Tools.foreach; // list comprehension
@@ -192,7 +193,7 @@ public class Breather {
         }
         @Override
         public String toString() {
-            return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
+            return new ToStringBuilder(this, SdrToString.STYLE)
             .append("input", input)
             .append("output", output)
             .toString();
@@ -857,6 +858,15 @@ public class Breather {
             // interfere with existing handholds)
             this.sharedEdges = bcm.get(minEnd) + bcm.get(maxStart);
         }
+        public String toString() {
+            return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("a", a)
+                .append("b", b)
+                .append("overlap", overlap.toProperString())
+                .append("sharedEdges", sharedEdges)
+                .toString();
+        }
+
         /** Compare pairs by (first) the number of dancers sharing the
          * trimable edges (min first), and (second) by the amount of overlap
          * between them (min first).
@@ -953,8 +963,10 @@ public class Breather {
         }
         public String toString() {
             return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-            .append("bounds", bounds())
             .append("isX", isX)
+            .append("start", getStart().toProperString())
+            .append("end", getEnd().toProperString())
+            .append("handhold", handholdDir.toAbsoluteString())
             .toString();
         }
     }
