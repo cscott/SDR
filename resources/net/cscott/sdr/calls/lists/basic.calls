@@ -448,8 +448,15 @@ def: cross run(sel)
 def: _designees cross run
   from: GENERAL LINE
     select: DESIGNATED
-      prim: in 2, 1, in
-      prim: in 1, 2, in
+      // in order for "do half of everyone cross run" to end in a tidal wave
+      // (as JYAW says it should), we do a big step/small step thing, with
+      // centers taking the small step first and ends taking the big step 1st
+      select: CENTER
+        prim: in 1, 1, in
+        prim: in 1, 3, in
+      select: END
+        prim: in 3, 1, in
+        prim: in 1, 1, in
     select: OTHERS
       call: _designees run
 
