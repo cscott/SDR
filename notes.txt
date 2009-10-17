@@ -1034,3 +1034,33 @@ entirely on phantoms?  Which might mean that the 'corporeal' bit may
 need to make a comeback, so we know what to complain about?
 The GeneralFormationMatcher needs to add a facing direction to the
 phantom when it makes a match.
+
+-----------
+
+Internal call node for "unapplied concept". -- use this to push (eg)
+fan and fractional down through from: nodes. Curried: concept:
+with_designators Also rename selectors etc to make sense?  Select=tag
+and from=selector
+
+Note when using select, you must define a whole call!  Your selected
+dancers *and the phantoms* will be dancing, so make sure the phantoms
+don't crash horribly
+
+Run diff from kickoff.  In run if no designee in your formation, nobody moves.
+
+Add designator stack, tag, and with_designated concept.
+Redefine run in terms of designers_run
+
+Add parse function to PMSD.
+
+Add a from-no-breathing node/concept
+
+For triple box, either suppress breathing at top level (breathed a
+prop of formation?) or materialize phantoms (ie must always use
+formation.dancers() not dancestate.dancers(). I think making breathed
+part of formation is probably correct, so we don't breathe after
+'press ahead' -- need to assert that press ahead doesn't result in
+collisions
+
+Write doctest asserting that sphinx grammar accepts a subset of what
+the antlr grammar accepts
