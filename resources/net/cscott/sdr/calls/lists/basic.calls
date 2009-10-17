@@ -415,11 +415,15 @@ def: run(sel)
   in: 4
   // XXX: this definition doesn't currently apply to T-boned formations.
   from: GENERAL LINE, BOX, COUPLE, MINIWAVE
-    // we can't use in/out in primitives here because (1) centers of waves
-    // run out, while ends of waves run in, and (2) the "run-around" dancer
-    // stands on the centerline of the formation at one point.
-    select: [sel]
-      from: COUPLE, MINIWAVE
+    // do the select from the line so that 'centers' works right
+    call: _with designated([sel], _designees run)
+
+def: _designees run
+  // we can't use in/out in primitives here because (1) centers of waves
+  // run out, while ends of waves run in, and (2) the "run-around" dancer
+  // stands on the centerline of the formation at one point.
+  from: COUPLE, MINIWAVE
+    select: DESIGNATED
         select: BEAU
           prim: 1,1,right
           prim: 1,1,right
@@ -427,7 +431,6 @@ def: run(sel)
           prim: -1,1,left
           prim: -1,1,left
     select: OTHERS
-      from: COUPLE, MINIWAVE
         select: BEAU
           prim: 1,0,none,sashay-start sashay-finish
           prim: 1,0,none,sashay-start sashay-finish
@@ -440,17 +443,15 @@ def: cross run(sel)
   in: 6
   // XXX: from other formations (t-bones, etc)
   from: GENERAL LINE
-    select: [sel]
+    call: _with designated([sel], _designees cross run)
+
+def: _designees cross run
+  from: GENERAL LINE
+    select: DESIGNATED
       prim: in 2, 1, in
       prim: in 1, 2, in
     select: OTHERS
-      from: COUPLE, MINIWAVE
-        select: BEAU
-          prim: 1,0,none,sashay-start sashay-finish
-          prim: 1,0,none,sashay-start sashay-finish
-        select: BELLE
-          prim: -1,0,none,sashay-start sashay-finish
-          prim: -1,0,none,sashay-start sashay-finish
+      call: _designees run
 
 def: zoom
   in: 4

@@ -41,6 +41,10 @@ public class TaggedFormation extends Formation {
         DANCER_5, DANCER_6, DANCER_7, DANCER_8,
         COUPLE_1, COUPLE_2, COUPLE_3, COUPLE_4,
         BOY, GIRL, HEAD, SIDE, ALL,
+        // this is a tag kept by the DanceState; the
+        // MetaEvaluator ensures that it is applied
+        // appropriately after matching
+        DESIGNATED,
         // more interesting tags.
         BEAU, BELLE, LEADER, TRAILER,
 	POINT, CENTER, VERY_CENTER, END,
@@ -115,6 +119,14 @@ public class TaggedFormation extends Formation {
 	    (this.location);
 	nmap.put(d, p);
 	return new TaggedFormation(nmap, this.selected, this.tags);
+    }
+    /** Add additional tags to the given formation. */
+    public TaggedFormation addTags(MultiMap<Dancer,Tag> newTags) {
+        MultiMap<Dancer,Tag> nmap = new GenericMultiMap<Dancer,Tag>
+            (Factories.enumSetFactory(Tag.class));
+        nmap.addAll(this.tags);
+        nmap.addAll(newTags);
+        return new TaggedFormation(this.location, this.selected, nmap);
     }
 
     // utility functions.

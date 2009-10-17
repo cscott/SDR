@@ -4,6 +4,7 @@ import static net.cscott.sdr.calls.transform.AstTokenTypes.PART;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.runner.RunWith;
 
@@ -15,6 +16,8 @@ import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.DancerPath;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.TaggedFormation;
+import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
@@ -248,6 +251,75 @@ public abstract class BasicList {
             }
             // no more to evaluate
             return null;
+        }
+    };
+
+    /**
+     * The "with designated" concept saves the designated dancers (in the
+     * {@link DanceState}) so that they can be referred to later in the call.
+     * This is used for '&lt;anyone&gt; hop' and even for the humble
+     * '&lt;anyone&gt; run'.
+     * Takes at least two arguments; all except the last are tag names; dancers
+     * who match any of these tags are saved as the 'designated' ones. (Note
+     * that you can add 'DESIGNATED' as one of the tags in order to grow the
+     * designated tag set after performing another match; not sure if that
+     * would ever be necessary.)
+     * @doc.test
+     *  Show how this concept is used for 'designees run':
+     *  js> importPackage(net.cscott.sdr.calls.ast)
+     *  js> a1 = Apply.makeApply("_designees run")
+     *  (Apply _designees run)
+     *  js> a = Apply.makeApply("_with designated", Apply.makeApply("boy"), a1)
+     *  (Apply _with designated (Apply boy) (Apply _designees run))
+     */
+    public static final Call _WITH_DESIGNATED = new BasicCall("_with designated") {
+        @Override
+        public int getMinNumberOfArguments() { return 2; }
+        @Override
+        public Comp apply(Apply ast) { return null; /* complex call */ }
+
+        @Override
+        public Evaluator getEvaluator(Apply ast) {
+            assert ast.callName.equals(getName());
+            // all but the last argument are names of tags
+            assert ast.args.size()>=2;
+            List<String> tagNames = new ArrayList<String>(ast.args.size()-1);
+            for (int i=0; i < ast.args.size()-1; i++)
+                tagNames.add(ast.getStringArg(i));
+            final Set<Tag> tags = ParCall.parseTags(tagNames);
+
+            // fetch the subcall, and make an evaluator which will eventually
+            // pop the designated dancers to clean up.
+            final Comp continuation = new Seq(ast.getArg(1));
+            final Evaluator popEval = new Evaluator() {
+                private Evaluator next = new Evaluator.Standard(continuation);
+                @Override
+                public Evaluator evaluate(DanceState ds) {
+                    this.next = next.evaluate(ds);
+                    if (this.next == null) {
+                        // we're finally done with the subcall!
+                        ds.popDesignated();
+                        return null;
+                    }
+                    return this;
+                }
+            };
+
+            // return an evaluator which matches the tags against the current
+            // formation, mutates the dance state, and then delegates to the
+            // popEval to do the actual evaluation and eventual cleanup
+            return new Evaluator() {
+                @Override
+                public Evaluator evaluate(DanceState ds) {
+                    // get the current tagged formation, match, push
+                    Formation f = ds.currentFormation();
+                    TaggedFormation tf = TaggedFormation.coerce(f);
+                    Set<Dancer> matched = tf.tagged(tags);
+                    ds.pushDesignated(matched);
+                    // delegate, eventually clean up
+                    return popEval.evaluate(ds);
+                }
+            };
         }
     };
 

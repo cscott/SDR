@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -33,6 +34,8 @@ public class DanceState {
     @SuppressWarnings("unused")
     private final ListMultiMap<Dancer, TimedAction> actions; // XXX?
     private final Map<Dancer, NavigableMap<Fraction, DancerPath>> movements;
+    // this is used to keep track of a 'designated dancer' stack
+    private final Stack<Set<Dancer>> designatedStack;
 
     public DanceState(DanceProgram dance, Formation f) {
         this.dance = dance;
@@ -45,6 +48,7 @@ public class DanceState {
         for (Dancer d: f.dancers())
             this.movements.put(d, new TreeMap<Fraction,DancerPath>());
         // xxx: initialize actions?
+        this.designatedStack = new Stack<Set<Dancer>>();
     }
     @Override
     public String toString() {
@@ -53,6 +57,7 @@ public class DanceState {
         .append("formations", formations)
         .append("actions", actions)
         .append("movements", movements)
+        .append("designated", designated())
         .toString();
     }
 
@@ -91,7 +96,28 @@ public class DanceState {
      */
     public DanceState cloneAndClear(Formation formation) {
         // XXX: should revisit this?
-        return new DanceState(dance, formation);
+        DanceState nds = new DanceState(dance, formation);
+        for (Set<Dancer> designated : this.designatedStack)
+            nds.pushDesignated(designated);
+        return nds;
+    }
+
+    /** Add the set of designated dancers to the stack stored in the
+     *  {@link DanceState}.
+     * @param designated
+     */
+    public void pushDesignated(Set<Dancer> designated) {
+        this.designatedStack.push(Collections.unmodifiableSet(designated));
+    }
+    /** Pop the top off the designated dancer stack. */
+    public void popDesignated() {
+        this.designatedStack.pop();
+    }
+    /** Look at the top of the designated dancer stack. */
+    public Set<Dancer> designated() {
+        if (this.designatedStack.isEmpty())
+            return Collections.<Dancer>emptySet();
+        return this.designatedStack.peek();
     }
 
     /**

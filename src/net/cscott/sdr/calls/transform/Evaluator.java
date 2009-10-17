@@ -14,6 +14,8 @@ import java.util.TreeSet;
 import org.junit.runner.RunWith;
 
 import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jutil.Factories;
+import net.cscott.jutil.GenericMultiMap;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Breather;
 import net.cscott.sdr.calls.CallDB;
@@ -356,6 +358,14 @@ public abstract class Evaluator {
                 Formation f = ds.currentFormation();
                 // hm, dynamically apply tags here?
                 TaggedFormation tf = TaggedFormation.coerce(f);
+                // well, we *are* going to dynamically apply the
+                // 'designated' tag.
+                GenericMultiMap<Dancer,Tag> newTags =
+                    new GenericMultiMap<Dancer,Tag>
+                        (Factories.enumSetFactory(Tag.class));
+                for (Dancer d : ds.designated())
+                    newTags.add(d, Tag.DESIGNATED);
+                tf = tf.addTags(newTags);
                 // we're going to want to ensure that every dancer matches
                 // some tag.
                 Set<Dancer> unmatched = new LinkedHashSet<Dancer>(f.dancers());

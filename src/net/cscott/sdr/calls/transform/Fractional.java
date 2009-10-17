@@ -80,6 +80,10 @@ public class Fractional extends TransformVisitor<Fraction> {
         }
         // optimization: some concepts are safe to hoist fractionalization thru
         if (safeConcepts.contains(apply.callName)) {
+            if (apply.callName.equals("_with designated"))
+                // two args, subcall is last one
+                return Apply.makeApply(apply.callName, apply.getArg(0),
+                        Apply.makeApply("_fractional", f, apply.getArg(1)));
             assert apply.args.size()==1;
             return Apply.makeApply(apply.callName,
                     Apply.makeApply("_fractional", f, apply.getArg(0)));
@@ -95,7 +99,7 @@ public class Fractional extends TransformVisitor<Fraction> {
     /** A list of concepts which it is safe to hoist fractionalization through.
      That is, "1/2(as couples(swing thru))" == "as couples(1/2(swing thru))". */
     private static Set<String> safeConcepts = new HashSet<String>(Arrays.asList(
-            "as couples","tandem"
+            "as couples","tandem","_with designated"
             // xxx more fractionalization-safe calls?
             ));
     @Override
