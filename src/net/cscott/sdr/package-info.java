@@ -7,6 +7,6 @@
  *  FAILED TESTS:
  *   dw-resolve at line 11
  *   extend-level at line 16
- *   hinge-1 at line 34
+ *   hinge-1 at line 36
  */
 package net.cscott.sdr;
