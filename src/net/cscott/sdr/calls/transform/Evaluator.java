@@ -532,7 +532,8 @@ public abstract class Evaluator {
                     // But I'm lazy, and the top-level breathedEval can share
                     // 99% of this code if only I allow it to breathe here.
                     // So this is a HACK!
-                    if (breatheParts()) subF = Breather.breathe(subF); // HACK!
+                    if (breatheParts())
+                        subF = Breather.breathe(subF); // HACK!
                     components.put(metaDancer, subF);
                 }
                 // insert the results into a new formation, breathing as necessary
