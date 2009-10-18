@@ -13,6 +13,9 @@ package EDU.Washington.grad.gjb.cassowary;
 
 import java.util.Random;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 public class ClTests extends CL {
     public ClTests() {
         RND = new Random(123456789);
@@ -388,7 +391,15 @@ public class ClTests extends CL {
         return (int) UniformRandomDiscretized() * (high - low) + low;
     }
 
-    public final static void main(String[] args) throws ExCLInternalError,
+    @Test
+    public void runTests() throws Exception {
+        Assert.assertTrue(runAllTests(new String[0]));
+    }
+    public final static void main(String[] args) throws Exception {
+        System.exit(runAllTests(args) ? 0 : 1);
+    }
+
+    public final static boolean runAllTests(String[] args) throws ExCLInternalError,
             ExCLNonlinearExpression, ExCLRequiredFailure,
             ExCLConstraintNotFound, ExCLError {
         // try
@@ -505,6 +516,7 @@ public class ClTests extends CL {
                 System.out.println("Num vars = "
                         + ClAbstractVariable.numCreated());
 
+            return fAllOkResult;
         }
         // catch (Exception err)
         // {
