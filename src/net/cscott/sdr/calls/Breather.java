@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.Default;
+import net.cscott.jutil.GenericMultiMap;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
@@ -793,6 +794,7 @@ public class Breather {
         List<TrimBit> trimY = new ArrayList<TrimBit>(pieces.size());
         BorderCountMap borderCountX = new BorderCountMap();
         BorderCountMap borderCountY = new BorderCountMap();
+        HandholdMap handholdMap = new HandholdMap();
         for (int i=0; i<pieces.size(); i++) {
             Formation input = pieces.get(i).input;
             Box bounds = input.bounds();
@@ -801,6 +803,13 @@ public class Breather {
                                   true, borderCountX));
             trimY.add(new TrimBit(input, boundsList, i, bounds.center(),
                                   false, borderCountY));
+            // keep track of handholds
+            Rotation handholdDir = trimX.get(trimX.size()-1).handholdDir;
+            if (handholdDir!=null) {
+                HandPair hp = hands(bounds, handholdDir);
+                handholdMap.add(hp.right, input);
+                handholdMap.add(hp.left, input);
+            }
         }
         // form all pairs
         List<TrimBitPair> trims = new ArrayList<TrimBitPair>();
@@ -808,25 +817,25 @@ public class Breather {
             for (int j=i+1; j<pieces.size(); j++) {
                 TrimBit aX = trimX.get(i), bX = trimX.get(j);
                 TrimBit aY = trimY.get(i), bY = trimY.get(j);
-                // special case!  recognize star, and don't try to
-                // push them apart (otherwise breathing thars gets to be a
-                // real problem!)
                 assert aX.input == aY.input && bX.input == bY.input;
-                trims.add(new TrimBitPair(aX, bX, borderCountX));
-                trims.add(new TrimBitPair(aY, bY, borderCountY));
+                trims.add(new TrimBitPair(aX, bX, borderCountX, handholdMap));
+                trims.add(new TrimBitPair(aY, bY, borderCountY, handholdMap));
             }
         }
-        // sort the pairs by distance between them, closest first.
+        // sort the pairs into the desired resolution order
+        // XXX this is a mess of hacks.
         Collections.sort(trims);
         // okay, now go through the pairs resolving the overlaps
         for (TrimBitPair tbp: trims) {
             // check that the formations actually overlap; may have already
             // been resolved.
-            if (!tbp.a.bounds().overlaps(tbp.b.bounds())) continue;
+            if (!tbp.lo.bounds().overlaps(tbp.hi.bounds())) continue;
             // and that this dimension overlaps, in case it's been fixed
-            if (!tbp.a.overlaps(tbp.b)) continue;
+            if (!tbp.lo.overlaps(tbp.hi)) continue;
             // maybe this has become a star; double check.
-            if (isStar(tbp.a, tbp.b)) continue;
+            // (don't try to push stars apart, or else breathing thars gets to
+            // be a real problem!)
+            if (isStar(tbp.lo, tbp.hi)) continue;
             // okay, a real problem!  Trim both sides back to the midpoint
             // of the overlap.
             tbp.trim();
@@ -871,11 +880,21 @@ public class Breather {
         return new Point(center.x.add(x), center.y.add(y));
     }
     private static class TrimBitPair implements Comparable<TrimBitPair>{
-        final TrimBit a, b;
+        final TrimBit lo, hi;
         final Fraction overlap;
         final int sharedEdges;
-        TrimBitPair(TrimBit a, TrimBit b, BorderCountMap bcm) {
-            this.a = a; this.b = b;
+        final int handholds;
+        TrimBitPair(TrimBit a, TrimBit b, BorderCountMap bcm, HandholdMap hhm) {
+            // order inputs into a 'lo' and 'hi' trim bit.
+            int c = a.getStart().compareTo(b.getStart());
+            if (c==0) c = a.getEnd().compareTo(b.getEnd());
+            if (c < 0) {
+                this.lo = a;
+                this.hi = b;
+            } else {
+                this.lo = b;
+                this.hi = a;
+            }
             // min of the highs
             Fraction minEnd = Collections.min(l(a.getEnd(),b.getEnd()));
             Fraction maxStart = Collections.max(l(a.getStart(),b.getStart()));
@@ -885,14 +904,37 @@ public class Breather {
             // how many input formations share this border exactly (try not to
             // interfere with existing handholds)
             this.sharedEdges = bcm.get(minEnd) + bcm.get(maxStart);
+            // how many handholds would break if we trimmed this bit?
+            // (trimming would modify lo.end and hi.start)
+            int handholds = 0;
+            // does 'lo' have a handhold at its end?
+            if (hasHandhold(hhm, lo, lo.getEnd()))
+                handholds++;
+            // does 'hi' have a handhold at its start?
+            if (hasHandhold(hhm, hi, hi.getStart()))
+                handholds++;
+            this.handholds = handholds;
         }
         public String toString() {
             return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("a", a)
-                .append("b", b)
+                .append("lo", lo)
+                .append("hi", hi)
                 .append("overlap", overlap.toProperString())
                 .append("sharedEdges", sharedEdges)
+                .append("handholds", handholds)
                 .toString();
+        }
+        private static boolean hasHandhold(HandholdMap hhm, TrimBit tb, Fraction edge) {
+            if (!tb.handholdOnAxis()) return false;
+            HandPair handPair = hands(tb.bounds(), tb.handholdDir);
+            Fraction left = tb.isX ? handPair.left.x : handPair.left.y;
+            Fraction right = tb.isX ? handPair.right.x : handPair.right.y;
+            assert !(edge.equals(left) && edge.equals(right));
+            Point p = edge.equals(left) ? handPair.left :
+                      edge.equals(right) ? handPair.right : null;
+            if (p==null) return false;
+            int h = hhm.getValues(p).size();
+            return (h>1);
         }
 
         /** Compare pairs by (first) whether it's a complete overlap (try to
@@ -901,27 +943,26 @@ public class Breather {
          * overlap between them (min first).
          */
         public int compareTo(TrimBitPair tbp) {
-            if (this.isComplete() && !tbp.isComplete())
+            if (this.isCompleteOverlap() && !tbp.isCompleteOverlap())
                 return 1;
-            if (tbp.isComplete() && !this.isComplete())
+            if (tbp.isCompleteOverlap() && !this.isCompleteOverlap())
                 return -1;
-            int c = this.sharedEdges - tbp.sharedEdges;
+            int c = this.handholds - tbp.handholds;
+            if (c!=0) return c;
+            c = this.sharedEdges - tbp.sharedEdges;
             if (c!=0) return c;
             c = this.overlap.compareTo(tbp.overlap);
             return c;
         }
-        public boolean isComplete() {
-            return a.getStart().equals(b.getStart()) &&
-                   a.getEnd().equals(b.getEnd());
+        private boolean isCompleteOverlap() {
+            return lo.getStart().equals(hi.getStart()) &&
+                   lo.getEnd().equals(hi.getEnd());
         }
         /** Trim a pair down to the midpoint of their overlap. */
         public void trim() {
             // figure out which of a and b is the "low" one.
-            TrimBit lo, hi;
-            int c = a.getStart().compareTo(b.getStart());
-            if (c==0) c = a.getEnd().compareTo(b.getEnd());
-            assert c!=0: "can't trim when they're exactly overlapping!";
-            if (c < 0) { lo = a; hi = b; } else { lo = b; hi = a; }
+            if (isCompleteOverlap())
+                throw new Error("can't trim when exactly overlapping!");
             // okay, now we're going to trim lo.end and hi.start to their avg
             Fraction newEdge = lo.getEnd().add(hi.getStart())
                 .divide(Fraction.TWO);
@@ -974,6 +1015,12 @@ public class Breather {
             return this.getStart().compareTo(b.getEnd()) < 0 &&
                    b.getStart().compareTo(this.getEnd()) < 0;
         }
+        /** Returns true if the "handholdDir" is consistent with "isX" */
+        public boolean handholdOnAxis() {
+            if (this.handholdDir==null) return false;
+            return this.handholdDir.includes
+                (isX ? ExactRotation.EAST : ExactRotation.NORTH);
+        }
         TrimBit(Formation input, List<Box> boundsList, int idx, Point center,
                 boolean isX, BorderCountMap borderCount) {
             this.input = input;
@@ -984,19 +1031,6 @@ public class Breather {
             this.isX = isX;
             borderCount.increment(getStart());
             borderCount.increment(getEnd());
-            // give an extra bonus if this shared edge is in the
-            // "hand hold" direction (with some formations or phantoms we
-            // can't tell).  Note that non-orthogonal formations (45 off, say)
-            // will break handholds is either the X or Y edges are moved, so
-            // go ahead and give them the handhold bonus on all sides
-            if (handholdDir != null) {
-                boolean northHands = handholdDir.includes(ExactRotation.NORTH);
-                boolean eastHands = handholdDir.includes(ExactRotation.EAST);
-                if ((isX ? eastHands : northHands) || !(northHands || eastHands)) {
-                    borderCount.increment(getStart());
-                    borderCount.increment(getEnd());
-                }
-            }
         }
         public String toString() {
             return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
@@ -1016,5 +1050,8 @@ public class Breather {
                 Integer i = super.get(f);
                 return (i==null) ? Integer.valueOf(0) : i;
             }
+    }
+    private static class HandholdMap extends GenericMultiMap<Point, Formation> {
+        HandholdMap() { super(); }
     }
 }
