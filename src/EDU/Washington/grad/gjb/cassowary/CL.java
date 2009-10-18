@@ -83,6 +83,10 @@ public class CL {
         return (new ClLinearExpression(e1)).plus(new ClLinearExpression(e2));
     }
 
+    public static ClLinearExpression Minus(ClVariable e1, ClVariable e2) {
+        return new ClLinearExpression(e1).minus(new ClLinearExpression(e2));
+    }
+
     public static ClLinearExpression Minus(ClLinearExpression e1,
             ClLinearExpression e2) {
         return e1.minus(e2);
