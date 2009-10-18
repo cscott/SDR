@@ -546,6 +546,8 @@ public class Breather {
                             madeAdjustment = true;
                         }
                     }
+                    // don't worry about symmetry until basic constraints are met
+                    if (madeAdjustment) continue;
                     // Symmetry constraint: moving from edges in, gaps should
                     // be equal.
                     for (Bit b : axis.bits) {
@@ -586,12 +588,14 @@ public class Breather {
 					  .add(adjAmt.divide(Fraction.TWO)));
                                 bound.put(outer, bound.get(outer)
 					  .add(adjAmt.divide(Fraction.TWO)));
+                                madeAdjustment=true;
                             } else if (cc < 0) {
                                 // outer gap is smaller; adjust 'lastOuter'
                                 bound.put(lastOuter, bound.get(lastOuter)
 					.subtract(adjAmt.divide(Fraction.TWO)));
                                 bound.put(lastInner, bound.get(lastInner)
 					.subtract(adjAmt.divide(Fraction.TWO)));
+                                madeAdjustment=true;
                             }
                             lastInner = inner; lastOuter = outer;
                         }
@@ -635,6 +639,13 @@ public class Breather {
             this.end = end;
             this.size = size;
         }
+        public String toString() {
+            return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("start", start.toProperString())
+                .append("end", end.toProperString())
+                .append("size", size.toProperString())
+                .toString();
+        }
     }
     /** State associated with the x or y axis; since we expand each axis
      * separately, it's nice to abstract away exactly which one we're dealing
@@ -655,6 +666,12 @@ public class Breather {
                 // otherwise, just add the bit
                 bits.add(new Bit(start, end, size));
             }
+        }
+        public String toString() {
+            return new ToStringBuilder(this, SdrToString.STYLE)
+                .append("bounds", bounds)
+                .append("bits", bits)
+                .toString();
         }
     }
     /** Locate collisions and resolve them to miniwaves. */
