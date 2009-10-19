@@ -12,21 +12,23 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
+import net.cscott.sdr.util.Fraction;
+
 public abstract class ClConstraint {
 
-    public ClConstraint(ClStrength strength, double weight) {
+    public ClConstraint(ClStrength strength, Fraction weight) {
         _strength = strength;
         _weight = weight;
     }
 
     public ClConstraint(ClStrength strength) {
         _strength = strength;
-        _weight = 1.0;
+        _weight = Fraction.ONE;
     }
 
     public ClConstraint() {
         _strength = ClStrength.required;
-        _weight = 1.0;
+        _weight = Fraction.ONE;
     }
 
     public abstract ClLinearExpression expression();
@@ -51,12 +53,12 @@ public abstract class ClConstraint {
         return _strength;
     }
 
-    public double weight() {
+    public Fraction weight() {
         return _weight;
     }
 
     public String toString() {
-        return _strength.toString() + " {" + weight() + "} (" + expression();
+        return _strength.toString() + " {" + weight().toProperString() + "} (" + expression();
     }
 
     public void setAttachedObject(Object o) {
@@ -73,7 +75,7 @@ public abstract class ClConstraint {
      * private void setWeight(double weight) { _weight = weight; }
      */
     private ClStrength _strength;
-    private double _weight;
+    private Fraction _weight;
 
     private Object _attachedObject;
 }

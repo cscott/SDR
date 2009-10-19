@@ -12,9 +12,11 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
+import net.cscott.sdr.util.Fraction;
+
 public class ClEditConstraint extends ClEditOrStayConstraint {
 
-    public ClEditConstraint(ClVariable clv, ClStrength strength, double weight) {
+    public ClEditConstraint(ClVariable clv, ClStrength strength, Fraction weight) {
         super(clv, strength, weight);
     }
 

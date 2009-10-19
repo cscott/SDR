@@ -12,21 +12,23 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
+import net.cscott.sdr.util.Fraction;
+
 class ClLinearConstraint extends ClConstraint {
 
     public ClLinearConstraint(ClLinearExpression cle, ClStrength strength,
-            double weight) {
+            Fraction weight) {
         super(strength, weight);
         _expression = cle;
     }
 
     public ClLinearConstraint(ClLinearExpression cle, ClStrength strength) {
-        super(strength, 1.0);
+        super(strength, Fraction.ONE);
         _expression = cle;
     }
 
     public ClLinearConstraint(ClLinearExpression cle) {
-        super(ClStrength.required, 1.0);
+        super(ClStrength.required, Fraction.ONE);
         _expression = cle;
     }
 

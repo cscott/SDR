@@ -13,9 +13,11 @@ package EDU.Washington.grad.gjb.cassowary;
 
 import java.util.*;
 
+import net.cscott.sdr.util.Fraction;
+
 public class ClVariable extends ClAbstractVariable {
 
-    public ClVariable(String name, double value) {
+    public ClVariable(String name, Fraction value) {
         super(name);
         _value = value;
         if (_ourVarMap != null) {
@@ -25,28 +27,28 @@ public class ClVariable extends ClAbstractVariable {
 
     public ClVariable(String name) {
         super(name);
-        _value = 0.0;
+        _value = Fraction.ZERO;
         if (_ourVarMap != null) {
             _ourVarMap.put(name, this);
         }
     }
 
-    public ClVariable(double value) {
+    public ClVariable(Fraction value) {
         _value = value;
     }
 
     public ClVariable() {
-        _value = 0.0;
+        _value = Fraction.ZERO;
     }
 
-    public ClVariable(long number, String prefix, double value) {
+    public ClVariable(long number, String prefix, Fraction value) {
         super(number, prefix);
         _value = value;
     }
 
     public ClVariable(long number, String prefix) {
         super(number, prefix);
-        _value = 0.0;
+        _value = Fraction.ZERO;
     }
 
     public boolean isDummy() {
@@ -71,11 +73,11 @@ public class ClVariable extends ClAbstractVariable {
 
     // change the value held -- should *not* use this if the variable is
     // in a solver -- instead use addEditVar() and suggestValue() interface
-    public final double value() {
+    public final Fraction value() {
         return _value;
     }
 
-    public final void set_value(double value) {
+    public final void set_value(Fraction value) {
         _value = value;
     }
 
@@ -83,7 +85,7 @@ public class ClVariable extends ClAbstractVariable {
     // done when the value is changed by the solver
     // may be called when the value hasn't actually changed -- just
     // means the solver is setting the external variable
-    public void change_value(double value) {
+    public void change_value(Fraction value) {
         _value = value;
     }
 
@@ -105,7 +107,7 @@ public class ClVariable extends ClAbstractVariable {
 
     private static Hashtable<String, ClVariable> _ourVarMap;
 
-    private double _value;
+    private Fraction _value;
 
     private Object _attachedObject;
 

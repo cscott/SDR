@@ -12,59 +12,36 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
-public class ClDouble extends Number {
-    /**
-	 * 
-	 */
-    private static final long serialVersionUID = 1L;
+import net.cscott.sdr.util.Fraction;
 
-    public ClDouble(double val) {
+public class ClFractionWrapper {
+    public ClFractionWrapper(Fraction val) {
         value = val;
     }
 
-    public ClDouble() {
-        this(0.0);
+    public ClFractionWrapper() {
+        this(Fraction.ZERO);
     }
 
     public final Object clone() {
-        return new ClDouble(value);
+        return new ClFractionWrapper(value);
     }
 
-    public final double doubleValue() {
+    public final Fraction getValue() {
         return value;
     }
 
-    public final int intValue() {
-        return (int) value;
-    }
-
-    public final long longValue() {
-        return (long) value;
-    }
-
-    public final float floatValue() {
-        return (float) value;
-    }
-
-    public final byte byteValue() {
-        return (byte) value;
-    }
-
-    public final short shortValue() {
-        return (short) value;
-    }
-
-    public final void setValue(double val) {
+    public final void setValue(Fraction val) {
         value = val;
     }
 
     public final String toString() {
-        return java.lang.Double.toString(value);
+        return value.toProperString();
     }
 
     public final boolean equals(Object o) {
         try {
-            return value == ((ClDouble) o).value;
+            return value.equals(((ClFractionWrapper) o).value);
         } catch (Exception err) {
             return false;
         }
@@ -72,8 +49,9 @@ public class ClDouble extends Number {
 
     public final int hashCode() {
         System.err.println("ClDouble.hashCode() called!");
-        return (int) java.lang.Double.doubleToLongBits(value);
+        assert false;
+        return value.hashCode();
     }
 
-    private double value;
+    private Fraction value;
 }

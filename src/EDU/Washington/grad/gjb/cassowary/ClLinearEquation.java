@@ -12,9 +12,11 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
+import net.cscott.sdr.util.Fraction;
+
 public class ClLinearEquation extends ClLinearConstraint {
     public ClLinearEquation(ClLinearExpression cle, ClStrength strength,
-            double weight) {
+            Fraction weight) {
         super(cle, strength, weight);
     }
 
@@ -27,63 +29,63 @@ public class ClLinearEquation extends ClLinearConstraint {
     }
 
     public ClLinearEquation(ClAbstractVariable clv, ClLinearExpression cle,
-            ClStrength strength, double weight) {
+            ClStrength strength, Fraction weight) {
         super(cle, strength, weight);
-        _expression.addVariable(clv, -1.0);
+        _expression.addVariable(clv, Fraction.mONE);
     }
 
     public ClLinearEquation(ClAbstractVariable clv, ClLinearExpression cle,
             ClStrength strength) {
-        this(clv, cle, strength, 1.0);
+        this(clv, cle, strength, Fraction.ONE);
     }
 
     public ClLinearEquation(ClAbstractVariable clv, ClLinearExpression cle) {
-        this(clv, cle, ClStrength.required, 1.0);
+        this(clv, cle, ClStrength.required, Fraction.ONE);
     }
 
-    public ClLinearEquation(ClAbstractVariable clv, double val,
-            ClStrength strength, double weight) {
+    public ClLinearEquation(ClAbstractVariable clv, Fraction val,
+            ClStrength strength, Fraction weight) {
         super(new ClLinearExpression(val), strength, weight);
-        _expression.addVariable(clv, -1.0);
+        _expression.addVariable(clv, Fraction.mONE);
     }
 
-    public ClLinearEquation(ClAbstractVariable clv, double val,
+    public ClLinearEquation(ClAbstractVariable clv, Fraction val,
             ClStrength strength) {
-        this(clv, val, strength, 1.0);
+        this(clv, val, strength, Fraction.ONE);
     }
 
-    public ClLinearEquation(ClAbstractVariable clv, double val) {
-        this(clv, val, ClStrength.required, 1.0);
+    public ClLinearEquation(ClAbstractVariable clv, Fraction val) {
+        this(clv, val, ClStrength.required, Fraction.ONE);
     }
 
     public ClLinearEquation(ClLinearExpression cle, ClAbstractVariable clv,
-            ClStrength strength, double weight) {
+            ClStrength strength, Fraction weight) {
         super(((ClLinearExpression) cle.clone()), strength, weight);
-        _expression.addVariable(clv, -1.0);
+        _expression.addVariable(clv, Fraction.mONE);
     }
 
     public ClLinearEquation(ClLinearExpression cle, ClAbstractVariable clv,
             ClStrength strength) {
-        this(cle, clv, strength, 1.0);
+        this(cle, clv, strength, Fraction.ONE);
     }
 
     public ClLinearEquation(ClLinearExpression cle, ClAbstractVariable clv) {
-        this(cle, clv, ClStrength.required, 1.0);
+        this(cle, clv, ClStrength.required, Fraction.ONE);
     }
 
     public ClLinearEquation(ClLinearExpression cle1, ClLinearExpression cle2,
-            ClStrength strength, double weight) {
+            ClStrength strength, Fraction weight) {
         super(((ClLinearExpression) cle1.clone()), strength, weight);
-        _expression.addExpression(cle2, -1.0);
+        _expression.addExpression(cle2, Fraction.mONE);
     }
 
     public ClLinearEquation(ClLinearExpression cle1, ClLinearExpression cle2,
             ClStrength strength) {
-        this(cle1, cle2, strength, 1.0);
+        this(cle1, cle2, strength, Fraction.ONE);
     }
 
     public ClLinearEquation(ClLinearExpression cle1, ClLinearExpression cle2) {
-        this(cle1, cle2, ClStrength.required, 1.0);
+        this(cle1, cle2, ClStrength.required, Fraction.ONE);
     }
 
     public String toString() {

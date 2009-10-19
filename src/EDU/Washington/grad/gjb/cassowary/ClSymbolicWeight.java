@@ -11,51 +11,52 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
+import net.cscott.sdr.util.Fraction;
+
 public class ClSymbolicWeight {
 
     public ClSymbolicWeight(int cLevels) {
-        _values = new double[cLevels];
-        // FIXGJB: ok to assume these get initialized to 0?
-        // for (int i = 0; i < cLevels; i++) {
-        // _values[i] = 0;
-        // }
+        _values = new Fraction[cLevels];
+        for (int i = 0; i < cLevels; i++) {
+            _values[i] = Fraction.ZERO;
+        }
     }
 
-    public ClSymbolicWeight(double w1, double w2, double w3) {
-        _values = new double[3];
+    public ClSymbolicWeight(Fraction w1, Fraction w2, Fraction w3) {
+        _values = new Fraction[3];
         _values[0] = w1;
         _values[1] = w2;
         _values[2] = w3;
     }
 
-    public ClSymbolicWeight(double[] weights) {
+    public ClSymbolicWeight(Fraction[] weights) {
         final int cLevels = weights.length;
-        _values = new double[cLevels];
+        _values = new Fraction[cLevels];
         for (int i = 0; i < cLevels; i++) {
             _values[i] = weights[i];
         }
     }
 
-    public static final ClSymbolicWeight clsZero = new ClSymbolicWeight(0.0,
-            0.0, 0.0);
+    public static final ClSymbolicWeight clsZero = new ClSymbolicWeight(Fraction.ZERO,
+            Fraction.ZERO, Fraction.ZERO);
 
     public Object clone() {
         return new ClSymbolicWeight(_values);
     }
 
-    public ClSymbolicWeight times(double n) {
+    public ClSymbolicWeight times(Fraction n) {
         ClSymbolicWeight clsw = (ClSymbolicWeight) clone();
         for (int i = 0; i < _values.length; i++) {
-            clsw._values[i] *= n;
+            clsw._values[i] = clsw._values[i].multiply(n);
         }
         return clsw;
     }
 
-    public ClSymbolicWeight divideBy(double n) {
+    public ClSymbolicWeight divideBy(Fraction n) {
         // assert(n != 0);
         ClSymbolicWeight clsw = (ClSymbolicWeight) clone();
         for (int i = 0; i < _values.length; i++) {
-            clsw._values[i] /= n;
+            clsw._values[i] = clsw._values[i].divide(n);
         }
         return clsw;
     }
@@ -65,7 +66,7 @@ public class ClSymbolicWeight {
 
         ClSymbolicWeight clsw = (ClSymbolicWeight) clone();
         for (int i = 0; i < _values.length; i++) {
-            clsw._values[i] += cl._values[i];
+            clsw._values[i] = clsw._values[i].add(cl._values[i]);
         }
         return clsw;
     }
@@ -75,7 +76,7 @@ public class ClSymbolicWeight {
 
         ClSymbolicWeight clsw = (ClSymbolicWeight) clone();
         for (int i = 0; i < _values.length; i++) {
-            clsw._values[i] -= cl._values[i];
+            clsw._values[i] = clsw._values[i].subtract(cl._values[i]);
         }
         return clsw;
     }
@@ -83,9 +84,9 @@ public class ClSymbolicWeight {
     public boolean lessThan(ClSymbolicWeight cl) {
         // assert cl.cLevels() == cLevels()
         for (int i = 0; i < _values.length; i++) {
-            if (_values[i] < cl._values[i])
+            if (_values[i].compareTo(cl._values[i]) < 0)
                 return true;
-            else if (_values[i] > cl._values[i])
+            else if (_values[i].compareTo(cl._values[i]) > 0)
                 return false;
         }
         return false; // they are equal
@@ -94,9 +95,9 @@ public class ClSymbolicWeight {
     public boolean lessThanOrEqual(ClSymbolicWeight cl) {
         // assert cl.cLevels() == cLevels()
         for (int i = 0; i < _values.length; i++) {
-            if (_values[i] < cl._values[i])
+            if (_values[i].compareTo(cl._values[i]) < 0)
                 return true;
-            else if (_values[i] > cl._values[i])
+            else if (_values[i].compareTo(cl._values[i]) > 0)
                 return false;
         }
         return true; // they are equal
@@ -104,7 +105,7 @@ public class ClSymbolicWeight {
 
     public boolean equal(ClSymbolicWeight cl) {
         for (int i = 0; i < _values.length; i++) {
-            if (_values[i] != cl._values[i])
+            if (!_values[i].equals(cl._values[i]))
                 return false;
         }
         return true; // they are equal
@@ -122,14 +123,14 @@ public class ClSymbolicWeight {
         return this.lessThan(clsZero);
     }
 
-    public double asDouble() {
+    public Fraction asFraction() {
         // ClSymbolicWeight clsw = (ClSymbolicWeight) clone(); // LM--Not used
-        double sum = 0;
-        double factor = 1;
-        double multiplier = 1000;
+        Fraction sum = Fraction.ZERO;
+        Fraction factor = Fraction.ONE;
+        Fraction multiplier = Fraction.valueOf(1000);
         for (int i = _values.length - 1; i >= 0; i--) {
-            sum += _values[i] * factor;
-            factor *= multiplier;
+            sum = sum.add(_values[i].multiply(factor));
+            factor = factor.multiply(multiplier);
         }
         return sum;
     }
@@ -149,6 +150,6 @@ public class ClSymbolicWeight {
         return _values.length;
     }
 
-    private double[] _values;
+    private Fraction[] _values;
 
 }

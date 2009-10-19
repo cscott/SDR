@@ -14,58 +14,60 @@ package EDU.Washington.grad.gjb.cassowary;
 
 import java.util.*;
 
+import net.cscott.sdr.util.Fraction;
+
 public class ClLinearExpression extends CL {
 
-    public ClLinearExpression(ClAbstractVariable clv, double value,
-            double constant) {
+    public ClLinearExpression(ClAbstractVariable clv, Fraction value,
+            Fraction constant) {
         if (CL.fGC)
             System.err.println("new ClLinearExpression");
 
-        _constant = new ClDouble(constant);
-        _terms = new Hashtable<ClAbstractVariable, ClDouble>(1);
+        _constant = new ClFractionWrapper(constant);
+        _terms = new Hashtable<ClAbstractVariable, ClFractionWrapper>(1);
         if (clv != null)
-            _terms.put(clv, new ClDouble(value));
+            _terms.put(clv, new ClFractionWrapper(value));
     }
 
-    public ClLinearExpression(double num) {
-        this(null, 0, num);
+    public ClLinearExpression(Fraction num) {
+        this(null, Fraction.ZERO, num);
     }
 
     public ClLinearExpression() {
-        this(0);
+        this(Fraction.ZERO);
     }
 
-    public ClLinearExpression(ClAbstractVariable clv, double value) {
-        this(clv, value, 0.0);
+    public ClLinearExpression(ClAbstractVariable clv, Fraction value) {
+        this(clv, value, Fraction.ZERO);
     }
 
     public ClLinearExpression(ClAbstractVariable clv) {
-        this(clv, 1, 0);
+        this(clv, Fraction.ONE, Fraction.ZERO);
     }
 
     // for use by the clone method
-    protected ClLinearExpression(ClDouble constant,
-            Hashtable<ClAbstractVariable, ClDouble> terms) {
+    protected ClLinearExpression(ClFractionWrapper constant,
+            Hashtable<ClAbstractVariable, ClFractionWrapper> terms) {
         if (CL.fGC)
             System.err.println("clone ClLinearExpression");
-        _constant = (ClDouble) constant.clone();
-        _terms = new Hashtable<ClAbstractVariable, ClDouble>();
+        _constant = (ClFractionWrapper) constant.clone();
+        _terms = new Hashtable<ClAbstractVariable, ClFractionWrapper>();
         // need to unalias the ClDouble-s that we clone (do a deep clone)
         for (Enumeration<ClAbstractVariable> e = terms.keys(); e
                 .hasMoreElements();) {
             ClAbstractVariable clv = e.nextElement();
-            _terms.put(clv, (ClDouble) terms.get(clv).clone());
+            _terms.put(clv, (ClFractionWrapper) terms.get(clv).clone());
         }
     }
 
-    public ClLinearExpression multiplyMe(double x) {
-        _constant.setValue(_constant.doubleValue() * x);
+    public ClLinearExpression multiplyMe(Fraction x) {
+        _constant.setValue(_constant.getValue().multiply(x));
 
         for (Enumeration<ClAbstractVariable> e = _terms.keys(); e
                 .hasMoreElements();) {
             ClAbstractVariable clv = e.nextElement();
-            ClDouble cld = _terms.get(clv);
-            cld.setValue(cld.doubleValue() * x);
+            ClFractionWrapper cld = _terms.get(clv);
+            cld.setValue(cld.getValue().multiply(x));
         }
         return this;
     }
@@ -74,44 +76,44 @@ public class ClLinearExpression extends CL {
         return new ClLinearExpression(_constant, _terms);
     }
 
-    public final ClLinearExpression times(double x) {
+    public final ClLinearExpression times(Fraction x) {
         return ((ClLinearExpression) clone()).multiplyMe(x);
     }
 
     public final ClLinearExpression times(ClLinearExpression expr)
             throws ExCLNonlinearExpression {
         if (isConstant()) {
-            return expr.times(_constant.doubleValue());
+            return expr.times(_constant.getValue());
         } else if (!expr.isConstant()) {
             throw new ExCLNonlinearExpression();
         }
-        return times(expr._constant.doubleValue());
+        return times(expr._constant.getValue());
     }
 
     public final ClLinearExpression plus(ClLinearExpression expr) {
-        return ((ClLinearExpression) clone()).addExpression(expr, 1.0);
+        return ((ClLinearExpression) clone()).addExpression(expr, Fraction.ONE);
     }
 
     public final ClLinearExpression plus(ClVariable var)
             throws ExCLNonlinearExpression {
-        return ((ClLinearExpression) clone()).addVariable(var, 1.0);
+        return ((ClLinearExpression) clone()).addVariable(var, Fraction.ONE);
     }
 
     public final ClLinearExpression minus(ClLinearExpression expr) {
-        return ((ClLinearExpression) clone()).addExpression(expr, -1.0);
+        return ((ClLinearExpression) clone()).addExpression(expr, Fraction.mONE);
     }
 
     public final ClLinearExpression minus(ClVariable var)
             throws ExCLNonlinearExpression {
-        return ((ClLinearExpression) clone()).addVariable(var, -1.0);
+        return ((ClLinearExpression) clone()).addVariable(var, Fraction.mONE);
     }
 
-    public final ClLinearExpression divide(double x)
+    public final ClLinearExpression divide(Fraction x)
             throws ExCLNonlinearExpression {
-        if (CL.approx(x, 0.0)) {
+        if (x.equals(Fraction.ZERO)) {
             throw new ExCLNonlinearExpression();
         }
-        return times(1.0 / x);
+        return times(x.invert());
     }
 
     public final ClLinearExpression divide(ClLinearExpression expr)
@@ -119,15 +121,15 @@ public class ClLinearExpression extends CL {
         if (!expr.isConstant()) {
             throw new ExCLNonlinearExpression();
         }
-        return divide(expr._constant.doubleValue());
+        return divide(expr._constant.getValue());
     }
 
     public final ClLinearExpression divFrom(ClLinearExpression expr)
             throws ExCLNonlinearExpression {
-        if (!isConstant() || CL.approx(_constant.doubleValue(), 0.0)) {
+        if (!isConstant() || _constant.getValue().equals(Fraction.ZERO)) {
             throw new ExCLNonlinearExpression();
         }
-        return expr.divide(_constant.doubleValue());
+        return expr.divide(_constant.getValue());
     }
 
     public final ClLinearExpression subtractFrom(ClLinearExpression expr) {
@@ -138,73 +140,73 @@ public class ClLinearExpression extends CL {
     // Notify the solver if a variable is added or deleted from this
     // expression.
     public final ClLinearExpression addExpression(ClLinearExpression expr,
-            double n, ClAbstractVariable subject, ClTableau solver) {
-        incrementConstant(n * expr.constant());
+            Fraction n, ClAbstractVariable subject, ClTableau solver) {
+        incrementConstant(n.multiply(expr.constant()));
 
         for (Enumeration<ClAbstractVariable> e = expr.terms().keys(); e
                 .hasMoreElements();) {
             ClAbstractVariable clv = e.nextElement();
-            double coeff = expr.terms().get(clv).doubleValue();
-            addVariable(clv, coeff * n, subject, solver);
+            Fraction coeff = expr.terms().get(clv).getValue();
+            addVariable(clv, coeff.multiply(n), subject, solver);
         }
         return this;
     }
 
     // Add n*expr to this expression from another expression expr.
     public final ClLinearExpression addExpression(ClLinearExpression expr,
-            double n) {
-        incrementConstant(n * expr.constant());
+            Fraction n) {
+        incrementConstant(n.multiply(expr.constant()));
 
         for (Enumeration<ClAbstractVariable> e = expr.terms().keys(); e
                 .hasMoreElements();) {
             ClAbstractVariable clv = e.nextElement();
-            double coeff = expr.terms().get(clv).doubleValue();
-            addVariable(clv, coeff * n);
+            Fraction coeff = expr.terms().get(clv).getValue();
+            addVariable(clv, coeff.multiply(n));
         }
         return this;
     }
 
     public final ClLinearExpression addExpression(ClLinearExpression expr) {
-        return addExpression(expr, 1.0);
+        return addExpression(expr, Fraction.ONE);
     }
 
     // Add a term c*v to this expression. If the expression already
     // contains a term involving v, add c to the existing coefficient.
     // If the new coefficient is approximately 0, delete v.
-    public final ClLinearExpression addVariable(ClAbstractVariable v, double c) { // body
+    public final ClLinearExpression addVariable(ClAbstractVariable v, Fraction c) { // body
         // largely
         // duplicated
         // below
         if (fTraceOn)
             fnenterprint("addVariable:" + v + ", " + c);
 
-        ClDouble coeff = _terms.get(v);
+        ClFractionWrapper coeff = _terms.get(v);
         if (coeff != null) {
-            double new_coefficient = coeff.doubleValue() + c;
-            if (CL.approx(new_coefficient, 0.0)) {
+            Fraction new_coefficient = coeff.getValue().add(c);
+            if (new_coefficient.equals(Fraction.ZERO)) {
                 _terms.remove(v);
             } else {
                 coeff.setValue(new_coefficient);
             }
         } else {
-            if (!CL.approx(c, 0.0)) {
-                _terms.put(v, new ClDouble(c));
+            if (!c.equals(Fraction.ZERO)) {
+                _terms.put(v, new ClFractionWrapper(c));
             }
         }
         return this;
     }
 
     public final ClLinearExpression addVariable(ClAbstractVariable v) {
-        return addVariable(v, 1.0);
+        return addVariable(v, Fraction.ONE);
     }
 
-    public final ClLinearExpression setVariable(ClAbstractVariable v, double c) {
-        // assert(c != 0.0);
-        ClDouble coeff = _terms.get(v);
+    public final ClLinearExpression setVariable(ClAbstractVariable v, Fraction c) {
+        // assert(c != Fraction.ZERO);
+        ClFractionWrapper coeff = _terms.get(v);
         if (coeff != null)
             coeff.setValue(c);
         else
-            _terms.put(v, new ClDouble(c));
+            _terms.put(v, new ClFractionWrapper(c));
         return this;
     }
 
@@ -212,7 +214,7 @@ public class ClLinearExpression extends CL {
     // contains a term involving v, add c to the existing coefficient.
     // If the new coefficient is approximately 0, delete v. Notify the
     // solver if v appears or disappears from this expression.
-    public final ClLinearExpression addVariable(ClAbstractVariable v, double c,
+    public final ClLinearExpression addVariable(ClAbstractVariable v, Fraction c,
             ClAbstractVariable subject, ClTableau solver) { // body largely
                                                             // duplicated
         // above
@@ -220,18 +222,18 @@ public class ClLinearExpression extends CL {
             fnenterprint("addVariable:" + v + ", " + c + ", " + subject
                     + ", ...");
 
-        ClDouble coeff = _terms.get(v);
+        ClFractionWrapper coeff = _terms.get(v);
         if (coeff != null) {
-            double new_coefficient = coeff.doubleValue() + c;
-            if (CL.approx(new_coefficient, 0.0)) {
+            Fraction new_coefficient = coeff.getValue().add(c);
+            if (new_coefficient.equals(Fraction.ZERO)) {
                 solver.noteRemovedVariable(v, subject);
                 _terms.remove(v);
             } else {
                 coeff.setValue(new_coefficient);
             }
         } else {
-            if (!CL.approx(c, 0.0)) {
-                _terms.put(v, new ClDouble(c));
+            if (!c.equals(Fraction.ZERO)) {
+                _terms.put(v, new ClFractionWrapper(c));
                 solver.noteAddedVariable(v, subject);
             }
         }
@@ -275,18 +277,18 @@ public class ClLinearExpression extends CL {
         if (fTraceOn)
             traceprint("this = " + this);
 
-        double multiplier = _terms.remove(var).doubleValue();
-        incrementConstant(multiplier * expr.constant());
+        Fraction multiplier = _terms.remove(var).getValue();
+        incrementConstant(multiplier.multiply(expr.constant()));
 
         for (Enumeration<ClAbstractVariable> e = expr.terms().keys(); e
                 .hasMoreElements();) {
             ClAbstractVariable clv = e.nextElement();
-            double coeff = expr.terms().get(clv).doubleValue();
-            ClDouble d_old_coeff = _terms.get(clv);
+            Fraction coeff = expr.terms().get(clv).getValue();
+            ClFractionWrapper d_old_coeff = _terms.get(clv);
             if (d_old_coeff != null) {
-                double old_coeff = d_old_coeff.doubleValue();
-                double newCoeff = old_coeff + multiplier * coeff;
-                if (CL.approx(newCoeff, 0.0)) {
+                Fraction old_coeff = d_old_coeff.getValue();
+                Fraction newCoeff = old_coeff.add(multiplier.multiply(coeff));
+                if (newCoeff.equals(Fraction.ZERO)) {
                     solver.noteRemovedVariable(clv, subject);
                     _terms.remove(clv);
                 } else {
@@ -294,7 +296,7 @@ public class ClLinearExpression extends CL {
                 }
             } else {
                 // did not have that variable already
-                _terms.put(clv, new ClDouble(multiplier * coeff));
+                _terms.put(clv, new ClFractionWrapper(multiplier.multiply(coeff)));
                 solver.noteAddedVariable(clv, subject);
             }
         }
@@ -319,11 +321,11 @@ public class ClLinearExpression extends CL {
     // Note that the term involving newSubject has been dropped.
     public final void changeSubject(ClAbstractVariable old_subject,
             ClAbstractVariable new_subject) {
-        ClDouble cld = _terms.get(old_subject);
+        ClFractionWrapper cld = _terms.get(old_subject);
         if (cld != null)
             cld.setValue(newSubject(new_subject));
         else
-            _terms.put(old_subject, new ClDouble(newSubject(new_subject)));
+            _terms.put(old_subject, new ClFractionWrapper(newSubject(new_subject)));
     }
 
     // This linear expression currently represents the equation self=0.
@@ -343,40 +345,40 @@ public class ClLinearExpression extends CL {
     //
     // Note that the term involving subject has been dropped.
     // Returns the reciprocal, so changeSubject can use it, too
-    public final double newSubject(ClAbstractVariable subject) {
+    public final Fraction newSubject(ClAbstractVariable subject) {
         if (fTraceOn)
             fnenterprint("newSubject:" + subject);
-        ClDouble coeff = _terms.remove(subject);
-        double reciprocal = 1.0 / coeff.doubleValue();
-        multiplyMe(-reciprocal);
+        ClFractionWrapper coeff = _terms.remove(subject);
+        Fraction reciprocal = coeff.getValue().invert();
+        multiplyMe(reciprocal.negate());
         return reciprocal;
     }
 
     // Return the coefficient corresponding to variable var, i.e.,
     // the 'ci' corresponding to the 'vi' that var is:
     // v1*c1 + v2*c2 + .. + vn*cn + c
-    public final double coefficientFor(ClAbstractVariable var) {
-        ClDouble coeff = _terms.get(var);
+    public final Fraction coefficientFor(ClAbstractVariable var) {
+        ClFractionWrapper coeff = _terms.get(var);
         if (coeff != null)
-            return coeff.doubleValue();
+            return coeff.getValue();
         else
-            return 0.0;
+            return Fraction.ZERO;
     }
 
-    public final double constant() {
-        return _constant.doubleValue();
+    public final Fraction constant() {
+        return _constant.getValue();
     }
 
-    public final void set_constant(double c) {
+    public final void set_constant(Fraction c) {
         _constant.setValue(c);
     }
 
-    public final Hashtable<ClAbstractVariable, ClDouble> terms() {
+    public final Hashtable<ClAbstractVariable, ClFractionWrapper> terms() {
         return _terms;
     }
 
-    public final void incrementConstant(double c) {
-        _constant.setValue(_constant.doubleValue() + c);
+    public final void incrementConstant(Fraction c) {
+        _constant.setValue(_constant.getValue().add(c));
     }
 
     public final boolean isConstant() {
@@ -387,19 +389,19 @@ public class ClLinearExpression extends CL {
         StringBuffer bstr = new StringBuffer();
         Enumeration<ClAbstractVariable> e = _terms.keys();
 
-        if (!CL.approx(_constant.doubleValue(), 0.0) || _terms.size() == 0) {
+        if (!_constant.getValue().equals(Fraction.ZERO) || _terms.size() == 0) {
             bstr.append(_constant.toString());
         } else {
             if (_terms.size() == 0) {
                 return bstr.toString();
             }
             ClAbstractVariable clv = e.nextElement();
-            ClDouble coeff = _terms.get(clv);
+            ClFractionWrapper coeff = _terms.get(clv);
             bstr.append(coeff.toString() + "*" + clv.toString());
         }
         for (; e.hasMoreElements();) {
             ClAbstractVariable clv = e.nextElement();
-            ClDouble coeff = _terms.get(clv);
+            ClFractionWrapper coeff = _terms.get(clv);
             bstr.append(" + " + coeff.toString() + "*" + clv.toString());
         }
         return bstr.toString();
@@ -430,8 +432,8 @@ public class ClLinearExpression extends CL {
         return e1 == e2;
     }
 
-    private ClDouble _constant;
-    private Hashtable<ClAbstractVariable, ClDouble> _terms; // from ClVariable
+    private ClFractionWrapper _constant;
+    private Hashtable<ClAbstractVariable, ClFractionWrapper> _terms; // from ClVariable
     // to
     // ClDouble
 

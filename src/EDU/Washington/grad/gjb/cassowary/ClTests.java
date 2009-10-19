@@ -13,6 +13,8 @@ package EDU.Washington.grad.gjb.cassowary;
 
 import java.util.Random;
 
+import net.cscott.sdr.util.Fraction;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,8 +26,8 @@ public class ClTests extends CL {
     public final static boolean simple1() throws ExCLInternalError,
             ExCLRequiredFailure {
         boolean fOkResult = true;
-        ClVariable x = new ClVariable(167);
-        ClVariable y = new ClVariable(2);
+        ClVariable x = new ClVariable(Fraction.valueOf(167));
+        ClVariable y = new ClVariable(Fraction.TWO);
         ClSimplexSolver solver = new ClSimplexSolver();
 
         // solver.addStay(x);
@@ -33,7 +35,7 @@ public class ClTests extends CL {
 
         ClLinearEquation eq = new ClLinearEquation(x, new ClLinearExpression(y));
         solver.addConstraint(eq);
-        fOkResult = (x.value() == y.value());
+        fOkResult = (x.value().equals(y.value()));
 
         System.out.println("x == " + x.value());
         System.out.println("y == " + y.value());
@@ -43,14 +45,14 @@ public class ClTests extends CL {
     public final static boolean justStay1() throws ExCLInternalError,
             ExCLRequiredFailure {
         boolean fOkResult = true;
-        ClVariable x = new ClVariable(5);
-        ClVariable y = new ClVariable(10);
+        ClVariable x = new ClVariable(Fraction.valueOf(5));
+        ClVariable y = new ClVariable(Fraction.valueOf(10));
         ClSimplexSolver solver = new ClSimplexSolver();
 
         solver.addStay(x);
         solver.addStay(y);
-        fOkResult = fOkResult && CL.approx(x, 5);
-        fOkResult = fOkResult && CL.approx(y, 10);
+        fOkResult = fOkResult && x.value().equals(Fraction.valueOf(5));
+        fOkResult = fOkResult && y.value().equals(Fraction.valueOf(10));
         System.out.println("x == " + x.value());
         System.out.println("y == " + y.value());
         return (fOkResult);
@@ -62,37 +64,37 @@ public class ClTests extends CL {
         ClVariable x = new ClVariable("x");
         ClSimplexSolver solver = new ClSimplexSolver();
 
-        solver.addConstraint(new ClLinearEquation(x, 100, ClStrength.weak));
+        solver.addConstraint(new ClLinearEquation(x, Fraction.valueOf(100), ClStrength.weak));
 
-        ClLinearInequality c10 = new ClLinearInequality(x, CL.Op.LEQ, 10.0);
-        ClLinearInequality c20 = new ClLinearInequality(x, CL.Op.LEQ, 20.0);
+        ClLinearInequality c10 = new ClLinearInequality(x, CL.Op.LEQ, Fraction.valueOf(10));
+        ClLinearInequality c20 = new ClLinearInequality(x, CL.Op.LEQ, Fraction.valueOf(20));
 
         solver.addConstraint(c10).addConstraint(c20);
 
-        fOkResult = fOkResult && CL.approx(x, 10.0);
+        fOkResult = fOkResult && x.value().equals(Fraction.valueOf(10));
         System.out.println("x == " + x.value());
 
         solver.removeConstraint(c10);
-        fOkResult = fOkResult && CL.approx(x, 20.0);
+        fOkResult = fOkResult && x.value().equals(Fraction.valueOf(20));
         System.out.println("x == " + x.value());
 
         solver.removeConstraint(c20);
-        fOkResult = fOkResult && CL.approx(x, 100.0);
+        fOkResult = fOkResult && x.value().equals(Fraction.valueOf(100));
         System.out.println("x == " + x.value());
 
-        ClLinearInequality c10again = new ClLinearInequality(x, CL.Op.LEQ, 10.0);
+        ClLinearInequality c10again = new ClLinearInequality(x, CL.Op.LEQ, Fraction.valueOf(10));
 
         solver.addConstraint(c10).addConstraint(c10again);
 
-        fOkResult = fOkResult && CL.approx(x, 10.0);
+        fOkResult = fOkResult && x.value().equals(Fraction.valueOf(10));
         System.out.println("x == " + x.value());
 
         solver.removeConstraint(c10);
-        fOkResult = fOkResult && CL.approx(x, 10.0);
+        fOkResult = fOkResult && x.value().equals(Fraction.valueOf(10));
         System.out.println("x == " + x.value());
 
         solver.removeConstraint(c10again);
-        fOkResult = fOkResult && CL.approx(x, 100.0);
+        fOkResult = fOkResult && x.value().equals(Fraction.valueOf(100));
         System.out.println("x == " + x.value());
 
         return (fOkResult);
@@ -106,32 +108,32 @@ public class ClTests extends CL {
         ClVariable y = new ClVariable("y");
         ClSimplexSolver solver = new ClSimplexSolver();
 
-        solver.addConstraint(new ClLinearEquation(x, 100.0, ClStrength.weak))
+        solver.addConstraint(new ClLinearEquation(x, Fraction.valueOf(100), ClStrength.weak))
                 .addConstraint(
-                        new ClLinearEquation(y, 120.0, ClStrength.strong));
+                        new ClLinearEquation(y, Fraction.valueOf(120), ClStrength.strong));
 
-        ClLinearInequality c10 = new ClLinearInequality(x, CL.Op.LEQ, 10.0);
-        ClLinearInequality c20 = new ClLinearInequality(x, CL.Op.LEQ, 20.0);
+        ClLinearInequality c10 = new ClLinearInequality(x, CL.Op.LEQ, Fraction.valueOf(10));
+        ClLinearInequality c20 = new ClLinearInequality(x, CL.Op.LEQ, Fraction.valueOf(20));
 
         solver.addConstraint(c10).addConstraint(c20);
-        fOkResult = fOkResult && CL.approx(x, 10.0) && CL.approx(y, 120.0);
+        fOkResult = fOkResult && x.value().equals(Fraction.valueOf(10)) && y.value().equals(Fraction.valueOf(120));
         System.out.println("x == " + x.value() + ", y == " + y.value());
 
         solver.removeConstraint(c10);
-        fOkResult = fOkResult && CL.approx(x, 20.0) && CL.approx(y, 120.0);
+        fOkResult = fOkResult && x.value().equals(Fraction.valueOf(20)) && y.value().equals(Fraction.valueOf(120));
         System.out.println("x == " + x.value() + ", y == " + y.value());
 
-        ClLinearEquation cxy = new ClLinearEquation(CL.Times(2.0, x), y);
+        ClLinearEquation cxy = new ClLinearEquation(CL.Times(Fraction.TWO, x), y);
         solver.addConstraint(cxy);
-        fOkResult = fOkResult && CL.approx(x, 20.0) && CL.approx(y, 40.0);
+        fOkResult = fOkResult && x.value().equals(Fraction.valueOf(20)) && y.value().equals(Fraction.valueOf(40));
         System.out.println("x == " + x.value() + ", y == " + y.value());
 
         solver.removeConstraint(c20);
-        fOkResult = fOkResult && CL.approx(x, 60.0) && CL.approx(y, 120.0);
+        fOkResult = fOkResult && x.value().equals(Fraction.valueOf(60)) && y.value().equals(Fraction.valueOf(120));
         System.out.println("x == " + x.value() + ", y == " + y.value());
 
         solver.removeConstraint(cxy);
-        fOkResult = fOkResult && CL.approx(x, 100.0) && CL.approx(y, 120.0);
+        fOkResult = fOkResult && x.value().equals(Fraction.valueOf(100)) && y.value().equals(Fraction.valueOf(120));
         System.out.println("x == " + x.value() + ", y == " + y.value());
 
         return (fOkResult);
@@ -145,14 +147,13 @@ public class ClTests extends CL {
         ClSimplexSolver solver = new ClSimplexSolver();
 
         solver.addConstraint(new ClLinearInequality(x, CL.Op.LEQ, y))
-                .addConstraint(new ClLinearEquation(y, CL.Plus(x, 3.0)))
-                .addConstraint(new ClLinearEquation(x, 10.0, ClStrength.weak))
-                .addConstraint(new ClLinearEquation(y, 10.0, ClStrength.weak));
+                .addConstraint(new ClLinearEquation(y, CL.Plus(x, Fraction.valueOf(3))))
+                .addConstraint(new ClLinearEquation(x, Fraction.valueOf(10), ClStrength.weak))
+                .addConstraint(new ClLinearEquation(y, Fraction.valueOf(10), ClStrength.weak));
 
         fOkResult = fOkResult
-                && (CL.approx(x, 10.0) && CL.approx(y, 13.0) || CL.approx(x,
-                        7.0)
-                        && CL.approx(y, 10.0));
+                && ((x.value().equals(Fraction.valueOf(10)) && y.value().equals(Fraction.valueOf(13))) ||
+                    (x.value().equals(Fraction.valueOf(7)) && y.value().equals(Fraction.valueOf(10))));
 
         System.out.println("x == " + x.value() + ", y == " + y.value());
         return (fOkResult);
@@ -164,8 +165,8 @@ public class ClTests extends CL {
             ClVariable x = new ClVariable("x");
             ClSimplexSolver solver = new ClSimplexSolver();
 
-            solver.addConstraint(new ClLinearEquation(x, 10.0)).addConstraint(
-                    new ClLinearEquation(x, 5.0));
+            solver.addConstraint(new ClLinearEquation(x, Fraction.valueOf(10))).addConstraint(
+                    new ClLinearEquation(x, Fraction.valueOf(5)));
 
             // no exception, we failed!
             return (false);
@@ -182,8 +183,8 @@ public class ClTests extends CL {
             ClVariable x = new ClVariable("x");
             ClSimplexSolver solver = new ClSimplexSolver();
 
-            solver.addConstraint(new ClLinearInequality(x, CL.Op.GEQ, 10.0))
-                    .addConstraint(new ClLinearInequality(x, CL.Op.LEQ, 5.0));
+            solver.addConstraint(new ClLinearInequality(x, CL.Op.GEQ, Fraction.valueOf(10)))
+                    .addConstraint(new ClLinearInequality(x, CL.Op.LEQ, Fraction.valueOf(5)));
 
             // no exception, we failed!
             return (false);
@@ -209,31 +210,31 @@ public class ClTests extends CL {
 
             solver.addEditVar(x).addEditVar(y).beginEdit();
 
-            solver.suggestValue(x, 10).suggestValue(y, 20).resolve();
+            solver.suggestValue(x, Fraction.valueOf(10)).suggestValue(y, Fraction.valueOf(20)).resolve();
 
             System.out.println("x = " + x.value() + "; y = " + y.value());
             System.out.println("w = " + w.value() + "; h = " + h.value());
 
-            fOkResult = fOkResult && CL.approx(x, 10) && CL.approx(y, 20)
-                    && CL.approx(w, 0) && CL.approx(h, 0);
+            fOkResult = fOkResult && x.value().equals(Fraction.valueOf(10)) && y.value().equals(Fraction.valueOf(20))
+                    && w.value().equals(Fraction.ZERO) && h.value().equals(Fraction.ZERO);
 
             solver.addEditVar(w).addEditVar(h).beginEdit();
 
-            solver.suggestValue(w, 30).suggestValue(h, 40).endEdit();
+            solver.suggestValue(w, Fraction.valueOf(30)).suggestValue(h, Fraction.valueOf(40)).endEdit();
 
             System.out.println("x = " + x.value() + "; y = " + y.value());
             System.out.println("w = " + w.value() + "; h = " + h.value());
 
-            fOkResult = fOkResult && CL.approx(x, 10) && CL.approx(y, 20)
-                    && CL.approx(w, 30) && CL.approx(h, 40);
+            fOkResult = fOkResult && x.value().equals(Fraction.valueOf(10)) && y.value().equals(Fraction.valueOf(20))
+                    && w.value().equals(Fraction.valueOf(30)) && h.value().equals(Fraction.valueOf(40));
 
-            solver.suggestValue(x, 50).suggestValue(y, 60).endEdit();
+            solver.suggestValue(x, Fraction.valueOf(50)).suggestValue(y, Fraction.valueOf(60)).endEdit();
 
             System.out.println("x = " + x.value() + "; y = " + y.value());
             System.out.println("w = " + w.value() + "; h = " + h.value());
 
-            fOkResult = fOkResult && CL.approx(x, 50) && CL.approx(y, 60)
-                    && CL.approx(w, 30) && CL.approx(h, 40);
+            fOkResult = fOkResult && x.value().equals(Fraction.valueOf(50)) && y.value().equals(Fraction.valueOf(60))
+                    && w.value().equals(Fraction.valueOf(30)) && h.value().equals(Fraction.valueOf(40));
 
             return (fOkResult);
         } catch (ExCLRequiredFailure err) {
@@ -252,12 +253,12 @@ public class ClTests extends CL {
             ClVariable z = new ClVariable("z");
             ClSimplexSolver solver = new ClSimplexSolver();
 
-            solver.addConstraint(new ClLinearInequality(w, CL.Op.GEQ, 10.0))
+            solver.addConstraint(new ClLinearInequality(w, CL.Op.GEQ, Fraction.valueOf(10)))
                     .addConstraint(new ClLinearInequality(x, CL.Op.GEQ, w))
                     .addConstraint(new ClLinearInequality(y, CL.Op.GEQ, x))
                     .addConstraint(new ClLinearInequality(z, CL.Op.GEQ, y))
-                    .addConstraint(new ClLinearInequality(z, CL.Op.GEQ, 8.0))
-                    .addConstraint(new ClLinearInequality(z, CL.Op.LEQ, 4.0));
+                    .addConstraint(new ClLinearInequality(z, CL.Op.GEQ, Fraction.valueOf(8)))
+                    .addConstraint(new ClLinearInequality(z, CL.Op.LEQ, Fraction.valueOf(4)));
 
             // no exception, we failed!
             return (false);
@@ -292,18 +293,18 @@ public class ClTests extends CL {
         int nvs = 0;
         int k;
         int j;
-        double coeff;
+        Fraction coeff;
         for (j = 0; j < nCns; j++) {
             // number of variables in this constraint
             nvs = RandomInRange(1, maxVars);
             ClLinearExpression expr = new ClLinearExpression(
-                    UniformRandomDiscretized() * 20.0 - 10.0);
+                    UniformRandomDiscretized().multiply(Fraction.valueOf(20)).subtract(Fraction.valueOf(10)));
             for (k = 0; k < nvs; k++) {
-                coeff = UniformRandomDiscretized() * 10 - 5;
-                int iclv = (int) (UniformRandomDiscretized() * nVars);
+                coeff = UniformRandomDiscretized().multiply(Fraction.valueOf(10)).subtract(Fraction.valueOf(5));
+                int iclv = RND.nextInt(nVars);
                 expr.addExpression(CL.Times(rgpclv[iclv], coeff));
             }
-            if (UniformRandomDiscretized() < ineqProb) {
+            if (UniformRandomDiscretized().doubleValue() < ineqProb) {
                 rgpcns[j] = new ClLinearInequality(expr);
             } else {
                 rgpcns[j] = new ClLinearEquation(expr);
@@ -335,8 +336,8 @@ public class ClTests extends CL {
         System.out.println("time = " + timer.ElapsedTime() + "\n");
         timer.Start();
 
-        int e1Index = (int) (UniformRandomDiscretized() * nVars);
-        int e2Index = (int) (UniformRandomDiscretized() * nVars);
+        int e1Index = RND.nextInt(nVars);
+        int e2Index = RND.nextInt(nVars);
 
         System.out.println("indices " + e1Index + ", " + e2Index);
 
@@ -356,8 +357,8 @@ public class ClTests extends CL {
 
         // FIXGJB start = Timer.now();
         for (int m = 0; m < nResolves; m++) {
-            solver.resolve(rgpclv[e1Index].value() * 1.001, rgpclv[e2Index]
-                    .value() * 1.001);
+            solver.resolve(rgpclv[e1Index].value().multiply(Fraction.valueOf(1001,1000)), rgpclv[e2Index]
+                    .value().multiply(Fraction.valueOf(1001,1000)));
         }
 
         System.out.println("done resolves -- now removing constraints");
@@ -382,18 +383,18 @@ public class ClTests extends CL {
         return true;
     }
 
-    public final static double UniformRandomDiscretized() {
-        double n = Math.abs(RND.nextInt());
-        return (n / Integer.MAX_VALUE);
+    public final static Fraction UniformRandomDiscretized() {
+        // in the closed range [0, 1]
+        return Fraction.valueOf(RND.nextInt(101), 100);
     }
 
     public final static int RandomInRange(int low, int high) {
-        return (int) UniformRandomDiscretized() * (high - low) + low;
+        return (int) UniformRandomDiscretized().doubleValue() * (high - low) + low;
     }
 
     @Test
     public void runTests() throws Exception {
-        Assert.assertTrue(runAllTests(new String[0]));
+        Assert.assertTrue(runAllTests(new String[] { "10", "10", "50" }));
     }
     public final static void main(String[] args) throws Exception {
         System.exit(runAllTests(args) ? 0 : 1);

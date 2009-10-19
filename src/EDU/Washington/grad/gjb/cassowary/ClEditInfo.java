@@ -12,6 +12,8 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
+import net.cscott.sdr.util.Fraction;
+
 // ClEditInfo is a privately-used class
 // that just wraps a constraint, its positive and negative
 // error variables, and its prior edit constant.
@@ -20,7 +22,7 @@ package EDU.Washington.grad.gjb.cassowary;
 // constants from the Smalltalk version of the code.
 class ClEditInfo {
     public ClEditInfo(ClConstraint cn_, ClSlackVariable eplus_,
-            ClSlackVariable eminus_, double prevEditConstant_, int i_) {
+            ClSlackVariable eminus_, Fraction prevEditConstant_, int i_) {
         cn = cn_;
         clvEditPlus = eplus_;
         clvEditMinus = eminus_;
@@ -44,18 +46,18 @@ class ClEditInfo {
         return clvEditMinus;
     }
 
-    public double PrevEditConstant() {
+    public Fraction PrevEditConstant() {
         return prevEditConstant;
     }
 
-    public void SetPrevEditConstant(double prevEditConstant_) {
+    public void SetPrevEditConstant(Fraction prevEditConstant_) {
         prevEditConstant = prevEditConstant_;
     }
 
     private ClConstraint cn;
     private ClSlackVariable clvEditPlus;
     private ClSlackVariable clvEditMinus;
-    private double prevEditConstant;
+    private Fraction prevEditConstant;
     private int i;
 
 }

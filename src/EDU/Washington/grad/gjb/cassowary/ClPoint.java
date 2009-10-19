@@ -12,13 +12,15 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
+import net.cscott.sdr.util.Fraction;
+
 public class ClPoint {
-    public ClPoint(double x, double y) {
+    public ClPoint(Fraction x, Fraction y) {
         _clv_x = new ClVariable(x);
         _clv_y = new ClVariable(y);
     }
 
-    public ClPoint(double x, double y, int a) {
+    public ClPoint(Fraction x, Fraction y, int a) {
         _clv_x = new ClVariable("x" + a, x);
         _clv_y = new ClVariable("y" + a, y);
     }
@@ -37,7 +39,7 @@ public class ClPoint {
     }
 
     // use only before adding into the solver
-    public void SetXY(double x, double y) {
+    public void SetXY(Fraction x, Fraction y) {
         _clv_x.set_value(x);
         _clv_y.set_value(y);
     }
@@ -47,11 +49,11 @@ public class ClPoint {
         _clv_y = clv_y;
     }
 
-    public double Xvalue() {
+    public Fraction Xvalue() {
         return X().value();
     }
 
-    public double Yvalue() {
+    public Fraction Yvalue() {
         return Y().value();
     }
 

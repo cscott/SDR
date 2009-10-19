@@ -12,18 +12,20 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
+import net.cscott.sdr.util.Fraction;
+
 public class ClStayConstraint extends ClEditOrStayConstraint {
 
-    public ClStayConstraint(ClVariable var, ClStrength strength, double weight) {
+    public ClStayConstraint(ClVariable var, ClStrength strength, Fraction weight) {
         super(var, strength, weight);
     }
 
     public ClStayConstraint(ClVariable var, ClStrength strength) {
-        super(var, strength, 1.0);
+        super(var, strength, Fraction.ONE);
     }
 
     public ClStayConstraint(ClVariable var) {
-        super(var, ClStrength.weak, 1.0);
+        super(var, ClStrength.weak, Fraction.ONE);
     }
 
     public boolean isStayConstraint() {

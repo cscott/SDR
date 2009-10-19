@@ -12,21 +12,23 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
+import net.cscott.sdr.util.Fraction;
+
 abstract class ClEditOrStayConstraint extends ClConstraint {
 
     public ClEditOrStayConstraint(ClVariable var, ClStrength strength,
-            double weight) {
+            Fraction weight) {
         super(strength, weight);
         _variable = var;
-        _expression = new ClLinearExpression(_variable, -1.0, _variable.value());
+        _expression = new ClLinearExpression(_variable, Fraction.mONE, _variable.value());
     }
 
     public ClEditOrStayConstraint(ClVariable var, ClStrength strength) {
-        this(var, strength, 1.0);
+        this(var, strength, Fraction.ONE);
     }
 
     public ClEditOrStayConstraint(ClVariable var) {
-        this(var, ClStrength.required, 1.0);
+        this(var, ClStrength.required, Fraction.ONE);
         _variable = var;
     }
 

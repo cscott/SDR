@@ -13,6 +13,8 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
+import net.cscott.sdr.util.Fraction;
+
 public class CL {
     protected final static boolean fDebugOn = false;
     protected final static boolean fTraceOn = false;
@@ -59,11 +61,11 @@ public class CL {
         return e1.plus(e2);
     }
 
-    public static ClLinearExpression Plus(ClLinearExpression e1, double e2) {
+    public static ClLinearExpression Plus(ClLinearExpression e1, Fraction e2) {
         return e1.plus(new ClLinearExpression(e2));
     }
 
-    public static ClLinearExpression Plus(double e1, ClLinearExpression e2) {
+    public static ClLinearExpression Plus(Fraction e1, ClLinearExpression e2) {
         return (new ClLinearExpression(e1)).plus(e2);
     }
 
@@ -75,11 +77,11 @@ public class CL {
         return e1.plus(new ClLinearExpression(e2));
     }
 
-    public static ClLinearExpression Plus(ClVariable e1, double e2) {
+    public static ClLinearExpression Plus(ClVariable e1, Fraction e2) {
         return (new ClLinearExpression(e1)).plus(new ClLinearExpression(e2));
     }
 
-    public static ClLinearExpression Plus(double e1, ClVariable e2) {
+    public static ClLinearExpression Plus(Fraction e1, ClVariable e2) {
         return (new ClLinearExpression(e1)).plus(new ClLinearExpression(e2));
     }
 
@@ -92,11 +94,11 @@ public class CL {
         return e1.minus(e2);
     }
 
-    public static ClLinearExpression Minus(double e1, ClLinearExpression e2) {
+    public static ClLinearExpression Minus(Fraction e1, ClLinearExpression e2) {
         return (new ClLinearExpression(e1)).minus(e2);
     }
 
-    public static ClLinearExpression Minus(ClLinearExpression e1, double e2) {
+    public static ClLinearExpression Minus(ClLinearExpression e1, Fraction e2) {
         return e1.minus(new ClLinearExpression(e2));
     }
 
@@ -115,22 +117,22 @@ public class CL {
         return (new ClLinearExpression(e1)).times(e2);
     }
 
-    public static ClLinearExpression Times(ClLinearExpression e1, double e2)
+    public static ClLinearExpression Times(ClLinearExpression e1, Fraction e2)
             throws ExCLNonlinearExpression {
         return e1.times(new ClLinearExpression(e2));
     }
 
-    public static ClLinearExpression Times(double e1, ClLinearExpression e2)
+    public static ClLinearExpression Times(Fraction e1, ClLinearExpression e2)
             throws ExCLNonlinearExpression {
         return (new ClLinearExpression(e1)).times(e2);
     }
 
-    public static ClLinearExpression Times(double n, ClVariable clv)
+    public static ClLinearExpression Times(Fraction n, ClVariable clv)
             throws ExCLNonlinearExpression {
         return (new ClLinearExpression(clv, n));
     }
 
-    public static ClLinearExpression Times(ClVariable clv, double n)
+    public static ClLinearExpression Times(ClVariable clv, Fraction n)
             throws ExCLNonlinearExpression {
         return (new ClLinearExpression(clv, n));
     }
@@ -138,24 +140,5 @@ public class CL {
     public static ClLinearExpression Divide(ClLinearExpression e1,
             ClLinearExpression e2) throws ExCLNonlinearExpression {
         return e1.divide(e2);
-    }
-
-    public static boolean approx(double a, double b) {
-        double epsilon = 1.0e-8;
-        if (a == 0.0) {
-            return (Math.abs(b) < epsilon);
-        } else if (b == 0.0) {
-            return (Math.abs(a) < epsilon);
-        } else {
-            return (Math.abs(a - b) < Math.abs(a) * epsilon);
-        }
-    }
-
-    public static boolean approx(ClVariable clv, double b) {
-        return approx(clv.value(), b);
-    }
-
-    static boolean approx(double a, ClVariable clv) {
-        return approx(a, clv.value());
     }
 }

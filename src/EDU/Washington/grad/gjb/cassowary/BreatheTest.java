@@ -1,5 +1,7 @@
 package EDU.Washington.grad.gjb.cassowary;
 
+import net.cscott.sdr.util.Fraction;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -8,23 +10,23 @@ public class BreatheTest {
     @Test
     public void testDiamondBreathing() throws ExCLError {
         ClSimplexSolver solver = new ClSimplexSolver();
-        ClVariable a = new ClVariable(0);
-        ClVariable b = new ClVariable(0);
-        ClVariable c = new ClVariable(0);
-        ClVariable d = new ClVariable(0);
-        ClVariable e = new ClVariable(0);
-        ClVariable f = new ClVariable(0);
-        ClVariable g = new ClVariable(0);
+        ClVariable a = new ClVariable(Fraction.ZERO);
+        ClVariable b = new ClVariable(Fraction.ZERO);
+        ClVariable c = new ClVariable(Fraction.ZERO);
+        ClVariable d = new ClVariable(Fraction.ZERO);
+        ClVariable e = new ClVariable(Fraction.ZERO);
+        ClVariable f = new ClVariable(Fraction.ZERO);
+        ClVariable g = new ClVariable(Fraction.ZERO);
         // objective: minimize a-g
-        solver.addConstraint(new ClLinearEquation(a, 0, ClStrength.weak));
-        solver.addConstraint(new ClLinearEquation(b, 0, ClStrength.weak));
-        solver.addConstraint(new ClLinearEquation(c, 0, ClStrength.weak));
-        solver.addConstraint(new ClLinearEquation(d, 0, ClStrength.weak));
-        solver.addConstraint(new ClLinearEquation(e, 0, ClStrength.weak));
-        solver.addConstraint(new ClLinearEquation(f, 0, ClStrength.weak));
-        solver.addConstraint(new ClLinearEquation(g, 0, ClStrength.weak));
+        solver.addConstraint(new ClLinearEquation(a, Fraction.ZERO, ClStrength.weak));
+        solver.addConstraint(new ClLinearEquation(b, Fraction.ZERO, ClStrength.weak));
+        solver.addConstraint(new ClLinearEquation(c, Fraction.ZERO, ClStrength.weak));
+        solver.addConstraint(new ClLinearEquation(d, Fraction.ZERO, ClStrength.weak));
+        solver.addConstraint(new ClLinearEquation(e, Fraction.ZERO, ClStrength.weak));
+        solver.addConstraint(new ClLinearEquation(f, Fraction.ZERO, ClStrength.weak));
+        solver.addConstraint(new ClLinearEquation(g, Fraction.ZERO, ClStrength.weak));
         // basic monotonicity constraints (required)
-        solver.addConstraint(new ClLinearEquation(a, 0));
+        solver.addConstraint(new ClLinearEquation(a, Fraction.ZERO));
         solver.addConstraint(new ClLinearInequality(b, CL.Op.GEQ, a));
         solver.addConstraint(new ClLinearInequality(c, CL.Op.GEQ, b));
         solver.addConstraint(new ClLinearInequality(d, CL.Op.GEQ, c));
@@ -32,10 +34,10 @@ public class BreatheTest {
         solver.addConstraint(new ClLinearInequality(f, CL.Op.GEQ, e));
         solver.addConstraint(new ClLinearInequality(g, CL.Op.GEQ, f));
         // make sure each element has enough space (required)
-        solver.addConstraint(new ClLinearInequality(CL.Plus(a, 2), CL.Op.LEQ, d));
-        solver.addConstraint(new ClLinearInequality(CL.Plus(d, 2), CL.Op.LEQ, g));
-        solver.addConstraint(new ClLinearInequality(CL.Plus(b, 2), CL.Op.LEQ, e));
-        solver.addConstraint(new ClLinearInequality(CL.Plus(c, 2), CL.Op.LEQ, f));
+        solver.addConstraint(new ClLinearInequality(CL.Plus(a, Fraction.TWO), CL.Op.LEQ, d));
+        solver.addConstraint(new ClLinearInequality(CL.Plus(d, Fraction.TWO), CL.Op.LEQ, g));
+        solver.addConstraint(new ClLinearInequality(CL.Plus(b, Fraction.TWO), CL.Op.LEQ, e));
+        solver.addConstraint(new ClLinearInequality(CL.Plus(c, Fraction.TWO), CL.Op.LEQ, f));
         // attempt to maintain symmetry (strong)
         solver.addConstraint(new ClLinearEquation(CL.Minus(b, a), CL.Minus(d, c),
                 ClStrength.strong));
@@ -46,21 +48,20 @@ public class BreatheTest {
         solver.addConstraint(new ClLinearEquation(CL.Minus(d, c), CL.Minus(f, e),
                 ClStrength.strong));
         // okay, look at solution
-        System.out.println("a="+a.value());
-        System.out.println("b="+b.value());
-        System.out.println("c="+c.value());
-        System.out.println("d="+d.value());
-        System.out.println("e="+e.value());
-        System.out.println("f="+f.value());
-        System.out.println("g="+g.value());
+        System.out.println("a="+a.value().toProperString());
+        System.out.println("b="+b.value().toProperString());
+        System.out.println("c="+c.value().toProperString());
+        System.out.println("d="+d.value().toProperString());
+        System.out.println("e="+e.value().toProperString());
+        System.out.println("f="+f.value().toProperString());
+        System.out.println("g="+g.value().toProperString());
         // automate the check
-        double EPSILON = 1e-5;
-        Assert.assertEquals("a", 0., a.value(), EPSILON);
-        Assert.assertEquals("b", 2/3., b.value(), EPSILON);
-        Assert.assertEquals("c", 4/3., c.value(), EPSILON);
-        Assert.assertEquals("d", 2., d.value(), EPSILON);
-        Assert.assertEquals("e", 8/3., e.value(), EPSILON);
-        Assert.assertEquals("f", 10/3., f.value(), EPSILON);
-        Assert.assertEquals("g", 4., g.value(), EPSILON);
+        Assert.assertEquals("a", Fraction.ZERO, a.value());
+        Assert.assertEquals("b", Fraction.valueOf(2, 3), b.value());
+        Assert.assertEquals("c", Fraction.valueOf(4, 3), c.value());
+        Assert.assertEquals("d", Fraction.TWO, d.value());
+        Assert.assertEquals("e", Fraction.valueOf(8, 3), e.value());
+        Assert.assertEquals("f", Fraction.valueOf(10, 3), f.value());
+        Assert.assertEquals("g", Fraction.valueOf(4), g.value());
     }
 }

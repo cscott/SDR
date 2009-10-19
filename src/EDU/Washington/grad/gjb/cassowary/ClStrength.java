@@ -11,13 +11,15 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
+import net.cscott.sdr.util.Fraction;
+
 public class ClStrength {
     public ClStrength(String name, ClSymbolicWeight symbolicWeight) {
         _name = name;
         _symbolicWeight = symbolicWeight;
     }
 
-    public ClStrength(String name, double w1, double w2, double w3) {
+    public ClStrength(String name, Fraction w1, Fraction w2, Fraction w3) {
         _name = name;
         _symbolicWeight = new ClSymbolicWeight(w1, w2, w3);
     }
@@ -47,15 +49,15 @@ public class ClStrength {
     }
 
     public static final ClStrength required = new ClStrength("<Required>",
-            1000, 1000, 1000);
+            Fraction.valueOf(1000), Fraction.valueOf(1000), Fraction.valueOf(1000));
 
-    public static final ClStrength strong = new ClStrength("strong", 1.0, 0.0,
-            0.0);
+    public static final ClStrength strong = new ClStrength("strong", Fraction.ONE, Fraction.ZERO,
+            Fraction.ZERO);
 
-    public static final ClStrength medium = new ClStrength("medium", 0.0, 1.0,
-            0.0);
+    public static final ClStrength medium = new ClStrength("medium", Fraction.ZERO, Fraction.ONE,
+            Fraction.ZERO);
 
-    public static final ClStrength weak = new ClStrength("weak", 0.0, 0.0, 1.0);
+    public static final ClStrength weak = new ClStrength("weak", Fraction.ZERO, Fraction.ZERO, Fraction.ONE);
 
     private String _name;
 

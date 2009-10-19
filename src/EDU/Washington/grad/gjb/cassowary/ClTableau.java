@@ -13,6 +13,8 @@ package EDU.Washington.grad.gjb.cassowary;
 
 import java.util.*;
 
+import net.cscott.sdr.util.Fraction;
+
 class ClTableau extends CL {
     // ctr is protected, since this only supports an ADT for
     // the ClSimplexSolved class
@@ -205,7 +207,7 @@ class ClTableau extends CL {
             ClAbstractVariable v = (ClAbstractVariable) e.nextElement();
             ClLinearExpression row = _rows.get(v);
             row.substituteOut(oldVar, expr, v, this);
-            if (v.isRestricted() && row.constant() < 0.0) {
+            if (v.isRestricted() && row.constant().compareTo(Fraction.ZERO) < 0) {
                 _infeasibleRows.insert(v);
             }
         }
