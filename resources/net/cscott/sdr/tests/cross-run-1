@@ -65,11 +65,13 @@ sdr> fan the top
 | 3G>  2G>
 | 
 | 4B<  1B<
+sdr> /// this isn't quite a diamond: the girls have breathed forward a bit
+sdr> /// as they were run around.  xxx: fix me, someday?
 sdr> do half of a boys cross run
-|   4G<     1G<
-|
-| 4B^ 3Bv  1B^ 2Bv
-|
-|   3G>     2G>
+|  4G<       1G<
+| 
+| 4B^  3Bv  1B^  2Bv
+| 
+|    3G>       2G>
 sdr> /exit
 

@@ -2,19 +2,24 @@ package net.cscott.sdr.calls;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.TreeMap;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.junit.runner.RunWith;
 
+import EDU.Washington.grad.gjb.cassowary.CL;
+import EDU.Washington.grad.gjb.cassowary.ClLinearEquation;
+import EDU.Washington.grad.gjb.cassowary.ClLinearExpression;
+import EDU.Washington.grad.gjb.cassowary.ClLinearInequality;
+import EDU.Washington.grad.gjb.cassowary.ClSimplexSolver;
+import EDU.Washington.grad.gjb.cassowary.ClStrength;
+import EDU.Washington.grad.gjb.cassowary.ClVariable;
+import EDU.Washington.grad.gjb.cassowary.ExCLError;
 import net.cscott.jdoctest.JDoctestRunner;
-import net.cscott.jutil.Default;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
@@ -482,6 +487,13 @@ public class Breather {
     // dancer giving the orientation only (or the match was used solely
     // to assign tags).
     public static Formation breathe(List<FormationPiece> pieces) {
+        try {
+            return _breathe(pieces);
+        } catch (ExCLError e) {
+            throw new BadCallException("Can't breathe");
+        }
+    }
+    private static Formation _breathe(List<FormationPiece> pieces) throws ExCLError {
         // Locate collisions and resolve them to miniwaves.
         pieces = resolveCollisions(pieces);
         // center all output formations
@@ -507,100 +519,62 @@ public class Breather {
         y.bounds.put(Fraction.ZERO, Fraction.ZERO);
         // okay, now expand our formations, until all our constraints are met
         for (Axis axis: l(x, y)) {
-            for (boolean isPositive : l(true, false)) {
-                NavigableMap<Fraction,Fraction> bound =
-                    isPositive ? axis.bounds : axis.bounds.descendingMap();
-                boolean madeAdjustment;
-                do {
-                    madeAdjustment = false;
-                    Comparator<? super Fraction> c = bound.comparator();
-                    if (c==null) c = Default.<Fraction>comparator();
-                    // Constraint 1: Boundaries need to be strictly increasing
-                    Fraction last=Fraction.ZERO;
-                    for (Fraction f=Fraction.ZERO;f!=null;f=bound.higherKey(f)){
-                        // if this key isn't at least as large as the last,
-                        // make it equal.
-                        assert bound.containsKey(f);
-                        if (c.compare(last, bound.get(f)) > 0) {
-                            bound.put(f, last);
-                            madeAdjustment = true;
-                        }
-                        assert c.compare(last, bound.get(f)) <= 0;
-                        last = bound.get(f);
-                    }
-                    // Constraint 2: Increase outer boundary as little as
-                    // possible to fit formation (outer-inner >= size)
-                    for (Bit b : axis.bits) {
-                        Fraction curSize =
-                            bound.get(b.end).subtract(bound.get(b.start));
-                        if (b.size.compareTo(curSize) > 0) {
-                            // increase the 'higher' edge.
-                            Fraction outer = isPositive ? b.end : b.start;
-                            // skip this bit if it's on the wrong side of zero.
-                            if (c.compare(Fraction.ZERO, outer) >= 0)
-                                continue;
-                            // okay, adjust it
-                            Fraction amt = b.size.subtract(curSize);
-                            if (!isPositive) amt = amt.negate();
-                            bound.put(outer, bound.get(outer).add(amt));
-                            madeAdjustment = true;
-                        }
-                    }
-                    // don't worry about symmetry until basic constraints are met
-                    if (madeAdjustment) continue;
-                    // Symmetry constraint: moving from edges in, gaps should
-                    // be equal.
-                    for (Bit b : axis.bits) {
-                        Fraction lastInner, lastOuter;
-                        if (isPositive) {
-                            lastInner = b.start; lastOuter = b.end;
-                            if (lastOuter.compareTo(Fraction.ZERO) <= 0)
-                                continue;
-                        } else {
-                            lastInner = b.end; lastOuter = b.start;
-                            if (lastOuter.compareTo(Fraction.ZERO) >= 0)
-                                continue;
-                        }
-                        while(true) {
-                            Fraction inner = bound.higherKey(lastInner);
-                            Fraction outer = bound.lowerKey(lastOuter);
-                            if (c.compare(inner, outer) >= 0) break; // done.
-                            // okay, compare size of inner gap (inner-lastInner)
-                            // to outer gap (lastOuter-outer).  We're going
-                            // to expand the outside edge of the smaller gap
-                            // "just enough" to make them equal
-                            // (note: if !isPositive, innerSize & outSize will
-                            //  both be negative)
-                            Fraction innerSize =
-				bound.get(inner).subtract(bound.get(lastInner));
-                            Fraction outerSize =
-				bound.get(lastOuter).subtract(bound.get(outer));
-                            Fraction adjAmt = outerSize.subtract(innerSize);
-                            int cc = adjAmt.compareTo(Fraction.ZERO);
-                            if (!isPositive) cc=-cc;
-                            //XXX: i'm not certain of the methodology here.
-			    //     we can adjust either the inner or outer
-			    //     gap, how do we know which?  we'll adjust
-			    //     both; hopefully that's the right thing.
-                            if (cc > 0) {
-                                // inner gap is smaller; adjust pos of 'inner'
-                                bound.put(inner, bound.get(inner)
-					  .add(adjAmt.divide(Fraction.TWO)));
-                                bound.put(outer, bound.get(outer)
-					  .add(adjAmt.divide(Fraction.TWO)));
-                                madeAdjustment=true;
-                            } else if (cc < 0) {
-                                // outer gap is smaller; adjust 'lastOuter'
-                                bound.put(lastOuter, bound.get(lastOuter)
-					.subtract(adjAmt.divide(Fraction.TWO)));
-                                bound.put(lastInner, bound.get(lastInner)
-					.subtract(adjAmt.divide(Fraction.TWO)));
-                                madeAdjustment=true;
-                            }
-                            lastInner = inner; lastOuter = outer;
-                        }
-                    }
-                } while (madeAdjustment);
+            // use Cassowary constraint solver (basic linear programming)
+            // to expand formation.
+
+            // solver setup: create variables for each boundary point;
+            //               objective function minimizes all boundaries
+            ClSimplexSolver solver = new ClSimplexSolver();
+            Map<Fraction, ClVariable> vars =
+                new LinkedHashMap<Fraction, ClVariable>();
+            for (Fraction f: axis.bounds.keySet()) {
+                ClVariable v = new ClVariable(Fraction.ZERO);
+                ClStrength s = f.equals(Fraction.ZERO) ?
+                        ClStrength.required : ClStrength.weak;
+                solver.addConstraint(new ClLinearEquation(v, Fraction.ZERO, s));
+                vars.put(f, v);
+            }
+            assert vars.containsKey(Fraction.ZERO);
+            // Constraint 1: Boundaries need to be strictly increasing
+            //               (required constraint)
+            Fraction last = null;
+            for (Fraction f : axis.bounds.keySet()) {
+                if (last!=null)
+                    solver.addConstraint(new ClLinearInequality
+                            (vars.get(f), CL.Op.GEQ, vars.get(last)));
+                last = f;
+            }
+            // Constraint 2: Must fit formation (outer-inner >= size)
+            //               (required constraint)
+            for (Bit b : axis.bits) {
+                ClVariable lo = vars.get(b.start), hi = vars.get(b.end);
+                solver.addConstraint(new ClLinearInequality
+                        (CL.Plus(lo, b.size), CL.Op.LEQ, hi));
+            }
+            // Symmetry constraint: moving from edges in, gaps should
+            // be equal. (strong constraint, not required)
+            for (Bit b : axis.bits) {
+                // (inner and outer are actually reversed for negative coords,
+                //  but it doesn't matter)
+                Fraction lastInner = b.start, lastOuter = b.end;
+                while(true) {
+                    Fraction inner = axis.bounds.higherKey(lastInner);
+                    Fraction outer = axis.bounds.lowerKey(lastOuter);
+                    if (inner.compareTo(outer) >= 0) break; // done.
+                    // okay, compare size of inner gap (inner-lastInner)
+                    // to outer gap (lastOuter-outer).
+                    ClLinearExpression innerSize =
+                        CL.Minus(vars.get(inner), vars.get(lastInner));
+                    ClLinearExpression outerSize =
+                        CL.Minus(vars.get(lastOuter), vars.get(outer));
+                    solver.addConstraintNoException(new ClLinearEquation
+                            (innerSize, outerSize, ClStrength.strong));
+                    lastInner = inner; lastOuter = outer;
+                }
+            }
+            // okay, read out the results.
+            for (Fraction f : axis.bounds.keySet()) {
+                axis.bounds.put(f, vars.get(f).value());
             }
         }
         // assemble meta formation.
