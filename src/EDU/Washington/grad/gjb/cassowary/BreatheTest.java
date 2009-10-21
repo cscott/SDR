@@ -1,8 +1,6 @@
 package EDU.Washington.grad.gjb.cassowary;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import net.cscott.sdr.util.Box;
@@ -101,7 +99,7 @@ public class BreatheTest {
          *
          * Four variables each: l,b,t,r (left/bottom/top/right)
          */
-        ClSimplexSolver solver = new ClSimplexSolver();
+        ClBranchAndBound solver = new ClBranchAndBound();
 
         Box ab = boxFromStrings(  "-2", "-1", "0", "1" );
         Box bb = boxFromStrings(   "0", "-1", "2", "1" );
@@ -115,11 +113,11 @@ public class BreatheTest {
         ClVariable[] dv = makeVars(solver, "d", db);
         // for each pair of overlapping boxes, add constraints to prevent the
         // overlap.
-        List<ClVariable> switches = new ArrayList<ClVariable>();
-        ClVariable sw;
+        List<ClBooleanVariable> switches = new ArrayList<ClBooleanVariable>();
+        ClBooleanVariable sw;
         // (1) a<->b (no overlap)
         // (2) a<->c (0=ar<cl, 1=ct<ab)
-        sw = makePseudoBoolean(solver);
+        sw = new ClBooleanVariable(solver);
         solver.addConstraint(new ClLinearInequality
                 (av[RIGHT], CL.Op.LEQ,
                  CL.Plus(cv[LEFT], CL.Times(sw, cb.width()))));
@@ -128,7 +126,7 @@ public class BreatheTest {
                  CL.Plus(av[BOTTOM], cb.height())));
         switches.add(sw);
         // (3) a<->d (0=ar<dl, 1=at<db)
-        sw = makePseudoBoolean(solver);
+        sw = new ClBooleanVariable(solver);
         solver.addConstraint(new ClLinearInequality
                 (av[RIGHT], CL.Op.LEQ,
                  CL.Plus(dv[LEFT], CL.Times(sw, db.width()))));
@@ -137,7 +135,7 @@ public class BreatheTest {
                  CL.Plus(dv[BOTTOM], db.height())));
         switches.add(sw);
         // (4) b<->c (0=cr<bl, 1=ct<bb)
-        sw = makePseudoBoolean(solver);
+        sw = new ClBooleanVariable(solver);
         solver.addConstraint(new ClLinearInequality
                 (cv[RIGHT], CL.Op.LEQ,
                  CL.Plus(bv[LEFT], CL.Times(sw, bb.width()))));
@@ -146,7 +144,7 @@ public class BreatheTest {
                  CL.Plus(bv[BOTTOM], bb.height())));
         switches.add(sw);
         // (5) b<->d (0=dr<bl, 1=bt<db)
-        sw = makePseudoBoolean(solver);
+        sw = new ClBooleanVariable(solver);
         solver.addConstraint(new ClLinearInequality
                 (dv[RIGHT], CL.Op.LEQ,
                  CL.Plus(bv[LEFT], CL.Times(sw, bb.width()))));
@@ -162,23 +160,8 @@ public class BreatheTest {
                  new ClLinearExpression(bv[LEFT]),
                  ClStrength.medium));
 
-        // this is a bad approximation at solving the mixed linear
-        // programming problem: force boolean vars to 0 or 1, depending on
-        // which they're closer to.  We should use branch-and-bound instead.
-        Collections.sort(switches, new Comparator<ClVariable>() {
-            public int compare(ClVariable v1, ClVariable v2) {
-                return v1.value().compareTo(v2.value());
-            }});
-        System.out.println(switches);
-        for (ClVariable v : switches) {
-            Fraction forced =(v.value().compareTo(Fraction.ONE_HALF) < 0) ?
-                    Fraction.ZERO : Fraction.ONE;
-            // add required constraint
-            System.out.println("Forcing "+v+" to "+forced);
-            solver.addConstraint(new ClLinearEquation(v, forced));
-        }
-
         // output/check solution!
+        solver.solve();
         ab = boxFromVars(av);
         bb = boxFromVars(bv);
         cb = boxFromVars(cv);
@@ -196,14 +179,14 @@ public class BreatheTest {
             v[i] = Fraction.valueOf(points[i]);
         return new Box(new Point(v[LEFT], v[BOTTOM]), new Point(v[RIGHT], v[TOP]));
     }
-    private static ClVariable[] makeVars(ClSimplexSolver s, String prefix, Box b) throws ExCLError {
+    private static ClVariable[] makeVars(ClBranchAndBound s, String prefix, Box b) throws ExCLError {
         ClVariable[] v = new ClVariable[4];
         v[LEFT] = new ClVariable(prefix+"l", b.ll.x);
         v[BOTTOM] = new ClVariable(prefix+"b", b.ll.y);
         v[RIGHT] = new ClVariable(prefix+"r", b.ur.x);
         v[TOP] = new ClVariable(prefix+"t", b.ur.y);
         for (int i=0; i<4; i++)
-            s.addStay(v[i]);
+            s.addConstraint(new ClLinearEquation(v[i], v[i].value(), ClStrength.weak));
         // required constraints: l<r, b<t
         s.addConstraint(new ClLinearInequality(v[LEFT], CL.Op.LEQ, v[RIGHT]));
         s.addConstraint(new ClLinearInequality(v[BOTTOM], CL.Op.LEQ, v[TOP]));
@@ -214,13 +197,6 @@ public class BreatheTest {
         s.addConstraint(new ClLinearInequality(v[BOTTOM], CL.Op.GEQ, b.ll.y));
         s.addConstraint(new ClLinearInequality(v[RIGHT], CL.Op.LEQ, b.ur.x));
         s.addConstraint(new ClLinearInequality(v[TOP], CL.Op.LEQ, b.ur.y));
-        return v;
-    }
-    private static ClVariable makePseudoBoolean(ClSimplexSolver s) throws ExCLError {
-        ClVariable v = new ClVariable();
-        // strong constraint that this is either 0 or 1
-        s.addConstraint(new ClLinearEquation(v, Fraction.ZERO, ClStrength.strong));
-        s.addConstraint(new ClLinearEquation(v, Fraction.ONE, ClStrength.strong));
         return v;
     }
     private static Box boxFromVars(ClVariable[] vars) {

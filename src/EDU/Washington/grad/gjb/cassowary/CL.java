@@ -77,6 +77,10 @@ public class CL {
         return e1.plus(new ClLinearExpression(e2));
     }
 
+    public static ClLinearExpression Plus(ClVariable e1, ClVariable e2) {
+        return new ClLinearExpression(e1).plus(new ClLinearExpression(e2));
+    }
+
     public static ClLinearExpression Plus(ClVariable e1, Fraction e2) {
         return (new ClLinearExpression(e1)).plus(new ClLinearExpression(e2));
     }

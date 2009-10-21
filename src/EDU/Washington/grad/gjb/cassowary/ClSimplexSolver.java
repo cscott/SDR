@@ -1139,6 +1139,10 @@ public class ClSimplexSolver extends ClTableau {
 
         _fNeedsSolving = false;
     }
+    Fraction objectiveValue() {
+        ClLinearExpression expr = rowExpression(this._objective);
+        return expr.constant();
+    }
 
     // Protected convenience function to insert an error variable into
     // the _errorVars set, creating the mapping with put as necessary
