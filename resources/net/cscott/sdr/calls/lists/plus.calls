@@ -32,6 +32,11 @@ def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
       prim: 0, 3, in 1/8
       prim: in 1 1/2, 1 1/2, in 1/8
 
+def: trade the wave
+  in: 6
+  from: OCEAN WAVE
+    call: cross run(ALL)
+
 // track(n) is c3b, but track(2) is plus.
 def: track(n)
   spoken: track <n=number>

@@ -64,6 +64,9 @@ import net.cscott.sdr.util.Tools;
  *  trade
  *  trade <cardinal>
  *  trade and roll
+ *  trade the wave
+ *  trade the wave <cardinal>
+ *  trade the wave and roll
  *  track <number>
  *  track <number> <cardinal>
  *  track <number> and roll
@@ -71,6 +74,9 @@ import net.cscott.sdr.util.Tools;
  *  trade
  *  trade <cardinal>
  *  trade and roll
+ *  trade the wave
+ *  trade the wave <cardinal>
+ *  trade the wave and roll
  *  js> c("trade a");
  *  trade and roll
  *  trade and roll <cardinal>
