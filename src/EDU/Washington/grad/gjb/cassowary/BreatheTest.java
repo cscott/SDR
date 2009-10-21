@@ -118,39 +118,31 @@ public class BreatheTest {
         // (1) a<->b (no overlap)
         // (2) a<->c (0=ar<cl, 1=ct<ab)
         sw = new ClBooleanVariable(solver);
-        solver.addConstraint(new ClLinearInequality
-                (av[RIGHT], CL.Op.LEQ,
-                 CL.Plus(cv[LEFT], CL.Times(sw, cb.width()))));
-        solver.addConstraint(new ClLinearInequality
-                (CL.Plus(cv[TOP], CL.Times(sw, cb.height())), CL.Op.LEQ,
-                 CL.Plus(av[BOTTOM], cb.height())));
+        solver.addConstraintIf(sw, new ClLinearInequality
+                (av[RIGHT], CL.Op.LEQ, cv[LEFT]));
+        solver.addConstraintIfNot(sw, new ClLinearInequality
+                (cv[TOP], CL.Op.LEQ, av[BOTTOM]));
         switches.add(sw);
         // (3) a<->d (0=ar<dl, 1=at<db)
         sw = new ClBooleanVariable(solver);
-        solver.addConstraint(new ClLinearInequality
-                (av[RIGHT], CL.Op.LEQ,
-                 CL.Plus(dv[LEFT], CL.Times(sw, db.width()))));
-        solver.addConstraint(new ClLinearInequality
-                (CL.Plus(av[TOP], CL.Times(sw, db.height())), CL.Op.LEQ,
-                 CL.Plus(dv[BOTTOM], db.height())));
+        solver.addConstraintIf(sw, new ClLinearInequality
+                (av[RIGHT], CL.Op.LEQ, dv[LEFT]));
+        solver.addConstraintIfNot(sw, new ClLinearInequality
+                (av[TOP], CL.Op.LEQ, dv[BOTTOM]));
         switches.add(sw);
         // (4) b<->c (0=cr<bl, 1=ct<bb)
         sw = new ClBooleanVariable(solver);
-        solver.addConstraint(new ClLinearInequality
-                (cv[RIGHT], CL.Op.LEQ,
-                 CL.Plus(bv[LEFT], CL.Times(sw, bb.width()))));
-        solver.addConstraint(new ClLinearInequality
-                (CL.Plus(cv[TOP], CL.Times(sw, bb.height())), CL.Op.LEQ,
-                 CL.Plus(bv[BOTTOM], bb.height())));
+        solver.addConstraintIf(sw, new ClLinearInequality
+                (cv[RIGHT], CL.Op.LEQ, bv[LEFT]));
+        solver.addConstraintIfNot(sw, new ClLinearInequality
+                (cv[TOP], CL.Op.LEQ, bv[BOTTOM]));
         switches.add(sw);
         // (5) b<->d (0=dr<bl, 1=bt<db)
         sw = new ClBooleanVariable(solver);
-        solver.addConstraint(new ClLinearInequality
-                (dv[RIGHT], CL.Op.LEQ,
-                 CL.Plus(bv[LEFT], CL.Times(sw, bb.width()))));
-        solver.addConstraint(new ClLinearInequality
-                (CL.Plus(bv[TOP], CL.Times(sw, db.height())), CL.Op.LEQ,
-                 CL.Plus(dv[BOTTOM], db.height())));
+        solver.addConstraintIf(sw, new ClLinearInequality
+                (dv[RIGHT], CL.Op.LEQ, bv[LEFT]));
+        solver.addConstraintIfNot(sw, new ClLinearInequality
+                (bv[TOP], CL.Op.LEQ, dv[BOTTOM]));
         switches.add(sw);
         // (6) c<->d (no overlap)
 
@@ -171,6 +163,11 @@ public class BreatheTest {
         System.out.println("b: "+bb);
         System.out.println("c: "+cb);
         System.out.println("d: "+db);
+        // automate the check
+        Assert.assertEquals("a", ab, boxFromStrings("-2","-1","0","1"));
+        Assert.assertEquals("b", bb, boxFromStrings("0","-1","2","1"));
+        Assert.assertEquals("c", cb, boxFromStrings("-1/2","-2","1 1/2","-1"));
+        Assert.assertEquals("d", db, boxFromStrings("-1 1/2","1","1/2","2"));
     }
     private static int LEFT=0, BOTTOM=1, RIGHT=2, TOP=3;
     private static Box boxFromStrings(String... points) {

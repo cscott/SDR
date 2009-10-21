@@ -67,6 +67,43 @@ public class ClBranchAndBound {
         clearIntegerConstraints(); // don't want to cause spurious infeasibility
         solver.addConstraint(cl);
     }
+    /** Used to automatically make inequalities conditional. */
+    private final static Fraction LARGE_NUMBER = Fraction.valueOf(1000);
+
+    public void addConstraintIf(ClBooleanVariable v, ClLinearInequality cl)
+        throws ExCLRequiredFailure, ExCLInternalError {
+        // the expression in cl is greater than 0; add LARGE_NUMBER if v is 0
+        // (which should make it true, regardless)
+        cl.setExpression(cl.expression()
+            .plus(new ClLinearExpression(LARGE_NUMBER))
+            .addVariable(v, LARGE_NUMBER.negate()));
+        solver.addConstraint(cl);
+    }
+    public void addConstraintIfNot(ClBooleanVariable v, ClLinearInequality cl)
+        throws ExCLRequiredFailure, ExCLInternalError {
+        // the expression in cl is greater than 0; add LARGE_NUMBER if v is 1
+        // (which should make it true, regardless)
+        cl.setExpression(cl.expression().addVariable(v, LARGE_NUMBER));
+        solver.addConstraint(cl);
+    }
+    public void addConstraintIf(ClBooleanVariable v, ClLinearEquation e)
+        throws ExCLRequiredFailure, ExCLInternalError {
+        addConstraintIf(v, new ClLinearInequality
+                (e.expression(), CL.Op.GEQ, new ClLinearExpression(Fraction.ZERO),
+                 e.strength(), e.weight()));
+        addConstraintIf(v, new ClLinearInequality
+                (e.expression(), CL.Op.LEQ, new ClLinearExpression(Fraction.ZERO),
+                 e.strength(), e.weight()));
+    }
+    public void addConstraintIfNot(ClBooleanVariable v, ClLinearEquation e)
+        throws ExCLRequiredFailure, ExCLInternalError {
+        addConstraintIfNot(v, new ClLinearInequality
+                (e.expression(), CL.Op.GEQ, new ClLinearExpression(Fraction.ZERO),
+                 e.strength(), e.weight()));
+        addConstraintIfNot(v, new ClLinearInequality
+                (e.expression(), CL.Op.LEQ, new ClLinearExpression(Fraction.ZERO),
+                 e.strength(), e.weight()));
+    }
 
     void addIntegerVariable(ClIntegerVariable v) {
         clearIntegerConstraints(); // don't want to cause spurious infeasibility
