@@ -11,7 +11,7 @@
 
 package EDU.Washington.grad.gjb.cassowary;
 
-public abstract class ClAbstractVariable {
+public abstract class ClAbstractVariable implements Comparable<ClAbstractVariable> {
     public ClAbstractVariable(String name) {
         hash_code = iVariableNumber;
         _name = name;
@@ -55,6 +55,10 @@ public abstract class ClAbstractVariable {
     }
 
     public final int hashCode() { return hash_code; }
+
+    public final int compareTo(ClAbstractVariable v) {
+        return this.hash_code - v.hash_code;
+    }
 
     private String _name;
 

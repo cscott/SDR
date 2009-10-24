@@ -1,14 +1,18 @@
 package EDU.Washington.grad.gjb.cassowary;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.junit.runner.RunWith;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.BinaryHeap;
+import net.cscott.jutil.Default;
 import net.cscott.jutil.Heap;
+import net.cscott.jutil.PersistentSetFactory;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.LL;
 
@@ -87,22 +91,68 @@ public class ClBranchAndBound {
     }
 
     /** Tracks "active subproblems" in the branch-and-bound algorithm.*/
-    private class State {
+    private static class State {
+        private final PersistentSetFactory<Branch> psf;
         final LL<ClConstraint> soFar;
+        final Set<Branch> branches;
         public State() {
             this.soFar = LL.<ClConstraint>NULL();
+            this.psf =
+                new PersistentSetFactory<Branch>(Default.<Branch>comparator());
+            this.branches = psf.makeSet();
         }
-        private State(State s, ClIntegerVariable v, CL.Op op, Fraction val)
+        private State(State s, ClIntegerVariable v, CL.Op op, Fraction val,
+                      Set<Branch> branches)
             throws ExCLInternalError {
+            this.psf = s.psf;
             this.soFar = s.soFar.push(new ClLinearInequality(v, op, val));
+            // this is a clone+add, but we can't get to the clone method of
+            // a Set without casting, and we don't have a type to cast to.
+            // makeSet() should be as fast.
+            this.branches = psf.makeSet(branches);
+            this.branches.add(new Branch(v, val, op==CL.Op.GEQ));
         }
         public State[] branchStates(ClIntegerVariable v, Fraction value)
             throws ExCLInternalError {
             Fraction lo = Fraction.valueOf(value.floor());
             return new State[] {
-              new State(this, v, CL.Op.LEQ, lo),
-              new State(this, v, CL.Op.GEQ, lo.add(Fraction.ONE))
+              new State(this, v, CL.Op.LEQ, lo, this.branches),
+              new State(this, v, CL.Op.GEQ, lo.add(Fraction.ONE), this.branches)
             };
+        }
+        public String toString() {
+            return "State(branches="+branches+", soFar="+soFar+")";
+        }
+    }
+    private static class Branch implements Comparable<Branch> {
+        final ClIntegerVariable v;
+        final Fraction branchVal;
+        final boolean isUp;
+        public Branch(ClIntegerVariable v, Fraction branchVal, boolean isUp) {
+            this.v = v;
+            this.branchVal = branchVal;
+            this.isUp = isUp;
+        }
+        public int compareTo(Branch b) {
+            // hash code and compare order of ClAbstractVariables are identical
+            // so we'll compare other other fields *first* to ward off bad
+            // behavior in the treap behind the PersistentSetFactory
+            int c = this.branchVal.compareTo(b.branchVal);
+            if (c==0) c = (this.isUp?1:0) - (b.isUp?1:0);
+            if (c==0) c = this.v.compareTo(b.v);
+            return c;
+        }
+        public int hashCode() {
+            return v.hashCode() ^ branchVal.hashCode() ^ (isUp?61:0);
+        }
+        public boolean equals(Object o) {
+            if (!(o instanceof Branch)) return false;
+            return this.compareTo((Branch)o) == 0;
+        }
+        public String toString() {
+            return "Branch("+v.name()+","
+                            +branchVal.toProperString()+","
+                            +(isUp?"up":"down")+")";
         }
     }
 
@@ -131,13 +181,18 @@ public class ClBranchAndBound {
         active.insert(Fraction.ZERO/* ignored*/, new State());
         clearIntegerConstraints();
 
-        // process each active state
+        // process each yet-unseen active state
+        Set<Set<Branch>> seen = new HashSet<Set<Branch>>();
         while (!active.isEmpty()) {
             Entry<Fraction,State> e = active.extractMinimum();
             if (upperBound!=null && upperBound.compareTo(e.getKey()) <= 0)
                 continue; // this solution can't be better than bestState
 
             State s = e.getValue();
+            if (seen.contains(s.branches))
+                continue; // already looked at this set of branches
+            seen.add(s.branches);
+
             // add all the constraints
             List<ClConstraint> added = new ArrayList<ClConstraint>();
             try {
