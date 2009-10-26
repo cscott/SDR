@@ -84,7 +84,7 @@ public class LL<T> implements Iterable<T> {
      *  true
      */
     public boolean isEmpty() {
-        return this==NULL();
+        return this==NULL;
     }
     /**
      * Return the number of items in this list.
@@ -98,7 +98,7 @@ public class LL<T> implements Iterable<T> {
      */
     public int size() {
         int sz = 0;
-        for (LL<T> l = this; l!=NULL(); l=l.tail)
+        for (LL<T> l = this; l!=NULL; l=l.tail)
             sz += 1;
         return sz;
     }
@@ -120,7 +120,7 @@ public class LL<T> implements Iterable<T> {
         LL<T> next;
         LLIterator(LL<T> ll) { this.next = ll; }
         @Override
-        public boolean hasNext() { return next!=NULL(); }
+        public boolean hasNext() { return next!=NULL; }
         @Override
         public T next() {
             assert hasNext();
