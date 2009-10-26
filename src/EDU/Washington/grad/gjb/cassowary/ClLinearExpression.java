@@ -94,8 +94,7 @@ public class ClLinearExpression extends CL {
         return ((ClLinearExpression) clone()).addExpression(expr, Fraction.ONE);
     }
 
-    public final ClLinearExpression plus(ClVariable var)
-            throws ExCLNonlinearExpression {
+    public final ClLinearExpression plus(ClVariable var) {
         return ((ClLinearExpression) clone()).addVariable(var, Fraction.ONE);
     }
 
@@ -103,8 +102,7 @@ public class ClLinearExpression extends CL {
         return ((ClLinearExpression) clone()).addExpression(expr, Fraction.mONE);
     }
 
-    public final ClLinearExpression minus(ClVariable var)
-            throws ExCLNonlinearExpression {
+    public final ClLinearExpression minus(ClVariable var) {
         return ((ClLinearExpression) clone()).addVariable(var, Fraction.mONE);
     }
 
@@ -363,6 +361,21 @@ public class ClLinearExpression extends CL {
             return coeff.getValue();
         else
             return Fraction.ZERO;
+    }
+
+    /** Evaluate the expression with the current values of the variables.
+     *  May throw a {@link ClassCastException} if the variables involved in
+     *  this expression are abstract (not {@link ClVariable}s).
+     */
+    public final Fraction evaluate() {
+        Fraction sum = _constant.getValue();
+        for (Map.Entry<ClAbstractVariable, ClFractionWrapper> term :
+                                                            _terms.entrySet()) {
+            ClVariable v = (ClVariable) term.getKey();
+            Fraction coeff = term.getValue().getValue();
+            sum = sum.add(v.value().multiply(coeff));
+        }
+        return sum;
     }
 
     public final Fraction constant() {

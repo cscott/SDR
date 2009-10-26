@@ -93,12 +93,20 @@ public class CL {
         return new ClLinearExpression(e1).minus(new ClLinearExpression(e2));
     }
 
+    public static ClLinearExpression Minus(ClVariable e1, Fraction e2) {
+        return new ClLinearExpression(e1).minus(new ClLinearExpression(e2));
+    }
+
     public static ClLinearExpression Minus(ClLinearExpression e1,
             ClLinearExpression e2) {
         return e1.minus(e2);
     }
 
     public static ClLinearExpression Minus(Fraction e1, ClLinearExpression e2) {
+        return (new ClLinearExpression(e1)).minus(e2);
+    }
+
+    public static ClLinearExpression Minus(Fraction e1, ClVariable e2) {
         return (new ClLinearExpression(e1)).minus(e2);
     }
 
@@ -121,23 +129,19 @@ public class CL {
         return (new ClLinearExpression(e1)).times(e2);
     }
 
-    public static ClLinearExpression Times(ClLinearExpression e1, Fraction e2)
-            throws ExCLNonlinearExpression {
-        return e1.times(new ClLinearExpression(e2));
+    public static ClLinearExpression Times(ClLinearExpression e1, Fraction e2) {
+        return e1.times(e2);
     }
 
-    public static ClLinearExpression Times(Fraction e1, ClLinearExpression e2)
-            throws ExCLNonlinearExpression {
-        return (new ClLinearExpression(e1)).times(e2);
+    public static ClLinearExpression Times(Fraction e1, ClLinearExpression e2) {
+        return e2.times(e1);
     }
 
-    public static ClLinearExpression Times(Fraction n, ClVariable clv)
-            throws ExCLNonlinearExpression {
+    public static ClLinearExpression Times(Fraction n, ClVariable clv) {
         return (new ClLinearExpression(clv, n));
     }
 
-    public static ClLinearExpression Times(ClVariable clv, Fraction n)
-            throws ExCLNonlinearExpression {
+    public static ClLinearExpression Times(ClVariable clv, Fraction n) {
         return (new ClLinearExpression(clv, n));
     }
 
