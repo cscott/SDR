@@ -114,9 +114,9 @@ public class Formation {
      * zero-height box centered at the origin.
      * @doc.test
      *  js> Formation.SQUARED_SET.bounds()
-     *  -4,-4,4,4
+     *  (-4,-4;4,4)
      *  js> Formation.SQUARED_SET.select(java.util.Collections.EMPTY_SET).onlySelected().bounds()
-     *  0,0,0,0
+     *  (0,0;0,0)
      */
     public Box bounds() {
         Fraction minx=null,miny=null,maxx=null,maxy=null;

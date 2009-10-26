@@ -4,8 +4,6 @@ import net.cscott.jdoctest.JDoctestRunner;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 import org.junit.runner.RunWith;
 
 /** An orthogonal box, with sides parallel to the x and y axes. */
@@ -45,13 +43,13 @@ public class Box {
      * @doc.test
      *  js> function f(i) { return Fraction.valueOf(i); }
      *  js> b1 = new Box(new Point(f(-1),f(-1)), new Point(f(1),f(1)));
-     *  -1,-1,1,1
+     *  (-1,-1;1,1)
      *  js> b2 = new Box(new Point(f(0),f(0)), new Point(f(3),f(3)));
-     *  0,0,3,3
+     *  (0,0;3,3)
      *  js> b3 = new Box(new Point(f(-2),f(-2)), new Point(f(0),f(0)));
-     *  -2,-2,0,0
+     *  (-2,-2;0,0)
      *  js> b4 = new Box(new Point(f(1),f(4)), new Point(f(2),f(4)));
-     *  1,4,2,4
+     *  (1,4;2,4)
      *  js> b1.overlaps(b2)
      *  true
      *  js> b1.overlaps(b2) == b2.overlaps(b1)
@@ -67,9 +65,9 @@ public class Box {
      * @doc.test
      *  js> function f(i) { return Fraction.valueOf(i); }
      *  js> b1 = new Box(new Point(f(-4),f(0)), new Point(f(0),f(2)));
-     *  -4,0,0,2
+     *  (-4,0;0,2)
      *  js> b2 = new Box(new Point(f(-4),f(-2)), new Point(f(0),f(0)));
-     *  -4,-2,0,0
+     *  (-4,-2;0,0)
      *  js> b1.overlaps(b2)
      *  false
      *  js> b2.overlaps(b1)
@@ -80,6 +78,34 @@ public class Box {
                 b.ll.x.compareTo(ur.x) < 0 &&
                 ll.y.compareTo(b.ur.y) < 0 &&
                 b.ll.y.compareTo(ur.y) < 0);
+    }
+    /**
+     * Returns true iff the given point in inside this box.  The edges count
+     * as "inside".
+     * @doc.test
+     *  js> function f(i) { return Fraction.valueOf(i); }
+     *  js> b = new Box(new Point(f(-1),f(-1)), new Point(f(1),f(1)));
+     *  (-1,-1;1,1)
+     *  js> b.includes(new Point(f(0),f(0)))
+     *  true
+     *  js> b.includes(b.ll)
+     *  true
+     *  js> b.includes(b.ur)
+     *  true
+     *  js> b.includes(new Point(f(-1),f(1)))
+     *  true
+     *  js> b.includes(new Point(f(1),f(-1)))
+     *  true
+     *  js> b.includes(new Point(f(-2),f(0)))
+     *  false
+     *  js> b.includes(new Point(f(0),f(2)))
+     *  false
+     */
+    public boolean includes(Point p) {
+        return (ll.x.compareTo(p.x) <= 0 &&
+                ll.y.compareTo(p.y) <= 0 &&
+                ur.x.compareTo(p.x) >= 0 &&
+                ur.y.compareTo(p.y) >= 0);
     }
     public boolean equals(Object o) {
         if (!(o instanceof Box)) return false;
@@ -95,9 +121,6 @@ public class Box {
             .toHashCode();
     }
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
-            .append("ll", ll)
-            .append("ur", ur)
-            .toString();
+        return "("+ll+";"+ur+")";
     }
 }
