@@ -112,7 +112,7 @@ public abstract class FormationList extends FormationListFast {
             if (Modifier.isPublic(f.getModifiers()) &&
                 Modifier.isStatic(f.getModifiers()) &&
                 f.getName().toUpperCase().equals(f.getName())) {
-                TaggedFormation ff = (TaggedFormation) f.get(null);
+                NamedTaggedFormation ff = (NamedTaggedFormation) f.get(null);
                 System.out.println("FormationList."+f.getName());
                 System.out.println(ff.toStringDiagram());
                 System.out.println(ff.toString());

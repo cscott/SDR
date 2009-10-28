@@ -37,9 +37,9 @@ public class FormationListJS implements Scriptable {
     private Class<?> formationList;
     public FormationListJS(Class<?> formationList) { this.formationList=formationList; }
     @SuppressWarnings("unchecked")
-    private List<TaggedFormation> all() {
+    private List<NamedTaggedFormation> all() {
         try {
-            return (List<TaggedFormation>) formationList.getField("all").get(null);
+            return (List<NamedTaggedFormation>) formationList.getField("all").get(null);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
