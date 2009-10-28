@@ -418,6 +418,7 @@ public class PMSD {
         // initialize Rhino
         Context cx = Context.enter();
         try {
+            cx.setLanguageVersion(Context.VERSION_1_7); // js 1.7 by default
             Global global = new Global();
             global.init(cx);
             cx.evaluateString(global, "importPackage(net.cscott.sdr.calls)",
