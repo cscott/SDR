@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
  * Helper class to associate a standard name with a canonical
  * formation.  This makes string representations more compact!
  * @doc.test Fetch tagged dancers from a TaggedFormation:
+ *  js> FormationList = FormationListJS.initJS(this); undefined;
  *  js> f = FormationList.STATIC_SQUARE ; f.getClass()
  *  class net.cscott.sdr.calls.NamedTaggedFormation
  *  js> f.getName()

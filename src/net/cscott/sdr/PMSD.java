@@ -421,7 +421,10 @@ public class PMSD {
             cx.setLanguageVersion(Context.VERSION_1_7); // js 1.7 by default
             Global global = new Global();
             global.init(cx);
-            cx.evaluateString(global, "importPackage(net.cscott.sdr.calls)",
+	    String initStmts =
+		"importPackage(net.cscott.sdr.calls);\n"+
+		"FormationList = FormationListJS.initJS(this);";
+            cx.evaluateString(global, initStmts,
                               "<init>", 0, null);
             // add the 'State' object to the scope chain
             ScriptableObject.defineClass(global, State.class);

@@ -86,6 +86,7 @@ import net.cscott.sdr.util.ListUtils;
  *     1B^  1G^
  *   [3G: BELLE,TRAILER; 3B: BEAU,TRAILER; 1B: BEAU,TRAILER; 1G: BELLE,TRAILER]
  * @doc.test Apply RH_MINIWAVE selector to PARALLEL_RH_WAVES:
+ *  js> FormationList = FormationListJS.initJS(this); undefined;
  *  js> fm = SelectorList.RH_MINIWAVE.match(FormationList.PARALLEL_RH_WAVES)
  *  AA^  BBv
  *  
@@ -322,6 +323,7 @@ public abstract class SelectorList {
      * The {@link #OR} function creates a Selector which matches any one of
      * the given alternatives.
      * @doc.test Diamonds or quarter tag:
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
      *  js> sel = SelectorList.OR("OR(RH BOX,RH DIAMOND)", SelectorList.RH_BOX, SelectorList.RH_DIAMOND)
      *  OR(RH BOX,RH DIAMOND)
      *  js> sel.match(FormationList.RH_BOX)                                    

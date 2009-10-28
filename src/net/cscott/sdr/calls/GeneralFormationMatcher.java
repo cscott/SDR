@@ -56,6 +56,7 @@ public abstract class GeneralFormationMatcher {
      * @throws NoMatchException if there is no way to match the goal formation
      *   with the given input
      * @doc.test A successful match with no phantoms or unmatched dancers:
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
      *  js> GeneralFormationMatcher.doMatch(Formation.SQUARED_SET,
      *    >                                 FormationList.COUPLE,
      *    >                                 false, false)
@@ -77,6 +78,7 @@ public abstract class GeneralFormationMatcher {
      *     1B^  1G^
      *   [1B: BEAU; 1G: BELLE]
      * @doc.test A successful match with some unmatched dancers:
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
      *  js> GeneralFormationMatcher.doMatch(FormationList.RH_TWIN_DIAMONDS,
      *    >                                 FormationList.RH_MINIWAVE,
      *    >                                 true, false)
@@ -100,6 +102,7 @@ public abstract class GeneralFormationMatcher {
      *  FF:
      *     ^
      * @doc.test When possible, symmetry is preserved in the result:
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
      *  js> GeneralFormationMatcher.doMatch(FormationList.PARALLEL_RH_WAVES,
      *    >                                 FormationList.RH_MINIWAVE,
      *    >                                 false, false)

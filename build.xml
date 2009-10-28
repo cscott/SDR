@@ -65,6 +65,9 @@ Square Dance Revolution build file.
         <!-- version numbers -->
         <delete file="src/net/cscott/sdr/Version.java" />
         <delete file="sdr.jnlp" />
+	<!-- optimized FormationList -->
+	<copy file="src/net/cscott/sdr/calls/FormationListFast.stub"
+	      tofile="src/net/cscott/sdr/calls/FormationListFast.java" />
 	<!-- classes and api docs -->
 	<delete dir="${classes_dir}" />
 	<delete dir="${api_dir}" />

@@ -26,6 +26,7 @@ import static net.cscott.sdr.util.Tools.*;
  *  statistics. (EXPECT FAIL: centers/ends not yet implemented)
  *  js> importPackage(net.cscott.sdr.calls);
  *  js> // create all possible RH ocean waves (modulo rotation)
+ *  js> FormationList = FormationListJS.initJS(this); undefined;
  *  js> const SD = StandardDancer;
  *  js> f = FormationList.PARALLEL_RH_WAVES; undefined
  *  js> f = f.mapStd([SD.COUPLE_2_BOY, SD.COUPLE_2_GIRL,

@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
  * In addition, all dancers can be tagged with modifiers
  * such as 'BEAU', 'BELLE', 'LEADER', 'TRAILER', etc.
  * @doc.test Fetch tagged dancers from a TaggedFormation:
+ *  js> FormationList = FormationListJS.initJS(this); undefined;
  *  js> f = FormationList.STATIC_SQUARE ; f.getClass()
  *  class net.cscott.sdr.calls.NamedTaggedFormation
  *  js> [ f.location(d) for each (d in Iterator(f.tagged(TaggedFormation.Tag.BEAU)))]
@@ -182,6 +183,7 @@ public class TaggedFormation extends Formation {
     /**
      * {@inheritDoc}
      * @doc.test Demonstrate usage of call in scripts:
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
      *  js> const SD = StandardDancer; const l = net.cscott.sdr.util.Tools.l;
      *  js> f = FormationList.TRADE_BY; f.toStringDiagram();
      *  ^    ^
@@ -215,6 +217,7 @@ public class TaggedFormation extends Formation {
     /**
      * {@inheritDoc}
      * @doc.test Demonstrate usage of call in scripts:
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
      *  js> const SD = StandardDancer;
      *  js> f = FormationList.TRADE_BY; undefined;
      *  js> f.mapStd([SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,

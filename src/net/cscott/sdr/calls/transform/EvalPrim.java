@@ -252,6 +252,7 @@ import net.cscott.sdr.util.Point;
  *  top, broken in halves.
  *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
+ *  js> FormationList = FormationListJS.initJS(this); undefined;
  *  js> f = FormationList.SINGLE_DANCER; d = f.dancers().iterator().next();
  *  <phantom@7b>
  *  js> p = EvalPrim.apply(d, f, AstNode.valueOf('(Prim 0, 3, -1/8, 1 1/2)'))
