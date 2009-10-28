@@ -16,3 +16,4 @@ debug.txt
 build.properties
 sdr.keystore
 sdr.jnlp
+TEST-*.txt
