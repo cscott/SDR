@@ -17,10 +17,15 @@ import org.junit.runner.RunWith;
  * allocate beats appropriately when rescaling.
  * @doc.test Simple SEQ:
  *  js> importPackage(net.cscott.sdr.calls.ast)
- *  js> s = AstNode.valueOf("(Seq (Prim -1 1 none 1 1/2) (Prim 1 1 none 1 1/2))")
- *  (Seq (Prim -1 1 none 1 1/2) (Prim 1 1 none 1 1/2))
- *  js> bc = BeatCounter(s)
- *  js> bc.getBeats(s)
+ *  js> s = AstNode.valueOf("(Seq (Prim -1, 1, none, 1 1/2) (Prim 1, 1, none, 1 1/2))")
+ *  (Seq (Prim -1, 1, none, 1 1/2) (Prim 1, 1, none, 1 1/2))
+ *  js> bc = new BeatCounter(); undefined
+ *  js> // invoking this package-scope method is going to be a little painful
+ *  js> astcls = java.lang.Class.forName('net.cscott.sdr.calls.ast.AstNode')
+ *  class net.cscott.sdr.calls.ast.AstNode
+ *  js> m=bc.getClass().getMethod('getBeats', astcls); undefined
+ *  js> m.setAccessible(true) // this is the key
+ *  js> m.invoke(bc, s).toProperString() // bc.getBeats(s).toProperString()
  *  3
  */
 @RunWith(value=JDoctestRunner.class)
