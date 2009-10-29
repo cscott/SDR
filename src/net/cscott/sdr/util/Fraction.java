@@ -1144,6 +1144,49 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
         }
         return toProperString;
     }
+    /** Returns an executable representation of this Fraction. */
+    public String repr() {
+	// try common constants
+        if (this.equals(Fraction.ZERO))
+            return "Fraction.ZERO";
+        if (this.equals(Fraction.mONE))
+            return "Fraction.mONE";
+        if (this.equals(Fraction.ONE))
+            return "Fraction.ONE";
+        if (this.equals(Fraction.TWO))
+            return "Fraction.TWO";
+        if (this.equals(Fraction.ONE_HALF))
+            return "Fraction.ONE_HALF";
+        if (this.equals(Fraction.ONE_THIRD))
+            return "Fraction.ONE_THIRD";
+        if (this.equals(Fraction.TWO_THIRDS))
+            return "Fraction.TWO_THIRDS";
+        if (this.equals(Fraction.ONE_QUARTER))
+            return "Fraction.ONE_QUARTER";
+        if (this.equals(Fraction.THREE_QUARTERS))
+            return "Fraction.THREE_QUARTERS";
+        if (this.equals(Fraction.ONE_FIFTH))
+            return "Fraction.ONE_FIFTH";
+        if (this.equals(Fraction.TWO_FIFTHS))
+            return "Fraction.TWO_FIFTHS";
+        if (this.equals(Fraction.THREE_FIFTHS))
+            return "Fraction.THREE_FIFTHS";
+        if (this.equals(Fraction.FOUR_FIFTHS))
+            return "Fraction.FOUR_FIFTHS";
+        if (this.equals(Fraction.ONE_EIGHTH))
+            return "Fraction.ONE_EIGHTH";
+        if (this.equals(Fraction.THREE_EIGHTHS))
+            return "Fraction.THREE_EIGHTHS";
+        if (this.equals(Fraction.FIVE_EIGHTHS))
+            return "Fraction.FIVE_EIGHTHS";
+        if (this.equals(Fraction.SEVEN_EIGHTHS))
+            return "Fraction.SEVEN_EIGHTHS";
+	// integers
+	if (this.denominator == 1)
+	    return "Fraction.valueOf("+this.numerator+")";
+	// other values
+	return "Fraction.valueOf("+this.numerator+","+this.denominator+")";
+    }
 
     /** Backwards-compatible extension of Fraction.  Makes it appear that
      *  fractions are stored unsimplified. */

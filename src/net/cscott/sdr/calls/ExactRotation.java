@@ -88,6 +88,25 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
 		return eighths[i];
 	return new ExactRotation(Fraction.valueOf(s));
     }
+    public String repr() {
+        if (this.equals(ExactRotation.NORTH))
+            return "ExactRotation.NORTH";
+        if (this.equals(ExactRotation.EAST))
+            return "ExactRotation.EAST";
+        if (this.equals(ExactRotation.SOUTH))
+            return "ExactRotation.SOUTH";
+        if (this.equals(ExactRotation.WEST))
+            return "ExactRotation.WEST";
+        if (this.equals(ExactRotation.ONE_EIGHTH))
+            return "ExactRotation.ONE_EIGHTH";
+        if (this.equals(ExactRotation.THREE_EIGHTHS))
+            return "ExactRotation.THREE_EIGHTHS";
+        if (this.equals(ExactRotation.FIVE_EIGHTHS))
+            return "ExactRotation.FIVE_EIGHTHS";
+        if (this.equals(ExactRotation.SEVEN_EIGHTHS))
+            return "ExactRotation.SEVEN_EIGHTHS";
+        return "ExactRotation.fromAbsoluteString(\""+toAbsoluteString()+"\")";
+    }
     /** Returns a ExactRotation corresponding to one of the strings "right", "left",
      * or "none".
      * @param s

@@ -572,6 +572,28 @@ public class Position implements Comparable<Position> {
 	    tsb = tsb.append("flags", flags);
 	return tsb.toString();
     }
+    /** Emit an executable representation of this position.
+     * @doc.test
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> p = new Position(Fraction.ZERO, Fraction.ONE_HALF, ExactRotation.ONE_EIGHTH,
+     *    >                  Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT);
+     *  0,1/2,ne,[PASS_LEFT, ROLL_RIGHT]
+     *  js> p.repr()
+     *  new Position(Fraction.ZERO, Fraction.ONE_HALF, ExactRotation.ONE_EIGHTH, Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT)
+     */
+    public String repr() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("new Position(");
+        sb.append(x.repr()); sb.append(", ");
+        sb.append(y.repr()); sb.append(", ");
+        sb.append(facing.repr());
+        for (Flag f : _flags) {
+            sb.append(", Position.Flag.");
+            sb.append(f.name());
+        }
+        sb.append(")");
+        return sb.toString();
+    }
     /**
      * Compare two {@link Position}s.  We use reading order: top to bottom,
      * then left to right.  Ties are broken first by facing direction: first

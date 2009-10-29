@@ -299,4 +299,21 @@ public class Rotation {
 	}
 	return '.'; // unrepresentable.
     }
+    /** Return an executable representation of this {@link Rotation}. */
+    public String repr() {
+        StringBuilder sb = new StringBuilder();
+        String s = _toDiagramString();
+        if (s!=null) {
+            sb.append("Rotation.fromAbsoluteString(\"");
+            sb.append(s);
+            sb.append("\")");
+        } else {
+            sb.append("Rotation.create(");
+            sb.append(amount.repr());
+            sb.append(",");
+            sb.append(modulus.repr());
+            sb.append(")");
+        }
+        return sb.toString();
+    }
 }
