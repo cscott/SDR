@@ -65,7 +65,8 @@ import static net.cscott.sdr.util.Tools.l;//list constructor
  * Third: Sort and order the boundary coordinates, and then allocate space
  * between boundaries so that it is "just enough" to fit the dancers between
  * them.  If a dancer spans multiple boundary points, their allocation is
- * divided equally between them.  Finally, the output formations are
+ * divided equally between them.  We use linear programming here to find
+ * an optimal expansion.  Finally, the output formations are
  * relocated so that they are centered between their new boundaries.
  *
  * @author C. Scott Ananian
@@ -368,6 +369,54 @@ public class Breather {
      *    > }; undefined
      *  js> Breather.breathe(f).toStringDiagram()
      *  v    ^    v    ^
+     * @doc.test From EvalPrim test:
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> m = new java.util.HashMap(); undefined
+     *  js> function di(p) { m.put(new PhantomDancer(), p); }
+     *  js> di(new Position(Fraction.mONE, Fraction.ONE, ExactRotation.NORTH));
+     *  js> di(new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.NORTH));
+     *  js> di(new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.SOUTH));
+     *  js> di(new Position(Fraction.ONE, Fraction.mONE, ExactRotation.SOUTH));
+     *  js> f = new Formation(m); f.toStringDiagram();
+     *  ^
+     *  ^    v
+     *       v
+     *  js> [f.location(d) for (d in Iterator(f.sortedDancers()))].join('  ')
+     *  -1,1,n  -1,0,n  1,0,s  1,-1,s
+     *  js> ff = Breather.breathe(f); ff.toStringDiagram()
+     *  ^
+     *
+     *  ^    v
+     *
+     *       v
+     *  js> [ff.location(d) for (d in Iterator(ff.sortedDancers()))].join('  ')
+     *  -1,2,n  -1,0,n  1,0,s  1,-2,s
+     * @doc.test From 'do half of an ends cross run':
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> m = new java.util.HashMap(); undefined
+     *  js> SD = StandardDancer; undefined
+     *  js> m.put(SD.COUPLE_4_GIRL, new Position(Fraction.valueOf(-5,2), Fraction.ONE, ExactRotation.WEST)); undefined
+     *  js> m.put(SD.COUPLE_1_GIRL, new Position(Fraction.valueOf(3,2), Fraction.ONE, ExactRotation.WEST)); undefined
+     *  js> m.put(SD.COUPLE_4_BOY, new Position(Fraction.valueOf(-3), Fraction.ZERO, ExactRotation.NORTH, Position.Flag.ROLL_RIGHT)); undefined
+     *  js> m.put(SD.COUPLE_3_BOY, new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.SOUTH, Position.Flag.ROLL_RIGHT)); undefined
+     *  js> m.put(SD.COUPLE_1_BOY, new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.NORTH, Position.Flag.ROLL_RIGHT)); undefined
+     *  js> m.put(SD.COUPLE_2_BOY, new Position(Fraction.valueOf(3), Fraction.ZERO, ExactRotation.SOUTH, Position.Flag.ROLL_RIGHT)); undefined
+     *  js> m.put(SD.COUPLE_3_GIRL, new Position(Fraction.valueOf(-3,2), Fraction.mONE, ExactRotation.EAST)); undefined
+     *  js> m.put(SD.COUPLE_2_GIRL, new Position(Fraction.valueOf(5,2), Fraction.mONE, ExactRotation.EAST)); undefined
+     *  js> f = new Formation(m); f.toStringDiagram();
+     *   4G<       1G<
+     *  4B^  3Bv  1B^  2Bv
+     *     3G>       2G>
+     *  js> [f.location(d) for (d in Iterator(f.sortedDancers()))].join('  ')
+     *  -2 1/2,1,w  1 1/2,1,w  -3,0,n,[ROLL_RIGHT]  -1,0,s,[ROLL_RIGHT]  1,0,n,[ROLL_RIGHT]  3,0,s,[ROLL_RIGHT]  -1 1/2,-1,e  2 1/2,-1,e
+     *  js> ff = Breather.breathe(f); ff.toStringDiagram()
+     *   4G<       1G<
+     *
+     *  4B^  3Bv  1B^  2Bv
+     *
+     *     3G>       2G>
+     *  js> [ff.location(d) for (d in Iterator(ff.sortedDancers()))].join('  ')
+     *  -2 1/3,2,w  1 2/3,2,w  -3,0,n,[ROLL_RIGHT]  -1,0,s,[ROLL_RIGHT]  1,0,n,[ROLL_RIGHT]  3,0,s,[ROLL_RIGHT]  -1 2/3,-2,e  2 1/3,-2,e
      */
     public static Formation breathe(Formation f) {
         List<FormationPiece> fpl = new ArrayList<FormationPiece>
