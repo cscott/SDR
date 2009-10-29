@@ -64,11 +64,13 @@ public class ClBranchAndBound {
 
     public void addConstraint(ClConstraint cl)
         throws ExCLRequiredFailure, ExCLInternalError {
+        if (cl instanceof ClEditOrStayConstraint)
+            throw new ExCLInternalError("not supported");
         clearIntegerConstraints(); // don't want to cause spurious infeasibility
         solver.addConstraint(cl);
     }
     /** Used to automatically make inequalities conditional. */
-    private final static Fraction LARGE_NUMBER = Fraction.valueOf(1000);
+    private final static Fraction LARGE_NUMBER = Fraction.valueOf(100);
 
     public void addConstraintIf(ClBooleanVariable v, ClLinearInequality cl)
         throws ExCLRequiredFailure, ExCLInternalError {
