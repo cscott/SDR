@@ -1,5 +1,7 @@
 package net.cscott.sdr.calls;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import net.cscott.jutil.MultiMap;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import static net.cscott.sdr.calls.TaggedFormation.Tag.*;
 import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
+import net.cscott.sdr.calls.grm.BuildGrammars;
 import net.cscott.sdr.util.Fraction;
 
 /**
@@ -504,18 +507,83 @@ abstract class FormationListSlow {
 
     /** Compile formations in this class into "fast" formations. */
     public static void main(String[] args) throws Exception {
-        //System.out.println(xofy("test formation", FACING_DANCERS, COUPLE).toStringDiagram());
-        for (Field f : FormationListSlow.class.getFields()) {
+        if (args.length==0) {
+            emit(new PrintWriter(System.out));
+        } else {
+            StringWriter sw = new StringWriter();
+            emit(new PrintWriter(sw));
+            BuildGrammars.writeFile(args[0], sw.toString());
+        }
+    }
+    private static void emit(PrintWriter pw) {
+        List<String> allFormations = new ArrayList<String>();
+        emitHeader(pw);
+        for (Field f : FormationListSlow.class.getDeclaredFields()) {
             if (Modifier.isPublic(f.getModifiers()) &&
                 Modifier.isStatic(f.getModifiers()) &&
-		f.getName().toUpperCase().equals(f.getName())) {
-                NamedTaggedFormation ff = (NamedTaggedFormation) f.get(null);
-                // XXX
-                System.out.println("FormationList."+f.getName());
-                System.out.println(ff.toStringDiagram());
-                System.out.println(ff.toString());
-		System.out.println();
+                !f.getName().equals("all")) {
+                try {
+                    String fieldName = f.getName();
+                    NamedTaggedFormation ntf;
+                    ntf = (NamedTaggedFormation) f.get(null);
+                    emitOne(pw, fieldName, ntf);
+                    allFormations.add(fieldName);
+                } catch (IllegalArgumentException e) {
+                    assert false : e;
+                } catch (IllegalAccessException e) {
+                    assert false : e;
+                }
             }
         }
+        emitAll(pw, allFormations);
+        emitFooter(pw);
+        pw.flush();
+    }
+    private static void emitHeader(PrintWriter pw) {
+        pw.println("package net.cscott.sdr.calls;");
+        pw.println();
+        pw.println("import java.util.Arrays;");
+        pw.println("import java.util.Collections;");
+        pw.println("import java.util.List;");
+        pw.println();
+        pw.println("import net.cscott.sdr.calls.TaggedFormation.Tag;");
+        pw.println("import static net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;");
+        pw.println("import net.cscott.sdr.util.Fraction;");
+        pw.println();
+        pw.println("/** Compiled version of {@link FormationListSlow}. */");
+        pw.println("abstract class FormationListFast {");
+    }
+    private static void emitOne(PrintWriter pw, String fieldName,
+                                NamedTaggedFormation ntf) {
+        String escapedName = ntf.getName(); // XXX eventually properly-escape this?
+        pw.println("    public static final NamedTaggedFormation "+fieldName+" =");
+        pw.print  ("        new NamedTaggedFormation(\""+escapedName+"\"");
+        for (Dancer d : ntf.sortedDancers()) {
+            pw.println(",");
+            pw.print  ("            ");
+            pw.print  ("new TaggedDancerInfo(new PhantomDancer(), ");
+            pw.print  (ntf.location(d).repr());
+            for (Tag t : ntf.tags(d)) {
+                pw.print(", Tag.");
+                pw.print(t.name());
+            }
+            pw.print(")");
+        }
+        pw.println(");");
+        pw.println();
+    }
+    private static void emitAll(PrintWriter pw, List<String> allFormations) {
+        pw.println("    public static final List<NamedTaggedFormation> all =");
+        pw.println("        Collections.unmodifiableList(Arrays.asList(");
+        boolean first = true;
+        for (String fieldName : allFormations) {
+            if (!first) pw.println(",");
+            pw.print("            FormationListFast."+fieldName);
+            first = false;
+        }
+        pw.println("));");
+    }
+    private static void emitFooter(PrintWriter pw) {
+        pw.println("}");
     }
 }

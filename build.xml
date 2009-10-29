@@ -67,7 +67,8 @@ Square Dance Revolution build file.
         <delete file="sdr.jnlp" />
 	<!-- optimized FormationList -->
 	<copy file="src/net/cscott/sdr/calls/FormationListFast.stub"
-	      tofile="src/net/cscott/sdr/calls/FormationListFast.java" />
+	      tofile="src/net/cscott/sdr/calls/FormationListFast.java"
+              overwrite="true" />
 	<!-- classes and api docs -->
 	<delete dir="${classes_dir}" />
 	<delete dir="${api_dir}" />
@@ -262,7 +263,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
     <!-- most ant scripts have a build target -->
     <target name="build" depends="jar" description="Alias for jar target"/>
     <!-- build classes and grammars -->
-    <target name="compile" depends="compile.base,compile.index,compile.grm" />
+    <target name="compile" depends="compile.base,compile.index,compile.flf,compile.grm" />
 
     <!-- create instrumented binaries for cobertura -->
     <target name="instrument" depends="compile,clean.cobertura"
@@ -410,6 +411,29 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		<classpath refid="classpath.path" />
         </antlr3>
     </target>
+
+    <!-- ********* Build the optimized FormationList. ********** -->
+    <target name="compile.flf"
+	    description="Build the optimized FormationList."
+	    depends="compile.base">
+	    <java classname="net.cscott.sdr.calls.FormationListSlow"
+		  fork="true">
+		  <jvmarg value="-ea:net.cscott..." />
+		  <arg value="src/net/cscott/sdr/calls/FormationListFast.java"/>
+                  <classpath>
+		    <path refid="classpath.path"/>
+                  </classpath>
+	    </java>
+	    <!-- build newly-generated FormationListFast -->
+	    <javac srcdir="${src_dir}"
+		   destdir="${classes_dir}"
+		   includes="net/cscott/sdr/calls/FormationListFast.java"
+		   deprecation="on" source="1.5" target="1.5" debug="true">
+                   <compilerarg value="-Xlint:unchecked"/>
+		   <classpath refid="classpath.path" />
+	    </javac>
+    </target>
+
 
     <target name="clean.grm" depends="init"
 	    description="Remove generated natural language grammars">

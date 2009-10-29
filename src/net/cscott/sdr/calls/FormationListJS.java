@@ -52,7 +52,7 @@ public class FormationListJS implements Scriptable {
 
     public Object get(String name, Scriptable start) {
         try {
-            return Context.javaToJS(FormationList.class.getField(name)
+            return Context.javaToJS(formationList.getField(name)
                                     .get(null), start);
         } catch (IllegalArgumentException e) {
         } catch (SecurityException e) {

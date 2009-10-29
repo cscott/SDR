@@ -91,7 +91,18 @@ import org.junit.runner.RunWith;
  *  js> [f for (f in FormationListFast)].length == len
  *  true
  *  js> function compare(a, b) {
- *    >    return a.equals(b); // XXX: will need to account for differing phantoms
+ *    >    if (!a.getName().equals(b.getName())) return false;
+ *    >    d1=a.sortedDancers(); d2=b.sortedDancers();
+ *    >    if (d1.size() != d2.size()) return false;
+ *    >    // make all phantoms equivalent
+ *    >    m=new java.util.HashMap();
+ *    >    for (let i=0; i<d1.size(); i++) {
+ *    >      if (!(d1.get(i) instanceof PhantomDancer)) return false;
+ *    >      if (!(d2.get(i) instanceof PhantomDancer)) return false;
+ *    >      m.put(d1.get(i), d2.get(i));
+ *    >    }
+ *    >    aa=a.map(m);
+ *    >    return aa.equals(b);
  *    > }
  *  js> matches=0
  *  0
