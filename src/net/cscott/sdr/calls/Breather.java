@@ -2,16 +2,32 @@ package net.cscott.sdr.calls;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.sdr.util.Box;
+import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.Point;
+import net.cscott.sdr.util.SdrToString;
+import net.cscott.sdr.util.Tools.ListMultiMap;
+import net.cscott.sdr.util.Tools.F; // list comprehension helper
+import static net.cscott.sdr.util.Tools.foreach; // list comprehension
+import static net.cscott.sdr.util.Tools.l;//list constructor
+import static net.cscott.sdr.util.Tools.m;//map constructor
+import static net.cscott.sdr.util.Tools.mml;//listmultimap constructor
+import static net.cscott.sdr.util.Tools.p;//pair constructor
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.junit.runner.RunWith;
 
 import EDU.Washington.grad.gjb.cassowary.CL;
+import EDU.Washington.grad.gjb.cassowary.ClBooleanVariable;
+import EDU.Washington.grad.gjb.cassowary.ClBranchAndBound;
+import EDU.Washington.grad.gjb.cassowary.ClConstraint;
 import EDU.Washington.grad.gjb.cassowary.ClLinearEquation;
 import EDU.Washington.grad.gjb.cassowary.ClLinearExpression;
 import EDU.Washington.grad.gjb.cassowary.ClLinearInequality;
@@ -19,19 +35,9 @@ import EDU.Washington.grad.gjb.cassowary.ClSimplexSolver;
 import EDU.Washington.grad.gjb.cassowary.ClStrength;
 import EDU.Washington.grad.gjb.cassowary.ClVariable;
 import EDU.Washington.grad.gjb.cassowary.ExCLError;
-import net.cscott.jdoctest.JDoctestRunner;
-import net.cscott.jutil.GenericMultiMap;
-import net.cscott.sdr.util.Box;
-import net.cscott.sdr.util.Fraction;
-import net.cscott.sdr.util.Point;
-import net.cscott.sdr.util.SdrToString;
-import net.cscott.sdr.util.Tools.ListMultiMap;
-import static net.cscott.sdr.util.Tools.F; // list comprehension helper
-import static net.cscott.sdr.util.Tools.foreach; // list comprehension
-import static net.cscott.sdr.util.Tools.m;//map constructor
-import static net.cscott.sdr.util.Tools.mml;//listmultimap constructor
-import static net.cscott.sdr.util.Tools.p;//pair constructor
-import static net.cscott.sdr.util.Tools.l;//list constructor
+import EDU.Washington.grad.gjb.cassowary.ExCLInternalError;
+import EDU.Washington.grad.gjb.cassowary.ExCLNonlinearExpression;
+import EDU.Washington.grad.gjb.cassowary.ExCLRequiredFailure;
 
 /**
  * The {@link Breather} class contains methods to reassemble and
@@ -58,10 +64,9 @@ import static net.cscott.sdr.util.Tools.l;//list constructor
  * <p>First: identify collisions.  Collided dancers are
  * inserted into a miniwave which replaces them in the remainder of the
  * algorithm.  Second: resolve overlaps.  Dancers which overlap have their
- * boundaries adjusted so that they share a boundary at the midpoint of the
- * overlap.  Order the resolution from "closest" overlapping dancers to
- * "furthest apart" (smallest overlap), and secondarily from center out, so
- * that extreme overlaps (ie, dancers spaced 1/4 apart) are handled sanely.
+ * boundaries adjusted so that they share a boundary, ideally at the midpoint
+ * of the overlap.  We now use a mixed integer programming solver to perform
+ * an optimal adjustment, keeping handholds and making stars when possible.
  * Third: Sort and order the boundary coordinates, and then allocate space
  * between boundaries so that it is "just enough" to fit the dancers between
  * them.  If a dancer spans multiple boundary points, their allocation is
@@ -74,6 +79,7 @@ import static net.cscott.sdr.util.Tools.l;//list constructor
  */
 @RunWith(value=JDoctestRunner.class)
 public class Breather {
+    private Breather() { }
 
     /**
      * Insert formations into a meta-formation.  This reassembles the
@@ -837,199 +843,113 @@ public class Breather {
      * to a diamond instead: we only preserve stars if they already exist,
      * we never make stars.
      */
-    // xxx test cases for all this
+    // test cases are contained within doctests for public breathe()
     private static List<Box> trimOverlap(List<FormationPiece> pieces) {
-        List<Box> boundsList = new ArrayList<Box>(pieces.size());
-        List<TrimBit> trimX = new ArrayList<TrimBit>(pieces.size());
-        List<TrimBit> trimY = new ArrayList<TrimBit>(pieces.size());
-        BorderCountMap borderCountX = new BorderCountMap();
-        BorderCountMap borderCountY = new BorderCountMap();
-        HandholdMap handholdMap = new HandholdMap();
-        for (int i=0; i<pieces.size(); i++) {
-            Formation input = pieces.get(i).input;
-            Box bounds = input.bounds();
-            boundsList.add(bounds);
-            trimX.add(new TrimBit(input, boundsList, i, bounds.center(),
-                                  true, borderCountX));
-            trimY.add(new TrimBit(input, boundsList, i, bounds.center(),
-                                  false, borderCountY));
-            // keep track of handholds
-            Rotation handholdDir = trimX.get(trimX.size()-1).handholdDir;
-            if (handholdDir!=null) {
-                HandPair hp = hands(bounds, handholdDir);
-                handholdMap.add(hp.right, input);
-                handholdMap.add(hp.left, input);
-            }
+        try {
+            return _trimOverlap(pieces);
+        } catch (ExCLInternalError e) {
+            assert false; // should never happen
+        } catch (ExCLRequiredFailure e) {
+            // fall through
         }
-        // form all pairs
-        List<TrimBitPair> trims = new ArrayList<TrimBitPair>();
+        throw new BadCallException("can't trim");
+    }
+    private static List<Box> _trimOverlap(List<FormationPiece> pieces)
+        throws ExCLRequiredFailure, ExCLInternalError {
+        List<VariableBox> vars = new ArrayList<VariableBox>(pieces.size());
+        // create variables and basic constraints
+        ClBranchAndBound solver = new ClBranchAndBound();
+        for (FormationPiece fp : pieces)
+            vars.add(new VariableBox(solver, fp.input));
+
+        // add pairwise constraints
         for (int i=0; i<pieces.size(); i++) {
             for (int j=i+1; j<pieces.size(); j++) {
-                TrimBit aX = trimX.get(i), bX = trimX.get(j);
-                TrimBit aY = trimY.get(i), bY = trimY.get(j);
-                assert aX.input == aY.input && bX.input == bY.input;
-                trims.add(new TrimBitPair(aX, bX, borderCountX, handholdMap));
-                trims.add(new TrimBitPair(aY, bY, borderCountY, handholdMap));
+                VariableBox va = vars.get(i), vb = vars.get(j);
+                //              no X overlap | some X overlap | total X overlap
+                // no Y overlap    skip           skip             skip
+                // some Y overlap  skip        resolve X or Y     resolve Y
+                // total Y overlap skip          resolve X         error
+                if (va.toBox().overlaps(vb.toBox())) {
+                    PairedConstraint<ClLinearInequality> xOverlap =
+                        va.overlapConstraint(vb,true);
+                    PairedConstraint<ClLinearInequality> yOverlap =
+                        va.overlapConstraint(vb,false);
+                    List<PairedConstraint<ClLinearEquation>> star =
+                        va.starConstraints(vb);
+                    List<ClBooleanVariable> options =
+                        new ArrayList<ClBooleanVariable>(3);
+
+                    if (star!=null) {
+                        // option 1: could make a star
+                        ClBooleanVariable sw = new ClBooleanVariable(solver);
+                        for (PairedConstraint<ClLinearEquation> pc : star) {
+                            solver.addConstraintIf(sw, pc.required);
+                            if (pc.symmetry != null)
+                                solver.addConstraintIf(sw, pc.symmetry);
+                        }
+                        options.add(sw);
+                    }
+                    if (xOverlap!=null) {
+                        // option 2: could resolve the x overlap
+                        ClBooleanVariable sw = new ClBooleanVariable(solver);
+                        solver.addConstraintIf(sw, xOverlap.required);
+                        solver.addConstraintIf(sw, xOverlap.symmetry);
+                        options.add(sw);
+                    }
+                    if (yOverlap!=null) {
+                        // option 3: could resolve the y overlap
+                        ClBooleanVariable sw = new ClBooleanVariable(solver);
+                        solver.addConstraintIf(sw, yOverlap.required);
+                        solver.addConstraintIf(sw, yOverlap.symmetry);
+                        options.add(sw);
+                    }
+
+                    // we can only take one of these options.
+                    if (!options.isEmpty()) {
+                        ClLinearExpression sum =
+                            new ClLinearExpression(Fraction.mONE);
+                        for (ClBooleanVariable v : options)
+                            sum = sum.addVariable(v);
+                        solver.addConstraint(new ClLinearEquation(sum));
+                    }
+                }
+
+                // try to keep handholds (optional constraints)
+                List<PairedConstraint<ClLinearEquation>> handConstraints =
+                    va.handConstraints(vb);
+                if (handConstraints!=null) {
+                    ClBooleanVariable sw = new ClBooleanVariable(solver);
+                    for (PairedConstraint<ClLinearEquation> pc:handConstraints){
+                        solver.addConstraintIf(sw, pc.required);
+                        if (pc.symmetry != null)
+                            solver.addConstraintIf(sw, pc.symmetry);
+                    }
+                    // w/ medium strength, request sw to be 1
+                    solver.addConstraint
+                    (new ClLinearEquation(sw, Fraction.ONE, ClStrength.medium));
+                }
             }
-        }
-        // sort the pairs into the desired resolution order
-        // XXX this is a mess of hacks.
-        Collections.sort(trims);
-        // okay, now go through the pairs resolving the overlaps
-        for (TrimBitPair tbp: trims) {
-            // check that the formations actually overlap; may have already
-            // been resolved.
-            if (!tbp.lo.bounds().overlaps(tbp.hi.bounds())) continue;
-            // and that this dimension overlaps, in case it's been fixed
-            if (!tbp.lo.overlaps(tbp.hi)) continue;
-            // maybe this has become a star; double check.
-            // (don't try to push stars apart, or else breathing thars gets to
-            // be a real problem!)
-            if (isStar(tbp.lo, tbp.hi)) continue;
-            // okay, a real problem!  Trim both sides back to the midpoint
-            // of the overlap.
-            tbp.trim();
-        }
-        // boundsList has been modified; return it now!
-        return boundsList;
-    }
-    /** Returns true if a and b are a 'star'; that is, their "left hands"
-     * or "right hands" meet at a point. Be conservative.
-     */
-    private static boolean isStar(TrimBit a, TrimBit b) {
-        Rotation aR = a.handholdDir;
-        Rotation bR = b.handholdDir;
-        if (aR==null || bR==null)
-            return false; // inconsistent facing dirs, not a star
-        if ((!bR.add(Fraction.ONE_QUARTER).equals(aR)) &&
-            (!aR.add(Fraction.ONE_QUARTER).equals(bR)))
-            return false; // only a star if we're exactly 90 degrees off
-        HandPair aH = hands(a.bounds(), aR), bH = hands(b.bounds(), bR);
-        if (aH.right.equals(bH.right) || aH.right.equals(bH.left) ||
-            aH.left.equals(bH.right) || aH.left.equals(bH.left)) {
-            return true; // it's a perfect star!
-        }
-        return false;
-    }
-    private static class HandPair {
-        Point right, left;
-        HandPair(Point right, Point left) { this.right=right; this.left=left; }
-    }
-    private static HandPair hands(Box bounds, Rotation handholdDir) {
-        ExactRotation er = new ExactRotation(handholdDir.normalize().amount);
-        // left and right labels are somewhat arbitrary, since we've normalized
-        // to a modulus of 1/2
-        Point rightHand = boundaryPoint(bounds, er);
-        Point leftHand = boundaryPoint(bounds, er.add(Fraction.ONE_HALF));
-        return new HandPair(rightHand, leftHand);
-    }
-    private static Point boundaryPoint(Box bounds, ExactRotation facing) {
-        Fraction x = facing.toX().multiply(bounds.width()).divide(Fraction.TWO);
-        Fraction y = facing.toY().multiply(bounds.height()).divide(Fraction.TWO);
-        Point center = bounds.center();
-        return new Point(center.x.add(x), center.y.add(y));
-    }
-    private static class TrimBitPair implements Comparable<TrimBitPair>{
-        final TrimBit lo, hi;
-        final Fraction overlap;
-        final int sharedEdges;
-        final int handholds;
-        TrimBitPair(TrimBit a, TrimBit b, BorderCountMap bcm, HandholdMap hhm) {
-            // order inputs into a 'lo' and 'hi' trim bit.
-            int c = a.getStart().compareTo(b.getStart());
-            if (c==0) c = a.getEnd().compareTo(b.getEnd());
-            if (c < 0) {
-                this.lo = a;
-                this.hi = b;
-            } else {
-                this.lo = b;
-                this.hi = a;
-            }
-            // min of the highs
-            Fraction minEnd = Collections.min(l(a.getEnd(),b.getEnd()));
-            Fraction maxStart = Collections.max(l(a.getStart(),b.getStart()));
-            // overlap is min of the highs minus max of the lows
-            this.overlap = minEnd.subtract(maxStart);
-            // now look at the borders which would be trimmed, and count
-            // how many input formations share this border exactly (try not to
-            // interfere with existing handholds)
-            this.sharedEdges = bcm.get(minEnd) + bcm.get(maxStart);
-            // how many handholds would break if we trimmed this bit?
-            // (trimming would modify lo.end and hi.start)
-            int handholds = 0;
-            // does 'lo' have a handhold at its end?
-            if (hasHandhold(hhm, lo, lo.getEnd()))
-                handholds++;
-            // does 'hi' have a handhold at its start?
-            if (hasHandhold(hhm, hi, hi.getStart()))
-                handholds++;
-            this.handholds = handholds;
-        }
-        public String toString() {
-            return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("lo", lo)
-                .append("hi", hi)
-                .append("overlap", overlap.toProperString())
-                .append("sharedEdges", sharedEdges)
-                .append("handholds", handholds)
-                .toString();
-        }
-        private static boolean hasHandhold(HandholdMap hhm, TrimBit tb, Fraction edge) {
-            if (!tb.handholdOnAxis()) return false;
-            HandPair handPair = hands(tb.bounds(), tb.handholdDir);
-            Fraction left = tb.isX ? handPair.left.x : handPair.left.y;
-            Fraction right = tb.isX ? handPair.right.x : handPair.right.y;
-            assert !(edge.equals(left) && edge.equals(right));
-            Point p = edge.equals(left) ? handPair.left :
-                      edge.equals(right) ? handPair.right : null;
-            if (p==null) return false;
-            int h = hhm.getValues(p).size();
-            return (h>1);
         }
 
-        /** Compare pairs by (first) whether it's a complete overlap (try to
-         * resolve all other conflicts first, (second) the number of dancers
-         * sharing the trimable edges (min first), and (third) by the amount of
-         * overlap between them (min first).
-         */
-        public int compareTo(TrimBitPair tbp) {
-            if (this.isCompleteOverlap() && !tbp.isCompleteOverlap())
-                return 1;
-            if (tbp.isCompleteOverlap() && !this.isCompleteOverlap())
-                return -1;
-            int c = this.handholds - tbp.handholds;
-            if (c!=0) return c;
-            c = this.sharedEdges - tbp.sharedEdges;
-            if (c!=0) return c;
-            c = this.overlap.compareTo(tbp.overlap);
-            return c;
-        }
-        private boolean isCompleteOverlap() {
-            return lo.getStart().equals(hi.getStart()) &&
-                   lo.getEnd().equals(hi.getEnd());
-        }
-        /** Trim a pair down to the midpoint of their overlap. */
-        public void trim() {
-            // figure out which of a and b is the "low" one.
-            if (isCompleteOverlap())
-                throw new Error("can't trim when exactly overlapping!");
-            // okay, now we're going to trim lo.end and hi.start to their avg
-            Fraction newEdge = lo.getEnd().add(hi.getStart())
-                .divide(Fraction.TWO);
-            lo.setEnd(newEdge);
-            hi.setStart(newEdge);
-            // ta-da!
-        }
+        // sanity check: verify that var values haven't changed before solving
+        for (int i=0; i<pieces.size(); i++)
+            assert pieces.get(i).input.bounds().equals(vars.get(i).toBox());
+
+        // solve constraints, return list of new boundaries.
+        solver.solve();
+        List<Box> bounds = new ArrayList<Box>(pieces.size());
+        for (VariableBox v : vars)
+            bounds.add(v.toBox());
+        return bounds;
     }
-    private static class TrimBit {
-        /** The index of the FormationPiece corresponding to this. */
-        final int idx;
-        /** Pointer to a shared copy of the bounds list. */
-        final List<Box> boundsList;
-        /** Is this an X slice or a Y slice? */
-        final boolean isX;
-        /** Original input {@link Formation}. */
-        final Formation input;
+
+    /** A {@link Box}, except using {@link ClVariable}s to represent the
+     *  left/right/bottom/top coordinates.
+     */
+    private static class VariableBox {
+        final ClVariable left, bottom;
+        final ClVariable right, top;
         /**
          * Formation "handhold" direction modulo 1/2, or {@code} null if it does
          * not have a consistent handhold direction.  For a dancer facing
@@ -1039,69 +959,233 @@ public class Breather {
          */
         final Rotation handholdDir;
 
-        public Box bounds() { return boundsList.get(idx); }
-        void setBounds(Box newBounds) { boundsList.set(idx, newBounds); }
-        public Fraction getStart() {
-            return isX ? bounds().ll.x : bounds().ll.y;
-        }
-        public void setStart(Fraction f) {
-            Box oldBounds = bounds();
-            Point oldll = oldBounds.ll;
-            Point newll = isX ? new Point(f, oldll.y) : new Point(oldll.x, f);
-            setBounds(new Box(newll, oldBounds.ur));
-        }
-        public Fraction getEnd() {
-            return isX ? bounds().ur.x : bounds().ur.y;
-        }
-        public void setEnd(Fraction f) {
-            Box oldBounds = bounds();
-            Point oldur = oldBounds.ur;
-            Point newur = isX ? new Point(f, oldur.y) : new Point(oldur.x, f);
-            setBounds(new Box(oldBounds.ll, newur));
-        }
-        /** Returns true if these bits overlap on this axis; the full 2d
-         * boxes may not actually overlap. */
-        public boolean overlaps(TrimBit b) {
-            return this.getStart().compareTo(b.getEnd()) < 0 &&
-                   b.getStart().compareTo(this.getEnd()) < 0;
-        }
-        /** Returns true if the "handholdDir" is consistent with "isX" */
-        public boolean handholdOnAxis() {
-            if (this.handholdDir==null) return false;
-            return this.handholdDir.includes
-                (isX ? ExactRotation.EAST : ExactRotation.NORTH);
-        }
-        TrimBit(Formation input, List<Box> boundsList, int idx, Point center,
-                boolean isX, BorderCountMap borderCount) {
-            this.input = input;
+        /** Create a new {@link VariableBox} corresponding to the bounds of
+         *  the specified input {@link Formation}.
+         */
+        public VariableBox(ClBranchAndBound s, Formation input)
+            throws ExCLRequiredFailure, ExCLInternalError {
+            Box b = input.bounds();
+            this.left = new ClVariable(b.ll.x);
+            this.bottom = new ClVariable(b.ll.y);
+            this.right = new ClVariable(b.ur.x);
+            this.top = new ClVariable(b.ur.y);
             Rotation hhD = formationFacing(input, Fraction.ONE_HALF);
             this.handholdDir = (hhD==null)?null:hhD.add(Fraction.ONE_QUARTER);
-            this.boundsList = boundsList;
-            this.idx = idx;
-            this.isX = isX;
-            borderCount.increment(getStart());
-            borderCount.increment(getEnd());
+            // stays: try to keep the bounds in the same place if possible
+            for (ClVariable v : l(left, bottom, right, top))
+                s.addConstraint
+                    (new ClLinearEquation(v, v.value(), ClStrength.weak));
+            // required constraints: l<r, b<t
+            s.addConstraint(new ClLinearInequality(left, CL.Op.LEQ, right));
+            s.addConstraint(new ClLinearInequality(bottom, CL.Op.LEQ, top));
+            // ONLY ALLOW SHRINKING REGIONS to resolve overlaps
+            // this ensures that overlaps in the solution are a subset of
+            // those currently present, which keeps the problem reasonable
+            s.addConstraint(new ClLinearInequality(left, CL.Op.GEQ, b.ll.x));
+            s.addConstraint(new ClLinearInequality(bottom, CL.Op.GEQ, b.ll.y));
+            s.addConstraint(new ClLinearInequality(right, CL.Op.LEQ, b.ur.x));
+            s.addConstraint(new ClLinearInequality(top, CL.Op.LEQ, b.ur.y));
+        }
+        public String toString() {
+            return "("+left+","+bottom+";"+right+","+top+") "+handholdDir;
+        }
+        public Box toBox() {
+            return new Box(new Point(left.value(), bottom.value()),
+                           new Point(right.value(), top.value()));
+        }
+        public ClVariable getStart(boolean isX) {
+            return isX ? left : bottom;
+        }
+        public ClVariable getEnd(boolean isX) {
+            return isX ? right : top;
+        }
+        /** Return constraints needed to resolve x/y overlaps, or null if no
+         *  such constraints are necessary (or possible).
+         */
+        public PairedConstraint<ClLinearInequality> overlapConstraint(
+                VariableBox that, boolean isX) throws ExCLInternalError {
+            assert this.toBox().overlaps(that.toBox());
+            // flip-flop so that this has lowest start dim.
+            int c = this.getStart(isX).value().compareTo(that.getStart(isX).value());
+            if (c==0) c = -this.getEnd(isX).value().compareTo(that.getEnd(isX).value());
+            if (c > 0) return that.overlapConstraint(this, isX);
+
+            if (this.getEnd(isX).value().compareTo(that.getEnd(isX).value())>=0)
+                return null; // complete overlap, can't resolve
+
+            if (this.getEnd(isX).value().compareTo(that.getStart(isX).value())<=0)
+                assert false; // no overlap, shouldn't happen
+
+            // ok, need this.end <= that.start
+            // we also add a weak symmetry constraint to provide some guidance
+            // as to where we'd like the new edge to go; otherwise any cut
+            // (from trimming 'this' only to trimming 'that' only) yields
+            // the same value for the objective function.
+            return new PairedConstraint<ClLinearInequality>
+                (new ClLinearInequality
+                        (this.getEnd(isX), CL.Op.LEQ, that.getStart(isX)),
+                 new ClLinearEquation
+                        (CL.Minus(this.getEnd(isX).value(), this.getEnd(isX)),
+                         CL.Minus(that.getStart(isX), that.getStart(isX).value()),
+                         ClStrength.weak));
+        }
+        /** Return constraints needed to ensure a star containing this and that,
+         *  or null if no such constraints are possible.
+         */
+        public List<PairedConstraint<ClLinearEquation>> starConstraints(
+                VariableBox that) {
+            // first, the facing directions have to be star-aligned
+            Rotation aR = this.handholdDir;
+            Rotation bR = that.handholdDir;
+            if (aR==null || bR==null)
+                return null; // inconsistent facing dirs, not a star
+            if ((!bR.add(Fraction.ONE_QUARTER).equals(aR)) &&
+                (!aR.add(Fraction.ONE_QUARTER).equals(bR)))
+                return null; // only a star if we're exactly 90 degrees off
+            // now look at possible hand holds
+            return _handConstraints(that, false/*possible as well as actual*/);
+        }
+        /** Return constraints needed to ensure this and that are holding
+         *  hands, if they are currently doing so.  (Or null, if they are
+         *  not holding hands currently.)
+         */
+        public List<PairedConstraint<ClLinearEquation>> handConstraints(
+                VariableBox that) {
+            // same facing direction (mod 1/2)
+            if (this.handholdDir==null || that.handholdDir==null)
+                return null;
+            if (!this.handholdDir.equals(that.handholdDir))
+                return null; // facing direction mod 1/2 isn't the same
+            return _handConstraints(that, true/*only actual*/);
+        }
+        // shared by handConstraints and starConstraints
+        private List<PairedConstraint<ClLinearEquation>> _handConstraints(
+                VariableBox that, boolean onlyActual) {
+            // ignore merely "possible" handholds
+            VarPoint aHand = this.nearHand(that);
+            VarPoint bHand = that.nearHand(this);
+            if (aHand==null || bHand==null)
+                return null; // hands can't reach
+            if (onlyActual && !aHand.toPoint().equals(bHand.toPoint()))
+                return null; // "possible" not *actual* handhold
+            // well! we could hold hands!
+            ClLinearEquation x = new ClLinearEquation(aHand.x, bHand.x);
+            ClLinearEquation y = new ClLinearEquation(aHand.y, bHand.y);
+            // Because our objective function is linear, we need to provide
+            // additional guidance on *how* this constraint should be satisfied,
+            // otherwise it will just arbitrarily move one endpoint, leaving an
+            // ugly asymmetry.  So we add additional weak symmetry constraints,
+            // which (more or less) try to make width and height equal
+            // (Strictly speaking, if coefficicients of aHand don't involve both
+            // start and end, then we don't have to make that dim equal. And
+            // stars want width to be equal to height, etc.)
+            ClLinearEquation xsym = aHand.nontrivialX() ?
+                (bHand.nontrivialX() ?
+                 new ClLinearEquation(this.width(), that.width(), ClStrength.weak) :
+                 bHand.nontrivialY() ?
+                 new ClLinearEquation(this.width(), that.height(), ClStrength.weak) :
+                 null) : null;
+            ClLinearEquation ysym = aHand.nontrivialY() ?
+                (bHand.nontrivialY() ?
+                 new ClLinearEquation(this.height(), that.height(), ClStrength.weak) :
+                 bHand.nontrivialX() ?
+                 new ClLinearEquation(this.height(), that.width(), ClStrength.weak) :
+                 null) : null;
+            return l(new PairedConstraint<ClLinearEquation>(x, xsym),
+                     new PairedConstraint<ClLinearEquation>(y, ysym));
+        }
+        /** This is not quite right if the box's width doesn't match its height,
+         *  but it's close enough -- and works for the orthogonal cases that we
+         *  really care about. */
+        private VarPoint boundaryPoint(ExactRotation facing) {
+            try {
+                ClLinearExpression x =
+                    width().times(facing.toX().divide(Fraction.TWO));
+                ClLinearExpression y =
+                    height().times(facing.toY().divide(Fraction.TWO));
+                ClLinearExpression centerx =
+                    CL.Plus(this.left, this.right).divide(Fraction.TWO);
+                ClLinearExpression centery =
+                    CL.Plus(this.bottom, this.top).divide(Fraction.TWO);
+                return new VarPoint(centerx.plus(x), centery.plus(y));
+            } catch (ExCLNonlinearExpression e) {
+                assert false : "Should never happen!";
+                throw new RuntimeException("Can't compute boundary expression");
+            }
+        }
+        private ClLinearExpression width() {
+            return CL.Minus(this.right, this.left);
+        }
+        private ClLinearExpression height() {
+            return CL.Minus(this.top, this.bottom);
+        }
+        private List<VarPoint> hands() {
+            ExactRotation er= new ExactRotation(handholdDir.normalize().amount);
+            // left and right labels are somewhat arbitrary, since we've
+            // normalized to a modulus of 1/2
+            VarPoint rightHand = boundaryPoint(er);
+            VarPoint leftHand = boundaryPoint(er.add(Fraction.ONE_HALF));
+            return l(rightHand, leftHand);
+        }
+        /** Return the handhold point which could hold hand with 'that' box,
+         *  or 'null' if neither handhold could join up. */
+        private VarPoint nearHand(VariableBox that) {
+            // the hand point has to be contained within 'that's boundary box
+            // to be a possible handhold.  If both are contained, then neither
+            // is a possible handhold (this might not be perfectly accurate,
+            // but it will do for now)
+            VarPoint near = null;
+            for (VarPoint hand : hands())
+                if (that.toBox().includes(hand.toPoint()))
+                    if (near==null)
+                        near = hand;
+                    else
+                        return null; // both match, ugh
+            return near;
+        }
+    }
+
+    /** The equivalent of a {@link Point}, except the x/y coordinates are
+     *  represented as {@link ClLinearExpression}s.
+     */
+    private static class VarPoint {
+        final ClLinearExpression x, y;
+        VarPoint(ClLinearExpression x, ClLinearExpression y) {
+            this.x=x; this.y=y;
+        }
+        Point toPoint() {
+            return new Point(x.evaluate(), y.evaluate());
+        }
+        boolean nontrivialX() {
+            return x.terms().size() > 1;
+        }
+        boolean nontrivialY() {
+            return y.terms().size() > 1;
+        }
+    }
+
+    /** Because our constraint solver is linear (not least squares), we need
+     *  to provide additional guidance wrt how we would like the inequalities
+     *  satisfied.  In general, we want boundaries moved symmetrically, instead
+     *  of just yanking one boundary over (note that moving one boundary a
+     *  distance X has the same linear "error" as moving two boundaries a
+     *  distance X/2, which is why we need these additional terms in the
+     *  objective function).  This class pairs some required constraint
+     *  ({@link ClLinearInequality} or {@link ClLinearEquation}) with a
+     *  weak symmetry constraint that goes with it.
+     */
+    private static class PairedConstraint<CONSTRAINT extends ClConstraint> {
+        final CONSTRAINT required;
+        final ClLinearEquation symmetry;
+        PairedConstraint(CONSTRAINT required, ClLinearEquation symmetry) {
+            this.required = required;
+            this.symmetry = symmetry;
         }
         public String toString() {
             return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-            .append("isX", isX)
-            .append("start", getStart().toProperString())
-            .append("end", getEnd().toProperString())
-            .append("handhold", handholdDir.toAbsoluteString())
-            .toString();
+                .append("req", required)
+                .append("sym", symmetry)
+                .toString();
         }
-    }
-    private static class BorderCountMap extends HashMap<Fraction,Integer> {
-            BorderCountMap() { super(); }
-            public void increment(Fraction f) {
-                this.put(f, this.get(f)+1);
-            }
-            public Integer get(Fraction f) {
-                Integer i = super.get(f);
-                return (i==null) ? Integer.valueOf(0) : i;
-            }
-    }
-    private static class HandholdMap extends GenericMultiMap<Point, Formation> {
-        HandholdMap() { super(); }
     }
 }
