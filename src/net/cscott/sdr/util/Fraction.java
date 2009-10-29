@@ -262,6 +262,58 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
         int gcd = greatestCommonDivisor(numerator, denominator);
         numerator /= gcd;
         denominator /= gcd;
+        // reuse existing objects if possible
+        switch (denominator) {
+        case 1:
+            switch (numerator) {
+            case -1: return Fraction.mONE;
+            case  0: assert false; return Fraction.ZERO;
+            case  1: return Fraction.ONE;
+            case  2: return Fraction.TWO;
+            default: break;
+            }
+            break;
+        case 2:
+            switch (numerator) {
+            case 1: return Fraction.ONE_HALF;
+            default: break;
+            }
+            break;
+        case 3:
+            switch (numerator) {
+            case 1: return Fraction.ONE_THIRD;
+            case 2: return Fraction.TWO_THIRDS;
+            default: break;
+            }
+            break;
+        case 4:
+            switch (numerator) {
+            case 1: return Fraction.ONE_QUARTER;
+            case 3: return Fraction.THREE_QUARTERS;
+            default: break;
+            }
+            break;
+        case 5:
+            switch (numerator) {
+            case 1: return Fraction.ONE_FIFTH;
+            case 2: return Fraction.TWO_FIFTHS;
+            case 3: return Fraction.THREE_FIFTHS;
+            case 4: return Fraction.FOUR_FIFTHS;
+            default: break;
+            }
+            break;
+        case 8:
+            switch (numerator) {
+            case 1: return Fraction.ONE_EIGHTH;
+            case 3: return Fraction.THREE_EIGHTHS;
+            case 5: return Fraction.FIVE_EIGHTHS;
+            case 7: return Fraction.SEVEN_EIGHTHS;
+            default: break;
+            }
+            break;
+        default:
+            break;
+        }
         return new Fraction(numerator, denominator);
     }
     /**
