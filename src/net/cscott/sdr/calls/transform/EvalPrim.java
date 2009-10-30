@@ -3,15 +3,19 @@ package net.cscott.sdr.calls.transform;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.runner.RunWith;
-
 import net.cscott.jdoctest.JDoctestRunner;
-import net.cscott.sdr.calls.*;
+import net.cscott.sdr.calls.Dancer;
+import net.cscott.sdr.calls.DancerPath;
+import net.cscott.sdr.calls.ExactRotation;
+import net.cscott.sdr.calls.Formation;
+import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.DancerPath.PointOfRotation;
-import net.cscott.sdr.calls.ast.*;
+import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.ast.Prim.Direction;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
+
+import org.junit.runner.RunWith;
 
 /** Apply a {@link Prim} to a {@link Dancer}'s {@link Position} to yield a
  * {@link DancerPath} (which contains a new {@link Position}).
@@ -390,7 +394,7 @@ public abstract class EvalPrim {
         return new DancerPath(from, to, prim.time, por, flags);
     }
     /** Normalize an ExactRotation, and set appropriate 'right' or 'left'
-     * {@link Position.Flag}s to a given {@link Position} as appropriate.
+     * {@link net.cscott.sdr.calls.Position.Flag}s to a given {@link Position} as appropriate.
      */
     private static Position addFlag(Position p, ExactRotation r,
 				    Position.Flag right, Position.Flag left) {

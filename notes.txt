@@ -1030,7 +1030,7 @@ the call; eg,
   ^ <    "everyone do your part, partner trade"
 
 Importantly here, we should probably suppress matches which consist
-entirely on phantoms?  Which might mean that the 'corporeal' bit may
+entirely of phantoms?  Which might mean that the 'corporeal' bit may
 need to make a comeback, so we know what to complain about?
 The GeneralFormationMatcher needs to add a facing direction to the
 phantom when it makes a match.
@@ -1048,8 +1048,8 @@ don't crash horribly
 
 Run diff from kickoff.  In run if no designee in your formation, nobody moves.
 
-Add designator stack, tag, and with_designated concept.
-Redefine run in terms of designers_run
+x Add designator stack, tag, and with_designated concept.
+x Redefine run in terms of designers_run
 
 Add parse function to PMSD.
 
