@@ -547,31 +547,73 @@ public class PMSD {
                     break;
             }
             String namesAndDots = buffer.substring(m+1, cursor);
-            String[] names = namesAndDots.split("\\.");
+            String[] names = namesAndDots.split("\\.", -1);
             Scriptable obj = this.global;
+            boolean inScope = true;
             for (int i=0; i < names.length - 1; i++) {
-                Object val = obj.get(names[i], global);
-                if (val instanceof Scriptable)
+                Object val = inScope ? getFromScope(obj, names[i]) :
+                    ScriptableObject.getProperty(obj, names[i]);
+                if (val instanceof Scriptable) {
                     obj = (Scriptable) val;
-                else {
+                    inScope = false;
+                } else {
                     return buffer.length(); // no matches
                 }
             }
-            Object[] ids = (obj instanceof ScriptableObject)
-                           ? ((ScriptableObject)obj).getAllIds()
-                           : obj.getIds();
             String lastPart = names[names.length-1];
-            for (int i=0; i < ids.length; i++) {
-                if (!(ids[i] instanceof String))
-                    continue;
-                String id = (String)ids[i];
+            // zoom up the scope chain and down the prototype chain
+            // enumerating all properties.
+            List<String> idList = new ArrayList<String>();
+            if (inScope)
+                addIdsFromScope(obj, idList);
+            else
+                addIdsFromObjAndPrototypes(obj, idList);
+
+            for (String id : idList) {
                 if (id.startsWith(lastPart)) {
-                    if (obj.get(id, obj) instanceof Function)
-                        id += "(";
+                    try {
+                        // actually getting this property could have
+                        // side-effects, including throwing exceptions!
+                        if (obj.get(id, obj) instanceof Function)
+                            id += "(";
+                    } catch (Throwable t) { /* ignore! */ }
                     candidates.add(id);
                 }
             }
             return buffer.length() - lastPart.length();
+        }
+        private static void addIdsFromObj(Scriptable obj, List<String> idList) {
+            Object[] ids = (obj instanceof ScriptableObject)
+                ? ((ScriptableObject)obj).getAllIds()
+                : obj.getIds();
+             for (Object o: ids) {
+                 if (!(o instanceof String))
+                     continue;
+                 idList.add((String)o);
+             }
+        }
+        private static void addIdsFromObjAndPrototypes(Scriptable obj, List<String> idList) {
+            Scriptable parent = obj.getPrototype();
+            if (parent != null)
+                addIdsFromObjAndPrototypes(parent, idList);
+            addIdsFromObj(obj, idList);
+        }
+        private static void addIdsFromScope(Scriptable scope, List<String> idList) {
+            Scriptable parentScope = scope.getParentScope();
+            if (parentScope!=null)
+                addIdsFromScope(parentScope, idList);
+            addIdsFromObjAndPrototypes(scope, idList);
+        }
+        private static Object getFromScope(Scriptable scope, String name) {
+            // ScriptableObject.getProperty does the recursion through the
+            // prototype chain; that leaves us to do the recursion up the
+            // scope stack.
+            for ( ; scope!=null ; scope=scope.getParentScope()) {
+                Object var = ScriptableObject.getProperty(scope, name);
+                if (var != Scriptable.NOT_FOUND)
+                    return var;
+            }
+            return Scriptable.NOT_FOUND;
         }
     }
 }
