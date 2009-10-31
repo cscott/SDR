@@ -23,6 +23,7 @@ import static net.cscott.sdr.calls.TaggedFormation.Tag.*;
 import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.calls.grm.BuildGrammars;
 import net.cscott.sdr.util.Fraction;
+import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
 
 /**
  * Source definitions for {@link FormationList}.  This class defines the
@@ -555,7 +556,7 @@ abstract class FormationListSlow {
     }
     private static void emitOne(PrintWriter pw, String fieldName,
                                 NamedTaggedFormation ntf) {
-        String escapedName = ntf.getName(); // XXX eventually properly-escape this?
+        String escapedName = escapeJava(ntf.getName());
         pw.println("    public static final NamedTaggedFormation "+fieldName+" =");
         pw.print  ("        new NamedTaggedFormation(\""+escapedName+"\"");
         for (Dancer d : ntf.sortedDancers()) {

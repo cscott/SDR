@@ -16,6 +16,7 @@ import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.transform.CallFileBuilder;
 import net.cscott.sdr.util.Tools;
+import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
 
 /**
  * This class contains inner classes creating an AST for the 'natural language'
@@ -233,12 +234,12 @@ public abstract class Grm {
             return v.visit(this);
         }
         public void repr(StringBuilder sb) {
-            sb.append("new Grm.Nonterminal(");
-            sb.append(str_escape(this.ruleName));
-            sb.append(",");
+            sb.append("new Grm.Nonterminal(\"");
+            sb.append(escapeJava(this.ruleName));
+            sb.append("\",");
             if (!this.ruleName.equals(this.prettyName)) {
                 sb.append((this.prettyName==null) ? "null" :
-                          str_escape(this.prettyName));
+                          ("\""+escapeJava(this.prettyName)+"\""));
                 sb.append(",");
             }
             sb.append(this.param);
@@ -272,9 +273,9 @@ public abstract class Grm {
             return v.visit(this);
         }
         public void repr(StringBuilder sb) {
-            sb.append("new Grm.Terminal(");
-            sb.append(str_escape(this.literal));
-            sb.append(")");
+            sb.append("new Grm.Terminal(\"");
+            sb.append(escapeJava(this.literal));
+            sb.append("\")");
         }
         @Override
         protected Terminal buildIntern() {
@@ -340,21 +341,5 @@ public abstract class Grm {
         } catch (Exception e) {
             throw new IllegalArgumentException("bad grammar rule: "+rule);
         }
-    }
-    /** Return the parameter as a properly-escaped Java string literal. */
-    static String str_escape(String s) {
-        StringBuilder sb = new StringBuilder();
-        sb.append('"');
-        for (int i=0; i<s.length(); i++) {
-            char c = s.charAt(i);
-            if (c < 128 && Character.isJavaIdentifierPart(c))
-                sb.append(c); // ASCII and alphanumeric-ish
-            else if (c<256) // this handles quotes, slashes, and other nasties
-                sb.append(String.format("\\\\%03o", (int) c));
-            else // make the world safe for unicode
-                sb.append(String.format("\\\\"+"u%04x", (int) c));
-        }
-        sb.append('"');
-        return sb.toString();
     }
 }

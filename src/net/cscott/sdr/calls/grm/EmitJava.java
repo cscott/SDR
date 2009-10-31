@@ -1,5 +1,7 @@
 package net.cscott.sdr.calls.grm;
 
+import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -135,9 +137,9 @@ public class EmitJava extends AbstractEmit {
                 sb.append(INDENT);
                 sb.append("_");
                 sb.append(p.name());
-                sb.append(".put(");
-                sb.append(Grm.str_escape(nonterm));
-                sb.append(",l.get("+n+"));"+NL);
+                sb.append(".put(\"");
+                sb.append(escapeJava(nonterm));
+                sb.append("\",l.get("+n+"));"+NL);
             }
             sb.append(INDENT);
             sb.append(p.name());

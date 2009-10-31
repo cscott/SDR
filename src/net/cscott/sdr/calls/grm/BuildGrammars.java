@@ -28,6 +28,7 @@ import net.cscott.sdr.calls.grm.Grm.Mult;
 import net.cscott.sdr.calls.grm.Grm.Nonterminal;
 import net.cscott.sdr.calls.grm.Grm.Terminal;
 import net.cscott.sdr.util.Fraction;
+import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
 import static net.cscott.sdr.util.Tools.l;
 
 /** Build speech/plain-text grammars for the various programs. */
@@ -148,7 +149,8 @@ public class BuildGrammars {
             sb.append(v);
             if (i<defaultArgs.size() && defaultArgs.get(i)!=null) {
                 assert defaultArgs.get(i).args.size()==0;
-                sb.append("!=null?"+v+":Apply.makeApply(\""+defaultArgs.get(i).callName+"\")");
+                sb.append("!=null?"+v+":Apply.makeApply"+
+                          "(\""+escapeJava(defaultArgs.get(i).callName)+"\")");
             }
         }
         // done!
