@@ -247,7 +247,7 @@ public abstract class PredicateList {
             Set<Dancer> leftDancers = tf.tagged(leftTags);
             Set<Dancer> rightDancers = tf.tagged(rightTags);
 
-            return leftDancers.equals(rightDancers);
+            return rightDancers.containsAll(leftDancers);
         }
     };
 
