@@ -160,7 +160,7 @@ abstract class BuilderHelper {
     static Call makeCall(final String name, final Program program,
             final B<? extends Comp> b, final int minNumberOfArguments,
             final Rule rule) {
-        if (b.isConstant())
+        if (b.isConstant() && minNumberOfArguments==0)
             return Call.makeSimpleCall(name,program,b.build(null), rule);
         return new Call() {
             @Override
