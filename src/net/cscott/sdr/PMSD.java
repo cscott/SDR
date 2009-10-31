@@ -25,6 +25,7 @@ import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.StandardDancer;
+import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.grm.CompletionEngine;
@@ -209,6 +210,13 @@ public class PMSD {
          */
         public String jsGet_resolveStep() {
             return DWResolver.resolveStep(ds.currentFormation());
+        }
+        /** Helper to write parsing tests.
+         *  @see net.cscott.sdr.calls.CallDB#parse(Program,String)
+         */
+        public String jsFunction_parse(String calltext) {
+            Apply a = CallDB.INSTANCE.parse(ds.dance.getProgram(), calltext);
+            return a.toShortString();
         }
 
         /** Runs the test in this same context, so that we can (for example)

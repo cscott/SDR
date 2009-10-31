@@ -121,6 +121,24 @@ public class Apply extends SeqCall {
 
     // XXX getSelectorArg, etc?
 
+    /** Emit an apply in the form it appears in the call definition lists. */
+    public String toShortString() {
+        return toShortString(new StringBuilder()).toString();
+    }
+    private StringBuilder toShortString(StringBuilder sb) {
+        sb.append(callName);
+        if (args.isEmpty())
+            return sb;
+        sb.append("(");
+        args.get(0).toShortString(sb);
+        for (int i=1; i<args.size(); i++) {
+            sb.append(", ");
+            args.get(i).toShortString(sb);
+        }
+        sb.append(")");
+        return sb;
+    }
+
     // factories.
     public static Apply makeApply(String callName) {
         return new Apply(callName, Collections.<Apply> emptyList());
