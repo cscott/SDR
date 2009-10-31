@@ -99,7 +99,7 @@ public class Fractional extends TransformVisitor<Fraction> {
     /** A list of concepts which it is safe to hoist fractionalization through.
      That is, "1/2(as couples(swing thru))" == "as couples(1/2(swing thru))". */
     private static Set<String> safeConcepts = new HashSet<String>(Arrays.asList(
-            "as couples","tandem","_with designated"
+            "as couples","tandem","_with designated", "reverse", "left", "mirror"
             // xxx more fractionalization-safe calls?
             ));
     @Override
