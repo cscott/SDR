@@ -4,6 +4,19 @@ program: basic
 def: nothing
  prim: 0,0,none
 
+// work out grammar implications
+def: _anyone(sel, c1)
+  //spoken: [-15] <sel=anyone> <c1=anything>
+  call: anyone_others([sel], [c1], nothing)
+
+def: anyone_others(sel, c1, c2)
+  spoken: [-15] <sel=anyone> <c1=anything> (while the (others|<anyone>) <c2=anything>)?
+  call: nothing // XXX STUBBED OUT
+
+// local helpers
+def: _centers(c)
+  call: _anyone(CENTER, [c])
+
 def: circle left(n)
   spoken: circle left <n=fraction>
   call: _fractional(_multiply_num([n],4), _circle left 1/4)
@@ -189,12 +202,6 @@ def: roll away
         prim:  1/2,  1, left, sashay-start sashay-finish
         prim:  1, -1/2, left, sashay-start
 
-def: _u turn back(sel)
-  spoken: <sel=anyone> u turn back
-  // get the turn direction correct if the selected
-  // are parts of couples
-  call: do your part([sel], u turn back) 
-
 // XXX: from a single quarter tag, currently no one can roll
 //      what should happen is that the miniwave rolls toward the
 //      handhold, and only the ends have an undefined roll
@@ -229,7 +236,7 @@ def: _right arm turn 1/2
 def: chain down the line
   in: 8
   from: RH TWO-FACED LINE
-  call: centers(_right arm turn 1/2, courtesy turn(3/4))
+  call: _centers(and(_right arm turn 1/2, courtesy turn(3/4)))
 
 def: two ladies chain(sel)
   spoken: two <sel=genders> chain // 'two ladies chain'
@@ -242,7 +249,7 @@ def: flutter wheel
   optional: REVERSE
   in: 8
   from: FACING COUPLES
-  call: 1/4(wheel around), centers(_right arm turn 1/2), 2(split counter rotate)
+  call: 1/4(wheel around), _centers(_right arm turn 1/2), 2(split counter rotate)
 
 def: lead right
   in: 4
@@ -422,9 +429,9 @@ def: swing thru
   optional: LEFT
   in: 6
   from: RH OCEAN WAVE
-    call: _right arm turn 1/2, centers(left(_right arm turn 1/2))
+    call: _right arm turn 1/2, _centers(left(_right arm turn 1/2))
   from: LH OCEAN WAVE
-    call: centers(_right arm turn 1/2), left(_right arm turn 1/2)
+    call: _centers(_right arm turn 1/2), left(_right arm turn 1/2)
 
 // NOTE THAT 'leads run' = 'IN YOUR BOX, leads run'
 // NOTE THAT 'boys run' = 'IN YOUR COUPLES, boys run'
@@ -609,7 +616,7 @@ def: couples left hinge
 def: _REAL recycle // xxx
   in: 4
   ipart:
-    call: fold(centers), breathe
+    call: fold(CENTER), breathe
   ipart:
     call: counter rotate 1/4
   ipart:

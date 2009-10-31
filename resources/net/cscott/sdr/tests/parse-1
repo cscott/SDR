@@ -1,0 +1,45 @@
+Test cases for proper call parsing.
+
+sdr> /program = Program.C4;
+C4
+sdr> ///
+sdr> /// simple examples
+sdr> /parse("trade")
+trade
+sdr> /parse("trade and roll")
+_and_roll(trade)
+sdr> ///
+sdr> /// precedence levels
+sdr> /parse("trade twice and roll")
+_and_roll(_fractional(2, trade))
+sdr> /parse("trade and roll twice")
+_fractional(2, _and_roll(trade))
+sdr> /parse("boys roll away the girls")
+_roll away(BOY, GIRL)
+sdr> ///
+sdr> /// "anyone anything" concept
+sdr> /parse("centers square thru and roll")
+_and_roll(anyone(CENTER, _full_square_thru))
+sdr> /parse("centers centers run")
+anyone(CENTER, run(CENTER))
+sdr> ///
+sdr> /// tricky roll away examples
+sdr> /parse("centers roll away")
+anyone(CENTER, roll away)
+sdr> /parse("centers roll away the ends")
+_roll away(CENTER, END)
+sdr> /parse("centers centers roll away the ends")
+anyone(CENTER, _roll away(CENTER, END))
+sdr> ///
+sdr> /// precedence of <anyone> <anything> -vs- roll and mirror
+sdr> /parse("centers trade while the ends trade and roll")
+anyone_others(CENTER, trade, _and_roll(trade))
+sdr> /parse("mirror centers trade while the ends trade")
+mirror(anyone_others(CENTER, trade, trade))
+sdr> ///
+sdr> /// precedence of mirror -vs- left
+sdr> /parse("left swing thru and roll")
+_and_roll(left(swing thru))
+sdr> /parse("mirror swing thru and roll")
+mirror(_and_roll(swing thru))
+sdr> /exit
