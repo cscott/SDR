@@ -45,17 +45,17 @@
 			<attribute name="javadoc_location" value="http://cscott.net/Projects/JUtil/jutil-latest/doc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/antlr-3.1.1-runtime.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.4.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://jakarta.apache.org/commons/lang/api-release/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/dev/antlr-3.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/dev/jline-0.9.94.jar"/>
 	<classpathentry kind="lib" path="lib/dev/jdoctest/rhino-1.7r2-rc3.jar"/>
 	<classpathentry kind="lib" path="lib/dev/junit-4.6.jar"/>
 	<classpathentry kind="lib" path="lib/dev/jdoctest/jdoctest-1.5.jar" sourcepath="/JDoctest/src"/>
 	<classpathentry kind="lib" path="/home/cananian/jdk1.6.0_11/lib/tools.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-runtime-3.2.jar" sourcepath="lib/dev/antlr-3.2-src.jar"/>
+	<classpathentry kind="lib" path="lib/dev/antlr-3.2.jar" sourcepath="lib/dev/antlr-3.2-src.jar"/>
 	<classpathentry kind="output" path="bin.eclipse"/>
 </classpath>

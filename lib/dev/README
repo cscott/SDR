@@ -11,3 +11,5 @@ antlr3-ant.jar:
   http://fisheye2.atlassian.com/browse/~raw,r=5375/antlr-buildtools/ant/antlr-ant/main/antlr3-task/antlr3.jar
 coberatura:
  from http://cobertura.sourceforge.net
+antlr:
+ from http://www.antlr.org/download.html
