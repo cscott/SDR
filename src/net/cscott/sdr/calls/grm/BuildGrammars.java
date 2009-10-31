@@ -21,6 +21,7 @@ import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.grm.Grm.Alt;
 import net.cscott.sdr.calls.grm.Grm.Concat;
 import net.cscott.sdr.calls.grm.Grm.Mult;
@@ -129,10 +130,11 @@ public class BuildGrammars {
     private static List<RuleAndAction> mkAction(Call c) {
         List<RuleAndAction> l = new ArrayList<RuleAndAction>(2);
         for (Rule r : splitTopLevelAlt(c.getRule()))
-            l.add(mkAction(c.getName(), r));
+            l.add(mkAction(c.getName(), c.getDefaultArguments(), r));
         return l;
     }
-    private static RuleAndAction mkAction(String callName, Rule r) {
+    private static RuleAndAction mkAction(String callName,
+                                          List<Apply> defaultArgs, Rule r) {
         int numArgs = highestNontermParam(r.rhs);
         NumberParams np = new NumberParams(r.rhs);
         StringBuilder sb = new StringBuilder();
@@ -142,7 +144,12 @@ public class BuildGrammars {
         // now args
         for (int i=0; i<=numArgs; i++) {
             sb.append(',');
-            sb.append((char)('a'+np.paramToOrder.get(i)));
+            char v = (char)('a'+np.paramToOrder.get(i));
+            sb.append(v);
+            if (i<defaultArgs.size() && defaultArgs.get(i)!=null) {
+                assert defaultArgs.get(i).args.size()==0;
+                sb.append("!=null?"+v+":Apply.makeApply(\""+defaultArgs.get(i).callName+"\")");
+            }
         }
         // done!
         sb.append(");");

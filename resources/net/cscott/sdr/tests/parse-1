@@ -19,17 +19,17 @@ _roll away(BOY, GIRL)
 sdr> ///
 sdr> /// "anyone anything" concept
 sdr> /parse("centers square thru and roll")
-_and_roll(anyone(CENTER, _full_square_thru))
+anyone_others(CENTER, _and_roll(_full_square_thru), nothing)
 sdr> /parse("centers centers run")
-anyone(CENTER, run(CENTER))
+anyone_others(CENTER, run(CENTER), nothing)
 sdr> ///
 sdr> /// tricky roll away examples
 sdr> /parse("centers roll away")
-anyone(CENTER, roll away)
+anyone_others(CENTER, roll away, nothing)
 sdr> /parse("centers roll away the ends")
 _roll away(CENTER, END)
 sdr> /parse("centers centers roll away the ends")
-anyone(CENTER, _roll away(CENTER, END))
+anyone_others(CENTER, _roll away(CENTER, END), nothing)
 sdr> ///
 sdr> /// precedence of <anyone> <anything> -vs- roll and mirror
 sdr> /parse("centers trade while the ends trade and roll")

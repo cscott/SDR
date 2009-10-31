@@ -139,18 +139,13 @@ program
 
 def
 @init {
-  String n=null; Apply a=null;
   Set<String> optional = new HashSet<String>();
 }
-	: ^(d=DEF cb=call_body
-    { if (!cb.isConstant()) semex(d, "Bad call definition");
-	  a = cb.build(null);
-	  n = a.callName;
-	  // if there are arguments, add them to our scope.
+	: ^(d=DEF n=simple_words args=decl_args
+    { // if there are arguments, add them to our scope.
 	  int i=0;
-	  for (Apply arg : a.args) {
-	    if (arg.args.size()!=0) semex(d, "Arguments can't have arguments");
-	    scope.put(arg.callName, i++);
+	  for (ArgAndDefault arg : args) {
+	    scope.put(arg.name, i++);
 	  }
 	}
        ( ^(OPTIONAL (id=IDENT {optional.add(id.getText().toUpperCase());})+ ) )?
@@ -171,13 +166,23 @@ def
 	    rule = new Rule(ruleName, SimplifyGrm.simplify(g),
 						prec==null ? Fraction.ZERO : prec);
 
-      Call call = makeCall(n, currentProgram, p, a.args.size(), rule);
+      Call call = makeCall(n, currentProgram, p, args, rule);
 	  db.add(call);
 
 	  scope.clear();
 	}
 	;
 	
+decl_args returns [List<ArgAndDefault> l]
+@init { $l = new ArrayList<ArgAndDefault>(); }
+    : (a=decl_arg {$l.add(a);} )*
+    ;
+
+decl_arg returns [ArgAndDefault a]
+    : ^(ARG name=simple_words defaultValue=simple_words? )
+      { a=new ArgAndDefault(name, defaultValue); }
+    ;
+
 example
 	: ^(EXAMPLE call_body BEFORE FIGURE AFTER FIGURE)
         // XXX we currently throw these figures away.

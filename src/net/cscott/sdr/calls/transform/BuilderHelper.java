@@ -1,6 +1,7 @@
 package net.cscott.sdr.calls.transform;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -157,11 +158,43 @@ abstract class BuilderHelper {
         }, isConstant(children));
     }
     //////////////
+    /** Calls can have defaults for arguments. */
+    static class ArgAndDefault {
+        public final String name, defaultValue;
+        public ArgAndDefault(String name, String defaultValue) {
+            this.name = name; this.defaultValue = defaultValue;
+        }
+        public String toString() {
+            if (defaultValue==null) return name;
+            return name+"="+defaultValue;
+        }
+    }
+    //////////////
     static Call makeCall(final String name, final Program program,
-            final B<? extends Comp> b, final int minNumberOfArguments,
+            final B<? extends Comp> b, List<ArgAndDefault> args,
             final Rule rule) {
-        if (b.isConstant() && minNumberOfArguments==0)
+        if (b.isConstant() && args.size()==0)
             return Call.makeSimpleCall(name,program,b.build(null), rule);
+        // min # of arguments is the last arg w/o a default.
+        int i;
+        for (i=args.size(); i>0; i--)
+            if (args.get(i-1).defaultValue == null)
+                break;
+        final int minNumberOfArguments = i;
+        // make default arguments list.
+        final List<Apply> defaultArguments;
+        for (i=args.size(); i>0; i--)
+            if (args.get(i-1).defaultValue != null)
+                break;
+        if (i==0) /* no default arguments */
+            defaultArguments = Collections.emptyList(); /* save memory */
+        else {
+             defaultArguments = new ArrayList<Apply>();
+             for (ArgAndDefault a: args)
+                 defaultArguments.add(a.defaultValue==null ? null :
+                                      Apply.makeApply(a.defaultValue));
+        }
+
         return new Call() {
             @Override
             public String getName() { return name; }
@@ -170,12 +203,20 @@ abstract class BuilderHelper {
             @Override
             public Comp apply(Apply ast) { 
                 assert ast.callName.equals(name);
-                assert ast.args.size() == minNumberOfArguments; // in this case, must be exact match.
-                return b.build(ast.args);
+                assert ast.args.size() >= minNumberOfArguments;
+                List<Apply> nargs = new ArrayList<Apply>(ast.args);
+                /* add default arguments if missing */
+                for (int i=nargs.size(); i<defaultArguments.size(); i++)
+                    nargs.add(defaultArguments.get(i));
+                return b.build(nargs);
             }
             @Override
             public int getMinNumberOfArguments() {
                 return minNumberOfArguments;
+            }
+            @Override
+            public List<Apply> getDefaultArguments() {
+                return defaultArguments;
             }
             @Override
             public Rule getRule() { return rule; }

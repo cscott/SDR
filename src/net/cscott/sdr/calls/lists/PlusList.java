@@ -1,5 +1,8 @@
 package net.cscott.sdr.calls.lists;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Dancer;
@@ -35,6 +38,10 @@ public abstract class PlusList {
         public final String getName() { return name; }
         @Override
         public final Program getProgram() { return Program.PLUS; }
+        @Override
+        public List<Apply> getDefaultArguments() {
+            return Collections.emptyList();
+        }
     }
 
     public static final Call ROLL = new PlusCall("_roll") {

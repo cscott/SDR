@@ -5,20 +5,20 @@
  *  js> new CallFileParser("program: basic").calllist().getTree().toStringTree()
  *  (CALLLIST (program basic))
  *  js> new CallFileParser("program: basic\ndef: _courtesy turn 4/4\n  in:8\n  call: wheelaround").calllist().getTree().toStringTree()
- *  (CALLLIST (program basic (def (APPLY (ITEM _courtesy turn 4/4)) (in 8 (SEQ (call (APPLY (ITEM wheelaround))))))))
+ *  (CALLLIST (program basic (def (ITEM _courtesy turn 4/4) (in 8 (SEQ (call (APPLY (ITEM wheelaround))))))))
  * @doc.test The 'and' concept is applied to successive calls joined by commas:
  *  js> new CallFileParser("program: basic\ndef: foo\n call: bar,bat").calllist().getTree().toStringTree()
- *  (CALLLIST (program basic (def (APPLY (ITEM foo)) (SEQ (call (APPLY (ITEM and) (APPLY (ITEM bar)) (APPLY (ITEM bat))))))))
+ *  (CALLLIST (program basic (def (ITEM foo) (SEQ (call (APPLY (ITEM and) (APPLY (ITEM bar)) (APPLY (ITEM bat))))))))
  * @doc.test Order of optional/spoken is normalized:
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cp("def: foo\n optional: REVERSE\n spoken: [10] foo\n call: bar")
- *  (def (APPLY (ITEM foo)) (optional REVERSE) (spoken 10 foo) (SEQ (call (APPLY (ITEM bar)))))
+ *  (def (ITEM foo) (optional REVERSE) (spoken 10 foo) (SEQ (call (APPLY (ITEM bar)))))
  *  js> cp("def: foo\n spoken: [10] foo\n optional: REVERSE\n call: bar")
- *  (def (APPLY (ITEM foo)) (optional REVERSE) (spoken 10 foo) (SEQ (call (APPLY (ITEM bar)))))
+ *  (def (ITEM foo) (optional REVERSE) (spoken 10 foo) (SEQ (call (APPLY (ITEM bar)))))
  * @doc.test Example and figure clauses:
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cp("def: foo\n call: bar\n example: foo\n  before:\n  ! diagram here\n  after:\n  ! more diagram")
- *  (def (APPLY (ITEM foo)) (example (APPLY (ITEM foo)) before  diagram here
+ *  (def (ITEM foo) (example (APPLY (ITEM foo)) before  diagram here
  *   after  more diagram
  *  ) (SEQ (call (APPLY (ITEM bar)))))
  * @doc.test Longer example clause:
@@ -41,7 +41,7 @@
  *    >    '    !  C c\n'+
  *    >    '    !  ^ ^\n'+
  *    >    '    !  D d\n')
- *  (def (APPLY (ITEM ferris wheel)) (example (APPLY (ITEM ferris wheel)) before   ^ ^
+ *  (def (ITEM ferris wheel) (example (APPLY (ITEM ferris wheel)) before   ^ ^
  *    A a c C
  *    ^ ^ v v
  *    B b d D
@@ -58,13 +58,13 @@
  * @doc.test Grammar precedence 1: INs bind tightly, FROMs do not:
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cp("def:foo\n in: 8\n in: 4\n call: bar")
- *  (def (APPLY (ITEM foo)) (in 8 (in 4 (SEQ (call (APPLY (ITEM bar)))))))
+ *  (def (ITEM foo) (in 8 (in 4 (SEQ (call (APPLY (ITEM bar)))))))
  *  js> cp("def:foo\n in: 4\n from: RH_BOX\n  call: bar\n from: LH_BOX\n  call: bat")
- *  (def (APPLY (ITEM foo)) (in 4 (OPT (from (simple body (ITEM RH_BOX)) (SEQ (call (APPLY (ITEM bar))))) (from (simple body (ITEM LH_BOX)) (SEQ (call (APPLY (ITEM bat))))))))
+ *  (def (ITEM foo) (in 4 (OPT (from (simple body (ITEM RH_BOX)) (SEQ (call (APPLY (ITEM bar))))) (from (simple body (ITEM LH_BOX)) (SEQ (call (APPLY (ITEM bat))))))))
  * @doc.test Grammar precedence: SEQs bind least tightly:
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cp("def:foo\n in: 4\n from: RH_MINIWAVE\n call: trade\n from: RH_BOX\n call: bar")
- *  (def (APPLY (ITEM foo)) (in 4 (OPT (from (simple body (ITEM RH_MINIWAVE)) (SEQ (call (APPLY (ITEM trade))))) (from (simple body (ITEM RH_BOX)) (SEQ (call (APPLY (ITEM bar))))))))
+ *  (def (ITEM foo) (in 4 (OPT (from (simple body (ITEM RH_MINIWAVE)) (SEQ (call (APPLY (ITEM trade))))) (from (simple body (ITEM RH_BOX)) (SEQ (call (APPLY (ITEM bar))))))))
  * @doc.test FROM(CONDITION..) requires indentation.
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cfp=new CallFileParser("def:foo\n in:4\n from:RH_BOX\n condition:true\n call: bar")
@@ -75,13 +75,18 @@
  * @doc.test PRIMs with numbers:
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cp("def:foo\n prim: 1 1/2, 1/2, left")
- *  (def (APPLY (ITEM foo)) (SEQ (prim 1 1/2 1/2 left 1/4 ATTRIBS)))
+ *  (def (ITEM foo) (SEQ (prim 1 1/2 1/2 left 1/4 ATTRIBS)))
  *  js> cp("def:foo\n prim: 1 1/2, 1/2, left 1/8, force-arc pass-left")
- *  (def (APPLY (ITEM foo)) (SEQ (prim 1 1/2 1/2 left 1/8 (ATTRIBS force-arc pass-left))))
+ *  (def (ITEM foo) (SEQ (prim 1 1/2 1/2 left 1/8 (ATTRIBS force-arc pass-left))))
  *  js> cp("def:foo\n prim: -1 1/2, -1/2, none, pass-left")
- *  (def (APPLY (ITEM foo)) (SEQ (prim -1 1/2 -1/2 none 0 (ATTRIBS pass-left))))
+ *  (def (ITEM foo) (SEQ (prim -1 1/2 -1/2 none 0 (ATTRIBS pass-left))))
  *  js> cp("def:foo\n prim: in -1 1/2, out -1/2, in, pass-left")
- *  (def (APPLY (ITEM foo)) (SEQ (prim in -1 1/2 out -1/2 in 1/4 (ATTRIBS pass-left))))
+ *  (def (ITEM foo) (SEQ (prim in -1 1/2 out -1/2 in 1/4 (ATTRIBS pass-left))))
+ * @doc.test Default values for call arguments:
+ *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
+ *  js> cp("def:foo(a, b=nothing)\n call: bar([a],[b])")
+ *  (def (ITEM foo) (ARG (ITEM a)) (ARG (ITEM b) (ITEM nothing)) (SEQ (call (APPLY (ITEM bar) (APPLY a) (APPLY b)))))
+ *  js> // (note that (APPLY a) and (APPLY b) are actually (APPLY REF[a]) etc
  * @doc.test Spoken language grammar rules, w/ precedence:
  *  js> function g(s) { return new CallFileParser(s).grm_rule().getTree().toStringTree() }
  *  js> g("foo bar|bat? baz")
@@ -115,6 +120,7 @@ tokens {
     SEQ;
     PAR;
     APPLY;
+    ARG;
 }
 @parser::header {
 	package net.cscott.sdr.calls.transform;
@@ -413,8 +419,18 @@ program
 	;
 
 def
-    : DEF COLON call_body INDENT os? pieces example* DEDENT
-        -> ^(DEF call_body os? example* pieces)
+    : DEF COLON name_and_args INDENT os? pieces example* DEDENT
+        -> ^(DEF name_and_args os? example* pieces)
+    ;
+name_and_args
+    : simple_words ( LPAREN! decl_args RPAREN! )?
+    ;
+decl_args
+    : decl_arg (COMMA! decl_arg)*
+    ;
+decl_arg!
+    : simple_words (EQUALS simple_words)? /* optional default value */
+        -> ^(ARG simple_words simple_words?)
     ;
 os	: optional (spoken)?
 	| spoken (optional)?

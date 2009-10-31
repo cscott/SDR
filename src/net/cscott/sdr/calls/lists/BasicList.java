@@ -3,6 +3,7 @@ package net.cscott.sdr.calls.lists;
 import static net.cscott.sdr.calls.transform.AstTokenTypes.PART;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -53,6 +54,10 @@ public abstract class BasicList {
         @Override
         public Evaluator getEvaluator(Apply ast) {
             return null; // use standard evaluator
+        }
+        @Override
+        public List<Apply> getDefaultArguments() {
+            return Collections.emptyList();
         }
     }
     

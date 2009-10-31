@@ -1,5 +1,8 @@
 package net.cscott.sdr.calls;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.grm.Rule;
@@ -40,6 +43,13 @@ public abstract class Call {
      * arguments.
      */
     public abstract int getMinNumberOfArguments();
+    /**
+     * Return argument defaults, if there are any for this call.
+     * The list may contain any number of entries (including 0).  Arguments
+     * off the end of the returned list, as well as arguments whose
+     * corresponding entry in the list is <code>null</code>, have no default.
+     */
+    public abstract List<Apply> getDefaultArguments();
     /**
      * Returns the grammar rule applicable to this call, or
      * {@code null}, if there is none (ie, this is an internal call).
@@ -90,6 +100,10 @@ public abstract class Call {
             }
             @Override
             public int getMinNumberOfArguments() { return 0; }
+            @Override
+            public List<Apply> getDefaultArguments() {
+                return Collections.emptyList();
+            }
             @Override
             public Rule getRule() { return rule; }
         };

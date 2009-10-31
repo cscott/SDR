@@ -5,15 +5,15 @@ def: nothing
  prim: 0,0,none
 
 // work out grammar implications
-def: _anyone(sel, c1)
-  //spoken: [-15] <sel=anyone> <c1=anything>
-  call: anyone_others([sel], [c1], nothing)
-
-def: anyone_others(sel, c1, c2)
-  spoken: [-15] <sel=anyone> <c1=anything> (while the (others|<anyone>) <c2=anything>)?
+def: anyone_others(sel, c1, c2=nothing)
+  /* default to 'nothing' if the 'while...' isn't present */
+  spoken: [-15] <sel=anyone> <c1=anything> \
+                 (while the (others|<anyone>) <c2=anything>)?
   call: nothing // XXX STUBBED OUT
 
 // local helpers
+def: _anyone(sel, c1)
+  call: anyone_others([sel], [c1], nothing)
 def: _centers(c)
   call: _anyone(CENTER, [c])
 

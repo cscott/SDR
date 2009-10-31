@@ -1,5 +1,8 @@
 package net.cscott.sdr.calls.lists;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ast.Apply;
@@ -32,6 +35,10 @@ public abstract class C3bList {
         public final String getName() { return name; }
         @Override
         public final Program getProgram() { return Program.C3B; }
+        @Override
+        public List<Apply> getDefaultArguments() {
+            return Collections.emptyList();
+        }
     }
 
     // note that precedence level makes "mirror swing thru and roll"
