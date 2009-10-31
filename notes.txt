@@ -761,6 +761,10 @@ Selectors should have two parts:
     an additional selector to try, after others have been tried
     (that way they don't override user's custom selector ordering)
 
+(maybe not separate adjustment/additional, maybe just return a list of
+possible 'adjust' calls, try normal, then perform an adjust and
+reattempt, etc.)
+
 Opts maintain a FIFO queue of the provided and additional() selectors.
 
 WAVE selector returns an additional() which has 'touch' as an initial
@@ -784,6 +788,10 @@ have a FIFO queue, to allow the user's explicit selectors to override.
 But maybe we'd be better off just having explicit NO_ADJUST versions
 of the selectors, using the adjustment() method and ditching the
 additional() method?
+
+*OR* just require calls to manually specify the possible adjustments.
+any call from ocean waves also has a "from: FACING COUPLES" variant.
+Maybe automatically generated using a call flag?
 -----
 BadCallExceptions:
   they should have messages and priorities.
@@ -953,6 +961,8 @@ to do:
     cleared when you manually scrub to a point. if you receive more
     call data and were stopped at the end but the 'keep playing' bit
     is set, start playing. (see git e5f9f473b591a678d71ee6b385596034cd61833f)
+ l) peel the top, from boxes and zees
+ m) diamond circulate, w/ adjustment from 'half of ends cross run' position.
 -------
 heads x:
   from squared_set:
