@@ -145,11 +145,30 @@ def: half sashay
       prim: -1, 1, none, sashay-start sashay-finish
       prim: -1,-1, none, sashay-start sashay-finish
 
-def: _roll away(sel)
-  optional: REVERSE
-  spoken: <sel=anyone> roll away
-  condition: ARE(sel,BELLE), [1] "Named dancers must be belles"
-  call: roll away // ignore the selector
+// semi-legal alternatives to "roll away" to make it clearer who's
+// doing what -- usually called when it's (unusually) the boys rolling
+// away.  Note that we get a grammar conflict if this is just
+// <anyone> roll away: consider for instance "boys roll away" with the
+// boys the centers of right-hand two-faced lines.  Do you mean "centers
+// roll away (each other)" or "ends roll away the centers".  So we don't
+// allow that form, preferring the "<anyone> roll away the <anyone>" where
+// the ambiguity is resolved.
+def: _roll away(sel1,sel2)
+  // Not reversable: the call would be "boys reverse roll away", not
+  //                 "reverse boys roll away"
+  // (also "reversable" messes with the precedence level)
+  spoken: <sel1=anyone> roll away the <sel2=anyone>
+  from: COUPLE, TWO-FACED LINE /* allows "ends roll away the centers" */
+    condition: ARE([sel1],BEAU), [1] "Those doing the rolling must be beaus"
+    condition: ARE([sel2],BELLE), [1] "Those rolling away must be belles"
+    call: roll away // ignore the selectors
+
+def: _reverse roll away(sel1,sel2)
+  spoken: <sel1=anyone> reverse roll away the <sel2=anyone>
+  from: COUPLE, TWO-FACED LINE /* allows "centers reverse roll away the ends" */
+    condition: ARE([sel1],BELLE), [1] "Those doing the rolling must be belles"
+    condition: ARE([sel2],BEAU), [1] "Those rolling away must be beaus"
+    call: reverse(roll away) // ignore the selectors
 
 def: roll away
   optional: REVERSE
@@ -216,7 +235,7 @@ def: two ladies chain(sel)
   spoken: two <sel=genders> chain // 'two ladies chain'
   in: 8
   from: FACING COUPLES
-    condition: ARE(sel, BELLE), "Named dancers must be belles"
+    condition: ARE([sel], BELLE), "Named dancers must be belles"
     call: 1/4(wheel around), chain down the line
 
 def: flutter wheel

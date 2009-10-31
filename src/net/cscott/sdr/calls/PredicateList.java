@@ -1,6 +1,7 @@
 package net.cscott.sdr.calls;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -227,6 +228,26 @@ public abstract class PredicateList {
                     if (!tf.isTagged(d, t))
                         return false;
             return true;
+        }
+    };
+    /** Check that the tagged dancers also have some other tag. */
+    public final static Predicate ARE = new _Predicate("are") {
+        @Override
+        public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
+            assert c.args.size()==2;
+            String left = c.getStringArg(0, ds, f);
+            String right = c.getStringArg(1, ds, f);
+
+            Set<Tag> leftTags = ParCall.parseTags
+                (Arrays.asList(left.split(",\\s*")));
+            Set<Tag> rightTags = ParCall.parseTags
+                (Arrays.asList(right.split(",\\s*")));
+
+            TaggedFormation tf = TaggedFormation.coerce(f);
+            Set<Dancer> leftDancers = tf.tagged(leftTags);
+            Set<Dancer> rightDancers = tf.tagged(rightTags);
+
+            return leftDancers.equals(rightDancers);
         }
     };
 
