@@ -4,13 +4,22 @@ import static net.cscott.sdr.util.Tools.m;
 import static net.cscott.sdr.util.Tools.p;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.runner.RunWith;
 
 import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jutil.Factories;
+import net.cscott.jutil.GenericMultiMap;
+import net.cscott.jutil.MultiMap;
+import net.cscott.sdr.calls.TaggedFormation.Tag;
+import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.ListUtils;
+import net.cscott.sdr.util.Tools;
 
 /**
  * The selector list creates selectors for various formations.
@@ -317,6 +326,159 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.LH_TIDAL_LINE);
     public static final Selector TIDAL_LINE =
         OR("TIDAL LINE", RH_TIDAL_LINE, LH_TIDAL_LINE);
+
+    // special purpose selector
+    public static final Selector CENTER_2 = new CenterSelector(2);
+    public static final Selector CENTER_4 = new CenterSelector(4);
+    public static final Selector CENTER_6 = new CenterSelector(6);
+    public static final Selector CENTER_HALF = new CenterSelector();
+    /**
+     * Algorithmically select the center N dancers from a formation.
+     * @doc.test Finding the centers of a 4-person formation:
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> SD = StandardDancer; undefined
+     *  js> // rotate the formation 1/2 just to get rid of the original tags
+     *  js> f = FormationList.RH_OCEAN_WAVE.rotate(ExactRotation.ONE_HALF); f.
+     *    >     toStringDiagram()
+     *  ^    v    ^    v
+     *  js> // label those dancers
+     *  js> f= f.map(SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
+     *    >          SD.COUPLE_3_GIRL, SD.COUPLE_3_BOY); f.toStringDiagram()
+     *  1B^  1Gv  3G^  3Bv
+     *  js> SelectorList.CENTER_HALF.match(f)
+     *  AA^
+     *  AA:
+     *     1B^  1Gv  3G^  3Bv
+     *   [1G: CENTER; 3G: CENTER]
+     *  js> SelectorList.CENTER_2.match(f)
+     *  AA^
+     *  AA:
+     *     1B^  1Gv  3G^  3Bv
+     *   [1G: CENTER; 3G: CENTER]
+     *  js> SelectorList.CENTER_4.match(f)
+     *  AA^
+     *  AA:
+     *     1B^  1Gv  3G^  3Bv
+     *   [1B: CENTER; 1G: CENTER; 3G: CENTER; 3B: CENTER]
+     *  js> try { SelectorList.CENTER_6.match(f); } catch (e) { print (e.javaException); }
+     *  net.cscott.sdr.calls.NoMatchException: No match for CENTER(6): Can't find 6 center dancers
+     * @doc.test Finding the centers of an 8-person formation:
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> SD = StandardDancer; undefined
+     *  js> // rotate the formation 1/2 just to get rid of the original tags
+     *  js> f = FormationList.RH_QUARTER_TAG.rotate(ExactRotation.ONE_HALF); f.
+     *    >     toStringDiagram()
+     *       v    v
+     *  
+     *  ^    v    ^    v
+     *  
+     *       ^    ^
+     *  js> // label those dancers
+     *  js> f= f.map(SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
+     *    >          SD.COUPLE_2_BOY, SD.COUPLE_2_GIRL, SD.COUPLE_4_GIRL, SD.COUPLE_4_BOY,
+     *    >          SD.COUPLE_3_GIRL, SD.COUPLE_3_BOY); f.toStringDiagram()
+     *       1Bv  1Gv
+     *  
+     *  2B^  2Gv  4G^  4Bv
+     *  
+     *       3G^  3B^
+     *  js> SelectorList.CENTER_HALF.match(f)
+     *  AA^
+     *  AA:
+     *          1Bv  1Gv
+     *     
+     *     2B^  2Gv  4G^  4Bv
+     *     
+     *          3G^  3B^
+     *   [2B: CENTER; 2G: CENTER; 4G: CENTER; 4B: CENTER]
+     *  js> SelectorList.CENTER_2.match(f)
+     *  AA^
+     *  AA:
+     *          1Bv  1Gv
+     *     
+     *     2B^  2Gv  4G^  4Bv
+     *     
+     *          3G^  3B^
+     *   [2G: CENTER; 4G: CENTER]
+     *  js> SelectorList.CENTER_4.match(f)
+     *  AA^
+     *  AA:
+     *          1Bv  1Gv
+     *     
+     *     2B^  2Gv  4G^  4Bv
+     *     
+     *          3G^  3B^
+     *   [2B: CENTER; 2G: CENTER; 4G: CENTER; 4B: CENTER]
+     *  js> SelectorList.CENTER_6.match(f)
+     *  AA^
+     *  AA:
+     *          1Bv  1Gv
+     *     
+     *     2B^  2Gv  4G^  4Bv
+     *     
+     *          3G^  3B^
+     *   [1B: CENTER; 1G: CENTER; 2G: CENTER; 4G: CENTER; 3G: CENTER; 3B: CENTER]
+     */
+    private static class CenterSelector extends Selector {
+        private final boolean half;
+        private final int howMany;
+        /** Select the center "half" of the formation. */
+        CenterSelector() {
+            this.half = true;
+            this.howMany = 0;
+        }
+        /** Select the center N dancers of the formation. */
+        CenterSelector(int i) {
+            this.half = false;
+            this.howMany = i;
+        }
+        @Override
+        public FormationMatch match(Formation f) throws NoMatchException {
+            int n = this.howMany;
+            if (half) {
+                assert (f.dancers().size() % 2) == 0;
+                n = f.dancers().size() / 2;
+            }
+            // ok, order dancers by distance from the center
+            // now take dancers from center out, skipping an entire group
+            // if we can't take them all w/o going over 'n'
+            // (ie, in an hourglass, the box points might be nearer than the
+            //  diamond points, but we can't take them all w/o going over
+            //  half the dancers)
+            MultiMap<Fraction,Dancer> mm = new GenericMultiMap<Fraction,Dancer>
+                (Factories.<Fraction,Collection<Dancer>>treeMapFactory(),
+                 Factories.<Dancer>linkedHashSetFactory());
+            for (Dancer d: f.dancers()) {
+                Position p = f.location(d);
+                Fraction dist2 = (p.x.multiply(p.x)).add(p.y.multiply(p.y));
+                mm.add(dist2, d);
+            }
+            Set<Dancer> centerDancers = new LinkedHashSet<Dancer>();
+            for (Fraction dist2 : mm.keySet()) {
+                Collection<Dancer> group = mm.getValues(dist2);
+                if (centerDancers.size()+group.size() > n)
+                    continue; // skip this group
+                centerDancers.addAll(group);
+            }
+            if (centerDancers.size() != n)
+                throw new NoMatchException("CENTER("+n+")",
+                                           "Can't find "+n+" center dancers");
+            // ok, apply the tags
+            MultiMap<Dancer,Tag> newTags = new GenericMultiMap<Dancer,Tag>();
+            for (Dancer d : centerDancers)
+                newTags.add(d, Tag.CENTER);
+            TaggedFormation tf = new TaggedFormation(f, newTags);
+            Formation meta = FormationList.SINGLE_DANCER;
+            return new FormationMatch
+                (meta,
+                 Tools.m(Tools.p(meta.dancers().iterator().next(), tf)),
+                 Collections.<Dancer>emptySet());
+        }
+        public String toString() {
+            if (half) return "CENTER HALF";
+            return "CENTER("+howMany+")";
+        }
+    }
 
     // selector combinator
     /**

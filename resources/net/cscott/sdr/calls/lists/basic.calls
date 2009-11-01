@@ -9,7 +9,21 @@ def: anyone_others(sel, c1, c2=nothing)
   /* default to 'nothing' if the 'while...' isn't present */
   spoken: [-15] <sel=anyone> <c1=anything> \
                  (while the (others|<anyone>) <c2=anything>)?
-  call: nothing // XXX STUBBED OUT
+  from: CENTER HALF
+    // the selected must be centers, and no centers can be unselected.
+    condition: ARE([sel], CENTER)
+    condition: ARE(CENTER, [sel])
+    call: _quasi_concentric([c1],[c2]) // like concentric, but no adjust after
+  from: CENTER HALF // other way 'round
+    condition: NOT(ARE([sel], CENTER))
+    condition: NOT(ARE(CENTER, [sel]))
+    call: _quasi_concentric([c2],[c1])
+  from: ANY // ugly hack to support "boys trade" == "boys trade down the line"
+    condition: CALL IS([c1], trade)
+    condition: CALL IS([c2], nothing)
+    call: trade down the line([sel])
+  from: ANY
+    call: _anyone_others([sel],[c1],[c2])
 
 // local helpers
 def: _anyone(sel, c1)
@@ -90,6 +104,14 @@ def: sides pair off
       prim: 0, 0, none
 // end pair off hack
 
+def: trade down the line(sel)
+  spoken: <sel=anyone> trade down the line
+  from: GENERAL LINE
+    in: 4
+    condition: TWO SELECTED
+    condition: not(SELECTED ARE TBONED)
+    call: ignore the others (trade) // this is a concept application
+
 def: trade
   from: COUPLE
     in: 6
@@ -99,13 +121,7 @@ def: trade
     in: 4
     prim: in 1,1,in
     prim: in 1,1,in
-  /*
-  from: GENERAL LINE
-    in: 4
-    condition: TWO SELECTED
-    condition: not(SELECTED ARE TBONED)
-    call: ignore the others (trade) // this is a concept application
-  */
+
 def: couples trade
   call: as couples(trade)
 

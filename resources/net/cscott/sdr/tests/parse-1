@@ -42,4 +42,12 @@ sdr> /parse("left swing thru and roll")
 _and_roll(left(swing thru))
 sdr> /parse("mirror swing thru and roll")
 mirror(_and_roll(swing thru))
+sdr> ///
+sdr> /// trade down the line:
+sdr> /parse('boys trade down the line')
+trade down the line(BOY)
+sdr> /// the "anyone_others" call has a special case to make
+sdr> /// "boys trade" equivalent to "boys trade down the line"
+sdr> /parse('boys trade')
+anyone_others(BOY, trade, nothing)
 sdr> /exit
