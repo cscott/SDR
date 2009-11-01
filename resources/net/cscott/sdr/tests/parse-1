@@ -8,6 +8,12 @@ sdr> /parse("trade")
 trade
 sdr> /parse("trade and roll")
 _and_roll(trade)
+sdr> /parse("do half of a trade and roll")
+_and_roll(_half(trade))
+sdr> /parse('do half of a trade twice')
+_fractional(2, _half(trade))
+sdr> /parse('do half of a trade twice and roll')
+_and_roll(_fractional(2, _half(trade)))
 sdr> ///
 sdr> /// precedence levels
 sdr> /parse("trade twice and roll")

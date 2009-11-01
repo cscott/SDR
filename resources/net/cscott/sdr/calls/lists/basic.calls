@@ -9,6 +9,12 @@ def: anyone_others(sel, c1, c2=nothing)
   /* default to 'nothing' if the 'while...' isn't present */
   spoken: [-15] <sel=anyone> <c1=anything> \
                  (while the (others|<anyone>) <c2=anything>)?
+  from: STATIC SQUARE
+    condition: CALL IS([sel], HEAD)
+    call: heads start, anyone_others([sel],[c1],[c2])
+  from: STATIC SQUARE
+    condition: CALL IS([sel], SIDE)
+    call: sides start, anyone_others([sel],[c1],[c2])
   from: CENTER HALF
     // the selected must be centers, and no centers can be unselected.
     condition: ARE([sel], CENTER), "Not all selected are centers"
@@ -39,18 +45,25 @@ def: circle right(n)
   call: mirror(circle left([n]))
 
 def: _circle left 1/4
- from: STATIC SQUARE // xxx should also work from 2 and 4-person formations
+ from: STATIC SQUARE
+   in: 4
    ipart:
      select: BEAU
-       call: _long_circle_left, _short_circle_left
+       prim: -2,2,right,sashay-start sashay-finish
+       prim: -2,0,none,sashay-start sashay-finish
      select: BELLE
-       call: _short_circle_left, _long_circle_left
-def: _long_circle_left
-  in: 12/5
-  prim: -2,2,right,sashay-start sashay-finish
-def: _short_circle_left
-  in: 8/5
-  prim: -2,0,none,sashay-start sashay-finish
+       prim: -2,0,none,sashay-start sashay-finish
+       prim: -2,2,right,sashay-start sashay-finish
+ from: FACING COUPLES
+   in: 2
+   ipart:
+     select: BEAU
+       prim: 0,2,right,sashay-start sashay-finish
+     select: BELLE
+       prim: -2,0,right,sashay-start sashay-finish
+ from: FACING DANCERS
+   in: 2 // not well specified
+     prim: -1,1,right,sashay-start sashay-finish
 
 /* we could (should?) define heads start this way.  We'd have to jiggle
  * the grammar to make 'heads start' low enough priority.  Better would

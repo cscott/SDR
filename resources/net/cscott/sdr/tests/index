@@ -7,6 +7,7 @@ sdr> ///
 sdr> /listTests("resources/net/cscott/sdr/tests")
 breathing-1
 centers
+circle
 cross-run-1
 dw-resolve
 extend-basic
@@ -18,5 +19,6 @@ pmsd
 roll-away
 tag
 trade-1
+trade-and-roll
 uturn-basic
 uturn-mixed
