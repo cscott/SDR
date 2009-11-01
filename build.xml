@@ -415,6 +415,9 @@ window['JAVADOC_BASE'] = '{@docRoot}';
       </java>
       <move file="resources/net/cscott/sdr/tests/index~"
 	    tofile="resources/net/cscott/sdr/tests/index" />
+      <copy todir="${classes_dir}">
+        <fileset dir="${resources_dir}" />
+      </copy>
     </target>
 
     <!-- ********* Build the natural-language grammars. ********* -->
