@@ -182,12 +182,28 @@ public class Formation {
      *  ]
      *  js> f.isCentered()
      *  false
-     *  js> f = f.recenter()
+     *  js> f1 = f.recenter()
      *  net.cscott.sdr.calls.Formation[
      *    location={COUPLE 1 BOY=-1,0,n, COUPLE 1 GIRL=1,0,n}
      *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
      *  ]
-     *  js> f.isCentered()
+     *  js> f1.isCentered()
+     *  true
+     *  js> // preserves position flags, too
+     *  js> f2=f.move(StandardDancer.COUPLE_1_BOY, f.location(StandardDancer.COUPLE_1_BOY)
+     *    >        .addFlags(Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT))
+     *  net.cscott.sdr.calls.Formation[
+     *    location={COUPLE 1 BOY=-1,-3,n,[PASS_LEFT, ROLL_RIGHT], COUPLE 1 GIRL=1,-3,n}
+     *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
+     *  ]
+     *  js> f2.isCentered()
+     *  false
+     *  js> f2 = f2.recenter()
+     *  net.cscott.sdr.calls.Formation[
+     *    location={COUPLE 1 BOY=-1,0,n,[PASS_LEFT, ROLL_RIGHT], COUPLE 1 GIRL=1,0,n}
+     *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
+     *  ]
+     *  js> f2.isCentered()
      *  true
      */
     public Formation recenter() {
@@ -197,9 +213,11 @@ public class Formation {
         if (ox.equals(Fraction.ZERO) && oy.equals(Fraction.ZERO))
             return this; // efficiency
         Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>(location.size());
-        for (Map.Entry<Dancer,Position> me : location.entrySet())
-            m.put(me.getKey(), new Position(me.getValue().x.subtract(ox),
-                    me.getValue().y.subtract(oy), me.getValue().facing));
+        for (Map.Entry<Dancer,Position> me : location.entrySet()) {
+            Dancer d = me.getKey();
+            Position p = me.getValue();
+            m.put(d, p.relocate(p.x.subtract(ox), p.y.subtract(oy), p.facing));
+        }
         return new Formation(Collections.unmodifiableMap(m), selected);
     }
     /**
