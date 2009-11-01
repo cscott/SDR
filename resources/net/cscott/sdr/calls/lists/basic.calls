@@ -11,16 +11,16 @@ def: anyone_others(sel, c1, c2=nothing)
                  (while the (others|<anyone>) <c2=anything>)?
   from: CENTER HALF
     // the selected must be centers, and no centers can be unselected.
-    condition: ARE([sel], CENTER)
-    condition: ARE(CENTER, [sel])
+    condition: ARE([sel], CENTER), "Not all selected are centers"
+    condition: ARE(CENTER, [sel]), "Not all centers are selected"
     call: _quasi_concentric([c1],[c2]) // like concentric, but no adjust after
   from: CENTER HALF // other way 'round
-    condition: NOT(ARE([sel], CENTER))
-    condition: NOT(ARE(CENTER, [sel]))
+    condition: NOT(ARE([sel], CENTER)), "Some selected are centers"
+    condition: NOT(ARE(CENTER, [sel])), "Some centers are selected"
     call: _quasi_concentric([c2],[c1])
   from: ANY // ugly hack to support "boys trade" == "boys trade down the line"
-    condition: CALL IS([c1], trade)
-    condition: CALL IS([c2], nothing)
+    condition: CALL IS([c1], trade), "Not a trade"
+    condition: CALL IS([c2], nothing), "Not just a trade"
     call: trade down the line([sel])
   from: ANY
     call: _anyone_others([sel],[c1],[c2])
@@ -106,15 +106,41 @@ def: sides pair off
 
 def: trade down the line(sel)
   spoken: <sel=anyone> trade down the line
-  from: GENERAL LINE
-    in: 4
-    condition: TWO SELECTED
-    condition: not(SELECTED ARE TBONED)
-    call: ignore the others (trade) // this is a concept application
+  in: 4
+  from: 1x4
+    condition: AND(OR(SELECTION PATTERN([sel], _x_x), \
+                      SELECTION PATTERN([sel], x_x_)), \
+                   NOT(TBONED([sel])))
+    select: [sel]
+      prim: in 2, 2, in
+      prim: in 2, 2, in
+    select: OTHERS
+      prim: 0, 0, none
+      prim: 0, 0, none
+  from: 1x4
+    condition: AND(SELECTION PATTERN([sel], x__x), NOT(TBONED([sel])))
+    select: [sel]
+      prim: in 3, 3, in
+      prim: in 3, 3, in
+    select: OTHERS
+      prim: 0, 0, none
+      prim: 0, 0, none
+  // these cases should really be "trade" not "trade down the line"
+  from: 1x4
+    condition: AND(OR(SELECTION PATTERN([sel], xx__), \
+                      SELECTION PATTERN([sel], __xx), \
+                      SELECTION PATTERN([sel], _xx_)), \
+                   NOT(TBONED([sel])))
+    select: [sel]
+      prim: in 1, 1, in
+      prim: in 1, 1, in
+    select: OTHERS
+      prim: 0, 0, none
+      prim: 0, 0, none
 
 def: trade
   from: COUPLE
-    in: 6
+    in: 4
     prim: in 1,1,in
     prim: in 1,1,in
   from: MINIWAVE
@@ -123,6 +149,7 @@ def: trade
     prim: in 1,1,in
 
 def: couples trade
+  in: 6
   call: as couples(trade)
 
 def: forward and back

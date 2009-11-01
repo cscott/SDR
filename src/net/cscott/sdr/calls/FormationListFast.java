@@ -56,6 +56,13 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, Rotation.fromAbsoluteString("|")), Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ZERO, Rotation.fromAbsoluteString("|")), Tag.END));
 
+    public static final NamedTaggedFormation _1x4 =
+        new NamedTaggedFormation("1x4",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ZERO, Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ZERO, Rotation.fromAbsoluteString("+"))));
+
     public static final NamedTaggedFormation _2x2 =
         new NamedTaggedFormation("2x2",
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ONE, Rotation.fromAbsoluteString("+"))),
@@ -679,6 +686,7 @@ abstract class FormationListFast {
             FormationListFast.RH_MINIWAVE,
             FormationListFast.LH_MINIWAVE,
             FormationListFast.GENERAL_LINE,
+            FormationListFast._1x4,
             FormationListFast._2x2,
             FormationListFast.FACING_COUPLES,
             FormationListFast.BACK_TO_BACK_COUPLES,

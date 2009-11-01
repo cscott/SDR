@@ -114,6 +114,8 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation GENERAL_LINE =
         create("GENERAL LINE", f("||||"), WhetherTagger.NO_AUTO_TAGS,
                 t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
+    public static final NamedTaggedFormation _1x4 =
+        create("1x4", f("++++"), WhetherTagger.NO_AUTO_TAGS);
     public static final NamedTaggedFormation _2x2 =
         create("2x2", f("++","++"), WhetherTagger.NO_AUTO_TAGS);
     public static final NamedTaggedFormation FACING_COUPLES = // callerlab #6

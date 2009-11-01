@@ -1,0 +1,73 @@
+Trades, down the line and t-boned.
+
+sdr> /program = Program.PLUS ; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> heads lead right ; extend
+| 4B>  1B>
+| 
+| 3G<  2G<
+| 
+| 4G>  1G>
+| 
+| 3B<  2B<
+sdr> boys trade
+| 3B>  2B>
+| 
+| 3G<  2G<
+| 
+| 4G>  1G>
+| 
+| 4B<  1B<
+sdr> girls trade
+| 3B>  2B>
+| 
+| 4G<  1G<
+| 
+| 3G>  2G>
+| 
+| 4B<  1B<
+sdr> /// hack to get into a formation to test t-boned trades down the line
+sdr> /f = ds.currentFormation() ; undefined
+sdr> /SD = StandardDancer.values(); undefined
+sdr> /f = f.mapStd([SD[7],SD[1],SD[4],SD[2],SD[5],SD[3],SD[6],SD[0]]) ; f.toStringDiagram()
+4G>  1G>
+
+3B<  2B<
+
+3G>  2G>
+
+4B<  1B<
+sdr> /for (i=0; i<8; i+=2) {
+   >   f = f.move(SD[i], f.location(SD[i]).turn(net.cscott.sdr.util.Fraction.ONE_QUARTER, false));
+   > } ; setFormation(f)
+| 4G>  1G>
+| 
+| 3B^  2B^
+| 
+| 3G>  2G>
+| 
+| 4B^  1B^
+sdr> girls trade
+| 3G<  2G<
+| 
+| 3B^  2B^
+| 
+| 4G<  1G<
+| 
+| 4B^  1B^
+sdr> girls trade down the line
+| 4G>  1G>
+| 
+| 3B^  2B^
+| 
+| 3G>  2G>
+| 
+| 4B^  1B^
+sdr> /// XXX: head girls run, and then try more t-boned trades
+sdr> /exit

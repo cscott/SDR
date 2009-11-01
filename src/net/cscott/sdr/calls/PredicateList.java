@@ -230,6 +230,127 @@ public abstract class PredicateList {
             return true;
         }
     };
+    /**
+     * Check the order of the selected dancers within the given formation.
+     * @doc.test
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> SD = StandardDancer; undefined
+     *  js> // rotate the formation 1/2 just to get rid of the original tags
+     *  js> f = FormationList.RH_OCEAN_WAVE; f.toStringDiagram()
+     *  ^    v    ^    v
+     *  js> // label those dancers
+     *  js> f= f.mapStd([SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
+     *    >              SD.COUPLE_3_BOY, SD.COUPLE_3_GIRL]); f.toStringDiagram()
+     *  1B^  1Gv  3B^  3Gv
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
+     *  js> function test(sel, pat) {
+     *    >   let c = net.cscott.sdr.calls.ast.AstNode.valueOf(
+     *    >           '(Condition SELECTION PATTERN '+
+     *    >           '(Condition literal (Condition '+sel+')) '+
+     *    >           '(Condition literal (Condition '+pat+')))');
+     *    >    return c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c);
+     *    > }
+     *  js> test('BOY', '____')
+     *  false
+     *  js> test('BOY', 'x_x_')
+     *  true
+     *  js> test('BOY', '_x_x')
+     *  false
+     *  js> test('CENTER', '_xx_')
+     *  true
+     *  js> test('HEAD', 'xxxx')
+     *  true
+     *  js> test('SIDE', '____')
+     *  true
+     *  js> test('COUPLE 1', 'xx__')
+     *  true
+     *  js> test('SIDE', '_xx_')
+     *  false
+     */
+    public final static Predicate SELECTION_PATTERN = new _Predicate("selection pattern") {
+        @Override
+        public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
+            List<String> args = new ArrayList<String>(c.args.size());
+            for (int i=0; i<c.args.size()-1; i++)
+                args.add(c.getStringArg(i, ds, f));
+            Set<Tag> tags = ParCall.parseTags(args);
+            String pattern = c.getStringArg(c.args.size()-1, ds, f);
+            if (pattern.length() != f.dancers().size())
+                return false;
+            // check each dancer against the corresponding character in the
+            // pattern.
+            TaggedFormation tf = TaggedFormation.coerce(f);
+            int i=0;
+            for (Dancer d : f.sortedDancers()) {
+                boolean t1 = tf.isTagged(d, tags);
+                boolean t2 = pattern.charAt(i++) != '_';
+                if (t1!=t2) return false;
+            }
+            return true;
+        }
+    };
+    /** Check whether the tagged dancers are t-boned.
+     * @doc.test
+     *  js> importPackage(net.cscott.sdr.util); // for Fraction
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> SD = StandardDancer; undefined
+     *  js> // rotate the formation 1/2 just to get rid of the original tags
+     *  js> f = FormationList.RH_OCEAN_WAVE; f.toStringDiagram()
+     *  ^    v    ^    v
+     *  js> d = [d for (d in Iterator(f.sortedDancers()))]; undefined
+     *  js> f = f.move(d[1], f.location(d[1]).turn
+     *    >                 (Fraction.ONE_QUARTER, false)) ; f.toStringDiagram()
+     *  ^    <    ^    v
+     *  js> f = f.move(d[3], f.location(d[3]).turn
+     *    >                 (Fraction.ONE_QUARTER, false)) ; f.toStringDiagram()
+     *  ^    <    ^    <
+     *  js> // label those dancers
+     *  js> f= f.mapStd([SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
+     *    >              SD.COUPLE_3_BOY, SD.COUPLE_3_GIRL]); f.toStringDiagram()
+     *  1B^  1G<  3B^  3G<
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
+     *  js> function test(sel) {
+     *    >   let c = net.cscott.sdr.calls.ast.AstNode.valueOf(
+     *    >           '(Condition TBONED '+
+     *    >           '(Condition literal (Condition '+sel+')))');
+     *    >    return c.getPredicate().evaluate(ds.dance, ds.currentFormation(), c);
+     *    > }
+     *  js> test('BOY')
+     *  false
+     *  js> test('GIRL')
+     *  false
+     *  js> test('CENTER')
+     *  true
+     *  js> test('END')
+     *  true
+     *  js> test('HEAD')
+     *  true
+     */
+    public final static Predicate TBONED = new _Predicate("tboned") {
+        @Override
+        public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
+            List<String> args = new ArrayList<String>(c.args.size());
+            for (int i=0; i<c.args.size(); i++)
+                args.add(c.getStringArg(i, ds, f));
+            Set<Tag> tags = ParCall.parseTags(args);
+            // ok, look at rotation directions for the selected dancers.
+            Rotation r = null;
+            // each selected dancer must have all of these tags
+            TaggedFormation tf = TaggedFormation.coerce(f);
+            for (Dancer d: f.selectedDancers()) {
+                if (!tf.isTagged(d, tags))
+                    continue;
+                if (r==null) {
+                    r = tf.location(d).facing;
+                    r = r.union(r.add(Fraction.ONE_HALF)); // fuzz
+                } else {
+                    if (!r.includes(tf.location(d).facing))
+                        return true; // yes, it's t-boned
+                }
+            }
+            return false; // nope, not t-boned
+        }
+    };
     /** Check that the tagged dancers also have some other tag. */
     public final static Predicate ARE = new _Predicate("are") {
         @Override
@@ -248,6 +369,18 @@ public abstract class PredicateList {
             Set<Dancer> rightDancers = tf.tagged(rightTags);
 
             return rightDancers.containsAll(leftDancers);
+        }
+    };
+    /** Check the identify of a call provided as an argument.
+     *  Used in a hack to implement "boys trade".
+     */
+    public final static Predicate CALL_IS = new _Predicate("call is") {
+        /** This is just a case-insensitive string comparison, really. */
+        @Override
+        public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
+            assert c.args.size() == 2;
+            return c.getStringArg(0, ds, f).equalsIgnoreCase
+                  (c.getStringArg(1, ds, f));
         }
     };
 

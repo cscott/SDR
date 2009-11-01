@@ -157,6 +157,10 @@ public abstract class SelectorList {
     public static final Selector GENERAL_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.GENERAL_LINE);
     // this selector has an extra underscore because the parser treats it
+    // as two items: the number one, and the identifier x4.
+    public static final Selector _1_X4 =
+        GeneralFormationMatcher.makeSelector(FormationList._1x4);
+    // this selector has an extra underscore because the parser treats it
     // as two items: the number two, and the identifier x2.
     public static final Selector _2_X2 =
         GeneralFormationMatcher.makeSelector(FormationList._2x2);
