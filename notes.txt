@@ -1017,7 +1017,28 @@ to do:
     // "quick step part 1".
  q) define LEADERS/TRAILERS/BEAUS/BELLES in 2x2 selector.
     (and retest first part of peel the top)
-
+ r) compute coverage metrics over the call definitions
+    - make fake classes for coberatura:
+      ClassData cd = net.sourceforce.coberatura.coveragedata.ProjectData
+                     .getGlobalProjectData()
+                     .getOrCreateClassData(fake_package_and_class_name);
+      cd.setSourceFileName(real_file_name);
+      cd.touch(line_num)
+    - preserve source file / line # for ast nodes (at least FROM/etc)
+    - in evaluator, touch the appropriate source file/line # (code above)
+      on *successful* evaluation, ie, when we're sure we're not going
+      to throw a BadCallException (hard?)
+ s) EQUALS/CALL_IS => NUM_EQUALS, STR_EQUALS
+    SELECTION_PATTERN => PATTERN_EQUALS(PATTERN(SELECTED), '_x__')
+     (add 'don't care' character -- '?' or '.')
+    PATTERN(ROLL) => 'rlrl', PATTERN(SWEEP) => 'rlrl'
+    use PATTERN(SWEEP) to define "sweep 1/4" (FROM FACING COUPLES:...)
+ t) add post-condition nodes to graph, evaluated as "do child, then
+    test condition on resulting formation".  IfAfter() or maybe just
+    a boolean in the If node for "eval after".
+ u) reorder defs to match callerlab docs
+ v) 'from' takes flags
+ w) 'select' is or-of-ands.  'select: DESIGNATED & BEAU, DESIGNATED & BELLE'
 -------
 heads x:
   from squared_set:
@@ -1130,4 +1151,49 @@ collisions
 Write doctest asserting that sphinx grammar accepts a subset of what
 the antlr grammar accepts (ie, generate N utterances from sphinx
 grammar, and try to parse them all w/ the antlr grammar)
+----
+FROM: <formation>
+  does two sorts of breathing: we (optionally?) breathe *before*
+  attempting the match, and then we *center* the pieces and *breathe*
+  the meta formation.
+  At top-level we also breathe the output formation, almost as if we
+  had a 'from: SINGLE_DANCER' at top level -- except we evaluate the
+  child in the whole formation.
 
+Want to be able to suppress:
+  a) input formation centering (press ahead, fold, parts of run)
+     way 1: 'absolute' flag on the FROM, ie:
+             from: [ABSOLUTE] ANY
+             works best with way 2 or 3 of (c)
+     way 2: 'anchor' flag on position; breathing tries to keep anchors
+            aligned during formation expansion, even if it means
+            giving extra space to a formation
+            (i was having trouble making the constraints for this work)
+     way 3: '_find tags' concept or [NO SUB] flag on FROM, which
+            says, "perform the match, but do the rest in the entire
+            input formation (just transferring flags) not breathing at
+            all. (note that 'ends fold' from parallel ocean waves
+            needs breathing, maybe this is explicit, like
+              from: BREATHING
+                from: [NO SUB, ALLOW UNMATCHED] GENERAL_COUPLE /* || */
+                  select: DESIGNATED[BEAU]
+                    prim: <fold over to 0, 1/2>
+                  select: DESIGNATED[BELLE]
+                    prim: <fold over to 0, 1/2>
+                  select: OTHERS
+                    prim: <nothing, clear roll>
+            after breathing this results in the callerlab "z formation",
+            like a column after a 1/2 press ahead.
+            (ALLOW UNMATCHED must still have at least one match)
+
+  b) breathe-before-match (to match triple boxes)
+     way 1: move breathe-before into GeneralFormationMatcher.makeSelector
+            (with an optional parameter to disable?)
+            SelectorList can then define ANY_NO_BREATHING formations,
+            TRIPLE_BOX would have the no breathing flag by default,
+            etc.  Disable parameter might not be necessary, if you
+            figure that TRIPLE_BOX is going to be a custom Selector anyway.
+  c) top-level breathing (assert no collisions if doing so)
+     way 1: insert phantoms to hold space
+     way 2: "already breathed" flag on formation.
+     way 3: only breathe @ top level if there are collisions.
