@@ -943,6 +943,10 @@ to do:
     concept for "ignore non-selected"
     * We'll probably need a "non-breathing from" selector at some
       point to make it easier to define calls!
+      - "breathe before match" == property of the selector?
+      - so we can define ANY_BREATHE and ANY_NO_BREATHE?
+      - what about breathing *after*, like we do for the top-level?
+    * need to audit our use of the formation/selected concept. remove it?
  x) fix breathing: we seem to be letting dancers' bounding boxes
     overlap during insert, and trade from a two-faced tidal line
     should *not* create triple boxes (ie, the formations should
@@ -958,11 +962,21 @@ to do:
     error" class (which pulls the one most useful/highest pri message)
     and "error detail" class (which shows the whole tree, like we're
     doing now)
- g) centers/ends.  heads/sides
- h) concentric
+ x) centers/ends.  heads/sides
+ g1) make heads/sides part of the 'anyone' grammar production.
+     (have to remove the hard coded 'heads <foo>' rules)
+ g2) _anyone_others concept: "do your part"?
+ h) concentric/quasi-concentric
+     use CENTER_HALF selector, remove those dancers and breathe the
+     remaining ones.  Now do the call in both of the resulting
+     formations.  Open up a vertical/horizontal line (depending on
+     concentric rules) in the resulting 'ends' formations and squeeze
+     the centers back in there.
  i) tandem
- j) test circle left/right, test run (in all its glory), test trade
+ x) test circle left/right, test run (in all its glory), test trade
     from quarter tag
+ j1) t-boned runs (see trade down the line code)
+ j2) trade from quarter tag.
  xx) separate insertion point and playback cursor.
  k2) have a 'keep playing' flag that is set when you press play but
     cleared when you manually scrub to a point. if you receive more
@@ -978,8 +992,27 @@ to do:
        'nothing-keep-roll' calls, and use 'nothing-clear-roll' in
        places like the <anyone> <anything> concept and for the
        non-moving dancers in 'trade down the line'
+     * SD says: "When "roll_transparent" is used on a part of a "seq"
+       definition, that call must have the property that anyone who is
+       marked roll-neutral (that is, with an "M" roll letter), must
+       not have moved at all, and must consider this part not to have
+       applied to him, so that the call "roll" will direct him to use
+       the roll direction arising from what he did previously.  The
+       call "centers hinge" obeys this property, and so the
+       "roll_transparent" flag is appropriate.  The purpose of this
+       flag is to make the centers hinge part of peel/trail to a
+       diamond work correctly, so that the new points can roll."
+
  xx) roll should breathe before trying to roll, otherwise it can
      screw up collision resolution.
+ p) CFLAG1_FUDGE_TO_Q_TAG from Sd/database.h:
+    // setup is to fudged from a suitably populated 3x4 into a 1/4 tag.
+    // The intention is that one can do "plenty" after doing a "1/2 press ahead"
+    // (as opposed to the more natural "extend") from waves.  It also means
+    // that we can fudge the other way if the schema is schema_in_out_triple
+    // or schema_in_out_triple_squash.  See the call "quick step part 2".
+    // It also means that a short6 is to be fudged to a 2x3.  See the call
+    // "quick step part 1".
 
 -------
 heads x:
