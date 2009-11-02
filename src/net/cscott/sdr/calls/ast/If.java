@@ -66,7 +66,7 @@ public class If extends Comp {
     public If build(Condition condition, Comp child) {
         if (this.condition==condition && this.child==child)
             return this;
-        return new If(condition, child);
+        return new If(condition, child, message, priority);
     }
     @Override
     public String argsToString() {
