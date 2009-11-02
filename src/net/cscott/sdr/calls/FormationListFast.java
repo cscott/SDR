@@ -119,6 +119,34 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.mONE, ExactRotation.SOUTH), Tag.BELLE, Tag.LEADER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.mONE, ExactRotation.NORTH), Tag.BELLE, Tag.TRAILER));
 
+    public static final NamedTaggedFormation RH_SINGLE_QUARTER_ZEE =
+        new NamedTaggedFormation("RH SINGLE 1/4 ZEE",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.TWO, ExactRotation.SOUTH), Tag.BEAU, Tag.TRAILER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU, Tag.LEADER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BEAU, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-2), ExactRotation.NORTH), Tag.BEAU, Tag.TRAILER));
+
+    public static final NamedTaggedFormation LH_SINGLE_QUARTER_ZEE =
+        new NamedTaggedFormation("LH SINGLE 1/4 ZEE",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.TWO, ExactRotation.SOUTH), Tag.BELLE, Tag.TRAILER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BELLE, Tag.LEADER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BELLE, Tag.LEADER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-2), ExactRotation.NORTH), Tag.BELLE, Tag.TRAILER));
+
+    public static final NamedTaggedFormation RH_SINGLE_THREE_QUARTER_ZEE =
+        new NamedTaggedFormation("RH SINGLE 3/4 ZEE",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.TWO, ExactRotation.NORTH), Tag.BEAU, Tag.LEADER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BEAU, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-2), ExactRotation.SOUTH), Tag.BEAU, Tag.LEADER));
+
+    public static final NamedTaggedFormation LH_SINGLE_THREE_QUARTER_ZEE =
+        new NamedTaggedFormation("LH SINGLE 3/4 ZEE",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.TWO, ExactRotation.NORTH), Tag.BELLE, Tag.LEADER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BELLE, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BELLE, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-2), ExactRotation.SOUTH), Tag.BELLE, Tag.LEADER));
+
     public static final NamedTaggedFormation RH_TWO_FACED_LINE =
         new NamedTaggedFormation("RH TWO-FACED LINE",
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU, Tag.END),
@@ -695,6 +723,10 @@ abstract class FormationListFast {
             FormationListFast.LH_OCEAN_WAVE,
             FormationListFast.RH_BOX,
             FormationListFast.LH_BOX,
+            FormationListFast.RH_SINGLE_QUARTER_ZEE,
+            FormationListFast.LH_SINGLE_QUARTER_ZEE,
+            FormationListFast.RH_SINGLE_THREE_QUARTER_ZEE,
+            FormationListFast.LH_SINGLE_THREE_QUARTER_ZEE,
             FormationListFast.RH_TWO_FACED_LINE,
             FormationListFast.LH_TWO_FACED_LINE,
             FormationListFast.SINGLE_INVERTED_LINE,

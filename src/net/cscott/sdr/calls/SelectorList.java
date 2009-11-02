@@ -182,6 +182,18 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.LH_BOX);
     public static final Selector BOX =
         OR("BOX", RH_BOX, LH_BOX);
+    public static final Selector RH_SINGLE_QUARTER_ZEE =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_SINGLE_QUARTER_ZEE);
+    public static final Selector LH_SINGLE_QUARTER_ZEE =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_SINGLE_QUARTER_ZEE);
+    public static final Selector SINGLE_QUARTER_ZEE =
+        OR("SINGLE 1/4 ZEE", RH_SINGLE_QUARTER_ZEE, LH_SINGLE_QUARTER_ZEE);
+    public static final Selector RH_SINGLE_THREE_QUARTER_ZEE =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_SINGLE_THREE_QUARTER_ZEE);
+    public static final Selector LH_SINGLE_THREE_QUARTER_ZEE =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_SINGLE_THREE_QUARTER_ZEE);
+    public static final Selector SINGLE_THREE_QUARTER_ZEE =
+        OR("SINGLE 3/4 ZEE", RH_SINGLE_THREE_QUARTER_ZEE, LH_SINGLE_THREE_QUARTER_ZEE);
     public static final Selector RH_TWO_FACED_LINE =
         GeneralFormationMatcher.makeSelector(FormationList.RH_TWO_FACED_LINE);
     public static final Selector LH_TWO_FACED_LINE =

@@ -134,6 +134,30 @@ abstract class FormationListSlow {
         xofy("RH BOX", RH_MINIWAVE, TANDEM);
     public static final NamedTaggedFormation LH_BOX = // callerlab #11
         xofy("LH BOX", LH_MINIWAVE, TANDEM);
+    public static final NamedTaggedFormation RH_SINGLE_QUARTER_ZEE =
+        create("RH SINGLE 1/4 ZEE",
+                d(+1, 2, "s", BEAU, TRAILER),
+                d(-1, 0, "n", BEAU, CENTER, LEADER),
+                d(+1, 0, "s", BEAU, CENTER, TRAILER),
+                d(-1,-2, "n", BEAU, TRAILER));
+    public static final NamedTaggedFormation LH_SINGLE_QUARTER_ZEE =
+        create("LH SINGLE 1/4 ZEE",
+                d(-1, 2, "s", BELLE, TRAILER),
+                d(-1, 0, "s", BELLE, CENTER, LEADER),
+                d(+1, 0, "n", BELLE, CENTER, LEADER),
+                d(+1,-2, "n", BELLE, TRAILER));
+    public static final NamedTaggedFormation RH_SINGLE_THREE_QUARTER_ZEE =
+        create("RH SINGLE 3/4 ZEE",
+                d(-1, 2, "n", BEAU, LEADER),
+                d(-1, 0, "n", BEAU, CENTER, TRAILER),
+                d(+1, 0, "s", BEAU, CENTER, TRAILER),
+                d(+1,-2, "s", BEAU, LEADER));
+    public static final NamedTaggedFormation LH_SINGLE_THREE_QUARTER_ZEE =
+        create("LH SINGLE 3/4 ZEE",
+                d(+1, 2, "n", BELLE, LEADER),
+                d(-1, 0, "s", BELLE, CENTER, TRAILER),
+                d(+1, 0, "n", BELLE, CENTER, TRAILER),
+                d(-1,-2, "s", BELLE, LEADER));
     public static final NamedTaggedFormation RH_TWO_FACED_LINE = // callerlab #12
         xofy("RH TWO-FACED LINE", RH_MINIWAVE, COUPLE,
                 t(0, END), t(1, CENTER), t(2, CENTER), t(3, END));
