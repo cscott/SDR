@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -392,9 +393,15 @@ public class Formation {
     public String toStringDiagram(String prefix,
                                   Map<Dancer,String> dancerNames) {
         GridString gs = new GridString(prefix);
+        _toStringDiagram(gs, Fraction.ZERO, dancerNames);
+        return gs.toString();
+    }
+    private void _toStringDiagram(GridString gs, Fraction xoffset,
+                                  Map<Dancer, String> dancerNames) {
         for (Dancer d : sortedDancers()) {
             Position p = location(d);
-            int x = Math.round(p.x.multiply(Fraction.valueOf(5,2)).floatValue());
+            int x = Math.round(p.x.add(xoffset)
+                               .multiply(Fraction.valueOf(5,2)).floatValue());
             int y = Math.round(p.y.floatValue());
 	    char facing = p.facing.toDiagramChar();
             gs.set(x,y,facing);
@@ -405,6 +412,23 @@ public class Formation {
 		gs.set(x-1,y,name.charAt(1));
             }
         }
+    }
+    public String toStringDiagramWithDetails() {
+        return toStringDiagramWithDetails("");
+    }
+    public String toStringDiagramWithDetails(String prefix) {
+        return toStringDiagramWithDetails(prefix, dancerNames);
+    }
+    public String toStringDiagramWithDetails(String prefix,
+                                             Map<Dancer,String> dancerNames) {
+        GridString gs = new GridString(prefix);
+        _toStringDiagram(gs, Fraction.ZERO, dancerNames);
+        // now add the roll details
+        Map<Dancer,String> details = new HashMap<Dancer,String>();
+        for (Dancer d : dancers()) {
+            details.put(d, location(d).shortFlagString());
+        }
+        _toStringDiagram(gs, bounds().width().add(Fraction.valueOf(3)), details);
         return gs.toString();
     }
     private static final Map<Dancer,String> _dancerNames =

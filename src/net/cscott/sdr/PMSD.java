@@ -138,6 +138,7 @@ public class PMSD {
         DanceState ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET);
         boolean _isDone = false;
         boolean _errorDetails = false;
+        boolean _formationDetails = false;
 
         // javascript api.
         public Object jsGet_ds() {
@@ -166,6 +167,13 @@ public class PMSD {
         public void jsSet_errorDetails(Object val) {
             Boolean b = (Boolean) Context.jsToJava(val, Boolean.TYPE);
             this._errorDetails = b.booleanValue();
+        }
+        public boolean jsGet_formationDetails() {
+            return this._formationDetails;
+        }
+        public void jsSet_formationDetails(Object val) {
+            Boolean b = (Boolean) Context.jsToJava(val, Boolean.TYPE);
+            this._formationDetails = b.booleanValue();
         }
         public void jsSet_formation(Object val) {
             Formation f = (Formation) Context.jsToJava(val, Formation.class);
@@ -203,6 +211,9 @@ public class PMSD {
         public String jsGet_printFormation() {
             return ds.currentFormation().toStringDiagram("| ");
         }
+        public String jsGet_printFormationDetails() {
+            return ds.currentFormation().toStringDiagramWithDetails("| ");
+        }
 
         /** Prints out one step of a resolve from here. Currently uses
          *  Dave Wilson's ocean wave resolution method.
@@ -229,13 +240,16 @@ public class PMSD {
             if (testCase==null)
 		return "* " + testName + " not found";
             // execute it!  (reusing current state)
+            // (but reset formation and program, since tests expect that)
+            this.ds = new DanceState(new DanceProgram(Program.PLUS),
+                                     Formation.SQUARED_SET);
             return runTest(this, testName, testCase);
 	}
 
 	/** Runs each test in its own javascript context, to ensure
 	 *  independence between tests.
 	 */
-	public String jsGet_runAllTests() {
+	public String jsFunction_runAllTests() {
 	    try {
 		return runAllTests();
 	    } catch (IOException e) {
@@ -491,7 +505,10 @@ public class PMSD {
                 try {
                     Comp c = new Seq(CallDB.INSTANCE.parse(s.ds.dance.getProgram(), line));
                     Evaluator.breathedEval(s.ds.currentFormation(), c).evaluateAll(s.ds);
-                    pw.println(s.ds.currentFormation().toStringDiagram("| "));
+                    if (s._formationDetails)
+                        pw.println(s.jsGet_printFormationDetails());
+                    else
+                        pw.println(s.jsGet_printFormation());
                 } catch (BadCallException bce) {
                     pw.println("* "+bce.getMessage());
                 } catch (Throwable t) {

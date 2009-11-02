@@ -572,6 +572,47 @@ public class Position implements Comparable<Position> {
 	    tsb = tsb.append("flags", flags);
 	return tsb.toString();
     }
+    /** Return a short string describing the flags on this position.
+     * @doc.test
+     *  js> p=Position.getGrid(1,2,"e",Position.Flag.SWEEP_LEFT,Position.Flag.ROLL_RIGHT);
+     *  1,2,e,[ROLL_RIGHT, SWEEP_LEFT]
+     *  js> new String(p.shortFlagString()).toSource()
+     *  (new String("RL"))
+     *  js> p = p.addFlags(Position.Flag.PASS_LEFT)
+     *  1,2,e,[PASS_LEFT, ROLL_RIGHT, SWEEP_LEFT]
+     *  js> new String(p.shortFlagString()).toSource()
+     *  (new String("rl"))
+     *  js> p = p.setFlags(Position.Flag.PASS_LEFT, Position.Flag.ROLL_LEFT)
+     *  1,2,e,[PASS_LEFT, ROLL_LEFT]
+     *  js> new String(p.shortFlagString()).toSource()
+     *  (new String("l_"))
+     *  js> p = p.setFlags(Position.Flag.PASS_LEFT)
+     *  1,2,e,[PASS_LEFT]
+     *  js> new String(p.shortFlagString()).toSource()
+     *  (new String("__"))
+     *  js> p = p.addFlags(Position.Flag.SWEEP_RIGHT)
+     *  1,2,e,[PASS_LEFT, SWEEP_RIGHT]
+     *  js> new String(p.shortFlagString()).toSource()
+     *  (new String("_r"))
+     *  js> p = p.setFlags(Position.Flag.SWEEP_RIGHT)
+     *  1,2,e,[SWEEP_RIGHT]
+     *  js> new String(p.shortFlagString()).toSource()
+     *  (new String(" R"))
+     *  js> p = p.setFlags()
+     *  1,2,e
+     *  js> new String(p.shortFlagString()).toSource()
+     *  (new String("  "))
+     */
+    public String shortFlagString() {
+        String roll = flags.contains(Flag.ROLL_RIGHT) ? "R" :
+                      flags.contains(Flag.ROLL_LEFT) ? "L" : " ";
+        String sweep = flags.contains(Flag.SWEEP_RIGHT) ? "R" :
+                       flags.contains(Flag.SWEEP_LEFT) ? "L" : " ";
+        String s = roll + sweep;
+        if (flags.contains(Position.Flag.PASS_LEFT))
+            s = s.toLowerCase().replace(' ', '_');
+        return s;
+    }
     /** Emit an executable representation of this position.
      * @doc.test
      *  js> importPackage(net.cscott.sdr.util)
