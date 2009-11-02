@@ -12,6 +12,7 @@ import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Prim;
+import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.transform.EvalPrim;
 import net.cscott.sdr.calls.transform.Evaluator;
@@ -82,9 +83,15 @@ public abstract class PlusList {
             };
             /* if there's an arg, do that first */
             if (ast.args.size() > 0) {
-                Apply arg = ast.getArg(0);
-                Evaluator sub = arg.evaluator();
-                if (sub==null) sub = new Evaluator.Standard(arg.expand());
+                final Apply arg = ast.getArg(0);
+                Evaluator sub = new Evaluator() {
+                    @Override
+                    public Evaluator evaluate(DanceState ds) {
+                        // breathe to resolve collisions before rolling.
+                        return Evaluator.breathedEval
+                            (ds.currentFormation(), new Seq(arg)).evaluate(ds);
+                    }
+                };
                 rolle =  new Evaluator.EvaluatorChain(sub, rolle);
             }
             return rolle;

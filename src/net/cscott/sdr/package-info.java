@@ -9,6 +9,5 @@
  *   extend-level at line 16
  *   hinge-1 at line 36
  *   roll at line 22
- *   trade-and-roll at line 20
  */
 package net.cscott.sdr;

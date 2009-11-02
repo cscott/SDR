@@ -974,7 +974,11 @@ to do:
  n) roll failures (roll/trade-and-roll tests):
  n1) top-level evaluator should clear all roll directions if next call
      is not 'roll' (or other roll-dependent call -- by golly?)
- n2) roll should breathe before trying to roll, otherwise it can
+     * or maybe should have separate 'nothing-clear-roll' and
+       'nothing-keep-roll' calls, and use 'nothing-clear-roll' in
+       places like the <anyone> <anything> concept and for the
+       non-moving dancers in 'trade down the line'
+ xx) roll should breathe before trying to roll, otherwise it can
      screw up collision resolution.
 
 -------
