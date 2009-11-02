@@ -982,9 +982,11 @@ to do:
     cleared when you manually scrub to a point. if you receive more
     call data and were stopped at the end but the 'keep playing' bit
     is set, start playing. (see git e5f9f473b591a678d71ee6b385596034cd61833f)
- l) peel the top, from boxes and zees
+ x) peel the top, from boxes and zees
+ l1) "ends fold" is broken.
  m) diamond circulate, w/ adjustment from 'half of ends cross run'
     position. Probably should switched to breathed diamond spots.
+ m1) peel the top ending in diamond ("do half a peel the top")
  n) roll failures (roll/trade-and-roll tests):
  n1) top-level evaluator should clear all roll directions if next call
      is not 'roll' (or other roll-dependent call -- by golly?)
@@ -1013,6 +1015,8 @@ to do:
     // or schema_in_out_triple_squash.  See the call "quick step part 2".
     // It also means that a short6 is to be fudged to a 2x3.  See the call
     // "quick step part 1".
+ q) define LEADERS/TRAILERS/BEAUS/BELLES in 2x2 selector.
+    (and retest first part of peel the top)
 
 -------
 heads x:

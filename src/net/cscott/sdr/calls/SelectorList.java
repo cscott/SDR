@@ -208,6 +208,10 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.LH_DIAMOND);
     public static final Selector LH_FACING_DIAMOND =
         GeneralFormationMatcher.makeSelector(FormationList.LH_FACING_DIAMOND);
+    public static final Selector FACING_DIAMOND =
+        OR("FACING DIAMONDS", RH_FACING_DIAMOND, LH_FACING_DIAMOND);
+    public static final Selector DIAMOND =
+        OR("DIAMOND", RH_DIAMOND, LH_DIAMOND, RH_FACING_DIAMOND, LH_FACING_DIAMOND);
     public static final Selector RH_SINGLE_PROMENADE =
         GeneralFormationMatcher.makeSelector(FormationList.RH_SINGLE_PROMENADE);
     public static final Selector LH_SINGLE_PROMENADE =

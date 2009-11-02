@@ -32,6 +32,36 @@ def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
       //call: counter rotate 1/4   // we'll use a primitive for simplicity
       prim: 0, 3, in 1/8
       prim: in 1 1/2, 1 1/2, in 1/8
+  from: DIAMOND // vic ceder says we can do this!
+    // XXX: if diamond points are on wave spots, we can use the above def
+    //      unmodified; otherwise we need to tweak the ends part slightly.
+    condition: FALSE, "Unimplemented"
+    call: nothing
+
+def: peel the top
+  in: 6
+  call: _peel and step, fan the top
+def: _peel and step
+  in: 2
+  ipart:
+    from: BOX, 2x2 /* XXX: 2x2 doesn't define LEADERS/TRAILERS =( */
+      condition: or(PROGRAM AT LEAST(c1), NOT(TBONED(ALL))), \
+                 "T-boned formations not allowed below C1"
+      condition: or(SELECTION_PATTERN(TRAILER, x__x), \
+                    SELECTION_PATTERN(TRAILER, _xx_)), \
+                 "Trailers must step to a hand hold"
+      select: LEADER
+        prim: out 1, 1, out 1/4
+        prim: in 2,  1, in 1/4
+      select: TRAILER
+        prim: 0, 1, none
+    from: SINGLE QUARTER ZEE
+      select: LEADER
+        prim: out 1, 1, out 1/4
+        prim: in 1,  1, in 1/4
+      select: TRAILER
+        prim: 0, 1, none
+        prim: 0, 1, none
 
 def: trade the wave
   in: 6
