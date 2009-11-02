@@ -5,3 +5,18 @@ def: _catch(n)
   call: square thru(_subtract_num([n],1/2))
   call: slip
   call: step and fold
+
+// XXX: should suppress top-level breathing
+// XXX: should check for collisions
+def: press in
+  prim: in 1, 1, none
+  prim: in 1, 1, none
+def: press out
+  prim: out 1, 1, none
+  prim: out 1, 1, none
+def: press right
+  prim: 1, 1, none
+  prim: 1, 1, none
+def: press left
+  prim: -1, 1, none
+  prim: -1, 1, none
