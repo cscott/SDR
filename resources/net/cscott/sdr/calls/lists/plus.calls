@@ -3,7 +3,7 @@ program: plus
 def: roll
   from: ANY // make sure we've breathed before we roll
     call: _roll
-def: _and_roll(c)
+def: _and roll(c)
   spoken: [-10] <c=anything> and roll
   call: _roll([c])
 
