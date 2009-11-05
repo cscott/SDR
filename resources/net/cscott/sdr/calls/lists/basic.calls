@@ -9,12 +9,21 @@ def: anyone_others(sel, c1, c2=nothing)
   /* default to 'nothing' if the 'while...' isn't present */
   spoken: [-15] <sel=anyone> <c1=anything> \
                  (while the (others|<anyone>) <c2=anything>)?
+  // special case 'heads promenade half way while the sides...'
+  from: STATIC SQUARE
+    condition: AND(CALL IS([sel], HEAD), CALL IS([c1], promenade half way))
+    call: anyone_others([sel],[c1],and(sides start, [c2]))
+  from: STATIC SQUARE
+    condition: AND(CALL IS([sel], SIDE), CALL IS([c1], promenade half way))
+    call: anyone_others([sel],[c1],and(heads start, [c2]))
+  // special case 'heads square thru...' from static square
   from: STATIC SQUARE
     condition: CALL IS([sel], HEAD)
     call: heads start, anyone_others([sel],[c1],[c2])
   from: STATIC SQUARE
     condition: CALL IS([sel], SIDE)
     call: sides start, anyone_others([sel],[c1],[c2])
+  // recognize cases where this really means something like 'concentric'
   from: CENTER HALF
     // the selected must be centers, and no centers can be unselected.
     condition: ARE([sel], CENTER), "Not all selected are centers"
@@ -136,6 +145,181 @@ def: _break out from swing
       prim: 0, 0, none
 
 // callerlab #6: PROMENADE FAMILY
+
+// this is the four-person call.
+def: _single promenade 1/4
+  in: 4
+  from: LH SINGLE PROMENADE
+    prim: -2, 2, left
+  from: LH DIAMOND
+    select: POINT
+      prim: -2, 2, left
+    select: CENTER
+      prim: -1, 2, left
+  // all other formations ought to end in LH SINGLE PROMENADE
+  // all roll directions should be left
+  // XXX: enforce with IfAfter?
+  from: LH STAR
+    prim: -1, 2, left
+  from: LH BOX
+    select: LEADER
+      prim: -1, 1, left
+    select: TRAILER
+      prim:  1, 1, none, sashay-start force-roll-left
+  from: LH SINGLE QUARTER TAG
+    select: CENTER
+      prim: -1, 2, left
+    select: END
+      prim:  2, 2, none, sashay-start force-roll-left
+  from: LH SINGLE THREE QUARTER TAG
+    ipart:
+      select: CENTER
+        prim: 1, 0, none, sashay-start sashay-finish force-roll-left
+        prim: -2, 2, left
+      select: END
+        prim: 0, 0, left
+        prim: -2, 2, left
+  from: LH SINGLE QUARTER ZEE
+    select: LEADER
+      prim: -1, 2, left
+    select: TRAILER
+      prim:  1, 2, none, force-roll-left
+  from: LH SINGLE THREE QUARTER ZEE
+    ipart:
+      select: LEADER
+        prim: -1, 0, left, sashay-start
+        prim: -2, 2, left
+      select: TRAILER
+        prim: 1, 0, none, sashay-start sashay-finish force-roll-left
+        prim: -2, 2, left
+
+// another 4-person promenade
+def: _single star promenade 1/4
+  in: 4
+  from: LH STAR
+    prim: -1, 1, left
+  // all other formations ought to end in LH STAR
+  // all roll directions should be left
+  // XXX: enforce with IfAfter?
+  from: LH SINGLE PROMENADE
+    prim: -2, 1, left
+  from: LH DIAMOND
+    select: POINT
+      prim: -2, 1, left
+    select: CENTER
+      prim: -1, 1, left
+
+// this is the eight-person call.
+def: _single file promenade 1/8
+  in: 2
+  from: SINGLE FILE PROMENADE
+    select: LEADER /* a little bogus, but we'll live */
+      prim: -2, 2, left
+    select: TRAILER
+      prim:  0, 2, none, force-roll-left
+  // all other formations ought to end in SINGLE FILE PROMENADE
+  // all roll directions should be left
+  // XXX: enforce with IfAfter?
+  from: LH COLUMN
+    select: NUMBER 1
+      prim: -2, 0, left, sashay-start
+    select: NUMBER 2
+      prim:  0, 2, left, sashay-finish
+    select: NUMBER 3, NUMBER 4
+      prim:  2, 2, none, force-roll-left
+
+def: _single promenade(n)
+  call: _fractional(_multiply_num([n], 4), _single promenade 1/4)
+def: _single star promenade(n)
+  call: _fractional(_multiply_num([n], 4), _single star promenade 1/4)
+def: _single file promenade(n)
+  call: _fractional(_multiply_num([n], 8), _single file promenade 1/8)
+
+def: _promenade(n)
+  from: STATIC SQUARE
+    call: _fractional(1/2, reverse(wheel around)), _promenade([n])
+  from: ANY // PROMENADE, STAR PROMENADE, as couples diamonds, etc.
+    call: as couples(_single promenade([n]))
+
+// as basic defs say, we always go at least 1/4
+def: promenade home
+  optional: REVERSE
+  ipart:
+    from: ANY // use ANY to guarantee no rotation
+      // we're going to the head beau's home.
+      condition: OR(SELECTION PATTERN(DANCER 1, ___x____), \
+                    SELECTION PATTERN(DANCER 2, ___x____))
+      from: PROMENADE, STAR PROMENADE
+        in: 4
+        call: as couples(_and roll(_single promenade 1/4))
+    from: ANY // no rotation
+      condition: OR(SELECTION PATTERN(DANCER 1, _____x__), \
+                    SELECTION PATTERN(DANCER 2, _____x__))
+      from: PARALLEL LH TWO-FACED LINES
+        in: 4
+        call: as couples(_and roll(_single promenade 1/4))
+    // XXX: might need to add extra patterns here to prevent overshoot
+    //      if promenading home from exactly 1/4 away from other starting
+    //      formations -- or use IfAfter?
+    from: ANY
+      call: _promenade(1/4), promenade home
+
+def: promenade half way
+  optional: REVERSE
+  in: 8
+  call: _promenade(1/2)
+
+def: _star promenade(n)
+  optional: REVERSE
+  spoken: star promenade <n=fraction>
+  call: as couples(_single star promenade([n]))
+
+// we always go at least 1/4, like for promenade home
+def: star promenade home
+  optional: REVERSE
+  ipart:
+    from: ANY // use ANY to guarantee no rotation
+      // we're going to the head beau's home.
+      condition: OR(SELECTION PATTERN(DANCER 1, ___x____), \
+                    SELECTION PATTERN(DANCER 2, ___x____))
+      from: PROMENADE, STAR PROMENADE
+        in: 4
+        call: as couples(_and roll(_single star promenade 1/4))
+    from: ANY
+      call: _star promenade(1/4), star promenade home
+
+// we always go at least 1/4, like for promenade home
+def: single file promenade home
+  optional: REVERSE
+  spoken: single file promenade (home)?
+  ipart:
+    from: ANY // use ANY to guarantee no rotation
+      condition: SELECTION PATTERN(DANCER 1, __x_____)
+      from: SINGLE FILE PROMENADE, LH COLUMN
+        in: 4
+        call: _and roll(_single file promenade(1/4))
+    from: ANY
+      call: _single file promenade 1/8, single file promenade home
+
+def: promenade inside(sel)
+  // what formation does this end in?
+  spoken: four <sel=anyone> promenade inside
+  ipart: // 8 beats total
+    call: _in(1, _start promenade inside([sel])), \
+          _in(5, _centers(_single promenade(3/4))), \
+          _in(2, _centers(_finish promenade inside))
+def: _start promenade inside(sel)
+  in: 2
+  from: STATIC SQUARE
+    select: [sel]
+      prim: in 1, 1, right, sashay-finish
+    select: OTHERS
+      prim: in 1, -1, none, sashay-start sashay-finish
+def: _finish promenade inside
+  in: 4
+  from: LH SINGLE PROMENADE
+    prim: -2, 2, none, force-roll-left
+
 // callerlab #7: ALLEMANDE FAMILY
 
 /* we could (should?) define heads start this way.  We'd have to jiggle
