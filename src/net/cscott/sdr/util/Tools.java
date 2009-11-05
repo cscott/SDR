@@ -91,6 +91,12 @@ public abstract class Tools {
         Map.Entry<A,B>[] items = (Map.Entry<A,B>[]) new Map.Entry[] { item1, item2, item3 };
         return m(items);
     }
+    /** @see #m(java.util.Map.Entry[]) */
+    public static <A,B> Map<A,B> m(Map.Entry<A, B> item1, Map.Entry<A,B> item2, Map.Entry<A,B> item3, Map.Entry<A,B> item4) {
+        @SuppressWarnings("unchecked")
+        Map.Entry<A,B>[] items = (Map.Entry<A,B>[]) new Map.Entry[] { item1, item2, item3, item4 };
+        return m(items);
+    }
     /**
      * Convenience constructor for lists.
      * @doc.test

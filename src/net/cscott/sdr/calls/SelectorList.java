@@ -155,15 +155,18 @@ public abstract class SelectorList {
         OR("MINIWAVE", RH_MINIWAVE, LH_MINIWAVE);
     // 4-person selectors
     public static final Selector GENERAL_LINE =
-        GeneralFormationMatcher.makeSelector(FormationList.GENERAL_LINE);
+        Tagger.autotag2
+            (GeneralFormationMatcher.makeSelector(FormationList.GENERAL_LINE));
     // this selector has an extra underscore because the parser treats it
     // as two items: the number one, and the identifier x4.
     public static final Selector _1_X4 =
-        GeneralFormationMatcher.makeSelector(FormationList._1x4);
+        Tagger.autotag2
+            (GeneralFormationMatcher.makeSelector(FormationList._1x4));
     // this selector has an extra underscore because the parser treats it
     // as two items: the number two, and the identifier x2.
     public static final Selector _2_X2 =
-        GeneralFormationMatcher.makeSelector(FormationList._2x2);
+        Tagger.autotag2
+            (GeneralFormationMatcher.makeSelector(FormationList._2x2));
     public static final Selector FACING_COUPLES =
         GeneralFormationMatcher.makeSelector(FormationList.FACING_COUPLES);
     public static final Selector BACK_TO_BACK_COUPLES =

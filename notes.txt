@@ -1015,7 +1015,7 @@ to do:
     // or schema_in_out_triple_squash.  See the call "quick step part 2".
     // It also means that a short6 is to be fudged to a 2x3.  See the call
     // "quick step part 1".
- q) define LEADERS/TRAILERS/BEAUS/BELLES in 2x2 selector.
+ x) define LEADERS/TRAILERS/BEAUS/BELLES in 2x2 selector.
     (and retest first part of peel the top)
  r) compute coverage metrics over the call definitions
     - make fake classes for coberatura:
