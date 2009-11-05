@@ -46,8 +46,10 @@ public abstract class PlusList {
     }
 
     public static final Call ROLL = new PlusCall("_roll") {
-        final Prim rightRoll = Prim.valueOf("(Prim 0, 0, right, 2)");
-        final Prim leftRoll = Prim.valueOf("(Prim 0, 0, left, 2)");
+	// the lists say 2 beats for 'roll', but that's way too long.
+	// try one instead.
+        final Prim rightRoll = Prim.valueOf("(Prim 0, 0, right, 1)");
+        final Prim leftRoll = Prim.valueOf("(Prim 0, 0, left, 1)");
         @Override
         public Comp apply(Apply ast) {
             assert false : "This call uses a custom Evaluator";
