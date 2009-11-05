@@ -15,6 +15,11 @@ sdr> ends fold
 sdr> peel the top
 | 4G^  3Bv  4B^  3Gv  1G^  2Bv  1B^  2Gv
 sdr> ends fold
+| 4Gv       1Gv
+| 
+| 3Bv  4B^  2Bv  1B^
+| 
+|      3G^       2G^
 sdr> peel the top
 | 3B>  2B>
 | 

@@ -983,7 +983,7 @@ to do:
     call data and were stopped at the end but the 'keep playing' bit
     is set, start playing. (see git e5f9f473b591a678d71ee6b385596034cd61833f)
  x) peel the top, from boxes and zees
- l1) "ends fold" is broken.
+ xx) "ends fold" is broken.
  m) diamond circulate, w/ adjustment from 'half of ends cross run'
     position. Probably should switched to breathed diamond spots.
  m1) peel the top ending in diamond ("do half a peel the top")
@@ -1175,7 +1175,7 @@ Want to be able to suppress:
             all. (note that 'ends fold' from parallel ocean waves
             needs breathing, maybe this is explicit, like
               from: BREATHING
-                from: [NO SUB, ALLOW UNMATCHED] GENERAL_COUPLE /* || */
+                from: [NO SUB, ALLOW UNMATCHED] GENERAL COUPLE /* || */
                   select: DESIGNATED[BEAU]
                     prim: <fold over to 0, 1/2>
                   select: DESIGNATED[BELLE]

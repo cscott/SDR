@@ -9,7 +9,6 @@
  *   extend-level at line 16
  *   hinge-1 at line 36
  *   peel-the-top-1 at line 32
- *   peel-the-top-2 at line 12
  *   roll at line 22
  */
 package net.cscott.sdr;
