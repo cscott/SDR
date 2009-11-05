@@ -60,9 +60,9 @@ def: _circle left 1/4
    ipart:
      select: BEAU
        prim: -2,2,right,sashay-start sashay-finish
-       prim: -2,0,none,sashay-start sashay-finish
+       prim: -2,0,none,sashay-start sashay-finish force-roll-right
      select: BELLE
-       prim: -2,0,none,sashay-start sashay-finish
+       prim: -2,0,none,sashay-start sashay-finish force-roll-right
        prim: -2,2,right,sashay-start sashay-finish
  from: FACING COUPLES
    in: 2
@@ -126,12 +126,15 @@ def: swing
     call: partner swing
 
 def: partner swing
-  spoken: (partner swing) | (swing your partner)
+  spoken: (partner swing) | (swing your partner) | (swing (the|your) corner)
   in: 6
   ipart:
     from: FACING DANCERS
       call: touch, partner swing
     from: RH MINIWAVE
+      // XXX: want "_cast_to_promenade", but that requires matching in the
+      //      whole formation (so we can still tell where promenade
+      //      direction is)
       call: cast(6/4), _break out from swing
 def: _break out from swing
   in: 2
@@ -303,7 +306,7 @@ def: single file promenade home
 
 def: promenade inside(sel)
   // what formation does this end in?
-  spoken: four <sel=anyone> promenade inside
+  spoken: four <sel=genders> promenade inside
   ipart: // 8 beats total
     call: _in(1, _start promenade inside([sel])), \
           _in(5, _centers(_single promenade(3/4))), \
@@ -534,6 +537,28 @@ def: two ladies chain(sel)
   from: FACING COUPLES
     condition: ARE([sel], BELLE), "Named dancers must be belles"
     call: 1/4(wheel around), chain down the line
+
+def: four ladies chain(sel,n=1/2)
+  spoken: four <sel=genders> chain (<n=fraction>)?
+  ipart:
+    from: STATIC SQUARE
+      condition: ARE([sel], BELLE), "Named dancers must be belles"
+      condition: NOT(GREATER(1/4, [n])), "Must chain at least 1/4"
+      call: _start belles chain, \
+            _centers(reverse(_single star promenade([n]))), \
+            _finish belles chain, courtesy_turn(3/4)
+def: _start belles chain
+  from: STATIC SQUARE
+    select: BELLE
+      prim: in 1, 2, left
+    select: BEAU
+      prim: in 1, 0, none, sashay-start sashay-finish
+def: _finish belles chain
+  from: CENTER HALF
+    select: CENTER
+      prim: 1, 0, none, sashay-start sashay-finish
+    select: END
+      prim: 0, -1, left, sashay-finish
 
 def: flutter wheel
   optional: REVERSE
@@ -849,6 +874,14 @@ def: _trail circ // trailers part of a box/column circulate
   prim: 0,1,none
 
 def: split circulate
+  from: PARALLEL GENERAL LINES
+    call: _box circulate // on each side.
+
+def: box circulate
+  call: _centers(_box circulate)
+
+def: _box circulate
+  // for internal use: this is the 2x2 version of circulate
   in: 4 // not official
   from: 2x2
     select: LEADER
@@ -856,11 +889,8 @@ def: split circulate
     select: TRAILER
       call: _trail circ
 
-def: box circulate
-  call: _centers(split circulate)
-
 def: couples circulate
-  call: as couples(box circulate)
+  call: as couples(_box circulate)
 
 def: spin the top
   optional: LEFT
@@ -917,7 +947,7 @@ def: _REAL recycle // xxx
 def: recycle // xxx cheat definition, for the present
   in: 4
   ipart: // this definition isn't valid for fractionalization
-    call: hinge, box circulate, quarter in
+    call: hinge, _box circulate, quarter in
 
 def: scoot back
   optional: LEFT
