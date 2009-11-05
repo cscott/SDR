@@ -191,18 +191,30 @@ abstract class FormationListSlow {
                d(-1, 0,"n",BEAU,CENTER),
                d(+1, 0,"s",BEAU,CENTER),
                d( 0,-3,"e",POINT));
-    public static final NamedTaggedFormation RH_SINGLE_PROMENADE =
-        create("RH SINGLE PROMENADE",
+    public static final NamedTaggedFormation RH_STAR =
+        create("RH STAR",
                 d( 0, 1, "e"),
                 d(-1, 0, "n"),
                 d( 0,-1, "w"),
-                d( 1, 0, "s")); // this is a star: is that correct?
-    public static final NamedTaggedFormation LH_SINGLE_PROMENADE =
-        create("LH SINGLE PROMENADE",
+                d( 1, 0, "s"));
+    public static final NamedTaggedFormation LH_STAR =
+        create("LH STAR",
                 d( 0, 1, "w"),
                 d(-1, 0, "s"),
                 d( 0,-1, "e"),
-                d( 1, 0, "n")); // this is a star: is that correct?
+                d( 1, 0, "n"));
+    public static final NamedTaggedFormation RH_SINGLE_PROMENADE =
+        create("RH SINGLE PROMENADE", // not a star in the center
+                d( 0, 2, "e"),
+                d(-2, 0, "n"),
+                d( 0,-2, "w"),
+                d( 2, 0, "s"));
+    public static final NamedTaggedFormation LH_SINGLE_PROMENADE =
+        create("LH SINGLE PROMENADE", // not a star in the center
+                d( 0, 2, "w"),
+                d(-2, 0, "s"),
+                d( 0,-2, "e"),
+                d( 2, 0, "n"));
     public static final NamedTaggedFormation RH_SINGLE_QUARTER_TAG =
         create("RH SINGLE 1/4 TAG",
                d( 0, 2,"s",END),
@@ -237,17 +249,34 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation STATIC_SQUARE = // callerlab #14
         create("STATIC SQUARE", f(" ss ","e  w","e  w"," nn "),
                 WhetherTagger.AUTO_TAGS);
-    // XXX circle, callerlab #15
-    // XXX single file promenade, callerlab #16
-    // XXX alamo style, callerlab #17
+    // XXX circle, callerlab #15 (we use STATIC SQUARE for this)
+    public static final NamedTaggedFormation SINGLE_FILE_PROMENADE = // callerlab #16
+        create("SINGLE FILE PROMENADE", f(" ww ","s  n","s  n"," ee "),
+                WhetherTagger.AUTO_TAGS);
+    public static final NamedTaggedFormation REVERSE_SINGLE_FILE_PROMENADE =
+        create("REVERSE SINGLE FILE PROMENADE", f(" ee ","n  s","n  s"," ww "),
+                WhetherTagger.AUTO_TAGS);
+    // callerlab #17, alamo ring -- this is a little sketchy, because we
+    // introduce an asymmetry by using squared-set spots.  In reality RH and
+    // LH alamo rings are indistinguishable.
+    public static final NamedTaggedFormation RH_ALAMO_RING =
+        create("RH ALAMO RING", f(" ns ","e  e","w  w"," ns "),
+                WhetherTagger.AUTO_TAGS);
+    public static final NamedTaggedFormation LH_ALAMO_RING =
+        create("LH ALAMO RING", f(" sn ","w  w","e  e"," sn "),
+                WhetherTagger.AUTO_TAGS);
     public static final NamedTaggedFormation PROMENADE = // callerlab #18
         xofy("PROMENADE", LH_SINGLE_PROMENADE, COUPLE);
     public static final NamedTaggedFormation WRONG_WAY_PROMENADE =
         xofy("WRONG WAY PROMENADE", RH_SINGLE_PROMENADE, COUPLE);
+    public static final NamedTaggedFormation STAR_PROMENADE =
+        xofy("STAR PROMENADE", LH_STAR, COUPLE);
+    public static final NamedTaggedFormation WRONG_WAY_STAR_PROMENADE =
+        xofy("WRONG WAY STAR PROMENADE", RH_STAR, COUPLE);
     public static final NamedTaggedFormation THAR =
-        xofy("THAR", LH_SINGLE_PROMENADE, LH_MINIWAVE);
+        xofy("THAR", LH_STAR, LH_MINIWAVE);
     public static final NamedTaggedFormation WRONG_WAY_THAR =
-        xofy("WRONG WAY THAR", LH_SINGLE_PROMENADE, RH_MINIWAVE);
+        xofy("WRONG WAY THAR", LH_STAR, RH_MINIWAVE);
     public static final NamedTaggedFormation FACING_LINES = // callerlab #22
         xofy("FACING LINES", FACING_COUPLES, COUPLE,
                 t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),

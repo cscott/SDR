@@ -196,19 +196,33 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-3), ExactRotation.EAST), Tag.POINT));
 
-    public static final NamedTaggedFormation RH_SINGLE_PROMENADE =
-        new NamedTaggedFormation("RH SINGLE PROMENADE",
+    public static final NamedTaggedFormation RH_STAR =
+        new NamedTaggedFormation("RH STAR",
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.ONE, ExactRotation.EAST)),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.NORTH)),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.SOUTH)),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.mONE, ExactRotation.WEST)));
 
-    public static final NamedTaggedFormation LH_SINGLE_PROMENADE =
-        new NamedTaggedFormation("LH SINGLE PROMENADE",
+    public static final NamedTaggedFormation LH_STAR =
+        new NamedTaggedFormation("LH STAR",
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.ONE, ExactRotation.WEST)),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.SOUTH)),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.NORTH)),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.mONE, ExactRotation.EAST)));
+
+    public static final NamedTaggedFormation RH_SINGLE_PROMENADE =
+        new NamedTaggedFormation("RH SINGLE PROMENADE",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.TWO, ExactRotation.EAST)),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.ZERO, ExactRotation.NORTH)),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.ZERO, ExactRotation.SOUTH)),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-2), ExactRotation.WEST)));
+
+    public static final NamedTaggedFormation LH_SINGLE_PROMENADE =
+        new NamedTaggedFormation("LH SINGLE PROMENADE",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.TWO, ExactRotation.WEST)),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.ZERO, ExactRotation.SOUTH)),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.ZERO, ExactRotation.NORTH)),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-2), ExactRotation.EAST)));
 
     public static final NamedTaggedFormation RH_SINGLE_QUARTER_TAG =
         new NamedTaggedFormation("RH SINGLE 1/4 TAG",
@@ -263,8 +277,74 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BEAU),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BELLE));
 
+    public static final NamedTaggedFormation SINGLE_FILE_PROMENADE =
+        new NamedTaggedFormation("SINGLE FILE PROMENADE",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(3), ExactRotation.WEST), Tag.LEADER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(3), ExactRotation.WEST), Tag.TRAILER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ONE, ExactRotation.SOUTH), Tag.TRAILER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ONE, ExactRotation.NORTH), Tag.LEADER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.mONE, ExactRotation.SOUTH), Tag.LEADER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.mONE, ExactRotation.NORTH), Tag.TRAILER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-3), ExactRotation.EAST), Tag.TRAILER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-3), ExactRotation.EAST), Tag.LEADER));
+
+    public static final NamedTaggedFormation REVERSE_SINGLE_FILE_PROMENADE =
+        new NamedTaggedFormation("REVERSE SINGLE FILE PROMENADE",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(3), ExactRotation.EAST), Tag.TRAILER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(3), ExactRotation.EAST), Tag.LEADER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ONE, ExactRotation.NORTH), Tag.LEADER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ONE, ExactRotation.SOUTH), Tag.TRAILER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.mONE, ExactRotation.NORTH), Tag.TRAILER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.mONE, ExactRotation.SOUTH), Tag.LEADER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-3), ExactRotation.WEST), Tag.LEADER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-3), ExactRotation.WEST), Tag.TRAILER));
+
+    public static final NamedTaggedFormation RH_ALAMO_RING =
+        new NamedTaggedFormation("RH ALAMO RING",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(3), ExactRotation.NORTH), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(3), ExactRotation.SOUTH), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ONE, ExactRotation.EAST), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ONE, ExactRotation.EAST), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.mONE, ExactRotation.WEST), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.mONE, ExactRotation.WEST), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.BEAU));
+
+    public static final NamedTaggedFormation LH_ALAMO_RING =
+        new NamedTaggedFormation("LH ALAMO RING",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(3), ExactRotation.SOUTH), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(3), ExactRotation.NORTH), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ONE, ExactRotation.WEST), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ONE, ExactRotation.WEST), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.mONE, ExactRotation.EAST), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.mONE, ExactRotation.EAST), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BELLE));
+
     public static final NamedTaggedFormation PROMENADE =
         new NamedTaggedFormation("PROMENADE",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(4), ExactRotation.WEST), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.TWO, ExactRotation.WEST), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-4), Fraction.ZERO, ExactRotation.SOUTH), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.ZERO, ExactRotation.SOUTH), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(4), Fraction.ZERO, ExactRotation.NORTH), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-2), ExactRotation.EAST), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-4), ExactRotation.EAST), Tag.BELLE));
+
+    public static final NamedTaggedFormation WRONG_WAY_PROMENADE =
+        new NamedTaggedFormation("WRONG WAY PROMENADE",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(4), ExactRotation.EAST), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.TWO, ExactRotation.EAST), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-4), Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.ZERO, ExactRotation.NORTH), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.ZERO, ExactRotation.SOUTH), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(4), Fraction.ZERO, ExactRotation.SOUTH), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-2), ExactRotation.WEST), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-4), ExactRotation.WEST), Tag.BEAU));
+
+    public static final NamedTaggedFormation STAR_PROMENADE =
+        new NamedTaggedFormation("STAR PROMENADE",
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(3), ExactRotation.WEST), Tag.BELLE),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.ONE, ExactRotation.WEST), Tag.BEAU),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ZERO, ExactRotation.SOUTH), Tag.BELLE),
@@ -274,8 +354,8 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.mONE, ExactRotation.EAST), Tag.BEAU),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-3), ExactRotation.EAST), Tag.BELLE));
 
-    public static final NamedTaggedFormation WRONG_WAY_PROMENADE =
-        new NamedTaggedFormation("WRONG WAY PROMENADE",
+    public static final NamedTaggedFormation WRONG_WAY_STAR_PROMENADE =
+        new NamedTaggedFormation("WRONG WAY STAR PROMENADE",
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(3), ExactRotation.EAST), Tag.BEAU),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.ONE, ExactRotation.EAST), Tag.BELLE),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU),
@@ -734,6 +814,8 @@ abstract class FormationListFast {
             FormationListFast.RH_FACING_DIAMOND,
             FormationListFast.LH_DIAMOND,
             FormationListFast.LH_FACING_DIAMOND,
+            FormationListFast.RH_STAR,
+            FormationListFast.LH_STAR,
             FormationListFast.RH_SINGLE_PROMENADE,
             FormationListFast.LH_SINGLE_PROMENADE,
             FormationListFast.RH_SINGLE_QUARTER_TAG,
@@ -743,8 +825,14 @@ abstract class FormationListFast {
             FormationListFast.SINGLE_DOUBLE_PASS_THRU,
             FormationListFast.COMPLETED_SINGLE_DOUBLE_PASS_THRU,
             FormationListFast.STATIC_SQUARE,
+            FormationListFast.SINGLE_FILE_PROMENADE,
+            FormationListFast.REVERSE_SINGLE_FILE_PROMENADE,
+            FormationListFast.RH_ALAMO_RING,
+            FormationListFast.LH_ALAMO_RING,
             FormationListFast.PROMENADE,
             FormationListFast.WRONG_WAY_PROMENADE,
+            FormationListFast.STAR_PROMENADE,
+            FormationListFast.WRONG_WAY_STAR_PROMENADE,
             FormationListFast.THAR,
             FormationListFast.WRONG_WAY_THAR,
             FormationListFast.FACING_LINES,

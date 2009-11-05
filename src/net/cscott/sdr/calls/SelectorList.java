@@ -215,6 +215,10 @@ public abstract class SelectorList {
         OR("FACING DIAMONDS", RH_FACING_DIAMOND, LH_FACING_DIAMOND);
     public static final Selector DIAMOND =
         OR("DIAMOND", RH_DIAMOND, LH_DIAMOND, RH_FACING_DIAMOND, LH_FACING_DIAMOND);
+    public static final Selector RH_STAR =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_STAR);
+    public static final Selector LH_STAR =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_STAR);
     public static final Selector RH_SINGLE_PROMENADE =
         GeneralFormationMatcher.makeSelector(FormationList.RH_SINGLE_PROMENADE);
     public static final Selector LH_SINGLE_PROMENADE =
@@ -235,10 +239,22 @@ public abstract class SelectorList {
     // 8-person selectors
     public static final Selector STATIC_SQUARE =
         GeneralFormationMatcher.makeSelector(FormationList.STATIC_SQUARE);
+    public static final Selector SINGLE_FILE_PROMENADE =
+        GeneralFormationMatcher.makeSelector(FormationList.SINGLE_FILE_PROMENADE);
+    public static final Selector REVERSE_SINGLE_FILE_PROMENADE =
+        GeneralFormationMatcher.makeSelector(FormationList.REVERSE_SINGLE_FILE_PROMENADE);
+    public static final Selector RH_ALAMO_RING =
+        GeneralFormationMatcher.makeSelector(FormationList.RH_ALAMO_RING);
+    public static final Selector LH_ALAMO_RING =
+        GeneralFormationMatcher.makeSelector(FormationList.LH_ALAMO_RING);
     public static final Selector PROMENADE =
         GeneralFormationMatcher.makeSelector(FormationList.PROMENADE);
     public static final Selector WRONG_WAY_PROMENADE =
         GeneralFormationMatcher.makeSelector(FormationList.WRONG_WAY_PROMENADE);
+    public static final Selector STAR_PROMENADE =
+        GeneralFormationMatcher.makeSelector(FormationList.STAR_PROMENADE);
+    public static final Selector WRONG_WAY_STAR_PROMENADE =
+        GeneralFormationMatcher.makeSelector(FormationList.WRONG_WAY_STAR_PROMENADE);
     public static final Selector THAR =
         GeneralFormationMatcher.makeSelector(FormationList.THAR);
     public static final Selector WRONG_WAY_THAR =
