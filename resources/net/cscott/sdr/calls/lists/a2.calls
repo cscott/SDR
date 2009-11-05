@@ -1,9 +1,6 @@
 program: a2
 
-def: swing
-  from: OCEAN WAVE
-    in: 3
-      call: trade // hm, better definition possible?
+/* 'swing' is defined in basic.calls */
 
 /*
 def: split counter rotate

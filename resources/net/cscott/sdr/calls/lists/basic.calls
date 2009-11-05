@@ -37,6 +37,7 @@ def: _anyone(sel, c1)
 def: _centers(c)
   call: _anyone(CENTER, [c])
 
+// callerlab #2: CIRCLE FAMILY
 def: circle left(n)
   spoken: circle left <n=fraction>
   call: _fractional(_multiply_num([n],4), _circle left 1/4)
@@ -64,6 +65,78 @@ def: _circle left 1/4
  from: FACING DANCERS
    in: 2 // not well specified
      prim: -1,1,right,sashay-start sashay-finish
+
+// callerlab #3: FORWARD AND BACK
+def: forward and back
+  in: 8
+  from: FACING COUPLES, STATIC SQUARE // XXX: SUPPRESS BREATHING
+    call: _forward, _pause, _back, _pause
+def: _forward
+  in: 3
+  prim: 0, 1, none
+def: _back
+  in: 3
+  prim: 0,-1, none
+def: _pause
+  in: 1
+  prim: 0, 0, none
+
+// callerlab #4: DOSADO
+def: dosado
+  optional: LEFT
+  in: 6
+  from: FACING DANCERS
+    prim: -1, 1,none,sashay-start
+    prim:  1, 1,none,sashay-finish
+    prim:  1,-1,none,sashay-start
+    prim: -1,-1,none,sashay-finish
+
+/*
+def: dosado to a wave
+  in: 6
+  part:
+    call: 3/4 (dosado)
+*/ // ambiguous =(
+
+// callerlab #5: SWING
+// XXX: ambiguity with A2 swing, we'll try to tell by program
+//      level and starting formation which is meant.
+// XXX: what direction should we face at end?
+def: swing
+  from: GENERAL LINE
+    condition: PROGRAM AT LEAST(A2), "Only partner swing allowed below A2"
+    condition: AND(NOT(TBONED(ALL)), \
+                   OR(SELECTION PATTERN(BEAU, ____), \
+                      SELECTION PATTERN(BEAU, __xx), \
+                      SELECTION PATTERN(BEAU, xx__), \
+                      SELECTION PATTERN(BEAU, xxxx))), \
+               "End and adjacent center must be in mini-wave"
+    in: 3
+    call: trade
+  from: FACING DANCERS, RH MINIWAVE
+    call: partner swing
+
+def: partner swing
+  spoken: (partner swing) | (swing your partner)
+  in: 6
+  ipart:
+    from: FACING DANCERS
+      call: touch, partner swing
+    from: RH MINIWAVE
+      call: cast(6/4), _break out from swing
+def: _break out from swing
+  in: 2
+  from: RH MINIWAVE
+    condition: OR(SELECTION PATTERN(BOY, x_), \
+                  SELECTION PATTERN(BOY, _x)), "Same sex swing!"
+    select: GIRL
+      prim: 0, 0, right
+      prim: 0, 0, right
+    select: BOY
+      prim: 0, 0, none
+
+// callerlab #6: PROMENADE FAMILY
+// callerlab #7: ALLEMANDE FAMILY
 
 /* we could (should?) define heads start this way.  We'd have to jiggle
  * the grammar to make 'heads start' low enough priority.  Better would
@@ -164,29 +237,6 @@ def: trade
 def: couples trade
   in: 6
   call: as couples(trade)
-
-def: forward and back
-  in: 4
-  part:
-    from: FACING COUPLES
-      prim: 0, 1,none
-      prim: 0,-1,none
-
-def: dosado
-  optional: LEFT
-  in: 6
-  from: FACING DANCERS
-    prim: -1, 1,none,sashay-start
-    prim:  1, 1,none,sashay-finish
-    prim:  1,-1,none,sashay-start
-    prim: -1,-1,none,sashay-finish
-
-/*
-def: dosado to a wave
-  in: 6
-  part:
-    call: 3/4 (dosado)
-*/ // ambiguous =(
 
 def: pass thru
   optional: LEFT
@@ -597,7 +647,7 @@ def: circulate // all-8
   spoken: (all eight)? circulate
   in: 4
   from: PARALLEL GENERAL LINES
-    call: concentric(box circulate)
+    call: concentric(split circulate)
   from: GENERAL COLUMNS
     call: column circulate
 def: column circulate
@@ -614,13 +664,16 @@ def: _trail circ // trailers part of a box/column circulate
   prim: 0,1,none
   prim: 0,1,none
 
-def: box circulate
+def: split circulate
   in: 4 // not official
-  from: BOX, TANDEM COUPLES, FACING COUPLES, BACK TO BACK COUPLES
+  from: 2x2
     select: LEADER
       call: _lead circ
     select: TRAILER
       call: _trail circ
+
+def: box circulate
+  call: _centers(split circulate)
 
 def: couples circulate
   call: as couples(box circulate)
