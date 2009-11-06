@@ -55,7 +55,8 @@ def: _anyone while others static square(sel, c1, c2)
 def: _anyone(sel, c1)
   call: anyone while others([sel], [c1], nothing)
 def: _centers(c)
-  call: _anyone(CENTER, [c])
+  from: CENTER_HALF
+    call: _anyone(CENTER, [c])
 
 // callerlab #2: CIRCLE FAMILY
 def: circle left(n)
@@ -526,7 +527,7 @@ def: u turn back
 
 def: courtesy turn(n)
   spoken: courtesy turn <n=fraction>
-  call: _fractional(n, _courtesy turn 4/4)
+  call: _fractional([n], _courtesy turn 4/4)
 
 def: _courtesy turn 4/4
   in: 8
@@ -540,7 +541,7 @@ def: _right arm turn 1/2
 def: chain down the line
   in: 8
   from: RH TWO-FACED LINE
-  call: _centers(and(_right arm turn 1/2, courtesy turn(3/4)))
+  call: _centers(_right arm turn 1/2), courtesy turn(3/4)
 
 def: two ladies chain(sel)
   spoken: two <sel=genders> chain // 'two ladies chain'
@@ -555,9 +556,9 @@ def: four ladies chain(sel,n=1/2)
     from: STATIC SQUARE
       condition: ARE([sel], BELLE), "Named dancers must be belles"
       condition: NOT(GREATER(1/4, [n])), "Must chain at least 1/4"
-      call: _start belles chain, \
-            _centers(reverse(_single star promenade([n]))), \
-            _finish belles chain, courtesy_turn(3/4)
+      call: _start belles chain
+      call: _centers(reverse(_single star promenade([n])))
+      call: _finish belles chain, courtesy turn(3/4)
 def: _start belles chain
   from: STATIC SQUARE
     select: BELLE
@@ -567,8 +568,8 @@ def: _start belles chain
 def: _finish belles chain
   from: CENTER HALF
     select: CENTER
-      prim: 1, 0, none, sashay-start sashay-finish
-    select: END
+      prim: -1, 0, none, sashay-start sashay-finish
+    select: OTHERS
       prim: 0, -1, left, sashay-finish
 
 def: flutter wheel
