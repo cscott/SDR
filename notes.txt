@@ -1040,6 +1040,7 @@ to do:
  u) reorder defs to match callerlab docs
  v) 'from' takes flags
  w) 'select' is or-of-ands.  'select: DESIGNATED & BEAU, DESIGNATED & BELLE'
+ x) _circle choreo concept that automagically adjusts 1/8 off circles
 -------
 heads x:
   from squared_set:

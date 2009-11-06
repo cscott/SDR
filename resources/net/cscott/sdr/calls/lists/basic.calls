@@ -69,7 +69,7 @@ def: circle right(n)
 def: _circle left 1/4
  from: STATIC SQUARE
    in: 4
-   ipart:
+   part:
      select: BEAU
        prim: -2,2,right,sashay-start sashay-finish
        prim: -2,0,none,sashay-start sashay-finish force-roll-right
@@ -253,8 +253,22 @@ def: _single file promenade(n)
 def: _promenade(n)
   from: STATIC SQUARE
     call: _fractional(1/2, reverse(wheel around)), _promenade([n])
+  from: ANY
+    call: _start promenade from facing, as couples(_single promenade([n]))
+  // XXX same thing from 1/8 rotated version of this (darn circle choreo)
   from: ANY // PROMENADE, STAR PROMENADE, as couples diamonds, etc.
     call: as couples(_single promenade([n]))
+// this is used for 'dosado, promenade': the dosado leaves you facing
+def: _start promenade from facing
+  in: 2
+  from: FACING DANCERS
+    condition: and(not(ALL(BOY)), not(ALL(GIRL))), "Same sex promenade"
+    select: BOY
+      prim: -1, 1, none
+      prim:  0, 0, none
+    select: GIRL
+      prim: -1, 1, right
+      prim:  0, 0, right
 
 // as basic defs say, we always go at least 1/4
 def: promenade home
@@ -336,6 +350,7 @@ def: _finish promenade inside
     prim: -2, 2, none, force-roll-left
 
 // callerlab #7: ALLEMANDE FAMILY
+// XXX in circle choreo, boys prefer turning to the left, girls to the right
 
 /* we could (should?) define heads start this way.  We'd have to jiggle
  * the grammar to make 'heads start' low enough priority.  Better would
@@ -494,6 +509,22 @@ def: roll away
   from: COUPLE
     select: BEAU
       ipart:
+        prim: 1, 0, none, sashay-start sashay-finish
+        prim: 0, 0, none
+      ipart:
+        prim: 1, 0, none, sashay-start sashay-finish
+        prim: 0, 0, none
+    select: BELLE
+      ipart:
+        prim: -1, 2, left
+        prim:  0, 0, left
+      ipart:
+        prim:  1, 2, left, sashay-start sashay-finish
+        prim:  0, 0, left
+  // old definition, doesn't animate well =(
+  from: COUPLE
+    select: BEAU
+      ipart:
         prim: 1/2, 0, none, sashay-start sashay-finish
         prim: 1/2, 0, none, sashay-start sashay-finish
       ipart:
@@ -552,20 +583,24 @@ def: two ladies chain(sel)
 
 def: four ladies chain(sel,n=1/2)
   spoken: four <sel=genders> chain (<n=fraction>)?
+  // timing = 6 + 2 per 1/4
   ipart:
     from: STATIC SQUARE
       condition: ARE([sel], BELLE), "Named dancers must be belles"
       condition: NOT(GREATER(1/4, [n])), "Must chain at least 1/4"
       call: _start belles chain
-      call: _centers(reverse(_single star promenade([n])))
-      call: _finish belles chain, courtesy turn(3/4)
+      call: _in(_multiply_num(8,[n]),\
+                _centers(reverse(_single star promenade([n]))))
+      call: _finish belles chain, _in(4, courtesy turn(3/4))
 def: _start belles chain
+  in: 1
   from: STATIC SQUARE
     select: BELLE
       prim: in 1, 2, left
     select: BEAU
       prim: in 1, 0, none, sashay-start sashay-finish
 def: _finish belles chain
+  in: 1
   from: CENTER HALF
     select: CENTER
       prim: -1, 0, none, sashay-start sashay-finish
