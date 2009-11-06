@@ -3,11 +3,27 @@
 //         to proportionally allocate the number of beats we will be given.
 package net.cscott.sdr.calls.transform;
 
-import net.cscott.jdoctest.JDoctestRunner;
-import net.cscott.sdr.calls.ast.*;
-import net.cscott.sdr.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.*;
+import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.ast.AstNode;
+import net.cscott.sdr.calls.ast.Comp;
+import net.cscott.sdr.calls.ast.Condition;
+import net.cscott.sdr.calls.ast.If;
+import net.cscott.sdr.calls.ast.In;
+import net.cscott.sdr.calls.ast.Opt;
+import net.cscott.sdr.calls.ast.OptCall;
+import net.cscott.sdr.calls.ast.Par;
+import net.cscott.sdr.calls.ast.ParCall;
+import net.cscott.sdr.calls.ast.Part;
+import net.cscott.sdr.calls.ast.Prim;
+import net.cscott.sdr.calls.ast.Seq;
+import net.cscott.sdr.calls.ast.SeqCall;
+import net.cscott.sdr.util.Fraction;
+import static net.cscott.sdr.util.Tools.s;
 
 import org.junit.runner.RunWith;
 
@@ -47,7 +63,7 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     @Override
     public Fraction visit(Apply apply, Void v) {
         // careful with recursive calls here!
-        if (apply.evaluator()!=null)
+        if (apply.evaluator()!=null || callBlacklist.contains(apply.callName))
             throw new CantCountBeatsException("can't expand fancy-pants calls");
         return getBeats(apply.expand());
     }
@@ -117,4 +133,8 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
         assert false : "Unhandled SeqCall";
         return null;
     }
+    /** A list of recursive calls which we shouldn't try to expand. */
+    private static Set<String> callBlacklist = s(
+            "anyone while others"
+    );
 }

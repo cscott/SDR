@@ -5,24 +5,13 @@ def: nothing
  prim: 0,0,none
 
 // work out grammar implications
-def: anyone_others(sel, c1, c2=nothing)
+def: anyone while others(sel, c1, c2=nothing)
   /* default to 'nothing' if the 'while...' isn't present */
   spoken: [-15] <sel=anyone> <c1=anything> \
                  (while the (others|<anyone>) <c2=anything>)?
-  // special case 'heads promenade half way while the sides...'
+  // special case HEADS and SIDES from static square
   from: STATIC SQUARE
-    condition: AND(CALL IS([sel], HEAD), CALL IS([c1], promenade half way))
-    call: anyone_others([sel],[c1],and(sides start, [c2]))
-  from: STATIC SQUARE
-    condition: AND(CALL IS([sel], SIDE), CALL IS([c1], promenade half way))
-    call: anyone_others([sel],[c1],and(heads start, [c2]))
-  // special case 'heads square thru...' from static square
-  from: STATIC SQUARE
-    condition: CALL IS([sel], HEAD)
-    call: heads start, anyone_others([sel],[c1],[c2])
-  from: STATIC SQUARE
-    condition: CALL IS([sel], SIDE)
-    call: sides start, anyone_others([sel],[c1],[c2])
+    call: _anyone while others static square([sel],[c1],[c2])
   // recognize cases where this really means something like 'concentric'
   from: CENTER HALF
     // the selected must be centers, and no centers can be unselected.
@@ -43,11 +32,28 @@ def: anyone_others(sel, c1, c2=nothing)
     condition: CALL IS([c2], nothing), "Not just a trade"
     call: trade down the line([sel])
   from: ANY
-    call: _anyone_others([sel],[c1],[c2])
+    call: _anyone while others([sel],[c1],[c2])
+
+// break static square cases out into a special call for efficiency
+def: _anyone while others static square(sel, c1, c2)
+  // special case 'heads promenade half way while the sides...'
+  from: STATIC SQUARE
+    condition: AND(CALL IS([sel], HEAD), CALL IS([c1], promenade half way))
+    call: anyone while others([sel],[c1],and(sides start, [c2]))
+  from: STATIC SQUARE
+    condition: AND(CALL IS([sel], SIDE), CALL IS([c1], promenade half way))
+    call: anyone while others([sel],[c1],and(heads start, [c2]))
+  // special case 'heads square thru...' from static square
+  from: STATIC SQUARE
+    condition: CALL IS([sel], HEAD)
+    call: heads start, anyone while others([sel],[c1],[c2])
+  from: STATIC SQUARE
+    condition: CALL IS([sel], SIDE)
+    call: sides start, anyone while others([sel],[c1],[c2])
 
 // local helpers
 def: _anyone(sel, c1)
-  call: anyone_others([sel], [c1], nothing)
+  call: anyone while others([sel], [c1], nothing)
 def: _centers(c)
   call: _anyone(CENTER, [c])
 

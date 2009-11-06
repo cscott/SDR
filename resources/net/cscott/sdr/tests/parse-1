@@ -25,23 +25,23 @@ _roll away(BOY, GIRL)
 sdr> ///
 sdr> /// "anyone anything" concept
 sdr> /parse("centers square thru and roll")
-anyone_others(CENTER, _and roll(_full_square_thru), nothing)
+anyone while others(CENTER, _and roll(_full_square_thru), nothing)
 sdr> /parse("centers centers run")
-anyone_others(CENTER, run(CENTER), nothing)
+anyone while others(CENTER, run(CENTER), nothing)
 sdr> ///
 sdr> /// tricky roll away examples
 sdr> /parse("centers roll away")
-anyone_others(CENTER, roll away, nothing)
+anyone while others(CENTER, roll away, nothing)
 sdr> /parse("centers roll away the ends")
 _roll away(CENTER, END)
 sdr> /parse("centers centers roll away the ends")
-anyone_others(CENTER, _roll away(CENTER, END), nothing)
+anyone while others(CENTER, _roll away(CENTER, END), nothing)
 sdr> ///
 sdr> /// precedence of <anyone> <anything> -vs- roll and mirror
 sdr> /parse("centers trade while the ends trade and roll")
-anyone_others(CENTER, trade, _and roll(trade))
+anyone while others(CENTER, trade, _and roll(trade))
 sdr> /parse("mirror centers trade while the ends trade")
-mirror(anyone_others(CENTER, trade, trade))
+mirror(anyone while others(CENTER, trade, trade))
 sdr> ///
 sdr> /// precedence of mirror -vs- left
 sdr> /parse("left swing thru and roll")
@@ -52,8 +52,8 @@ sdr> ///
 sdr> /// trade down the line:
 sdr> /parse('boys trade down the line')
 trade down the line(BOY)
-sdr> /// the "anyone_others" call has a special case to make
+sdr> /// the "anyone while others" call has a special case to make
 sdr> /// "boys trade" equivalent to "boys trade down the line"
 sdr> /parse('boys trade')
-anyone_others(BOY, trade, nothing)
+anyone while others(BOY, trade, nothing)
 sdr> /exit
