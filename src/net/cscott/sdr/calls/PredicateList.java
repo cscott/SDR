@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Apply;
-import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Condition;
 import net.cscott.sdr.calls.ast.ParCall;
 import net.cscott.sdr.util.Fraction;
@@ -395,6 +394,16 @@ public abstract class PredicateList {
             return rightDancers.containsAll(leftDancers);
         }
     };
+    /** Check that all dancers have the specified tag. */
+    public final static Predicate ALL = new _Predicate("all") {
+        @Override
+        public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
+            assert c.args.size()==1;
+            return ARE.evaluate(ds, f, Condition.makeCondition
+                    ("are", Condition.makeCondition("ALL"), c.getArg(0)));
+        }
+    };
+
     /** Check the identify of a call provided as an argument.
      *  Used in a hack to implement "boys trade".
      */

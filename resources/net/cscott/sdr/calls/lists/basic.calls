@@ -641,7 +641,7 @@ def: left and right thru
 def: star thru
   in: 4
   from: FACING DANCERS
-    condition: not(or(ALL(BOYS), ALL(GIRLS))), "Same sex star thru!"
+    condition: not(or(ALL(BOY), ALL(GIRL))), "Same sex star thru!"
     call: slide thru // modulo styling
 
 // I've seen 1/2 slide thru, and 'finish a slide thru' called, so
@@ -692,7 +692,7 @@ def: _quarter wheel
 def: box the gnat
   in: 4
   from: FACING DANCERS
-    condition: not(or(ALL(BOYS), ALL(GIRLS))), "Same sex boxing!"
+    condition: not(or(ALL(BOY), ALL(GIRL))), "Same sex boxing!"
     call: _and roll(_touch(1/4)) // modulo styling
 
 def: step to a wave
