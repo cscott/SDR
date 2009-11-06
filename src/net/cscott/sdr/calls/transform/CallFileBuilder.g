@@ -345,15 +345,13 @@ cond_body returns [B<Condition> c]
 	  // use the given parameter as a string.
 	  $c = new B<Condition>() {
 	    	public Condition build(List<Apply> args) {
-                // here's a hack to support simple math: keep expanding the
-                // parameter until it doesn't have any arguments.
-                // (see similar hack in Apply.getNumberArg())
                 Apply a = args.get(param);
-                while (!a.args.isEmpty())
-                    // typecasts show that this is kludgey...
-                    a = (Apply) ((Seq)a.expand()).children.get(0);
-				assert a.args.isEmpty();
+                // note that this strips off the arguments.
                 String predicate = a.callName;
+                if (a.args.size() > 0) {
+                   assert cond_args==null : "don't know how to merge params";
+                   return Condition.makeCondition("call", apply2cond(a));
+                }
                 if (cond_args==null)
                     return Condition.makeCondition
                         ("literal", Condition.makeCondition(predicate));

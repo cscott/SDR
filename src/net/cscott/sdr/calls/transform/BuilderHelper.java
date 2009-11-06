@@ -157,6 +157,12 @@ abstract class BuilderHelper {
             }
         }, isConstant(children));
     }
+    static Condition apply2cond(Apply a) {
+        List<Condition> args = new ArrayList<Condition>(a.args.size());
+        for (Apply arg : a.args)
+            args.add(apply2cond(arg));
+        return new Condition(a.callName, args);
+    }
     //////////////
     /** Calls can have defaults for arguments. */
     static class ArgAndDefault {

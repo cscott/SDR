@@ -9,6 +9,8 @@ import org.junit.runner.RunWith;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
+import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Condition;
 import net.cscott.sdr.calls.ast.ParCall;
 import net.cscott.sdr.util.Fraction;
@@ -84,6 +86,28 @@ public abstract class PredicateList {
             Condition arg = c.getArg(0);
             assert arg.args.size()==0;
             return arg.predicate;
+        }
+    };
+    // thunk to allow computation in Apply nodes
+    public final static Predicate CALL = new _Predicate("call") {
+        @Override
+        public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
+            throw new IllegalArgumentException("type mismatch");
+        }
+        @Override
+        public String evaluateAsString(DanceProgram ds, Formation f, Condition c) {
+            throw new IllegalArgumentException("type mismatch");
+        }
+        @Override
+        public Fraction evaluateAsNumber(DanceProgram ds, Formation f, Condition c) {
+            assert c.args.size()==1;
+            return cond2apply(c).getNumberArg(0);
+        }
+        private Apply cond2apply(Condition c) {
+            List<Apply> args = new ArrayList<Apply>(c.args.size());
+            for (Condition arg : c.args)
+                args.add(cond2apply(arg));
+            return new Apply(c.predicate, args);
         }
     };
     // binary numerical operators
@@ -379,8 +403,21 @@ public abstract class PredicateList {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
             assert c.args.size() == 2;
-            return c.getStringArg(0, ds, f).equalsIgnoreCase
-                  (c.getStringArg(1, ds, f));
+            assert c.getArg(0).predicate.equals("literal") ||
+                   c.getArg(0).predicate.equals("call");
+            assert c.getArg(1).predicate.equals("literal") ||
+                   c.getArg(1).predicate.equals("call");
+            return condEquals(c.getArg(0).getArg(0), c.getArg(1).getArg(0));
+        }
+        private boolean condEquals(Condition c1, Condition c2) {
+            if (!c1.predicate.equalsIgnoreCase(c2.predicate))
+                return false;
+            if (c1.args.size() != c2.args.size())
+                return false;
+            for (int i=0; i<c1.args.size(); i++)
+                if (!condEquals(c1.args.get(i), c2.args.get(i)))
+                    return false;
+            return true;
         }
     };
 
