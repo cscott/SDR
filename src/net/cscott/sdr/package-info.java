@@ -6,7 +6,7 @@
  *  js> PMSD.runAllTests()
  *  FAILED TESTS:
  *   concentric-1 at line 66
- *   dw-resolve at line 11
+ *   dw-resolve at line 78
  *   extend-level at line 16
  *   hinge-1 at line 36
  *   peel-the-top-1 at line 32

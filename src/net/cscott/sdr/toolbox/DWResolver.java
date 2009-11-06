@@ -23,7 +23,7 @@ import static net.cscott.sdr.util.Tools.*;
  * resolution technique.
  * @author C. Scott Ananian
  * @doc.test Show that this resolves from all RH ocean waves, and compute
- *  statistics. (EXPECT FAIL: centers/ends not yet implemented)
+ *  statistics.
  *  js> importPackage(net.cscott.sdr.calls);
  *  js> // create all possible RH ocean waves (modulo rotation)
  *  js> FormationList = FormationListJS.initJS(this); undefined;
@@ -54,15 +54,30 @@ import static net.cscott.sdr.util.Tools.*;
  *    >   // keep dancing.
  *    >   return dance(ds, steps+1);
  *    > }
- *  js> nums = [dance(ds) for each (ds in dss)]; nums.slice(0,5)
+ *  js> nums = [dance(ds, 0) for each (ds in dss)]; nums.slice(0,5)
+ *  2,3,6,4,5
  *  js> // the minimum ought to be one: from some formation, a RLG is possible
  *  js> Math.min.apply(null, nums)
  *  1
  *  js> // and the largest number of calls to resolve is:
- *  js> Math.max.apply(null, nums)
+ *  js> max = Math.max.apply(null, nums)
+ *  9
  *  js> // average:
  *  js> let [sum,count] = [0,0]
  *  js> nums.map(function(e) { sum+=e; count+=1; }); sum/count;
+ *  5.25
+ *  js> // formations which require the maximum number of calls:
+ *  js> for (let i=0; i<nums.length; i++)
+ *    >   if (nums[i]==max) print(i+":\n"+fs[i].toStringDiagram()+"\n");
+ *  30:
+ *  2B^  2Gv  1B^  3Gv
+ *
+ *  1G^  3Bv  4G^  4Bv
+ *
+ *  80:
+ *  3G^  2Bv  2G^  3Bv
+ *
+ *  1B^  4Gv  4B^  1Gv
  */
 @RunWith(value=JDoctestRunner.class)
 public class DWResolver {
@@ -71,9 +86,12 @@ public class DWResolver {
     public static String resolveStep(Formation f) {
         // step 1: are we in RH waves?  if no, half tag
         FormationMatch fm;
+        TaggedFormation parallelWaves;
         try {
             // we want parallel waves
-            SelectorList.PARALLEL_RH_WAVES.match(f);
+            fm = SelectorList.PARALLEL_RH_WAVES.match(f);
+            assert fm.matches.values().size() == 1;
+            parallelWaves = fm.matches.values().iterator().next();
             // ok, we've got them, match each wave separately
             fm = SelectorList.RH_OCEAN_WAVE.match(f);
         } catch (NoMatchException e) {
@@ -108,9 +126,9 @@ public class DWResolver {
         if (couplesInWave0.size()==3) {
             // one of the matched dancers at end facing out? if no swing thru
             StandardDancer end = wave0.get(0);
-            if (!waves.get(0).isTagged(end, Tag.LEADER))
+            if (!parallelWaves.isTagged(end, Tag.LEADER))
                 end = wave0.get(3);
-            assert waves.get(0).isTagged(end, Tag.LEADER);
+            assert parallelWaves.isTagged(end, Tag.LEADER);
             if (end.coupleNumber() != wave0.get(1).coupleNumber() &&
                 end.coupleNumber() != wave0.get(2).coupleNumber())
                 return "Swing Thru";
@@ -126,7 +144,7 @@ public class DWResolver {
             return "Trade";
         // step 8: in sequence? if not, swing thru (twice)
         StandardDancer leaderBoy, trailerBoy;
-        if (waves.get(0).isTagged(wave0.get(1), Tag.LEADER)) {
+        if (parallelWaves.isTagged(wave0.get(1), Tag.LEADER)) {
             leaderBoy = wave0.get(1);
             trailerBoy = wave0.get(2);
         } else {
