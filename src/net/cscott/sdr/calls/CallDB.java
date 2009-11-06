@@ -13,6 +13,8 @@ import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.lists.BasicList;
+import net.cscott.sdr.calls.lists.C1List;
+import net.cscott.sdr.calls.lists.C2List;
 import net.cscott.sdr.calls.lists.C3bList;
 import net.cscott.sdr.calls.lists.MainstreamList;
 import net.cscott.sdr.calls.lists.PlusList;
@@ -75,6 +77,8 @@ public class CallDB {
         loadFromClass(BasicList.class);
         loadFromClass(MainstreamList.class);
         loadFromClass(PlusList.class);
+        loadFromClass(C1List.class);
+        loadFromClass(C2List.class);
         loadFromClass(C3bList.class);
     }
     private static URL resource(String name) {

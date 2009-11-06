@@ -22,6 +22,8 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
+import net.cscott.sdr.calls.lists.C1List.ConcentricEvaluator;
+import net.cscott.sdr.calls.lists.C1List.ConcentricType;
 import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.calls.transform.Fractional;
 import net.cscott.sdr.util.Fraction;
@@ -325,6 +327,27 @@ public abstract class BasicList {
                     return popEval.evaluate(ds);
                 }
             };
+        }
+    };
+
+    /** Like the "concentric" concept, but no adjustment for ends.  What's
+     *  usually meant by "centers X while the ends do Y". */
+    public static final Call QUASI_CONCENTRIC = new BasicCall("_quasi concentric") {
+        @Override
+        public Comp apply(Apply ast) {
+            assert false : "This call uses a custom Evaluator";
+            return null;
+        }
+        @Override
+        public int getMinNumberOfArguments() { return 2; }
+        @Override
+        public Rule getRule() { return null; /* internal call */ }
+        @Override
+        public Evaluator getEvaluator(Apply ast) {
+            assert ast.callName.equals(getName());
+            assert ast.args.size() == 2;
+            return new ConcentricEvaluator(ast.getArg(0), ast.getArg(1),
+                                           ConcentricType.QUASI);
         }
     };
 

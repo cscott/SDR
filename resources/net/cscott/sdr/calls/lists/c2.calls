@@ -20,3 +20,8 @@ def: press right
 def: press left
   prim: -1, 1, none
   prim: -1, 1, none
+
+def: cross concentric(c)
+  spoken: cross concentric <c=anything>
+  from: CENTER HALF
+    call: _cross concentric([c], [c])

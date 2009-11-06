@@ -28,11 +28,16 @@ def: anyone_others(sel, c1, c2=nothing)
     // the selected must be centers, and no centers can be unselected.
     condition: ARE([sel], CENTER), "Not all selected are centers"
     condition: ARE(CENTER, [sel]), "Not all centers are selected"
-    call: _quasi_concentric([c1],[c2]) // like concentric, but no adjust after
+    call: _quasi concentric([c1],[c2]) // like concentric, but no adjust after
   from: CENTER HALF // other way 'round
     condition: NOT(ARE([sel], CENTER)), "Some selected are centers"
     condition: NOT(ARE(CENTER, [sel])), "Some centers are selected"
-    call: _quasi_concentric([c2],[c1])
+    call: _quasi concentric([c2],[c1])
+  from: CENTER HALF
+    // same as above, but special cased because END and OUTSIDE tags aren't
+    // applied by the CENTER HALF selector.
+    condition: OR(CALL IS([sel], END), CALL IS([sel], OUTSIDE))
+    call: _quasi concentric([c2],[c1])
   from: ANY // ugly hack to support "boys trade" == "boys trade down the line"
     condition: CALL IS([c1], trade), "Not a trade"
     condition: CALL IS([c2], nothing), "Not just a trade"

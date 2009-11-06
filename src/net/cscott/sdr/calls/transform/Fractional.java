@@ -10,6 +10,7 @@ import java.util.Set;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
+import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.In;
@@ -55,6 +56,11 @@ public class Fractional extends TransformVisitor<Fraction> {
     }
     @Override
     public Prim visit(Prim p, Fraction f) {
+        // nothing can be infinitely subdivided
+        if (p.x.equals(Fraction.ZERO) &&
+            p.y.equals(Fraction.ZERO) &&
+            p.rot.equals(ExactRotation.ZERO))
+            return p.scaleTime(f);
         if (Fraction.ONE.equals(f))
             return p;
         throw new BadCallException("Primitives cannot be subdivided");
@@ -84,6 +90,13 @@ public class Fractional extends TransformVisitor<Fraction> {
                 // two args, subcall is last one
                 return Apply.makeApply(apply.callName, apply.getArg(0),
                         Apply.makeApply("_fractional", f, apply.getArg(1)));
+            if (apply.callName.equals("_quasi concentric") ||
+                apply.callName.equals("_concentric") ||
+                apply.callName.equals("_cross concentric"))
+                // two args, fractionalize each
+                return Apply.makeApply(apply.callName,
+                        Apply.makeApply("_fractional", f, apply.getArg(0)),
+                        Apply.makeApply("_fractional", f, apply.getArg(1)));
             assert apply.args.size()==1;
             return Apply.makeApply(apply.callName,
                     Apply.makeApply("_fractional", f, apply.getArg(0)));
@@ -99,7 +112,10 @@ public class Fractional extends TransformVisitor<Fraction> {
     /** A list of concepts which it is safe to hoist fractionalization through.
      That is, "1/2(as couples(swing thru))" == "as couples(1/2(swing thru))". */
     private static Set<String> safeConcepts = new HashSet<String>(Arrays.asList(
-            "as couples","tandem","_with designated", "reverse", "left", "mirror"
+            "as couples","tandem","_with designated",
+            "reverse", "left", "mirror",
+            "_quasi concentric", "_concentric", "_cross concentric",
+            "concentric", "cross concentric"
             // xxx more fractionalization-safe calls?
             ));
     @Override

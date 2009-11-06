@@ -10,7 +10,7 @@ def: _and roll(c)
 def: acey deucey
   // XXX: test this from three-quarter tag.
   from: CENTER HALF
-    call: _quasi_concentric(trade, _box circulate)
+    call: _quasi concentric(trade, _box circulate)
 
 def: three quarter tag
   optional: LEFT

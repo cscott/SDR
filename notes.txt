@@ -966,12 +966,13 @@ to do:
  g1) make heads/sides part of the 'anyone' grammar production.
      (have to remove the hard coded 'heads <foo>' rules)
  g2) _anyone_others concept: "do your part"?
- h) concentric/quasi-concentric
+ x) concentric/quasi-concentric
      use CENTER_HALF selector, remove those dancers and breathe the
      remaining ones.  Now do the call in both of the resulting
      formations.  Open up a vertical/horizontal line (depending on
      concentric rules) in the resulting 'ends' formations and squeeze
      the centers back in there.
+ h1) test/fix axis adjustment in concentric
  i) tandem
  x) test circle left/right, test run (in all its glory), test trade
     from quarter tag

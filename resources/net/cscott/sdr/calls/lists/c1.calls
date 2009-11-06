@@ -11,3 +11,8 @@ def: press back
   // XXX: we ought to ensure that collisions don't occur
   prim: 0, -1, none
   prim: 0, -1, none
+
+def: concentric(c)
+  spoken: concentric <c=anything>
+  from: CENTER HALF
+    call: _concentric([c], [c])
