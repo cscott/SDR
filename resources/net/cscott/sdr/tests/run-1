@@ -1,0 +1,28 @@
+T-boned runs.
+
+sdr> heads start
+| 4B>  3Gv  3Bv  2G<
+| 
+| 4G>  1B^  1G^  2B<
+sdr> centers run
+| 3G^  4B>  2G<  3B^
+| 
+| 1Bv  4G>  2B<  1Gv
+sdr> /setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> heads start
+| 4B>  3Gv  3Bv  2G<
+| 
+| 4G>  1B^  1G^  2B<
+sdr> centers cross run
+| 3B^  4B>  2G<  3G^
+| 
+| 1Gv  4G>  2B<  1Bv
+sdr> /exit
+

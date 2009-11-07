@@ -766,8 +766,7 @@ def: swing thru
 def: run(sel)
   spoken: <sel=anyone> run
   in: 4
-  // XXX: this definition doesn't currently apply to T-boned formations.
-  from: GENERAL LINE, BOX, COUPLE, MINIWAVE
+  from: 1x4, BOX, COUPLE, MINIWAVE, 1x2
     // do the select from the line so that 'centers' works right
     call: _with designated([sel], _designees run)
 
@@ -775,14 +774,21 @@ def: _designees run
   // we can't use in/out in primitives here because (1) centers of waves
   // run out, while ends of waves run in, and (2) the "run-around" dancer
   // stands on the centerline of the formation at one point.
-  from: COUPLE, MINIWAVE
+  from: 1x2
+    condition: not(or(ARE(DESIGNATED, TRAILER), ARE(DESIGNATED, LEADER))),\
+               "Designated dancers must be in lines"
     select: DESIGNATED
+    // designated must be "in lines" (ie EW) so must match BEAU or BELLE
         select: BEAU
           prim: 1,1,right
           prim: 1,1,right
         select: BELLE
           prim: -1,1,left
           prim: -1,1,left
+        select: OTHERS
+          // because select does not delete other dancers, need to
+          // provide an OTHERS case here.
+          prim: 0, 0, none
     select: OTHERS
         select: BEAU
           prim: 1,0,none,sashay-start sashay-finish
@@ -790,16 +796,24 @@ def: _designees run
         select: BELLE
           prim: -1,0,none,sashay-start sashay-finish
           prim: -1,0,none,sashay-start sashay-finish
+        select: LEADER
+          prim:  0,-1,none
+          prim:  0,-1,none
+        select: TRAILER
+          prim:  0,1,none
+          prim:  0,1,none
 
 def: cross run(sel)
   spoken: <sel=anyone> cross run
   in: 6
   // XXX: from other formations (t-bones, etc)
-  from: GENERAL LINE
+  from: 1x4
     call: _with designated([sel], _designees cross run)
 
 def: _designees cross run
-  from: GENERAL LINE
+  from: 1x4
+    condition: not(or(ARE(DESIGNATED, TRAILER), ARE(DESIGNATED, LEADER))),\
+               "Designated dancers must be in lines"
     select: DESIGNATED
       // in order for "do half of everyone cross run" to end in a tidal wave
       // (as JYAW says it should), we do a big step/small step thing, with
@@ -810,6 +824,7 @@ def: _designees cross run
       select: END
         prim: in 3, 1, in
         prim: in 1, 1, in
+      // XXX: with t-boned cross run, the 'in' breaks. gah.
     select: OTHERS
       call: _designees run
 

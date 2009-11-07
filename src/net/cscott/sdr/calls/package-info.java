@@ -20,10 +20,10 @@
  *  js> a = Apply.makeApply("run", Apply.makeApply("boy"))
  *  (Apply run (Apply boy))
  *  js> a.expand()
- *  (In 4 (Opt (From [GENERAL LINE, BOX, COUPLE, MINIWAVE] (Seq (Apply _with designated (Apply boy) (Apply _designees run))))))
+ *  (In 4 (Opt (From [1x4, BOX, COUPLE, MINIWAVE, 1x2] (Seq (Apply _with designated (Apply boy) (Apply _designees run))))))
  *  js> a = Apply.makeApply("_fractional", Apply.makeApply("1/2"), a)
  *  (Apply _fractional (Apply 1/2) (Apply run (Apply boy)))
  *  js> a.expand()
- *  (In 2 (Opt (From [GENERAL LINE, BOX, COUPLE, MINIWAVE] (Seq (Apply _with designated (Apply boy) (Apply _fractional (Apply 1/2) (Apply _designees run)))))))
+ *  (In 2 (Opt (From [1x4, BOX, COUPLE, MINIWAVE, 1x2] (Seq (Apply _with designated (Apply boy) (Apply _fractional (Apply 1/2) (Apply _designees run)))))))
  */
 package net.cscott.sdr.calls;
