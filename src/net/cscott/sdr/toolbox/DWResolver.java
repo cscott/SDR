@@ -67,6 +67,8 @@ import static net.cscott.sdr.util.Tools.*;
  *  js> nums.map(function(e) { sum+=e; count+=1; }); sum/count;
  *  5.25
  *  js> // formations which require the maximum number of calls:
+ *  js> // (the first here is a 'sides lead right, swing thru, hinge,
+ *  js> //  spin chain and exchange the gears')
  *  js> for (let i=0; i<nums.length; i++)
  *    >   if (nums[i]==max) print(i+":\n"+fs[i].toStringDiagram()+"\n");
  *  30:
@@ -95,6 +97,7 @@ public class DWResolver {
             // ok, we've got them, match each wave separately
             fm = SelectorList.RH_OCEAN_WAVE.match(f);
         } catch (NoMatchException e) {
+            // XXX: half tag only if we're in GENERAL LINEs
             return "Half Tag";
         }
         List<TaggedFormation> waves = new ArrayList<TaggedFormation>
@@ -122,7 +125,7 @@ public class DWResolver {
             (foreach(wave0, coupleNumberFilter));
         if (couplesInWave0.size()==4) // all dancers are different
             return "Acey Deucey";
-        // step 5: both couples in same way? if no...
+        // step 5: both couples in same wave? if no...
         if (couplesInWave0.size()==3) {
             // one of the matched dancers at end facing out? if no swing thru
             StandardDancer end = wave0.get(0);
