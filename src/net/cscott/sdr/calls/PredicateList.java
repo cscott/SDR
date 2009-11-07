@@ -237,22 +237,6 @@ public abstract class PredicateList {
             return ds.getProgram().includes(p);
         }
     };
-    public final static Predicate SELECTED_ARE = new _Predicate("selected are") {
-        @Override
-        public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
-            List<String> args = new ArrayList<String>(c.args.size());
-            for (int i=0; i<c.args.size(); i++)
-                args.add(c.getStringArg(i, ds, f));
-            Set<Tag> tags = ParCall.parseTags(args);
-            // each selected dancer must have all of these tags
-            TaggedFormation tf = TaggedFormation.coerce(f);
-            for (Dancer d: f.selectedDancers())
-                for (Tag t : tags)
-                    if (!tf.isTagged(d, t))
-                        return false;
-            return true;
-        }
-    };
     /**
      * Check the order of the selected dancers within the given formation.
      * @doc.test
