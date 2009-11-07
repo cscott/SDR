@@ -19,6 +19,11 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, Rotation.fromAbsoluteString("|"))),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, Rotation.fromAbsoluteString("|"))));
 
+    public static final NamedTaggedFormation _1x2 =
+        new NamedTaggedFormation("1x2",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, Rotation.fromAbsoluteString("+"))));
+
     public static final NamedTaggedFormation COUPLE =
         new NamedTaggedFormation("COUPLE",
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU),
@@ -58,10 +63,10 @@ abstract class FormationListFast {
 
     public static final NamedTaggedFormation _1x4 =
         new NamedTaggedFormation("1x4",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ZERO, Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ZERO, Rotation.fromAbsoluteString("+"))));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ZERO, Rotation.fromAbsoluteString("+")), Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ZERO, Rotation.fromAbsoluteString("+")), Tag.END));
 
     public static final NamedTaggedFormation _2x2 =
         new NamedTaggedFormation("2x2",
@@ -787,6 +792,7 @@ abstract class FormationListFast {
         Collections.unmodifiableList(Arrays.asList(
             FormationListFast.SINGLE_DANCER,
             FormationListFast.GENERAL_PARTNERS,
+            FormationListFast._1x2,
             FormationListFast.COUPLE,
             FormationListFast.FACING_DANCERS,
             FormationListFast.BACK_TO_BACK_DANCERS,

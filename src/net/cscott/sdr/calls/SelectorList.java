@@ -139,6 +139,11 @@ public abstract class SelectorList {
     // 2-person selectors
     public static final Selector GENERAL_PARTNERS =
         GeneralFormationMatcher.makeSelector(FormationList.GENERAL_PARTNERS);
+    // this selector has an extra underscore because the parser treats it
+    // as two items: the number one, and the identifier x2.
+    public static final Selector _1_X2 =
+        Tagger.autotag2
+            (GeneralFormationMatcher.makeSelector(FormationList._1x2));
     public static final Selector COUPLE = 
         GeneralFormationMatcher.makeSelector(FormationList.COUPLE);
     public static final Selector FACING_DANCERS =

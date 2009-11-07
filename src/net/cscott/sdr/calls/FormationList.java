@@ -73,6 +73,7 @@ import org.junit.runner.RunWith;
  *    >            .replace(' ','_').replace('-','_')
  *    >            .replace("1/4","QUARTER")
  *    >            .replace("3/4","THREE_QUARTER")
+ *    >            .replace("1x2", "_1x2")
  *    >            .replace("1x4", "_1x4")
  *    >            .replace("2x2", "_2x2")
  *    >            .equals(name));
