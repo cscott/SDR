@@ -5,6 +5,7 @@
  *  (fail-first development: note which cases are currently failing)
  *  js> PMSD.runAllTests()
  *  FAILED TESTS:
+ *   concentric-1 at line 66
  *   dw-resolve at line 11
  *   extend-level at line 16
  *   hinge-1 at line 36

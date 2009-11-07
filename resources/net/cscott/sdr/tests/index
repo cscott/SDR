@@ -8,6 +8,7 @@ sdr> /listTests("resources/net/cscott/sdr/tests")
 breathing-1
 centers
 circle
+concentric-1
 cross-run-1
 dw-resolve
 extend-basic
