@@ -56,4 +56,9 @@ sdr> /// the "anyone while others" call has a special case to make
 sdr> /// "boys trade" equivalent to "boys trade down the line"
 sdr> /parse('boys trade')
 anyone while others(BOY, trade, nothing)
+sdr> ///
+sdr> /// precedence of "as couples" vs roll
+sdr> /parse('as couples trade and roll')
+_and roll(as couples(trade))
+sdr> /// XXX: as couples swing and mix?
 sdr> /exit

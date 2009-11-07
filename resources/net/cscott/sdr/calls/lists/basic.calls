@@ -448,6 +448,10 @@ def: trade
     prim: in 1,1,in
     prim: in 1,1,in
 
+def: partner trade
+  from: COUPLE
+    call: trade
+
 def: couples trade
   in: 6
   call: as couples(trade)

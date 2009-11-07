@@ -12,6 +12,7 @@ import java.util.Map;
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.lists.A1List;
 import net.cscott.sdr.calls.lists.BasicList;
 import net.cscott.sdr.calls.lists.C1List;
 import net.cscott.sdr.calls.lists.C2List;
@@ -77,6 +78,7 @@ public class CallDB {
         loadFromClass(BasicList.class);
         loadFromClass(MainstreamList.class);
         loadFromClass(PlusList.class);
+        loadFromClass(A1List.class);
         loadFromClass(C1List.class);
         loadFromClass(C2List.class);
         loadFromClass(C3bList.class);

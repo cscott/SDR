@@ -972,8 +972,9 @@ to do:
      formations.  Open up a vertical/horizontal line (depending on
      concentric rules) in the resulting 'ends' formations and squeeze
      the centers back in there.
- h1) test/fix axis adjustment in concentric
- i) tandem
+ h1) fix axis adjustment in concentric
+ x) tandem
+ i1) fix roll/sweep in tandem/as couples/etc.
  x) test circle left/right, test run (in all its glory), test trade
     from quarter tag
  j1) t-boned runs (see trade down the line code)

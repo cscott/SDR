@@ -5,13 +5,14 @@
  *  (fail-first development: note which cases are currently failing)
  *  js> PMSD.runAllTests()
  *  FAILED TESTS:
- *   concentric-1 at line 66
+ *   concentric-1 at line 83
  *   dw-resolve at line 78
  *   extend-level at line 16
  *   hinge-1 at line 36
  *   peel-the-top-1 at line 32
  *   roll at line 22
  *   run-1 at line 24
+ *   siamese-1 at line 30
  *   vaya-con-dios at line 39
  */
 package net.cscott.sdr;

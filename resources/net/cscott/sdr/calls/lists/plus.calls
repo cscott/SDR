@@ -76,12 +76,12 @@ def: trade the wave
 // track(n) is c3b, but track(2) is plus.
 def: track(n)
   spoken: track <n=number>
-  condition: not(or(less([n],0),greater([n],4))), \
+  condition: not(or(greater(0,[n]),greater([n],4))), \
              "Can't track less than 0 or greater than 4"
   condition: or(PROGRAM AT LEAST(c3b),equal([n],2)), \
              "Only track 2 is allowed below C3B"
   from: COMPLETED DOUBLE PASS THRU
-    call: _tag(tandem(partner trade), [n])
+    call: _tag(tandem(partner trade), _multiply_num([n], 1/4))
   example: track(0)
     before:
     ! <a<b D>C>
