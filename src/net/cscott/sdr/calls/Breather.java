@@ -854,8 +854,26 @@ public class Breather {
         }
         throw new BadCallException("can't trim");
     }
+    private static boolean hasAnyOverlaps(List<FormationPiece> pieces) {
+        for (int i=0; i<pieces.size(); i++) {
+            Box iBounds = pieces.get(i).input.bounds();
+            for (int j=i+1; j<pieces.size(); j++) {
+                Box jBounds = pieces.get(j).input.bounds();
+                if (iBounds.overlaps(jBounds))
+                    return true;
+            }
+        }
+        return false;
+    }
     private static List<Box> _trimOverlap(List<FormationPiece> pieces)
         throws ExCLRequiredFailure, ExCLInternalError {
+        // quick out if no overlaps
+        if (!hasAnyOverlaps(pieces)) {
+            List<Box> bounds = new ArrayList<Box>(pieces.size());
+            for (FormationPiece fp : pieces)
+                bounds.add(fp.input.bounds());
+            return bounds;
+        }
         List<VariableBox> vars = new ArrayList<VariableBox>(pieces.size());
         // create variables and basic constraints
         ClBranchAndBound solver = new ClBranchAndBound();
