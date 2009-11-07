@@ -13,6 +13,9 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import net.cscott.jutil.Factories;
+import net.cscott.jutil.GenericMultiMap;
+import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.transform.EvalPrim;
 import net.cscott.sdr.util.Fraction;
@@ -118,6 +121,28 @@ public class DanceState {
         if (this.designatedStack.isEmpty())
             return Collections.<Dancer>emptySet();
         return this.designatedStack.peek();
+    }
+    /** Add the 'DESIGNATED' tag to the given Formation. */
+    public TaggedFormation tagDesignated(Formation f) {
+        TaggedFormation tf = TaggedFormation.coerce(f);
+        GenericMultiMap<Dancer,Tag> newTags =
+            new GenericMultiMap<Dancer,Tag>
+                (Factories.enumSetFactory(Tag.class));
+        for (Dancer d : this.designated())
+            if (f.dancers().contains(d))
+                newTags.add(d, Tag.DESIGNATED);
+        return tf.addTags(newTags);
+    }
+    /** Add the 'DESIGNATED' tag to the given FormationMatch. */
+    public FormationMatch tagDesignated(FormationMatch fm) {
+        if (this.designatedStack.isEmpty() ||
+            this.designatedStack.peek().isEmpty())
+            return fm; // fast out for common case
+        Map<Dancer,TaggedFormation> nMatches =
+            new LinkedHashMap<Dancer,TaggedFormation>();
+        for (Dancer d : fm.matches.keySet())
+            nMatches.put(d, this.tagDesignated(fm.matches.get(d)));
+        return new FormationMatch(fm.meta, nMatches, fm.unmatched);
     }
 
     /**

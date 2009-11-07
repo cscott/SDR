@@ -328,7 +328,7 @@ public abstract class Evaluator {
                 for (Selector s: oc.selectors) {
                     FormationMatch fm;
                     try {
-                        fm = s.match(f);
+                        fm = ds.tagDesignated(s.match(f));
                     } catch (NoMatchException nme) {
                         /* ignore; try the next selector */
                         reasons.add(nme.target+" ("+nme.reason+")");
@@ -358,14 +358,6 @@ public abstract class Evaluator {
                 Formation f = ds.currentFormation();
                 // hm, dynamically apply tags here?
                 TaggedFormation tf = TaggedFormation.coerce(f);
-                // well, we *are* going to dynamically apply the
-                // 'designated' tag.
-                GenericMultiMap<Dancer,Tag> newTags =
-                    new GenericMultiMap<Dancer,Tag>
-                        (Factories.enumSetFactory(Tag.class));
-                for (Dancer d : ds.designated())
-                    newTags.add(d, Tag.DESIGNATED);
-                tf = tf.addTags(newTags);
                 // we're going to want to ensure that every dancer matches
                 // some tag.
                 Set<Dancer> unmatched = new LinkedHashSet<Dancer>(f.dancers());
