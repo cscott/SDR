@@ -35,7 +35,9 @@ public class FormationMatch {
      */
     public final Map<Dancer,TaggedFormation> matches;
     /** Be explicit about unmatched dancers, just in case real matched dancers
-     * also map to {@link FormationList#SINGLE_DANCER}.
+     * also map to {@link FormationList#SINGLE_DANCER}.  This is a set of
+     * *phantom* dancers in the meta formation, which correspond (via
+     * SINGLE DANCER subformations) to unmatched real dancers.
      */
     public final Set<Dancer> unmatched;
 

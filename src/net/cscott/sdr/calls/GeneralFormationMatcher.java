@@ -87,9 +87,9 @@ public abstract class GeneralFormationMatcher {
      *  CC^  DDv
      *  
      *  EE<  FF<
-     *  AA:
+     *  AA: (unmatched)
      *     ^
-     *  BB:
+     *  BB: (unmatched)
      *     ^
      *  CC:
      *     ^    v
@@ -97,9 +97,9 @@ public abstract class GeneralFormationMatcher {
      *  DD:
      *     ^    v
      *   [ph: BEAU; ph: BEAU]
-     *  EE:
+     *  EE: (unmatched)
      *     ^
-     *  FF:
+     *  FF: (unmatched)
      *     ^
      * @doc.test When possible, symmetry is preserved in the result:
      *  js> FormationList = FormationListJS.initJS(this); undefined;
@@ -305,6 +305,7 @@ public abstract class GeneralFormationMatcher {
             pieces.add(new FormationPiece(pieceI, pieceO));
         }
         // add pieces for unmapped dancers (see spec for FormationMatch.meta)
+        Set<Dancer> unmatchedMetaDancers = new LinkedHashSet<Dancer>();
         for (Dancer d : unmappedInputDancers) {
 	    // these clauses are parallel to the ones above for matched dancers
             Position inP = input.location(d);
@@ -316,6 +317,7 @@ public abstract class GeneralFormationMatcher {
             TaggedFormation tf = new TaggedFormation
 		(new TaggedDancerInfo(d, goP));
             canonical.put(dd, tf);
+            unmatchedMetaDancers.add(dd);
 
             Formation pieceI = input.select(tf.dancers()).onlySelected();
             Formation pieceO = new Formation(m(p(dd, new Position(0,0,rr))));
@@ -327,7 +329,7 @@ public abstract class GeneralFormationMatcher {
         // are unwarped and unrotated.  The key dancers in the canonical map
         // are the phantoms from the meta formation.
         return new FormationMatch(Breather.breathe(pieces), canonical,
-                                  unmappedInputDancers);
+                                  unmatchedMetaDancers);
     }
     private static class OneMatch {
         /** This input dancer is #1 in the goal formation. */
