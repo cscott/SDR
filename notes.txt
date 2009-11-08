@@ -977,7 +977,7 @@ to do:
  i1) fix roll/sweep in tandem/as couples/etc.
  x) test circle left/right, test run (in all its glory), test trade
     from quarter tag
- j1) t-boned runs (see trade down the line code)
+ j1) t-boned cross runs (needs select X&Y, see (w))
  j2) trade from quarter tag.
  xx) separate insertion point and playback cursor.
  k2) have a 'keep playing' flag that is set when you press play but
@@ -1042,6 +1042,8 @@ to do:
  v) 'from' takes flags
  w) 'select' is or-of-ands.  'select: DESIGNATED & BEAU, DESIGNATED & BELLE'
  x) _circle choreo concept that automagically adjusts 1/8 off circles
+ y) siamese concept -- multiple simultaneous formations in
+    GeneralFormationMatcher
 -------
 heads x:
   from squared_set:
