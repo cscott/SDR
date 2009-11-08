@@ -1,6 +1,102 @@
 program: mainstream
 
-// callerlab #62 "fold family"
+// callerlab #53: CLOVERLEAF
+// XXX DEFINE ME
+
+// callerlab #54: TURN THRU
+
+def: turn thru
+  optional: LEFT
+  in: 4 // from mini-wave; 6 from facing?
+  from: FACING DANCERS
+  call: touch, trade, _extend
+
+// callerlab #55: EIGHT CHAIN THRU
+// XXX DEFINE ME
+
+// callerlab #56: PASS TO THE CENTER
+// XXX DEFINE ME
+
+// callerlab #57: SPIN THE TOP
+def: spin the top
+  optional: LEFT
+  in: 8 // from wave
+  from: RH OCEAN WAVE, LH OCEAN WAVE // any hand
+    call: swing, fan the top
+
+// callerlab #58: CENTERS IN
+
+// callerlab #59: CAST OFF THREE QUARTERS
+
+// cast 3/4 is mainstream -- what level is "cast 1/4"
+// and/or "cast 1/2"?  We'll follow SD in calling these
+// mainstream as well.
+def: cast(n)
+  spoken: cast (off)? <n=fraction>
+  call: _fractional([n], _cast 4/4)
+def: _cast 4/4
+  in: 8
+  //from: LH 3 AND 1, LH SPLIT 3 AND 1
+  //  call: mirror(_cast 4/4)
+  //from: RH 3 AND 1, RH SPLIT 3 AND 1
+  //   call: _beau cast 4/4
+  from: RH MINIWAVE, LH MINIWAVE
+    prim: in 1,1,in
+    prim: in 1,1,in
+    prim: in 1,1,in
+    prim: in 1,1,in
+def: _beau cast 4/4 // ie, cast around beau
+  //from: RH MINIWAVE, LH MINIWAVE
+  //  call: _cast 4/4 // subpart of a 3-and-1 line; not a special pushy cast
+  from: COUPLE
+    select: BEAU // pivot
+      prim: 0,0,left
+      prim: 0,0,left
+      prim: 0,0,left
+      prim: 0,0,left
+    select: BELLE // pusher
+      prim: -2,2,left
+      prim: -2,2,left
+      prim: -2,2,left
+      prim: -2,2,left
+
+// callerlab #60: WALK AND DODGE
+def: walk and dodge
+  in: 4
+  call: walk others dodge(TRAILER)
+
+def: walk others dodge(sel)
+  spoken: <sel=anyone> walk (others|<anyone>) dodge
+  in: 4
+  from: BOX, FACING COUPLES
+    condition: ARE([sel], TRAILER), "Named dancers can't walk!"
+    select: [sel]
+      prim: 0,1,none
+      prim: 0,1,none
+    select: OTHERS
+      select: BEAU
+        prim: 1,0,none,sashay-start sashay-finish
+        prim: 1,0,none,sashay-start sashay-finish
+      select: BELLE
+        prim: -1,0,none,sashay-start sashay-finish
+        prim: -1,0,none,sashay-start sashay-finish
+
+// callerlab #61: SLIDE THRU
+
+// I've seen 1/2 slide thru, and 'finish a slide thru' called, so
+// pretend that slide thru has two parts.
+def: slide thru
+  in: 4
+  from: FACING DANCERS
+  part:
+    call: pass thru
+  part:
+    select: BOY
+      call: face right
+    select: GIRL
+      call: face left
+
+// callerlab #62: FOLD FAMILY
 // XXX: see notes; definition says we can fold from anyplace where we've
 //      got a shoulder to another dancer.  we probably want to implement
 //      this as 'from: [ALLOW UNMATCHED] GENERAL COUPLE' with some way
@@ -40,60 +136,116 @@ def: _designees cross fold
     select: OTHERS
       prim: 0,0,none
 
-// cast 3/4 is mainstream -- what level is "cast 1/4"
-// and/or "cast 1/2"?  We'll follow SD in calling these
-// mainstream as well.
-def: cast(n)
-  spoken: cast (off)? <n=fraction>
-  call: _fractional([n], _cast 4/4)
-def: _cast 4/4
-  in: 8
-  //from: LH 3 AND 1, LH SPLIT 3 AND 1
-  //  call: mirror(_cast 4/4)
-  //from: RH 3 AND 1, RH SPLIT 3 AND 1
-  //   call: _beau cast 4/4
-  from: RH MINIWAVE, LH MINIWAVE
-    prim: in 1,1,in
-    prim: in 1,1,in
-    prim: in 1,1,in
-    prim: in 1,1,in
-def: _beau cast 4/4 // ie, cast around beau
-  //from: RH MINIWAVE, LH MINIWAVE
-  //  call: _cast 4/4 // subpart of a 3-and-1 line; not a special pushy cast
-  from: COUPLE
-    select: BEAU // pivot
-      prim: 0,0,left
-      prim: 0,0,left
-      prim: 0,0,left
-      prim: 0,0,left
-    select: BELLE // pusher
-      prim: -2,2,left
-      prim: -2,2,left
-      prim: -2,2,left
-      prim: -2,2,left
+// callerlab #63: DIXIE STYLE TO AN OCEAN WAVE
+def: dixie style
+  spoken: dixie style (to a wave)?
+  in: 6
+  from: FACING COUPLES
+  ipart: // "girls right pull by"
+    select: BEAU
+      prim: 1,-1,none
+      prim: 0,-1,none
+    select: BELLE
+      prim: -2,1,none
+      prim: 1,1,none
+  ipart:
+    call: mirror(_touch(1/4))
 
-// ferris wheel should be: call: ferris(wheel and deal)
-// but ferris is a hard concept to program, and c3b and/or c4 to boot.
-// XXX: we'll use the simpler stretch definition for now.
-def: ferris wheel
-  call: stretch(wheel and deal)
-  example: ferris wheel
-    before:
-    !  ^ ^
-    !  A a c C
-    !  ^ ^ v v
-    !  B b d D
-    !      v v
-    after:
-    !  a A
-    !  v v
-    !  b B
-    !  v v
-    !  ^ ^
-    !  C c
-    !  ^ ^
-    !  D d
+// callerlab #64: SPIN CHAIN THRU
+// XXX DEFINE ME
+
+// callerlab #65: TAG THE LINE
+
+def: _tag(atc, n)
+  ipart:
+    call: [atc], _finish_tag([n])
+def: _finish_tag(n)
+  from: SINGLE DOUBLE PASS THRU
+    condition: EQUAL([n], 0)
+    call: nothing
+  from: SINGLE DOUBLE PASS THRU
+    condition: GREATER([n], 0)
+    call: _fractional(_multiply_num(4,[n]), _extend)
+// or else: n=0->atc; else fractional(n, part(atc,extend), part(extend), part(extend), part(extend))
+
+def: _atc tag
+  in: 2
+  from: GENERAL LINE
+    prim: 0, 0, in
+
+// half tag = mainstream
+// 3/4 tag = plus
+def: tag the line
+  optional: LEFT
+  spoken: tag the line (all the way (through)?)?
+  in: 6 // xxx ?
+  call: _tag(_atc tag, 1)
+def: _tag the line(n)
+  optional: LEFT
+  spoken: tag the line <n=fraction>
+  condition: GREATER(1, [n])
+  call: _tag(_atc tag, [n])
+
+// callerlab #66: HALF TAG THE LINE
 
 def: half tag
   optional: LEFT
   call: _tag the line(1/2)
+
+// callerlab #67: SCOOT BACK
+
+def: scoot back
+  optional: LEFT
+  in: 6
+  from: BOX
+    select: TRAILER
+      ipart:
+        prim: 0,1,none
+        prim: in 1,1,in
+      ipart:
+        prim: in 1,1,in
+        prim: 0,1,none
+    select: LEADER
+      ipart:
+        prim: in 1,2,in
+      ipart:
+        prim: in 2,1,in
+  from: SINGLE QUARTER TAG, QUARTER TAG
+    call: _extend, trade, _extend
+
+// callerlab #68: HINGE FAMILY
+
+def: _hinge
+  optional: LEFT
+  in: 2
+  call: 1/2(trade)
+def: hinge
+  from: MINIWAVE
+    call: _hinge
+  from: COUPLE
+    condition: PROGRAM AT LEAST(A1), "Partner hinge not allowed below A1"
+    call: _hinge
+
+def: couples hinge
+  in: 3
+  call: as couples(_hinge)
+
+def: couples left hinge
+  call: left(couples hinge)
+
+// callerlab #69: RECYCLE
+
+def: _REAL recycle // xxx
+  in: 4
+  ipart:
+    call: fold(CENTER), breathe
+  ipart:
+    call: counter rotate 1/4
+  ipart:
+    call: roll
+def: recycle // xxx cheat definition, for the present
+  in: 4
+  ipart: // this definition isn't valid for fractionalization
+    call: hinge, _box circulate, quarter in
+
+////////// end of mainstream list //////////////

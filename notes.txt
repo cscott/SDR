@@ -1038,7 +1038,7 @@ to do:
  t) add post-condition nodes to graph, evaluated as "do child, then
     test condition on resulting formation".  IfAfter() or maybe just
     a boolean in the If node for "eval after".
- u) reorder defs to match callerlab docs
+ xx) reorder defs to match callerlab docs
  v) 'from' takes flags
  w) 'select' is or-of-ands.  'select: DESIGNATED & BEAU, DESIGNATED & BELLE'
  x) _circle choreo concept that automagically adjusts 1/8 off circles
