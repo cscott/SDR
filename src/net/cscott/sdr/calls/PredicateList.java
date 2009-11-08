@@ -77,6 +77,13 @@ public abstract class PredicateList {
     public final static Predicate LITERAL = new _Predicate("literal") {
         @Override
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
+            // a little bit of magic for our two zero-arg predicates
+            if (c.args.size()==1 && c.getArg(0).args.isEmpty()) {
+                if (c.getArg(0).predicate.equalsIgnoreCase("false"))
+                    return FALSE.evaluate(ds, f, c.getArg(0));
+                if (c.getArg(0).predicate.equalsIgnoreCase("true"))
+                    return TRUE.evaluate(ds, f, c.getArg(0));
+            }
             throw new IllegalArgumentException("type mismatch");
         }
         @Override
