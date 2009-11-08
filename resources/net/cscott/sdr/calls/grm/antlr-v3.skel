@@ -51,8 +51,26 @@ parenthesized_anything returns [Apply r]
 	;
 
 people returns [Apply r]
-	: a=genders {r=a;} | a=all {r=a;}
+	: a=genders {r=a;} | a=heads_or_sides {r=a;} | a=all {r=a;}
 	;
+heads_or_sides returns [Apply r]
+        : 'heads' { r = Apply.makeApply("HEAD"); }
+        | 'sides' { r = Apply.makeApply("SIDE"); }
+        ;
+two_select returns [Apply r]
+        : a=head_or_side b=genders { r = Apply.makeApply("&", a, b); }
+        | a=center_or_end b=genders { r = Apply.makeApply("&", a, b); }
+        | 'very' 'centers' { r = Apply.makeApply("VERY_CENTER"); }
+        | 'center' 'two' { r = Apply.makeApply("VERY_CENTER"); }
+        ;
+center_or_end returns [Apply r]
+	: 'center' { r = Apply.makeApply("CENTER"); }
+	| 'end' { r = Apply.makeApply("END"); }
+	;
+head_or_side returns [Apply r]
+        : 'head' { r = Apply.makeApply("HEAD"); }
+        | 'side' { r = Apply.makeApply("SIDE"); }
+        ;
 genders returns [Apply r]
 	: a=boys {r=a;} | a=girls {r=a;}
 	;

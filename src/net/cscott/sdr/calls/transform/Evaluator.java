@@ -84,8 +84,7 @@ import net.cscott.sdr.util.ListUtils;
  *  |4B>  3Gv  3Bv  2G<
  *  |
  *  |4G>  1B^  1G^  2B<
- * @doc.test "Heads pair off" from squared set -- this is a bit of a hack, it
- *  should eventually be "heads start, heads (pair off)" or some such.
+ * @doc.test "Heads pair off" from squared set.
  *  js> importPackage(net.cscott.sdr.calls);
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
  *  js> ds.currentFormation().toStringDiagram("|");
@@ -97,9 +96,9 @@ import net.cscott.sdr.util.ListUtils;
  *  |
  *  |     1B^  1G^
  *  js> comp = CallDB.INSTANCE.parse(ds.dance.program, "heads pair off");
- *  (Apply heads pair off)
+ *  (Apply anyone while others (Apply HEAD) (Apply pair off) (Apply nothing))
  *  js> comp = new net.cscott.sdr.calls.ast.Seq(comp);
- *  (Seq (Apply heads pair off))
+ *  (Seq (Apply anyone while others (Apply HEAD) (Apply pair off) (Apply nothing)))
  *  js> e = new Evaluator.Standard(comp); undefined
  *  js> e.evaluateAll(ds);
  *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");

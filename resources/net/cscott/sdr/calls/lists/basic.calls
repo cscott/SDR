@@ -386,24 +386,6 @@ def: sides start
   select: OTHERS
    prim: 0, 0, none // stay where they are
 
-// XXX this is not actually on the basic list, but it gets us out of
-//     the squared set -- which is otherwise hard to do w/o centers/ends!
-def: heads pair off
-  from: STATIC SQUARE
-    in: 4
-    select: HEAD
-      prim: 0, 2, out
-    select: OTHERS
-      prim: 0, 0, none
-def: sides pair off
-  from: STATIC SQUARE
-    in: 4
-    select: SIDE
-      prim: 0, 2, out
-    select: OTHERS
-      prim: 0, 0, none
-// end pair off hack
-
 def: trade down the line(sel)
   spoken: <sel=anyone> trade down the line
   in: 4
@@ -555,7 +537,8 @@ def: u turn back
   // we can u-turn back from other formations, too: turn toward
   // the center in that case.
   from: ANY
-    call: quarter in, roll // is this right? fails for dancers on centerline.
+      prim: 0, 0, in // fails for dancers on centerline.
+      call: _in(1, roll) // ie, continue in the same direction
   from: SINGLE DANCER // if all else fails
     prim: 0, 0, right, force-roll-none
     prim: 0, 0, right, force-roll-none
@@ -626,48 +609,10 @@ def: lead left
 
 def: _single lead right
   from: FACING DANCERS
+    prim:    1,  0, right 1/8
+    prim: -1/2,1/2, right 1/8
     // XXX: we should be able to do half of this
-    prim: 1, 1, right, pass-left
-
-// XXX: hack until we have heads/sides selectors working right
-//      or the static square -> 2x4 adjustment
-def: heads lead right
-  from: STATIC SQUARE
-    in: 6
-    select: HEAD
-      // use a definition which lets us do half a lead right
-      // this also ensures we don't animate a wheel thru!
-      select: BEAU
-        //prim: 2, 4, right
-        prim: 2, 2, right 1/8
-        prim: -1, 1, right 1/8
-      select: BELLE
-        //prim: 0, 2, right
-        prim:  2, 0, right 1/8
-        prim: -2, 0, right 1/8
-    select: OTHERS
-      prim: 0, 0, none
-def: heads lead left
-  call: mirror(heads lead right)
-def: sides lead right
-  from: STATIC SQUARE
-    in: 6
-    select: SIDE
-      // use a definition which lets us do half a lead right
-      // this also ensures we don't animate a wheel thru!
-      select: BEAU
-        //prim: 2, 4, right
-        prim: 2, 2, right 1/8
-        prim: -1, 1, right 1/8
-      select: BELLE
-        //prim: 0, 2, right
-        prim:  2, 0, right 1/8
-        prim: -2, 0, right 1/8
-    select: OTHERS
-      prim: 0, 0, none
-def: sides lead left
-  call: mirror(side lead right)
-// --- end heads/sides hack ---
+    //prim: 1, 1, right, pass-left
 
 def: right and left thru
   in: 6
@@ -692,9 +637,9 @@ def: slide thru
     call: pass thru
   part:
     select: BOY
-      call: quarter right
+      call: face right
     select: GIRL
-      call: quarter left
+      call: face left
 
 def: bend the line
   in: 4
@@ -702,7 +647,7 @@ def: bend the line
 
 def: _single bend
   from: COUPLE, MINIWAVE
-    call: quarter in
+    prim: 0, 0, in
 
 def: california twirl
   in: 4

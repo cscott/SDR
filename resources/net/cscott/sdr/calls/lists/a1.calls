@@ -8,7 +8,14 @@ def: quarter left
   prim: 0,0,left // or call: left(quarter right)
 def: quarter in
   in: 2
-  prim: 0,0,in
+  from: 2x2 // into your 2x2
+    prim: 0,0,in
 def: quarter out
   in: 2
-  prim: 0,0,out
+  from: 2x2 // out of your 2x2
+    prim: 0,0,out
+
+def: pair off
+  in: 2
+  from: ANY // center of the formation
+    prim: 0,0,out

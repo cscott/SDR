@@ -11,7 +11,10 @@ grammar @CLASSNAME@;
 // no parentheses in speech
 <parenthesized_anything> = <VOID>;
 
-<people> = <genders> | <all>;
+<people> = <genders> | <heads_or_sides> | <all>;
+<heads_or_sides> = heads | sides ;
+<two_select> = (head|side) <genders> | (center|end) <genders>
+             | very centers | center two ;
 <genders> = <boys> | <girls> ;
 <boys> = boys | men {boys};
 <girls> = girls | ladies {girls};
