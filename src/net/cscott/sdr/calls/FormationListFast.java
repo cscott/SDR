@@ -175,31 +175,31 @@ abstract class FormationListFast {
 
     public static final NamedTaggedFormation RH_DIAMOND =
         new NamedTaggedFormation("RH DIAMOND",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(3), ExactRotation.EAST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.TWO, ExactRotation.EAST), Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-3), ExactRotation.WEST), Tag.POINT));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-2), ExactRotation.WEST), Tag.POINT));
 
     public static final NamedTaggedFormation RH_FACING_DIAMOND =
         new NamedTaggedFormation("RH FACING DIAMOND",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(3), ExactRotation.EAST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.TWO, ExactRotation.EAST), Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-3), ExactRotation.WEST), Tag.POINT));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-2), ExactRotation.WEST), Tag.POINT));
 
     public static final NamedTaggedFormation LH_DIAMOND =
         new NamedTaggedFormation("LH DIAMOND",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(3), ExactRotation.WEST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.TWO, ExactRotation.WEST), Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-3), ExactRotation.EAST), Tag.POINT));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-2), ExactRotation.EAST), Tag.POINT));
 
     public static final NamedTaggedFormation LH_FACING_DIAMOND =
         new NamedTaggedFormation("LH FACING DIAMOND",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(3), ExactRotation.WEST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.TWO, ExactRotation.WEST), Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-3), ExactRotation.EAST), Tag.POINT));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-2), ExactRotation.EAST), Tag.POINT));
 
     public static final NamedTaggedFormation RH_STAR =
         new NamedTaggedFormation("RH STAR",
@@ -636,91 +636,91 @@ abstract class FormationListFast {
 
     public static final NamedTaggedFormation RH_TWIN_DIAMONDS =
         new NamedTaggedFormation("RH TWIN DIAMONDS",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(3), ExactRotation.EAST), Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.valueOf(3), ExactRotation.EAST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.TWO, ExactRotation.EAST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.TWO, ExactRotation.EAST), Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ZERO, ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(-3), ExactRotation.WEST), Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.valueOf(-3), ExactRotation.WEST), Tag.POINT));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(-2), ExactRotation.WEST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.valueOf(-2), ExactRotation.WEST), Tag.POINT));
 
     public static final NamedTaggedFormation LH_TWIN_DIAMONDS =
         new NamedTaggedFormation("LH TWIN DIAMONDS",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(3), ExactRotation.WEST), Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.valueOf(3), ExactRotation.WEST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.TWO, ExactRotation.WEST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.TWO, ExactRotation.WEST), Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ZERO, ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ZERO, ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(-3), ExactRotation.EAST), Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.valueOf(-3), ExactRotation.EAST), Tag.POINT));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(-2), ExactRotation.EAST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.valueOf(-2), ExactRotation.EAST), Tag.POINT));
 
     public static final NamedTaggedFormation RH_POINT_TO_POINT_DIAMONDS =
         new NamedTaggedFormation("RH POINT-TO-POINT DIAMONDS",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(7), ExactRotation.EAST), Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(4), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(4), ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(5), ExactRotation.EAST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(3), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(3), ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.ONE, ExactRotation.WEST), Tag.BELLE, Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.mONE, ExactRotation.EAST), Tag.BELLE, Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-4), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-4), ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-7), ExactRotation.WEST), Tag.POINT));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-5), ExactRotation.WEST), Tag.POINT));
 
     public static final NamedTaggedFormation RH_POINT_TO_POINT_FACING_DIAMONDS =
         new NamedTaggedFormation("RH POINT-TO-POINT FACING DIAMONDS",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(7), ExactRotation.EAST), Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(4), ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(4), ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(5), ExactRotation.EAST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(3), ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(3), ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.ONE, ExactRotation.WEST), Tag.BELLE, Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.mONE, ExactRotation.EAST), Tag.BELLE, Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-4), ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-4), ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-7), ExactRotation.WEST), Tag.POINT));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-5), ExactRotation.WEST), Tag.POINT));
 
     public static final NamedTaggedFormation LH_POINT_TO_POINT_DIAMONDS =
         new NamedTaggedFormation("LH POINT-TO-POINT DIAMONDS",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(7), ExactRotation.WEST), Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(4), ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(4), ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(5), ExactRotation.WEST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(3), ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(3), ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.ONE, ExactRotation.EAST), Tag.BEAU, Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.mONE, ExactRotation.WEST), Tag.BEAU, Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-4), ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-4), ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-7), ExactRotation.EAST), Tag.POINT));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-5), ExactRotation.EAST), Tag.POINT));
 
     public static final NamedTaggedFormation LH_POINT_TO_POINT_FACING_DIAMONDS =
         new NamedTaggedFormation("LH POINT-TO-POINT FACING DIAMONDS",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(7), ExactRotation.WEST), Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(4), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(4), ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(5), ExactRotation.WEST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(3), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(3), ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.ONE, ExactRotation.EAST), Tag.BEAU, Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.mONE, ExactRotation.WEST), Tag.BEAU, Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-4), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-4), ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-7), ExactRotation.EAST), Tag.POINT));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ZERO, Fraction.valueOf(-5), ExactRotation.EAST), Tag.POINT));
 
     public static final NamedTaggedFormation RH_TWIN_FACING_DIAMONDS =
         new NamedTaggedFormation("RH TWIN FACING DIAMONDS",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(3), ExactRotation.EAST), Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.valueOf(3), ExactRotation.EAST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.TWO, ExactRotation.EAST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.TWO, ExactRotation.EAST), Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ZERO, ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ZERO, ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(-3), ExactRotation.WEST), Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.valueOf(-3), ExactRotation.WEST), Tag.POINT));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(-2), ExactRotation.WEST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.valueOf(-2), ExactRotation.WEST), Tag.POINT));
 
     public static final NamedTaggedFormation LH_TWIN_FACING_DIAMONDS =
         new NamedTaggedFormation("LH TWIN FACING DIAMONDS",
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(3), ExactRotation.WEST), Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.valueOf(3), ExactRotation.WEST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.TWO, ExactRotation.WEST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.TWO, ExactRotation.WEST), Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ZERO, ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(-3), ExactRotation.EAST), Tag.POINT),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.valueOf(-3), ExactRotation.EAST), Tag.POINT));
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(-2), ExactRotation.EAST), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.TWO, Fraction.valueOf(-2), ExactRotation.EAST), Tag.POINT));
 
     public static final NamedTaggedFormation RH_TIDAL_WAVE =
         new NamedTaggedFormation("RH TIDAL WAVE",

@@ -56,26 +56,7 @@ abstract class FormationListSlow {
 
     // from http://www.penrod-sq-dancing.com/form2.html
     // see also http://www.penrod-sq-dancing.com/fars0.html
-    // 'create' should really be the constructor for a formation subclass.
-    // things like 'three and one' lines really want another programming
-    // "check formation" method which can be overridden??
-/*
-    public static final Formation GENERAL_DIAMONDS = // too permissive?
-	create(// centers
-	       d(0,+3,"-", CENTER),
-	       d(0,+1,"-", CENTER, VERY_CENTER),
-	       d(0,-1,"-", CENTER, VERY_CENTER),
-	       d(0,-3,"-", CENTER),
-	       // points
-	       d(-3,+2,"|", END),
-	       d(-3,-2,"|", END),
-	       d(+3,+2,"|", END),
-	       d(+3,-2,"|", END));
-    public static final Formation GENERAL_TAG =
-	create(" - ","---","---"," - ");
-    public static final Formation Z_FORMATION =
-	create("s ","sn","sn","sn"," n");
-*/
+
     // labelled calls named as per the "Callerlab Approved Formations"
     // from April 1980
 
@@ -170,30 +151,33 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation SINGLE_INVERTED_LINE =
         create("SINGLE INVERTED LINE", f("snns"), WhetherTagger.AUTO_TAGS,
                 t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
+    // NOTE that we use Vic Ceder's position of diamond points: at the 2
+    // spot, not the 3 spot.  Diamonds belong to a 2x3 formation, not a 2x4
+    // This matches the output of our breathing algorithm.
     public static final NamedTaggedFormation RH_DIAMOND =
         create("RH DIAMOND",
-               d( 0, 3,"e",POINT),
+               d( 0, 2,"e",POINT),
                d(-1, 0,"n",BEAU,CENTER),
                d(+1, 0,"s",BEAU,CENTER),
-               d( 0,-3,"w",POINT));
+               d( 0,-2,"w",POINT));
     public static final NamedTaggedFormation RH_FACING_DIAMOND =
         create("RH FACING DIAMOND",
-               d( 0, 3,"e",POINT),
+               d( 0, 2,"e",POINT),
                d(-1, 0,"s",BELLE,CENTER),
                d(+1, 0,"n",BELLE,CENTER),
-               d( 0,-3,"w",POINT));
+               d( 0,-2,"w",POINT));
     public static final NamedTaggedFormation LH_DIAMOND =
         create("LH DIAMOND",
-               d( 0, 3,"w",POINT),
+               d( 0, 2,"w",POINT),
                d(-1, 0,"s",BELLE,CENTER),
                d(+1, 0,"n",BELLE,CENTER),
-               d( 0,-3,"e",POINT));
+               d( 0,-2,"e",POINT));
     public static final NamedTaggedFormation LH_FACING_DIAMOND =
         create("LH FACING DIAMOND",
-               d( 0, 3,"w",POINT),
+               d( 0, 2,"w",POINT),
                d(-1, 0,"n",BEAU,CENTER),
                d(+1, 0,"s",BEAU,CENTER),
-               d( 0,-3,"e",POINT));
+               d( 0,-2,"e",POINT));
     public static final NamedTaggedFormation RH_STAR =
         create("RH STAR",
                 d( 0, 1, "e"),

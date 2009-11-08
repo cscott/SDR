@@ -15,24 +15,16 @@ import org.junit.runner.RunWith;
  * definitions and contains doc tests on the formations.
  *
  * @doc.test Almost all standard formations are maximally "breathed in".
- *  Diamonds are a special case.  There should be "expanded" diamonds and
- *  "compressed" diamonds.  (Also the case for quarter tags?)
+ *  This includes single diamonds, which are defined on a 2x3 grid, but
+ *  twin diamonds have unbreathed points.
  *  js> FormationList = FormationListJS.initJS(this); undefined;
  *  js> for (f in Iterator(FormationList.all)) {
  *    >   if (!Breather.breathe(f).equals(f)) {
  *    >     print("Unbreathed formation: "+f.getName());
  *    >   }
  *    > }
- *  Unbreathed formation: RH DIAMOND
- *  Unbreathed formation: RH FACING DIAMOND
- *  Unbreathed formation: LH DIAMOND
- *  Unbreathed formation: LH FACING DIAMOND
  *  Unbreathed formation: RH TWIN DIAMONDS
  *  Unbreathed formation: LH TWIN DIAMONDS
- *  Unbreathed formation: RH POINT-TO-POINT DIAMONDS
- *  Unbreathed formation: RH POINT-TO-POINT FACING DIAMONDS
- *  Unbreathed formation: LH POINT-TO-POINT DIAMONDS
- *  Unbreathed formation: LH POINT-TO-POINT FACING DIAMONDS
  *  Unbreathed formation: RH TWIN FACING DIAMONDS
  *  Unbreathed formation: LH TWIN FACING DIAMONDS
  * @doc.test Canonical formations should be centered.
@@ -59,7 +51,8 @@ import org.junit.runner.RunWith;
  *    > } ; undefined
  *  js> // note no output from the above.
  * @doc.test Formations in the formation list should be named to match their
- *  field name, except that underscores become spaces.
+ *  field name, except that underscores become spaces (and some other
+ *  minor abbreviations/tweaks occur, see below).
  *  js> flc = java.lang.Class.forName('net.cscott.sdr.calls.FormationList')
  *  class net.cscott.sdr.calls.FormationList
  *  js> flds = [f for each (f in flc.getFields()) if
@@ -79,6 +72,24 @@ import org.junit.runner.RunWith;
  *    >            .equals(name));
  *    > })
  *  true
+ * @doc.test There should be a selector for every formation. (Although there
+ *  are more selectors than there are formations.)
+ *  js> FormationList = FormationListJS.initJS(this); undefined;
+ *  js> for (f in Iterator(FormationList.all)) {
+ *    >   let name = (f.getName()
+ *    >                .replace("1/4","QUARTER")
+ *    >                .replace("3/4","THREE_QUARTER")
+ *    >                .replace("1x2", "_1_X2")
+ *    >                .replace("1x4", "_1_X4")
+ *    >                .replace("2x2", "_2_X2"));
+ *    >   try {
+ *    >     if (Selector.valueOf(name).toString() != f.getName())
+ *    >        print("Selector name mismatch: "+f.getName());
+ *    >   } catch (e) {
+ *    >     print("No selector for "+f.getName());
+ *    >   }
+ *    > }; undefined
+ *  js> // note: no output
  * @doc.test The "slow" and "fast" versions of the formations should be
  *  identical (modulo the exact identity of the phantom dancers)
  *  js> FormationListSlow = FormationListJS.initJS(this, FormationListSlow)

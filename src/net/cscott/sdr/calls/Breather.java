@@ -131,9 +131,7 @@ public class Breather {
      *  js> meta = FormationList.RH_DIAMOND ; meta.toStringDiagram("|", Formation.dancerNames)
      *  |  >
      *  |
-     *  |
      *  |^    v
-     *  |
      *  |
      *  |  <
      *  js> m = xofy(meta, FormationList.TANDEM); undefined
@@ -299,20 +297,17 @@ public class Breather {
      *  ^    v
      *  
      *    ^
-     * @doc.test From right-hand diamond, take a step and a half in; breathe out:
+     * @doc.test From right-hand diamond, take half a step in; breathe out:
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
      *  js> FormationList = FormationListJS.initJS(this); undefined;
      *  js> f = FormationList.RH_DIAMOND ; f.toStringDiagram("|", Formation.dancerNames)
      *  |  >
      *  |
-     *  |
      *  |^    v
      *  |
-     *  |
      *  |  <
-     *  js> // XXX have to change this amount if we shrink diamonds
      *  js> for (d in Iterator(f.tagged(TaggedFormation.Tag.POINT))) {
-     *    >   f=f.move(d,f.location(d).sideStep(Fraction.valueOf(3,2), true));
+     *    >   f=f.move(d,f.location(d).sideStep(Fraction.valueOf(1,2), true));
      *    > }; f.toStringDiagram("|", Formation.dancerNames)
      *  |  >
      *  |
@@ -324,20 +319,17 @@ public class Breather {
      *  |^    v
      *  |
      *  |  <
-     * @doc.test From right-hand diamond, take 2 1/2 steps in; breathe out to stars:
+     * @doc.test From right-hand diamond, take 1 1/2 steps in; breathe out to stars:
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
      *  js> FormationList = FormationListJS.initJS(this); undefined;
      *  js> f = FormationList.RH_DIAMOND ; f.toStringDiagram("|", Formation.dancerNames)
      *  |  >
      *  |
-     *  |
      *  |^    v
      *  |
-     *  |
      *  |  <
-     *  js> // XXX have to change this amount if we shrink diamonds
      *  js> for (d in Iterator(f.tagged(TaggedFormation.Tag.POINT))) {
-     *    >   f=f.move(d,f.location(d).sideStep(Fraction.valueOf(5,2), true));
+     *    >   f=f.move(d,f.location(d).sideStep(Fraction.valueOf(3,2), true));
      *    > }; f.toStringDiagram("|", Formation.dancerNames)
      *  |  >
      *  |^ <  v

@@ -212,6 +212,8 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.LH_TWO_FACED_LINE);
     public static final Selector TWO_FACED_LINE =
         OR("TWO-FACED LINE", RH_TWO_FACED_LINE, LH_TWO_FACED_LINE);
+    public static final Selector SINGLE_INVERTED_LINE =
+        GeneralFormationMatcher.makeSelector(FormationList.SINGLE_INVERTED_LINE);
     public static final Selector RH_DIAMOND =
         GeneralFormationMatcher.makeSelector(FormationList.RH_DIAMOND);
     public static final Selector RH_FACING_DIAMOND =
@@ -607,9 +609,7 @@ public abstract class SelectorList {
      *  AA:
      *       >
      *     
-     *     
      *     ^    v
-     *     
      *     
      *       <
      *   [ph: POINT; ph: BEAU,CENTER; ph: BEAU,CENTER; ph: POINT]
