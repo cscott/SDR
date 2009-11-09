@@ -81,6 +81,9 @@ def: _anyone(sel, c1)
 def: _centers(c)
   from: CENTER_HALF
     call: _anyone(CENTER, [c])
+def: _ends(c)
+  from: CENTER HALF
+    call: _anyone(END, [c])
 
 def: heads start
  from: STATIC SQUARE
@@ -745,7 +748,15 @@ def: california twirl
     call: partner trade // apart from styling, that is.
 
 // callerlab #29: DIVE THRU
-// XXX DEFINE ME
+// XXX: callerlab says, "the couple whose back is to the center of the square
+//      (unless a specific couple is directed) makes an arch..."
+//      Are there other formations this can be done from?  Should we support
+//      <anyone> dive thru?
+def: dive thru
+  from: EIGHT CHAIN THRU
+    // total 6 beats, but only 2 for the couple diving.
+    // (how can we express the overlap?)
+    call: _in(2, pass thru), _in(4, _ends(california twirl))
 
 // callerlab #30: WHEEL AROUND
 def: wheel around
@@ -986,7 +997,45 @@ def: double pass thru
   call: tandem(pass thru)
 
 // callerlab #44: FIRST COUPLE GO LEFT/RIGHT (see BMS addendum)
-// XXX DEFINE ME
+def: first couple go left next couple go left
+  // ends in promenade
+  in: 6 // XXX no callerlab timing given
+  from: COMPLETED DOUBLE PASS THRU
+    call: as couples(_single go left left)
+def: first couple go left next couple go right
+  // ends in facing lines
+  in: 6 // XXX no callerlab timing given
+  from: COMPLETED DOUBLE PASS THRU
+    call: as couples(_single go left right)
+def: first couple go right next couple go right
+  call: mirror(first couple go left next couple go left)
+def: first couple go right next couple go left
+  call: mirror(first couple go left next couple go right)
+
+def: _single go left left
+  ipart:
+    from: COMPLETED SINGLE DOUBLE PASS THRU
+      // ends in: single promenade
+      select: END    // starts at 0, 3 ; ends at -2,0
+        prim: -1, 1, left // to -1, 4
+        prim: -2, 1, left // to -2, 2
+        prim:  0, 2, none, force-roll-left
+      select: CENTER // starts at 0, 1 ; ends at  0,2
+        prim:  0, 1/2, none // to 0, 1 1/2
+        prim:  0, 1/2, none // to 0, 2
+        prim:  0, 0, left   // to 0,2
+def: _single go left right
+  ipart:
+    from: COMPLETED SINGLE DOUBLE PASS THRU
+      // ends in: facing couple
+      select: END    // starts at 0, 3 ; ends at -1, 1
+        prim: -1, 1, left // to -1, 4
+        prim: -2, 1, left // to -2, 2
+        prim: -1, 1, none, force-roll-left
+      select: CENTER // starts at 0, 1 ; ends at  1, 1
+        prim:  1, 1, right // to 1, 2
+        prim:  1, 1, right // to 2, 1
+        prim:  1, 0, none, force-roll-right sashay-start sashay-finish
 
 // callerlab #45: ZOOM
 def: zoom
