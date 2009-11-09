@@ -963,7 +963,7 @@ to do:
     and "error detail" class (which shows the whole tree, like we're
     doing now)
  x) centers/ends.  heads/sides
- g1) make heads/sides part of the 'anyone' grammar production.
+ xx) make heads/sides part of the 'anyone' grammar production.
      (have to remove the hard coded 'heads <foo>' rules)
  g2) _anyone_others concept: "do your part"?
  x) concentric/quasi-concentric
@@ -978,7 +978,7 @@ to do:
  x) test circle left/right, test run (in all its glory), test trade
     from quarter tag
  j1) t-boned cross runs (needs select X&Y, see (w))
- j2) trade from quarter tag.
+ j2) trade from quarter tag. (needs selector from multiple formations (y))
  xx) separate insertion point and playback cursor.
  k2) have a 'keep playing' flag that is set when you press play but
     cleared when you manually scrub to a point. if you receive more
@@ -987,7 +987,7 @@ to do:
  x) peel the top, from boxes and zees
  xx) "ends fold" is broken.
  m) diamond circulate, w/ adjustment from 'half of ends cross run'
-    position. Probably should switched to breathed diamond spots.
+    position. Probably should switch to breathed diamond spots. (see (aa))
  m1) peel the top ending in diamond ("do half a peel the top")
  n) roll failures (roll/trade-and-roll tests):
  n1) top-level evaluator should clear all roll directions if next call
@@ -1030,6 +1030,8 @@ to do:
     - in evaluator, touch the appropriate source file/line # (code above)
       on *successful* evaluation, ie, when we're sure we're not going
       to throw a BadCallException (hard?)
+      - collect "lines touched" set and pass up to top level, so we
+        can touch only the lines which were part of a successful Opt.
  s) EQUALS/CALL_IS => NUM_EQUALS, STR_EQUALS
     SELECTION_PATTERN => PATTERN_EQUALS(PATTERN(SELECTED), '_x__')
      (add 'don't care' character -- '?' or '.')
@@ -1038,12 +1040,29 @@ to do:
  t) add post-condition nodes to graph, evaluated as "do child, then
     test condition on resulting formation".  IfAfter() or maybe just
     a boolean in the If node for "eval after".
+    -- allow 'ends in:' as a special case of this
+    -- 'ends in' could eventually be used to choreograph backwards:
+       take the current formation, match against all the known ends
+       in, for those that match look at their 'from' clauses and try
+       all 96 possible symmetric permutations to find the one which
+       results in the current formation.
  xx) reorder defs to match callerlab docs
  v) 'from' takes flags
  w) 'select' is or-of-ands.  'select: DESIGNATED & BEAU, DESIGNATED & BELLE'
  x) _circle choreo concept that automagically adjusts 1/8 off circles
+      do a 'circle left 1/8', then do the call and rotate all the
+     intermediate formations right 1/8, then circle left 1/8 the final
+     formation unrotated, to snap to squared set spots again.
  y) siamese concept -- multiple simultaneous formations in
     GeneralFormationMatcher
+ z) Breather.breathe() should look at facing directions, and if
+     they're 1/8 off, rotate,breathe,unrotate.
+ aa) diamond/quarter tag conversions
+     -- automatic in the diamond/tag selectors?
+     -- use the multiple-formation matcher, then adjust the results to
+        canonical shape?
+ bb) facing couples/wave (and vice versa) conversions.
+     -- do these manually for appropriate calls? (handles recycle)
 -------
 heads x:
   from squared_set:
