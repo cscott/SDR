@@ -391,7 +391,10 @@ public abstract class PredicateList {
         public boolean evaluate(DanceProgram ds, Formation f, Condition c) {
             assert c.args.size()==1;
             return ARE.evaluate(ds, f, Condition.makeCondition
-                    ("are", Condition.makeCondition("ALL"), c.getArg(0)));
+                      ("are",
+                       Condition.makeCondition("literal",
+                                               Condition.makeCondition("ALL")),
+                       c.getArg(0)));
         }
     };
 
