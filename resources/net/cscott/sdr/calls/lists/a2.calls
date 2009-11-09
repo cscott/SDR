@@ -15,3 +15,8 @@ def: split counter rotate
     select: END
     // XXX!
 */
+
+def: single wheel
+  in: 4
+  ipart:
+    call: _and roll(_hinge)

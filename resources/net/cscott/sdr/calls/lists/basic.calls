@@ -12,6 +12,14 @@ def: face left
   in: 2
   prim: 0,0,left
 
+def: face in
+  in: 2
+  prim: 0,0,in
+
+def: face out
+  in: 2
+  prim: 0,0,out
+
 // work out grammar implications
 def: anyone while others(sel, c1, c2=nothing)
   /* default to 'nothing' if the 'while...' isn't present */
@@ -47,10 +55,18 @@ def: _anyone while others static square(sel, c1, c2)
   // special case 'heads promenade half way while the sides...'
   from: STATIC SQUARE
     condition: AND(CALL IS([sel], HEAD), CALL IS([c1], promenade half way))
-    call: anyone while others([sel],[c1],and(sides start, [c2]))
+    //call: _anyone while others([sel],[c1],and(sides start, [c2]))
+    select: HEAD
+      call: [c1]
+    select: SIDE
+      call: sides start, _centers([c2])
   from: STATIC SQUARE
     condition: AND(CALL IS([sel], SIDE), CALL IS([c1], promenade half way))
-    call: anyone while others([sel],[c1],and(heads start, [c2]))
+    //call: _anyone while others([sel],[c1],and(heads start, [c2]))
+    select: SIDE
+      call: [c1]
+    select: HEAD
+      call: heads start, _centers([c2])
   // special case 'heads square thru...' from static square
   from: STATIC SQUARE
     condition: CALL IS([sel], HEAD)
@@ -115,11 +131,11 @@ def: _circle left 1/4
 def: forward and back
   in: 8
   from: FACING COUPLES, STATIC SQUARE // XXX: SUPPRESS BREATHING
-    call: _forward, _pause, _back, _pause
-def: _forward
+    call: _forward 1, _pause, _back 1, _pause
+def: _forward 1
   in: 3
   prim: 0, 1, none
-def: _back
+def: _back 1
   in: 3
   prim: 0,-1, none
 def: _pause
@@ -316,7 +332,6 @@ def: promenade home
     //      if promenading home from exactly 1/4 away from other starting
     //      formations -- or use IfAfter?
     from: ANY
-      // XXX should throw an error if neither dancer 1 or 2 is a beau.
       call: _promenade(1/4), _promenade check
 
 // Continue to 'promenade home' after checking to ensure dancer 1 or 2
@@ -328,7 +343,8 @@ def: _promenade check
 
 def: promenade half way
   in: 8
-  call: _promenade(1/2)
+  ipart:
+    call: _promenade(1/2), 1/2(wheel around)
 
 def: wrong way promenade
   call: mirror(promenade home)
@@ -601,8 +617,6 @@ def: _single lead right
   from: FACING DANCERS
     prim:    1,  0, right 1/8
     prim: -1/2,1/2, right 1/8
-    // XXX: we should be able to do half of this
-    //prim: 1, 1, right, pass-left
 
 // callerlab #20: RIGHT AND LEFT THRU
 def: right and left thru
@@ -911,7 +925,9 @@ def: partner trade
     call: trade
 
 // callerlab #42: WHEEL AND DEAL FAMILY
-// XXX DEFINE ME
+def: wheel and deal
+  in: 4
+  call: as couples(single wheel)
 
 // callerlab #43: DOUBLE PASS THRU
 def: double pass thru

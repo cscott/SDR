@@ -135,6 +135,6 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     }
     /** A list of recursive calls which we shouldn't try to expand. */
     private static Set<String> callBlacklist = s(
-            "anyone while others"
+            "anyone while others", "_promenade", "_promenade check"
     );
 }

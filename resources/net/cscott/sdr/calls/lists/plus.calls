@@ -37,11 +37,9 @@ def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
       //call: counter rotate 1/4   // we'll use a primitive for simplicity
       prim: 0, 3, in 1/8
       prim: in 1 1/2, 1 1/2, in 1/8
-  from: DIAMOND // vic ceder says we can do this!
-    // XXX: if diamond points are on wave spots, we can use the above def
-    //      unmodified; otherwise we need to tweak the ends part slightly.
-    condition: FALSE, "Unimplemented"
-    call: nothing
+  from: DIAMOND // XXX actually from 'SPLIT 4' which is 4 dancers on each side
+    ipart:
+      call: _quasi concentric(_in(4, cast(3/4)), _in(4, cast(1/4)))
 
 def: peel the top
   in: 6
