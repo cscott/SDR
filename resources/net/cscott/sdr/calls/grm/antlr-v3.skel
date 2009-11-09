@@ -82,7 +82,7 @@ girls returns [Apply a]
 	: 'girls' | 'ladies';
 all returns [Apply a]
 @init { a = Apply.makeApply("ALL"); }
-	: 'all' | 'everyone' | 'every' 'one' | 'every' 'body';
+	: 'all' | 'everyone' | 'every' 'one' | 'everybody' | 'every' 'body';
 wave_select returns [Apply a]
 	: 'centers' { a = Apply.makeApply("CENTER"); }
 	| 'ends' { a = Apply.makeApply("END"); }

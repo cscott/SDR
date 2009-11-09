@@ -25,6 +25,10 @@ def: anyone while others(sel, c1, c2=nothing)
   /* default to 'nothing' if the 'while...' isn't present */
   spoken: [-15] <sel=anyone> <c1=anything> \
                  (while the (others|<anyone>) <c2=anything>)?
+  // special case "everybody" as a filler word.
+  from: ANY
+    condition: AND(CALL IS([sel], ALL), CALL IS([c2], nothing))
+    call: [c1]
   // special case HEADS and SIDES from static square
   from: STATIC SQUARE
     call: _anyone while others static square([sel],[c1],[c2])
