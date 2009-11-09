@@ -628,7 +628,58 @@ def: left and right thru
   call: left(right and left thru)
 
 // callerlab #21: GRAND SQUARE
-// XXX DEFINE ME
+def: grand square
+  from: STATIC SQUARE
+    condition: FALSE(), "Who should face in?"
+    call: nothing
+  from: O DOUBLE PASS THRU
+    call: _grand square(nothing, nothing)
+
+def: _grand square(first, last)
+  ipart:
+    call: _in(4, and([first], _grand square 1/4(face in)))
+  ipart:
+    call: _grand square 1/4(face in)
+  ipart:
+    call: _grand square 1/4(face in)
+  ipart:
+    call: _grand square 1/4(nothing)
+  ipart:
+    call: _grand square 1/4(face in)
+  ipart:
+    call: _grand square 1/4(face in)
+  ipart:
+    call: _grand square 1/4(face in)
+  ipart:
+    call: _grand square 1/4([last])
+
+def: _grand square 1/4(face)
+  in: 4
+  ipart:
+    from: O DOUBLE PASS THRU, BUTTERFLY DOUBLE PASS THRU
+      select: CENTER
+        call: _in(3, _back 2), _in(1, [face])
+      select: END
+        call: _in(3, _forward 2), _in(1, [face])
+
+def: _forward 2
+  in: 3
+  prim: 0, 2, none
+def: _back 2
+  in: 3
+  prim: 0, -2, none
+def: _grand square face(sel)
+  in: 1
+  select: [sel]
+    prim: 0, 0, in
+  select: OTHERS
+    prim: 0, 0, none
+
+def: face grand square(sel, n=32)
+  // XXX boys face grand square, etc?
+  spoken: <sel=heads_or_sides> face grand square ( <n=number> steps )?
+    call: _fractional(_multiply_num([n],1/32), \
+          _grand square(_grand square face([sel]), _grand square face([sel])))
 
 // callerlab #22: STAR THRU
 def: star thru

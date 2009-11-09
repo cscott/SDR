@@ -788,6 +788,28 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(5), Fraction.ZERO, ExactRotation.NORTH), Tag.BEAU),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(7), Fraction.ZERO, ExactRotation.NORTH), Tag.BELLE));
 
+    public static final NamedTaggedFormation O_DOUBLE_PASS_THRU =
+        new NamedTaggedFormation("O DOUBLE PASS THRU",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(3), ExactRotation.SOUTH), Tag.BELLE, Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(3), ExactRotation.SOUTH), Tag.BEAU, Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.ONE, ExactRotation.SOUTH), Tag.BELLE, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.ONE, ExactRotation.SOUTH), Tag.BEAU, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.mONE, ExactRotation.NORTH), Tag.BEAU, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.mONE, ExactRotation.NORTH), Tag.BELLE, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BEAU, Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BELLE, Tag.END));
+
+    public static final NamedTaggedFormation BUTTERFLY_DOUBLE_PASS_THRU =
+        new NamedTaggedFormation("BUTTERFLY DOUBLE PASS THRU",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(3), ExactRotation.SOUTH), Tag.BELLE, Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(3), ExactRotation.SOUTH), Tag.BEAU, Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.ONE, ExactRotation.SOUTH), Tag.BELLE, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.ONE, ExactRotation.SOUTH), Tag.BEAU, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.mONE, Fraction.mONE, ExactRotation.NORTH), Tag.BEAU, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.ONE, Fraction.mONE, ExactRotation.NORTH), Tag.BELLE, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BEAU, Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BELLE, Tag.END));
+
     public static final List<NamedTaggedFormation> all =
         Collections.unmodifiableList(Arrays.asList(
             FormationListFast.SINGLE_DANCER,
@@ -876,5 +898,7 @@ abstract class FormationListFast {
             FormationListFast.RH_TIDAL_TWO_FACED_LINE,
             FormationListFast.LH_TIDAL_TWO_FACED_LINE,
             FormationListFast.RH_TIDAL_LINE,
-            FormationListFast.LH_TIDAL_LINE));
+            FormationListFast.LH_TIDAL_LINE,
+            FormationListFast.O_DOUBLE_PASS_THRU,
+            FormationListFast.BUTTERFLY_DOUBLE_PASS_THRU));
 }

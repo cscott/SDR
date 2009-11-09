@@ -415,6 +415,20 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation LH_TIDAL_LINE = // callerlab #52(b)
         xofy("LH TIDAL LINE", LH_TWO_FACED_LINE, COUPLE);
     // XXX galaxy, callerlab #53
+    public static final NamedTaggedFormation O_DOUBLE_PASS_THRU = // used for grand square
+        create("O DOUBLE PASS THRU", f(" ss ","s  s","n  n"," nn "),
+                WhetherTagger.AUTO_TAGS,
+                t(0, BELLE, END),    t(1, BEAU, END),
+                t(2, BELLE, CENTER), t(3, BEAU, CENTER),
+                t(4, BEAU, CENTER),  t(5, BELLE, CENTER),
+                t(6, BEAU, END),     t(7, BELLE, END));
+    public static final NamedTaggedFormation BUTTERFLY_DOUBLE_PASS_THRU = // used for grand square
+        create("BUTTERFLY DOUBLE PASS THRU", f("s  s"," ss "," nn ","n  n"),
+                WhetherTagger.AUTO_TAGS,
+                t(0, BELLE, END),    t(1, BEAU, END),
+                t(2, BELLE, CENTER), t(3, BEAU, CENTER),
+                t(4, BEAU, CENTER),  t(5, BELLE, CENTER),
+                t(6, BEAU, END),     t(7, BELLE, END));
 
     /** List of all formations defined in this class. */
     public static final List<NamedTaggedFormation> all = _enumerateFormations();

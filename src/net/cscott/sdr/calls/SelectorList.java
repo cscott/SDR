@@ -376,6 +376,10 @@ public abstract class SelectorList {
         GeneralFormationMatcher.makeSelector(FormationList.LH_TIDAL_LINE);
     public static final Selector TIDAL_LINE =
         OR("TIDAL LINE", RH_TIDAL_LINE, LH_TIDAL_LINE);
+    public static final Selector O_DOUBLE_PASS_THRU =
+        GeneralFormationMatcher.makeSelector(FormationList.O_DOUBLE_PASS_THRU);
+    public static final Selector BUTTERFLY_DOUBLE_PASS_THRU =
+        GeneralFormationMatcher.makeSelector(FormationList.BUTTERFLY_DOUBLE_PASS_THRU);
 
     // special purpose selector
     public static final Selector CENTER_2 = new CenterSelector(2);
