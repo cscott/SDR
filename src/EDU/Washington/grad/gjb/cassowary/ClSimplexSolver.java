@@ -21,7 +21,7 @@ public class ClSimplexSolver extends ClTableau {
     public ClSimplexSolver() {
         _stayMinusErrorVars = new Vector<ClSlackVariable>();
         _stayPlusErrorVars = new Vector<ClSlackVariable>();
-        _errorVars = new Hashtable<ClConstraint, Set>();
+        _errorVars = new Hashtable<ClConstraint, Set<ClAbstractVariable>>();
         _markerVars = new Hashtable<ClConstraint, ClAbstractVariable>();
 
         _resolve_pair = new Vector<ClFractionWrapper>(2);
@@ -293,13 +293,13 @@ public class ClSimplexSolver extends ClTableau {
 
         ClLinearExpression zRow = rowExpression(_objective);
 
-        Set eVars = _errorVars.get(cn);
+        Set<ClAbstractVariable> eVars = _errorVars.get(cn);
         if (fTraceOn)
             traceprint("eVars == " + eVars);
 
         if (eVars != null) {
-            for (Enumeration<Object> e = eVars.elements(); e.hasMoreElements();) {
-                ClAbstractVariable clv = (ClAbstractVariable) e.nextElement();
+            for (Enumeration<ClAbstractVariable> e = eVars.elements(); e.hasMoreElements();) {
+                ClAbstractVariable clv = e.nextElement();
                 final ClLinearExpression expr = rowExpression(clv);
                 if (expr == null) {
                     zRow.addVariable(clv, cn.weight().negate().multiply
@@ -323,15 +323,15 @@ public class ClSimplexSolver extends ClTableau {
 
         if (rowExpression(marker) == null) {
             // not in the basis, so need to do some work
-            Set col = _columns.get(marker);
+            Set<ClAbstractVariable> col = _columns.get(marker);
 
             if (fTraceOn)
                 traceprint("Must pivot -- columns are " + col);
 
             ClAbstractVariable exitVar = null;
             Fraction minRatio = Fraction.ZERO;
-            for (Enumeration<Object> e = col.elements(); e.hasMoreElements();) {
-                final ClAbstractVariable v = (ClAbstractVariable) e
+            for (Enumeration<ClAbstractVariable> e = col.elements(); e.hasMoreElements();) {
+                final ClAbstractVariable v = e
                         .nextElement();
                 if (v.isRestricted()) {
                     final ClLinearExpression expr = rowExpression(v);
@@ -351,9 +351,9 @@ public class ClSimplexSolver extends ClTableau {
             if (exitVar == null) {
                 if (fTraceOn)
                     traceprint("exitVar is still null");
-                for (Enumeration<Object> e = col.elements(); e
+                for (Enumeration<ClAbstractVariable> e = col.elements(); e
                         .hasMoreElements();) {
-                    final ClAbstractVariable v = (ClAbstractVariable) e
+                    final ClAbstractVariable v = e
                             .nextElement();
                     if (v.isRestricted()) {
                         final ClLinearExpression expr = rowExpression(v);
@@ -372,7 +372,7 @@ public class ClSimplexSolver extends ClTableau {
                 if (col.size() == 0) {
                     removeColumn(marker);
                 } else {
-                    exitVar = (ClAbstractVariable) col.elements().nextElement();
+                    exitVar = col.elements().nextElement();
                 }
             }
 
@@ -391,8 +391,8 @@ public class ClSimplexSolver extends ClTableau {
         }
 
         if (eVars != null) {
-            for (Enumeration<Object> e = eVars.elements(); e.hasMoreElements();) {
-                ClAbstractVariable v = (ClAbstractVariable) e.nextElement();
+            for (Enumeration<ClAbstractVariable> e = eVars.elements(); e.hasMoreElements();) {
+                ClAbstractVariable v = e.nextElement();
                 // FIXGJBNOW != or equals?
                 if (v != marker) {
                     removeColumn(v);
@@ -812,7 +812,7 @@ public class ClSimplexSolver extends ClTableau {
             exprPlus.incrementConstant(delta);
 
             if (exprPlus.constant().compareTo(Fraction.ZERO) < 0) {
-                _infeasibleRows.insert(plusErrorVar);
+                _infeasibleRows.add(plusErrorVar);
             }
             return;
         }
@@ -821,22 +821,21 @@ public class ClSimplexSolver extends ClTableau {
         if (exprMinus != null) {
             exprMinus.incrementConstant(delta.negate());
             if (exprMinus.constant().compareTo(Fraction.ZERO) < 0) {
-                _infeasibleRows.insert(minusErrorVar);
+                _infeasibleRows.add(minusErrorVar);
             }
             return;
         }
 
-        Set columnVars = _columns.get(minusErrorVar);
+        Set<ClAbstractVariable> columnVars = _columns.get(minusErrorVar);
 
-        for (Enumeration<Object> e = columnVars.elements(); e.hasMoreElements();) {
-            final ClAbstractVariable basicVar = (ClAbstractVariable) e
-                    .nextElement();
+        for (Enumeration<ClAbstractVariable> e = columnVars.elements(); e.hasMoreElements();) {
+            final ClAbstractVariable basicVar = e.nextElement();
             ClLinearExpression expr = rowExpression(basicVar);
             // assert(expr != null, "expr != null" );
             final Fraction c = expr.coefficientFor(minusErrorVar);
             expr.incrementConstant(c.multiply(delta));
             if (basicVar.isRestricted() && expr.constant().compareTo(Fraction.ZERO) < 0) {
-                _infeasibleRows.insert(basicVar);
+                _infeasibleRows.add(basicVar);
             }
         }
     }
@@ -848,7 +847,7 @@ public class ClSimplexSolver extends ClTableau {
             fnenterprint("dualOptimize:");
         final ClLinearExpression zRow = rowExpression(_objective);
         while (!_infeasibleRows.isEmpty()) {
-            ClAbstractVariable exitVar = (ClAbstractVariable) _infeasibleRows
+            ClAbstractVariable exitVar = _infeasibleRows
                     .elements().nextElement();
             _infeasibleRows.remove(exitVar);
             ClAbstractVariable entryVar = null;
@@ -1018,11 +1017,11 @@ public class ClSimplexSolver extends ClTableau {
                         + objectiveCoeff);
 
             Fraction minRatio = null;
-            Set columnVars = _columns.get(entryVar);
+            Set<ClAbstractVariable> columnVars = _columns.get(entryVar);
             Fraction r = Fraction.ZERO;
-            for (Enumeration<Object> e = columnVars.elements(); e
+            for (Enumeration<ClAbstractVariable> e = columnVars.elements(); e
                     .hasMoreElements();) {
-                ClAbstractVariable v = (ClAbstractVariable) e.nextElement();
+                ClAbstractVariable v = e.nextElement();
                 if (fTraceOn)
                     traceprint("Checking " + v);
                 if (v.isPivotable()) {
@@ -1115,7 +1114,7 @@ public class ClSimplexSolver extends ClTableau {
         if (fTraceOn)
             traceprint(this.toString());
 
-        for (Enumeration<Object> e = _externalParametricVars.elements(); e
+        for (Enumeration<ClAbstractVariable> e = _externalParametricVars.elements(); e
                 .hasMoreElements();) {
             ClVariable v = (ClVariable) e.nextElement();
             if (rowExpression(v) != null) {
@@ -1126,7 +1125,7 @@ public class ClSimplexSolver extends ClTableau {
             v.change_value(Fraction.ZERO);
         }
 
-        for (Enumeration<Object> e = _externalRows.elements(); e
+        for (Enumeration<ClAbstractVariable> e = _externalRows.elements(); e
                 .hasMoreElements();) {
             ClVariable v = (ClVariable) e.nextElement();
             ClLinearExpression expr = rowExpression(v);
@@ -1150,10 +1149,10 @@ public class ClSimplexSolver extends ClTableau {
         if (fTraceOn)
             fnenterprint("insertErrorVar:" + cn + ", " + var);
 
-        Set cnset = _errorVars.get(var);
+        Set<ClAbstractVariable> cnset = _errorVars.get(var);
         if (cnset == null)
-            _errorVars.put(cn, cnset = new Set());
-        cnset.insert(var);
+            _errorVars.put(cn, cnset = new Set<ClAbstractVariable>());
+        cnset.add(var);
     }
 
     // // BEGIN PRIVATE INSTANCE FIELDS
@@ -1166,7 +1165,7 @@ public class ClSimplexSolver extends ClTableau {
 
     // give error variables for a non required constraint,
     // maps to ClSlackVariable-s
-    private Hashtable<ClConstraint, Set> _errorVars; // map
+    private Hashtable<ClConstraint, Set<ClAbstractVariable>> _errorVars; // map
     // ClConstraint
     // to
     // Set

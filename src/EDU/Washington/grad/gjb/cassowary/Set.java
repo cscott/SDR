@@ -15,33 +15,35 @@ package EDU.Washington.grad.gjb.cassowary;
 
 import java.util.*;
 
-class Set {
+class Set<T> implements Iterable<T> {
     public Set() {
-        hash = new Hashtable<Object, Object>();
+        hash = new java.util.HashSet<T>();
     }
 
     public Set(int i) {
-        hash = new Hashtable<Object, Object>(i);
+        this();
     }
 
     public Set(int i, float f) {
-        hash = new Hashtable<Object, Object>(i, f);
+        this();
     }
 
-    public Set(Hashtable<Object, Object> h) {
+    private Set(java.util.Set<T> h) {
         hash = h;
     }
 
-    public boolean containsKey(Object o) {
-        return hash.containsKey(o);
+    public boolean contains(Object o) {
+        return hash.contains(o);
     }
 
-    public boolean insert(Object o) {
-        return hash.put(o, o) == null ? true : false;
+    public boolean add(T o) {
+        return hash.add(o);
+        //return hash.put(o, o) == null ? true : false;
     }
 
     public boolean remove(Object o) {
-        return hash.remove(o) == null ? true : false;
+        return hash.remove(o);
+        //return hash.remove(o) == null ? true : false;
     }
 
     public void clear() {
@@ -57,17 +59,20 @@ class Set {
     }
 
     @SuppressWarnings("unchecked")
-    public Object clone() {
-        return new Set((Hashtable<Object, Object>) hash.clone());
+    public Set<T> clone() {
+        return new Set<T>(new java.util.HashSet<T>(this.hash));
+        //return new Set<T>((Hashtable<Object, Object>) hash.clone());
     }
 
-    public Enumeration<Object> elements() {
-        return hash.elements();
+    @SuppressWarnings("unchecked")
+    public Enumeration<T> elements() {
+        return Collections.enumeration(hash);
     }
+    public Iterator<T> iterator() { return hash.iterator(); }
 
     public String toString() {
         StringBuffer bstr = new StringBuffer("{ ");
-        Enumeration<Object> e = hash.keys();
+        Enumeration<T> e = elements();
         if (e.hasMoreElements())
             bstr.append(e.nextElement().toString());
         while (e.hasMoreElements()) {
@@ -77,5 +82,5 @@ class Set {
         return bstr.toString();
     }
 
-    private Hashtable<Object, Object> hash;
+    private java.util.Set<T> hash;
 }
