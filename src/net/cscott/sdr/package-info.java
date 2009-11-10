@@ -6,7 +6,6 @@
  *  js> PMSD.runAllTests()
  *  FAILED TESTS:
  *   basic-calls-1 at line 92
- *   basic-calls-2 at line 51
  *   concentric-1 at line 83
  *   dw-resolve at line 78
  *   extend-level at line 16

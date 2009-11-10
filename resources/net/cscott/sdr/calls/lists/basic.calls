@@ -433,8 +433,11 @@ def: pass thru
     prim: 0, 1, none
 
 def: pull by
-  optional: LEFT
   call: pass thru // at least until i implement hand holds
+def: right pull by
+  call: pull by
+def: left pull by
+  call: left(pull by)
 
 
 // callerlab #12: SPLIT THE OUTSIDE COUPLE/SPLIT TWO (see BMS addendum)
