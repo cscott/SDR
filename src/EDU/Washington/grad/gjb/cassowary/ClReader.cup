@@ -11,10 +11,10 @@ import java_cup.runtime.*;
 
 parser code
 {:
-	public java.util.Hashtable m_variable_name_object_hash;
+	public java.util.Map<String,ClVariable> m_variable_name_object_hash;
 	public boolean m_debug_parse = false;
 
-	public void setVariableNameObjectHash(java.util.Hashtable variable_name_object_hash) {
+	public void setVariableNameObjectHash(java.util.Map<String,ClVariable> variable_name_object_hash) {
 		m_variable_name_object_hash = variable_name_object_hash;
 	}
 :}
@@ -60,7 +60,7 @@ expr		::=	  NUMBER:a				{: RESULT = (new ClLinearExpression(a.doubleValue())); :
 		}
 	}
 
-	ClVariable variable_object = (ClVariable) parser.m_variable_name_object_hash.get(a);
+	ClVariable variable_object = parser.m_variable_name_object_hash.get(a);
 
 	if (variable_object == null) {
 		System.err.println("	Could not get hashed variable.");

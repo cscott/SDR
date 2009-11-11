@@ -24,7 +24,7 @@ public class ClLinearExpression extends CL {
             System.err.println("new ClLinearExpression");
 
         _constant = new ClFractionWrapper(constant);
-        _terms = new Hashtable<ClAbstractVariable, ClFractionWrapper>(1);
+        _terms = new LinkedHashMap<ClAbstractVariable, ClFractionWrapper>(7);
         if (clv != null)
             _terms.put(clv, new ClFractionWrapper(value));
     }
@@ -47,25 +47,21 @@ public class ClLinearExpression extends CL {
 
     // for use by the clone method
     protected ClLinearExpression(ClFractionWrapper constant,
-            Hashtable<ClAbstractVariable, ClFractionWrapper> terms) {
+            Map<ClAbstractVariable, ClFractionWrapper> terms) {
         if (CL.fGC)
             System.err.println("clone ClLinearExpression");
-        _constant = (ClFractionWrapper) constant.clone();
-        _terms = new Hashtable<ClAbstractVariable, ClFractionWrapper>();
+        _constant = constant.clone();
+        _terms = new LinkedHashMap<ClAbstractVariable, ClFractionWrapper>();
         // need to unalias the ClDouble-s that we clone (do a deep clone)
-        for (Enumeration<ClAbstractVariable> e = terms.keys(); e
-                .hasMoreElements();) {
-            ClAbstractVariable clv = e.nextElement();
-            _terms.put(clv, (ClFractionWrapper) terms.get(clv).clone());
+        for (ClAbstractVariable clv : terms.keySet()) {
+            _terms.put(clv, terms.get(clv).clone());
         }
     }
 
     public ClLinearExpression multiplyMe(Fraction x) {
         _constant.setValue(_constant.getValue().multiply(x));
 
-        for (Enumeration<ClAbstractVariable> e = _terms.keys(); e
-                .hasMoreElements();) {
-            ClAbstractVariable clv = e.nextElement();
+        for (ClAbstractVariable clv : _terms.keySet()) {
             ClFractionWrapper cld = _terms.get(clv);
             cld.setValue(cld.getValue().multiply(x));
         }
@@ -141,9 +137,7 @@ public class ClLinearExpression extends CL {
             Fraction n, ClAbstractVariable subject, ClTableau solver) {
         incrementConstant(n.multiply(expr.constant()));
 
-        for (Enumeration<ClAbstractVariable> e = expr.terms().keys(); e
-                .hasMoreElements();) {
-            ClAbstractVariable clv = e.nextElement();
+        for (ClAbstractVariable clv : expr.terms().keySet()) {
             Fraction coeff = expr.terms().get(clv).getValue();
             addVariable(clv, coeff.multiply(n), subject, solver);
         }
@@ -155,9 +149,7 @@ public class ClLinearExpression extends CL {
             Fraction n) {
         incrementConstant(n.multiply(expr.constant()));
 
-        for (Enumeration<ClAbstractVariable> e = expr.terms().keys(); e
-                .hasMoreElements();) {
-            ClAbstractVariable clv = e.nextElement();
+        for (ClAbstractVariable clv : expr.terms().keySet()) {
             Fraction coeff = expr.terms().get(clv).getValue();
             addVariable(clv, coeff.multiply(n));
         }
@@ -248,9 +240,7 @@ public class ClLinearExpression extends CL {
                     "anyPivotableVariable called on a constant");
         }
 
-        for (Enumeration<ClAbstractVariable> e = _terms.keys(); e
-                .hasMoreElements();) {
-            ClAbstractVariable clv = e.nextElement();
+        for (ClAbstractVariable clv : _terms.keySet()) {
             if (clv.isPivotable())
                 return clv;
         }
@@ -278,9 +268,7 @@ public class ClLinearExpression extends CL {
         Fraction multiplier = _terms.remove(var).getValue();
         incrementConstant(multiplier.multiply(expr.constant()));
 
-        for (Enumeration<ClAbstractVariable> e = expr.terms().keys(); e
-                .hasMoreElements();) {
-            ClAbstractVariable clv = e.nextElement();
+        for (ClAbstractVariable clv : expr.terms().keySet()) {
             Fraction coeff = expr.terms().get(clv).getValue();
             ClFractionWrapper d_old_coeff = _terms.get(clv);
             if (d_old_coeff != null) {
@@ -386,7 +374,7 @@ public class ClLinearExpression extends CL {
         _constant.setValue(c);
     }
 
-    public final Hashtable<ClAbstractVariable, ClFractionWrapper> terms() {
+    public final Map<ClAbstractVariable, ClFractionWrapper> terms() {
         return _terms;
     }
 
@@ -400,7 +388,7 @@ public class ClLinearExpression extends CL {
 
     public final String toString() {
         StringBuffer bstr = new StringBuffer();
-        Enumeration<ClAbstractVariable> e = _terms.keys();
+        Iterator<ClAbstractVariable> it = _terms.keySet().iterator();
 
         if (!_constant.getValue().equals(Fraction.ZERO) || _terms.size() == 0) {
             bstr.append(_constant.toString());
@@ -408,12 +396,12 @@ public class ClLinearExpression extends CL {
             if (_terms.size() == 0) {
                 return bstr.toString();
             }
-            ClAbstractVariable clv = e.nextElement();
+            ClAbstractVariable clv = it.next();
             ClFractionWrapper coeff = _terms.get(clv);
             bstr.append(coeff.toString() + "*" + clv.toString());
         }
-        for (; e.hasMoreElements();) {
-            ClAbstractVariable clv = e.nextElement();
+        for (; it.hasNext();) {
+            ClAbstractVariable clv = it.next();
             ClFractionWrapper coeff = _terms.get(clv);
             bstr.append(" + " + coeff.toString() + "*" + clv.toString());
         }
@@ -446,7 +434,7 @@ public class ClLinearExpression extends CL {
     }
 
     private ClFractionWrapper _constant;
-    private Hashtable<ClAbstractVariable, ClFractionWrapper> _terms; // from ClVariable
+    private Map<ClAbstractVariable, ClFractionWrapper> _terms; // from ClVariable
     // to
     // ClDouble
 

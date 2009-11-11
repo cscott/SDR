@@ -28,10 +28,10 @@ ws		= [ \t\r\n\f]+
 %{
 	// added code to lexer class
 
-	private java.util.Hashtable m_variable_name_object_hash;
+	private java.util.Map<String,ClVariable> m_variable_name_object_hash;
 	public boolean m_debug_lex = false;
 
-	public void setVariableNameObjectHash(java.util.Hashtable variable_name_object_hash)
+	public void setVariableNameObjectHash(java.util.Map<String,ClVariable> variable_name_object_hash)
 	{
 		m_variable_name_object_hash = variable_name_object_hash;
 	}

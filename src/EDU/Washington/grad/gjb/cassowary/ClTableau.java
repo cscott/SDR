@@ -19,8 +19,8 @@ class ClTableau extends CL {
     // ctr is protected, since this only supports an ADT for
     // the ClSimplexSolved class
     protected ClTableau() {
-        _columns = new Hashtable<ClAbstractVariable, Set<ClAbstractVariable>>();
-        _rows = new Hashtable<ClAbstractVariable, ClLinearExpression>();
+        _columns = new LinkedHashMap<ClAbstractVariable, Set<ClAbstractVariable>>();
+        _rows = new LinkedHashMap<ClAbstractVariable, ClLinearExpression>();
         _infeasibleRows = new LinkedHashSet<ClAbstractVariable>();
         _externalRows = new LinkedHashSet<ClAbstractVariable>();
         _externalParametricVars = new LinkedHashSet<ClAbstractVariable>();
@@ -67,9 +67,7 @@ class ClTableau extends CL {
 
     public String toString() {
         StringBuffer bstr = new StringBuffer("Tableau:\n");
-        for (Enumeration<ClAbstractVariable> e = _rows.keys(); e
-                .hasMoreElements();) {
-            ClAbstractVariable clv = e.nextElement();
+        for (ClAbstractVariable clv : _rows.keySet()) {
             ClLinearExpression expr = _rows.get(clv);
             bstr.append(clv.toString());
             bstr.append(" <==> ");
@@ -116,9 +114,7 @@ class ClTableau extends CL {
         // have that variable in their expression
         _rows.put(var, expr);
 
-        for (Enumeration<ClAbstractVariable> e = expr.terms().keys(); e
-                .hasMoreElements();) {
-            ClAbstractVariable clv = e.nextElement();
+        for (ClAbstractVariable clv : expr.terms().keySet()) {
             insertColVar(clv, var);
             if (clv.isExternal()) {
                 _externalParametricVars.add(clv);
@@ -169,9 +165,7 @@ class ClTableau extends CL {
         // For each variable in this expression, update
         // the column mapping and remove the variable from the list
         // of rows it is known to be in
-        for (Enumeration<ClAbstractVariable> e = expr.terms().keys(); e
-                .hasMoreElements();) {
-            ClAbstractVariable clv = e.nextElement();
+        for (ClAbstractVariable clv : expr.terms().keySet()) {
             Set<ClAbstractVariable> varset = _columns.get(clv);
             if (varset != null) {
                 if (fTraceOn)
@@ -217,11 +211,11 @@ class ClTableau extends CL {
         _columns.remove(oldVar);
     }
 
-    protected final Hashtable<ClAbstractVariable, Set<ClAbstractVariable>> columns() {
+    protected final Map<ClAbstractVariable, Set<ClAbstractVariable>> columns() {
         return _columns;
     }
 
-    protected final Hashtable<ClAbstractVariable, ClLinearExpression> rows() {
+    protected final Map<ClAbstractVariable, ClLinearExpression> rows() {
         return _rows;
     }
 
@@ -239,13 +233,13 @@ class ClTableau extends CL {
     // set of basic variables whose expressions contain them
     // i.e., it's a mapping from variables in expressions (a column) to the
     // set of rows that contain them
-    protected Hashtable<ClAbstractVariable,Set<ClAbstractVariable>> _columns; // From
+    protected Map<ClAbstractVariable,Set<ClAbstractVariable>> _columns; // From
     // ClAbstractVariable
     // to Set of
     // variables
 
     // _rows maps basic variables to the expressions for that row in the tableau
-    protected Hashtable<ClAbstractVariable, ClLinearExpression> _rows; // From
+    protected Map<ClAbstractVariable, ClLinearExpression> _rows; // From
     // ClAbstractVariable
     // to
     // ClLinearExpression

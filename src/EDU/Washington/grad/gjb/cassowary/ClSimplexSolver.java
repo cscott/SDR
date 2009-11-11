@@ -19,18 +19,18 @@ import net.cscott.sdr.util.Fraction;
 public class ClSimplexSolver extends ClTableau {
     // Ctr initializes the fields, and creates the objective row
     public ClSimplexSolver() {
-        _stayMinusErrorVars = new Vector<ClSlackVariable>();
-        _stayPlusErrorVars = new Vector<ClSlackVariable>();
-        _errorVars = new Hashtable<ClConstraint, Set<ClAbstractVariable>>();
-        _markerVars = new Hashtable<ClConstraint, ClAbstractVariable>();
+        _stayMinusErrorVars = new ArrayList<ClSlackVariable>();
+        _stayPlusErrorVars = new ArrayList<ClSlackVariable>();
+        _errorVars = new LinkedHashMap<ClConstraint, Set<ClAbstractVariable>>();
+        _markerVars = new LinkedHashMap<ClConstraint, ClAbstractVariable>();
 
-        _resolve_pair = new Vector<ClFractionWrapper>(2);
-        _resolve_pair.addElement(new ClFractionWrapper(Fraction.ZERO));
-        _resolve_pair.addElement(new ClFractionWrapper(Fraction.ZERO));
+        _resolve_pair = new ArrayList<ClFractionWrapper>(2);
+        _resolve_pair.add(new ClFractionWrapper(Fraction.ZERO));
+        _resolve_pair.add(new ClFractionWrapper(Fraction.ZERO));
 
         _objective = new ClObjectiveVariable("Z");
 
-        _editVarMap = new Hashtable<ClVariable, ClEditInfo>();
+        _editVarMap = new LinkedHashMap<ClVariable, ClEditInfo>();
 
         _slackCounter = 0;
         _artificialCounter = 0;
@@ -79,7 +79,7 @@ public class ClSimplexSolver extends ClTableau {
         if (fTraceOn)
             fnenterprint("addConstraint: " + cn);
 
-        Vector<ClSlackVariable> eplus_eminus = new Vector<ClSlackVariable>(2);
+        List<ClSlackVariable> eplus_eminus = new ArrayList<ClSlackVariable>(2);
         ClFractionWrapper prevEConstant = new ClFractionWrapper();
         ClLinearExpression expr = newExpression(cn, /* output to: */
                 eplus_eminus, prevEConstant);
@@ -107,8 +107,8 @@ public class ClSimplexSolver extends ClTableau {
         if (cn.isEditConstraint()) {
             int i = _editVarMap.size();
             ClEditConstraint cnEdit = (ClEditConstraint) cn;
-            ClSlackVariable clvEplus = eplus_eminus.elementAt(0);
-            ClSlackVariable clvEminus = eplus_eminus.elementAt(1);
+            ClSlackVariable clvEplus = eplus_eminus.get(0);
+            ClSlackVariable clvEminus = eplus_eminus.get(1);
             _editVarMap.put(cnEdit.variable(), new ClEditInfo(cnEdit, clvEplus,
                     clvEminus, prevEConstant.getValue(), i));
         }
@@ -197,9 +197,7 @@ public class ClSimplexSolver extends ClTableau {
     public final ClSimplexSolver removeEditVarsTo(int n)
             throws ExCLInternalError {
         try {
-            for (Enumeration<ClVariable> e = _editVarMap.keys(); e
-                    .hasMoreElements();) {
-                ClVariable v = e.nextElement();
+            for (ClVariable v: new ArrayList<ClVariable>(_editVarMap.keySet())){
                 ClEditInfo cei = _editVarMap.get(v);
                 if (cei.Index() >= n) {
                     removeEditVar(v);
@@ -218,14 +216,14 @@ public class ClSimplexSolver extends ClTableau {
     // increasing weights so that the solver will try to satisfy the x
     // and y stays on the same point, rather than the x stay on one and
     // the y stay on another.
-    public final ClSimplexSolver addPointStays(Vector<?> listOfPoints)
+    public final ClSimplexSolver addPointStays(List<ClPoint> listOfPoints)
             throws ExCLRequiredFailure, ExCLInternalError {
         if (fTraceOn)
             fnenterprint("addPointStays" + listOfPoints);
         Fraction weight = Fraction.ONE;
         final Fraction multiplier = Fraction.TWO;
         for (int i = 0; i < listOfPoints.size(); i++) {
-            addPointStay((ClPoint) listOfPoints.elementAt(i), weight);
+            addPointStay(listOfPoints.get(i), weight);
             weight = weight.multiply(multiplier);
         }
         return this;
@@ -397,8 +395,8 @@ public class ClSimplexSolver extends ClTableau {
         if (cn.isStayConstraint()) {
             if (eVars != null) {
                 for (int i = 0; i < _stayPlusErrorVars.size(); i++) {
-                    eVars.remove(_stayPlusErrorVars.elementAt(i));
-                    eVars.remove(_stayMinusErrorVars.elementAt(i));
+                    eVars.remove(_stayPlusErrorVars.get(i));
+                    eVars.remove(_stayMinusErrorVars.get(i));
                 }
             }
         } else if (cn.isEditConstraint()) {
@@ -444,18 +442,16 @@ public class ClSimplexSolver extends ClTableau {
     // of a list of edits and then try to resolve with this function
     // (you'll get the wrong answer, because the indices will be wrong
     // in the ClEditInfo objects)
-    public final void resolve(Vector<ClFractionWrapper> newEditConstants)
+    public final void resolve(List<ClFractionWrapper> newEditConstants)
             throws ExCLInternalError {
         if (fTraceOn)
             fnenterprint("resolve" + newEditConstants);
-        for (Enumeration<ClVariable> e = _editVarMap.keys(); e
-                .hasMoreElements();) {
-            ClVariable v = e.nextElement();
+        for (ClVariable v : _editVarMap.keySet()) {
             ClEditInfo cei = _editVarMap.get(v);
             int i = cei.Index();
             try {
                 if (i < newEditConstants.size())
-                    suggestValue(v, newEditConstants.elementAt(i).getValue());
+                    suggestValue(v, newEditConstants.get(i).getValue());
             } catch (ExCLError err) {
                 throw new ExCLInternalError("Error during resolve");
             }
@@ -465,8 +461,8 @@ public class ClSimplexSolver extends ClTableau {
 
     // Convenience function for resolve-s of two variables
     public final void resolve(Fraction x, Fraction y) throws ExCLInternalError {
-        _resolve_pair.elementAt(0).setValue(x);
-        _resolve_pair.elementAt(1).setValue(y);
+        _resolve_pair.get(0).setValue(x);
+        _resolve_pair.get(1).setValue(y);
         resolve(_resolve_pair);
     }
 
@@ -610,7 +606,7 @@ public class ClSimplexSolver extends ClTableau {
         return bstr.toString();
     }
 
-    public Hashtable<ClConstraint, ClAbstractVariable> getConstraintMap() {
+    public Map<ClConstraint, ClAbstractVariable> getConstraintMap() {
         return _markerVars;
     }
 
@@ -723,11 +719,9 @@ public class ClSimplexSolver extends ClTableau {
         boolean foundUnrestricted = false;
         boolean foundNewRestricted = false;
 
-        final Hashtable<ClAbstractVariable, ClFractionWrapper> terms = expr.terms();
+        final Map<ClAbstractVariable, ClFractionWrapper> terms = expr.terms();
 
-        for (Enumeration<ClAbstractVariable> e = terms.keys(); e
-                .hasMoreElements();) {
-            final ClAbstractVariable v = e.nextElement();
+        for (ClAbstractVariable v : terms.keySet()) {
             final Fraction c = terms.get(v).getValue();
 
             if (foundUnrestricted) {
@@ -758,9 +752,7 @@ public class ClSimplexSolver extends ClTableau {
 
         Fraction coeff = Fraction.ZERO;
 
-        for (Enumeration<ClAbstractVariable> e = terms.keys(); e
-                .hasMoreElements();) {
-            final ClAbstractVariable v = e.nextElement();
+        for (ClAbstractVariable v : terms.keySet()) {
             final Fraction c = terms.get(v).getValue();
             if (!v.isDummy())
                 return null; // nope, no luck
@@ -847,11 +839,8 @@ public class ClSimplexSolver extends ClTableau {
                 if (expr.constant().compareTo(Fraction.ZERO) < 0) {
                     Fraction ratio = null;
                     Fraction r;
-                    Hashtable<ClAbstractVariable, ClFractionWrapper> terms = expr
-                            .terms();
-                    for (Enumeration<ClAbstractVariable> e = terms.keys(); e
-                            .hasMoreElements();) {
-                        ClAbstractVariable v = e.nextElement();
+                    Map<ClAbstractVariable, ClFractionWrapper> terms = expr.terms();
+                    for (ClAbstractVariable v : terms.keySet()) {
                         Fraction c = terms.get(v).getValue();
                         if (c.compareTo(Fraction.ZERO) > 0 && v.isPivotable()) {
                             Fraction zc = zRow.coefficientFor(v);
@@ -879,7 +868,7 @@ public class ClSimplexSolver extends ClTableau {
     // the constraint is non-required give its error variables an
     // appropriate weight in the objective function.
     protected final ClLinearExpression newExpression(ClConstraint cn,
-            Vector<ClSlackVariable> eplus_eminus, ClFractionWrapper prevEConstant) {
+            List<ClSlackVariable> eplusEminus, ClFractionWrapper prevEConstant) {
         if (fTraceOn)
             fnenterprint("newExpression: " + cn);
         if (fTraceOn)
@@ -893,10 +882,8 @@ public class ClSimplexSolver extends ClTableau {
         ClDummyVariable dummyVar = new ClDummyVariable();
         ClSlackVariable eminus = new ClSlackVariable();
         ClSlackVariable eplus = new ClSlackVariable();
-        final Hashtable<ClAbstractVariable, ClFractionWrapper> cnTerms = cnExpr.terms();
-        for (Enumeration<ClAbstractVariable> en = cnTerms.keys(); en
-                .hasMoreElements();) {
-            final ClAbstractVariable v = en.nextElement();
+        final Map<ClAbstractVariable, ClFractionWrapper> cnTerms = cnExpr.terms();
+        for (ClAbstractVariable v : cnTerms.keySet()) {
             Fraction c = cnTerms.get(v).getValue();
             final ClLinearExpression e = rowExpression(v);
             if (e == null)
@@ -958,11 +945,11 @@ public class ClSimplexSolver extends ClTableau {
                 insertErrorVar(cn, eminus);
                 insertErrorVar(cn, eplus);
                 if (cn.isStayConstraint()) {
-                    _stayPlusErrorVars.addElement(eplus);
-                    _stayMinusErrorVars.addElement(eminus);
+                    _stayPlusErrorVars.add(eplus);
+                    _stayMinusErrorVars.add(eminus);
                 } else if (cn.isEditConstraint()) {
-                    eplus_eminus.addElement(eplus);
-                    eplus_eminus.addElement(eminus);
+                    eplusEminus.add(eplus);
+                    eplusEminus.add(eminus);
                     prevEConstant.setValue(cnExpr.constant());
                 }
             }
@@ -991,10 +978,8 @@ public class ClSimplexSolver extends ClTableau {
         ClAbstractVariable exitVar = null;
         while (true) {
             Fraction objectiveCoeff = Fraction.ZERO;
-            Hashtable<ClAbstractVariable, ClFractionWrapper> terms = zRow.terms();
-            for (Enumeration<ClAbstractVariable> e = terms.keys(); e
-                    .hasMoreElements();) {
-                ClAbstractVariable v = e.nextElement();
+            Map<ClAbstractVariable, ClFractionWrapper> terms = zRow.terms();
+            for (ClAbstractVariable v : terms.keySet()) {
                 Fraction c = terms.get(v).getValue();
                 if (v.isPivotable() && c.compareTo(objectiveCoeff) < 0) {
                     objectiveCoeff = c;
@@ -1077,10 +1062,9 @@ public class ClSimplexSolver extends ClTableau {
             fnenterprint("resetStayConstants");
 
         for (int i = 0; i < _stayPlusErrorVars.size(); i++) {
-            ClLinearExpression expr = rowExpression(_stayPlusErrorVars
-                    .elementAt(i));
+            ClLinearExpression expr = rowExpression(_stayPlusErrorVars.get(i));
             if (expr == null)
-                expr = rowExpression(_stayMinusErrorVars.elementAt(i));
+                expr = rowExpression(_stayMinusErrorVars.get(i));
             if (expr != null)
                 expr.set_constant(Fraction.ZERO);
         }
@@ -1147,12 +1131,12 @@ public class ClSimplexSolver extends ClTableau {
     // the arrays of positive and negative error vars for the stay constraints
     // (need both positive and negative since they have only non-negative
     // values)
-    private Vector<ClSlackVariable> _stayMinusErrorVars;
-    private Vector<ClSlackVariable> _stayPlusErrorVars;
+    private List<ClSlackVariable> _stayMinusErrorVars;
+    private List<ClSlackVariable> _stayPlusErrorVars;
 
     // give error variables for a non required constraint,
     // maps to ClSlackVariable-s
-    private Hashtable<ClConstraint, Set<ClAbstractVariable>> _errorVars; // map
+    private Map<ClConstraint, Set<ClAbstractVariable>> _errorVars; // map
     // ClConstraint
     // to
     // Set
@@ -1160,7 +1144,7 @@ public class ClSimplexSolver extends ClTableau {
 
     // Return a lookup table giving the marker variable for each
     // constraint (used when deleting a constraint).
-    private Hashtable<ClConstraint, ClAbstractVariable> _markerVars; // map
+    private Map<ClConstraint, ClAbstractVariable> _markerVars; // map
     // ClConstraint
     // to
     // ClVariable
@@ -1172,7 +1156,7 @@ public class ClSimplexSolver extends ClTableau {
     // edit constraint (the edit plus/minus vars, the index [for old-style
     // resolve(Vector...) interface], and the previous value.
     // (ClEditInfo replaces the parallel vectors from the Smalltalk impl.)
-    private Hashtable<ClVariable, ClEditInfo> _editVarMap; // map
+    private Map<ClVariable, ClEditInfo> _editVarMap; // map
     // ClVariable
     // to a
     // ClEditInfo
@@ -1181,7 +1165,7 @@ public class ClSimplexSolver extends ClTableau {
     private long _artificialCounter;
     private long _dummyCounter;
 
-    private Vector<ClFractionWrapper> _resolve_pair;
+    private List<ClFractionWrapper> _resolve_pair;
 
     private Fraction _epsilon;
 

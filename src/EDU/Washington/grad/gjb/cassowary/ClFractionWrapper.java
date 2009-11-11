@@ -23,7 +23,7 @@ public class ClFractionWrapper {
         this(Fraction.ZERO);
     }
 
-    public final Object clone() {
+    public final ClFractionWrapper clone() {
         return new ClFractionWrapper(value);
     }
 

@@ -97,15 +97,15 @@ public class ClVariable extends ClAbstractVariable {
         return _attachedObject;
     }
 
-    public static void setVarMap(Hashtable<String, ClVariable> map) {
+    public static void setVarMap(Map<String, ClVariable> map) {
         _ourVarMap = map;
     }
 
-    public static Hashtable<String, ClVariable> getVarMap() {
+    public static Map<String, ClVariable> getVarMap() {
         return _ourVarMap;
     }
 
-    private static Hashtable<String, ClVariable> _ourVarMap;
+    private static Map<String, ClVariable> _ourVarMap;
 
     private Fraction _value;
 
