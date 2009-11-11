@@ -62,6 +62,10 @@ public class Box {
      *  false
      *  js> b2.overlaps(b4) == b4.overlaps(b2)
      *  true
+     *  js> b2.overlaps(b3)
+     *  false
+     *  js> b2.overlaps(b3) == b3.overlaps(b2)
+     *  true
      * @doc.test
      *  js> function f(i) { return Fraction.valueOf(i); }
      *  js> b1 = new Box(new Point(f(-4),f(0)), new Point(f(0),f(2)));
