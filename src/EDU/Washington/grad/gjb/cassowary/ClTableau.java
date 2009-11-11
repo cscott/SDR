@@ -21,9 +21,9 @@ class ClTableau extends CL {
     protected ClTableau() {
         _columns = new Hashtable<ClAbstractVariable, Set<ClAbstractVariable>>();
         _rows = new Hashtable<ClAbstractVariable, ClLinearExpression>();
-        _infeasibleRows = new Set<ClAbstractVariable>();
-        _externalRows = new Set<ClAbstractVariable>();
-        _externalParametricVars = new Set<ClAbstractVariable>();
+        _infeasibleRows = new LinkedHashSet<ClAbstractVariable>();
+        _externalRows = new LinkedHashSet<ClAbstractVariable>();
+        _externalParametricVars = new LinkedHashSet<ClAbstractVariable>();
     }
 
     // Variable v has been removed from an expression. If the
@@ -99,7 +99,7 @@ class ClTableau extends CL {
             ClAbstractVariable rowvar) {
         Set<ClAbstractVariable> rowset = _columns.get(param_var);
         if (rowset == null)
-            _columns.put(param_var, rowset = new Set<ClAbstractVariable>());
+            _columns.put(param_var, rowset = new LinkedHashSet<ClAbstractVariable>());
         rowset.add(rowvar);
     }
 
@@ -141,8 +141,7 @@ class ClTableau extends CL {
         Set<ClAbstractVariable> rows = _columns.remove(var);
 
         if (rows != null) {
-            for (Enumeration<ClAbstractVariable> e = rows.elements(); e.hasMoreElements();) {
-                ClAbstractVariable clv = e.nextElement();
+            for (ClAbstractVariable clv : rows) {
                 ClLinearExpression expr = _rows.get(clv);
                 expr.terms().remove(var);
             }
@@ -203,8 +202,7 @@ class ClTableau extends CL {
             traceprint(this.toString());
 
         Set<ClAbstractVariable> varset = _columns.get(oldVar);
-        for (Enumeration<ClAbstractVariable> e = varset.elements(); e.hasMoreElements();) {
-            ClAbstractVariable v = e.nextElement();
+        for (ClAbstractVariable v : varset) {
             ClLinearExpression row = _rows.get(v);
             row.substituteOut(oldVar, expr, v, this);
             if (v.isRestricted() && row.constant().compareTo(Fraction.ZERO) < 0) {
