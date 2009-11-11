@@ -1,0 +1,68 @@
+Test grand square N steps, promenade half way.
+
+sdr> sides face grand square
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> heads face grand square 8 steps
+|      4B>  2G<
+| 
+| 3G>            3B<
+| 
+| 1B>            1G<
+| 
+|      4G>  2B<
+sdr> /setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> heads promenade half way while the sides square thru
+| 1Gv  1Bv
+| 
+| 4B^  2G^
+| 
+| 4Gv  2Bv
+| 
+| 3B^  3G^
+sdr> boys run
+| 1B^  1Gv
+| 
+| 2G^  4Bv
+| 
+| 2B^  4Gv
+| 
+| 3G^  3Bv
+sdr> /// "initially twice, shazam"
+sdr> trade
+| 1G^  1Bv
+| 
+| 4B^  2Gv
+| 
+| 4G^  2Bv
+| 
+| 3B^  3Gv
+sdr> u turn back
+| 1Gv  1B^
+| 
+| 4Bv  2G^
+| 
+| 4Gv  2B^
+| 
+| 3Bv  3G^
+sdr> single file promenade home
+|      3Gv  3Bv
+| 
+| 2B>            4G<
+| 
+| 2G>            4B<
+| 
+|      1B^  1G^
+sdr> /exit
