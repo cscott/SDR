@@ -355,6 +355,8 @@ public abstract class GeneralFormationMatcher {
         // these next one is used to pass info into validate & back:
         /** Input dancers who are already assigned to a formation. */
         PersistentSet<Dancer> inFormation;
+        /** Size of the current best match. */
+        int bestMatchSize = 0;
         MatchInfo(Formation f, TaggedFormation goal,
                   List<Dancer> inputDancers, Indexer<Dancer> inputIndex,
                   PersistentSet<Dancer> inputEmpty,
@@ -446,13 +448,13 @@ public abstract class GeneralFormationMatcher {
                 if (!allowUnmatchedDancers)
                     return; // not a good assignment
             // we've got a complete assignment; save it.
-            if (!currentAssignment.isEmpty())
+            if (!currentAssignment.isEmpty() &&
+                currentAssignment.size() >= mi.bestMatchSize) {
+                mi.bestMatchSize = currentAssignment.size();
                 mi.matches.add(currentAssignment);
+            }
             return;
         }
-        // try NOT assigning this dancer
-        tryOne(mi, dancerNum+1, currentAssignment, inFormation,
-               allowUnmatchedDancers);
         // okay, try to assign the next dancer, possibly w/ some extra rotation
         for (int i=0; i < mi.numExtra; i++) {
             Fraction extraRot = Fraction.valueOf(i,mi.numExtra);
@@ -463,6 +465,13 @@ public abstract class GeneralFormationMatcher {
                 tryOne(mi, dancerNum+1, newAssignment, mi.inFormation,
                         allowUnmatchedDancers);
         }
+        // if we don't assign this dancer, is there any way we'll match the
+        // bestMatchSize?
+        if (currentAssignment.size()+(mi.numInput-(dancerNum+1)) < mi.bestMatchSize)
+            return; // no way we can beat the current best match
+        // try NOT assigning this dancer
+        tryOne(mi, dancerNum+1, currentAssignment, inFormation,
+               allowUnmatchedDancers);
     }
 
     /** Make a position with an ExactRotation from the given position with a
