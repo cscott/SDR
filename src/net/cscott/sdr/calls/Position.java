@@ -620,7 +620,7 @@ public class Position implements Comparable<Position> {
      *    >                  Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT);
      *  0,1/2,ne,[PASS_LEFT, ROLL_RIGHT]
      *  js> p.repr()
-     *  new Position(Fraction.ZERO, Fraction.ONE_HALF, ExactRotation.ONE_EIGHTH, Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT)
+     *  new Position(Fraction.valueOf(0), Fraction.valueOf(1,2), ExactRotation.ONE_EIGHTH, Position.Flag.PASS_LEFT, Position.Flag.ROLL_RIGHT)
      */
     public String repr() {
         StringBuilder sb = new StringBuilder();
