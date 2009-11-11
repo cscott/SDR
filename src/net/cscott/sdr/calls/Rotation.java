@@ -44,12 +44,48 @@ public class Rotation {
         // lowest terms, then use denom.  For example, a modulus of 2/3 is
         // equivalent to 1/3, since the sequence goes:
         //            2/3, 4/3 == 1/3 mod 1, 6/3 == 0 mod 1.
-        if (modulo.compareTo(Fraction.ZERO)==0)
+        if (modulo.equals(Fraction.ZERO))
             amount = Fraction.ZERO;
         else
             modulo = Fraction.valueOf(1, modulo.getDenominator());
-        return (modulo.compareTo(Fraction.ONE)==0) ?
-                new ExactRotation(amount) : new Rotation(amount, modulo);
+        if (modulo.equals(Fraction.ONE)) {
+            // avoid creating new objects for common values
+            switch (amount.getDenominator()) {
+            case 1:
+                switch (amount.getNumerator()) {
+                case 0: return ExactRotation.ZERO;
+                case 1: return ExactRotation.ONE;
+                default: break;
+                }
+                break;
+            case 2:
+                switch (amount.getNumerator()) {
+                case 1: return ExactRotation.ONE_HALF;
+                default: break;
+                }
+                break;
+            case 4:
+                switch (amount.getNumerator()) {
+                case -1: return ExactRotation.mONE_QUARTER;
+                case  1: return ExactRotation.ONE_QUARTER;
+                case  3: return ExactRotation.THREE_QUARTERS;
+                default: break;
+                }
+                break;
+            case 8:
+                switch (amount.getNumerator()) {
+                case 1: return ExactRotation.ONE_EIGHTH;
+                case 3: return ExactRotation.THREE_EIGHTHS;
+                case 5: return ExactRotation.FIVE_EIGHTHS;
+                case 7: return ExactRotation.SEVEN_EIGHTHS;
+                default: break;
+                }
+                break;
+            }
+            return new ExactRotation(amount);
+        } else {
+            return new Rotation(amount, modulo);
+        }
     }
     /** Return true iff this rotation is exact (that is, if the modulus is
      *  one). */
@@ -77,11 +113,16 @@ public class Rotation {
         if (abs.compareTo(Fraction.ZERO) < 0)
 	    abs = abs.subtract(Fraction.valueOf(abs.floor()));
         assert abs.compareTo(Fraction.ZERO) >= 0;
-        // now reduce by modulus.
-        Fraction f = abs.divide(this.modulus);
-        // just want the fractional part.
-	f = f.subtract(Fraction.valueOf(f.floor()))
-                    .multiply(this.modulus);
+        // quick out
+        Fraction f = abs;
+        if (f.compareTo(this.modulus) >= 0) {
+            // reduce by modulus.
+            f = abs.divide(this.modulus);
+            // just want the fractional part.
+            f = f.subtract(Fraction.valueOf(f.floor()))
+                 .multiply(this.modulus);
+        }
+        if (f==this.amount) return this; // quick out
         return create(f, this.modulus);
     }
     /** Rotations are equal iff their normalized rotation amount and

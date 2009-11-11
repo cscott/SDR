@@ -122,21 +122,18 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
         if (s=="left") return ExactRotation.mONE_QUARTER;
         return new ExactRotation(Fraction.valueOf(s));
     }
-    private static ExactRotation create(int num, int denom) {
-        return (ExactRotation) Rotation.create(Fraction.valueOf(num,denom),Fraction.ONE);
-    }
     /** Common rotations. */
     public static final ExactRotation
-        mONE_QUARTER = create(-1,4),
-        ZERO = create(0,8),
-	ONE_EIGHTH = create(1,8),
-	ONE_QUARTER = create(2,8),
-	THREE_EIGHTHS = create(3,8),
-	ONE_HALF = create(4,8),
-	FIVE_EIGHTHS = create(5,8),
-	THREE_QUARTERS = create(6,8),
-	SEVEN_EIGHTHS = create(7,8),
-	ONE = create(8,8);
+        mONE_QUARTER = new ExactRotation(Fraction.valueOf(-1,4)),
+        ZERO = new ExactRotation(Fraction.valueOf(0,8)),
+	ONE_EIGHTH = new ExactRotation(Fraction.valueOf(1,8)),
+	ONE_QUARTER = new ExactRotation(Fraction.valueOf(2,8)),
+	THREE_EIGHTHS = new ExactRotation(Fraction.valueOf(3,8)),
+	ONE_HALF = new ExactRotation(Fraction.valueOf(4,8)),
+	FIVE_EIGHTHS = new ExactRotation(Fraction.valueOf(5,8)),
+	THREE_QUARTERS = new ExactRotation(Fraction.valueOf(6,8)),
+	SEVEN_EIGHTHS = new ExactRotation(Fraction.valueOf(7,8)),
+	ONE = new ExactRotation(Fraction.valueOf(8,8));
     /** Common absolute rotations. */
     public static final ExactRotation
         NORTH=ZERO, EAST=ONE_QUARTER, SOUTH=ONE_HALF, WEST=THREE_QUARTERS;

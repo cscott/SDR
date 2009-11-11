@@ -83,21 +83,65 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      */
     public static final Fraction ONE = new Fraction(1, 1);
     /**
+     * <code>Fraction</code> representation of -2.
+     */
+    public static final Fraction mTWO = new Fraction(-2, 1);
+    /**
      * <code>Fraction</code> representation of 2.
      */
     public static final Fraction TWO = new Fraction(2, 1);
+    /**
+     * <code>Fraction</code> representation of -3.
+     */
+    public static final Fraction mTHREE = new Fraction(-3, 1);
+    /**
+     * <code>Fraction</code> representation of 3.
+     */
+    public static final Fraction THREE = new Fraction(3, 1);
+    /**
+     * <code>Fraction</code> representation of -4.
+     */
+    public static final Fraction mFOUR = new Fraction(-4, 1);
+    /**
+     * <code>Fraction</code> representation of 4.
+     */
+    public static final Fraction FOUR = new Fraction(4, 1);
+    /**
+     * <code>Fraction</code> representation of -1/2.
+     */
+    public static final Fraction mONE_HALF = new Fraction(-1, 2);
     /**
      * <code>Fraction</code> representation of 1/2.
      */
     public static final Fraction ONE_HALF = new Fraction(1, 2);
     /**
+     * <code>Fraction</code> representation of -3/2.
+     */
+    public static final Fraction mTHREE_HALVES = new Fraction(-3, 2);
+    /**
+     * <code>Fraction</code> representation of 3/2.
+     */
+    public static final Fraction THREE_HALVES = new Fraction(3, 2);
+    /**
+     * <code>Fraction</code> representation of -1/3.
+     */
+    public static final Fraction mONE_THIRD = new Fraction(-1, 3);
+    /**
      * <code>Fraction</code> representation of 1/3.
      */
     public static final Fraction ONE_THIRD = new Fraction(1, 3);
     /**
+     * <code>Fraction</code> representation of -2/3.
+     */
+    public static final Fraction mTWO_THIRDS = new Fraction(-2, 3);
+    /**
      * <code>Fraction</code> representation of 2/3.
      */
     public static final Fraction TWO_THIRDS = new Fraction(2, 3);
+    /**
+     * <code>Fraction</code> representation of -1/4.
+     */
+    public static final Fraction mONE_QUARTER = new Fraction(-1, 4);
     /**
      * <code>Fraction</code> representation of 1/4.
      */
@@ -107,7 +151,11 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      * @deprecated This is an unreduced fraction for backwards-compatibility,
      *   and is prone to overflow during arithmetic.  Use ONE_HALF instead.
      */
-    public static final Fraction TWO_QUARTERS = getFraction(2, 4);
+    //public static final Fraction TWO_QUARTERS = getFraction(2, 4);
+    /**
+     * <code>Fraction</code> representation of -3/4.
+     */
+    public static final Fraction mTHREE_QUARTERS = new Fraction(-3, 4);
     /**
      * <code>Fraction</code> representation of 3/4.
      */
@@ -262,34 +310,51 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
         int gcd = greatestCommonDivisor(numerator, denominator);
         numerator /= gcd;
         denominator /= gcd;
+        return _valueOf(numerator, denominator);
+    }
+    /** Return a fraction from reduced/canonical numerator/denominator pairs,
+     *  reusing objects for common numbers. */
+    private static Fraction _valueOf(int numerator, int denominator) {
         // reuse existing objects if possible
         switch (denominator) {
         case 1:
             switch (numerator) {
+            case -4: return Fraction.mFOUR;
+            case -3: return Fraction.mTHREE;
+            case -2: return Fraction.mTWO;
             case -1: return Fraction.mONE;
-            case  0: assert false; return Fraction.ZERO;
+            case  0: return Fraction.ZERO;
             case  1: return Fraction.ONE;
             case  2: return Fraction.TWO;
+            case  3: return Fraction.THREE;
+            case  4: return Fraction.FOUR;
             default: break;
             }
             break;
         case 2:
             switch (numerator) {
-            case 1: return Fraction.ONE_HALF;
+            case -3: return Fraction.mTHREE_HALVES;
+            case -1: return Fraction.mONE_HALF;
+            case  1: return Fraction.ONE_HALF;
+            case  3: return Fraction.THREE_HALVES;
             default: break;
             }
             break;
         case 3:
             switch (numerator) {
-            case 1: return Fraction.ONE_THIRD;
-            case 2: return Fraction.TWO_THIRDS;
+            case -2: return Fraction.mTWO_THIRDS;
+            case -1: return Fraction.mONE_THIRD;
+            case  1: return Fraction.ONE_THIRD;
+            case  2: return Fraction.TWO_THIRDS;
             default: break;
             }
             break;
         case 4:
             switch (numerator) {
-            case 1: return Fraction.ONE_QUARTER;
-            case 3: return Fraction.THREE_QUARTERS;
+            case -3: return Fraction.mTHREE_QUARTERS;
+            case -1: return Fraction.mONE_QUARTER;
+            case  1: return Fraction.ONE_QUARTER;
+            case  3: return Fraction.THREE_QUARTERS;
             default: break;
             }
             break;
@@ -322,7 +387,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      * @return a new fraction instance that is equal to the value
      */
     public static Fraction valueOf(int value) {
-        return new Fraction(value,1);
+        return _valueOf(value, 1);
     }
 
     /**
@@ -746,9 +811,9 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
             throw new ArithmeticException("overflow: can't negate numerator");
         }
         if (numerator<0) {
-            return new Fraction(-denominator, -numerator);
+            return _valueOf(-denominator, -numerator);
         } else {
-            return new Fraction(denominator, numerator);
+            return _valueOf(denominator, numerator);
         }
     }
 
@@ -762,7 +827,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
         if (numerator==Integer.MIN_VALUE) {
             throw new ArithmeticException("overflow: too large to negate");
         }
-        return new Fraction(-numerator, denominator);
+        return _valueOf(-numerator, denominator);
     }
 
     /**
@@ -977,7 +1042,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
             // result is ( (u*v' +/- u'v) / u'v')
             int uvp = mulAndCheck(numerator, fraction.denominator);
             int upv = mulAndCheck(fraction.numerator, denominator);
-            return new Fraction
+            return _valueOf
                 (isAdd ? addAndCheck(uvp, upv) : subAndCheck(uvp, upv),
                  mulPosAndCheck(denominator, fraction.denominator));
         }
@@ -1000,7 +1065,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
             throw new ArithmeticException
                 ("overflow: numerator too large after multiply");
         }
-        return new Fraction
+        return _valueOf
             (w.intValue(),
              mulPosAndCheck(denominator/d1, fraction.denominator/d2));
     }
@@ -1031,14 +1096,27 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
         if (fraction == null) {
             throw new IllegalArgumentException("The fraction must not be null");
         }
-        if (numerator == 0 || fraction.numerator == 0) {
-            return ZERO;
+        // quick outs for common cases.
+        if (denominator == 1) {
+            switch (numerator) {
+            case 0: return ZERO;
+            case 1: return fraction;
+            case -1: return fraction.negate();
+            default: break;
+            }
+        }
+        if (fraction.denominator == 1) {
+            switch (fraction.numerator) {
+            case 0: return ZERO;
+            case 1: return this;
+            case -1: return this.negate();
+            }
         }
         // knuth 4.5.1
         // make sure we don't overflow unless the result *must* overflow.
         int d1 = greatestCommonDivisor(numerator, fraction.denominator);
         int d2 = greatestCommonDivisor(fraction.numerator, denominator);
-        return new Fraction
+        return _valueOf
             (mulAndCheck(numerator/d1, fraction.numerator/d2),
              mulPosAndCheck(denominator/d2, fraction.denominator/d1));
     }
@@ -1285,7 +1363,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
          * @return a simplified fraction.
          */
         public Fraction reduce() {
-            return new Fraction(this.numerator, this.denominator);
+            return _valueOf(this.numerator, this.denominator);
         }
         /** Invert this fraction, keeping it unsimplified.
          * @return an unreduced fraction with denominator equal to the
