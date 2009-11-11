@@ -15,7 +15,7 @@ public class BreatheTest {
     /**
      * Test formation expansion.
      * @doc.test
-     *  js> BreatheTest.testDiamondBreathing()
+     *  js> new BreatheTest().testDiamondBreathing()
      */
     @Test
     public void testDiamondBreathing() throws ExCLError {
@@ -87,7 +87,7 @@ public class BreatheTest {
      * </pre>
      * But for simplicity, only doing half the formation.
      * @doc.test
-     *  js> BreatheTest.testDiamondTrimming()
+     *  js> new BreatheTest().testDiamondTrimming()
      */
     @Test
     public void testDiamondTrimming() throws ExCLError {
