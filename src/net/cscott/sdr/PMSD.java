@@ -1,6 +1,7 @@
 package net.cscott.sdr;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,6 +10,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -404,8 +409,8 @@ public class PMSD {
 
     /** Console front end entry point. */
     public static void main(String[] args) throws IOException {
-        final PrintWriter pw = new PrintWriter(System.out, true);
         if (args.length > 0) {
+            PrintWriter pw = new PrintWriter(System.out, true);
             // ooh, got an argument!
             // run test in its own javascript context
             String result =
@@ -415,24 +420,56 @@ public class PMSD {
             return;
         }
         // console i/o
-        pw.println("Welcome to "+Version.PACKAGE_STRING);
-        repl(new ReaderWriter() {
-            jline.ConsoleReader cr = null;
-            @Override
-            String sourceName() { return "<stdin>"; }
-            @Override
-            String readLine(State state, String prompt) throws IOException {
-                if (cr==null) {
-                    // initialize JLine!
-                    cr = new jline.ConsoleReader();
-                    cr.addCompletor(new SDRCallCompletor(state));
-                    cr.addCompletor(new JavascriptCompletor(state));
-                }
-                return cr.readLine(prompt);
+        final Console c = System.console();
+        // create ReaderWriter
+        ReaderWriter rw;
+        try {
+            // try to use JLine
+            rw = new JLineReaderWriter(c!=null ? c.writer() :
+                                       new PrintWriter(System.out, true));
+        } catch (Throwable t) {
+            if (c!=null) {
+                // try to use the System console, if available.
+                rw = new ReaderWriter() {
+                    @Override
+                    String sourceName() { return "<stdin>"; }
+                    @Override
+                    String readLine(State s, String prompt) throws IOException {
+                        return c.readLine("%s", prompt);
+                    }
+                    @Override
+                    PrintWriter writer() { return c.writer(); }
+                };
+            } else {
+                // ok, give up: use the simplest possible thing that could work
+                rw = new ReaderWriter() {
+                    PrintWriter pw = new PrintWriter(System.out, true);
+                    @Override
+                    String sourceName() { return "<stdin>"; }
+                    @Override
+                    String readLine(State s, String prompt) throws IOException {
+                        pw.print(prompt);
+                        pw.flush();
+                        StringBuilder sb = new StringBuilder();
+                        do {
+                            int c = System.in.read();
+                            if (sb.length()==0) {
+                                if (c==-1)
+                                    return null; // EOF
+                                if (c=='\n' || c=='\r')
+                                    continue; // ignore.
+                            } else if (c==-1 || c=='\n' || c=='\r')
+                                return sb.toString();
+                            sb.append((char)c);
+                        } while(true);
+                    }
+                    @Override
+                    PrintWriter writer() { return pw; }
+                };
             }
-            @Override
-            PrintWriter writer() { return pw; }
-            });
+        }
+        rw.writer().println("Welcome to "+Version.PACKAGE_STRING);
+        repl(rw);
     }
     /** The main read-eval-print loop.
      *  Creates a new JavaScript score/context. */
@@ -519,13 +556,87 @@ public class PMSD {
         }
         s._isDone = wasDone; // support nested invocations.
     }
+    /** Attempt to create a ReaderWriter based on JLine, without a
+     *  compile-time dependency.  Will throw an exception if JLine is not
+     *  available at runtime.
+     */
+    static class JLineReaderWriter extends ReaderWriter {
+        PrintWriter pw;
+        Class<?> consoleReaderClass;
+        Class<?> completorClass;
+        Method addCompletor;
+        Method readLine;
+        Object cr = null;
+
+        JLineReaderWriter(PrintWriter pw) throws ClassNotFoundException, NoSuchMethodException {
+            this.pw = pw;
+            this.consoleReaderClass = Class.forName
+                ("jline.ConsoleReader", false, PMSD.class.getClassLoader());
+            this.completorClass = Class.forName
+                ("jline.Completor", false, PMSD.class.getClassLoader());
+            this.addCompletor = consoleReaderClass.getMethod
+                ("addCompletor", completorClass);
+            this.readLine = consoleReaderClass.getMethod
+                ("readLine", String.class);
+        }
+        private Object initJLine(State state)
+            throws InstantiationException, IllegalAccessException,
+                   IllegalArgumentException, InvocationTargetException {
+            // initialize JLine!
+            Object consoleReader = consoleReaderClass.newInstance();
+            // add JLineCompletors
+            addCompletor(consoleReader, new SDRCallCompletor(state));
+            addCompletor(consoleReader, new JavascriptCompletor(state));
+            return consoleReader;
+        }
+        private void addCompletor(Object consoleReader,final JLineCompletor jlc)
+            throws IllegalArgumentException, IllegalAccessException,
+                   InvocationTargetException {
+            // Wow, this is ugly!
+            InvocationHandler handler = new InvocationHandler() {
+                @SuppressWarnings("unchecked")
+                public Object invoke(Object proxy, Method method, Object[] args)
+                    throws Throwable {
+                    assert args.length == 3;
+                    return jlc.complete((String) args[0],
+                            (Integer) args[1],
+                            (List) args[2]);
+                }
+            };
+            Object proxy = Proxy.newProxyInstance
+                (PMSD.class.getClassLoader(),
+                 new Class[] { completorClass },
+                 handler);
+            addCompletor.invoke(consoleReader, proxy);
+        }
+        @Override
+        String sourceName() { return "<stdin>"; }
+        @Override
+        String readLine(State state, String prompt) throws IOException {
+            try {
+                if (cr==null) {
+                    cr=initJLine(state);
+                }
+                return (String) readLine.invoke(cr, prompt);
+            } catch (Throwable t) {
+                throw new IOException("Couldn't read line using JLine", t);
+            }
+        }
+        @Override
+        PrintWriter writer() { return pw; }
+    }
+    /** This is our version of jline.Completor, defined here to avoid a
+     *  compile-time (or run-time) dependency on jline. */
+    static abstract class JLineCompletor {
+        public abstract int complete(String buffer, int cursor,
+                                     List<String> candidates);
+    }
     /** JLine completion engine for call names. */
-    static class SDRCallCompletor implements jline.Completor {
+    static class SDRCallCompletor extends JLineCompletor {
         final State state;
         SDRCallCompletor(State state) { this.state = state; }
 
-        @SuppressWarnings("unchecked")
-        public int complete(String buffer, int cursor, List candidates) {
+        public int complete(String buffer, int cursor, List<String> candidates) {
             String start = (buffer == null) ? "" : buffer;
             // javascript commands start with "/"
             if (start.startsWith("/")) return -1;
@@ -545,11 +656,11 @@ public class PMSD {
         }
     }
     /** This is borrowed from ShellLine.FlexibleCompletor in Rhino. */
-    static class JavascriptCompletor implements jline.Completor {
+    static class JavascriptCompletor extends JLineCompletor {
         Scriptable global;
         JavascriptCompletor(Scriptable global) { this.global = global; }
-        @SuppressWarnings("unchecked")
-        public int complete(String buffer, int cursor, List candidates) {
+
+        public int complete(String buffer, int cursor, List<String> candidates) {
             // only try to complete strings starting with "/"
             if (buffer==null || !buffer.startsWith("/")) return -1;
             List<String> clist = new ArrayList<String>();
