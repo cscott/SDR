@@ -535,63 +535,9 @@ public abstract class SelectorList {
     }
 
     /** Siamese selector.  Used in Siamese concept (C1). */
-    public static final Selector SIAMESE = new Selector() {
-        @Override
-        public FormationMatch match(Formation f) throws NoMatchException {
-            // this should really do a simultaneous match against *both* the
-            // tandem and couples formation.  But hack around it for now by
-            // trying first one, and then the other.  It's not certain that
-            // max matches of siamese necessarily contains either max matches
-            // of tandem or max matches of couples... but it's close enough
-            // for now. XXX
-            for (List<NamedTaggedFormation> targets :
-                l(l(FormationList.COUPLE, FormationList.TANDEM),
-                  l(FormationList.TANDEM, FormationList.COUPLE))) {
-                try {
-                    FormationMatch fm1 =
-                        GeneralFormationMatcher.doMatch(f, targets.get(0),
-                                                        true/*allow unmatched*/,
-                                                        false/* no phantoms */);
-                    Set<Dancer> unmatched = new LinkedHashSet<Dancer>();
-                    for (Dancer d : fm1.unmatched)
-                        unmatched.addAll(fm1.matches.get(d).dancers());
-                    Formation ff = f.select(unmatched).onlySelected();
-                    if (ff.dancers().isEmpty())
-                        continue; // none are targets[0]
-                    if (fm1.unmatched.isEmpty())
-                        continue; // all are targets[0]
-                    FormationMatch fm2 =
-                        GeneralFormationMatcher.doMatch(ff, targets.get(1),
-                                                        false/* no unmatched */,
-                                                        false/* no phantoms */);
-                    // glue fm1 and fm2 together.
-                    Map<Dancer,Position> metaMap =
-                        new LinkedHashMap<Dancer,Position>();
-                    Map<Dancer,TaggedFormation> matches =
-                        new LinkedHashMap<Dancer,TaggedFormation>();
-                    for (FormationMatch fm : l(fm1, fm2)) {
-                        for (Dancer d : fm.matches.keySet()) {
-                            if (fm.unmatched.contains(d))
-                                continue; // unmatched dancer
-                            TaggedFormation tf = fm.matches.get(d);
-                            matches.put(d, tf);
-                            Point center = f.select(tf.dancers()).onlySelected()
-                                            .bounds().center();
-                            Position newP = fm.meta.location(d);
-                            newP = newP.relocate(center.x, center.y,
-                                                 newP.facing);
-                            metaMap.put(d, newP);
-                        }
-                    }
-                    Formation metaF = new Formation(metaMap);
-                    metaF = Breather.breathe(metaF); // take out extra space
-                    return new FormationMatch(metaF, matches,
-                                              Collections.<Dancer>emptySet());
-                } catch (NoMatchException nme) { /* try the other one */ }
-            }
-            throw new NoMatchException("siamese","Siamese dancers not matched");
-        }
-    };
+    public static final Selector SIAMESE =
+        GeneralFormationMatcher.makeSelector(FormationList.COUPLE,
+                                             FormationList.TANDEM);
 
     // selector combinator
     /**

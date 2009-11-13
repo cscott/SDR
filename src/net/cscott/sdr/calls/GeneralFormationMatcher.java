@@ -23,18 +23,16 @@ import net.cscott.jutil.*;
  * @author C. Scott Ananian
  */
 @RunWith(value=JDoctestRunner.class)
-public abstract class GeneralFormationMatcher {
+public class GeneralFormationMatcher {
+    private GeneralFormationMatcher() {}
     // currying, oh, my
-    public static Selector makeSelector(final TaggedFormation goal) {
+    public static Selector makeSelector(final TaggedFormation... goals) {
         return new Selector() {
             public FormationMatch match(Formation f) throws NoMatchException {
-                return doMatch(f, goal, false, false);
+                return doMatch(f, Arrays.asList(goals), false, false);
             }
             public String toString() {
-		// special case for "standard" formations.
-                if (goal instanceof NamedTaggedFormation)
-                    return ((NamedTaggedFormation)goal).getName();
-                return goal.toString();
+                return targetName(Arrays.asList(goals));
 	    }
         };
     }
@@ -134,13 +132,80 @@ public abstract class GeneralFormationMatcher {
             boolean allowUnmatchedDancers,
             boolean usePhantoms)
     throws NoMatchException {
+        return doMatch(input, Collections.singletonList(goal),
+                       allowUnmatchedDancers, usePhantoms);
+    }
+    private static String targetName(List<TaggedFormation> goals) {
+        StringBuilder sb = new StringBuilder();
+        for (TaggedFormation goal : goals) {
+            String name = (goal instanceof NamedTaggedFormation) ?
+                    ((NamedTaggedFormation) goal).getName() : goal.toString();
+            if (sb.length()>0) sb.append('&');
+            sb.append(name);
+        }
+        return sb.toString();
+    }
+    /** sort so that first dancers' target rotations are most constrained,
+     *  for efficiency. (ie largest rotation moduli are first) */
+    private static Comparator<Position> PCOMP = new Comparator<Position>() {
+        public int compare(Position p1, Position p2) {
+            int c = -p1.facing.modulus.compareTo(p2.facing.modulus);
+            if (c!=0) return c;
+            return p1.compareTo(p2);
+        }
+    };
+    /** Allow multiple simultaneous goal formations.
+     * @doc.test A successful match on a Siamese Diamond.
+     *  js> importPackage(net.cscott.sdr.util); // for Fraction
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> f = Formation.SQUARED_SET; undefined
+     *  js> for each (d in StandardDancer.values()) {
+     *    >   if (d.isHead()) continue;
+     *    >   p = f.location(d).forwardStep(Fraction.valueOf(2), true).
+     *    >                     turn(Fraction.valueOf(1,4), false);
+     *    >   f = f.move(d, p);
+     *    > }; f.toStringDiagram('|');
+     *  |3Gv  3Bv
+     *  |
+     *  |4Bv  2G^
+     *  |
+     *  |4Gv  2B^
+     *  |
+     *  |1B^  1G^
+     *  js> goals = java.util.Arrays.asList(FormationList.TANDEM,
+     *    >                                 FormationList.COUPLE); undefined
+     *  js> GeneralFormationMatcher.doMatch(f, goals, false, false)
+     *    AAv
+     *  
+     *  BBv  CC^
+     *  
+     *    DD^
+     *  AA:
+     *     3B^  3G^
+     *   [3B: BEAU; 3G: BELLE]
+     *  BB:
+     *     4G^
+     *     
+     *     4B^
+     *   [4G: LEADER; 4B: TRAILER]
+     *  CC:
+     *     2G^
+     *     
+     *     2B^
+     *   [2G: LEADER; 2B: TRAILER]
+     *  DD:
+     *     1B^  1G^
+     *   [1B: BEAU; 1G: BELLE]
+     */
+    public static FormationMatch doMatch(
+                final Formation input,
+                final List<TaggedFormation> goals,
+                boolean allowUnmatchedDancers,
+                boolean usePhantoms)
+        throws NoMatchException {
         assert !usePhantoms : "matching with phantoms is not implemented";
         // get an appropriate formation name
-        String target;
-        if (goal instanceof NamedTaggedFormation)
-            target = ((NamedTaggedFormation)goal).getName();
-        else
-            target = goal.toString();
+        String target = targetName(goals);
 
         // okay, try to perform match by trying to use each dancer in turn
         // as dancer #1 in the goal formation.  We then validate the match:
@@ -156,27 +221,19 @@ public abstract class GeneralFormationMatcher {
         // match is ambiguous and we throw NoMatchException.
         // (note that we ignore unselected dancers in formation f)
         // (note that 'dancer #1' is really 'dancer #0' below)
-        if (goal.dancers().size() > input.dancers().size())
+        assert goals.size() > 0;
+        int minGoalDancers = goals.get(0).dancers().size();
+        List<GoalInfo> goalInfo = new ArrayList<GoalInfo>(goals.size());
+        for (TaggedFormation goal : goals) {
+            // create GoalInfo
+            goalInfo.add(new GoalInfo(goal));
+            minGoalDancers = Math.min(minGoalDancers, goal.dancers().size());
+        }
+        if (minGoalDancers > input.dancers().size())
             throw new NoMatchException(target, "goal is too large");
 
-        // Make a canonical ordering for the goal dancers.
-        List<Dancer> goalDancers=new ArrayList<Dancer>(goal.dancers());
-        // sort so that first dancers' target rotations are most constrained,
-        // for efficiency. (ie largest rotation moduli are first)
-        final Comparator<Position> pcomp = new Comparator<Position>() {
-            public int compare(Position p1, Position p2) {
-                int c = -p1.facing.modulus.compareTo(p2.facing.modulus);
-                if (c!=0) return c;
-                return p1.compareTo(p2);
-            }
-        };
-        Collections.sort(goalDancers, new Comparator<Dancer>() {
-            public int compare(Dancer d1, Dancer d2) {
-                return pcomp.compare(goal.location(d1), goal.location(d2));
-            }
-        });
-        SetFactory<Dancer> gsf = new BitSetFactory<Dancer>(goalDancers);
-        // sort the input dancers the same way: real dancers before phantoms.
+        // sort the input dancers the same as the goal dancers: real dancers
+        // before phantoms.
         // there must be at least one non-phantom dancer in the formation.
         // in addition, group symmetric dancers together in the order, so
         // that the resulting matches tend to symmetry.
@@ -184,24 +241,32 @@ public abstract class GeneralFormationMatcher {
         Collections.sort(inputDancers, new Comparator<Dancer>() {
             /** minimum of position rotated through 4 quarter rotations */
             private Position qtrMin(Position p) {
-                return Collections.min(rotated(p), pcomp);
+                if (!qtrMinCache.containsKey(p))
+                    qtrMinCache.put(p, Collections.min(rotated(p), PCOMP));
+                return qtrMinCache.get(p);
             }
             /** minimum of position rotated by 180 degrees */
             private Position halfMin(Position p) {
-                Position pprime = p.rotateAroundOrigin(ExactRotation.ONE_HALF);
-                return Collections.min(Arrays.asList(p,pprime), pcomp);
+                if (!halfMinCache.containsKey(p)) {
+                    Position pprime = p.rotateAroundOrigin(ExactRotation.ONE_HALF);
+                    Position r = Collections.min(Arrays.asList(p,pprime), PCOMP);
+                    halfMinCache.put(p, r);
+                }
+                return halfMinCache.get(p);
             }
             public int compare(Dancer d1, Dancer d2) {
                 Position p1 = input.location(d1), p2 = input.location(d2);
                 // first comparison is against min of quarter-rotated versions
-                int c = pcomp.compare(qtrMin(p1), qtrMin(p2));
+                int c = PCOMP.compare(qtrMin(p1), qtrMin(p2));
                 if (c!=0) return c;
                 // now, compare against min of half-rotated versions
-                c = pcomp.compare(halfMin(p1), halfMin(p2));
+                c = PCOMP.compare(halfMin(p1), halfMin(p2));
                 if (c!=0) return c;
                 // finally, break ties by comparing against "real" position
-                return pcomp.compare(p1, p2);
+                return PCOMP.compare(p1, p2);
             }
+            private Map<Position,Position> halfMinCache = new HashMap<Position,Position>();
+            private Map<Position,Position> qtrMinCache = new HashMap<Position,Position>();
         });
         final Indexer<Dancer> inputIndex = new Indexer<Dancer>() {
             Map<Dancer,Integer> index = new HashMap<Dancer,Integer>();
@@ -220,22 +285,11 @@ public abstract class GeneralFormationMatcher {
             } 
         });
         
-        // Identify dancers who are symmetric to dancer #1
-        assert goal.isCentered(); // Assumes center of goal formation is 0,0
-        Dancer gd0 = goalDancers.get(0);
-        Set<Dancer> eq0 = gsf.makeSet();
-        Position p0 = goal.location(gd0).normalize(); // remember p0.facing is most exact
-        for (Dancer gd : goalDancers)
-            for (Position rp: rotated(goal.location(gd)))
-                    if (rp.x.equals(p0.x) && rp.y.equals(p0.y)&& 
-                            rp.facing.includes(p0.facing))
-                        eq0.add(gd);
-        assert eq0.contains(gd0);//at the very least, gd0 is symmetric to itself
-        
         // now try setting each dancer in 'f' to d0 in the goal formation.
 
         // Construct MatchInfo & initial (empty) assignment
-        MatchInfo mi = new MatchInfo(input, goal, inputDancers, inputIndex, inputEmpty, goalDancers, eq0);
+        MatchInfo mi = new MatchInfo(input, goalInfo, minGoalDancers,
+                                     inputDancers, inputIndex, inputEmpty);
         PersistentSet<OneMatch> initialAssignment = new PersistentSet<OneMatch>
         (new Comparator<OneMatch>(){
             public int compare(OneMatch o1, OneMatch o2) {
@@ -277,14 +331,14 @@ public abstract class GeneralFormationMatcher {
             assert inP.facing instanceof ExactRotation :
                 "at least one real dancer must be in formation";
             // make an ExactRotation for pGoal, given the extraRot
-            Position goP = makeExact(mi.goalPositions.get(0), om.extraRot);
+            Position goP = makeExact(om.gi.goalPositions.get(0), om.extraRot);
             Warp warpF = Warp.rotateAndMove(goP, inP);
             Warp warpB = Warp.rotateAndMove(inP, goP);
             ExactRotation rr = (ExactRotation) inP.facing.subtract(goP.facing.amount);
             Map<Dancer,Position> subPos = new LinkedHashMap<Dancer,Position>();
             MultiMap<Dancer,Tag> subTag = new GenericMultiMap<Dancer,Tag>();
-            for (Dancer goD : mi.goalDancers) {
-                goP = goal.location(goD);
+            for (Dancer goD : om.gi.goalDancers) {
+                goP = om.gi.goal.location(goD);
                 // warp to find which input dancer corresponds to this one
                 inP = warpF.warp(goP, Fraction.ZERO);
                 Dancer inD = mi.inputPositionMap.get(zeroRotation(inP));
@@ -292,7 +346,7 @@ public abstract class GeneralFormationMatcher {
                 goP = warpB.warp(input.location(inD), Fraction.ZERO);
                 // add to this subformation.
                 subPos.put(inD, goP);
-                subTag.addAll(inD, goal.tags(goD));
+                subTag.addAll(inD, om.gi.goal.tags(goD));
                 unmappedInputDancers.remove(inD);
             }
             TaggedFormation tf =
@@ -332,13 +386,54 @@ public abstract class GeneralFormationMatcher {
                                   unmatchedMetaDancers);
     }
     private static class OneMatch {
+        /** Which goal formation. */
+        public final GoalInfo gi;
         /** This input dancer is #1 in the goal formation. */
         public final Dancer dancer;
         /** This is the 'extra rotation' needed to align the goal formation,
          * if dancer #1 in the goal formation allows multiple orientations. */
         public final Fraction extraRot;
-        OneMatch(Dancer dancer, Fraction extraRot) {
-            this.dancer = dancer; this.extraRot = extraRot;
+        OneMatch(GoalInfo gi, Dancer dancer, Fraction extraRot) {
+            this.gi = gi; this.dancer = dancer; this.extraRot = extraRot;
+        }
+    }
+    private static class GoalInfo {
+        final List<Dancer> goalDancers;
+        final List<Position> goalPositions;
+        final TaggedFormation goal;
+        final Set<Dancer> eq0; // goal dancers who are symmetric to goal dancer #0
+        final int numExtra; // number of 'extra' rotations we'll try to match
+        GoalInfo(final TaggedFormation goal) {
+            this.goal = goal;
+            // make a canonical ordering for the goal dancers
+            this.goalDancers=new ArrayList<Dancer>(goal.dancers());
+            Collections.sort(this.goalDancers, new Comparator<Dancer>() {
+                public int compare(Dancer d1, Dancer d2) {
+                    return PCOMP.compare(goal.location(d1), goal.location(d2));
+                }
+            });
+            SetFactory<Dancer> gsf = new BitSetFactory<Dancer>(goalDancers);
+            // Identify dancers who are symmetric to dancer #0
+            assert goal.isCentered(); // Assumes center of goal formation is 0,0
+            Dancer gd0 = goalDancers.get(0);
+            this.eq0 = gsf.makeSet();
+            Position p0 = goal.location(gd0).normalize(); // remember p0.facing is most exact
+            for (Dancer gd : goalDancers)
+                for (Position rp: rotated(goal.location(gd)))
+                        if (rp.x.equals(p0.x) && rp.y.equals(p0.y)&&
+                                rp.facing.includes(p0.facing))
+                            eq0.add(gd);
+            assert eq0.contains(gd0);//at the very least, gd0 is symmetric to itself
+            // map dancer # to position
+            this.goalPositions = new ArrayList<Position>(goalDancers.size());
+            for (Dancer d : goalDancers) {
+                Position p = goal.location(d);
+                this.goalPositions.add(p);
+            }
+            // first goal dancer has a rotation modulus which is 1/N for some
+            // N.  This means we need to try N other rotations for matches.
+            this.numExtra = goal.location
+                (goalDancers.get(0)).facing.modulus.getDenominator();
         }
     }
     private static class MatchInfo {
@@ -346,21 +441,18 @@ public abstract class GeneralFormationMatcher {
         final Indexer<Dancer> inputIndex;
         final Map<Position,Dancer> inputPositionMap = new HashMap<Position,Dancer>();
         final List<Position> inputPositions = new ArrayList<Position>();
-        final List<Dancer> goalDancers;
-        final List<Position> goalPositions = new ArrayList<Position>();
-        final Set<Dancer> eq0; // goal dancers who are symmetric to goal dancer #0
+        final List<GoalInfo> goals;
+        final int minGoalDancers;
         final int numInput;
-        final int numExtra; // number of 'extra' rotations we'll try to match
         final Set<Dancer> sel; // input dancers who are selected
         // these next one is used to pass info into validate & back:
         /** Input dancers who are already assigned to a formation. */
         PersistentSet<Dancer> inFormation;
         /** Size of the current best match. */
         int bestMatchSize = 0;
-        MatchInfo(Formation f, TaggedFormation goal,
+        MatchInfo(Formation f, List<GoalInfo> goals, int minGoalDancers,
                   List<Dancer> inputDancers, Indexer<Dancer> inputIndex,
-                  PersistentSet<Dancer> inputEmpty,
-                  List<Dancer> goalDancers, Set<Dancer> eq0) {
+                  PersistentSet<Dancer> inputEmpty) {
             for (Dancer d : inputDancers) {
                 Position p = f.location(d);
                 this.inputPositions.add(p);
@@ -368,33 +460,25 @@ public abstract class GeneralFormationMatcher {
             }
             this.numInput = inputDancers.size();
             this.inputIndex = inputIndex;
-            this.goalDancers = goalDancers;
-            for (Dancer d : goalDancers) {
-                Position p = goal.location(d);
-                this.goalPositions.add(p);
-            }
-            this.eq0 = eq0;
             this.sel = f.selected;
             this.inFormation = inputEmpty;
-            // first goal dancer has a rotation modulus which is 1/N for some
-            // N.  This means we need to try N other rotations for matches.
-            this.numExtra = goal.location
-                (goalDancers.get(0)).facing.modulus.getDenominator();
+            this.goals = goals;
+            this.minGoalDancers = minGoalDancers;
         }
     }
-    private static boolean validate(MatchInfo mi, int dancerNum, Fraction extraRot) {
+    private static boolean validate(MatchInfo mi, GoalInfo goal, int dancerNum, Fraction extraRot) {
         PersistentSet<Dancer> inFormation = mi.inFormation;
-        Set<Dancer> eq0 = mi.eq0;
+        Set<Dancer> eq0 = goal.eq0;
         // find some Dancer in the input formation to correspond to each
         // Dancer in the goal formation.  Each such dancer must not already
         // be assigned.
         Position pIn = mi.inputPositions.get(dancerNum);
         assert pIn.facing instanceof ExactRotation :
             "at least one dancer in the input formation must be non-phantom";
-        Position pGoal = makeExact(mi.goalPositions.get(0), extraRot);
+        Position pGoal = makeExact(goal.goalPositions.get(0), extraRot);
         Warp warp = Warp.rotateAndMove(pGoal, pIn);
         int gNum = 0;
-        for (Position gp : mi.goalPositions) {
+        for (Position gp : goal.goalPositions) {
             // compute warped position.
             gp = warp.warp(gp, Fraction.ZERO);
             Position key = zeroRotation(gp);
@@ -417,12 +501,12 @@ public abstract class GeneralFormationMatcher {
             // check for symmetry: if this goal position is 'eq0' (ie,
             // symmetric with the 0 dancer's position), then this dancer #
             // must be >= the 0 dancer's input # (ie, dancerNum)
-            if (eq0.contains(mi.goalDancers.get(gNum)))
+            if (eq0.contains(goal.goalDancers.get(gNum)))
                 if (iNum < dancerNum) {
                     // check that our matching rotation is really symmetric,
                     // since the goal dancer may have a vague direction which
                     // includes an asymmetric alternative (ie, "n|" as a target)
-                    for (Position gp0 : rotated(mi.goalPositions.get(0))) {
+                    for (Position gp0 : rotated(goal.goalPositions.get(0))) {
                         gp0 = warp.warp(gp0, Fraction.ZERO);
                         if (ip.x.equals(gp0.x) &&
                             ip.y.equals(gp0.y) &&
@@ -455,20 +539,34 @@ public abstract class GeneralFormationMatcher {
             }
             return;
         }
-        // okay, try to assign the next dancer, possibly w/ some extra rotation
-        for (int i=0; i < mi.numExtra; i++) {
-            Fraction extraRot = Fraction.valueOf(i,mi.numExtra);
-            PersistentSet<OneMatch> newAssignment = currentAssignment.add
-                (new OneMatch(mi.inputIndex.getByID(dancerNum), extraRot));
-            mi.inFormation = inFormation;
-            if (validate(mi, dancerNum, extraRot))
-                tryOne(mi, dancerNum+1, newAssignment, mi.inFormation,
-                        allowUnmatchedDancers);
+
+        // is there any way we can still match the bestMatchSize?
+        int dancer0sLeftToAssign = mi.numInput - dancerNum;
+        if (currentAssignment.size() + dancer0sLeftToAssign < mi.bestMatchSize)
+            return; // not enough dancer 0's to beat the current best match
+        int dancersLeftToAssign = mi.numInput - inFormation.size();
+        int goalsLeftToAssign = mi.bestMatchSize - currentAssignment.size();
+        if (mi.minGoalDancers*goalsLeftToAssign > dancersLeftToAssign)
+            return; // not enough unassigned dancers to beat the best match
+
+        // is this dancer available to be assigned?
+        Dancer thisDancer = mi.inputIndex.getByID(dancerNum);
+        if (!inFormation.contains(thisDancer)) {
+            // okay, try to assign the thisDancer, possibly w/ some extra rotation
+            for (GoalInfo gi : mi.goals) {
+                for (int i=0; i < gi.numExtra; i++) {
+                    Fraction extraRot = Fraction.valueOf(i, gi.numExtra);
+                    PersistentSet<OneMatch> newAssignment =
+                        currentAssignment.add(new OneMatch(gi, thisDancer, extraRot));
+                    mi.inFormation = inFormation;
+                    if (validate(mi, gi, dancerNum, extraRot)) // sets mi.inFormation
+                        // try to extend this match!
+                        tryOne(mi, dancerNum+1, newAssignment, mi.inFormation,
+                                allowUnmatchedDancers);
+                }
+            }
         }
-        // if we don't assign this dancer, is there any way we'll match the
-        // bestMatchSize?
-        if (currentAssignment.size()+(mi.numInput-(dancerNum+1)) < mi.bestMatchSize)
-            return; // no way we can beat the current best match
+
         // try NOT assigning this dancer
         tryOne(mi, dancerNum+1, currentAssignment, inFormation,
                allowUnmatchedDancers);
