@@ -17,7 +17,7 @@
  * @doc.test Parsing spoken-language grammar rules:
  *  js> CallFileBuilder.parseGrm("foo bar|bat? baz")
  *  foo bar|bat? baz
- *  js> CallFileBuilder.parseGrm("square thru <number> (hands (around|round)?)?")  
+ *  js> CallFileBuilder.parseGrm("square thru <number> (hands (around|round)?)?")
  *  square thru <number> (hands (around|round)?)?
  * @doc.test Call with long example clause:
  *  js> CallFileBuilder.parseCalllist('program: basic\n'+
@@ -63,17 +63,17 @@ import java.util.HashSet;
 import java.util.Set;
 }
 @members {
-	private final Set<String> names = new HashSet<String>();
-	private final List<Call> db = new ArrayList<Call>();
-	public List<Call> getList() { return Collections.unmodifiableList(db); }
-	Program currentProgram = null;
-	// quick helper
-	public <T> T ifNull(T t, T otherwise) { return (t==null)?otherwise:t; }
-	public BDirection d(BDirection d) { return ifNull(d, BDirection.ASIS); }
-	private Map<String,Integer> scope = new HashMap<String,Integer>();
-	private void semex(Tree a, String s) throws SemanticException {
-		throw new SemanticException(s, a.getLine(), a.getCharPositionInLine());
-	}
+    private final Set<String> names = new HashSet<String>();
+    private final List<Call> db = new ArrayList<Call>();
+    public List<Call> getList() { return Collections.unmodifiableList(db); }
+    Program currentProgram = null;
+    // quick helper
+    public <T> T ifNull(T t, T otherwise) { return (t==null)?otherwise:t; }
+    public BDirection d(BDirection d) { return ifNull(d, BDirection.ASIS); }
+    private Map<String,Integer> scope = new HashMap<String,Integer>();
+    private void semex(Tree a, String s) throws SemanticException {
+        throw new SemanticException(s, a.getLine(), a.getCharPositionInLine());
+    }
     class SemanticException extends RuntimeException {
         SemanticException(String msg, int line, int column) {
             super("line "+line+":"+column+" "+msg);
@@ -105,7 +105,7 @@ import java.util.Set;
         // don't need an indent processor, but do need to setup lexer
         lexer.setToRuleStart();
         // Create a parser that reads from the scanner
-        CallFileParser parser= new CallFileParser(new CommonTokenStream(lexer));
+        CallFileParser parser=new CallFileParser(new CommonTokenStream(lexer));
         // start parsing at the grammar_start rule
         Tree tree = (Tree) parser.grammar_start().getTree();
         // check for errors
@@ -118,61 +118,63 @@ import java.util.Set;
 }
 // exit immediately on error; don't try to recover
 @rulecatch {
-    catch (RecognitionException e) {
-        throw e;
+    catch (RecognitionException _re) {
+        throw _re;
     }
 }
-    
+
 // start production for parsing call file.
 calllist
-	: ^(CALLLIST (program)* )
-	;
+    : ^(CALLLIST (program)* )
+    ;
 // start production for parsing grammar rules
 grammar_start returns [Grm g]
-	: grm_rule { $g=$grm_rule.g; }
-	;
+    : grm_rule { $g=$grm_rule.g; }
+    ;
 
 
 program
-	: ^(PROGRAM id=IDENT { currentProgram=Program.valueOf(id.getText().toUpperCase()); } (def)* )
-	;
+    : ^(PROGRAM id=IDENT {
+          currentProgram=Program.valueOf(id.getText().toUpperCase());
+        } (def)* )
+    ;
 
 def
 @init {
   Set<String> optional = new HashSet<String>();
 }
-	: ^(d=DEF n=simple_words args=decl_args
+    : ^(d=DEF n=simple_words args=decl_args
     { // if there are arguments, add them to our scope.
-	  int i=0;
-	  for (ArgAndDefault arg : args) {
-	    scope.put(arg.name, i++);
-	  }
-	}
+      int i=0;
+      for (ArgAndDefault arg : args) {
+        scope.put(arg.name, i++);
+      }
+    }
        ( ^(OPTIONAL (id=IDENT {optional.add(id.getText().toUpperCase());})+ ) )?
        ( ^(SPOKEN (prec=number)? g=grm_rule ) )?
        example*
-	   p=pieces)
-	{ if (names.contains(n)) semex(d, "duplicate call: "+n);
+       p=pieces)
+    { if (names.contains(n)) semex(d, "duplicate call: "+n);
       n = n.intern();
       names.add(n);
 
-	  String ruleName = optional.contains("LEFT") ? "leftable_anything" :
-	  	optional.contains("REVERSE") ? "reversable_anything" :
-	  	"anything";
-	  Rule rule = null;
-	  if (g==null && !n.startsWith("_"))
-	    g = Grm.mkGrm(n.split("\\s+"));
-	  if (g!=null)
-	    rule = new Rule(ruleName, SimplifyGrm.simplify(g),
-						prec==null ? Fraction.ZERO : prec);
+      String ruleName = optional.contains("LEFT") ? "leftable_anything" :
+                        optional.contains("REVERSE") ? "reversable_anything" :
+                        "anything";
+      Rule rule = null;
+      if (g==null && !n.startsWith("_"))
+        g = Grm.mkGrm(n.split("\\s+"));
+      if (g!=null)
+        rule = new Rule(ruleName, SimplifyGrm.simplify(g),
+                        prec==null ? Fraction.ZERO : prec);
 
       Call call = makeCall(n, currentProgram, p, args, rule);
-	  db.add(call);
+      db.add(call);
 
-	  scope.clear();
-	}
-	;
-	
+      scope.clear();
+    }
+    ;
+
 decl_args returns [List<ArgAndDefault> l]
 @init { $l = new ArrayList<ArgAndDefault>(); }
     : (a=decl_arg {$l.add(a);} )*
@@ -184,105 +186,103 @@ decl_arg returns [ArgAndDefault a]
     ;
 
 example
-	: ^(EXAMPLE call_body BEFORE FIGURE AFTER FIGURE)
+    : ^(EXAMPLE call_body BEFORE FIGURE AFTER FIGURE)
         // XXX we currently throw these figures away.
         //     we should save them, and later check them.
-	;
+    ;
 
 pieces returns [B<? extends Comp> r]
-	: opt { $r=$opt.o; }
-	| seq { $r=$seq.s; }
-	| par { $r=$par.p; }
-	| res { $r=$res.c; };
-	
+    : opt { $r=$opt.o; }
+    | seq { $r=$seq.s; }
+    | par { $r=$par.p; }
+    | res { $r=$res.c; };
+
 opt returns [B<Opt> o]
 @init { List<B<OptCall>> l = new ArrayList<B<OptCall>>(); }
-	: ^(OPT (oc=one_opt {l.add(oc);})+)
-	{ $o = mkOpt(l); }
-	;
+    : ^(OPT (oc=one_opt {l.add(oc);})+)
+    { $o = mkOpt(l); }
+    ;
 one_opt returns [B<OptCall> oc]
-	: ^(FROM f=simple_body co=pieces)
-	{ $oc = mkOptCall(OptCall.parseFormations(f), co); }
-	;
+    : ^(FROM f=simple_body co=pieces)
+    { $oc = mkOptCall(OptCall.parseFormations(f), co); }
+    ;
 seq returns [B<Seq> s]
 @init { List<B<? extends SeqCall>> l = new ArrayList<B<? extends SeqCall>>(); }
-	: ^(SEQ (sc=one_seq {l.add(sc);})+)
-	{ $s = mkSeq(l); }
-	;
+    : ^(SEQ (sc=one_seq {l.add(sc);})+)
+    { $s = mkSeq(l); }
+    ;
 one_seq returns [B<? extends SeqCall> sc]
 @init { EnumSet<Prim.Flag> a=EnumSet.noneOf(Prim.Flag.class); }
-	: ^(PRIM (dx=direction)? x=number (dy=direction)? y=number (dr=direction | r=rotation) rotamt=number ^(ATTRIBS ( prim_flag[a] )* ) )
-	{ $sc=mkPrim(d(dx), x, d(dy), y, d(dr), new ExactRotation(ifNull(r,Fraction.ONE).multiply(rotamt)), a); }
-	| ^(CALL call_body) { $sc=$call_body.ast; }
-	| ^(PART p=pieces)
-	{ $sc = mkPart(true, p); /* divisible part */}
-	| ^(IPART p=pieces)
-	{ $sc = mkPart(false, p); /* indivisible part */}
-	;
+    : ^(PRIM (dx=direction)? x=number (dy=direction)? y=number (dr=direction | r=rotation) rotamt=number ^(ATTRIBS ( prim_flag[a] )* ) )
+    { $sc=mkPrim(d(dx), x, d(dy), y, d(dr), new ExactRotation(ifNull(r,Fraction.ONE).multiply(rotamt)), a); }
+    | ^(CALL call_body) { $sc=$call_body.ast; }
+    | ^(PART p=pieces)
+    { $sc = mkPart(true, p); /* divisible part */}
+    | ^(IPART p=pieces)
+    { $sc = mkPart(false, p); /* indivisible part */}
+    ;
 
 direction returns [BDirection d]
-	: IN { $d=BDirection.IN; }
-	| OUT { $d=BDirection.OUT; }
-	;
+    : IN { $d=BDirection.IN; }
+    | OUT { $d=BDirection.OUT; }
+    ;
 rotation returns [Fraction r]
-	: RIGHT { $r = Fraction.ONE; }
-	| LEFT { $r = Fraction.mONE; }
-	| NONE { $r = Fraction.ZERO; }
-	;
+    : RIGHT { $r = Fraction.ONE; }
+    | LEFT { $r = Fraction.mONE; }
+    | NONE { $r = Fraction.ZERO; }
+    ;
 fragment
 prim_flag[Set<Prim.Flag> s]
     : IDENT { $s.add(Prim.Flag.valueOf(Prim.Flag.canon($IDENT.text))); }
     ;
 
 par returns [B<Par> p]
-@init {List<B<ParCall>> l=new ArrayList<B<ParCall>>();}
+@init { List<B<ParCall>> l = new ArrayList<B<ParCall>>(); }
     : ^(PAR (pc=one_par {l.add(pc);})+)
-	{ $p = mkPar(l); }
+    { $p = mkPar(l); }
     ;
 
 one_par returns [B<ParCall> pc]
     : ^(SELECT sl=simple_ref_body p=pieces)
-	{ $pc = mkParCall(sl, p); }
-	;
+    { $pc = mkParCall(sl, p); }
+    ;
 // restrictions/timing
 res returns [B<? extends Comp> c]
     : ^(IN f=number p=pieces)
-	{ $c = mkIn(f, p); }
+    { $c = mkIn(f, p); }
     | ^(IF cd=cond_body ^(n=NUMBER msg=QUOTED_STR?) p=pieces)
-	{ $c = mkIf(cd, Fraction.valueOf(n.getText()), msg==null?null:msg.getText(), p); }
+    { $c = mkIf(cd, Fraction.valueOf(n.getText()), msg==null?null:msg.getText(), p); }
     ;
-	
+
 simple_words returns [String r]
-@init {
-  StringBuilder sb = new StringBuilder();
-}
-	: ^(ITEM s=simple_word {sb.append(s);}
-	        (s=simple_word {sb.append(' ');sb.append(s);})* )
+@init { StringBuilder sb = new StringBuilder(); }
+    : ^(ITEM s=simple_word {sb.append(s);}
+            (s=simple_word {sb.append(' ');sb.append(s);})* )
       { $r = sb.toString(); }
-	;
+    ;
 simple_word returns [String r]
-	: i=IDENT { $r = i.getText(); }
-	| n=number { $r = n.toProperString(); }
-	;
+    : i=IDENT { $r = i.getText(); }
+    | n=number { $r = n.toProperString(); }
+    ;
 
 simple_body returns [List<String> l]
 @init { $l = new ArrayList<String>(); }
-	: ^(BODY (s=simple_words {$l.add(s);} )+)
-	;
+    : ^(BODY (s=simple_words {$l.add(s);} )+)
+    ;
 
 words_or_ref returns [B<String> b]
-	: s=simple_words
-	{ $b = mkConstant(s); }
-	| r=ref
-	{ final int param = r;
-	  $b = new B<String>() {
-	  	public String build(List<Expr> args) {
-	  	  assert args.get(param).args.isEmpty();
-                  return args.get(param).atom;
-	  	}
-	  };
-	}
-	;
+    : s=simple_words
+    { $b = mkConstant(s); }
+    | r=ref
+    { final int param = r;
+      $b = new B<String>() {
+        public String build(List<Expr> args) {
+          assert args.get(param).args.isEmpty();
+          return args.get(param).atom;
+        }
+      };
+    }
+    ;
 
 simple_ref_body returns [List<B<String>> l]
 @init { $l = new ArrayList<B<String>>(); }
@@ -290,61 +290,61 @@ simple_ref_body returns [List<B<String>> l]
     ;
 
 call_body returns [B<Apply> ast]
-	// shorthand: 3/4 (foo) = fractional(3/4, foo)
-	: ( ^(APPLY ^(ITEM number) call_args_plus ) ) =>
-	  ^(APPLY ^(ITEM n=number) args=call_args_plus )
-	{   args.add(0, mkConstant(Apply.makeApply(n.toString().intern())));
-		$ast = mkApply("_fractional", args); }
-	// parameter reference
-	| ( ^(APPLY REF (.)* ) ) =>
-	  ^(APPLY r=ref args=call_args )
-	{ final int param = r;
-	  final List<B<Apply>> call_args = args;
-	  if (call_args.isEmpty()) {
-	  	// if no args, then substitute given Apply node wholesale.
+    // shorthand: 3/4 (foo) = fractional(3/4, foo)
+    : ( ^(APPLY ^(ITEM number) call_args_plus ) ) =>
+      ^(APPLY ^(ITEM n=number) args=call_args_plus )
+    {   args.add(0, mkConstant(Apply.makeApply(n.toString().intern())));
+        $ast = mkApply("_fractional", args); }
+    // parameter reference
+    | ( ^(APPLY REF (.)* ) ) =>
+      ^(APPLY r=ref args=call_args )
+    { final int param = r;
+      final List<B<Apply>> call_args = args;
+      if (call_args.isEmpty()) {
+        // if no args, then substitute given Apply node wholesale.
         // note: lazy evaluation here.
-	    $ast = new B<Apply>() {
-	    	public Apply build(List<Expr> args) {
-	    		return expr2apply(args.get(param));
-	    	}
-	    };
-	  } else {
-	  	// otherwise, just use the given parameter as a string.
-	    $ast = new B<Apply>() {
-	    	public Apply build(List<Expr> args) {
-				assert args.get(param).args.isEmpty();
-	    		String callName = args.get(param).atom;
-	    		return new Apply(callName, reduce(call_args, args));
-	    	}
-	    };
-	  }
-	}
-	// standard rule
-	| ^(APPLY s=simple_words args=call_args )
-	{ $ast = mkApply(s.intern(), args); }
-	;
+        $ast = new B<Apply>() {
+            public Apply build(List<Expr> args) {
+                return expr2apply(args.get(param));
+            }
+        };
+      } else {
+        // otherwise, just use the given parameter as a string.
+        $ast = new B<Apply>() {
+            public Apply build(List<Expr> args) {
+                assert args.get(param).args.isEmpty();
+                String callName = args.get(param).atom;
+                return new Apply(callName, reduce(call_args, args));
+            }
+        };
+      }
+    }
+    // standard rule
+    | ^(APPLY s=simple_words args=call_args )
+    { $ast = mkApply(s.intern(), args); }
+    ;
 ref returns [int v]
-	: r=REF
-	{ if (!scope.containsKey(r.getText())) semex(r, "No argument named "+r.getText());
-	  $v=scope.get(r.getText()); }
-	;
+    : r=REF
+    { if (!scope.containsKey(r.getText())) semex(r, "No argument named "+r.getText());
+      $v=scope.get(r.getText()); }
+    ;
 call_args returns [List<B<Apply>> l]
 @init { $l = new ArrayList<B<Apply>>(); }
-	: (c=call_body {$l.add(c);} )*
-	;
+    : (c=call_body {$l.add(c);} )*
+    ;
 call_args_plus returns [List<B<Apply>> l]
 @init { $l = new ArrayList<B<Apply>>(); }
-	: (c=call_body {$l.add(c);} )+
-	;
+    : (c=call_body {$l.add(c);} )+
+    ;
 cond_body returns [B<Condition> c]
-	// parameter reference
-	: ( ^(CONDITION REF (.)* ) ) =>
-	  ^(CONDITION r=ref args=cond_args )
-	{ final int param = r;
-	  final List<B<Condition>> cond_args = args;
-	  // use the given parameter as a string.
-	  $c = new B<Condition>() {
-	    	public Condition build(List<Expr> args) {
+    // parameter reference
+    : ( ^(CONDITION REF (.)* ) ) =>
+      ^(CONDITION r=ref args=cond_args )
+    { final int param = r;
+      final List<B<Condition>> cond_args = args;
+      // use the given parameter as a string.
+      $c = new B<Condition>() {
+            public Condition build(List<Expr> args) {
                 Apply a = expr2apply(args.get(param));
                 // note that this strips off the arguments.
                 String predicate = a.callName;
@@ -355,23 +355,23 @@ cond_body returns [B<Condition> c]
                 if (cond_args==null)
                     return Condition.makeCondition
                         ("literal", Condition.makeCondition(predicate));
-	    	return new Condition(predicate, reduce(cond_args, args));
-	    	}
-	  };
-	}
-	| ^(CONDITION s=simple_words args=cond_args )
-	{  if (args == null) {
-	     args = Collections.<B<Condition>>singletonList
-	       (mkCondition(s.intern(), Collections.<B<Condition>>emptyList()));
-	     s = "literal";
-	   }
-	   $c = mkCondition(s.intern(), args);
-	};
+                return new Condition(predicate, reduce(cond_args, args));
+            }
+      };
+    }
+    | ^(CONDITION s=simple_words args=cond_args )
+    {  if (args == null) {
+         args = Collections.<B<Condition>>singletonList
+           (mkCondition(s.intern(), Collections.<B<Condition>>emptyList()));
+         s = "literal";
+       }
+       $c = mkCondition(s.intern(), args);
+    };
 cond_args returns [List<B<Condition>> l]
 @init { $l = new ArrayList<B<Condition>>(); }
-	: LPAREN (c=cond_body {$l.add(c);} )*
-	| { $l = null; }
-	;
+    : LPAREN (c=cond_body {$l.add(c);} )*
+    | { $l = null; }
+    ;
 
 expr_body returns [B<Expr> eb]
         // parameter reference
@@ -381,7 +381,7 @@ expr_body returns [B<Expr> eb]
           final List<B<Expr>> expr_args = args;
           // use the given parameter as a string.
           $eb = new B<Expr>() {
-                public Expr build(List<Expr> args) {
+            public Expr build(List<Expr> args) {
                 Expr e = args.get(param);
                 // note that this strips off the arguments.
                 String atom = e.atom;
@@ -392,7 +392,7 @@ expr_body returns [B<Expr> eb]
                 if (expr_args==null)
                     return new Expr("literal", new Expr(atom));
                 return new Expr(atom, reduce(expr_args, args));
-                }
+            }
           };
         }
         | ^(EXPR s=simple_words args=expr_args )
@@ -410,31 +410,31 @@ expr_args returns [List<B<Expr>> l]
         ;
 
 number returns [Fraction r]
-	: n=NUMBER
-	{ $r = Fraction.valueOf(n.getText()); }
-	;
-	
+    : n=NUMBER
+    { $r = Fraction.valueOf(n.getText()); }
+    ;
+
 grm_rule returns [Grm g]
 @init { List<Grm> l = new ArrayList<Grm>(); }
-	: ^(VBAR (gg=grm_rule {l.add(gg);})+ )
-	{ $g = new Grm.Alt(l); }
-	| ^(ADJ (gg=grm_rule {l.add(gg);})+ )
-	{ $g = new Grm.Concat(l); }
-	| ^(PLUS gg=grm_rule )
-	{ $g = new Grm.Mult(gg, Grm.Mult.Type.PLUS); }
-	| ^(STAR gg=grm_rule )
-	{ $g = new Grm.Mult(gg, Grm.Mult.Type.STAR); }
-	| ^(QUESTION gg=grm_rule )
-	{ $g = new Grm.Mult(gg, Grm.Mult.Type.QUESTION); }
-	| i=IDENT
-	{ $g = new Grm.Terminal(i.getText()); }
-	| ^(REF r=IDENT (p=grm_ref_or_int)? )
-	{ $g = new Grm.Nonterminal(r.getText(), p==null ? -1 : p); }
-	;
+    : ^(VBAR (gg=grm_rule {l.add(gg);})+ )
+    { $g = new Grm.Alt(l); }
+    | ^(ADJ (gg=grm_rule {l.add(gg);})+ )
+    { $g = new Grm.Concat(l); }
+    | ^(PLUS gg=grm_rule )
+    { $g = new Grm.Mult(gg, Grm.Mult.Type.PLUS); }
+    | ^(STAR gg=grm_rule )
+    { $g = new Grm.Mult(gg, Grm.Mult.Type.STAR); }
+    | ^(QUESTION gg=grm_rule )
+    { $g = new Grm.Mult(gg, Grm.Mult.Type.QUESTION); }
+    | i=IDENT
+    { $g = new Grm.Terminal(i.getText()); }
+    | ^(REF r=IDENT (p=grm_ref_or_int)? )
+    { $g = new Grm.Nonterminal(r.getText(), p==null ? -1 : p); }
+    ;
 grm_ref_or_int returns [Integer i]
-	: p=IDENT
-	{ if (!scope.containsKey(p.getText()))
+    : p=IDENT
+    { if (!scope.containsKey(p.getText()))
         semex(p, "No argument named "+p.getText());
       $i=scope.get(p.getText()); }
-	| n=INTEGER { $i=Integer.valueOf(n.getText()); }
-	;
+    | n=INTEGER { $i=Integer.valueOf(n.getText()); }
+    ;

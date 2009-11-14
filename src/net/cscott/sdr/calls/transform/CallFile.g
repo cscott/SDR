@@ -108,13 +108,13 @@ options {
   //tokenVocab = Ast;
 }
 tokens {
-	CALLLIST;
-	BODY;
-	ITEM;
-	NUMBER;
-	ATTRIBS;
-	REF;
-	ADJ;
+    CALLLIST;
+    BODY;
+    ITEM;
+    NUMBER;
+    ATTRIBS;
+    REF;
+    ADJ;
     IF;
     OPT;
     SEQ;
@@ -124,11 +124,11 @@ tokens {
     EXPR;
 }
 @parser::header {
-	package net.cscott.sdr.calls.transform;
-	import java.util.ArrayList;
-	import java.util.List;
-	import org.antlr.runtime.tree.Tree;
-	import org.antlr.runtime.CommonToken;
+    package net.cscott.sdr.calls.transform;
+    import java.util.ArrayList;
+    import java.util.List;
+    import org.antlr.runtime.tree.Tree;
+    import org.antlr.runtime.CommonToken;
 
     import net.cscott.sdr.calls.ast.Prim;
 }
@@ -139,18 +139,18 @@ tokens {
 }
 
 @lexer::header {
-	package net.cscott.sdr.calls.transform;
+    package net.cscott.sdr.calls.transform;
 }
 @lexer::members {
     /** Have we seen the line-initial whitespace yet? */
-	private boolean afterIndent=false;
+    private boolean afterIndent=false;
     /** Have we seen a colon on this line? */
-	private boolean beforeColon=true;
+    private boolean beforeColon=true;
     /** Are we inside a 'prim' operation? */
-	private boolean afterPrim=false;
+    private boolean afterPrim=false;
     /** Set the lexer state to begin parsing a grammar rule. */
     public void setToRuleStart() {
-		afterIndent=true; beforeColon=false; afterPrim=false;
+        afterIndent=true; beforeColon=false; afterPrim=false;
     }
     // this is a little bit sketchy!
     /** Override superclass' nextToken to insert the IndentProcessor */
@@ -308,7 +308,7 @@ tokens {
         return sb.toString();
     }
 
-	/////////////////////////////////////////////////
+    /////////////////////////////////////////////////
     /** Inner class: a token stream filter to implement
      * INDENT/DEDENT processing. */
     public static class IndentProcessor
@@ -412,12 +412,12 @@ calllist
     ;
 // another start production for parsing grammar rules
 grammar_start
-	: grm_rule
-	;
+    : grm_rule
+    ;
 
 program
-	: PROGRAM^ COLON! IDENT ( def )*
-	;
+    : PROGRAM^ COLON! IDENT ( def )*
+    ;
 
 def
     : DEF COLON name_and_args INDENT os? pieces example* DEDENT
@@ -433,21 +433,21 @@ decl_arg!
     : simple_words (EQUALS simple_words)? /* optional default value */
         -> ^(ARG simple_words simple_words?)
     ;
-os	: optional (spoken)?
-	| spoken (optional)?
+os  : optional (spoken)?
+    | spoken (optional)?
         -> optional? spoken
-	;
+    ;
 optional
-	: OPTIONAL^ COLON! IDENT ( COMMA! IDENT )*
-	;
+    : OPTIONAL^ COLON! IDENT ( COMMA! IDENT )*
+    ;
 spoken
-	: SPOKEN^ COLON! (priority)? grm_rule
-	;
+    : SPOKEN^ COLON! (priority)? grm_rule
+    ;
 priority
-	: LBRACK! number RBRACK!
-	;
+    : LBRACK! number RBRACK!
+    ;
 example
-    : EXAMPLE^ COLON! call_body_seq 
+    : EXAMPLE^ COLON! call_body_seq
       INDENT! BEFORE COLON! figure AFTER COLON! figure DEDENT!
     ;
 figure
@@ -525,11 +525,11 @@ seq
         -> ^(SEQ one_seq+)
     ;
 fragment one_seq
-	: PRIM^ COLON! prim_body
-	| CALL^ COLON! call_body_seq
-	| PART^ COLON! pieces_factor
-	| IPART^ COLON! pieces_factor
-	;
+    : PRIM^ COLON! prim_body
+    | CALL^ COLON! call_body_seq
+    | PART^ COLON! pieces_factor
+    | IPART^ COLON! pieces_factor
+    ;
 
 par
     : ( options {greedy=true;} : one_par)+
@@ -538,56 +538,56 @@ par
 
 fragment one_par
     : SELECT^ COLON! simple_ref_body pieces_term
-	;
+    ;
 
 simple_word
-	: IDENT
-	| number
-	;
+    : IDENT
+    | number
+    ;
 simple_words
-	: simple_word+
+    : simple_word+
         -> ^(ITEM simple_word+)
-	;
+    ;
 simple_body
-	: simple_words (COMMA simple_words)*
+    : simple_words (COMMA simple_words)*
         -> ^(BODY["simple body"] simple_words+)
-	;
+    ;
 simple_ref_body
-	: words_or_ref (COMMA words_or_ref)*
+    : words_or_ref (COMMA words_or_ref)*
         -> ^(BODY["simple ref body"] words_or_ref+)
-	;
+    ;
 words_or_ref
-	: simple_words
-	| ref
-	;
+    : simple_words
+    | ref
+    ;
 ref!
-	: LBRACK IDENT RBRACK
+    : LBRACK IDENT RBRACK
         -> ^(REF[$IDENT.getText()])
-	;
+    ;
 call_body!
-	: words_or_ref ( LPAREN call_args RPAREN )?
+    : words_or_ref ( LPAREN call_args RPAREN )?
         -> ^(APPLY words_or_ref call_args?)
-	;
+    ;
 call_args
-	: call_arg (COMMA! call_arg)*
-	;
+    : call_arg (COMMA! call_arg)*
+    ;
 call_arg
-	: call_body
-	| LPAREN! call_body_seq RPAREN!
-	;
+    : call_body
+    | LPAREN! call_body_seq RPAREN!
+    ;
 call_body_seq
     : (call_body COMMA call_body) =>
        call_body (COMMA call_body)+
         -> ^(APPLY ^(ITEM IDENT["and"]) call_body+)
     | call_body
-	;
+    ;
 cond_body
-        : words_or_ref (LPAREN cond_args? RPAREN)?
+    : words_or_ref (LPAREN cond_args? RPAREN)?
         -> ^(CONDITION words_or_ref LPAREN? cond_args?)
-	;
+    ;
 cond_args
-	: cond_body (COMMA! cond_body)*
-	;
+    : cond_body (COMMA! cond_body)*
+    ;
 cond_msg
     : COMMA! LBRACK! number^ RBRACK! QUOTED_STR
     | COMMA QUOTED_STR -> ^(NUMBER["1"] QUOTED_STR)
@@ -595,19 +595,19 @@ cond_msg
     ;
 
 expr_body
-        : words_or_ref (LPAREN expr_args? RPAREN)?
+    : words_or_ref (LPAREN expr_args? RPAREN)?
         -> ^(EXPR words_or_ref LPAREN? expr_args?)
-        ;
+    ;
 expr_args
-        : expr_body (COMMA! expr_body)*
-        ;
+    : expr_body (COMMA! expr_body)*
+    ;
 
 prim_body
-	: in_out_num COMMA! in_out_num COMMA! turn opt_prim_attrib
-	;
+    : in_out_num COMMA! in_out_num COMMA! turn opt_prim_attrib
+    ;
 in_out_num
-	: (IN | OUT)? number
-	;
+    : (IN | OUT)? number
+    ;
 turn
     : (IN | OUT | RIGHT | LEFT) opt_turn_amt
     | NONE -> NONE ^(NUMBER["0"])
@@ -618,11 +618,11 @@ opt_turn_amt
     | number
     ;
 opt_prim_attrib!
-	: COMMA prim_flag+
+    : COMMA prim_flag+
         -> ^(ATTRIBS prim_flag+)
     |
         -> ^(ATTRIBS)
-	;
+    ;
 fragment
 prim_flag
     : {Prim.Flag.contains(Prim.Flag.canon(input.LT(1).getText()))}?
@@ -630,19 +630,19 @@ prim_flag
     ;
 
 number
-	@init { String nstr=null; }
-	: ( opt_sign (INTEGER)? INTEGER SLASH INTEGER ) =>
-	  s=opt_sign (p=INTEGER)? n=INTEGER SLASH d=INTEGER
+    @init { String nstr=null; }
+    : ( opt_sign (INTEGER)? INTEGER SLASH INTEGER ) =>
+      s=opt_sign (p=INTEGER)? n=INTEGER SLASH d=INTEGER
         {nstr = s.s+(p==null?"":(p.getText()+" "))+n.getText()+"/"+d.getText();}
         -> ^(NUMBER[nstr])
-	| s=opt_sign i=INTEGER
+    | s=opt_sign i=INTEGER
         { nstr = s.s+i.getText(); }
         -> ^(NUMBER[nstr])
-	;
+    ;
 opt_sign returns [String s]
-	: MINUS { $opt_sign.s="-";}
-	| PLUS { $opt_sign.s="+"; }
-	| /* nothing */ { $opt_sign.s=""; };
+    : MINUS { $opt_sign.s="-";}
+    | PLUS { $opt_sign.s="+"; }
+    | /* nothing */ { $opt_sign.s=""; };
 
 // Rule Grammar forms, from highest to lowest precedence
 // <bar> <foo=bar>
@@ -653,32 +653,32 @@ opt_sign returns [String s]
 
 grm_rule
     : (grm_term VBAR grm_term) =>
-	  grm_term ( VBAR grm_term )+
+      grm_term ( VBAR grm_term )+
         -> ^(VBAR grm_term+)
     | grm_term
-	;
+    ;
 grm_term
     : (grm_factor grm_factor) =>
       grm_factor ( grm_factor )+
         -> ^(ADJ grm_factor+)
     | grm_factor
-	;
+    ;
 grm_factor
     : (grm_exp grm_mult) =>
-	  grm_exp grm_mult
+      grm_exp grm_mult
         -> ^(grm_mult grm_exp)
     | grm_exp
-	;
+    ;
 grm_exp
-	: LPAREN! grm_rule RPAREN!
-	| IDENT
-	| LANGLE ( ref_or_int EQUALS )? IDENT RANGLE
+    : LPAREN! grm_rule RPAREN!
+    | IDENT
+    | LANGLE ( ref_or_int EQUALS )? IDENT RANGLE
         -> ^(REF IDENT ref_or_int?)
-	;
+    ;
 ref_or_int
-	: IDENT | INTEGER ;
+    : IDENT | INTEGER ;
 grm_mult
-	: PLUS | QUESTION | STAR ;
+    : PLUS | QUESTION | STAR ;
 
 //----------------------------------------------------------------------------
 // The scanner
@@ -688,67 +688,67 @@ grm_mult
 // first rule; will always match if afterIndent is false.
 INITIAL_WS
     : {!afterIndent}?=> // at start of line.
-	( ' ' | '\t' )*
+    ( ' ' | '\t' )*
     { afterIndent=true; }
     ;
 
 COMMENT
-  // Single-line comments
-  : {afterIndent}?=>
-    '//' (~('\n'|'\r'))* { $channel=HIDDEN; }
-  // Block comments
-  | {afterIndent}?=>
-    '/*' .* '*/' // NOTE: we're not calling NL here; & .* is magically ungreedy
-    { $channel=HIDDEN; }
-  ;
+    // Single-line comments
+    : {afterIndent}?=>
+      '//' (~('\n'|'\r'))* { $channel=HIDDEN; }
+    // Block comments
+    | {afterIndent}?=>
+      '/*' .* '*/' // NOTE: we're not calling NL here; & .* is magically ungreedy
+      { $channel=HIDDEN; }
+    ;
 
 // Literals
 
-INTEGER 
-  : {afterIndent}?=>
-    ('0'..'9')+
-  ;
+INTEGER
+    : {afterIndent}?=>
+      ('0'..'9')+
+    ;
 QUOTED_STR
-  : {afterIndent}?=>
-    '"' (~('"'|'\\'))* '"'
-        { setText(getText().substring(1, getText().length()-1)); }
-  ;
-  
+    : {afterIndent}?=>
+      '"' (~('"'|'\\'))* '"'
+          { setText(getText().substring(1, getText().length()-1)); }
+    ;
+
 // newline processing
 fragment NL
-  : // handle newlines
+    : // handle newlines
       ( '\r\n' // DOS/Windows (greedy match, comes first)
       | '\r' // Macintosh
       | '\n' // Unix
       )
       // increment the line count in the scanner
       { this.afterIndent=false; this.beforeColon=true; this.afterPrim=false; }
-  ;
+    ;
 
 // Whitespace -- ignored
 WS
-  : {afterIndent}?=> // not start-of-line whitespace
-  ( ' ' | '\t' )
-    { $channel=HIDDEN; }
+    : {afterIndent}?=> // not start-of-line whitespace
+      ( ' ' | '\t' )
+      { $channel=HIDDEN; }
     ;
 WSNL
-  : '\\' (' '|'\t')* ('\r\n' | '\r' | '\n' )
-    { $channel=HIDDEN; /* an escaped newline: no NL processing */ }
+    : '\\' (' '|'\t')* ('\r\n' | '\r' | '\n' )
+      { $channel=HIDDEN; /* an escaped newline: no NL processing */ }
     | NL
-    { $channel=HIDDEN; }
-  ;
+      { $channel=HIDDEN; }
+    ;
 
 // Parse formation figure
 FIGURE
-  : {afterIndent}?=>
-    '!' (~('\n'|'\r'))*
-        { setText(getText().substring(1)); }
-  ;
+    : {afterIndent}?=>
+      '!' (~('\n'|'\r'))*
+      { setText(getText().substring(1)); }
+    ;
 
 // keywords
 DEF :      {afterIndent && beforeColon}?=> 'def' ;
 FROM:      {afterIndent && beforeColon}?=> 'from' ;
-IN:      {(afterIndent && beforeColon) || afterPrim}?=> 'in' ;
+IN:        {(afterIndent && beforeColon) || afterPrim}?=> 'in' ;
 SELECT:    {afterIndent && beforeColon}?=> 'select' ;
 CONDITION: {afterIndent && beforeColon}?=> 'condition' ;
 CALL:      {afterIndent && beforeColon}?=> 'call' ;
@@ -773,7 +773,7 @@ IDENT
   : {afterIndent}?=>
     ('_'|'a'..'z'|'A'..'Z') ('_'|'a'..'z'|'A'..'Z'|'0'..'9'|'-')*
   ;
-  
+
 // Operators
 COMMA      : {afterIndent}?=> ','   ;
 COLON      : {afterIndent}?=> ':' { this.beforeColon=false; }  ;
