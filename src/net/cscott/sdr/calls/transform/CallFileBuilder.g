@@ -276,9 +276,9 @@ words_or_ref returns [B<String> b]
 	| r=ref
 	{ final int param = r;
 	  $b = new B<String>() {
-	  	public String build(List<Apply> args) {
+	  	public String build(List<Expr> args) {
 	  	  assert args.get(param).args.isEmpty();
-          return args.get(param).callName;
+                  return args.get(param).atom;
 	  	}
 	  };
 	}
@@ -304,16 +304,16 @@ call_body returns [B<Apply> ast]
 	  	// if no args, then substitute given Apply node wholesale.
         // note: lazy evaluation here.
 	    $ast = new B<Apply>() {
-	    	public Apply build(List<Apply> args) {
-	    		return args.get(param);
+	    	public Apply build(List<Expr> args) {
+	    		return expr2apply(args.get(param));
 	    	}
 	    };
 	  } else {
 	  	// otherwise, just use the given parameter as a string.
 	    $ast = new B<Apply>() {
-	    	public Apply build(List<Apply> args) {
+	    	public Apply build(List<Expr> args) {
 				assert args.get(param).args.isEmpty();
-	    		String callName = args.get(param).callName;
+	    		String callName = args.get(param).atom;
 	    		return new Apply(callName, reduce(call_args, args));
 	    	}
 	    };
@@ -344,8 +344,8 @@ cond_body returns [B<Condition> c]
 	  final List<B<Condition>> cond_args = args;
 	  // use the given parameter as a string.
 	  $c = new B<Condition>() {
-	    	public Condition build(List<Apply> args) {
-                Apply a = args.get(param);
+	    	public Condition build(List<Expr> args) {
+                Apply a = expr2apply(args.get(param));
                 // note that this strips off the arguments.
                 String predicate = a.callName;
                 if (a.args.size() > 0) {
@@ -372,6 +372,42 @@ cond_args returns [List<B<Condition>> l]
 	: LPAREN (c=cond_body {$l.add(c);} )*
 	| { $l = null; }
 	;
+
+expr_body returns [B<Expr> eb]
+        // parameter reference
+        : ( ^(EXPR REF (.)* ) ) =>
+          ^(EXPR r=ref args=expr_args )
+        { final int param = r;
+          final List<B<Expr>> expr_args = args;
+          // use the given parameter as a string.
+          $eb = new B<Expr>() {
+                public Expr build(List<Expr> args) {
+                Expr e = args.get(param);
+                // note that this strips off the arguments.
+                String atom = e.atom;
+                if (e.args.size() > 0) {
+                   assert expr_args==null : "don't know how to merge params";
+                   return e;
+                }
+                if (expr_args==null)
+                    return new Expr("literal", new Expr(atom));
+                return new Expr(atom, reduce(expr_args, args));
+                }
+          };
+        }
+        | ^(EXPR s=simple_words args=expr_args )
+        {  if (args == null) {
+             args = Collections.<B<Expr>>singletonList
+               (mkExpr(s.intern(), Collections.<B<Expr>>emptyList()));
+             s = "literal";
+           }
+           $eb = mkExpr(s.intern(), args);
+        };
+expr_args returns [List<B<Expr>> l]
+@init { $l = new ArrayList<B<Expr>>(); }
+        : LPAREN (eb=expr_body {$l.add(eb);} )*
+        | { $l = null; }
+        ;
 
 number returns [Fraction r]
 	: n=NUMBER

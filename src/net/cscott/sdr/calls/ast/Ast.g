@@ -6,6 +6,8 @@
  *  (Seq (Prim -1, in 1, none, 1))
  *  js> new AstParser("(If (Condition true) (Seq (Apply nothing)))").ast()
  *  (If (Condition true) (Seq (Apply nothing)))
+ *  js> new AstParser("(Expr multiple words (Expr arg 1) (Expr arg 2))").ast()
+    (Expr multiple words (Expr arg 1) (Expr arg 2))
  * @doc.test White space is ignored:
  *  js> new AstParser("( Seq\n (Prim\tin\r-1 ,  1 , out  1  / 4  ,1 ) ) ").ast()
  *  (Seq (Prim in -1, 1, in -1/4, 1))
@@ -65,6 +67,7 @@ ast returns [AstNode r]
     | optcall { $r=$optcall.r; }
     | parcall { $r=$parcall.r; }
     | seqcall { $r=$seqcall.r; }
+    | expr { $r=$expr.r; }
     ;
 comp returns [Comp r]
     : if_ { $r=$if_.r; }
@@ -93,6 +96,12 @@ seqcall returns [SeqCall r]
     : apply { $r=$apply.r; }
     | part  { $r=$part.r; }
     | prim  { $r=$prim.r; }
+    ;
+expr returns [Expr r]
+@init { List<Expr> args = new ArrayList<Expr>(); }
+    : {input.LT(2).getText().equalsIgnoreCase("Expr")}?
+        '(' IDENT atom=simple_words (ee=expr {args.add(ee);})* ')'
+        { $r=new Expr($atom.r, args); }
     ;
 apply returns [Apply r]
 @init { List<Apply> args = new ArrayList<Apply>(); }

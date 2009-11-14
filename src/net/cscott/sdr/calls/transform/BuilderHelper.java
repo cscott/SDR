@@ -45,7 +45,7 @@ abstract class BuilderHelper {
      * 'B' is pronounced as 'Builder'.  So a B<Prim> builds Prim objects.
      */
     static abstract class B<T> {
-        public abstract T build(List<Apply> args);
+        public abstract T build(List<Expr> args);
         /** 
          * Returns true if the build operation will succeed given a zero-length
          * argument list.
@@ -55,7 +55,7 @@ abstract class BuilderHelper {
     static <T> B<T> mkConstant(final T t) {
         return new B<T>() {
             @Override
-            public T build(List<Apply> args) { return t; }
+            public T build(List<Expr> args) { return t; }
             @Override
             public boolean isConstant() { return true; }
         };
@@ -65,7 +65,7 @@ abstract class BuilderHelper {
             if (!b.isConstant()) return false;
         return true;
     }
-    static <T> List<T> reduce(List<? extends B<? extends T>> l, List<Apply> args) {
+    static <T> List<T> reduce(List<? extends B<? extends T>> l, List<Expr> args) {
         List<T> ll = new ArrayList<T>(l.size());
         for (B<? extends T> b : l)
             ll.add(b.build(args));
@@ -76,22 +76,29 @@ abstract class BuilderHelper {
     }
     static B<Apply> mkApply(final String callName, final List<B<Apply>> args) {
         return optimize(new B<Apply>() {
-            public Apply build(List<Apply> fargs) {
+            public Apply build(List<Expr> fargs) {
                 return new Apply(callName, reduce(args, fargs));
             }
         }, isConstant(args));
     }
     static B<Condition> mkCondition(final String predicate, final List<B<Condition>> args) {
         return optimize(new B<Condition>() {
-            public Condition build(List<Apply> fargs) {
+            public Condition build(List<Expr> fargs) {
                 return new Condition(predicate, reduce(args, fargs));
+            }
+        }, isConstant(args));
+    }
+    static B<Expr> mkExpr(final String predicate, final List<B<Expr>> args) {
+        return optimize(new B<Expr>() {
+            public Expr build(List<Expr> fargs) {
+                return new Expr(predicate, reduce(args, fargs));
             }
         }, isConstant(args));
     }
     static B<If> mkIf(final B<Condition> cond, final Fraction priority,
                       final String msg, final B<? extends Comp> child) {
         return optimize(new B<If>() {
-            public If build(List<Apply> fargs) {
+            public If build(List<Expr> fargs) {
                 return new If(cond.build(fargs), child.build(fargs),
                               msg, priority);
             }
@@ -99,42 +106,42 @@ abstract class BuilderHelper {
     }
     static B<In> mkIn(final Fraction count, final B<? extends Comp> child) {
         return optimize(new B<In>() {
-            public In build(List<Apply> fargs) {
+            public In build(List<Expr> fargs) {
                 return new In(count, child.build(fargs));
             }
         }, child.isConstant());
     }
     static B<Opt> mkOpt(final List<B<OptCall>> children) {
         return optimize(new B<Opt>() {
-            public Opt build(List<Apply> fargs) {
+            public Opt build(List<Expr> fargs) {
                 return new Opt(reduce(children, fargs));
             }
         }, isConstant(children));
     }
     static B<OptCall> mkOptCall(final List<Selector> selectors, final B<? extends Comp> child) {
         return optimize(new B<OptCall>() {
-            public OptCall build(List<Apply> fargs) {
+            public OptCall build(List<Expr> fargs) {
                 return new OptCall(selectors, child.build(fargs));
             }
         }, child.isConstant());
     }
     static B<Par> mkPar(final List<B<ParCall>> children) {
         return optimize(new B<Par>() {
-            public Par build(List<Apply> fargs) {
+            public Par build(List<Expr> fargs) {
                 return new Par(reduce(children, fargs));
             }
         }, isConstant(children));
     }
     static B<ParCall> mkParCall(final List<B<String>> tags, final B<? extends Comp> child) {
         return optimize(new B<ParCall>() {
-            public ParCall build(List<Apply> fargs) {
+            public ParCall build(List<Expr> fargs) {
                 return new ParCall(ParCall.parseTags(reduce(tags,fargs)), child.build(fargs));
             }
         }, child.isConstant() && isConstant(tags));
     }
     static B<Part> mkPart(final boolean isDivisible, final B<? extends Comp> child) {
         return optimize(new B<Part>() {
-            public Part build(List<Apply> fargs) {
+            public Part build(List<Expr> fargs) {
                 return new Part(isDivisible, child.build(fargs));
             }
         }, child.isConstant());
@@ -152,7 +159,7 @@ abstract class BuilderHelper {
     }
     static B<Seq> mkSeq(final List<B<? extends SeqCall>> children) {
         return optimize(new B<Seq>() {
-            public Seq build(List<Apply> fargs) {
+            public Seq build(List<Expr> fargs) {
                 return new Seq(reduce(children, fargs));
             }
         }, isConstant(children));
@@ -162,6 +169,24 @@ abstract class BuilderHelper {
         for (Apply arg : a.args)
             args.add(apply2cond(arg));
         return new Condition(a.callName, args);
+    }
+    static Expr apply2expr(Apply a) {
+        return new Expr(a.callName, apply2expr(a.args));
+    }
+    static List<Expr> apply2expr(List<Apply> a) {
+        List<Expr> args = new ArrayList<Expr>(a.size());
+        for (Apply arg : a)
+            args.add(apply2expr(arg));
+        return args;
+    }
+    static Apply expr2apply(Expr e) {
+        return new Apply(e.atom, expr2apply(e.args));
+    }
+    static List<Apply> expr2apply(List<Expr> e) {
+        List<Apply> args = new ArrayList<Apply>(e.size());
+        for (Expr arg : e)
+            args.add(expr2apply(arg));
+        return args;
     }
     //////////////
     /** Calls can have defaults for arguments. */
@@ -210,10 +235,10 @@ abstract class BuilderHelper {
             public Comp apply(Apply ast) { 
                 assert ast.callName.equals(name);
                 assert ast.args.size() >= minNumberOfArguments;
-                List<Apply> nargs = new ArrayList<Apply>(ast.args);
+                List<Expr> nargs = new ArrayList<Expr>(apply2expr(ast.args));
                 /* add default arguments if missing */
                 for (int i=nargs.size(); i<defaultArguments.size(); i++)
-                    nargs.add(defaultArguments.get(i));
+                    nargs.add(apply2expr(defaultArguments.get(i)));
                 return b.build(nargs);
             }
             @Override

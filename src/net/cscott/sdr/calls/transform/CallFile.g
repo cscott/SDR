@@ -121,6 +121,7 @@ tokens {
     PAR;
     APPLY;
     ARG;
+    EXPR;
 }
 @parser::header {
 	package net.cscott.sdr.calls.transform;
@@ -504,10 +505,10 @@ res
 // indicates a programmer error, rather than a simple "can't do that
 // from here"
 endsin
-    : ENDS^ IN! COLON! simple_body
+    : ENDS^ IN! COLON! expr_body
     ;
 assertion
-    : ASSERT^ COLON! cond_body cond_msg
+    : ASSERT^ COLON! expr_body cond_msg
     ;
 
 // options (exactly one of the list must be selected)
@@ -592,6 +593,14 @@ cond_msg
     | COMMA QUOTED_STR -> ^(NUMBER["1"] QUOTED_STR)
     | -> ^(NUMBER["0"])
     ;
+
+expr_body
+        : words_or_ref (LPAREN expr_args? RPAREN)?
+        -> ^(EXPR words_or_ref LPAREN? expr_args?)
+        ;
+expr_args
+        : expr_body (COMMA! expr_body)*
+        ;
 
 prim_body
 	: in_out_num COMMA! in_out_num COMMA! turn opt_prim_attrib

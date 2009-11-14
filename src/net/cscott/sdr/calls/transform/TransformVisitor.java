@@ -29,6 +29,13 @@ public abstract class TransformVisitor<T> {
         }
         return c.build(c.predicate, l);
     }
+    public Expr visit(Expr e, T t) {
+        List<Expr> l = new ArrayList<Expr>(e.args.size());
+        for (Expr ee : e.args) {
+            l.add(ee.accept(this, t));
+        }
+        return e.build(e.atom, l);
+    }
     public Comp visit(If iff, T t) {
         return iff.build(iff.condition.accept(this,t),
                     iff.child.accept(this,t));

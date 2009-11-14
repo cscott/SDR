@@ -14,8 +14,6 @@ import java.util.TreeSet;
 import org.junit.runner.RunWith;
 
 import net.cscott.jdoctest.JDoctestRunner;
-import net.cscott.jutil.Factories;
-import net.cscott.jutil.GenericMultiMap;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Breather;
 import net.cscott.sdr.calls.CallDB;
@@ -36,6 +34,7 @@ import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.AstNode;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Condition;
+import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.If;
 import net.cscott.sdr.calls.ast.In;
 import net.cscott.sdr.calls.ast.Opt;
@@ -434,6 +433,11 @@ public abstract class Evaluator {
             @Override
             public Evaluator visit(ParCall pc, DanceState ds) {
                 assert false : "case handled in Par parent";
+                return null;
+            }
+            @Override
+            public Evaluator visit(Expr e, DanceState t) {
+                assert false : "expr should be handled in parent";
                 return null;
             }
         }

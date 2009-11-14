@@ -130,6 +130,24 @@ import org.junit.runner.RunWith;
 public abstract class FormationList extends FormationListFast {
     // no implementation: all the interesting stuff is in FormationListSlow.
     
+    public static NamedTaggedFormation valueOf(String s) {
+        s = s.toUpperCase()
+             .replace(' ','_')
+             .replace("1/4","QUARTER")
+             .replace("3/4","THREE_QUARTER")
+             .replace("1x2", "_1X2")
+             .replace("1x4", "_1X4")
+             .replace("2x2", "_2X2");
+        try {
+            return (NamedTaggedFormation)
+                FormationList.class.getField(s).get(null);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("No such formation: "+s);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException("No such formation: "+s);
+        }
+    }
+
     /** Show all the defined formations. */
     public static void main(String[] args) throws Exception {
         for (Field f : FormationList.class.getFields()) {

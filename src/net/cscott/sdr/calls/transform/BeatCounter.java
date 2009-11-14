@@ -12,6 +12,7 @@ import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.AstNode;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Condition;
+import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.If;
 import net.cscott.sdr.calls.ast.In;
 import net.cscott.sdr.calls.ast.Opt;
@@ -131,6 +132,11 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     @Override
     public Fraction visit(SeqCall s, Void t) {
         assert false : "Unhandled SeqCall";
+        return null;
+    }
+    @Override
+    public Fraction visit(Expr e, Void t) {
+        assert false : "Unhandled Expr";
         return null;
     }
     /** A list of recursive calls which we shouldn't try to expand. */

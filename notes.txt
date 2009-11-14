@@ -1063,6 +1063,24 @@ to do:
         canonical shape?
  bb) facing couples/wave (and vice versa) conversions.
      -- do these manually for appropriate calls? (handles recycle)
+ cc) use a uniform Expr type as the argument of
+     Opt/Par/Apply/Condition.
+         class Expr {
+         String atom;
+         T evaluate(Class<T> type, DanceState ds, List<Expr> args)
+         }
+     this will return a Selector for From (by looking it up in
+     SelectorList, and if not found, evaluating the Expr as a
+     Formation (looking up in FormationList) and creating a
+     GeneralFormationMatcher from that, a Call for Apply
+     (looking it up in CallDB), a Predicate for If, etc.
+     evaluate(Fraction.class, ...) can draw on a single list of
+     numeric functions.  We can have a single RefExpr type and an
+         Expr substitute(Expr, List<Expr> args) (beta expansion?)
+     so we can handle refs in If/Predicate/Apply/Par/Opt/wherever.
+     Selector combiners (AND, etc) are also defined in SelectorList?
+     Or else in an ExprList?
+     ** where do we define SelectorCombiner?
 -------
 heads x:
   from squared_set:
