@@ -4,6 +4,7 @@
 package net.cscott.sdr.calls.transform;
 
 import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.util.*;
 import java.util.*;
@@ -17,31 +18,39 @@ import org.junit.runner.RunWith;
  * "inherent" times given by a {@link BeatCounter} to proportionally allocate
  * the available beats from the top down.
  * @doc.test Eliminate In from 1/2 DOSADO:
+ *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
- *  js> a = Apply.makeApply("_fractional", Apply.makeApply("1/2"), Apply.makeApply("dosado"))
- *  (Apply _fractional (Apply 1/2) (Apply dosado))
- *  js> def = a.expand()
+ *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+ *  js> a = new Apply(new Expr("_fractional", Expr.literal("1/2"), Expr.literal("dosado")))
+ *  (Apply (Expr _fractional '1/2 'dosado))
+ *  js> def = a.evaluator(ds).simpleExpansion()
  *  (In 3 (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))
- *  js> def = RemoveIn.removeIn(def)
+ *  js> def = RemoveIn.removeIn(ds, def)
  *  (Opt (From [FACING DANCERS] (In 3 (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))
- *  js> def = RemoveIn.removeIn(def.children.get(0).child)
+ *  js> def = RemoveIn.removeIn(ds, def.children.get(0).child)
  *  (Seq (Prim -1, 1, none, 1 1/2, SASHAY_START) (Prim 1, 1, none, 1 1/2, SASHAY_FINISH))
  * @doc.test Proper handling of Part:
+ *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
+ *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
  *  js> a = AstNode.valueOf('(In 1 (Seq (Part false (Seq (Prim 0, 1, none, 1) (Prim 0, 1, in 1/4, 1)))))')
  *  (In 1 (Seq (Part false (Seq (Prim 0, 1, none, 1) (Prim 0, 1, in 1/4, 1)))))
- *  js> RemoveIn.removeIn(a)
+ *  js> RemoveIn.removeIn(ds, a)
  *  (Seq (Part false (Seq (Prim 0, 1, none, 1/2) (Prim 0, 1, in 1/4, 1/2))))
  */
 @RunWith(value=JDoctestRunner.class)
 public class RemoveIn extends TransformVisitor<Fraction> {
-    private final BeatCounter bc = new BeatCounter();
-    private RemoveIn() { }
+    private final BeatCounter bc;
+    private final DanceState ds;
+    private RemoveIn(DanceState ds) {
+        this.ds = ds;
+        this.bc = new BeatCounter(ds);
+    }
 
     /** Main method: pass in a {@link Comp}, and get out a {@link Comp}
      *  without {@link In} nodes. */
-    public static Comp removeIn(In in) {
-        RemoveIn ri = new RemoveIn();
+    public static Comp removeIn(DanceState ds, In in) {
+        RemoveIn ri = new RemoveIn(ds);
         try {
             return in.child.accept(ri,in.count);
         } catch (BeatCounter.CantCountBeatsException ccbe) {
@@ -58,7 +67,7 @@ public class RemoveIn extends TransformVisitor<Fraction> {
             // weird special case: make sure we don't get caught in a loop:
             // In(f, Seq(Apply(x))) <-> Seq(Apply(_in, f, x))
             if (s.children.get(0) instanceof Apply &&
-                ((Apply)s.children.get(0)).evaluator() != null)
+                !((Apply)s.children.get(0)).evaluator(ds).hasSimpleExpansion())
                 throw new BeatCounter.CantCountBeatsException("avoid loops");
             // otherwise, just push the target # f beats down the tree
             l.add(s.children.get(0).accept(this, f));
@@ -83,9 +92,10 @@ public class RemoveIn extends TransformVisitor<Fraction> {
         // Use the 'in' pseudo-concept; this will add an 'In' node when 'a'
         // gets expanded.
         // if this already has an 'in', then just alter the existing _in
-        if (a.callName.equals("_in"))
-            a = a.getArg(1);
-        return Apply.makeApply("_in", f, a);
+        Expr call = a.call;
+        if (call.atom.equals("_in"))
+            call = call.args.get(1);
+        return new Apply(new Expr("_in", Expr.literal(f), call));
     }
     // pass timing straight down Par: this will cause all sections of the
     // par to finish at the same time; revisit this (make it more like Seq

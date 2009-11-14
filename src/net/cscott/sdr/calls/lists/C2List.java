@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.List;
 
 import net.cscott.sdr.calls.Call;
+import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Program;
-import net.cscott.sdr.calls.ast.Apply;
-import net.cscott.sdr.calls.ast.Comp;
+import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.lists.C1List.ConcentricEvaluator;
 import net.cscott.sdr.calls.lists.C1List.ConcentricType;
@@ -34,26 +34,20 @@ public abstract class C2List {
         @Override
         public final Program getProgram() { return Program.C2; }
         @Override
-        public List<Apply> getDefaultArguments() {
+        public List<Expr> getDefaultArguments() {
             return Collections.emptyList();
         }
     }
 
     public static final Call CROSS_CONCENTRIC = new C2Call("_cross concentric") {
         @Override
-        public Comp apply(Apply ast) {
-            assert false : "This concept uses a custom Evaluator";
-            return null;
-        }
-        @Override
         public int getMinNumberOfArguments() { return 2; }
         @Override
         public Rule getRule() { return null; /* internal call */ }
         @Override
-        public Evaluator getEvaluator(Apply ast) {
-            assert ast.callName.equals(getName());
-            assert ast.args.size() == 2;
-            return new ConcentricEvaluator(ast.getArg(0), ast.getArg(1),
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
+            assert args.size() == 2;
+            return new ConcentricEvaluator(args.get(0), args.get(1),
                                            ConcentricType.CROSS);
         }
     };

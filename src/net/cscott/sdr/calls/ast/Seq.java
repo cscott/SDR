@@ -18,7 +18,7 @@ public class Seq extends Comp {
     public Seq(SeqCall... children) {
         super(SEQ);
         this.children = Collections.unmodifiableList
-        (Arrays.asList(children.clone()));
+            (Arrays.asList(children.clone()));
     }
     public Seq(List<SeqCall> children) {
         this(children.toArray(new SeqCall[children.size()]));

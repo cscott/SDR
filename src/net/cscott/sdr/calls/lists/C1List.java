@@ -27,8 +27,7 @@ import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Apply;
-import net.cscott.sdr.calls.ast.Comp;
-import net.cscott.sdr.calls.ast.Seq;
+import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.lists.A1List.SolidEvaluator;
@@ -60,17 +59,12 @@ public abstract class C1List {
         @Override
         public final Program getProgram() { return Program.C1; }
         @Override
-        public List<Apply> getDefaultArguments() {
+        public List<Expr> getDefaultArguments() {
             return Collections.emptyList();
         }
     }
 
     public static final Call TANDEM = new C1Call("tandem") {
-        @Override
-        public Comp apply(Apply ast) {
-            assert false : "This concept uses a custom Evaluator";
-            return null;
-        }
         @Override
         public int getMinNumberOfArguments() { return 1; }
         @Override
@@ -79,20 +73,14 @@ public abstract class C1List {
             return new Rule("anything", g, Fraction.valueOf(-10));
         }
         @Override
-        public Evaluator getEvaluator(Apply ast) {
-            assert ast.callName.equals(getName());
-            assert ast.args.size() == 1;
-            return new SolidEvaluator(ast.getArg(0), FormationList.TANDEM,
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
+            assert args.size() == 1;
+            return new SolidEvaluator(args.get(0), FormationList.TANDEM,
                                       SolidMatch.ALL, SolidType.SOLID);
         }
     };
 
     public static final Call SIAMESE = new C1Call("siamese") {
-        @Override
-        public Comp apply(Apply ast) {
-            assert false : "This concept uses a custom Evaluator";
-            return null;
-        }
         @Override
         public int getMinNumberOfArguments() { return 1; }
         @Override
@@ -101,10 +89,9 @@ public abstract class C1List {
             return new Rule("anything", g, Fraction.valueOf(-10));
         }
         @Override
-        public Evaluator getEvaluator(Apply ast) {
-            assert ast.callName.equals(getName());
-            assert ast.args.size() == 1;
-            return new SolidEvaluator(ast.getArg(0), "siamese",
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
+            assert args.size() == 1;
+            return new SolidEvaluator(args.get(0), "siamese",
                                       SelectorList.SIAMESE, SolidType.SOLID);
         }
     };
@@ -112,19 +99,13 @@ public abstract class C1List {
 
     public static final Call CONCENTRIC = new C1Call("_concentric") {
         @Override
-        public Comp apply(Apply ast) {
-            assert false : "This concept uses a custom Evaluator";
-            return null;
-        }
-        @Override
         public int getMinNumberOfArguments() { return 2; }
         @Override
         public Rule getRule() { return null; /* internal call */ }
         @Override
-        public Evaluator getEvaluator(Apply ast) {
-            assert ast.callName.equals(getName());
-            assert ast.args.size() == 2;
-            return new ConcentricEvaluator(ast.getArg(0), ast.getArg(1),
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
+            assert args.size() == 2;
+            return new ConcentricEvaluator(args.get(0), args.get(1),
                                            ConcentricType.CONCENTRIC);
         }
     };
@@ -133,12 +114,12 @@ public abstract class C1List {
     public static enum ConcentricType { QUASI, CONCENTRIC, CROSS };
     /** Evaluator for concentric and quasi-concentric. */
     public static class ConcentricEvaluator extends Evaluator {
-        private final Comp centersPart, endsPart;
+        private final Expr centersPart, endsPart;
         private final ConcentricType which;
-        public ConcentricEvaluator(Apply centersPart, Apply endsPart,
+        public ConcentricEvaluator(Expr centersPart, Expr endsPart,
                                    ConcentricType which) {
-            this.centersPart = new Seq(centersPart);
-            this.endsPart = new Seq(endsPart);
+            this.centersPart = centersPart;
+            this.endsPart = endsPart;
             this.which = which;
         }
         @Override
@@ -159,7 +140,7 @@ public abstract class C1List {
             DanceState centerS = ds.cloneAndClear(centerF);
             DanceState endS = ds.cloneAndClear(Breather.breathe(endF));
             TreeSet<Fraction> moments = new TreeSet<Fraction>();
-            new Evaluator.Standard(this.centersPart).evaluateAll(centerS);
+            new Apply(this.centersPart).evaluator(centerS).evaluateAll(centerS);
             for (TimedFormation tf: centerS.formations())
                 moments.add(tf.time);
             // in CROSS, have the ends wait until the centers are done
@@ -168,7 +149,7 @@ public abstract class C1List {
                 endsOffset = moments.last();
                 endS.syncDancers(endsOffset);
             }
-            new Evaluator.Standard(this.endsPart).evaluateAll(endS);
+            new Apply(this.endsPart).evaluator(endS).evaluateAll(endS);
             for (TimedFormation tf: endS.formations())
                 moments.add(tf.time);
             for (DanceState nds: l(centerS, endS))

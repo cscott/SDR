@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.List;
 
 import net.cscott.sdr.calls.Call;
+import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Program;
-import net.cscott.sdr.calls.ast.Apply;
-import net.cscott.sdr.calls.ast.Comp;
+import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.lists.BasicList.LRMEvaluator;
@@ -36,7 +36,7 @@ public abstract class C3bList {
         @Override
         public final Program getProgram() { return Program.C3B; }
         @Override
-        public List<Apply> getDefaultArguments() {
+        public List<Expr> getDefaultArguments() {
             return Collections.emptyList();
         }
     }
@@ -47,11 +47,6 @@ public abstract class C3bList {
     // XXX: is this right?
     public static final Call MIRROR = new C3BCall("mirror") {
         @Override
-        public Comp apply(Apply ast) {
-            assert false; /* should use custom evaluator */
-            return null;
-        }
-        @Override
         public int getMinNumberOfArguments() { return 1; }
         @Override
         public Rule getRule() {
@@ -59,9 +54,9 @@ public abstract class C3bList {
             return new Rule("anything", g, Fraction.valueOf(-20)); // bind loose
         }
         @Override
-        public Evaluator getEvaluator(Apply ast) {
-            assert ast.callName.equals(getName());
-            return new LRMEvaluator(LRMType.MIRROR, ast);
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
+            assert args.size()==1;
+            return new LRMEvaluator(LRMType.MIRROR, args.get(0));
         }
     };
 }

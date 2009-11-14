@@ -29,74 +29,74 @@ package net.cscott.sdr.calls.lists;
   }
 }
 
-start returns [Apply r]
+start returns [Expr r]
 	: a=anything_list EOF { r=a; }
 	;
 
-anything_list returns [Apply r]
-@init { List<Apply> l = new ArrayList<Apply>(); }
+anything_list returns [Expr r]
+@init { List<Expr> l = new ArrayList<Expr>(); }
 	// semicolons are just for ease of typing (not spoken)
 	: a=anything { l.add(a); } (';' b=anything { l.add(b); } )*
 	  {
 	    r = (l.size() > 1)
-                ? Apply.makeApply("and", l.toArray(new Apply[0]))
+                ? new Expr("and", l.toArray(new Expr[l.size()]))
 	        : a;
 	  }
 	;
 
 @RULES@
 
-parenthesized_anything returns [Apply r]
+parenthesized_anything returns [Expr r]
 	: '(' a=anything_list ')' { r=a; }
 	;
 
-people returns [Apply r]
+people returns [Expr r]
 	: a=genders {r=a;} | a=heads_or_sides {r=a;} | a=all {r=a;}
 	;
-heads_or_sides returns [Apply r]
-        : 'heads' { r = Apply.makeApply("HEAD"); }
-        | 'sides' { r = Apply.makeApply("SIDE"); }
+heads_or_sides returns [Expr r]
+        : 'heads' { r = Expr.literal("HEAD"); }
+        | 'sides' { r = Expr.literal("SIDE"); }
         ;
-two_select returns [Apply r]
-        : a=head_or_side b=genders { r = Apply.makeApply("&", a, b); }
-        | a=center_or_end b=genders { r = Apply.makeApply("&", a, b); }
-        | 'very' 'centers' { r = Apply.makeApply("VERY_CENTER"); }
-        | 'center' 'two' { r = Apply.makeApply("VERY_CENTER"); }
+two_select returns [Expr r]
+        : a=head_or_side b=genders { r = new Expr("&", a, b); }
+        | a=center_or_end b=genders { r = new Expr("&", a, b); }
+        | 'very' 'centers' { r = Expr.literal("VERY_CENTER"); }
+        | 'center' 'two' { r = Expr.literal("VERY_CENTER"); }
         ;
-center_or_end returns [Apply r]
-	: 'center' { r = Apply.makeApply("CENTER"); }
-	| 'end' { r = Apply.makeApply("END"); }
+center_or_end returns [Expr r]
+	: 'center' { r = Expr.literal("CENTER"); }
+	| 'end' { r = Expr.literal("END"); }
 	;
-head_or_side returns [Apply r]
-        : 'head' { r = Apply.makeApply("HEAD"); }
-        | 'side' { r = Apply.makeApply("SIDE"); }
+head_or_side returns [Expr r]
+        : 'head' { r = Expr.literal("HEAD"); }
+        | 'side' { r = Expr.literal("SIDE"); }
         ;
-genders returns [Apply r]
+genders returns [Expr r]
 	: a=boys {r=a;} | a=girls {r=a;}
 	;
-boys returns [Apply a]
-@init { a = Apply.makeApply("BOY"); }
+boys returns [Expr a]
+@init { a = Expr.literal("BOY"); }
 	: 'boys' | 'men' ;
-girls returns [Apply a]
-@init { a = Apply.makeApply("GIRL"); }
+girls returns [Expr a]
+@init { a = Expr.literal("GIRL"); }
 	: 'girls' | 'ladies';
-all returns [Apply a]
-@init { a = Apply.makeApply("ALL"); }
+all returns [Expr a]
+@init { a = Expr.literal("ALL"); }
 	: 'all' | 'everyone' | 'every' 'one' | 'everybody' | 'every' 'body';
-wave_select returns [Apply a]
-	: 'centers' { a = Apply.makeApply("CENTER"); }
-	| 'ends' { a = Apply.makeApply("END"); }
+wave_select returns [Expr a]
+	: 'centers' { a = Expr.literal("CENTER"); }
+	| 'ends' { a = Expr.literal("END"); }
 	;
-anyone returns [Apply r]
+anyone returns [Expr r]
 	: a=people {r=a;} | a=wave_select {r=a;} ;
-number returns [Apply a]
-	: f=a_number { a = Apply.makeApply(f.toProperString()); }
+number returns [Expr a]
+	: f=a_number { a = Expr.literal(f); }
 	// hacks for typing (not spoken)
 	| ( INT? INT '/' INT ) =>
 	    w=integer? n=integer '/' d=integer
-	  { a = Apply.makeApply($n.f.divide($d.f).add($w.f==null?Fraction.ZERO:$w.f).toProperString()); }
+	  { a = Expr.literal($n.f.divide($d.f).add($w.f==null?Fraction.ZERO:$w.f)); }
 	| i=integer
-	  { a = Apply.makeApply($i.f.toProperString()); }
+	  { a = Expr.literal($i.f); }
 	;
 a_number returns [Fraction f]
 	: f1=a_digit 'and' f2=a_fraction { f=f1.add(f2); }
@@ -118,19 +118,19 @@ a_digit_greater_than_two returns [Fraction f]
 	| 'nine' { f=Fraction.valueOf(9); }
 	;
 
-fraction returns [Apply a]
-	: f=a_fraction { a = Apply.makeApply(f.toProperString()); }
+fraction returns [Expr a]
+	: f=a_fraction { a = Expr.literal(f); }
 	// hack for typing (not spoken)
 	| n=integer '/' d=integer
-	{ a = Apply.makeApply($n.f.divide($d.f).toProperString()); }
+	{ a = Expr.literal($n.f.divide($d.f)); }
 	;
 a_fraction returns [Fraction f]
-	: ('a'|'one') 'half' { f=Fraction.valueOf("1/2"); }
-	| ('a'|'one') 'third' { f=Fraction.valueOf("1/3"); }
-	| ('a'|'one') 'quarter' { f=Fraction.valueOf("1/4"); }
-	| 'two' 'thirds' { f=Fraction.valueOf("2/3"); }
-	| 'two' 'quarters' { f=Fraction.valueOf("2/4"); }
-	| 'three' 'quarters' { f=Fraction.valueOf("3/4"); }
+	: ('a'|'one') 'half' { f=Fraction.valueOf(1,2); }
+	| ('a'|'one') 'third' { f=Fraction.valueOf(1,3); }
+	| ('a'|'one') 'quarter' { f=Fraction.valueOf(1,4); }
+	| 'two' 'thirds' { f=Fraction.valueOf(2,3); }
+	| 'two' 'quarters' { f=Fraction.valueOf(2,4); }
+	| 'three' 'quarters' { f=Fraction.valueOf(3,4); }
 	;
 fragment
 integer returns [Fraction f]
@@ -138,8 +138,8 @@ integer returns [Fraction f]
 	;
 INT	: ('0'..'9')+ ;
 
-cardinal returns [Apply a]
-	: f=a_cardinal { a=Apply.makeApply(f.toProperString()); }
+cardinal returns [Expr a]
+	: f=a_cardinal { a=Expr.literal(f); }
 	// hacks for typing (not spoken)
 	// COMMENTED OUT BECAUSE INTRODUCES AMBIGUITIES WITH
 	//  "square thru 3" / "breaker 3" etc.

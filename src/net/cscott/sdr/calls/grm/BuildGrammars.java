@@ -1,10 +1,13 @@
 package net.cscott.sdr.calls.grm;
 
+import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
+import static net.cscott.sdr.util.Tools.l;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
@@ -21,23 +24,20 @@ import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.Program;
-import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.ExprFunc.EvaluationException;
+import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.grm.Grm.Alt;
 import net.cscott.sdr.calls.grm.Grm.Concat;
 import net.cscott.sdr.calls.grm.Grm.Mult;
 import net.cscott.sdr.calls.grm.Grm.Nonterminal;
 import net.cscott.sdr.calls.grm.Grm.Terminal;
 import net.cscott.sdr.util.Fraction;
-import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
-import static net.cscott.sdr.util.Tools.l;
 
 /** Build speech/plain-text grammars for the various programs. */
 public class BuildGrammars {
 
-    /**
-     * @param args
-     */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)
+        throws IOException, EvaluationException {
         for (Program p : Program.values()) {
             if (p!=Program.C4 && DevSettings.ONLY_C4_GRAMMAR) // FOR DEBUGGING
                 continue; // skip this grammar to speed up the compile
@@ -47,7 +47,8 @@ public class BuildGrammars {
                   EmitJava.INSTANCE.emit());
         System.err.println("Done.");
     }
-    public static void build(Program program) throws IOException {
+    public static void build(Program program)
+        throws IOException, EvaluationException {
         // collect all the grammar rules & make actions.
         List<RuleAndAction> rules = new ArrayList<RuleAndAction>();
         for (Call c : CallDB.INSTANCE.allCalls)
@@ -128,29 +129,38 @@ public class BuildGrammars {
         EmitJava.INSTANCE.collect(program, rules);
     }
     
-    private static List<RuleAndAction> mkAction(Call c) {
+    private static List<RuleAndAction> mkAction(Call c)
+        throws EvaluationException {
         List<RuleAndAction> l = new ArrayList<RuleAndAction>(2);
         for (Rule r : splitTopLevelAlt(c.getRule()))
             l.add(mkAction(c.getName(), c.getDefaultArguments(), r));
         return l;
     }
     private static RuleAndAction mkAction(String callName,
-                                          List<Apply> defaultArgs, Rule r) {
-        int numArgs = highestNontermParam(r.rhs);
+                                          List<Expr> defaultArgs, Rule r)
+        throws EvaluationException {
+        int numArgs = highestNontermParam(r.rhs) + 1;
         NumberParams np = new NumberParams(r.rhs);
         StringBuilder sb = new StringBuilder();
-        sb.append("r=Apply.makeApply(\"");
-        sb.append(callName);
+        if (numArgs == 0) {
+            sb.append("r=Expr.literal(\"");
+            sb.append(escapeJava(callName));
+            sb.append("\");");
+            return new RuleAndAction(r, sb.toString());
+        }
+        sb.append("r=new Expr(\"");
+        sb.append(escapeJava(callName));
         sb.append('\"');
         // now args
-        for (int i=0; i<=numArgs; i++) {
+        for (int i=0; i<numArgs; i++) {
             sb.append(',');
             char v = (char)('a'+np.paramToOrder.get(i));
             sb.append(v);
             if (i<defaultArgs.size() && defaultArgs.get(i)!=null) {
-                assert defaultArgs.get(i).args.size()==0;
-                sb.append("!=null?"+v+":Apply.makeApply"+
-                          "(\""+escapeJava(defaultArgs.get(i).callName)+"\")");
+                String defaultValue =
+                    defaultArgs.get(i).evaluate(String.class, null);
+                sb.append("!=null?"+v+":Expr.literal"+
+                        "(\""+escapeJava(defaultValue)+"\")");
             }
         }
         // done!

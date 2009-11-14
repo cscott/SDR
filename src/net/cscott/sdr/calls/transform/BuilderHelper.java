@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.cscott.sdr.calls.Call;
+import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Selector;
@@ -42,7 +43,7 @@ abstract class BuilderHelper {
         }
     }
     /**
-     * 'B' is pronounced as 'Builder'.  So a B<Prim> builds Prim objects.
+     * 'B' is pronounced as 'Builder'.  So a B&lt;Prim&gt; builds Prim objects.
      */
     static abstract class B<T> {
         public abstract T build(List<Expr> args);
@@ -74,19 +75,12 @@ abstract class BuilderHelper {
     static <T> B<T> optimize(B<T> b, boolean isConstant) {
         return (isConstant) ? mkConstant(b.build(null)) : b;
     }
-    static B<Apply> mkApply(final String callName, final List<B<Apply>> args) {
+    static B<Apply> mkApply(final B<Expr> call) {
         return optimize(new B<Apply>() {
             public Apply build(List<Expr> fargs) {
-                return new Apply(callName, reduce(args, fargs));
+                return new Apply(call.build(fargs));
             }
-        }, isConstant(args));
-    }
-    static B<Condition> mkCondition(final String predicate, final List<B<Condition>> args) {
-        return optimize(new B<Condition>() {
-            public Condition build(List<Expr> fargs) {
-                return new Condition(predicate, reduce(args, fargs));
-            }
-        }, isConstant(args));
+        }, call.isConstant());
     }
     static B<Expr> mkExpr(final String predicate, final List<B<Expr>> args) {
         return optimize(new B<Expr>() {
@@ -95,7 +89,7 @@ abstract class BuilderHelper {
             }
         }, isConstant(args));
     }
-    static B<If> mkIf(final B<Condition> cond, final Fraction priority,
+    static B<If> mkIf(final B<Expr> cond, final Fraction priority,
                       final String msg, final B<? extends Comp> child) {
         return optimize(new B<If>() {
             public If build(List<Expr> fargs) {
@@ -164,30 +158,6 @@ abstract class BuilderHelper {
             }
         }, isConstant(children));
     }
-    static Condition apply2cond(Apply a) {
-        List<Condition> args = new ArrayList<Condition>(a.args.size());
-        for (Apply arg : a.args)
-            args.add(apply2cond(arg));
-        return new Condition(a.callName, args);
-    }
-    static Expr apply2expr(Apply a) {
-        return new Expr(a.callName, apply2expr(a.args));
-    }
-    static List<Expr> apply2expr(List<Apply> a) {
-        List<Expr> args = new ArrayList<Expr>(a.size());
-        for (Apply arg : a)
-            args.add(apply2expr(arg));
-        return args;
-    }
-    static Apply expr2apply(Expr e) {
-        return new Apply(e.atom, expr2apply(e.args));
-    }
-    static List<Apply> expr2apply(List<Expr> e) {
-        List<Apply> args = new ArrayList<Apply>(e.size());
-        for (Expr arg : e)
-            args.add(expr2apply(arg));
-        return args;
-    }
     //////////////
     /** Calls can have defaults for arguments. */
     static class ArgAndDefault {
@@ -213,17 +183,17 @@ abstract class BuilderHelper {
                 break;
         final int minNumberOfArguments = i;
         // make default arguments list.
-        final List<Apply> defaultArguments;
+        final List<Expr> defaultArguments;
         for (i=args.size(); i>0; i--)
             if (args.get(i-1).defaultValue != null)
                 break;
         if (i==0) /* no default arguments */
             defaultArguments = Collections.emptyList(); /* save memory */
         else {
-             defaultArguments = new ArrayList<Apply>();
+             defaultArguments = new ArrayList<Expr>();
              for (ArgAndDefault a: args)
                  defaultArguments.add(a.defaultValue==null ? null :
-                                      Apply.makeApply(a.defaultValue));
+                                      Expr.literal(a.defaultValue));
         }
 
         return new Call() {
@@ -232,28 +202,23 @@ abstract class BuilderHelper {
             @Override
             public Program getProgram() { return program; }
             @Override
-            public Comp apply(Apply ast) { 
-                assert ast.callName.equals(name);
-                assert ast.args.size() >= minNumberOfArguments;
-                List<Expr> nargs = new ArrayList<Expr>(apply2expr(ast.args));
-                /* add default arguments if missing */
-                for (int i=nargs.size(); i<defaultArguments.size(); i++)
-                    nargs.add(apply2expr(defaultArguments.get(i)));
-                return b.build(nargs);
-            }
-            @Override
             public int getMinNumberOfArguments() {
                 return minNumberOfArguments;
             }
             @Override
-            public List<Apply> getDefaultArguments() {
+            public List<Expr> getDefaultArguments() {
                 return defaultArguments;
             }
             @Override
             public Rule getRule() { return rule; }
             @Override
-            public Evaluator getEvaluator(Apply ast) {
-                return null; // ok to apply standard evaluator on expansion.
+            public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
+                assert args.size() >= minNumberOfArguments;
+                List<Expr> nargs = new ArrayList<Expr>(args);
+                /* add default arguments if missing */
+                for (int i=nargs.size(); i<defaultArguments.size(); i++)
+                    nargs.add(defaultArguments.get(i));
+                return new Evaluator.Standard(b.build(nargs));
             }
         };
     }

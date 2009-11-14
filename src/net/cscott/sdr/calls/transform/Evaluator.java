@@ -25,15 +25,14 @@ import net.cscott.sdr.calls.FormationList;
 import net.cscott.sdr.calls.FormationMatch;
 import net.cscott.sdr.calls.NoMatchException;
 import net.cscott.sdr.calls.Position;
-import net.cscott.sdr.calls.Predicate;
 import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TimedFormation;
+import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.AstNode;
 import net.cscott.sdr.calls.ast.Comp;
-import net.cscott.sdr.calls.ast.Condition;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.If;
 import net.cscott.sdr.calls.ast.In;
@@ -74,9 +73,9 @@ import net.cscott.sdr.util.ListUtils;
  *  |
  *  |     1B^  1G^
  *  js> comp = CallDB.INSTANCE.parse(ds.dance.program, "heads start");
- *  (Apply heads start)
+ *  (Apply 'heads start)
  *  js> comp = new net.cscott.sdr.calls.ast.Seq(comp);
- *  (Seq (Apply heads start))
+ *  (Seq (Apply 'heads start))
  *  js> e = new Evaluator.Standard(comp); undefined
  *  js> e.evaluateAll(ds);
  *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
@@ -95,9 +94,9 @@ import net.cscott.sdr.util.ListUtils;
  *  |
  *  |     1B^  1G^
  *  js> comp = CallDB.INSTANCE.parse(ds.dance.program, "heads pair off");
- *  (Apply anyone while others (Apply HEAD) (Apply pair off) (Apply nothing))
+ *  (Apply (Expr anyone while others 'HEAD 'pair off 'nothing))
  *  js> comp = new net.cscott.sdr.calls.ast.Seq(comp);
- *  (Seq (Apply anyone while others (Apply HEAD) (Apply pair off) (Apply nothing)))
+ *  (Seq (Apply (Expr anyone while others 'HEAD 'pair off 'nothing)))
  *  js> e = new Evaluator.Standard(comp); undefined
  *  js> e.evaluateAll(ds);
  *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
@@ -188,6 +187,19 @@ public abstract class Evaluator {
      * @return An {@link Evaluator} for the remaining parts, or null.
      */
     public abstract Evaluator evaluate(DanceState ds);
+    /** Return true iff this Evaluator simply evaluates an Ast tree.
+     *  That is, if we can "look inside" the definition of this call or concept
+     *  by treating it as equivalent to its expansion.
+     */
+    public boolean hasSimpleExpansion() { return false; }
+    /** Returns the equivalent simple expansion of the call, if it has one.
+     * @throws IllegalArgumentException if {@link #hasSimpleExpansion()} is
+     *         false.
+     */
+    public Comp simpleExpansion() {
+        assert !hasSimpleExpansion();
+        throw new IllegalArgumentException("Does not have a simple expansion");
+    }
 
     public final void evaluateAll(DanceState ds) {
         for(Evaluator e = this; e!=null; )
@@ -236,6 +248,10 @@ public abstract class Evaluator {
             this.continuation = continuation;
         }
         @Override
+        public boolean hasSimpleExpansion() { return true; }
+        @Override
+        public Comp simpleExpansion() { return (Comp) continuation; }
+        @Override
         public Evaluator evaluate(DanceState ds) {
             return this.continuation.accept(new StandardVisitor(),ds);
         }
@@ -250,10 +266,7 @@ public abstract class Evaluator {
              */
             @Override
             public Evaluator visit(Apply a, DanceState ds) {
-                Evaluator e = a.evaluator();
-                if (e==null)
-                    // use standard evaluator if call is simple
-                    e = new Standard(a.expand());
+                Evaluator e = a.evaluator(ds);
                 return e.evaluate(ds);
             }
             /* Evaluate predicates, and either evaluate the child or
@@ -261,8 +274,14 @@ public abstract class Evaluator {
             @Override
             public Evaluator visit(If iff, DanceState ds) {
                 // evaluate the predicate
-                Predicate p = iff.condition.getPredicate();
-                if (!p.evaluate(ds.dance, ds.currentFormation(), iff.condition)) 
+                boolean predicate;
+                try {
+                    predicate = iff.condition.evaluate(Boolean.class, ds);
+                } catch (EvaluationException e) {
+                    assert false : "Expression failed to evaluate: "+iff;
+                    throw new BadCallException("Couldn't evaluate expression");
+                }
+                if (!predicate)
                     throw new BadCallException(iff.message, iff.priority);
                 Comp c = iff.child;
                 return c.accept(this, ds); // keep going
@@ -273,7 +292,7 @@ public abstract class Evaluator {
              */
             @Override
             public Evaluator visit(In in, DanceState ds) {
-                Comp inRemoved = RemoveIn.removeIn(in);
+                Comp inRemoved = RemoveIn.removeIn(ds, in);
                 // if inRemoved is not an in, then just evaluate it
                 if (inRemoved != in)
                     return inRemoved.accept(this, ds);
@@ -418,11 +437,6 @@ public abstract class Evaluator {
             @Override
             public Evaluator visit(Comp c, DanceState ds) {
                 assert false : "missing case!";
-                return null;
-            }
-            @Override
-            public Evaluator visit(Condition c, DanceState ds) {
-                assert false : "not a Comp";
                 return null;
             }
             @Override

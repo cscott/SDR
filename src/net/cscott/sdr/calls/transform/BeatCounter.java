@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.Set;
 
 import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.AstNode;
 import net.cscott.sdr.calls.ast.Comp;
-import net.cscott.sdr.calls.ast.Condition;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.If;
 import net.cscott.sdr.calls.ast.In;
@@ -33,10 +33,12 @@ import org.junit.runner.RunWith;
  * to its spec, whatever that is.  This is used by {@link RemoveIn} to
  * allocate beats appropriately when rescaling.
  * @doc.test Simple SEQ:
+ *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> s = AstNode.valueOf("(Seq (Prim -1, 1, none, 1 1/2) (Prim 1, 1, none, 1 1/2))")
  *  (Seq (Prim -1, 1, none, 1 1/2) (Prim 1, 1, none, 1 1/2))
- *  js> bc = new BeatCounter(); undefined
+ *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+ *  js> bc = new BeatCounter(ds); undefined
  *  js> // invoking this package-scope method is going to be a little painful
  *  js> astcls = java.lang.Class.forName('net.cscott.sdr.calls.ast.AstNode')
  *  class net.cscott.sdr.calls.ast.AstNode
@@ -50,7 +52,8 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     static class CantCountBeatsException extends RuntimeException {
         CantCountBeatsException(String msg) { super(msg); }
     }
-    public BeatCounter() { }
+    private final DanceState ds;
+    public BeatCounter(DanceState ds) { this.ds = ds; }
     private final Map<AstNode,Fraction> inherent = new HashMap<AstNode,Fraction>();
     // Math.max for Fractions.
     private Fraction max(Fraction a, Fraction b) {
@@ -64,12 +67,14 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     @Override
     public Fraction visit(Apply apply, Void v) {
         // careful with recursive calls here!
-        if (apply.evaluator()!=null || callBlacklist.contains(apply.callName))
-            throw new CantCountBeatsException("can't expand fancy-pants calls");
-        return getBeats(apply.expand());
+        Evaluator e = apply.evaluator(ds);
+        if (e.hasSimpleExpansion() &&
+            !callBlacklist.contains(apply.call.atom))
+            return getBeats(e.simpleExpansion());
+        throw new CantCountBeatsException("can't expand fancy-pants calls");
     }
     @Override
-    public Fraction visit(Condition c, Void v) {
+    public Fraction visit(Expr e, Void v) {
         throw new CantCountBeatsException("shouldn't traverse conditions");
     }
     @Override
@@ -132,11 +137,6 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     @Override
     public Fraction visit(SeqCall s, Void t) {
         assert false : "Unhandled SeqCall";
-        return null;
-    }
-    @Override
-    public Fraction visit(Expr e, Void t) {
-        assert false : "Unhandled Expr";
         return null;
     }
     /** A list of recursive calls which we shouldn't try to expand. */

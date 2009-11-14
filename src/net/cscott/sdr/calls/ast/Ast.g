@@ -4,23 +4,23 @@
  * @doc.test Simple conversion:
  *  js> new AstParser("(Seq (Prim -1, in 1, none, 1))").ast()
  *  (Seq (Prim -1, in 1, none, 1))
- *  js> new AstParser("(If (Condition true) (Seq (Apply nothing)))").ast()
- *  (If (Condition true) (Seq (Apply nothing)))
+ *  js> new AstParser("(If (Expr true) (Seq (Apply 'nothing)))").ast()
+ *  (If (Expr true) (Seq (Apply 'nothing)))
  *  js> new AstParser("(Expr multiple words (Expr arg 1) (Expr arg 2))").ast()
     (Expr multiple words (Expr arg 1) (Expr arg 2))
  * @doc.test White space is ignored:
  *  js> new AstParser("( Seq\n (Prim\tin\r-1 ,  1 , out  1  / 4  ,1 ) ) ").ast()
  *  (Seq (Prim in -1, 1, in -1/4, 1))
  * @doc.test Call names, predicates, formations, etc can be quoted:
- *  js> new AstParser("(Condition \"Condition\" (Condition \"If\") (Condition \"Prim\"))").ast()
- *  (Condition Condition (Condition If) (Condition Prim))
- *  js> new AstParser('(If (Condition true) (Seq (Apply nothing)) "Message!" 1/2)').ast()
- *  (If (Condition true) (Seq (Apply nothing)) "Message!" 1/2)
- *  js> new AstParser('(If (Condition true) (Seq (Apply nothing)) "Message!")').ast()
- *  (If (Condition true) (Seq (Apply nothing)) "Message!")
+ *  js> new AstParser("(Expr \"Expr\" (Expr \"If\") (Expr \"Prim\"))").ast()
+ *  (Expr Expr (Expr If) (Expr Prim))
+ *  js> new AstParser('(If (Expr true) (Seq (Apply \'nothing)) "Message!" 1/2)').ast()
+ *  (If (Expr true) (Seq (Apply 'nothing)) "Message!" 1/2)
+ *  js> new AstParser('(If (Expr true) (Seq (Apply \'nothing)) "Message!")').ast()
+ *  (If (Expr true) (Seq (Apply 'nothing)) "Message!")
  * @doc.test Keywords ought to be ignored in call names, etc.
- *  js> new AstParser("(Condition Condition (Condition If) (Condition Prim))").ast()
- *  (Condition Condition (Condition If) (Condition Prim))
+ *  js> new AstParser("(Expr Expr (Expr If) (Expr Prim))").ast()
+ *  (Expr Expr (Expr If) (Expr Prim))
  * @doc.test Parsing complicated Prims:
  *  js> new AstParser("(Seq (Prim 1 1/2, 1/2, left, 1, PASS_LEFT, FORCE_ARC, FORCE_ROLL_RIGHT))").ast()
  *  (Seq (Prim 1 1/2, 1/2, left, 1, PASS_LEFT, FORCE_ARC, FORCE_ROLL_RIGHT))
@@ -63,7 +63,6 @@ start returns [AstNode r]
 
 ast returns [AstNode r]
     : comp { $r=$comp.r; }
-    | condition { $r=$condition.r; }
     | optcall { $r=$optcall.r; }
     | parcall { $r=$parcall.r; }
     | seqcall { $r=$seqcall.r; }
@@ -75,12 +74,6 @@ comp returns [Comp r]
     | opt { $r=$opt.r; }
     | par { $r=$par.r; }
     | seq { $r=$seq.r; }
-    ;
-condition returns [Condition r]
-@init { List<Condition> args = new ArrayList<Condition>(); }
-    : {input.LT(2).getText().equalsIgnoreCase("Condition")}?
-        '(' IDENT predicate (cc=condition {args.add(cc);})* ')'
-        { $r=new Condition($predicate.r, args); }
     ;
 optcall returns [OptCall r]
     : {input.LT(2).getText().equalsIgnoreCase("OptCall")}?
@@ -100,14 +93,15 @@ seqcall returns [SeqCall r]
 expr returns [Expr r]
 @init { List<Expr> args = new ArrayList<Expr>(); }
     : {input.LT(2).getText().equalsIgnoreCase("Expr")}?
-        '(' IDENT atom=simple_words (ee=expr {args.add(ee);})* ')'
+        '(' IDENT atom=list_elem (ee=expr {args.add(ee);})* ')'
         { $r=new Expr($atom.r, args); }
+    | '\'' atom=list_elem
+        { $r=Expr.literal($atom.r); }
     ;
 apply returns [Apply r]
-@init { List<Apply> args = new ArrayList<Apply>(); }
     : {input.LT(2).getText().equalsIgnoreCase("Apply")}?
-        '(' IDENT callname=simple_words (aa=apply {args.add(aa);})* ')'
-        { $r = new Apply($callname.r, args); }
+        '(' IDENT expr ')'
+        { $r = new Apply($expr.r); }
     ;
 part returns [Part r]
     : {input.LT(2).getText().equalsIgnoreCase("Part")}?
@@ -136,10 +130,10 @@ prim_flag returns [Prim.Flag r]
 
 if_ returns [If r]
     : {input.LT(2).getText().equalsIgnoreCase("If")}?
-        '(' IDENT condition child=comp (msg=STRING (pri=number)?)? ')'
-        { $r = (msg==null) ? new If($condition.r, $child.r) :
-               (pri==null) ? new If($condition.r, $child.r, $msg.text) :
-               new If($condition.r, $child.r, $msg.text, $pri.r); }
+        '(' IDENT expr child=comp (msg=STRING (pri=number)?)? ')'
+        { $r = (msg==null) ? new If($expr.r, $child.r) :
+               (pri==null) ? new If($expr.r, $child.r, $msg.text) :
+               new If($expr.r, $child.r, $msg.text, $pri.r); }
     ;
 in returns [In r]
     : {input.LT(2).getText().equalsIgnoreCase("In")}?
@@ -165,10 +159,6 @@ seq returns [Seq r]
         { $r = new Seq(sc); }
     ;
 
-predicate returns [String r]
-    : list_elem
-        { $r = $list_elem.r; }
-    ;
 selectors returns [List<Selector> r]
     : string_list
         { $r = OptCall.parseFormations($string_list.r); }
@@ -193,20 +183,16 @@ list_elem returns [String r]
 // pieces
 fragment
 number returns [Fraction r]
-    : opt_sign integer fraction
+    : ( opt_sign (INT)? INT '/' INT ) =>
+      opt_sign (p=integer)? fraction
         {
-            $r = Fraction.valueOf($integer.r);
+            $r = Fraction.valueOf($p.r==null ? 0 : $p.r);
             $r=$r.add($fraction.r);
             if ($opt_sign.negate) $r = $r.negate();
         }
     | opt_sign integer
         {
             $r = Fraction.valueOf($integer.r);
-            if ($opt_sign.negate) $r = $r.negate();
-        }
-    | opt_sign fraction
-        {
-            $r = $fraction.r;
             if ($opt_sign.negate) $r = $r.negate();
         }
     ;
@@ -277,7 +263,7 @@ bool returns [Boolean r]
 fragment
 simple_word returns [String r]
     : IDENT { $r=$IDENT.text; }
-    | INT { $r=$INT.text; }
+    | number { $r=$number.r.toProperString(); }
     ;
 fragment
 simple_words returns [String r]

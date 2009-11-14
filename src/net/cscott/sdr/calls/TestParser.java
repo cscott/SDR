@@ -1,11 +1,13 @@
 package net.cscott.sdr.calls;
 
 import java.io.*;
+import java.util.Collections;
 
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
 
 import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.transform.*;
 
 /** Simple parser driver to syntax-check call lists. */
@@ -74,7 +76,7 @@ public abstract class TestParser {
         builder.calllist();
           for (Call call : builder.getList()) {
               if (call.getMinNumberOfArguments()==0)
-                System.out.println(call.getName()+": "+call.apply(Apply.makeApply(call.getName())).toString());
+                System.out.println(call.getName()+": "+call.getEvaluator(null, Collections.<Expr>emptyList()).simpleExpansion());
               if (call.getRule()!=null)
                   System.out.println(call.getRule());
           }

@@ -25,8 +25,7 @@ import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.ast.Apply;
-import net.cscott.sdr.calls.ast.Comp;
-import net.cscott.sdr.calls.ast.Seq;
+import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.transform.Evaluator;
@@ -54,17 +53,12 @@ public abstract class A1List {
         @Override
         public final Program getProgram() { return Program.A1; }
         @Override
-        public List<Apply> getDefaultArguments() {
+        public List<Expr> getDefaultArguments() {
             return Collections.emptyList();
         }
     }
 
     public static final Call AS_COUPLES = new A1Call("as couples") {
-        @Override
-        public Comp apply(Apply ast) {
-            assert false : "This concept uses a custom Evaluator";
-            return null;
-        }
         @Override
         public int getMinNumberOfArguments() { return 1; }
         @Override
@@ -73,10 +67,9 @@ public abstract class A1List {
             return new Rule("anything", g, Fraction.valueOf(-10));
         }
         @Override
-        public Evaluator getEvaluator(Apply ast) {
-            assert ast.callName.equals(getName());
-            assert ast.args.size() == 1;
-            return new SolidEvaluator(ast.getArg(0), FormationList.COUPLE,
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
+            assert args.size() == 1;
+            return new SolidEvaluator(args.get(0), FormationList.COUPLE,
                                       SolidMatch.ALL, SolidType.SOLID);
         }
     };
@@ -85,11 +78,11 @@ public abstract class A1List {
     public static enum SolidMatch { SOME, ALL };
     /** Evaluator for couples/tandem/solid formations. */
     public static class SolidEvaluator extends Evaluator {
-        private final Comp subCall;
+        private final Expr subCall;
         private final String formationName;
         private final Selector solidSelector;
         private final SolidType type;
-        public SolidEvaluator(Apply subCall,
+        public SolidEvaluator(Expr subCall,
                               final NamedTaggedFormation solidFormation,
                               final SolidMatch match, SolidType type) {
             this(subCall, solidFormation.getName(), new Selector() {
@@ -100,9 +93,9 @@ public abstract class A1List {
                          false /* no phantoms */);
                 }}, type);
         }
-        public SolidEvaluator(Apply subCall, String formationName,
+        public SolidEvaluator(Expr subCall, String formationName,
                               Selector solidSelector, SolidType type) {
-            this.subCall = new Seq(subCall);
+            this.subCall = subCall;
             this.formationName = formationName;
             this.solidSelector = solidSelector;
             this.type = type;
@@ -123,7 +116,7 @@ public abstract class A1List {
             // XXX: DO ME
             // and do the call in the meta formation
             DanceState metaS = ds.cloneAndClear(metaF);
-            new Evaluator.Standard(this.subCall).evaluateAll(metaS);
+            new Apply(this.subCall).evaluator(metaS).evaluateAll(metaS);
             metaS.syncDancers();
             // now go through moment-by-moment and insert the subformations
             // XXX lots of cut-and-paste from MetaEvaluator; we should

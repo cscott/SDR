@@ -15,20 +15,9 @@ import net.cscott.sdr.calls.ast.*;
  */
 public abstract class TransformVisitor<T> {
     public SeqCall visit(Apply apply, T t) {
-        List<Apply> l = new ArrayList<Apply>(apply.args.size());
-        for (Apply arg : apply.args) {
-            l.add((Apply)arg.accept(this, t));
-        }
-        return apply.build(apply.callName, l);
+        return apply.build(apply.call.accept(this, t));
     }
 //  public Comp visit(Comp c, T t) { }
-    public Condition visit(Condition c, T t) {
-        List<Condition> l = new ArrayList<Condition>(c.args.size());
-        for (Condition cc : c.args) {
-            l.add(cc.accept(this, t));
-        }
-        return c.build(c.predicate, l);
-    }
     public Expr visit(Expr e, T t) {
         List<Expr> l = new ArrayList<Expr>(e.args.size());
         for (Expr ee : e.args) {

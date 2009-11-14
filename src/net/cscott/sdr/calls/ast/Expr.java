@@ -11,6 +11,7 @@ import net.cscott.sdr.calls.ExprList;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
+import net.cscott.sdr.util.Fraction;
 
 public class Expr extends AstNode {
     public final String atom;
@@ -22,6 +23,13 @@ public class Expr extends AstNode {
     }
     public Expr(String atom, Expr... args) {
         this(atom, Arrays.asList(args));
+    }
+    // special constructors
+    public static Expr literal(String s) {
+        return new Expr("literal", new Expr(s));
+    }
+    public static Expr literal(Fraction f) {
+        return literal(f.toProperString());
     }
     // AST just represents the computation; actual evaluation is done in
     // ExprList
@@ -49,7 +57,34 @@ public class Expr extends AstNode {
         }
         return sb.toString();
     }
-    /** Factory: creates new Condition only if it would differ from this. */
+    @Override
+    public String toString() {
+        // abbreviate literals with a single quote
+        if (atom.equals("literal"))
+            return "'"+args.get(0).atom;
+        return super.toString();
+    }
+    /** Emit an apply in the form it appears in the call definition lists.
+     *  (Something like Lisp M-expressions.) */
+    public String toShortString() {
+        return toShortString(new StringBuilder()).toString();
+    }
+    StringBuilder toShortString(StringBuilder sb) {
+        if (atom.equals("literal")) {
+            return sb.append(args.get(0).atom);
+        }
+        sb.append(atom);
+        // always parens in M-expression form (except for literals, which
+        // were specially handled above)
+        sb.append("(");
+        for (int i=0; i<args.size(); i++) {
+            if (i>0) sb.append(", ");
+            args.get(i).toShortString(sb);
+        }
+        sb.append(")");
+        return sb;
+    }
+    /** Factory: creates new Expr only if it would differ from this. */
     public Expr build(String atom, List<Expr> args) {
         if (this.atom.equals(atom) && this.args.equals(args))
             return this;

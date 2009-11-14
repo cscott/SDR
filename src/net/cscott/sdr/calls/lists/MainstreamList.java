@@ -1,7 +1,11 @@
 package net.cscott.sdr.calls.lists;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.ast.Expr;
 
 /** 
  * The <code>MainstreamList</code> class contains complex call
@@ -25,6 +29,10 @@ public abstract class MainstreamList {
         public final String getName() { return name; }
         @Override
         public final Program getProgram() { return Program.MAINSTREAM; }
+        @Override
+        public List<Expr> getDefaultArguments() {
+            return Collections.emptyList();
+        }
     }
 
 }

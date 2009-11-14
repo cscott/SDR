@@ -10,9 +10,11 @@ import java.util.Set;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
+import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
+import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.In;
 import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Prim;
@@ -31,18 +33,20 @@ import org.junit.runner.RunWith;
  * @author C. Scott Ananian
  * @doc.test
  *  Use Fractional class to evaluate TWICE QUARTER RIGHT:
+ *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> importPackage(net.cscott.sdr.util)
+ *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
  *  js> callname="dosado"
  *  dosado
  *  js> call = net.cscott.sdr.calls.CallDB.INSTANCE.lookup(callname)
  *  dosado[basic]
- *  js> comp = call.apply(Apply.makeApply(callname))
+ *  js> comp = call.getEvaluator(null, java.util.Arrays.asList()).simpleExpansion()
  *  (In 6 (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH) (Prim 1, -1, none, 1, SASHAY_START) (Prim -1, -1, none, 1, SASHAY_FINISH)))))
- *  js> comp.accept(new Fractional(), Fraction.ONE_QUARTER)
+ *  js> comp.accept(new Fractional(ds), Fraction.ONE_QUARTER)
  *  (In 1 1/2 (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1, SASHAY_START)))))
  *  js> try {
- *    >   comp.accept(new Fractional(), Fraction.ONE_THIRD)
+ *    >   comp.accept(new Fractional(ds), Fraction.ONE_THIRD)
  *    > } catch (e) {
  *    >   print(e.javaException)
  *    > }
@@ -50,6 +54,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(value=JDoctestRunner.class)
 public class Fractional extends TransformVisitor<Fraction> {
+    private final DanceState ds;
+    public Fractional(DanceState ds) { this.ds = ds; }
     @Override
     public In visit(In in, Fraction f) {
         return in.build(in.count.multiply(f), in.child.accept(this, f));
@@ -78,35 +84,41 @@ public class Fractional extends TransformVisitor<Fraction> {
         if (f.compareTo(Fraction.ONE)==0)
             return apply;
         // optimization: 1/2(1/2(x)) = 1/4(x)
-        if (apply.callName.equals("_fractional")) {
+        if (apply.call.atom.equals("_fractional")) {
             // special case; just multiply fractions
-            return Apply.makeApply("_fractional",
-                    apply.getNumberArg(0).multiply(f),
-                    apply.getArg(1));
+            return new Apply
+                (new Expr("_fractional",
+                          new Expr("_multiply_num",
+                                   apply.call.args.get(0), Expr.literal(f)),
+                          apply.call.args.get(1)));
         }
         // optimization: some concepts are safe to hoist fractionalization thru
-        if (safeConcepts.contains(apply.callName)) {
-            if (apply.callName.equals("_with designated"))
+        if (safeConcepts.contains(apply.call.atom)) {
+            if (apply.call.atom.equals("_with designated"))
                 // two args, subcall is last one
-                return Apply.makeApply(apply.callName, apply.getArg(0),
-                        Apply.makeApply("_fractional", f, apply.getArg(1)));
-            if (apply.callName.equals("_quasi concentric") ||
-                apply.callName.equals("_concentric") ||
-                apply.callName.equals("_cross concentric"))
+                return new Apply
+                    (new Expr(apply.call.atom, apply.call.args.get(0),
+                              new Expr("_fractional", Expr.literal(f),
+                                       apply.call.args.get(1))));
+            if (apply.call.atom.equals("_quasi concentric") ||
+                apply.call.atom.equals("_concentric") ||
+                apply.call.atom.equals("_cross concentric"))
                 // two args, fractionalize each
-                return Apply.makeApply(apply.callName,
-                        Apply.makeApply("_fractional", f, apply.getArg(0)),
-                        Apply.makeApply("_fractional", f, apply.getArg(1)));
-            assert apply.args.size()==1;
-            return Apply.makeApply(apply.callName,
-                    Apply.makeApply("_fractional", f, apply.getArg(0)));
+                return new Apply
+                    (new Expr(apply.call.atom,
+                     new Expr("_fractional", Expr.literal(f), apply.call.args.get(0)),
+                     new Expr("_fractional", Expr.literal(f), apply.call.args.get(1))));
+            assert apply.call.args.size()==1;
+            return new Apply(new Expr(apply.call.atom,
+                     new Expr("_fractional", Expr.literal(f), apply.call.args.get(0))));
         }
         // okay, we have to expand the call in order to fractionalize the
         // contents.
-        if (apply.evaluator()!=null)
+        Evaluator e = apply.evaluator(ds);
+        if (!e.hasSimpleExpansion())
             throw new BadCallException("Can't fractionalize complex concept");
         // okay, this concept can be simply expanded...
-        Part result = new Part(true,apply.expand().accept(this, f));
+        Part result = new Part(true,e.simpleExpansion().accept(this, f));
         return result;
     }
     /** A list of concepts which it is safe to hoist fractionalization through.

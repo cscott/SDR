@@ -21,10 +21,10 @@ public class EmitANTLRv3 extends AbstractEmit {
         StringBuilder sb = new StringBuilder();
         for (String lhs : sorted(mm.keySet())) {
 	    if (lhs.endsWith("_suffix"))
-		sb.append("fragment "+lhs+"[Apply a]");
+		sb.append("fragment "+lhs+"[Expr a]");
 	    else
 		sb.append(lhs);
-            sb.append(" returns [Apply r]");
+            sb.append(" returns [Expr r]");
             sb.append(NL);
             boolean first = true;
             for (RuleAndAction ra : mm.getValues(lhs)) {

@@ -7,12 +7,12 @@
  * @doc.test An actual call definition:
  *  js> cl=CallFileBuilder.parseCalllist("program:basic\ndef: foo\n call: bar,bat")
  *  [foo[basic]]
- *  js> cl.get(0).apply(net.cscott.sdr.calls.ast.Apply.makeApply('foo'))
- *  (Seq (Apply and (Apply bar) (Apply bat)))
+ *  js> cl.get(0).getEvaluator(null, java.util.Arrays.asList()).simpleExpansion()
+ *  (Seq (Apply (Expr and 'bar 'bat)))
  * @doc.test Parsing Prims:
  *  js> cl=CallFileBuilder.parseCalllist("program:basic\ndef: foo\n prim: 1 1/2, 1/2, left, force-arc pass-left force-roll-right")
  *  [foo[basic]]
- *  js> cl.get(0).apply(net.cscott.sdr.calls.ast.Apply.makeApply('foo'))
+ *  js> cl.get(0).getEvaluator(null, java.util.Arrays.asList()).simpleExpansion()
  *  (Seq (Prim 1 1/2, 1/2, left, 1, PASS_LEFT, FORCE_ARC, FORCE_ROLL_RIGHT))
  * @doc.test Parsing spoken-language grammar rules:
  *  js> CallFileBuilder.parseGrm("foo bar|bat? baz")
@@ -250,7 +250,7 @@ one_par returns [B<ParCall> pc]
 res returns [B<? extends Comp> c]
     : ^(IN f=number p=pieces)
     { $c = mkIn(f, p); }
-    | ^(IF cd=cond_body ^(n=NUMBER msg=QUOTED_STR?) p=pieces)
+    | ^(IF cd=expr_body ^(n=NUMBER msg=QUOTED_STR?) p=pieces)
     { $c = mkIf(cd, Fraction.valueOf(n.getText()), msg==null?null:msg.getText(), p); }
     ;
 
@@ -277,8 +277,12 @@ words_or_ref returns [B<String> b]
     { final int param = r;
       $b = new B<String>() {
         public String build(List<Expr> args) {
-          assert args.get(param).args.isEmpty();
-          return args.get(param).atom;
+          // XXX: this should be an Expr retval, not a String
+          try {
+            return args.get(param).evaluate(String.class, null);
+          } catch (ExprFunc.EvaluationException ee) {
+            throw new BadCallException("Can't evaluate!");
+          }
         }
       };
     }
@@ -290,124 +294,59 @@ simple_ref_body returns [List<B<String>> l]
     ;
 
 call_body returns [B<Apply> ast]
-    // shorthand: 3/4 (foo) = fractional(3/4, foo)
-    : ( ^(APPLY ^(ITEM number) call_args_plus ) ) =>
-      ^(APPLY ^(ITEM n=number) args=call_args_plus )
-    {   args.add(0, mkConstant(Apply.makeApply(n.toString().intern())));
-        $ast = mkApply("_fractional", args); }
-    // parameter reference
-    | ( ^(APPLY REF (.)* ) ) =>
-      ^(APPLY r=ref args=call_args )
-    { final int param = r;
-      final List<B<Apply>> call_args = args;
-      if (call_args.isEmpty()) {
-        // if no args, then substitute given Apply node wholesale.
-        // note: lazy evaluation here.
-        $ast = new B<Apply>() {
-            public Apply build(List<Expr> args) {
-                return expr2apply(args.get(param));
-            }
-        };
-      } else {
-        // otherwise, just use the given parameter as a string.
-        $ast = new B<Apply>() {
-            public Apply build(List<Expr> args) {
-                assert args.get(param).args.isEmpty();
-                String callName = args.get(param).atom;
-                return new Apply(callName, reduce(call_args, args));
-            }
-        };
-      }
-    }
-    // standard rule
-    | ^(APPLY s=simple_words args=call_args )
-    { $ast = mkApply(s.intern(), args); }
+    : eb=expr_body { $ast = mkApply(eb); }
     ;
 ref returns [int v]
     : r=REF
     { if (!scope.containsKey(r.getText())) semex(r, "No argument named "+r.getText());
       $v=scope.get(r.getText()); }
     ;
-call_args returns [List<B<Apply>> l]
-@init { $l = new ArrayList<B<Apply>>(); }
-    : (c=call_body {$l.add(c);} )*
-    ;
-call_args_plus returns [List<B<Apply>> l]
-@init { $l = new ArrayList<B<Apply>>(); }
-    : (c=call_body {$l.add(c);} )+
-    ;
-cond_body returns [B<Condition> c]
-    // parameter reference
-    : ( ^(CONDITION REF (.)* ) ) =>
-      ^(CONDITION r=ref args=cond_args )
-    { final int param = r;
-      final List<B<Condition>> cond_args = args;
-      // use the given parameter as a string.
-      $c = new B<Condition>() {
-            public Condition build(List<Expr> args) {
-                Apply a = expr2apply(args.get(param));
-                // note that this strips off the arguments.
-                String predicate = a.callName;
-                if (a.args.size() > 0) {
-                   assert cond_args==null : "don't know how to merge params";
-                   return Condition.makeCondition("call", apply2cond(a));
-                }
-                if (cond_args==null)
-                    return Condition.makeCondition
-                        ("literal", Condition.makeCondition(predicate));
-                return new Condition(predicate, reduce(cond_args, args));
-            }
-      };
-    }
-    | ^(CONDITION s=simple_words args=cond_args )
-    {  if (args == null) {
-         args = Collections.<B<Condition>>singletonList
-           (mkCondition(s.intern(), Collections.<B<Condition>>emptyList()));
-         s = "literal";
-       }
-       $c = mkCondition(s.intern(), args);
-    };
-cond_args returns [List<B<Condition>> l]
-@init { $l = new ArrayList<B<Condition>>(); }
-    : LPAREN (c=cond_body {$l.add(c);} )*
-    | { $l = null; }
-    ;
 
 expr_body returns [B<Expr> eb]
-        // parameter reference
-        : ( ^(EXPR REF (.)* ) ) =>
-          ^(EXPR r=ref args=expr_args )
-        { final int param = r;
-          final List<B<Expr>> expr_args = args;
-          // use the given parameter as a string.
-          $eb = new B<Expr>() {
-            public Expr build(List<Expr> args) {
-                Expr e = args.get(param);
-                // note that this strips off the arguments.
-                String atom = e.atom;
-                if (e.args.size() > 0) {
-                   assert expr_args==null : "don't know how to merge params";
-                   return e;
-                }
-                if (expr_args==null)
-                    return new Expr("literal", new Expr(atom));
-                return new Expr(atom, reduce(expr_args, args));
+    // shorthand: 3/4 (foo) = _fractional(3/4, foo)
+    : ( ^(EXPR ^(ITEM number) expr_args_plus ) ) =>
+        ^(EXPR ^(ITEM n=number) args=expr_args_plus )
+    {   args.add(0, mkConstant(Expr.literal(n)));
+        $eb = mkExpr("_fractional", args);
+    }
+    // parameter reference
+    | ( ^(EXPR REF (.)* ) ) =>
+        ^(EXPR r=ref args=expr_args )
+    { final int param = r;
+      final List<B<Expr>> expr_args = args;
+      // use the given parameter as a string.
+      $eb = new B<Expr>() {
+        public Expr build(List<Expr> args) {
+            Expr e = args.get(param);
+            // note that this strips off the arguments.
+            String atom = e.atom;
+            if (e.args.size() > 0) {
+               assert expr_args==null : "don't know how to merge params";
+               return e;
             }
-          };
+            if (expr_args==null)
+                return new Expr("literal", new Expr(atom));
+            return new Expr(atom, reduce(expr_args, args));
         }
-        | ^(EXPR s=simple_words args=expr_args )
-        {  if (args == null) {
-             args = Collections.<B<Expr>>singletonList
-               (mkExpr(s.intern(), Collections.<B<Expr>>emptyList()));
-             s = "literal";
-           }
-           $eb = mkExpr(s.intern(), args);
-        };
+      };
+    }
+    | ^(EXPR s=simple_words args=expr_args )
+    {  if (args == null) {
+         args = Collections.<B<Expr>>singletonList
+           (mkExpr(s.intern(), Collections.<B<Expr>>emptyList()));
+         s = "literal";
+       }
+       $eb = mkExpr(s.intern(), args);
+    };
 expr_args returns [List<B<Expr>> l]
 @init { $l = new ArrayList<B<Expr>>(); }
-        : LPAREN (eb=expr_body {$l.add(eb);} )*
-        | { $l = null; }
-        ;
+    : LPAREN (eb=expr_body {$l.add(eb);} )*
+    | { $l = null; }
+    ;
+expr_args_plus returns [List<B<Expr>> l]
+@init { $l = new ArrayList<B<Expr>>(); }
+    : LPAREN (eb=expr_body {$l.add(eb);} )+
+    ;
 
 number returns [Fraction r]
     : n=NUMBER

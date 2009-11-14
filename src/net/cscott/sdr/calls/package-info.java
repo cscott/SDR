@@ -3,27 +3,29 @@
  * types and interfaces required to communicate with it.
  *
  * @doc.test Test basic call database functionality:
- *  js> CallDB.INSTANCE.parse(Program.BASIC, "double pass thru").expand()
- *  (In 4 (Seq (Apply tandem (Apply pass thru))))
+ *  js> CallDB.INSTANCE.parse(Program.BASIC, "double pass thru").
+ *    >     evaluator(null).simpleExpansion()
+ *  (In 4 (Seq (Apply (Expr tandem 'pass thru))))
  *
  * @doc.test Calls with arguments:
  *  js> importPackage(net.cscott.sdr.util) // for Fraction
  *  js> importPackage(net.cscott.sdr.calls.ast) // for Apply
  *  js> sqthr = CallDB.INSTANCE.lookup("square thru")
  *  square thru[basic]
- *  js> def = sqthr.apply(Apply.makeApply("square thru", Fraction.valueOf("1 1/2")))
- *  (Opt (From [FACING COUPLES] (If (Condition and (Condition greater (Condition literal (Condition 3/2)) (Condition literal (Condition 0))) (Condition not (Condition greater (Condition literal (Condition 3/2)) (Condition literal (Condition 1))))) (Seq (Apply _fractional (Apply 3/2) (Apply _in (Apply 2) (Apply pull by)))))) (From [FACING COUPLES] (If (Condition greater (Condition literal (Condition 3/2)) (Condition literal (Condition 1))) (Seq (Part false (Seq (Apply and (Apply _in (Apply 2) (Apply _sq_thru_part)) (Apply left (Apply square thru (Apply _subtract_num (Apply 3/2) (Apply 1)))))))))))
+ *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+ *  js> def = sqthr.getEvaluator(ds, java.util.Arrays.asList(Expr.literal("1 1/2"))).simpleExpansion()
+ *  (Opt (From [FACING COUPLES] (If (Expr and (Expr greater '1 1/2 '0) (Expr not (Expr greater '1 1/2 '1))) (Seq (Apply (Expr _fractional '1 1/2 (Expr _in '2 'pull by)))))) (From [FACING COUPLES] (If (Expr greater '1 1/2 '1) (Seq (Part false (Seq (Apply (Expr and (Expr _in '2 '_sq_thru_part) (Expr left (Expr square thru (Expr _subtract_num '1 1/2 '1)))))))))))
  *
  * @doc.test Call fractionalization:
  *  js> importPackage(net.cscott.sdr.util) // for Fraction
  *  js> importPackage(net.cscott.sdr.calls.ast) // for Apply
- *  js> a = Apply.makeApply("run", Apply.makeApply("boy"))
- *  (Apply run (Apply boy))
- *  js> a.expand()
- *  (In 4 (Opt (From [1x4, BOX, COUPLE, MINIWAVE, 1x2] (Seq (Apply _with designated (Apply boy) (Apply _designees run))))))
- *  js> a = Apply.makeApply("_fractional", Apply.makeApply("1/2"), a)
- *  (Apply _fractional (Apply 1/2) (Apply run (Apply boy)))
- *  js> a.expand()
- *  (In 2 (Opt (From [1x4, BOX, COUPLE, MINIWAVE, 1x2] (Seq (Apply _with designated (Apply boy) (Apply _fractional (Apply 1/2) (Apply _designees run)))))))
+ *  js> a = new Apply(new Expr("run", Expr.literal("boy")))
+ *  (Apply (Expr run 'boy))
+ *  js> a.evaluator(null).simpleExpansion()
+ *  (In 4 (Opt (From [1x4, BOX, COUPLE, MINIWAVE, 1x2] (Seq (Apply (Expr _with designated 'boy '_designees run))))))
+ *  js> a = new Apply(new Expr("_fractional", Expr.literal("1/2"), a.call))
+ *  (Apply (Expr _fractional '1/2 (Expr run 'boy)))
+ *  js> a.evaluator(null).simpleExpansion()
+ *  (In 2 (Opt (From [1x4, BOX, COUPLE, MINIWAVE, 1x2] (Seq (Apply (Expr _with designated 'boy (Expr _fractional '1/2 '_designees run)))))))
  */
 package net.cscott.sdr.calls;

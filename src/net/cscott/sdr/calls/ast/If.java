@@ -13,20 +13,20 @@ import net.cscott.sdr.util.Fraction;
  * the current formation unless its condition evaluates true.
  * @author C. Scott Ananian
  * @doc.test An If with no message
- *  js> iff = new If(Condition.makeCondition("true"), new Seq(Apply.makeApply("nothing")));
- *  (If (Condition true) (Seq (Apply nothing)))
+ *  js> iff = new If(new Expr("true"), new Seq(Apply.makeApply("nothing")));
+ *  (If (Expr true) (Seq (Apply 'nothing)))
  * @doc.test An If with a message and the default priority:
- *  js> iff = new If(Condition.makeCondition("true"), new Seq(Apply.makeApply("nothing")), "Message!");
- *  (If (Condition true) (Seq (Apply nothing)) "Message!")
+ *  js> iff = new If(new Expr("true"), new Seq(Apply.makeApply("nothing")), "Message!");
+ *  (If (Expr true) (Seq (Apply 'nothing)) "Message!")
  * @doc.test An If with a user-specified priority:
  *  js> importPackage(net.cscott.sdr.util)
- *  js> iff = new If(Condition.makeCondition("true"), new Seq(Apply.makeApply("nothing")), "Message!", Fraction.ONE_HALF);
- *  (If (Condition true) (Seq (Apply nothing)) "Message!" 1/2)
+ *  js> iff = new If(new Expr("true"), new Seq(Apply.makeApply("nothing")), "Message!", Fraction.ONE_HALF);
+ *  (If (Expr true) (Seq (Apply 'nothing)) "Message!" 1/2)
  */
 @RunWith(value=JDoctestRunner.class)
 public class If extends Comp {
-    /** The condition to evaluate */
-    public final Condition condition;
+    /** The condition to evaluate.  Should yield a boolean. */
+    public final Expr condition;
     /** The child to evaluate, iff the condition is true. */
     public final Comp child;
     /** User-friendly message to report if the condition fails, or null. */
@@ -37,14 +37,14 @@ public class If extends Comp {
      * Negative priorities can be used to specify nonfatal warnings.*/
     public final Fraction priority;
     
-    public If(Condition condition, Comp child) {
+    public If(Expr condition, Comp child) {
         this(condition, child, null);
     }
-    public If(Condition condition, Comp child, String msg) {
+    public If(Expr condition, Comp child, String msg) {
         this(condition, child, msg,
              (msg==null) ? Fraction.ZERO : Fraction.ONE/* default priority */);
     }
-    public If(Condition condition, Comp child, String msg, Fraction priority) {
+    public If(Expr condition, Comp child, String msg, Fraction priority) {
         super(IF);
         this.condition = condition;
         this.child = child;
@@ -63,7 +63,7 @@ public class If extends Comp {
         return v.visit(this, cl);
     }
     /** Factory: creates new If only if it would differ from this. */
-    public If build(Condition condition, Comp child) {
+    public If build(Expr condition, Comp child) {
         if (this.condition==condition && this.child==child)
             return this;
         return new If(condition, child, message, priority);

@@ -1,65 +1,63 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.transform.AstTokenTypes.APPLY;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.runner.RunWith;
-
+import static net.cscott.sdr.calls.transform.CallFileLexer.APPLY;
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.CallDB;
+import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
-import net.cscott.sdr.util.Fraction;
+
+import org.junit.runner.RunWith;
 
 /**
- * {@code Apply} represents a invocation of a call or concept, with zero or more
- * arguments. The {@link Apply#callName callName} field of the {@code Apply}
- * gives the name of the call (which can be converted to a {@link Call} object
- * with {@link CallDB#lookup(String)}). Note that 'and' is a concept used to
- * sequentially join calls: the caller's "slip and slide" would be represented
- * as:
+ * {@code Apply} represents a invocation of a call or concept, with
+ * zero or more arguments. The {@link Apply#call call} field of the
+ * {@code Apply} gives an expression for the call (which can be
+ * converted to a {@link Call} object with {@link CallDB#lookup(String)} or to
+ * an {@link Evaluator} using {@link Expr#evaluate(Class, DanceState)}). Note
+ * that 'and' is a concept used to sequentially join calls: the caller's
+ * "slip and slide" would be represented as:
  * 
  * <pre>
- *  #(APPLY["and"] #(APPLY["slip"]) #(APPLY["slide"]))
+ * and(slip, slide)
+ * (Apply (Expr and 'slip 'slide))
  * </pre>
  * 
  * The children of this node represent the arguments. Numerical or selector
- * arguments are represented as text in another Apply (since we don't know the
- * proper types); for example "twice (trade and roll)" is:
+ * arguments are represented as text beneath a "literal" expression, to
+ * distinguish them from similarly-named functions which might be
+ * evaluated to yield a Call value.  For example, "twice (trade and roll)" is:
  * 
  * <pre>
- *  #(APPLY["_fractional"] #(APPLY["2"]) #(APPLY["_roll"] #(APPLY["trade"])))
+ * _fractional(2, _roll(trade))
+ * (Apply _fractional '2 (Expr _roll 'trade))
  * </pre>
- * 
- * Convenience methods are provided to convert numerical or string arguments
- * when implementing {@link Call#apply(Apply)}.
  * 
  * @author C. Scott Ananian
  * @version $Id: Apply.java,v 1.9 2006-10-19 21:00:09 cananian Exp $
  * @doc.test Actual code for examples in the class description:
- *  js> Apply.makeApply("and", Apply.makeApply("slip"), Apply.makeApply("slide"))
- *  (Apply and (Apply slip) (Apply slide))
+ *  js> a = new Apply(new Expr("and", Expr.literal("slip"), Expr.literal("slide")))
+ *  (Apply (Expr and 'slip 'slide))
+ *  js> a.toShortString()
+ *  and(slip, slide)
  *  js> importPackage(net.cscott.sdr.util)
- *  js> Apply.makeApply("_fractional", Fraction.TWO,
- *    >                 Apply.makeApply("_roll", Apply.makeApply("trade")))
- *  (Apply _fractional (Apply 2/1) (Apply _roll (Apply trade)))
+ *  js> a = new Apply(new Expr("_fractional", Expr.literal(Fraction.TWO),
+ *    >                        new Expr("_roll", Expr.literal("trade"))))
+ *  (Apply (Expr _fractional '2 (Expr _roll 'trade)))
+ *  js> a.toShortString()
+ *  _fractional(2, _roll(trade))
  */
 @RunWith(value=JDoctestRunner.class)
 public class Apply extends SeqCall {
-    public final String callName;
-    public final List<Apply> args;
+    public final Expr call;
 
-    public Apply(String callName, List<Apply> args) {
+    public Apply(Expr call) {
         super(APPLY);
-        this.callName = callName;
-        this.args = Collections.unmodifiableList
-        (Arrays.asList(args.toArray(new Apply[args.size()])));
+        this.call = call;
     }
 
     @Override
@@ -73,96 +71,32 @@ public class Apply extends SeqCall {
     }
     @Override
     public String argsToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(callName);
-        sb.append(' ');
-        for (Apply a : args) {
-            sb.append(a.toString());
-            sb.append(' ');
-        }
-        return sb.toString();
+        return call.toString();
     }
 
-    public Comp expand() throws BadCallException {
-        Call c;
+    public Evaluator evaluator(DanceState ds)
+        throws BadCallException {
         try {
-            c = CallDB.INSTANCE.lookup(callName);
-        } catch (IllegalArgumentException e) {
-            throw new BadCallException("Unknown call: "+callName);
+            return call.evaluate(Evaluator.class, ds);
+        } catch (EvaluationException ee) {
+            throw new BadCallException("Unknown call: "+this);
         }
-        assert c.getEvaluator(this) == null; // don't blindly expand
-        return c.apply(this);
     }
-    public Evaluator evaluator() throws BadCallException {
-	Call c;
-	try {
-	    c = CallDB.INSTANCE.lookup(callName);
-	} catch (IllegalArgumentException e) {
-	    throw new BadCallException("Unknown call: "+callName);
-	}
-        return c.getEvaluator(this); // could be null.
-    }
-    
-    public Apply getArg(int n) { return args.get(n); }
-
-    public Fraction getNumberArg(int n) {
-        // special feature: support arithmetic evaluation by calling
-        // 'expand' on this arg, if it isn't already a simple string.
-        Apply a = getArg(n);
-        while (!a.args.isEmpty()) // typecasts show that this is kludgey...
-            a = (Apply) ((Seq)a.expand()).children.get(0); // do arithmetic!
-        assert a.args.isEmpty();
-        return Fraction.valueOf(a.callName);
-    }
-
-    public String getStringArg(int n) {
-        return getArg(n).callName;
-    }
-
-    // XXX getSelectorArg, etc?
 
     /** Emit an apply in the form it appears in the call definition lists. */
     public String toShortString() {
-        return toShortString(new StringBuilder()).toString();
-    }
-    private StringBuilder toShortString(StringBuilder sb) {
-        sb.append(callName);
-        if (args.isEmpty())
-            return sb;
-        sb.append("(");
-        args.get(0).toShortString(sb);
-        for (int i=1; i<args.size(); i++) {
-            sb.append(", ");
-            args.get(i).toShortString(sb);
-        }
-        sb.append(")");
-        return sb;
+        return call.toShortString();
     }
 
-    // factories.
+    // helper method
     public static Apply makeApply(String callName) {
-        return new Apply(callName, Collections.<Apply> emptyList());
+        return new Apply(Expr.literal(callName));
     }
 
-    public static Apply makeApply(String callName, Fraction number) {
-        Apply arg = makeApply(number.toString()); // sigh
-        return makeApply(callName, arg);
-    }
-    public static Apply makeApply(String callName, Fraction number, String s) {
-        return makeApply(callName, number, makeApply(s));
-    }
-    public static Apply makeApply(String callName, Fraction number, Apply arg2) {
-        Apply arg1 = makeApply(number.toString()); // sigh
-        return makeApply(callName, arg1, arg2);
-    }
-
-    public static Apply makeApply(String conceptName, Apply... subCalls) {
-        return new Apply(conceptName, Arrays.asList(subCalls));
-    }
     /** Factory: creates new Apply only if it would differ from this. */
-    public Apply build(String callName, List<Apply> args) {
-        if (this.callName.equals(callName) && this.args.equals(args))
+    public Apply build(Expr call) {
+        if (this.call.equals(call))
             return this;
-        return new Apply(callName, args);
+        return new Apply(call);
     }
 }

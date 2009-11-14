@@ -1,16 +1,13 @@
 package net.cscott.sdr.calls;
 
-import static net.cscott.sdr.util.Tools.l;
 import static net.cscott.sdr.util.Tools.m;
 import static net.cscott.sdr.util.Tools.p;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.runner.RunWith;
@@ -22,7 +19,6 @@ import net.cscott.jutil.MultiMap;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.ListUtils;
-import net.cscott.sdr.util.Point;
 import net.cscott.sdr.util.Tools;
 
 /**

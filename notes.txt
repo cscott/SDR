@@ -1049,6 +1049,8 @@ to do:
  xx) reorder defs to match callerlab docs
  v) 'from' takes flags
  w) 'select' is or-of-ands.  'select: DESIGNATED & BEAU, DESIGNATED & BELLE'
+     PersonSelector for 'select' (expr for 'select')
+     rename Selector -> Matcher (also, expr for 'from')
  x) _circle choreo concept that automagically adjusts 1/8 off circles
       do a 'circle left 1/8', then do the call and rotate all the
      intermediate formations right 1/8, then circle left 1/8 the final

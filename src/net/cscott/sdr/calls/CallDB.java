@@ -12,6 +12,7 @@ import java.util.Map;
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.lists.A1List;
 import net.cscott.sdr.calls.lists.BasicList;
 import net.cscott.sdr.calls.lists.C1List;
@@ -107,35 +108,35 @@ public class CallDB {
      *  js> db = CallDB.INSTANCE
      *  net.cscott.sdr.calls.CallDB@1d66e22
      *  js> db.parse(Program.BASIC, "double pass thru")
-     *  (Apply double pass thru)
+     *  (Apply 'double pass thru)
      *  js> db.parse(Program.BASIC, "square thru three and a half")
-     *  (Apply square thru (Apply 3 1/2))
+     *  (Apply (Expr square thru '3 1/2))
      * @doc.test As a convenience, we also allow numbers specified with digits
      *  (even though this is never produced by the spoken language recognizer):
      *  js> db = CallDB.INSTANCE ; undefined
      *  js> db.parse(Program.BASIC, "square thru 3 1/2")
-     *  (Apply square thru (Apply 3 1/2))
+     *  (Apply (Expr square thru '3 1/2))
      * @doc.test We use a precedence grammar to resolve some ambiguities:
      *  js> db = CallDB.INSTANCE ; undefined
      *  js> db.parse(Program.BASIC, "do one half of a trade")
-     *  (Apply _fractional (Apply 1/2) (Apply trade))
+     *  (Apply (Expr _fractional '1/2 'trade))
      *  js> db.parse(Program.PLUS, "do one half of a trade and roll")
-     *  (Apply _and roll (Apply _fractional (Apply 1/2) (Apply trade)))
+     *  (Apply (Expr _and roll (Expr _fractional '1/2 'trade)))
      *  js> db.parse(Program.PLUS, "trade twice and roll")
-     *  (Apply _and roll (Apply _fractional (Apply 2) (Apply trade)))
+     *  (Apply (Expr _and roll (Expr _fractional '2 'trade)))
      *  js> db.parse(Program.PLUS, "trade and roll twice")
-     *  (Apply _fractional (Apply 2) (Apply _and roll (Apply trade)))
+     *  (Apply (Expr _fractional '2 (Expr _and roll 'trade)))
      * @doc.test Semicolon-separated calls are also used in the typed
      *  (not the spoken) grammar:
      *  js> db = CallDB.INSTANCE ; undefined
      *  js> db.parse(Program.PLUS, "circulate; trade; u turn back")
-     *  (Apply and (Apply circulate) (Apply trade) (Apply u turn back))
+     *  (Apply (Expr and 'circulate 'trade 'u turn back))
      * @doc.test Parentheses can be used in the typed (not spoken) grammar:
      *  js> db = CallDB.INSTANCE ; undefined
      *  js> db.parse(Program.PLUS, "do one half of a trade and roll")
-     *  (Apply _and roll (Apply _fractional (Apply 1/2) (Apply trade)))
+     *  (Apply (Expr _and roll (Expr _fractional '1/2 'trade)))
      *  js> db.parse(Program.PLUS, "do one half of a ( trade and roll )")
-     *  (Apply _fractional (Apply 1/2) (Apply _and roll (Apply trade)))
+     *  (Apply (Expr _fractional '1/2 (Expr _and roll 'trade)))
      * @doc.test Ensure we throw an exception if the call is unrecognized or
      *  not on level:
      *  js> db = CallDB.INSTANCE ; undefined
@@ -165,7 +166,7 @@ public class CallDB {
         String baseName = program.toTitleCase()+"Grammar";
         String parserName = baseName+"Parser";
         String lexerName = baseName+"Lexer";
-	Apply result=null;
+	Expr result=null;
 
         try {
             Lexer lexer = (Lexer) Class.forName(pkgName+lexerName)
@@ -176,7 +177,7 @@ public class CallDB {
             Parser parser = (Parser) Class.forName(pkgName+parserName)
                 .getConstructor(TokenStream.class).newInstance(tokens);
             Method m = parser.getClass().getMethod("start");
-            result = (Apply) m.invoke(parser);
+            result = (Expr) m.invoke(parser);
             if (lexer.getNumberOfSyntaxErrors() > 0 ||
                 parser.getNumberOfSyntaxErrors() > 0 ||
                 result == null)
@@ -184,6 +185,6 @@ public class CallDB {
         } catch (Exception e) {
             throw new BadCallException("Not on list: "+s);
         }
-	return result;
+	return new Apply(result);
     }
 }
