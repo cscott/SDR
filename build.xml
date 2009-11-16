@@ -223,6 +223,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		</taglet>
 		<!-- write coverage info to cobertura.ser -->
 		<arg value="-J-Dnet.sourceforge.cobertura.datafile=${instrumented_dir}/cobertura.ser" />
+		<arg value="-J-Xmx1024M" />
 		<!-- write tests to api/tests -->
 		<arg value="-J-Dnet.cscott.jdoctest.output=${api_dir}/tests" />
 		<!-- enable assertions when evaluating doctests -->
