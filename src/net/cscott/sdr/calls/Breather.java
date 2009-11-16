@@ -46,7 +46,7 @@ import EDU.Washington.grad.gjb.cassowary.ExCLRequiredFailure;
  * <p>The {@link #insert(Formation,Map) insert()} method pushes
  * sub-formations into a meta-formation after performing (say) a four
  * person call &mdash; ie, starting with a tidal wave, {@link
- * Selector} will pull out two four-person waves as a mini-wave as the
+ * Matcher} will pull out two four-person waves as a mini-wave as the
  * meta-formation.  We do a crossfire (say) from the mini-waves to get
  * boxes.  Now {@link #insert(Formation,Map)} will shove the boxes
  * into the mini-wave meta-formation to get parallel ocean waves.</p>

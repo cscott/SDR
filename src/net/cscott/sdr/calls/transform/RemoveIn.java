@@ -114,7 +114,7 @@ public class RemoveIn extends TransformVisitor<Fraction> {
     public Opt visit(Opt o, Fraction f) {
         List<OptCall> l=new ArrayList<OptCall>();
         for (OptCall oc : o.children)
-            l.add(new OptCall(oc.selectors, new In(f, oc.child)));
+            l.add(new OptCall(oc.matchers, new In(f, oc.child)));
         return o.build(l);
     }
     // f is target # of beats

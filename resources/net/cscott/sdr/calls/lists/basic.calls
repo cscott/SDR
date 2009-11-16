@@ -44,7 +44,7 @@ def: anyone while others(sel, c1, c2=nothing)
     call: _quasi concentric([c2],[c1])
   from: CENTER HALF
     // same as above, but special cased because END and OUTSIDE tags aren't
-    // applied by the CENTER HALF selector.
+    // applied by the CENTER HALF matcher.
     condition: OR(CALL IS([sel], END), CALL IS([sel], OUTSIDE))
     call: _quasi concentric([c2],[c1])
   from: ANY // ugly hack to support "boys trade" == "boys trade down the line"

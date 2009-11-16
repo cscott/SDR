@@ -21,7 +21,7 @@ import net.cscott.sdr.calls.NamedTaggedFormation;
 import net.cscott.sdr.calls.NoMatchException;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Program;
-import net.cscott.sdr.calls.Selector;
+import net.cscott.sdr.calls.Matcher;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.ast.Apply;
@@ -80,12 +80,12 @@ public abstract class A1List {
     public static class SolidEvaluator extends Evaluator {
         private final Expr subCall;
         private final String formationName;
-        private final Selector solidSelector;
+        private final Matcher solidMatcher;
         private final SolidType type;
         public SolidEvaluator(Expr subCall,
                               final NamedTaggedFormation solidFormation,
                               final SolidMatch match, SolidType type) {
-            this(subCall, solidFormation.getName(), new Selector() {
+            this(subCall, solidFormation.getName(), new Matcher() {
                 @Override
                 public FormationMatch match(Formation f) throws NoMatchException {
                     return GeneralFormationMatcher.doMatch
@@ -94,10 +94,10 @@ public abstract class A1List {
                 }}, type);
         }
         public SolidEvaluator(Expr subCall, String formationName,
-                              Selector solidSelector, SolidType type) {
+                              Matcher solidMatcher, SolidType type) {
             this.subCall = subCall;
             this.formationName = formationName;
-            this.solidSelector = solidSelector;
+            this.solidMatcher = solidMatcher;
             this.type = type;
         }
 
@@ -106,7 +106,7 @@ public abstract class A1List {
             // this is very similar to what we do in MetaEvaluator
             FormationMatch fm;
             try {
-                fm = this.solidSelector.match(ds.currentFormation());
+                fm = this.solidMatcher.match(ds.currentFormation());
             } catch (NoMatchException nme) {
                 throw new BadCallException("No "+this.formationName+" dancers");
             }

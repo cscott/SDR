@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.cscott.sdr.calls.Selector;
+import net.cscott.sdr.calls.Matcher;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 
@@ -17,18 +17,17 @@ import net.cscott.sdr.calls.transform.ValueVisitor;
  * @version $Id: OptCall.java,v 1.7 2006-10-19 18:44:50 cananian Exp $
  */
 public class OptCall extends AstNode {
-    public final List<Selector> selectors;
+    public final List<Matcher> matchers;
     public final Comp child;
     // use 'parseFormations' if you want to create an OptCall from a list of
     // strings.
-    public OptCall(List<Selector> selectors, Comp child) {
-        this(selectors.toArray(new Selector[selectors.size()]), child);
+    public OptCall(List<Matcher> matchers, Comp child) {
+        this(matchers.toArray(new Matcher[matchers.size()]), child);
     }
-    // does not make a copy of selectors.
-    private OptCall(Selector[] selectors, Comp child) {
+    // does not make a copy of matchers.
+    private OptCall(Matcher[] matchers, Comp child) {
         super(FROM, "From");
-        this.selectors = Collections.unmodifiableList
-        (Arrays.asList(selectors));
+        this.matchers = Collections.unmodifiableList(Arrays.asList(matchers));
         this.child = child;
     }
     @Override
@@ -41,23 +40,23 @@ public class OptCall extends AstNode {
         return v.visit(this, cl);
     }
     
-    public static List<Selector> parseFormations(List<String> formations) {
-        List<Selector> sels = new ArrayList<Selector>(formations.size());
+    public static List<Matcher> parseFormations(List<String> formations) {
+        List<Matcher> lm = new ArrayList<Matcher>(formations.size());
         for (String s: formations)
-            sels.add(Selector.valueOf(s));
-        return sels;
+            lm.add(Matcher.valueOf(s));
+        return lm;
     }
     /** Factory: creates new OptCall only if it would differ from this. */
-    public OptCall build(List<Selector> selectors, Comp child) {
-        if (this.selectors.equals(selectors) && this.child==child)
+    public OptCall build(List<Matcher> matchers, Comp child) {
+        if (this.matchers.equals(matchers) && this.child==child)
             return this;
-        return new OptCall(selectors.toArray(new Selector[selectors.size()]),
+        return new OptCall(matchers.toArray(new Matcher[matchers.size()]),
                 child);
     }
     @Override
     public String argsToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(selectors);
+        sb.append(matchers);
         sb.append(' ');
         sb.append(child);
         return sb.toString();

@@ -50,7 +50,6 @@ import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
  * may have doctests for its helper functions, but not on the formations
  * themselves.
  */
-// can use SelectorList to associate phantoms with real dancers.
 @RunWith(value=JDoctestRunner.class)
 abstract class FormationListSlow {
 

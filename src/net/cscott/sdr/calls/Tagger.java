@@ -50,15 +50,15 @@ public abstract class Tagger {
         assert false : "unimplemented";
     }
 
-    /** Return a new selector which adds two-person tags
-     *  (BEAU/BELLE/LEADER/TRAILER) to the generic formatio matched by the
-     *  given {@link Selector}.
+    /** Return a new matcher which adds two-person tags
+     *  (BEAU/BELLE/LEADER/TRAILER) to the generic formation matched by the
+     *  given {@link Matcher}.
      */
-    public static Selector autotag2(final Selector s) {
-        return new Selector() {
+    public static Matcher autotag2(final Matcher s) {
+        return new Matcher() {
             @Override
             public FormationMatch match(Formation f) throws NoMatchException {
-                // first match with the child selector.
+                // first match with the child matcher.
                 FormationMatch fm = s.match(f);
                 // now go through the match and add autotags to the pieces.
                 Map<Dancer,TaggedFormation> nmatches =

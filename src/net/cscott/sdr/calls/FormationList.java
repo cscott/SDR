@@ -72,8 +72,8 @@ import org.junit.runner.RunWith;
  *    >            .equals(name));
  *    > })
  *  true
- * @doc.test There should be a selector for every formation. (Although there
- *  are more selectors than there are formations.)
+ * @doc.test There should be a matcher for every formation. (Although there
+ *  are more matchers than there are formations.)
  *  js> FormationList = FormationListJS.initJS(this); undefined;
  *  js> for (f in Iterator(FormationList.all)) {
  *    >   let name = (f.getName()
@@ -83,10 +83,10 @@ import org.junit.runner.RunWith;
  *    >                .replace("1x4", "_1_X4")
  *    >                .replace("2x2", "_2_X2"));
  *    >   try {
- *    >     if (Selector.valueOf(name).toString() != f.getName())
- *    >        print("Selector name mismatch: "+f.getName());
+ *    >     if (Matcher.valueOf(name).toString() != f.getName())
+ *    >        print("Matcher name mismatch: "+f.getName());
  *    >   } catch (e) {
- *    >     print("No selector for "+f.getName());
+ *    >     print("No matcher for "+f.getName());
  *    >   }
  *    > }; undefined
  *  js> // note: no output
@@ -125,7 +125,7 @@ import org.junit.runner.RunWith;
  *    > }; matches == len;
  *  true
  */
-// can use SelectorList to associate phantoms with real dancers.
+// can use MatcherList to associate phantoms with real dancers.
 @RunWith(value=JDoctestRunner.class)
 public abstract class FormationList extends FormationListFast {
     // no implementation: all the interesting stuff is in FormationListSlow.

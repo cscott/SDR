@@ -22,7 +22,7 @@ import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationList;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Program;
-import net.cscott.sdr.calls.SelectorList;
+import net.cscott.sdr.calls.MatcherList;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
@@ -92,7 +92,7 @@ public abstract class C1List {
         public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
             assert args.size() == 1;
             return new SolidEvaluator(args.get(0), "siamese",
-                                      SelectorList.SIAMESE, SolidType.SOLID);
+                                      MatcherList.SIAMESE, SolidType.SOLID);
         }
     };
 

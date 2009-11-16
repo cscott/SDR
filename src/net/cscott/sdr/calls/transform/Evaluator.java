@@ -25,7 +25,7 @@ import net.cscott.sdr.calls.FormationList;
 import net.cscott.sdr.calls.FormationMatch;
 import net.cscott.sdr.calls.NoMatchException;
 import net.cscott.sdr.calls.Position;
-import net.cscott.sdr.calls.Selector;
+import net.cscott.sdr.calls.Matcher;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
@@ -336,18 +336,18 @@ public abstract class Evaluator {
 		msg += " ("+ListUtils.join(reasons, ", ")+")";
                 throw new BadCallException(msg, Fraction.mONE);
             }
-            /** Try all the selectors. */
+            /** Try all the matchers. */
             @Override
             public Evaluator visit(OptCall oc, DanceState ds) {
                 // Match from the breathed version of the formation.
                 Formation f = Breather.breathe(ds.currentFormation());
-                List<String> reasons = new ArrayList<String>(oc.selectors.size());
-                for (Selector s: oc.selectors) {
+                List<String> reasons = new ArrayList<String>(oc.matchers.size());
+                for (Matcher s: oc.matchers) {
                     FormationMatch fm;
                     try {
                         fm = ds.tagDesignated(s.match(f));
                     } catch (NoMatchException nme) {
-                        /* ignore; try the next selector */
+                        /* ignore; try the next matcher */
                         reasons.add(nme.target+" ("+nme.reason+")");
                         continue;
                     }
@@ -356,12 +356,12 @@ public abstract class Evaluator {
                         return new MetaEvaluator(fm, oc.child).evaluate(ds);
                     } catch (BadCallException bce) {
                         reasons.add(s.toString()+" ("+bce.getMessage()+")");
-                        /* continue with the next selector */
+                        /* continue with the next matcher */
                     }
                 }
-                /* Hmm, none of the selectors matched. */
+                /* Hmm, none of the matchers matched. */
 		// this exception should only be seen internally
-                throw new NoMatchException(oc.selectors.toString(),
+                throw new NoMatchException(oc.matchers.toString(),
                                            ListUtils.join(reasons, ", "));
             }
             /**

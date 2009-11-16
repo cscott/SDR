@@ -9,7 +9,7 @@ import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ExactRotation;
-import net.cscott.sdr.calls.Selector;
+import net.cscott.sdr.calls.Matcher;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.calls.ast.Prim.Direction;
 import net.cscott.sdr.calls.grm.Rule;
@@ -112,10 +112,10 @@ abstract class BuilderHelper {
             }
         }, isConstant(children));
     }
-    static B<OptCall> mkOptCall(final List<Selector> selectors, final B<? extends Comp> child) {
+    static B<OptCall> mkOptCall(final List<Matcher> matchers, final B<? extends Comp> child) {
         return optimize(new B<OptCall>() {
             public OptCall build(List<Expr> fargs) {
-                return new OptCall(selectors, child.build(fargs));
+                return new OptCall(matchers, child.build(fargs));
             }
         }, child.isConstant());
     }

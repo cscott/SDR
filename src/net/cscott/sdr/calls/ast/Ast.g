@@ -36,7 +36,7 @@ import java.util.Set;
 
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Predicate;
-import net.cscott.sdr.calls.Selector;
+import net.cscott.sdr.calls.Matcher;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 
 import net.cscott.sdr.util.Fraction;
@@ -77,8 +77,8 @@ comp returns [Comp r]
     ;
 optcall returns [OptCall r]
     : {input.LT(2).getText().equalsIgnoreCase("OptCall")}?
-        '(' IDENT selectors child=comp ')'
-        { $r=new OptCall($selectors.r, $child.r); }
+        '(' IDENT matchers child=comp ')'
+        { $r=new OptCall($matchers.r, $child.r); }
     ;
 parcall returns [ParCall r]
     : {input.LT(2).getText().equalsIgnoreCase("ParCall")}?
@@ -159,7 +159,7 @@ seq returns [Seq r]
         { $r = new Seq(sc); }
     ;
 
-selectors returns [List<Selector> r]
+matchers returns [List<Matcher> r]
     : string_list
         { $r = OptCall.parseFormations($string_list.r); }
     ;

@@ -12,7 +12,7 @@ import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationMatch;
 import net.cscott.sdr.calls.NoMatchException;
-import net.cscott.sdr.calls.SelectorList;
+import net.cscott.sdr.calls.MatcherList;
 import net.cscott.sdr.calls.StandardDancer;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
@@ -91,11 +91,11 @@ public class DWResolver {
         TaggedFormation parallelWaves;
         try {
             // we want parallel waves
-            fm = SelectorList.PARALLEL_RH_WAVES.match(f);
+            fm = MatcherList.PARALLEL_RH_WAVES.match(f);
             assert fm.matches.values().size() == 1;
             parallelWaves = fm.matches.values().iterator().next();
             // ok, we've got them, match each wave separately
-            fm = SelectorList.RH_OCEAN_WAVE.match(f);
+            fm = MatcherList.RH_OCEAN_WAVE.match(f);
         } catch (NoMatchException e) {
             // XXX: half tag only if we're in GENERAL LINEs
             return "Half Tag";

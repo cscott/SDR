@@ -139,7 +139,7 @@ Multiple formation option (advanced rounds)
 Keep a List<Formation> around.  If there are several possible calls in the
 "top-N" recognition options list, flip a coin (based on their
 respective probabilities) to chose which one each square does.
-Probably need selectors like "back square" to make this more fun,
+Probably need matchers like "back square" to make this more fun,
 although maybe "those who can" is enough.  Squares ignore calls they
 can't do (and glare at the caller) until they hear a 'forward and
 back', at which point they make lines.
@@ -341,7 +341,7 @@ necessary.  Make 'small diamonds' (points at (0,+/-2) isomorphic to
 like 'quarter tag with ends facing right' is isomorphic to 'twin
 diamonds'. (and in some cases, facing couples are isomorphic to waves
 & vice versa).
-(Alternatively: the Selector for diamonds also recognizes the
+(Alternatively: the Matcher for diamonds also recognizes the
 alternatives, and inserts a breathe operation.)
 
 Also "heads r&l thru" from squared set results in a quantum
@@ -407,8 +407,8 @@ need to interpolate paths in order to get a uniform set of steps; ensure
 that crossing paths will actually result in identical locations for the
 relevant dancers -- tricky for t-boned jaywalk.
 4. Be careful to distinguish between 'general formations' and disjunctive
-   selectors.  Use general formation where possible, and use GENERAL in the
-   name of the selector.  BOX and OCEAN_WAVE can't be general selectors.
+   matchers.  Use general formation where possible, and use GENERAL in the
+   name of the matcher.  BOX and OCEAN_WAVE can't be general matchers.
 5. NEAR WAVE / NEAR LINE / FAR WAVE / FAR LINE tags?
 -----
 Circular interpolation algorithm:
@@ -597,7 +597,7 @@ _atc is a specially recognized call that is search-and-replaced by the
 various tagging modifiers; it means "double pass through" if
 unmodified.
 ---
-special selectors for certain formations: diamond might also introduce
+special matchers for certain formations: diamond might also introduce
 a "points point in" action in addition to handling the different
 alternate diamond shapes.
 --
@@ -754,20 +754,20 @@ etc works -- ie, no parentheses for simple commands.
 Does javascript have a prompt mechanism?  How much of PMSD can we
 write in javascript?
 --
-Selectors should have two parts:
+Matchers should have two parts:
  - "Apply adjustment()"
-    returns the adjustment call necessary to use this selector (if any)
- - "Selector additional()"
-    an additional selector to try, after others have been tried
-    (that way they don't override user's custom selector ordering)
+    returns the adjustment call necessary to use this matcher (if any)
+ - "Matcher additional()"
+    an additional matcher to try, after others have been tried
+    (that way they don't override user's custom matcher ordering)
 
 (maybe not separate adjustment/additional, maybe just return a list of
 possible 'adjust' calls, try normal, then perform an adjust and
 reattempt, etc.)
 
-Opts maintain a FIFO queue of the provided and additional() selectors.
+Opts maintain a FIFO queue of the provided and additional() matchers.
 
-WAVE selector returns an additional() which has 'touch' as an initial
+WAVE matcher returns an additional() which has 'touch' as an initial
 adjustment.  (Note that left swing thru must be "left(swing thru)" in
 order to properly make the touch a left touch.)
 
@@ -775,7 +775,7 @@ DIAMONDS, etc have "ends in" adjustments (maybe always).
 
 FACING COUPLES is tricky: the adjustment only applies if the call
 starts with a pass thru.  So we have a special:
-  FACING_COUPLES_WITH_PASS_THRU selector which returns the formation
+  FACING_COUPLES_WITH_PASS_THRU matcher which returns the formation
   after the touch, with an adjustment that does 'nothing' from
   RH_WAVES and 'touch' from FACING COUPLES.  (Pass thru is tricky:
   note that it's a FACING DANCERS call, not just a FACING COUPLES
@@ -784,9 +784,9 @@ starts with a pass thru.  So we have a special:
 
 We're trying to be extra careful with RECYCLE, for which the "step to
 a wave and" and "rear back" adjustments don't apply.  That's why we
-have a FIFO queue, to allow the user's explicit selectors to override.
+have a FIFO queue, to allow the user's explicit matchers to override.
 But maybe we'd be better off just having explicit NO_ADJUST versions
-of the selectors, using the adjustment() method and ditching the
+of the matchers, using the adjustment() method and ditching the
 additional() method?
 
 *OR* just require calls to manually specify the possible adjustments.
@@ -941,9 +941,9 @@ to do:
     dancers, and only the selected dancers move, but that *from*
     *ignores* the selected status of the dancers.  Use a separate
     concept for "ignore non-selected"
-    * We'll probably need a "non-breathing from" selector at some
+    * We'll probably need a "non-breathing from" matcher at some
       point to make it easier to define calls!
-      - "breathe before match" == property of the selector?
+      - "breathe before match" == property of the matcher?
       - so we can define ANY_BREATHE and ANY_NO_BREATHE?
       - what about breathing *after*, like we do for the top-level?
     * need to audit our use of the formation/selected concept. remove it?
@@ -967,7 +967,7 @@ to do:
      (have to remove the hard coded 'heads <foo>' rules)
  g2) _anyone_others concept: "do your part"?
  x) concentric/quasi-concentric
-     use CENTER_HALF selector, remove those dancers and breathe the
+     use CENTER_HALF matcher, remove those dancers and breathe the
      remaining ones.  Now do the call in both of the resulting
      formations.  Open up a vertical/horizontal line (depending on
      concentric rules) in the resulting 'ends' formations and squeeze
@@ -978,7 +978,7 @@ to do:
  x) test circle left/right, test run (in all its glory), test trade
     from quarter tag
  j1) t-boned cross runs (needs select X&Y, see (w))
- j2) trade from quarter tag. (needs selector from multiple formations (y))
+ j2) trade from quarter tag. (needs matcher from multiple formations (y))
  xx) separate insertion point and playback cursor.
  k2) have a 'keep playing' flag that is set when you press play but
     cleared when you manually scrub to a point. if you receive more
@@ -1017,7 +1017,7 @@ to do:
     // or schema_in_out_triple_squash.  See the call "quick step part 2".
     // It also means that a short6 is to be fudged to a 2x3.  See the call
     // "quick step part 1".
- x) define LEADERS/TRAILERS/BEAUS/BELLES in 2x2 selector.
+ x) define LEADERS/TRAILERS/BEAUS/BELLES in 2x2 matcher.
     (and retest first part of peel the top)
  r) compute coverage metrics over the call definitions
     - make fake classes for coberatura:
@@ -1047,10 +1047,12 @@ to do:
        all 96 possible symmetric permutations to find the one which
        results in the current formation.
  xx) reorder defs to match callerlab docs
- v) 'from' takes flags
+ v) 'from' takes flags (square brackets before Matcher expression)
  w) 'select' is or-of-ands.  'select: DESIGNATED & BEAU, DESIGNATED & BELLE'
-     PersonSelector for 'select' (expr for 'select')
-     rename Selector -> Matcher (also, expr for 'from')
+     PersonSelector for 'select'
+         (expr for 'select')
+ xx  rename Selector -> Matcher
+         (also, expr for 'from')
  x) _circle choreo concept that automagically adjusts 1/8 off circles
       do a 'circle left 1/8', then do the call and rotate all the
      intermediate formations right 1/8, then circle left 1/8 the final
@@ -1060,19 +1062,19 @@ to do:
  z) Breather.breathe() should look at facing directions, and if
      they're 1/8 off, rotate,breathe,unrotate.
  aa) diamond/quarter tag conversions
-     -- automatic in the diamond/tag selectors?
+     -- automatic in the diamond/tag matchers?
      -- use the multiple-formation matcher, then adjust the results to
         canonical shape?
  bb) facing couples/wave (and vice versa) conversions.
      -- do these manually for appropriate calls? (handles recycle)
- cc) use a uniform Expr type as the argument of
+ xx) use a uniform Expr type as the argument of
      Opt/Par/Apply/Condition.
          class Expr {
          String atom;
          T evaluate(Class<T> type, DanceState ds, List<Expr> args)
          }
-     this will return a Selector for From (by looking it up in
-     SelectorList, and if not found, evaluating the Expr as a
+     this will return a Matcher for From (by looking it up in
+     MatcherList, and if not found, evaluating the Expr as a
      Formation (looking up in FormationList) and creating a
      GeneralFormationMatcher from that, a Call for Apply
      (looking it up in CallDB), a Predicate for If, etc.
@@ -1080,9 +1082,13 @@ to do:
      numeric functions.  We can have a single RefExpr type and an
          Expr substitute(Expr, List<Expr> args) (beta expansion?)
      so we can handle refs in If/Predicate/Apply/Par/Opt/wherever.
-     Selector combiners (AND, etc) are also defined in SelectorList?
+     Matcher combiners (AND, etc) are also defined in MatcherList?
      Or else in an ExprList?
-     ** where do we define SelectorCombiner?
+     ** where do we define MatcherCombiner?
+ dd) Expr.intern() using InternedExpr subclass
+ ee) Thunks?  Hook up subst() so we can replace an expr w/ a literal
+     when rewriting?  Or just map intern'ed Exprs -> Values (so our
+     tree grows as O(N) but our compute doesn't?)
 -------
 heads x:
   from squared_set:
@@ -1101,7 +1107,7 @@ centers x:
       call: ignore(ends, x)
 
 -------
-FROM: <selector>
+FROM: <matcher>
   usually a formation, but may be things like "with_centers"
   match results in: (a) subformations and a meta-formation which shows
   how to combine them, (b) subformations are tagged, which gives
@@ -1231,12 +1237,12 @@ Want to be able to suppress:
             (ALLOW UNMATCHED must still have at least one match)
 
   b) breathe-before-match (to match triple boxes)
-     way 1: move breathe-before into GeneralFormationMatcher.makeSelector
+     way 1: move breathe-before into GeneralFormationMatcher.makeMatcher
             (with an optional parameter to disable?)
-            SelectorList can then define ANY_NO_BREATHING formations,
+            MatcherList can then define ANY_NO_BREATHING formations,
             TRIPLE_BOX would have the no breathing flag by default,
             etc.  Disable parameter might not be necessary, if you
-            figure that TRIPLE_BOX is going to be a custom Selector anyway.
+            figure that TRIPLE_BOX is going to be a custom Matcher anyway.
   c) top-level breathing (assert no collisions if doing so)
      way 1: insert phantoms to hold space
      way 2: "already breathed" flag on formation.

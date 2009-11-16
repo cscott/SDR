@@ -20,7 +20,7 @@ public abstract class ExprList {
     //     static method evaluate() there.  The ast just represents the
     //     computation, it doesn't perform it.
     // XXX provide implementation that looks up 'atom' in ExprList,
-    // SelectorList, depending on the type requested.  This will be the
+    // MatcherList, depending on the type requested.  This will be the
     // 'name spacing' mechanism: different namespace per result type.
     public static <T> T evaluate(String atom, Class<T> type,
                                  DanceState ds, List<Expr> args)
@@ -75,9 +75,9 @@ public abstract class ExprList {
                 if (name.equalsIgnoreCase("false"))
                     return (T) Boolean.FALSE;
             }
-            if (type.isAssignableFrom(Selector.class))
-                // XXX try to get selector, otherwise make from formation.
-                return (T) Selector.valueOf
+            if (type.isAssignableFrom(Matcher.class))
+                // XXX try to get matcher, otherwise make from formation.
+                return (T) Matcher.valueOf
                     (this.<String>_evaluate(String.class, ds, args));
             if (type.isAssignableFrom(NamedTaggedFormation.class))
                 return (T) FormationList.valueOf

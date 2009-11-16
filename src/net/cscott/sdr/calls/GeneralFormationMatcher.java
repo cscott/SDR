@@ -17,8 +17,8 @@ import net.cscott.jutil.*;
 /**
  * {@link GeneralFormationMatcher} produces a {@link FormationMatch}
  * given an input {@link Formation} and a goal {@link TaggedFormation}.
- * This can be used to make {@link Selector}s out of {@link TaggedFormation}s,
- * via the {@link #makeSelector} method.
+ * This can be used to make {@link Matcher}s out of {@link TaggedFormation}s,
+ * via the {@link #makeMatcher} method.
  *
  * @author C. Scott Ananian
  */
@@ -26,8 +26,8 @@ import net.cscott.jutil.*;
 public class GeneralFormationMatcher {
     private GeneralFormationMatcher() {}
     // currying, oh, my
-    public static Selector makeSelector(final TaggedFormation... goals) {
-        return new Selector() {
+    public static Matcher makeMatcher(final TaggedFormation... goals) {
+        return new Matcher() {
             public FormationMatch match(Formation f) throws NoMatchException {
                 return doMatch(f, Arrays.asList(goals), false, false);
             }

@@ -49,7 +49,7 @@ public abstract class TransformVisitor<T> {
         return opt.build(l);
     }
     public OptCall visit(OptCall oc, T t) { 
-        return oc.build(oc.selectors, oc.child.accept(this, t));
+        return oc.build(oc.matchers, oc.child.accept(this, t));
     }
     public Comp visit(Par p, T t) {
         BadCallException bce=null;
@@ -64,7 +64,7 @@ public abstract class TransformVisitor<T> {
         }
         if (l.isEmpty()) // all options have been exhausted
             throw new BadCallException
-            ("No dancer selectors left: "+bce.getMessage());
+            ("No dancer matchers left: "+bce.getMessage());
         return p.build(l);
     }
     public ParCall visit(ParCall pc, T t) {

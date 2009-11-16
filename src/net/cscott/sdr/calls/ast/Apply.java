@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
  * (Apply (Expr and 'slip 'slide))
  * </pre>
  * 
- * The children of this node represent the arguments. Numerical or selector
+ * The children of this node represent the arguments. Numeric or matcher
  * arguments are represented as text beneath a "literal" expression, to
  * distinguish them from similarly-named functions which might be
  * evaluated to yield a Call value.  For example, "twice (trade and roll)" is:

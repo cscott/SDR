@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
  * @doc.test Partner trade:
  *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
- *  js> fm = SelectorList.COUPLE.match(Formation.FOUR_SQUARE); undefined
+ *  js> fm = MatcherList.COUPLE.match(Formation.FOUR_SQUARE); undefined
  *  js> f=[ff for (ff in Iterator(fm.matches.values()))
  *    >    if (ff.dancers().contains(StandardDancer.COUPLE_1_BOY))][0]
  *  net.cscott.sdr.calls.TaggedFormation[
@@ -67,7 +67,7 @@ import org.junit.runner.RunWith;
  * @doc.test Check that in/out motions are computed correctly:
  *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
- *  js> fm = SelectorList.COUPLE.match(Formation.FOUR_SQUARE); undefined
+ *  js> fm = MatcherList.COUPLE.match(Formation.FOUR_SQUARE); undefined
  *  js> f=[ff for (ff in Iterator(fm.matches.values()))
  *    >    if (ff.dancers().contains(StandardDancer.COUPLE_1_BOY))][0]; f.toStringDiagram()
  *  1B^  1G^
@@ -236,7 +236,7 @@ import org.junit.runner.RunWith;
  * @doc.test Prims which "stand still" preserve roll.
  *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
- *  js> fm = SelectorList.COUPLE.match(Formation.FOUR_SQUARE); undefined
+ *  js> fm = MatcherList.COUPLE.match(Formation.FOUR_SQUARE); undefined
  *  js> f=[ff for (ff in Iterator(fm.matches.values()))
  *    >    if (ff.dancers().contains(StandardDancer.COUPLE_1_BOY))][0]; f.toStringDiagram()
  *  1B^  1G^

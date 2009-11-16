@@ -13,7 +13,7 @@ import net.cscott.sdr.calls.transform.Evaluator;
  * numerical argument, and 'concepts' (like AS COUPLES) which take another
  * call or calls as arguments.  These are not distinguished here: the
  * important thing is that any call can be *applied* to zero or more
- * arguments (numbers, selectors, or other calls) to result in an
+ * arguments (numbers, matchers, or other calls) to result in an
  * {@link Evaluator} (and sometimes, if {@link Evaluator#hasSimpleExpansion()}
  * is true, to a {@link Comp} AST tree).
  * @author C. Scott Ananian
