@@ -1,3 +1,14 @@
+This file contains miscellaneous notes on the design and
+implementation of SDR.  It's chronologically ordered, with the most
+recent additions at the bottom.  I've tried to go back and mark or
+delete the "unused ideas" when I've ended up chosing a different path,
+but caveat lector: generally the end of this file is a more reliable
+guide to the current implementation and future directions than the
+beginning is.
+==================================================================
+
+Animation notes:
+----------------
 List of targets for each person.
 
 A target is:
@@ -46,11 +57,29 @@ caller's direction (limited by neck mobility) -- also eye turn?
 Dancers should also look towards their partners if their partner is
 'near enough'.
 
-
 The checkers can have a walking animation, too, tilting up & down and
 'walking' across the table.  Maybe include global translation/rotation
 matrix in keyframining?
----------
+
+For animation of complicated sequences, treat dancers as connected to
+their desired locations with a spring.  Sense collisions and stretch
+the spring as necessary (ie, don't walk through people).  Should
+probably treat dancers as circles so they don't get stuck on each
+other.  Each path has a "shoulder direction" which says which way they
+attempt to go around obstacles.
+
+[2009-11-21: DancerPaths do have 'shoulder directions'; we'll probably
+need to use the physics model for animating cross-concentric and once
+removed calls (and probably other similar concepts), but otherwise our
+Breathing model seems to be handling collisions well.]
+
+Use ChaseCamera to 'chase' the center of the set.
+
+During menu modes, slowly rotate the camera around the set.  Slew to
+chase position when game starts.
+
+Scoring:
+--------
 
 More points for sequences near 'optimal length' (ie, not too long or
 short).
@@ -87,7 +116,65 @@ Should consider bigram and trigram distributions, so that we penalize
 things; current meter values==score, applied at discrete points.  Also
 "resolve" bonus.)
 
+Multiple formation option (advanced game levels):
+Keep a List<Formation> around.  If there are several possible calls in the
+"top-N" recognition options list, flip a coin (based on their
+respective probabilities) to chose which one each square does.
+Probably need matchers like "back square" to make this more fun,
+although maybe "those who can" is enough.  Squares ignore calls they
+can't do (and glare at the caller) until they hear a 'forward and
+back', at which point they make lines.
+
+ScoreAccumulator should get updates when the dancers are waiting for
+their next call, as the "timing and flow" meter should continue to run
+down while they wait.  ScoreAccumulator 'goodCall' method should just
+be responsible for the jump in "timing and flow" when a good call is
+given.
+
+Integrate with DDR game?  Maybe generate step sequences based on calls &
+timing, so that the caller is effectively dynamically generating step
+sequences.  Other ideas: 4x4 grid of DDR pads?  Step on facing direction?
+
+Regular tick, at each tick add points according to the current
+flow/difficulty/etc meters and the current bonus multipliers.
+Bonus multipliers for "hard material" and "flowy material" --
+each dance floor is different, some may like the hard stuff and
+not care about flowy; some may want flowy and not care for hard
+stuff.
+"Hard sequence: 2x"
+Calls and concepts can get "difficulty" annotations, which probably
+multiply together to get the nested difficulty level.  ie "tandem as
+couples trade" is a little hard, "tandem as couples (single wheel and
+roll)" is pretty hard (since single wheel has higher intrinsic
+difficulty than trade).
+
+For flow, we're going to compute scores for each dancer individually;
+the overall flow should be the "minimum of all the moving dancers".
+You only get good flow if it's good for everyone (but people standing
+still don't count for or against).
+
+HUD:
 ----
+Bonus formations on right.
+Suggestions for 'new' calls you can do presently also on right.  Part
+of 'tutorial'.  Can select "help" level.   Always give suggestion when
+stalled.
+
+Better error messages for calls. "Boys and Girls must be together" or
+"only from waves or facing couples" eg when caller gets it wrong.
+
+try to teach caller w/o having to rely on outside references?
+
+Menu: microphone selection and volume (virtualize Sphinx "Microphone"
+component?), # of dancers (4/8/12 <- "at home" really is at home for
+everyone), dance program (basic->c4), judging (easy/medium/hard).
+
+Rewrite TextureText to generate triangle strips and a non-sheared texture.
+How do we make the bounding box actually match up?  Generate 10% extra and
+then dynamically shrink?  Maybe use different means to get text width?
+
+Music:
+------
 splice 'miditimers' together to allow switching tunes?
  each time measurement is a rational number; pass this rational number
  between timers atomically to ensure monoticity.  main timer is just a
@@ -97,7 +184,7 @@ Support sampled sound (wav/mp3) via "beat maps" -- a list of
  (beat number, micro-second location) pairs which are smoothly
  interpolated to reconstruct beat number from the playback us
  location.
---
+
 To switch songs: turn on the loop; when we receive the 'music end'
  signal switch to new song?
 
@@ -110,10 +197,54 @@ From FAQ: http://www.jsresources.org/faq_midi.html#note_event_notification
  will trigger the switch to the 1 beat pickup.
  See also http://www.ii.uib.no/~espenr/midistreaming/ w/ regard to
  swapping sequencers for gapless playback.
----------
-photos of barn.
----------
-resolve:
+
+Eventually: sound effects.  Special type of prim with timing 0?
+Same for actions? (sound effects are triggered at prim location,
+while actions are centered at prim location).
+
+Moderate volume level of MidiThread!
+
+Wrap BeatTimer so that it returns 0 until music is started up; this will
+allow us to delay music startup until after Venue (ideally, music would
+start when the menu comes up, so that user immediately has the option to
+turn it off or adjust the volume).
+
+At the moment we're using the Java Sound API for recording/playback.
+For fancier (& hardware-accelerated) playback, we could switch to
+OpenAL, which lets us do doppler-shifted positional sounds & other fun
+stuff.  OpenAL 1.1 has a capture interface; look for
+alcCaptureOpenDevice & friends.  To enumerate capture devices, call
+alcGetString(NULL, ALC_CAPTURE_DEVICE_SPECIFIER).
+  xxx: this results in a very limited list of capture devices:
+         '((device '(native))
+       no way to select microphone vs line in vs usb mic.
+
+For midi output, we don't need to manually set
+Transmitters/Receivers/etc. Look at MidiSystem.getSequencer(true);
+
+Sphinx:
+-------
+Add audio feedback element to Sphinx frontend pipeline, between
+edu.cmu.sphinx.frontend.util.Microphone and
+edu.cmu.sphinx.frontend.endpoint.SpeechClassifier.   Look at the
+SpeechClassifer for ideas: it is estimating input level as well; we just need
+a shorter time constant.  Alternatively, grab audio after the
+edu.cmu.sphinx.frontend.endpoint.SpeechMarker; then we can use different
+colors for non-speech (grey with high alpha) and speech (primary
+color) data.
+
+Sphinx states like GameStates; pass Results around from each (since we
+need different result processing in different states).
+
+"Say "square up" or press enter to start" w/ high "out of grammar
+utterance" probability.
+
+Venue:
+------
+Shoot photos of Baypath barn and use to build a venue model.
+
+Resolution:
+-----------
  search both backwards and forwards.
  initially discard rotation information ('at home' getout vs not)
   and search from both ends (from the start & from the goal)
@@ -130,24 +261,24 @@ resolve:
  user UI should allow you to select 'at home getouts', 'promenade
  1/4', 'promenade 1/2', 'promenade 3/4', etc. for singers.
 
-----
+Call evaluation:
+----------------
 call application should reduce to a tree of nothing but IN PRIM and
 SELECT.  Otherwise keep tree as high as possible for concept application.
 
-------
-Multiple formation option (advanced rounds)
-Keep a List<Formation> around.  If there are several possible calls in the
-"top-N" recognition options list, flip a coin (based on their
-respective probabilities) to chose which one each square does.
-Probably need matchers like "back square" to make this more fun,
-although maybe "those who can" is enough.  Squares ignore calls they
-can't do (and glare at the caller) until they hear a 'forward and
-back', at which point they make lines.
-------
+[2009-11-21: originally the idea was that call evaluation would be
+nothing more than macro expansion, incrementally expanding each call
+until all we had was a tree of Prims describing the dancer movements.
+This turned out to be very awkward and unsuitable for describing some
+dance states, and was replaced with 'evaluate' which mutates a
+DanceState-containing-DancerPaths.]
+
+Predicates:
+-----------
 All call predicates take a 'DanceState' as well as the Formation or
 whatever else they are operating on.  The DanceState contains info
 like the current program (which should be an enumeration).
-------
+
 counter rotate (for example) is:
   from: MINI_WAVE
     condition: PROGRAM AT LEAST(a2) // is this right?
@@ -158,34 +289,31 @@ counter rotate (for example) is:
 When using counter rotate to define other calls, use _counter rotate
 or counter rotate, depending on whether the use is program-sensitive
 or not.
+
+[2009-11-21: the new "Expr" refactoring makes the DanceState object
+the sole keeper of any information needed for predicate evaluation,
+but also for evaluating Select/From as well.  Eventually, we might
+move call argument binding into the dance state as well, so that
+the DanceState holds the current bindings with which to evaluate
+argument references.]
+
 ------
 Use call grammar to do a typing interface as well: do the
 selected-text-while-typing thing to display the possible lookahead.
 Space accepts the current lookahead.
+[2009-11-21: not quite the same bindings, but we do have
+call-completion in both the PMSD and GWT interfaces now.]
 ------
-For animation of complicated sequences, treat dancers as connected to
-their desired locations with a spring.  Sense collisions and stretch
-the spring as necessary (ie, don't walk through people).  Should
-probably treat dancers as circles so they don't get stuck on each
-other.  Each path has a "shoulder direction" which says which way they
-attempt to go around obstacles.
------
-Eventually: sound effects.  Special type of prim with timing 0?
-Same for actions? (sound effects are triggered at prim location,
-while actions are centered at prim location).
-----
 fractionalization can only occur in a Seq of Parts, not between
 prim calls, or in mixed lists.  the 'and' concept creates a
 divisible part for each call.  IPART is an 'indivisible part'
 (XXX: we don't currently check homogenity of a Seq)
-----
-to do:
-create plain-text parser (into APPLY trees)
-add formation changes during Seqs to elaborate.
-build dancerpath from simplified tree (PRIM/WARP/SELECT with numbered dancers)
-animate dancer paths
-  generalize rotation
-----
+
+Warps:
+------
+[2009-11-21: representing concepts and breathing as warps was
+eventually abandoned as unworkable.  We breathe formation-by-formation
+and use a linear constraint solver to implement the breathing now.]
 
 Formation warps are independent stretches of x,y axes.
 
@@ -241,7 +369,9 @@ Note that compressing a tandem diamond in this fashion will result in
 a 'short' diamond (points at (0,+/-2) instead of (0,+/-3).  We
 recognize this as an alternative diamond formation that can be
 breathed out into the standard diamond.
------------
+
+Stars:
+------
 Dancers are diamond shaped:
   ^
  <+>
@@ -254,7 +384,12 @@ stars.  More correct to say that stars, thars, and C1 phantoms are
 special "crossed" formations with dancers occupying spots in a crossed
 grid that lets them get closer to each other than they would otherwise.)
 
------------
+[2009-11-21: the latter is roughly how we implement it: we allow stars
+as a special case in the breathing code.  Dancers very close together
+breathe into stars; dancers further apart breathe into 3x2 diamonds.]
+
+Matching:
+---------
 FormationMatch includes both the formations matched, as well as
 a 'meta formation' showing the arrangement of these.  Then, we apply
 the calls in the subformations, and put the results together according
@@ -263,6 +398,7 @@ to the meta formation.
 Think about 'lock it twice' from parallel ocean waves.  We need to
 reassemble the formation in the middle to accomodate the tidal wave.
 (Maybe the reassembly should happen at each intermediate point?)
+[2009-11-21: yes, we reassemble at each intermediate point.]
 
 ----------
 elaborate should weed out inapplicable formations/evaluate conds, but
@@ -271,12 +407,17 @@ not do any irreversible rewriting. (No.)
 The formation reconstruction which 'from' does is not currently
 encapsulatable in a 'Warp' node. (I think I'm getting rid of the
 'Warp' idea, except perhaps for smooth animation of (say) once-removed.)
+
+[2009-11-21: we got rid of 'elaboration' as a means of evaluating
+calls as well as getting rid of the 'warp' idea.]
 ---------
 
 We handle collisions at the same time we do formation reconstruction: if
 two dancers are on the same spot, replace them with a RH MINIWAVE
 at that location.
----------
+
+Parsing:
+--------
 
 anything: LEFT leftable_anything // tight
 	| REVERSE reversable_anything // tight
@@ -311,10 +452,17 @@ anything4
 	| DOSADO
 	| LPAREN anything0 RPAREN
 	;
-----------
+
 how to deal with "swing and mix"/"and(swing,mix)" ambiguity?
 Answer: post-process parse tree to create "(apply swing-and-mix)" from
 "(apply and (apply swing) (apply mix))".
+
+[2009-11-21: we ended up banning 'and' as a call-combiner from the
+grammar, because it introduced too many ambiguities.  When you're
+typing you can use a semicolon instead, and when talking, use a pause.
+We do post-process certain parses, like "heads square thru" from
+a squared set, but we do it in the call definition lists using the
+'condition:' operator.]
 
 More tricky parses:
  <designator> (<anything> and <anything>)
@@ -332,8 +480,15 @@ or:
 What about doing a "find all parses" with a truly ambiguous grammar?
 We could do the same thing we do with speech recognition: try each
 possible parse & discard any that don't work.
+
+[2009-11-21: Investigated, but no good ambiguous parsing tools, and it
+doesn't actually solve the problem: both (and 'swing 'mix) and ('swing
+and mix) parse and apply correctly, so it offers no guidance as to
+which to select.]
 -----------
 
+Matching quantum superimpositions:
+---------------------------------
 Whenever we try to match a formation and fail, try also to
 match "isomorphic" formations & insert a 'breathe' operation if
 necessary.  Make 'small diamonds' (points at (0,+/-2) isomorphic to 
@@ -366,6 +521,7 @@ Formation elaboration does:
     have 'twin diamonds'.  This allows us to decouple the 'formation
     reassembly' from elaboration.
 (Mm, not quite?)
+[2009-11-21: 'elaboration' eventually abandoned.]
 
 Formation evaluation results in a series of time-stamped formations.
 Tricky: how to combine parallel movements.  Do we interpolate (along
@@ -389,26 +545,59 @@ just do the exact floating point computation, and use the Fraction
 method which generates a rational from a double -- but will this result
 in overflow?  The benefit of the rational approximation is that we
 know that the denominators are < 1000, which gives us plenty of room.
+
+[2009-11-21: DanceState.formations() contains our actual solution:
+we basically breathe intermediate formations as if the
+dancers-who-need-interpolation haven't moved from their starting
+position.  This only affects the intermediate breathing: we actually
+reconstruct breathed dancer paths from their (breathed) positions only
+at the path start and end points.  We could switch to using a more
+accurate interpolation fairly easily, but the resulting breathed
+intermediates might actually prove harder to understand.]
 ---------------
 Use the Sphinx RuleGrammar to parse our inputs, rather than having a
 separate ANTLRv3 grammar?  cons: Sphinx doesn't recognize ambiguity
 in the grammar.  pro: it (seems to have) no problem with left recursion.
+
+[2009-11-21: at the moment ANTLRv3 seems to add enough value
+(especially useful diagnostics when ambiguities are inadvertently
+introduced) to make it well worth maintaining a separate grammar.]
+
 ---------------
 1. Each movement ought to be interpolated according to the momentary center of
 the (sub)formation - ie, box counter rotate is an arcing movement, not a a
 straightforward prim 0,2,right (for trailer in right hand box).  This is
 important for roll/sweep and flow.
+
+[2009-11-21: doesn't actually seem to be a problem; the bezier
+interpolation given starting and ending tangent vectors does just fine
+adding an arcing motion to counter rotate.]
+
 2. Post processing at SELECT (ParCall) should insert handhold actions for
 connected dancers.  Actions are "left hand hold" and "right hand hold".
+
+[2009-11-21: probably will be done by post-processing the formation to
+annotate dancers in "holding hands" positions, with a special
+DancerPath flag to indicate when hands should not be held (ie, weave
+the ring or pass thru, as opposed to right&left grand and right pull by.)]
+
 3. Evaluate returns list of "Prim or Action" per Dancer; these are applied
 during SELECT (ParCall) processing to yield a formation.  (Separate class
 does the combination from the sorted list of time steps).  Note that we may
 need to interpolate paths in order to get a uniform set of steps; ensure
 that crossing paths will actually result in identical locations for the
 relevant dancers -- tricky for t-boned jaywalk.
+
+[2009-11-21: we use DancerPaths now, but t-boned jaywalk will still be
+a tricky one to define in order to make the
+collisions/shoulder-passing work correctly.]
+
 4. Be careful to distinguish between 'general formations' and disjunctive
    matchers.  Use general formation where possible, and use GENERAL in the
    name of the matcher.  BOX and OCEAN_WAVE can't be general matchers.
+
+[2009-11-21: we now have MIXED options as well.]
+
 5. NEAR WAVE / NEAR LINE / FAR WAVE / FAR LINE tags?
 -----
 Circular interpolation algorithm:
@@ -422,97 +611,27 @@ Circular interpolation algorithm:
     line path.
  3. If both left or both right, then arc is possible: center is at intersection
     point.  Otherwise, bail to straight line path.
+[2009-11-21: arcCenter code is still present, but only for scoring;
+we're using bezier interpolation and it's working out fine.]
+
 -----
 After SELECT fails, we go to a 'try harder' phase, where we try to find the
 appropriate tags, irrespective of the current TaggedFormation.
+[2009-11-21: nope, it's clearer just to ensure that an appropriate
+FROM always precedes a SELECT.]
 
 After FROM fails, we 'try harder', which involves trying breathing and applying
 "from facing couples" and "from waves" rules.  Need explicit tag in call
 definition to say when this is/is not applicable?  Ie, recycle from facing
 couples not okay using "from facing couples" rule.
+[2009-11-21: i think these will be special Matchers]
 ----
-Add audio feedback element to Sphinx frontend pipeline, between
-edu.cmu.sphinx.frontend.util.Microphone and 
-edu.cmu.sphinx.frontend.endpoint.SpeechClassifier.   Look at the
-SpeechClassifer for ideas: it is estimating input level as well; we just need
-a shorter time constant.  Alternatively, grab audio after the
-edu.cmu.sphinx.frontend.endpoint.SpeechMarker; then we can use different
-colors for non-speech (grey with high alpha) and speech (primary
-color) data.
-----
-HUD To-Do:
- support for scrolling "measure end" and "call stars"
-----
-Use ChaseCamera to 'chase' the center of the set.
-
-During menu modes, slowly rotate the camera around the set.  Slew to
-chase position when game starts.
-----
-Bonus formations on right.
-Suggestions for 'new' calls you can do presently also on right.  Part
-of 'tutorial'.  Can select "help" level.   Always give suggestion when
-stalled.
-
-Better error messages for calls. "Boys and Girls must be together" or
-"only from waves or facing couples" eg when caller gets it wrong.
-
-try to teach caller w/o having to rely on outside references?
-----
-Should add package.html files.
-----
-ScoreAccumulator should get updates when the dancers are waiting for
-their next call, as the "timing and flow" meter should continue to run
-down while they wait.  ScoreAccumulator 'goodCall' method should just
-be responsible for the jump in "timing and flow" when a good call is
-given.
----
-Sphinx states like GameStates; pass Results around from each (since we
-need different result processing in different states).
-
-"Say "square up" or press enter to start" w/ high "out of grammar
-utterance" probability.
-
-Menu: microphone selection and volume (virtualize Sphinx "Microphone"
-component?), # of dancers (4/8/12 <- "at home" really is at home for
-everyone), dance program (basic->c4), judging (easy/medium/hard).
-
-"Poor man's SD" (PMSD) interface, with text i/o to call engine.
-(java.util.Scanner)
---
-Integrate with DDR game?  Maybe generate step sequences based on calls &
-timing, so that the caller is effectively dynamically generating step
-sequences.  Other ideas: 4x4 grid of DDR pads?  Step on facing direction?
----
-Rewrite TextureText to generate triangle strips and a non-sheared texture.
-How do we make the bounding box actually match up?  Generate 10% extra and
-then dynamically shrink?  Maybe use different means to get text width?
----
-Moderate volume level of MidiThread!
----
-Wrap BeatTimer so that it returns 0 until music is started up; this will
-allow us to delay music startup until after Venue (ideally, music would
-start when the menu comes up, so that user immediately has the option to
-turn it off or adjust the volume).
----
-At the moment we're using the Java Sound API for recording/playback.
-For fancier (& hardware-accelerated) playback, we could switch to
-OpenAL, which lets us do doppler-shifted positional sounds & other fun
-stuff.  OpenAL 1.1 has a capture interface; look for
-alcCaptureOpenDevice & friends.  To enumerate capture devices, call
-alcGetString(NULL, ALC_CAPTURE_DEVICE_SPECIFIER).
-  xxx: this results in a very limited list of capture devices:
-         '((device '(native))
-       no way to select microphone vs line in vs usb mic.
----
-For midi output, we don't need to manually set
-Transmitters/Receivers/etc. Look at MidiSystem.getSequencer(true);
-
-----------------------
 Selecting ends/centers etc depends on matching a specific formation.
 So: FROM xyz SELECT pdq.
 FROM converts the Formation to a TaggedFormation.
 SELECT w/o a controlling FROM can fail.
 FROM is an explicit "re-evaluate".
+[2009-11-21: yes, this is what we ended up doing.]
 ---------
 Add "designated dancer" concept which adds the appropriate DESIGNATED
 tag.  Should this tag be preserved within a FROM?  If so, a property
@@ -524,6 +643,10 @@ ie, the designate concept would already have a TaggedFormation to work
 with, so this can be a TaggedFormation.Tag, not a Position.Flag.
 --------
 Elaborate should do "one step" of the call at each invocation.
+[2009-11-21: evaluate does "one step" now, but evaluateAll() is used
+in many places.  We could probably fix this by maintaining a heap of
+DanceStates and evaluating only until all are past the next
+TimedFormation we need to assemble.]
 -------
 Need a "as N steps" version of Part, to make square through, swing and
 mix, etc work right. (or an _expand concept, to make the parts of the
@@ -555,6 +678,10 @@ then disappear, or (b) install themselves in the evaluator stack, as
 an ongoing filter on the movements (like tandem would be).  Option
 (a) can also be implemented by doing the transformation and then
 invoking the standard evaluator on the result.
+
+[2009-11-21: option (a) is currently represented by creating a
+standard evaluator and then delegating to it; optionally also using
+the hasSimpleExpansion facility.]
 --
 We have a special "_boring" call which is used as the continuation
 when it would otherwise be null.  It's defined something like:
@@ -573,25 +700,20 @@ can be extended to have various placeholder actions performed by the
 dancers while they are "waiting" -- ie, california twirl with each
 other, swing, partner trade twice, scootback twice, etc.  We probably
 need a _random predicate to gate these behaviors.
+
+2009-11-21: we can probably implement a top-level loop now using Exprs:
+
+call: _dance to a caller
+  from: ANY
+    if: _callstack empty()
+      call: _boring, _dance to a caller
+  from: ANY
+    // else!
+    call: _pop callstack, _dance to a caller
+
+Need to take care that the tail-call is safe; maybe by removing the
+tail call and just repeatedly executing _dance to a caller at top-level.
 ---
-Regular tick, at each tick add points according to the current
-flow/difficulty/etc meters and the current bonus multipliers.
-Bonus multipliers for "hard material" and "flowy material" --
-each dance floor is different, some may like the hard stuff and
-not care about flowy; some may want flowy and not care for hard
-stuff.
-"Hard sequence: 2x"
-Calls and concepts can get "difficulty" annotations, which probably
-multiply together to get the nested difficulty level.  ie "tandem as
-couples trade" is a little hard, "tandem as couples (single wheel and
-roll)" is pretty hard (since single wheel has higher intrinsic
-difficulty than trade).
----
-For flow, we're going to compute scores for each dancer individually;
-the overall flow should be the "minimum of all the moving dancers".
-You only get good flow if it's good for everyone (but people standing
-still don't count for or against).
---
 double pass through = <nothing> _atc
 _atc is a specially recognized call that is search-and-replaced by the
 various tagging modifiers; it means "double pass through" if
@@ -633,8 +755,10 @@ It may be that CENTERS/ENDS (as opposed to other <anyone>/others)
 wants to try a "concentric" first, the regular evaluation if it
 doesn't work.  This way "centers trade, ends circulate" will Just
 Work, but "centers concentric trade, ends circulate" will also work.
----
 
+[2009-11-21: see the definition of _anyone anything for how this is
+implemented.]
+---
 
 SELECT marks a "re-evaluation" point.  Take the *breathed* version of
 the formation at that point.
@@ -709,8 +833,10 @@ couple/miniwave and single dancers, so we can do:
      call: face in and roll
     from: SINGLE DANCER
      ...face in, warn about roll direction
+[2009-11-21: we have a 'mixed' matcher now which might help.]
 ---
 same for cast 1/4, which should match GENERAL_COUPLE
+[2009-11-21: again, 'mixed']
 ---
 calls movements start/end in directions other than the facing
 direction.  Eg: half of a rollaway ends in sashay direction, and a
@@ -750,6 +876,8 @@ on the State object, so:
 : exit
 : restart
 etc works -- ie, no parentheses for simple commands.
+[2009-11-21: this is what we do, more or less, but with / as the
+command signifier, instead of :]
 
 Does javascript have a prompt mechanism?  How much of PMSD can we
 write in javascript?
@@ -883,8 +1011,6 @@ pointer at the first dancerpath for each dancer for a given call
 (place to start deleting/recomputing from; may actually belong to a
 subsequent call or point at the end of the list)
 ---
-Rename 'cardinal' rule to "numeric_adverb" or "times"
------
 tag sequences in sdrweb.  automatic tags such as plus/ms/c3/c4 and
 also based on starting/ending formation:
 module/singer/reverse singer/resolved/unresolved
@@ -996,6 +1122,10 @@ to do:
        'nothing-keep-roll' calls, and use 'nothing-clear-roll' in
        places like the <anyone> <anything> concept and for the
        non-moving dancers in 'trade down the line'
+     * Better: add a KEEP ROLL prim flag.  Swing thru, etc, should
+       do _anyone anything(CENTER, foo, _nothing keep roll)
+       - The 'roll' concept should be careful only to delete 'nothings'
+         which KEEP ROLL (also look @ the dancerSync method)
      * SD says: "When "roll_transparent" is used on a part of a "seq"
        definition, that call must have the property that anyone who is
        marked roll-neutral (that is, with an "M" roll letter), must
@@ -1047,8 +1177,12 @@ to do:
        all 96 possible symmetric permutations to find the one which
        results in the current formation.
  xx) reorder defs to match callerlab docs
- v) 'from' takes flags (square brackets before Matcher expression)
- w) 'select' is or-of-ands.  'select: DESIGNATED & BEAU, DESIGNATED & BELLE'
+ v) 'from' takes flags (curly brackets before Matcher expression)
+     - UNBREATHED is a FROM flag.
+     x 'mixed(...)' operator for from.
+     - fix top-level hack for OptCall evaluation: change Matcher to
+       return an Iterator<FormationMatch>?
+ x) 'select' is or-of-ands.  'select: DESIGNATED & BEAU, DESIGNATED & BELLE'
      PersonSelector for 'select'
          (expr for 'select')
  xx  rename Selector -> Matcher
@@ -1057,7 +1191,7 @@ to do:
       do a 'circle left 1/8', then do the call and rotate all the
      intermediate formations right 1/8, then circle left 1/8 the final
      formation unrotated, to snap to squared set spots again.
- y) siamese concept -- multiple simultaneous formations in
+ x) siamese concept -- multiple simultaneous formations in
     GeneralFormationMatcher
  z) Breather.breathe() should look at facing directions, and if
      they're 1/8 off, rotate,breathe,unrotate.
@@ -1065,8 +1199,12 @@ to do:
      -- automatic in the diamond/tag matchers?
      -- use the multiple-formation matcher, then adjust the results to
         canonical shape?
+     -- select "center 4", ensure they're a wave, and then move
+        outside 4 to the appropriate diamond spots (same for "center 2")
  bb) facing couples/wave (and vice versa) conversions.
      -- do these manually for appropriate calls? (handles recycle)
+     -- def of right pull by: from RH_MINIWAVE: extend
+                              from FACING DANCER: touch, right pull by
  xx) use a uniform Expr type as the argument of
      Opt/Par/Apply/Condition.
          class Expr {
@@ -1089,6 +1227,10 @@ to do:
  ee) Thunks?  Hook up subst() so we can replace an expr w/ a literal
      when rewriting?  Or just map intern'ed Exprs -> Values (so our
      tree grows as O(N) but our compute doesn't?)
+ ff) Rename 'cardinal' rule to "numeric_adverb" or "times"
+ gg) Refs in Exprs using special (Expr ref (Expr 1)); put binding
+     environment in DanceState (and cache binding vals once evaluated?)
+
 -------
 heads x:
   from squared_set:
@@ -1175,8 +1317,7 @@ phantom when it makes a match.
 
 Internal call node for "unapplied concept". -- use this to push (eg)
 fan and fractional down through from: nodes. Curried: concept:
-with_designators Also rename selectors etc to make sense?  Select=tag
-and from=selector
+with_designators
 
 Note when using select, you must define a whole call!  Your selected
 dancers *and the phantoms* will be dancing, so make sure the phantoms
@@ -1247,3 +1388,12 @@ Want to be able to suppress:
      way 1: insert phantoms to hold space
      way 2: "already breathed" flag on formation.
      way 3: only breathe @ top level if there are collisions.
+---------
+Who's calling
+  net.cscott.sdr.calls.TaggedFormation.move(TaggedFormation.java:35)
+it's a hotspot for allocation (of TaggedFormation objects).
+
+Who's calling Breather.breathe() ?  There are 10,000 calls unaccounted
+for.
+
+Who's constructing jline.ConsoleReader in JDoctest?
