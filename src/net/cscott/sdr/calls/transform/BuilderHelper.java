@@ -126,12 +126,12 @@ abstract class BuilderHelper {
             }
         }, isConstant(children));
     }
-    static B<ParCall> mkParCall(final List<B<String>> tags, final B<? extends Comp> child) {
+    static B<ParCall> mkParCall(final B<Expr> selector, final B<? extends Comp> child) {
         return optimize(new B<ParCall>() {
             public ParCall build(List<Expr> fargs) {
-                return new ParCall(ParCall.parseTags(reduce(tags,fargs)), child.build(fargs));
+                return new ParCall(selector.build(fargs), child.build(fargs));
             }
-        }, child.isConstant() && isConstant(tags));
+        }, child.isConstant() && selector.isConstant());
     }
     static B<Part> mkPart(final boolean isDivisible, final B<? extends Comp> child) {
         return optimize(new B<Part>() {

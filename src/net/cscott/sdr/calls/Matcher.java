@@ -19,6 +19,7 @@ public abstract class Matcher {
     public abstract FormationMatch match(Formation f)
         throws NoMatchException;
 
+    /** @throws IllegalArgumentException if the matcher is unknown. */
     public static Matcher valueOf(String s) {
         // Look for this matcher in the MatcherList
         try {
@@ -28,9 +29,9 @@ public abstract class Matcher {
                 .replace(' ','_').replace('-','_');
             return (Matcher) MatcherList.class.getField(s).get(null);
         } catch (NoSuchFieldException e) {
-            throw new RuntimeException("Bad matcher name: "+s);
+            throw new IllegalArgumentException("Bad matcher name: "+s);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Can't access matcher "+s+": "+e);
+            throw new IllegalArgumentException("Can't access matcher "+s+": "+e);
         }
     }
 }

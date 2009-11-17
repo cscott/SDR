@@ -17,13 +17,12 @@ import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.DancerPath;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.TaggedFormation;
-import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.In;
-import net.cscott.sdr.calls.ast.ParCall;
 import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
@@ -201,17 +200,14 @@ public abstract class BasicList {
         public Evaluator getEvaluator(DanceState ds, List<Expr> args)
             throws EvaluationException {
             // all but the last argument are names of tags
-            assert args.size()>=2;
-            List<String> tagNames = new ArrayList<String>(args.size()-1);
-            for (int i=0; i < args.size()-1; i++)
-                // XXX evaluate as Tag or as PersonSelector
-                tagNames.add(args.get(i).evaluate(String.class, ds));
-            final Set<Tag> tags = ParCall.parseTags(tagNames);
+            assert args.size()==2;
+            final Selector selector =
+                args.get(0).evaluate(Selector.class, ds);
 
             // fetch the subcall, and make an evaluator which will eventually
             // pop the designated dancers to clean up.
             final Evaluator subEval =
-                args.get(args.size()-1).evaluate(Evaluator.class, ds);
+                args.get(1).evaluate(Evaluator.class, ds);
             final Evaluator popEval = new Evaluator() {
                 private Evaluator next = subEval;
                 @Override
@@ -235,7 +231,7 @@ public abstract class BasicList {
                     // get the current tagged formation, match, push
                     Formation f = ds.currentFormation();
                     TaggedFormation tf = TaggedFormation.coerce(f);
-                    Set<Dancer> matched = tf.tagged(tags);
+                    Set<Dancer> matched = selector.select(tf);
                     ds.pushDesignated(matched);
                     // delegate, eventually clean up
                     return popEval.evaluate(ds);

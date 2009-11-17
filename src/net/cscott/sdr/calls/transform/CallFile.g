@@ -447,7 +447,7 @@ priority
     : LBRACK! number RBRACK!
     ;
 example
-    : EXAMPLE^ COLON! call_body_seq
+    : EXAMPLE^ COLON! and_body_seq
       INDENT! BEFORE COLON! figure AFTER COLON! figure DEDENT!
     ;
 figure
@@ -526,7 +526,7 @@ seq
     ;
 fragment one_seq
     : PRIM^ COLON! prim_body
-    | CALL^ COLON! call_body_seq
+    | CALL^ COLON! and_body_seq
     | PART^ COLON! pieces_factor
     | IPART^ COLON! pieces_factor
     ;
@@ -537,7 +537,7 @@ par
     ;
 
 fragment one_par
-    : SELECT^ COLON! simple_ref_body pieces_term
+    : SELECT^ COLON! or_body_seq pieces_term
     ;
 
 simple_word
@@ -567,12 +567,20 @@ ref!
 call_body!
     : expr_body
     ;
-call_body_seq
+and_body_seq
     : (call_body COMMA call_body) =>
        call_body (COMMA call_body)+
         -> ^(EXPR ^(ITEM IDENT["and"]) LPAREN call_body+)
     | call_body
     ;
+
+or_body_seq
+    : (expr_body COMMA expr_body) =>
+       expr_body (COMMA expr_body)+
+        -> ^(EXPR ^(ITEM IDENT["or"]) LPAREN expr_body+)
+    | expr_body
+    ;
+
 cond_msg
     : COMMA! LBRACK! number^ RBRACK! QUOTED_STR
     | COMMA QUOTED_STR -> ^(NUMBER["1"] QUOTED_STR)

@@ -82,8 +82,8 @@ optcall returns [OptCall r]
     ;
 parcall returns [ParCall r]
     : {input.LT(2).getText().equalsIgnoreCase("ParCall")}?
-        '(' IDENT tags child=comp ')'
-        { $r=new ParCall($tags.r, $child.r); }
+        '(' IDENT expr child=comp ')'
+        { $r=new ParCall($expr.r, $child.r); }
     ;
 seqcall returns [SeqCall r]
     : apply { $r=$apply.r; }
@@ -162,10 +162,6 @@ seq returns [Seq r]
 matchers returns [List<Matcher> r]
     : string_list
         { $r = OptCall.parseFormations($string_list.r); }
-    ;
-tags returns [Set<Tag> r]
-    : string_list
-        { $r = ParCall.parseTags($string_list.r); }
     ;
 
 fragment

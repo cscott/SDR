@@ -16,12 +16,7 @@ public abstract class ExprList {
     private final static Map<String, ExprFunc<Fraction>> exprMathFuncs =
         new LinkedHashMap<String,ExprFunc<Fraction>>();
 
-    // XXX move all evaluation to net.cscott.sdr.calls.ExprFunc
-    //     static method evaluate() there.  The ast just represents the
-    //     computation, it doesn't perform it.
-    // XXX provide implementation that looks up 'atom' in ExprList,
-    // MatcherList, depending on the type requested.  This will be the
-    // 'name spacing' mechanism: different namespace per result type.
+    /** This method evaluates {@link Expr} nodes. */
     public static <T> T evaluate(String atom, Class<T> type,
                                  DanceState ds, List<Expr> args)
         throws EvaluationException {
@@ -38,18 +33,21 @@ public abstract class ExprList {
         if (type.isAssignableFrom(Fraction.class) &&
             exprMathFuncs.containsKey(atomP))
             return (ExprFunc<? extends T>) exprMathFuncs.get(atomP);
-        if (type.isAssignableFrom(Boolean.class) &&
-            PredicateList.predicates.containsKey(atomP))
-            return (ExprFunc<? extends T>) (ExprFunc<Boolean>)
-                PredicateList.predicates.get(atomP);
-        if (type.isAssignableFrom(Evaluator.class)) {
+        if (type.isAssignableFrom(Boolean.class))
+            try {
+                return (ExprFunc<? extends T>) (ExprFunc<Boolean>)
+                    PredicateList.valueOf(atom);
+            } catch (IllegalArgumentException iae) { /* fall through */ }
+        if (type.isAssignableFrom(Evaluator.class))
             try {
                 return (ExprFunc<? extends T>) (ExprFunc<Evaluator>)
                     CallDB.INSTANCE.lookup(atom);
-            } catch (IllegalArgumentException iae) {
-                // fall through
-            }
-        }
+            } catch (IllegalArgumentException iae) { /* fall through */ }
+        if (type.isAssignableFrom(Selector.class))
+            try {
+                return (ExprFunc<? extends T>) (ExprFunc<Selector>)
+                    SelectorList.valueOf(atom);
+            } catch (IllegalArgumentException iae) { /* fall through */ }
         throw new EvaluationException("Couldn't find function "+atom);
     }
     public static final ExprFunc<Object> LITERAL = new ExprFunc<Object>() {
@@ -84,6 +82,9 @@ public abstract class ExprList {
                     (this.<String>_evaluate(String.class, ds, args));
             if (type.isAssignableFrom(Evaluator.class))
                 // allow 'trade' to be an abbreviation of 'trade()'
+                return (T) args.get(0).evaluate(type, ds);
+            if (type.isAssignableFrom(Selector.class))
+                // allow 'beau' to be an abbreviation of 'beau()'
                 return (T) args.get(0).evaluate(type, ds);
             throw new EvaluationException("Can't evaluate LITERAL as "+type);
         }

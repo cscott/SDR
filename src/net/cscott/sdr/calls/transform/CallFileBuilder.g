@@ -243,8 +243,8 @@ par returns [B<Par> p]
     ;
 
 one_par returns [B<ParCall> pc]
-    : ^(SELECT sl=simple_ref_body p=pieces)
-    { $pc = mkParCall(sl, p); }
+    : ^(SELECT eb=expr_body p=pieces)
+    { $pc = mkParCall(eb, p); }
     ;
 // restrictions/timing
 res returns [B<? extends Comp> c]

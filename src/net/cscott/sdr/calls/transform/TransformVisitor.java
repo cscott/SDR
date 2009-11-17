@@ -27,7 +27,7 @@ public abstract class TransformVisitor<T> {
     }
     public Comp visit(If iff, T t) {
         return iff.build(iff.condition.accept(this,t),
-                    iff.child.accept(this,t));
+                         iff.child.accept(this,t));
     }
     public Comp visit(In in, T t) {
         return in.build(in.count, in.child.accept(this, t));
@@ -68,7 +68,7 @@ public abstract class TransformVisitor<T> {
         return p.build(l);
     }
     public ParCall visit(ParCall pc, T t) {
-        return pc.build(pc.tags, pc.child.accept(this, t));
+        return pc.build(pc.selector.accept(this, t), pc.child.accept(this, t));
     }
     public SeqCall visit(Part p, T t) {
         return p.build(p.isDivisible, p.child.accept(this, t));

@@ -105,7 +105,7 @@ public class RemoveIn extends TransformVisitor<Fraction> {
     public Par visit(Par p, Fraction f) {
         List<ParCall> l=new ArrayList<ParCall>();
         for (ParCall pc : p.children)
-            l.add(new ParCall(pc.tags, new In(f, pc.child)));
+            l.add(new ParCall(pc.selector, new In(f, pc.child)));
         return p.build(l);
     }
     // don't recurse down Opt, so we don't do more work than we need to on

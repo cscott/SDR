@@ -11,8 +11,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.junit.runner.RunWith;
-
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Breather;
@@ -23,13 +21,12 @@ import net.cscott.sdr.calls.DancerPath;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationList;
 import net.cscott.sdr.calls.FormationMatch;
+import net.cscott.sdr.calls.Matcher;
 import net.cscott.sdr.calls.NoMatchException;
 import net.cscott.sdr.calls.Position;
-import net.cscott.sdr.calls.Matcher;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
-import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.AstNode;
 import net.cscott.sdr.calls.ast.Comp;
@@ -46,6 +43,8 @@ import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.ListUtils;
+
+import org.junit.runner.RunWith;
 
 /**
  * An {@link Evaluator} represents a current dance context.
@@ -378,12 +377,10 @@ public abstract class Evaluator {
                 // we're going to want to ensure that every dancer matches
                 // some tag.
                 Set<Dancer> unmatched = new LinkedHashSet<Dancer>(f.dancers());
-                Set<Tag> allTags = new LinkedHashSet<Tag>();
                 PartsCombineEvaluator pce = new PartsCombineEvaluator();
                 for (ParCall pc : p.children) {
-                    allTags.addAll(pc.tags);
                     // find the dancers matched, adjusting unmatched set
-                    Set<Dancer> matched = tf.tagged(pc.tags);
+                    Set<Dancer> matched = pc.evaluate(ds).select(tf);
                     matched.retainAll(unmatched);
                     unmatched.removeAll(matched);
                     // create a "do your part" evaluator.
@@ -392,9 +389,7 @@ public abstract class Evaluator {
                 }
                 // all dancers must match a part.
                 if (!unmatched.isEmpty())
-                    throw new BadCallException
-                        ("Some dancers are not " +
-                         ListUtils.join(allTags, ", ", " or "));
+                    throw new BadCallException("Some dancers are not matched");
                 // ok, now do one step of the evaluation.
                 return pce.evaluate(ds);
             }

@@ -1,24 +1,19 @@
 package net.cscott.sdr.calls;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
 import static java.util.Arrays.asList;
 
-import java.util.Collections;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.runner.RunWith;
-
 import net.cscott.jdoctest.JDoctestRunner;
-import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Expr;
-import net.cscott.sdr.calls.ast.ParCall;
 import net.cscott.sdr.util.Fraction;
+
+import org.junit.runner.RunWith;
 
 /** This class contains all the predicates known to the system. */
 @RunWith(value=JDoctestRunner.class)
@@ -30,7 +25,7 @@ public abstract class PredicateList {
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr true)');
      *  (Expr true)
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  true
      */
     public final static Predicate TRUE = new _Predicate("true") {
@@ -46,7 +41,7 @@ public abstract class PredicateList {
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr false)');
      *  (Expr false)
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  false
      */
     public final static Predicate FALSE = new _Predicate("false") {
@@ -63,11 +58,11 @@ public abstract class PredicateList {
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr not (Expr false))');
      *  (Expr not (Expr false))
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  true
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr not (Expr true))');
      *  (Expr not (Expr true))
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  false
      */
     public final static Predicate NOT = new _Predicate("not") {
@@ -85,11 +80,11 @@ public abstract class PredicateList {
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr equal \'"1 1/2" \'1 1/2)');
      *  (Expr equal '1 1/2 '1 1/2)
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  true
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr equal \'"1 1/2" \'2)');
      *  (Expr equal '1 1/2 '2)
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  false
      */
     public final static Predicate EQUAL = new _Predicate("equal") {
@@ -107,11 +102,11 @@ public abstract class PredicateList {
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr greater \'"1 1/2" \'"1 1/2")');
      *  (Expr greater '1 1/2 '1 1/2)
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  false
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr greater '2 '1 1/2)");
      *  (Expr greater '2 '1 1/2)
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  true
      */
     public final static Predicate GREATER = new _Predicate("greater") {
@@ -130,16 +125,16 @@ public abstract class PredicateList {
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr and (Expr true) (Expr true) (Expr false))');
      *  (Expr and (Expr true) (Expr true) (Expr false))
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  false
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr and (Expr true) (Expr true) (Expr true))');
      *  (Expr and (Expr true) (Expr true) (Expr true))
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  true
      *  js> // short-circuits
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr and (Expr false) (Expr bogus))');
      *  (Expr and (Expr false) (Expr bogus))
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  false
      */
     public final static Predicate AND = new _Predicate("and") {
@@ -160,16 +155,16 @@ public abstract class PredicateList {
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr or (Expr false) (Expr false) (Expr false))');
      *  (Expr or (Expr false) (Expr false) (Expr false))
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  false
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr or (Expr false) (Expr false) (Expr true))');
      *  (Expr or (Expr false) (Expr false) (Expr true))
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  true
      *  js> // short-circuits
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr or (Expr true) (Expr bogus))');
      *  (Expr or (Expr true) (Expr bogus))
-     *  js> PredicateList.predicates.get(c.atom).evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  true
      */
     public final static Predicate OR = new _Predicate("or") {
@@ -191,11 +186,11 @@ public abstract class PredicateList {
      *  js> ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET); undefined;
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr PROGRAM AT LEAST 'BASIC)");
      *  (Expr PROGRAM AT LEAST 'BASIC)
-     *  js> PredicateList.PROGRAM_AT_LEAST.evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  true
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr PROGRAM AT LEAST 'A2)");
      *  (Expr PROGRAM AT LEAST 'A2)
-     *  js> PredicateList.PROGRAM_AT_LEAST.evaluate(ds, c.args)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  false
      */
     public final static Predicate PROGRAM_AT_LEAST = new _Predicate("program at least") {
@@ -223,7 +218,7 @@ public abstract class PredicateList {
      *  js> function test(sel, pat) {
      *    >   let c = net.cscott.sdr.calls.ast.AstNode.valueOf(
      *    >           "(Expr SELECTION PATTERN '"+sel+" '"+pat+")");
-     *    >    return PredicateList.SELECTION_PATTERN.evaluate(ds, c.args);
+     *    >    return PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *    > }
      *  js> test('BOY', '____')
      *  false
@@ -245,21 +240,19 @@ public abstract class PredicateList {
     public final static Predicate SELECTION_PATTERN = new _Predicate("selection pattern") {
         @Override
         public boolean evaluate(DanceState ds, List<Expr> args) throws EvaluationException {
-            List<String> sArgs = new ArrayList<String>(args.size());
-            for (int i=0; i<args.size()-1; i++)
-                // XXX: should parse as Tag.class
-                sArgs.add(args.get(i).evaluate(String.class, ds));
-            Set<Tag> tags = ParCall.parseTags(sArgs);
+            assert args.size()==2;
+            Selector selector = args.get(0).evaluate(Selector.class, ds);
 
             TaggedFormation tf = TaggedFormation.coerce(ds.currentFormation());
-            String pattern = args.get(args.size()-1).evaluate(String.class, ds);
+            Set<Dancer> selected = selector.select(tf);
+            String pattern = args.get(1).evaluate(String.class, ds);
             if (pattern.length() != tf.dancers().size())
                 return false;
             // check each dancer against the corresponding character in the
             // pattern.
             int i=0;
             for (Dancer d : tf.sortedDancers()) {
-                boolean t1 = tf.isTagged(d, tags);
+                boolean t1 = selected.contains(d);
                 boolean t2 = pattern.charAt(i++) != '_';
                 if (t1!=t2) return false;
             }
@@ -289,7 +282,7 @@ public abstract class PredicateList {
      *  js> function test(sel) {
      *    >   let c = net.cscott.sdr.calls.ast.AstNode.valueOf(
      *    >           "(Expr TBONED '"+sel+")");
-     *    >    return PredicateList.TBONED.evaluate(ds, c.args);
+     *    >    return PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *    > }
      *  js> test('BOY')
      *  false
@@ -305,17 +298,15 @@ public abstract class PredicateList {
     public final static Predicate TBONED = new _Predicate("tboned") {
         @Override
         public boolean evaluate(DanceState ds, List<Expr> args) throws EvaluationException {
-            List<String> sArgs = new ArrayList<String>(args.size());
-            for (Expr e : args)
-                // XXX should eval as Tag.class
-                sArgs.add(e.evaluate(String.class, ds));
-            Set<Tag> tags = ParCall.parseTags(sArgs);
+            Selector selector =
+                SelectorList.OR.evaluate(Selector.class, ds, args);
             // ok, look at rotation directions for the selected dancers.
             Rotation r = null;
             // each selected dancer must have all of these tags
             TaggedFormation tf = TaggedFormation.coerce(ds.currentFormation());
+            Set<Dancer> selected = selector.select(tf);
             for (Dancer d: tf.selectedDancers()) {
-                if (!tf.isTagged(d, tags))
+                if (!selected.contains(d))
                     continue;
                 if (r==null) {
                     r = tf.location(d).facing;
@@ -333,18 +324,12 @@ public abstract class PredicateList {
         @Override
         public boolean evaluate(DanceState ds, List<Expr> args) throws EvaluationException {
             assert args.size()==2;
-            // XXX should parse as Set<Tag> -- PersonSelector?
-            String left = args.get(0).evaluate(String.class, ds);
-            String right = args.get(1).evaluate(String.class, ds);
-
-            Set<Tag> leftTags = ParCall.parseTags
-                (Arrays.asList(left.split(",\\s*")));
-            Set<Tag> rightTags = ParCall.parseTags
-                (Arrays.asList(right.split(",\\s*")));
+            Selector left = args.get(0).evaluate(Selector.class, ds);
+            Selector right = args.get(1).evaluate(Selector.class, ds);
 
             TaggedFormation tf = TaggedFormation.coerce(ds.currentFormation());
-            Set<Dancer> leftDancers = tf.tagged(leftTags);
-            Set<Dancer> rightDancers = tf.tagged(rightTags);
+            Set<Dancer> leftDancers = left.select(tf);
+            Set<Dancer> rightDancers = right.select(tf);
 
             return rightDancers.containsAll(leftDancers);
         }
@@ -382,6 +367,18 @@ public abstract class PredicateList {
         }
     };
 
+    /** Return the {@link Predicate} function with the given (case-insensitive)
+     *  name.
+     * @throws IllegalArgumentException if no predicate with the given name is
+     *         found.
+     */
+    public static Predicate valueOf(String s) {
+        String ss = normalize(s);
+        if (!predicateList.containsKey(ss))
+            throw new IllegalArgumentException("No such predicate: "+s);
+        return predicateList.get(ss);
+    }
+
     // helper class ////////////////////////////////////
     private static abstract class _Predicate extends Predicate {
         private final String name;
@@ -390,21 +387,26 @@ public abstract class PredicateList {
     }
 
     /** List of all the {@link Predicate}s defined here. */
-    public final static Map<String, Predicate> predicates;
+    private final static Map<String, Predicate> predicateList =
+        new LinkedHashMap<String, Predicate>();
     static {
-        Map<String,Predicate> _p = new LinkedHashMap<String,Predicate>();
         for (Field f : PredicateList.class.getDeclaredFields()) {
             if (f.getName().equals(f.getName().toUpperCase()) &&
                 Predicate.class.isAssignableFrom(f.getType()) &&
                 Modifier.isStatic(f.getModifiers())) {
                 try {
-                    Predicate p = (Predicate) f.get(null);
-                    _p.put(p.getName().replace(' ', '_'), p);
+                    addToList((Predicate) f.get(null));
                 } catch (Throwable t) {
                     assert false : "unreachable";
                 }
             }
         }
-        predicates = Collections.unmodifiableMap(_p);
+    }
+    private static String normalize(String s) {
+        return s.toLowerCase().replace('_', ' ').intern();
+    }
+    private static void addToList(Predicate s) {
+        assert normalize(s.getName()).equals(s.getName());
+        predicateList.put(s.getName(), s);
     }
 }
