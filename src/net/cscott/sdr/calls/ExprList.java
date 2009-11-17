@@ -11,8 +11,9 @@ import net.cscott.sdr.util.Fraction;
 
 public abstract class ExprList {
     /** Map of all the {@link ExprFunc}s defined here. */
-    private final static Map<String, ExprFunc<Object>> exprGenericFuncs =
-        new LinkedHashMap<String,ExprFunc<Object>>();
+    @SuppressWarnings("unchecked")
+    private final static Map<String, ExprFunc> exprGenericFuncs =
+        new LinkedHashMap<String,ExprFunc>();
     private final static Map<String, ExprFunc<Fraction>> exprMathFuncs =
         new LinkedHashMap<String,ExprFunc<Fraction>>();
 
@@ -50,48 +51,44 @@ public abstract class ExprList {
             } catch (IllegalArgumentException iae) { /* fall through */ }
         throw new EvaluationException("Couldn't find function "+atom);
     }
-    public static final ExprFunc<Object> LITERAL = new ExprFunc<Object>() {
+    @SuppressWarnings("unchecked")
+    public static final ExprFunc LITERAL = new ExprFunc() {
         @Override
         public String getName() { return "literal"; }
-        @SuppressWarnings("unchecked") // polymorphic function
-        public <T> T _evaluate(Class<? super T> type,
-                               DanceState ds, List<Expr> args)
+        @Override
+        public Object evaluate(Class type, DanceState ds, List _args)
             throws EvaluationException {
+            List<Expr> args = (List<Expr>) _args;
             if (type.isAssignableFrom(Expr.class))
-                return (T) args.get(0);
+                return args.get(0);
             if (args.size() != 1)
                 throw new EvaluationException("Missing argument to LITERAL");
             if (type.isAssignableFrom(String.class))
-                return (T) this.<Expr>_evaluate(Expr.class, ds, args).atom;
+                return args.get(0).atom;
             if (type.isAssignableFrom(Fraction.class))
-                return (T) Fraction.valueOf
-                    (this.<String>_evaluate(String.class, ds, args));
+                return Fraction.valueOf
+                    ((String)evaluate(String.class, ds, args));
             if (type.isAssignableFrom(Boolean.class)) {
-                String name = _evaluate(String.class, ds, args);
+                String name = (String) evaluate(String.class, ds, args);
                 if (name.equalsIgnoreCase("true"))
-                    return (T) Boolean.TRUE;
+                    return Boolean.TRUE;
                 if (name.equalsIgnoreCase("false"))
-                    return (T) Boolean.FALSE;
+                    return Boolean.FALSE;
             }
             if (type.isAssignableFrom(Matcher.class))
                 // XXX try to get matcher, otherwise make from formation.
-                return (T) Matcher.valueOf
-                    (this.<String>_evaluate(String.class, ds, args));
+                return Matcher.valueOf
+                    ((String)evaluate(String.class, ds, args));
             if (type.isAssignableFrom(NamedTaggedFormation.class))
-                return (T) FormationList.valueOf
-                    (this.<String>_evaluate(String.class, ds, args));
+                return FormationList.valueOf
+                    ((String)evaluate(String.class, ds, args));
             if (type.isAssignableFrom(Evaluator.class))
                 // allow 'trade' to be an abbreviation of 'trade()'
-                return (T) args.get(0).evaluate(type, ds);
+                return args.get(0).evaluate(type, ds);
             if (type.isAssignableFrom(Selector.class))
                 // allow 'beau' to be an abbreviation of 'beau()'
-                return (T) args.get(0).evaluate(type, ds);
+                return args.get(0).evaluate(type, ds);
             throw new EvaluationException("Can't evaluate LITERAL as "+type);
-        }
-        @Override
-        public Object evaluate(Class<? super Object> type, DanceState ds,
-                List<Expr> args) throws EvaluationException {
-            return _evaluate(type, ds, args);
         }
     };
     static { exprGenericFuncs.put(LITERAL.getName(), LITERAL); }
