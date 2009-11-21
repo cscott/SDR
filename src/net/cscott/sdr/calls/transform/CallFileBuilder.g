@@ -203,8 +203,8 @@ opt returns [B<Opt> o]
     { $o = mkOpt(l); }
     ;
 one_opt returns [B<OptCall> oc]
-    : ^(FROM f=simple_body co=pieces)
-    { $oc = mkOptCall(OptCall.parseFormations(f), co); }
+    : ^(FROM eb=expr_body co=pieces)
+    { $oc = mkOptCall(eb, co); }
     ;
 seq returns [B<Seq> s]
 @init { List<B<? extends SeqCall>> l = new ArrayList<B<? extends SeqCall>>(); }
@@ -265,11 +265,6 @@ simple_word returns [String r]
     | n=number { $r = n.toProperString(); }
     ;
 
-simple_body returns [List<String> l]
-@init { $l = new ArrayList<String>(); }
-    : ^(BODY (s=simple_words {$l.add(s);} )+)
-    ;
-
 words_or_ref returns [B<String> b]
     : s=simple_words
     { $b = mkConstant(s); }
@@ -286,11 +281,6 @@ words_or_ref returns [B<String> b]
         }
       };
     }
-    ;
-
-simple_ref_body returns [List<B<String>> l]
-@init { $l = new ArrayList<B<String>>(); }
-    : ^(BODY (s=words_or_ref {$l.add(s);} )+)
     ;
 
 call_body returns [B<Apply> ast]

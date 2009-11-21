@@ -91,7 +91,10 @@ public abstract class A1List {
                     return GeneralFormationMatcher.doMatch
                         (f, solidFormation, (match == SolidMatch.SOME),
                          false /* no phantoms */);
-                }}, type);
+                }
+                @Override
+                public String getName() { return solidFormation.getName(); }
+            }, type);
         }
         public SolidEvaluator(Expr subCall, String formationName,
                               Matcher solidMatcher, SolidType type) {

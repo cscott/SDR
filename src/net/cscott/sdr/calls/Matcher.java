@@ -1,5 +1,9 @@
 package net.cscott.sdr.calls;
 
+import java.util.List;
+
+import net.cscott.sdr.calls.ast.Expr;
+
 
 /** A {@link Matcher} takes a formation and pulls out all instances of
  *  a sub-formation.  For example, given facing lines, the
@@ -10,7 +14,7 @@ package net.cscott.sdr.calls;
  *  numbered in a standard left-to-right top-to-bottom order using
  *  {@link Formation#sortedDancers()}.
  */
-public abstract class Matcher {
+public abstract class Matcher extends ExprFunc<FormationMatch> {
     /** Match sub-formations from a formation using this.  (The
      *  subformation may be as large as the original formation -- or even
      *  larger, if phantoms are generated; it may also be as small as a
@@ -18,6 +22,17 @@ public abstract class Matcher {
      *  the current dancer configuration, throws NoMatchException. */
     public abstract FormationMatch match(Formation f)
         throws NoMatchException;
+
+    /** Implement the {@link ExprFunc} contract. */
+    @Override
+    public final FormationMatch evaluate(Class<? super FormationMatch> type,
+                                         DanceState ds, List<Expr> args)
+            throws net.cscott.sdr.calls.ExprFunc.EvaluationException {
+        assert args.size()==0;
+        return match(ds.currentFormation());
+    }
+    @Override
+    public String toString() { return getName(); }
 
     /** @throws IllegalArgumentException if the matcher is unknown. */
     public static Matcher valueOf(String s) {

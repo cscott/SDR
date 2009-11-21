@@ -340,11 +340,27 @@ public abstract class Evaluator {
             public Evaluator visit(OptCall oc, DanceState ds) {
                 // Match from the breathed version of the formation.
                 Formation f = Breather.breathe(ds.currentFormation());
-                List<String> reasons = new ArrayList<String>(oc.matchers.size());
-                for (Matcher s: oc.matchers) {
+                List<String> reasons = new ArrayList<String>();
+                // XXX bit of a hack here: we don't want BadCallExceptions to
+                // bail out of the entire top-level OR.  Eventually we'll want
+                // to introduce some other sort of combiner for this.
+                List<Expr> matchers;
+                if (oc.matcher.atom=="or")
+                    matchers = oc.matcher.args;
+                else
+                    matchers = Collections.singletonList(oc.matcher);
+                for (Expr e: matchers) {
+                    Matcher m;
                     FormationMatch fm;
                     try {
-                        fm = ds.tagDesignated(s.match(f));
+                        m = e.evaluate(Matcher.class, ds);
+                    } catch (EvaluationException ee) {
+                        assert false : "error in definition";
+                        reasons.add(e.toShortString()+" ("+ee.getMessage()+")");
+                        continue;
+                    }
+                    try {
+                        fm = ds.tagDesignated(m.match(f));
                     } catch (NoMatchException nme) {
                         /* ignore; try the next matcher */
                         reasons.add(nme.target+" ("+nme.reason+")");
@@ -354,13 +370,13 @@ public abstract class Evaluator {
                     try {
                         return new MetaEvaluator(fm, oc.child).evaluate(ds);
                     } catch (BadCallException bce) {
-                        reasons.add(s.toString()+" ("+bce.getMessage()+")");
+                        reasons.add(m.toString()+" ("+bce.getMessage()+")");
                         /* continue with the next matcher */
                     }
                 }
                 /* Hmm, none of the matchers matched. */
-		// this exception should only be seen internally
-                throw new NoMatchException(oc.matchers.toString(),
+                // this exception should only be seen internally
+                throw new NoMatchException(oc.matcher.toShortString(),
                                            ListUtils.join(reasons, ", "));
             }
             /**

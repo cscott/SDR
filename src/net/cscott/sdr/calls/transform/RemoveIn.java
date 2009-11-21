@@ -24,9 +24,9 @@ import org.junit.runner.RunWith;
  *  js> a = new Apply(new Expr("_fractional", Expr.literal("1/2"), Expr.literal("dosado")))
  *  (Apply (Expr _fractional '1/2 'dosado))
  *  js> def = a.evaluator(ds).simpleExpansion()
- *  (In 3 (Opt (From [FACING DANCERS] (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))
+ *  (In 3 (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))
  *  js> def = RemoveIn.removeIn(ds, def)
- *  (Opt (From [FACING DANCERS] (In 3 (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))
+ *  (Opt (From 'FACING DANCERS (In 3 (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))
  *  js> def = RemoveIn.removeIn(ds, def.children.get(0).child)
  *  (Seq (Prim -1, 1, none, 1 1/2, SASHAY_START) (Prim 1, 1, none, 1 1/2, SASHAY_FINISH))
  * @doc.test Proper handling of Part:
@@ -114,7 +114,7 @@ public class RemoveIn extends TransformVisitor<Fraction> {
     public Opt visit(Opt o, Fraction f) {
         List<OptCall> l=new ArrayList<OptCall>();
         for (OptCall oc : o.children)
-            l.add(new OptCall(oc.matchers, new In(f, oc.child)));
+            l.add(new OptCall(oc.matcher, new In(f, oc.child)));
         return o.build(l);
     }
     // f is target # of beats

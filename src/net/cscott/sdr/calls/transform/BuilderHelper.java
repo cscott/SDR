@@ -7,10 +7,21 @@ import java.util.Set;
 
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
-import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ExactRotation;
-import net.cscott.sdr.calls.Matcher;
-import net.cscott.sdr.calls.ast.*;
+import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.ast.Comp;
+import net.cscott.sdr.calls.ast.Expr;
+import net.cscott.sdr.calls.ast.If;
+import net.cscott.sdr.calls.ast.In;
+import net.cscott.sdr.calls.ast.Opt;
+import net.cscott.sdr.calls.ast.OptCall;
+import net.cscott.sdr.calls.ast.Par;
+import net.cscott.sdr.calls.ast.ParCall;
+import net.cscott.sdr.calls.ast.Part;
+import net.cscott.sdr.calls.ast.Prim;
+import net.cscott.sdr.calls.ast.Seq;
+import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.calls.ast.Prim.Direction;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.util.Fraction;
@@ -112,10 +123,10 @@ abstract class BuilderHelper {
             }
         }, isConstant(children));
     }
-    static B<OptCall> mkOptCall(final List<Matcher> matchers, final B<? extends Comp> child) {
+    static B<OptCall> mkOptCall(final B<Expr> matcher, final B<? extends Comp> child) {
         return optimize(new B<OptCall>() {
             public OptCall build(List<Expr> fargs) {
-                return new OptCall(matchers, child.build(fargs));
+                return new OptCall(matcher.build(fargs), child.build(fargs));
             }
         }, child.isConstant());
     }

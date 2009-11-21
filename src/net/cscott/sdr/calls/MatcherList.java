@@ -4,22 +4,24 @@ import static net.cscott.sdr.util.Tools.m;
 import static net.cscott.sdr.util.Tools.p;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.runner.RunWith;
-
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
+import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.ListUtils;
 import net.cscott.sdr.util.Tools;
+
+import org.junit.runner.RunWith;
 
 /**
  * The {@link MatcherList} contains matchers for various formations.
@@ -124,14 +126,14 @@ public abstract class MatcherList {
 	    return new FormationMatch(meta, m(p(metaDancer, tf)),
 				      Collections.<Dancer>emptySet());
         }
-        public String toString() { return "ANY"; }
+        public String getName() { return "ANY"; }
     };
     // 0-person matchers
     public static final Matcher NONE = new Matcher() {
         public FormationMatch match(Formation f) throws NoMatchException {
             throw new NoMatchException("NONE", "NONE matcher used");
         }
-        public String toString() { return "NONE"; }
+        public String getName() { return "NONE"; }
     };
     // 1-person matchers
     public static final Matcher SINGLE_DANCER =
@@ -219,9 +221,13 @@ public abstract class MatcherList {
     public static final Matcher LH_FACING_DIAMOND =
         GeneralFormationMatcher.makeMatcher(FormationList.LH_FACING_DIAMOND);
     public static final Matcher FACING_DIAMOND =
-        OR("FACING DIAMONDS", RH_FACING_DIAMOND, LH_FACING_DIAMOND);
+        OR("FACING DIAMOND", RH_FACING_DIAMOND, LH_FACING_DIAMOND);
+    public static final Matcher MIXED_FACING_DIAMOND =
+        mixed("MIXED FACING DIAMOND", FormationList.RH_FACING_DIAMOND, FormationList.LH_FACING_DIAMOND);
     public static final Matcher DIAMOND =
         OR("DIAMOND", RH_DIAMOND, LH_DIAMOND, RH_FACING_DIAMOND, LH_FACING_DIAMOND);
+    public static final Matcher MIXED_DIAMOND =
+        mixed("MIXED DIAMOND", FormationList.RH_DIAMOND, FormationList.LH_DIAMOND, FormationList.RH_FACING_DIAMOND, FormationList.LH_FACING_DIAMOND);
     public static final Matcher RH_STAR =
         GeneralFormationMatcher.makeMatcher(FormationList.RH_STAR);
     public static final Matcher LH_STAR =
@@ -524,7 +530,7 @@ public abstract class MatcherList {
                  Tools.m(Tools.p(meta.dancers().iterator().next(), tf)),
                  Collections.<Dancer>emptySet());
         }
-        public String toString() {
+        public String getName() {
             if (half) return "CENTER HALF";
             return "CENTER("+howMany+")";
         }
@@ -535,7 +541,7 @@ public abstract class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.COUPLE,
                                              FormationList.TANDEM);
 
-    // matcher combinator
+    // matcher combinators
     /**
      * The {@link #OR} function creates a Matcher which matches any one of
      * the given alternatives.
@@ -560,7 +566,11 @@ public abstract class MatcherList {
      *       <
      *   [ph: POINT; ph: BEAU,CENTER; ph: BEAU,CENTER; ph: POINT]
      */
-    public static Matcher OR(final String name, final Matcher... alternatives) {
+    public static Matcher OR(String name, Matcher... alternatives) {
+        return OR(name, Arrays.asList(alternatives));
+    }
+    public static Matcher OR(final String name,
+                             final List<Matcher> alternatives) {
         return new Matcher() {
             @Override
             public FormationMatch match(Formation f) throws NoMatchException {
@@ -577,20 +587,88 @@ public abstract class MatcherList {
                 throw new NoMatchException(name, ListUtils.join(reasons, ", "));
             }
             @Override
-            public String toString() { return name; }
-            @SuppressWarnings("unused")
-            public String repr() {
-                StringBuilder sb = new StringBuilder("OR(");
-                for (int i=0; i<alternatives.length; i++) {
-                    sb.append(alternatives[i].toString());
-                    if (i+1 < alternatives.length) sb.append(',');
-                }
-                sb.append(')');
-                return sb.toString();
-            }
+            public String getName() { return name; }
         };
     }
-
+    public static Matcher mixed(String name, TaggedFormation... goals) {
+        return GeneralFormationMatcher.makeMatcher(name, Arrays.asList(goals));
+    }
+    public static ExprFunc<Matcher> _MIXED = new ExprFunc<Matcher>() {
+        @Override
+        public String getName() { return "mixed"; }
+        @Override
+        public Matcher evaluate(Class<? super Matcher> type,
+                                DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            // parse the argument list as formations
+            assert args.size() > 0;
+            List<TaggedFormation> goals = new ArrayList<TaggedFormation>();
+            for (Expr e : args)
+                goals.add(e.evaluate(TaggedFormation.class, ds));
+            // XXX if args are constant, cache Matcher
+            return GeneralFormationMatcher.makeMatcher
+                (goals.toArray(new TaggedFormation[goals.size()]));
+        }
+        @Override
+        public boolean isConstant(Class<? super Matcher> type, List<Expr> args){
+            for (Expr e : args)
+                if (!e.isConstant(TaggedFormation.class))
+                    return false;
+            return true;
+        }
+    };
+    public static ExprFunc<Matcher> _OR = new ExprFunc<Matcher>(){
+        @Override
+        public String getName() { return "or"; }
+        @Override
+        public Matcher evaluate(Class<? super Matcher> type,
+                                DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            List<Matcher> ml = new ArrayList<Matcher>(args.size());
+            for (Expr alternative : args)
+                ml.add(alternative.evaluate(Matcher.class, ds));
+            String name = new Expr(getName(), args).toShortString();
+            return OR(name, ml);
+        }
+        @Override
+        public boolean isConstant(Class<? super Matcher> type, List<Expr> args){
+            for (Expr e : args)
+                if (!e.isConstant(Matcher.class))
+                    return false;
+            return true;
+        }
+    };
+    public static ExprFunc<Matcher> _CENTER =
+        new ExprFunc<Matcher>() {
+        @Override
+        public String getName() { return "center"; }
+        @Override
+        public Matcher evaluate(Class<? super Matcher> type,
+                                DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            assert args.size()==1;
+            Fraction n = args.get(0).evaluate(Fraction.class, ds);
+            if (n.getDenominator()!=1 || n.compareTo(Fraction.ZERO) <= 0)
+                throw new EvaluationException
+                     ("Can't match "+n.toProperString()+" dancers");
+            return new CenterMatcher(n.intValue());
+        }
+        @Override
+        public boolean isConstant(Class<? super Matcher> type, List<Expr> args){
+            assert args.size()==1;
+            return args.get(0).isConstant(type);
+        }
+    };
+    public static ExprFunc<Matcher> valueOf(String s) {
+        s = s.toLowerCase().intern();
+        if (s == "mixed")
+            return _MIXED;
+        if (s == "or")
+            return _OR;
+        if (s == "center")
+            return _CENTER;
+        throw new IllegalArgumentException("No such Matcher function");
+    }
     // unimplemented matchers
     /** Stub for not-yet-implemented {@link Matcher}s. */
     private static final Matcher _STUB_ = new Matcher() {
@@ -599,7 +677,7 @@ public abstract class MatcherList {
             throw new NoMatchException(f.toString(), "Unimplemented");
         }
         @Override
-        public String toString() { return "*STUB*"; }
+        public String getName() { return "*STUB*"; }
     };
     public static final Matcher LH_3_AND_1 = _STUB_;
     public static final Matcher LH_SPLIT_3_AND_1 = _STUB_;
@@ -607,6 +685,8 @@ public abstract class MatcherList {
     public static final Matcher RH_SPLIT_3_AND_1 = _STUB_;
     public static final Matcher PARALLEL_GENERAL_LINES =
 	// XXX: 3-and-1 lines, t-bones of various kinds
+        // xxx: match against ||||
+        //                    |||| ?
         OR("PARALLEL GENERAL LINES", FACING_LINES, LINES_FACING_OUT, PARALLEL_WAVES,
 	   PARALLEL_TWO_FACED_LINES, INVERTED_LINES);
     public static final Matcher GENERAL_COLUMNS =

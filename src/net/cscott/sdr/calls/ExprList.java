@@ -58,6 +58,8 @@ public abstract class ExprList {
                 return (ExprFunc<? extends T>) (ExprFunc<Selector>)
                     SelectorList.valueOf(atom);
             } catch (IllegalArgumentException iae) { /* fall through */ }
+        if (type.isAssignableFrom(Matcher.class))
+            return (ExprFunc<? extends T>) MatcherList.valueOf(atom);
         throw new EvaluationException("Couldn't find function "+atom);
     }
     @SuppressWarnings("unchecked")
@@ -85,9 +87,14 @@ public abstract class ExprList {
                     return Boolean.FALSE;
             }
             if (type.isAssignableFrom(Matcher.class))
-                // XXX try to get matcher, otherwise make from formation.
-                return Matcher.valueOf
-                    ((String)evaluate(String.class, ds, args));
+                try {
+                    // try to get matcher, otherwise make from formation.
+                    return Matcher.valueOf
+                        ((String)evaluate(String.class, ds, args));
+                } catch (IllegalArgumentException iae) {
+                    return GeneralFormationMatcher.makeMatcher
+                        ((TaggedFormation)evaluate(TaggedFormation.class, ds, args));
+                }
             if (type.isAssignableFrom(NamedTaggedFormation.class))
                 return FormationList.valueOf
                     ((String)evaluate(String.class, ds, args));

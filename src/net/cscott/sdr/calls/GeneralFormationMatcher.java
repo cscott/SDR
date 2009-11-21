@@ -1,18 +1,33 @@
 package net.cscott.sdr.calls;
 
-import java.util.*;
+import static net.cscott.sdr.util.Tools.m;
+import static net.cscott.sdr.util.Tools.p;
 
-import org.junit.runner.RunWith;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jutil.BitSetFactory;
+import net.cscott.jutil.GenericMultiMap;
+import net.cscott.jutil.Indexer;
+import net.cscott.jutil.MultiMap;
+import net.cscott.jutil.PersistentSet;
+import net.cscott.jutil.SetFactory;
 import net.cscott.sdr.calls.Breather.FormationPiece;
 import net.cscott.sdr.calls.Position.Flag;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.util.Fraction;
-import static net.cscott.sdr.util.Tools.m;
-import static net.cscott.sdr.util.Tools.p;
-import net.cscott.jdoctest.JDoctestRunner;
-import net.cscott.jutil.*;
+
+import org.junit.runner.RunWith;
 
 /**
  * {@link GeneralFormationMatcher} produces a {@link FormationMatch}
@@ -26,14 +41,21 @@ import net.cscott.jutil.*;
 public class GeneralFormationMatcher {
     private GeneralFormationMatcher() {}
     // currying, oh, my
-    public static Matcher makeMatcher(final TaggedFormation... goals) {
+    public static Matcher makeMatcher(TaggedFormation... goals) {
+        return makeMatcher(Arrays.asList(goals));
+    }
+    public static Matcher makeMatcher(List<TaggedFormation> goals) {
+        String name = targetName(goals);
+        return makeMatcher(name, goals);
+    }
+    public static Matcher makeMatcher(final String name, final List<TaggedFormation> goals) {
         return new Matcher() {
+            @Override
             public FormationMatch match(Formation f) throws NoMatchException {
-                return doMatch(f, Arrays.asList(goals), false, false);
+                return doMatch(f, goals, false, false);
             }
-            public String toString() {
-                return targetName(Arrays.asList(goals));
-	    }
+            @Override
+            public String getName() { return name; }
         };
     }
 
@@ -137,12 +159,15 @@ public class GeneralFormationMatcher {
     }
     private static String targetName(List<TaggedFormation> goals) {
         StringBuilder sb = new StringBuilder();
+        assert goals.size() > 0;
         for (TaggedFormation goal : goals) {
             String name = (goal instanceof NamedTaggedFormation) ?
                     ((NamedTaggedFormation) goal).getName() : goal.toString();
-            if (sb.length()>0) sb.append('&');
+            if (sb.length()>0) sb.append(',');
             sb.append(name);
         }
+        if (goals.size()>1)
+            return "MIXED("+sb.toString()+")";
         return sb.toString();
     }
     /** sort so that first dancers' target rotations are most constrained,

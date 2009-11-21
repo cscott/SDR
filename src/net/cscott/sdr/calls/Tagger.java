@@ -75,7 +75,7 @@ public abstract class Tagger {
                 return new FormationMatch(fm.meta, nmatches, fm.unmatched);
             }
             @Override
-            public String toString() { return s.toString(); }
+            public String getName() { return s.toString(); }
         };
     }
 

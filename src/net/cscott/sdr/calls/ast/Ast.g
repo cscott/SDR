@@ -77,8 +77,8 @@ comp returns [Comp r]
     ;
 optcall returns [OptCall r]
     : {input.LT(2).getText().equalsIgnoreCase("OptCall")}?
-        '(' IDENT matchers child=comp ')'
-        { $r=new OptCall($matchers.r, $child.r); }
+        '(' IDENT expr child=comp ')'
+        { $r=new OptCall($expr.r, $child.r); }
     ;
 parcall returns [ParCall r]
     : {input.LT(2).getText().equalsIgnoreCase("ParCall")}?
@@ -157,11 +157,6 @@ seq returns [Seq r]
     : {input.LT(2).getText().equalsIgnoreCase("Seq")}?
         '(' IDENT (seqcall {sc.add($seqcall.r); })* ')'
         { $r = new Seq(sc); }
-    ;
-
-matchers returns [List<Matcher> r]
-    : string_list
-        { $r = OptCall.parseFormations($string_list.r); }
     ;
 
 fragment

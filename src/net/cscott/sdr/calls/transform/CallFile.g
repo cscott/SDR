@@ -60,11 +60,11 @@
  *  js> cp("def:foo\n in: 8\n in: 4\n call: bar")
  *  (def (ITEM foo) (in 8 (in 4 (SEQ (call (EXPR (ITEM bar)))))))
  *  js> cp("def:foo\n in: 4\n from: RH_BOX\n  call: bar\n from: LH_BOX\n  call: bat")
- *  (def (ITEM foo) (in 4 (OPT (from (simple body (ITEM RH_BOX)) (SEQ (call (EXPR (ITEM bar))))) (from (simple body (ITEM LH_BOX)) (SEQ (call (EXPR (ITEM bat))))))))
+ *  (def (ITEM foo) (in 4 (OPT (from (EXPR (ITEM RH_BOX)) (SEQ (call (EXPR (ITEM bar))))) (from (EXPR (ITEM LH_BOX)) (SEQ (call (EXPR (ITEM bat))))))))
  * @doc.test Grammar precedence: SEQs bind least tightly:
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cp("def:foo\n in: 4\n from: RH_MINIWAVE\n call: trade\n from: RH_BOX\n call: bar")
- *  (def (ITEM foo) (in 4 (OPT (from (simple body (ITEM RH_MINIWAVE)) (SEQ (call (EXPR (ITEM trade))))) (from (simple body (ITEM RH_BOX)) (SEQ (call (EXPR (ITEM bar))))))))
+ *  (def (ITEM foo) (in 4 (OPT (from (EXPR (ITEM RH_MINIWAVE)) (SEQ (call (EXPR (ITEM trade))))) (from (EXPR (ITEM RH_BOX)) (SEQ (call (EXPR (ITEM bar))))))))
  * @doc.test FROM(CONDITION..) requires indentation.
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cfp=new CallFileParser("def:foo\n in:4\n from:RH_BOX\n condition:true\n call: bar")
@@ -517,7 +517,7 @@ opt
         -> ^(OPT one_opt+)
     ;
 fragment one_opt
-    : FROM^ COLON! simple_body pieces_term //( endsin! )? //XXX see above
+    : FROM^ COLON! or_body_seq pieces_term //( endsin! )? //XXX see above
     ;
 
 seq
@@ -548,14 +548,6 @@ simple_words
     : simple_word+
         -> ^(ITEM simple_word+)
     ;
-simple_body
-    : simple_words (COMMA simple_words)*
-        -> ^(BODY["simple body"] simple_words+)
-    ;
-simple_ref_body
-    : words_or_ref (COMMA words_or_ref)*
-        -> ^(BODY["simple ref body"] words_or_ref+)
-    ;
 words_or_ref
     : simple_words
     | ref
@@ -564,14 +556,11 @@ ref!
     : LBRACK IDENT RBRACK
         -> ^(REF[$IDENT.getText()])
     ;
-call_body!
-    : expr_body
-    ;
 and_body_seq
-    : (call_body COMMA call_body) =>
-       call_body (COMMA call_body)+
-        -> ^(EXPR ^(ITEM IDENT["and"]) LPAREN call_body+)
-    | call_body
+    : (expr_body COMMA expr_body) =>
+       expr_body (COMMA expr_body)+
+        -> ^(EXPR ^(ITEM IDENT["and"]) LPAREN expr_body+)
+    | expr_body
     ;
 
 or_body_seq

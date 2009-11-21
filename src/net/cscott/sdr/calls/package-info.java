@@ -14,7 +14,7 @@
  *  square thru[basic]
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
  *  js> def = sqthr.getEvaluator(ds, java.util.Arrays.asList(Expr.literal("1 1/2"))).simpleExpansion()
- *  (Opt (From [FACING COUPLES] (If (Expr and (Expr greater '1 1/2 '0) (Expr not (Expr greater '1 1/2 '1))) (Seq (Apply (Expr _fractional '1 1/2 (Expr _in '2 'pull by)))))) (From [FACING COUPLES] (If (Expr greater '1 1/2 '1) (Seq (Part false (Seq (Apply (Expr and (Expr _in '2 '_sq_thru_part) (Expr left (Expr square thru (Expr _subtract_num '1 1/2 '1)))))))))))
+ *  (Opt (From 'FACING COUPLES (If (Expr and (Expr greater '1 1/2 '0) (Expr not (Expr greater '1 1/2 '1))) (Seq (Apply (Expr _fractional '1 1/2 (Expr _in '2 'pull by)))))) (From 'FACING COUPLES (If (Expr greater '1 1/2 '1) (Seq (Part false (Seq (Apply (Expr and (Expr _in '2 '_sq_thru_part) (Expr left (Expr square thru (Expr _subtract_num '1 1/2 '1)))))))))))
  *
  * @doc.test Call fractionalization:
  *  js> importPackage(net.cscott.sdr.util) // for Fraction
@@ -22,10 +22,10 @@
  *  js> a = new Apply(new Expr("run", Expr.literal("boy")))
  *  (Apply (Expr run 'boy))
  *  js> a.evaluator(null).simpleExpansion()
- *  (In 4 (Opt (From [1x4, BOX, COUPLE, MINIWAVE, 1x2] (Seq (Apply (Expr _with designated 'boy '_designees run))))))
+ *  (In 4 (Opt (From (Expr or '1 x4 'BOX 'COUPLE 'MINIWAVE '1 x2) (Seq (Apply (Expr _with designated 'boy '_designees run))))))
  *  js> a = new Apply(new Expr("_fractional", Expr.literal("1/2"), a.call))
  *  (Apply (Expr _fractional '1/2 (Expr run 'boy)))
  *  js> a.evaluator(null).simpleExpansion()
- *  (In 2 (Opt (From [1x4, BOX, COUPLE, MINIWAVE, 1x2] (Seq (Apply (Expr _with designated 'boy (Expr _fractional '1/2 '_designees run)))))))
+ *  (In 2 (Opt (From (Expr or '1 x4 'BOX 'COUPLE 'MINIWAVE '1 x2) (Seq (Apply (Expr _with designated 'boy (Expr _fractional '1/2 '_designees run)))))))
  */
 package net.cscott.sdr.calls;
