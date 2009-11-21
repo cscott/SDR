@@ -21,6 +21,12 @@ public abstract class ExprFunc<T> {
      */
     public abstract T evaluate(Class<? super T> type, DanceState ds, List<Expr> args)
         throws EvaluationException;
+    /** Indicates whether the result of the evaluation would be a constant (ie,
+     *  independent of {@link DanceState}).
+     */
+    public boolean isConstant(Class<? super T> type, List<Expr> args) {
+        return false;
+    }
 
     /** Thrown to indicate an unexpected problem evaluating an
      *  {@link net.cscott.sdr.calls.ast.Expr}, for example a type mismatch.

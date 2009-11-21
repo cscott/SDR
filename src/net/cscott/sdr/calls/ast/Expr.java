@@ -33,9 +33,16 @@ public class Expr extends AstNode {
     }
     // AST just represents the computation; actual evaluation is done in
     // ExprList
+    /** Evaluate the {@link Expr} in the given {@link DanceState} to yield
+     *  a result of the requested {@code type}. */
     public final <T> T evaluate(Class<T> type, DanceState ds)
         throws EvaluationException {
         return ExprList.evaluate(this.atom, type, ds, args);
+    }
+    /** Returns true iff the value of this {@link Expr} is independent of the
+     *  {@link DanceState}. */
+    public final boolean isConstant(Class<?> type) {
+        return ExprList.isConstant(this.atom, type, args);
     }
 
     public <T> Expr accept(TransformVisitor<T> v, T t) {

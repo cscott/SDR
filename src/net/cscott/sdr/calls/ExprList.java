@@ -23,6 +23,15 @@ public abstract class ExprList {
         throws EvaluationException {
         return lookup(atom, type).evaluate(type, ds, args);
     }
+    /** This method tells whether an {@link Expr} will result in a constant. */
+    public static <T> boolean isConstant(String atom, Class<T> type, List<Expr> args) {
+        try {
+            return lookup(atom, type).isConstant(type, args);
+        } catch (EvaluationException e) {
+            assert false : "should never happen";
+            throw new RuntimeException(e);
+        }
+    }
     // namespace mechanism.
     @SuppressWarnings("unchecked") // dispatch mechanism needs crazy casts
     private static final <T> ExprFunc<? extends T> lookup(String atom,
@@ -90,6 +99,11 @@ public abstract class ExprList {
                 return args.get(0).evaluate(type, ds);
             throw new EvaluationException("Can't evaluate LITERAL as "+type);
         }
+        /** Literals are constants. */
+        @Override
+        public boolean isConstant(Class type, List args) {
+            return true;
+        }
     };
     static { exprGenericFuncs.put(LITERAL.getName(), LITERAL); }
 
@@ -102,6 +116,14 @@ public abstract class ExprList {
         abstract int minArgs();
         abstract int maxArgs();
         abstract Fraction doOp(Fraction f1, Fraction f2);
+        // the result of a math op is a constant if the args are.
+        @Override
+        public boolean isConstant(Class<? super Fraction> type,List<Expr> args){
+            for (Expr e : args)
+                if (!ExprList.isConstant(e.atom, Fraction.class, e.args))
+                    return false;
+            return true;
+        }
         @Override
         public Fraction evaluate(Class<? super Fraction> type,
                                  DanceState ds, List<Expr> args)
