@@ -15,11 +15,11 @@ import net.cscott.sdr.calls.ast.Expr;
  *  {@link Formation#sortedDancers()}.
  */
 public abstract class Matcher extends ExprFunc<FormationMatch> {
-    /** Match sub-formations from a formation using this.  (The
+    /** Match sub-formations from a formation.  The
      *  subformation may be as large as the original formation -- or even
      *  larger, if phantoms are generated; it may also be as small as a
-     *  single dancer.)  If the given formation can't be matched from
-     *  the current dancer configuration, throws NoMatchException. */
+     *  single dancer.  If the given formation can't be matched from
+     *  the current dancer configuration, throws {@link NoMatchException}. */
     public abstract FormationMatch match(Formation f)
         throws NoMatchException;
 

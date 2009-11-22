@@ -1182,6 +1182,9 @@ to do:
      x 'mixed(...)' operator for from.
      - fix top-level hack for OptCall evaluation: change Matcher to
        return an Iterator<FormationMatch>?
+       (if so, we need to add a name to the match so we can name the formation
+        if evaluation fails.  Maybe "next()" method on the matcher
+        instead so we can preserve failure reasons.)
  x) 'select' is or-of-ands.  'select: DESIGNATED & BEAU, DESIGNATED & BELLE'
      PersonSelector for 'select'
          (expr for 'select')
