@@ -33,7 +33,9 @@ public abstract class PredicateList {
         public boolean evaluate(DanceState ds, List<Expr> args) {
             assert args.isEmpty();
             return true;
-        }        
+        }
+        @Override
+        public boolean isConstant(List<Expr> args) { return true; }
     };
     /**
      * Always false.
@@ -50,6 +52,8 @@ public abstract class PredicateList {
             assert args.isEmpty();
             return false;
         }
+        @Override
+        public boolean isConstant(List<Expr> args) { return true; }
     };
     // one-arg operators
     /**
@@ -71,6 +75,10 @@ public abstract class PredicateList {
             assert args.size()==1;
             Expr arg = args.get(0);
             return !arg.evaluate(Boolean.class, ds);
+        }
+        @Override
+        public boolean isConstant(List<Expr> args) {
+            return args.get(0).isConstant(Boolean.class);
         }
     };
     // binary numerical operators
@@ -95,6 +103,10 @@ public abstract class PredicateList {
             Fraction f1 = args.get(1).evaluate(Fraction.class, ds);
             return f0.equals(f1);
         }
+        @Override
+        public boolean isConstant(List<Expr> args) {
+            return argsAreConstant(Fraction.class, args);
+        }
     };
     /**
      * Numerical comparison.
@@ -116,6 +128,10 @@ public abstract class PredicateList {
             Fraction f0 = args.get(0).evaluate(Fraction.class, ds);
             Fraction f1 = args.get(1).evaluate(Fraction.class, ds);
             return f0.compareTo(f1) > 0;
+        }
+        @Override
+        public boolean isConstant(List<Expr> args) {
+            return argsAreConstant(Fraction.class, args);
         }
     };
     // n-ary operators.
@@ -148,6 +164,10 @@ public abstract class PredicateList {
             }
             return result;
         }
+        @Override
+        public boolean isConstant(List<Expr> args) {
+            return argsAreConstant(Boolean.class, args);
+        }
     };
     /**
      * Short-circuit boolean disjunction.
@@ -177,6 +197,10 @@ public abstract class PredicateList {
                 if (result) break; // short-circuit operator.
             }
             return result;
+        }
+        @Override
+        public boolean isConstant(List<Expr> args) {
+            return argsAreConstant(Boolean.class, args);
         }
     };
     // okay, square-dance-specific operators.
@@ -349,12 +373,15 @@ public abstract class PredicateList {
      *  Used in a hack to implement "boys trade".
      */
     public final static Predicate CALL_IS = new _Predicate("call is") {
-        /** This is just a case-insensitive string comparison, really. */
+        /** This is a case-insensitive tree comparison. */
         @Override
         public boolean evaluate(DanceState ds, List<Expr> args) {
             assert args.size() == 2;
             return exprEquals(args.get(0), args.get(1));
         }
+        // XXX fix this (and isConstant) if/when REF substitution is moved into
+        //     expression evaluation.  If so, we'd have to substitute the refs
+        //     as we do the comparison.
         private boolean exprEquals(Expr c1, Expr c2) {
             if (!c1.atom.equalsIgnoreCase(c2.atom))
                 return false;
@@ -365,6 +392,9 @@ public abstract class PredicateList {
                     return false;
             return true;
         }
+        /** No evaluation, just based on the shape of the tree. */
+        @Override
+        public boolean isConstant(List<Expr> args) { return true; }
     };
 
     /** Return the {@link Predicate} function with the given (case-insensitive)
@@ -384,6 +414,19 @@ public abstract class PredicateList {
         private final String name;
         _Predicate(String name) { this.name = name; }
         public String getName() { return name; }
+        public boolean isConstant(List<Expr> args) { return false; }
+        @Override
+        public final boolean isConstant(Class<? super Boolean> type,
+                                        List<Expr> args) {
+            return isConstant(args);
+        }
+        protected static boolean argsAreConstant(Class<?> type,
+                                                 List<Expr> args) {
+            for (Expr e : args)
+                if (!e.isConstant(type))
+                    return false;
+            return true;
+        }
     }
 
     /** List of all the {@link Predicate}s defined here. */
