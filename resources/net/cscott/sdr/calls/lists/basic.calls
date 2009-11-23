@@ -1079,7 +1079,31 @@ def: flutter wheel
       call: 1/2(wheel around)
 
 // callerlab #47: SWEEP A QUARTER
-// XXX DEFINE ME
+def: sweep(n)
+  spoken: sweep <n=fraction>
+  condition: AND(GREATER([n],0), GREATER(1, [n])), \
+             "Must sweep some number of quarters"
+  // two beats per quarter
+  call: _in(_multiply num([n], 8), \
+            as couples(_fractional(_multiply num([n], 4), _single sweep 1/4)))
+def: _single sweep 1/4
+  from: FACING DANCERS
+    from: ANY
+      condition: MATCH(_SWEEP PATTERN(), RR) // right sweep
+        prim: 1, 1, left
+    from: ANY
+      condition: MATCH(_SWEEP PATTERN(), LL) // left sweep
+        prim: -1, 1, right
+    from: ANY
+      condition: MATCH(_SWEEP PATTERN(), "_.|._") // missing sweep
+      condition: FALSE(), [2] "No sweep direction" // override 'mismatched' msg
+      call: nothing
+    from: ANY
+      condition: FALSE(), "Mismatched sweep direction"
+      call: nothing
+def: and sweep(c, n)
+  spoken: [-10] <c=anything> and sweep <n=fraction>
+    call: [c], sweep([n])
 
 // callerlab #48: VEER FAMILY
 def: veer left

@@ -1100,7 +1100,9 @@ to do:
      the centers back in there.
  h1) fix axis adjustment in concentric
  x) tandem
- i1) fix roll/sweep in tandem/as couples/etc.
+ xx) fix roll/sweep in tandem/as couples/etc.
+ i2) roll should preserve sweep (recycle, wheel & deal)
+ i3) hinge should set sweep (or hinge&roll should)
  x) test circle left/right, test run (in all its glory), test trade
     from quarter tag
  j1) t-boned cross runs (needs select X&Y, see (w))

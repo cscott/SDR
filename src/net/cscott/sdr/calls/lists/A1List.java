@@ -3,8 +3,10 @@ package net.cscott.sdr.calls.lists;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
@@ -145,7 +147,9 @@ public abstract class A1List {
                         // XXX for twosome, rotate formations
                         throw new BadCallException("twosome not implemented");
                     }
-                    // XXX transfer roll, etc from tf.formation to solidPiece
+                    // transfer roll, etc from tf.formation to solidPiece
+                    solidPiece = transferPositionFlags
+                        (tf.formation.location(d), solidPiece);
                     pieces.put(d, solidPiece);
                 }
                 Formation mergeF = Breather.insert(tf.formation, pieces);
@@ -169,33 +173,66 @@ public abstract class A1List {
             // no more to evaluate
             return null;
         }
+        /** Transfer position flags from 'location' to all dancers in the
+         *  'solidPiece', returning the new 'solidPiece'. */
+        private TaggedFormation transferPositionFlags
+            (Position location, TaggedFormation solidPiece) {
+            TaggedFormation npiece = solidPiece;
+            for (Dancer d : solidPiece.dancers()) {
+                Position p = solidPiece.location(d);
+                p = p.setFlags(location.flags);
+                npiece = npiece.move(d, p); // XXX not very efficient
+            }
+            return npiece;
+        }
+        /** Add any tags which a subformation has in common to the meta-dancer
+         *  and meta-formation. */
         private static FormationMatch transferTags(FormationMatch fm) {
-            MultiMap<Dancer,Tag> extraTags = new GenericMultiMap<Dancer,Tag>
+            MultiMap<Dancer,Tag> metaTags = new GenericMultiMap<Dancer,Tag>
                 (Factories.enumSetFactory(Tag.class));
-            Map<Dancer,Dancer> dancerMap = new LinkedHashMap<Dancer,Dancer>();
+            Map<Dancer,Position> metaPos =
+                new LinkedHashMap<Dancer,Position>();
+            Set<Dancer> unmatched =
+                new LinkedHashSet<Dancer>();
+            Map<Dancer,TaggedFormation> matches =
+                new LinkedHashMap<Dancer,TaggedFormation>();
+
             for (Dancer md : fm.meta.dancers()) {
                 // this is a little bit awkward because primitive tags are
                 // kept by the dancer, not by the formation
-                EnumSet<Tag> common = EnumSet.allOf(Tag.class);
+                EnumSet<Tag> commonTags =
+                    EnumSet.allOf(Tag.class);
+                EnumSet<Position.Flag> commonFlags =
+                    EnumSet.allOf(Position.Flag.class);
                 TaggedFormation subF = fm.matches.get(md);
+
                 for (Dancer d : subF.dancers()) {
+                    // compute the set of common tags and flags
                     EnumSet<Tag> dancerTags = primitiveTags(d);
                     dancerTags.addAll(subF.tags(d));
-                    common.retainAll(dancerTags);
+                    commonTags.retainAll(dancerTags);
+                    commonFlags.retainAll(subF.location(d).flags);
                 }
-                common.remove(Tag.ALL); // redundant; everyone matches ALL
-                EnumSet<Tag> commonPrim = EnumSet.copyOf(common);
+                commonTags.remove(Tag.ALL); // redundant; everyone matches ALL
+                EnumSet<Tag> commonPrim = EnumSet.copyOf(commonTags);
                 commonPrim.retainAll(PRIMITIVE_TAGS);
-                common.removeAll(commonPrim);
+                commonTags.removeAll(commonPrim);
+
                 // primitive common tags go on the new meta dancer
                 Dancer nmd = new PhantomDancer(commonPrim);
-                dancerMap.put(md, nmd);
                 // and non-primitive common tags will go in the taggedformation
-                extraTags.addAll(nmd, common);
+                metaTags.addAll(nmd, commonTags);
+                // position flags go on the position
+                metaPos.put(nmd, fm.meta.location(md).setFlags(commonFlags));
+
+                // transfer information from FormationMatch
+                if (fm.unmatched.contains(md)) unmatched.add(nmd);
+                matches.put(nmd, subF);
             }
-            FormationMatch nfm = fm.map(dancerMap);
-            TaggedFormation metaF = new TaggedFormation(nfm.meta, extraTags);
-            return new FormationMatch(metaF, nfm.matches, nfm.unmatched);
+            // create new FormationMatch with the new meta formation
+            TaggedFormation metaF =
+                new TaggedFormation(new Formation(metaPos), metaTags);
+            return new FormationMatch(metaF, matches, unmatched);
         }
         /** Return all the primitive tags for the given dancer (including
          *  the 'ALL' tag). */

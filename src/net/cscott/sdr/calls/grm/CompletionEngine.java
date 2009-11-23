@@ -38,85 +38,118 @@ import net.cscott.sdr.util.Tools;
  *  square thru
  *  square thru <cardinal>
  *  square thru and roll
+ *  square thru and sweep <fraction>
  *  square thru <number>
  *  square thru <number> <cardinal>
  *  square thru <number> and roll
+ *  square thru <number> and sweep <fraction>
  *  square thru <number> hands
  *  square thru <number> hands <cardinal>
  *  square thru <number> hands and roll
+ *  square thru <number> hands and sweep <fraction>
  *  square thru <number> hands around
  *  square thru <number> hands around <cardinal>
  *  square thru <number> hands around and roll
+ *  square thru <number> hands around and sweep <fraction>
  *  square thru <number> hands round
  *  square thru <number> hands round <cardinal>
  *  square thru <number> hands round and roll
+ *  square thru <number> hands round and sweep <fraction>
  *  js> c("square thru 1 1/2 h");
  *  square thru 1 1/2 hands
  *  square thru 1 1/2 hands <cardinal>
  *  square thru 1 1/2 hands and roll
+ *  square thru 1 1/2 hands and sweep <fraction>
  *  square thru 1 1/2 hands around
  *  square thru 1 1/2 hands around <cardinal>
  *  square thru 1 1/2 hands around and roll
+ *  square thru 1 1/2 hands around and sweep <fraction>
  *  square thru 1 1/2 hands round
  *  square thru 1 1/2 hands round <cardinal>
  *  square thru 1 1/2 hands round and roll
+ *  square thru 1 1/2 hands round and sweep <fraction>
  *  js> c("tr");
  *  trade
  *  trade <cardinal>
  *  trade and roll
+ *  trade and sweep <fraction>
  *  trade the wave
  *  trade the wave <cardinal>
  *  trade the wave and roll
+ *  trade the wave and sweep <fraction>
  *  track <number>
  *  track <number> <cardinal>
  *  track <number> and roll
+ *  track <number> and sweep <fraction>
  *  js> c("trade")
  *  trade
  *  trade <cardinal>
  *  trade and roll
+ *  trade and sweep <fraction>
  *  trade the wave
  *  trade the wave <cardinal>
  *  trade the wave and roll
+ *  trade the wave and sweep <fraction>
  *  js> c("trade a");
  *  trade and roll
  *  trade and roll <cardinal>
  *  trade and roll and roll
+ *  trade and roll and sweep <fraction>
+ *  trade and sweep <fraction>
+ *  trade and sweep <fraction> <cardinal>
+ *  trade and sweep <fraction> and roll
+ *  trade and sweep <fraction> and sweep <fraction>
  *  js> c("trade and roll");
  *  trade and roll
  *  trade and roll <cardinal>
  *  trade and roll and roll
+ *  trade and roll and sweep <fraction>
  *  js> c("trade and roll a");
  *  trade and roll and roll
  *  trade and roll and roll <cardinal>
  *  trade and roll and roll and roll
+ *  trade and roll and roll and sweep <fraction>
+ *  trade and roll and sweep <fraction>
+ *  trade and roll and sweep <fraction> <cardinal>
+ *  trade and roll and sweep <fraction> and roll
+ *  trade and roll and sweep <fraction> and sweep <fraction>
  *  js> c("scoot back once a");
  *  scoot back once and a half
  *  scoot back once and a half <cardinal>
  *  scoot back once and a half and roll
+ *  scoot back once and a half and sweep <fraction>
  *  scoot back once and a third
  *  scoot back once and a third <cardinal>
  *  scoot back once and a third and roll
+ *  scoot back once and a third and sweep <fraction>
  *  scoot back once and a quarter
  *  scoot back once and a quarter <cardinal>
  *  scoot back once and a quarter and roll
+ *  scoot back once and a quarter and sweep <fraction>
  *  scoot back once and one half
  *  scoot back once and one half <cardinal>
  *  scoot back once and one half and roll
+ *  scoot back once and one half and sweep <fraction>
  *  scoot back once and one third
  *  scoot back once and one third <cardinal>
  *  scoot back once and one third and roll
+ *  scoot back once and one third and sweep <fraction>
  *  scoot back once and one quarter
  *  scoot back once and one quarter <cardinal>
  *  scoot back once and one quarter and roll
+ *  scoot back once and one quarter and sweep <fraction>
  *  scoot back once and two thirds
  *  scoot back once and two thirds <cardinal>
  *  scoot back once and two thirds and roll
+ *  scoot back once and two thirds and sweep <fraction>
  *  scoot back once and two quarters
  *  scoot back once and two quarters <cardinal>
  *  scoot back once and two quarters and roll
+ *  scoot back once and two quarters and sweep <fraction>
  *  scoot back once and three quarters
  *  scoot back once and three quarters <cardinal>
  *  scoot back once and three quarters and roll
+ *  scoot back once and three quarters and sweep <fraction>
  */
 @RunWith(value=JDoctestRunner.class)
 public class CompletionEngine {

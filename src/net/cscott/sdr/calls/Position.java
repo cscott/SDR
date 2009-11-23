@@ -2,6 +2,7 @@ package net.cscott.sdr.calls;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -344,6 +345,14 @@ public class Position implements Comparable<Position> {
      */
     public Position setFlags(Flag... flags) {
 	return new Position(this.x, this.y, this.facing, flags);
+    }
+    /**
+     * Return a new {@link Position} identical to this one, except
+     * with exactly the given flags set.
+     * @see #setFlags(Flag...)
+     */
+    public Position setFlags(Collection<Flag> f) {
+        return setFlags(f.toArray(new Flag[f.size()]));
     }
     /**
      * Return a new {@link Position} identical to this one, except
