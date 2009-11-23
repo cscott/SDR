@@ -1233,7 +1233,9 @@ to do:
  ff) Rename 'cardinal' rule to "numeric_adverb" or "times"
  gg) Refs in Exprs using special (Expr ref (Expr 1)); put binding
      environment in DanceState (and cache binding vals once evaluated?)
-
+ hh) Move Evaluator from calls.transform to calls
+     Move all generated parsers to calls.parser
+     Add ref from AstNode.valueOf() to AstParser class.
 -------
 heads x:
   from squared_set:

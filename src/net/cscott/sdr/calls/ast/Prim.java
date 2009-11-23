@@ -34,10 +34,12 @@ public class Prim extends SeqCall {
         IN,
     };
     public static enum Flag {
-	/** This flag indicates whether this motion involves a right
-	 * shoulder pass (as most motions do, including "cross" calls where the
-	 * crossers start far apart) or else a left shoulder pass
-	 * ("cross" calls which start with adjacent crossers).
+	/** This flag indicates that this motion involves a left
+	 * shoulder pass (left/mirror concepts, "cross" calls which
+	 * start with adjacent crossers, etc).  Lack of this flag
+	 * indicates that, like most motions, a right shoulder pass is
+	 * to be used (for example, for "cross" calls where the
+	 * crossers start far apart).
 	 */
 	PASS_LEFT,
 	/** The {@link #FORCE_ARC} flag helps distinguish between (say)
