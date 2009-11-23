@@ -271,11 +271,13 @@ window['JAVADOC_BASE'] = '{@docRoot}';
       <cobertura-instrument todir="${instrumented_dir}"
 			    datafile="${instrumented_dir}/cobertura.ser">
 	<!-- we get an over-size method error in class file
-	     net/cscott/sdr/calls/transform/CallFileLexer$DFA9, so
-	     we'll ignore it. -->
+	     net/cscott/sdr/calls/transform/CallFileLexer$DFA9
+         and net/cscott/sdr/calls/lists/C4GrammarParser, so
+	     we'll ignore them. -->
 	<fileset dir="${classes_dir}">
           <include name="**/*.class" />
 	  <exclude name="**/CallFileLexer*.class" />
+	  <exclude name="**/C4GrammarParser*.class" />
 	</fileset>
       </cobertura-instrument>
     </target>
