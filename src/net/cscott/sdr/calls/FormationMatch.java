@@ -47,6 +47,20 @@ public class FormationMatch {
         this.matches = Collections.unmodifiableMap(matches);
         this.unmatched = Collections.unmodifiableSet(unmatched);
     }
+    /** Remap the meta dancers in the given {@link FormationMatch}, returning
+     *  a new {@link FormationMatch}. */
+    public FormationMatch map(Map<Dancer,Dancer> m) {
+        Formation nmeta = this.meta.map(m);
+        Map<Dancer,TaggedFormation> nmatches =
+            new LinkedHashMap<Dancer,TaggedFormation>();
+        Set<Dancer> nunmatched = new LinkedHashSet<Dancer>();
+        for (Dancer d : this.meta.dancers()) {
+            nmatches.put(m.get(d), this.matches.get(d));
+            if (this.unmatched.contains(d))
+                nunmatched.add(m.get(d));
+        }
+        return new FormationMatch(nmeta, nmatches, nunmatched);
+    }
 
     /** Pretty-print a {@link FormationMatch}. */
     public String toString() {

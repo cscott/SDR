@@ -1,12 +1,16 @@
 package net.cscott.sdr.calls.lists;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import net.cscott.jutil.Factories;
+import net.cscott.jutil.GenericMultiMap;
+import net.cscott.jutil.MultiMap;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Breather;
 import net.cscott.sdr.calls.Call;
@@ -17,13 +21,15 @@ import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationList;
 import net.cscott.sdr.calls.FormationMatch;
 import net.cscott.sdr.calls.GeneralFormationMatcher;
+import net.cscott.sdr.calls.Matcher;
 import net.cscott.sdr.calls.NamedTaggedFormation;
 import net.cscott.sdr.calls.NoMatchException;
+import net.cscott.sdr.calls.PhantomDancer;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Program;
-import net.cscott.sdr.calls.Matcher;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TimedFormation;
+import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.grm.Grm;
@@ -113,11 +119,11 @@ public abstract class A1List {
             } catch (NoMatchException nme) {
                 throw new BadCallException("No "+this.formationName+" dancers");
             }
-            Formation metaF = fm.meta;
             // ok, now tag the meta dancers the way the real dancers are
             // tagged
-            // XXX: DO ME
+            fm = transferTags(fm);
             // and do the call in the meta formation
+            Formation metaF = fm.meta;
             DanceState metaS = ds.cloneAndClear(metaF);
             new Apply(this.subCall).evaluator(metaS).evaluateAll(metaS);
             metaS.syncDancers();
@@ -162,6 +168,50 @@ public abstract class A1List {
             // dancers should all be in sync at this point.
             // no more to evaluate
             return null;
+        }
+        private static FormationMatch transferTags(FormationMatch fm) {
+            MultiMap<Dancer,Tag> extraTags = new GenericMultiMap<Dancer,Tag>
+                (Factories.enumSetFactory(Tag.class));
+            Map<Dancer,Dancer> dancerMap = new LinkedHashMap<Dancer,Dancer>();
+            for (Dancer md : fm.meta.dancers()) {
+                // this is a little bit awkward because primitive tags are
+                // kept by the dancer, not by the formation
+                EnumSet<Tag> common = EnumSet.allOf(Tag.class);
+                TaggedFormation subF = fm.matches.get(md);
+                for (Dancer d : subF.dancers()) {
+                    EnumSet<Tag> dancerTags = primitiveTags(d);
+                    dancerTags.addAll(subF.tags(d));
+                    common.retainAll(dancerTags);
+                }
+                common.remove(Tag.ALL); // redundant; everyone matches ALL
+                EnumSet<Tag> commonPrim = EnumSet.copyOf(common);
+                commonPrim.retainAll(PRIMITIVE_TAGS);
+                common.removeAll(commonPrim);
+                // primitive common tags go on the new meta dancer
+                Dancer nmd = new PhantomDancer(commonPrim);
+                dancerMap.put(md, nmd);
+                // and non-primitive common tags will go in the taggedformation
+                extraTags.addAll(nmd, common);
+            }
+            FormationMatch nfm = fm.map(dancerMap);
+            TaggedFormation metaF = new TaggedFormation(nfm.meta, extraTags);
+            return new FormationMatch(metaF, nfm.matches, nfm.unmatched);
+        }
+        /** Return all the primitive tags for the given dancer (including
+         *  the 'ALL' tag). */
+        private static EnumSet<Tag> primitiveTags(Dancer d) {
+            EnumSet<Tag> result = EnumSet.noneOf(Tag.class);
+            for (Tag t : PRIMITIVE_TAGS)
+                if (d.matchesTag(t))
+                    result.add(t);
+            return result;
+        }
+        /** All primitive tags, including the 'ALL' tag. */
+        private static final EnumSet<Tag> PRIMITIVE_TAGS = EnumSet.noneOf(Tag.class);
+        static {
+            for (Tag t : Tag.values())
+                if (t.isPrimitive())
+                    PRIMITIVE_TAGS.add(t);
         }
     };
 }

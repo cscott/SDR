@@ -5,6 +5,7 @@ sdr> /// "test case" is used as input by runAllTests() to enumerate
 sdr> /// all the tests to run.
 sdr> ///
 sdr> /listTests("resources/net/cscott/sdr/tests")
+as-couples-1
 basic-calls-1
 basic-calls-2
 basic-calls-3
