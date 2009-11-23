@@ -38,7 +38,7 @@ def: bingo
     ! <C a
     !  ^ v
     !  c A> 
-  example: _and roll(bingo)
+  example: and roll(bingo)
     // ensure that we're going 3/4 out, not 1/4 in! (common cheat)
     before:
     ! <A <a
@@ -80,7 +80,7 @@ def: boomerang
     after:
     ! C><a
     ! c><A
-  example: _and roll(boomerang) // everyone can roll from tandem couples
+  example: and roll(boomerang) // everyone can roll from tandem couples
     before:
     ! A> C>
     ! a> c>
@@ -128,7 +128,7 @@ def: boomerang
     !     ^ ^
     ! A a c C
     ! v v
-  example: _and roll(boomerang) // only leaders can roll.
+  example: and roll(boomerang) // only leaders can roll.
     before:
     ! ^
     ! A <a
@@ -337,7 +337,7 @@ def: rip off
     ! ^  
     ! C c
     !   v
-  example: _and roll(rip off)
+  example: and roll(rip off)
     before:
     ! ^  
     ! A c

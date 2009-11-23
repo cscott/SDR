@@ -324,13 +324,13 @@ def: promenade home
                     MATCH(_SELECTION PATTERN(DANCER 2), ___x____))
       from: PROMENADE, STAR PROMENADE
         in: 4
-        call: as couples(_and roll(_single promenade 1/4))
+        call: as couples(and roll(_single promenade 1/4))
     from: ANY // no rotation
       condition: OR(MATCH(_SELECTION PATTERN(DANCER 1), _____x__), \
                     MATCH(_SELECTION PATTERN(DANCER 2), _____x__))
       from: PARALLEL LH TWO-FACED LINES
         in: 4
-        call: as couples(_and roll(_single promenade 1/4))
+        call: as couples(and roll(_single promenade 1/4))
     // XXX: might need to add extra patterns here to prevent overshoot
     //      if promenading home from exactly 1/4 away from other starting
     //      formations -- or use IfAfter?
@@ -365,7 +365,7 @@ def: star promenade home
                     MATCH(_SELECTION PATTERN(DANCER 2), ___x____))
       from: PROMENADE, STAR PROMENADE
         in: 4
-        call: as couples(_and roll(_single star promenade 1/4))
+        call: as couples(and roll(_single star promenade 1/4))
     from: ANY
       call: _star promenade(1/4), star promenade home
 
@@ -378,7 +378,7 @@ def: single file promenade home
       condition: MATCH(_SELECTION PATTERN(DANCER 1), __x_____)
       from: SINGLE FILE PROMENADE, LH COLUMN
         in: 4
-        call: _and roll(_single file promenade(1/4))
+        call: and roll(_single file promenade(1/4))
     from: ANY
       call: _single file promenade 1/8, single file promenade home
 
@@ -788,7 +788,7 @@ def: box the gnat
   in: 4
   from: FACING DANCERS
     condition: not(or(ALL(BOY), ALL(GIRL))), "Same sex boxing!"
-    call: _and roll(_touch(1/4)) // modulo styling
+    call: and roll(_touch(1/4)) // modulo styling
 
 // callerlab #35: OCEAN WAVE FAMILY (see BMS addendum)
 

@@ -7,25 +7,25 @@ sdr> /// simple examples
 sdr> /parse("trade")
 trade
 sdr> /parse("trade and roll")
-_and roll(trade)
+and roll(trade)
 sdr> /parse("do half of a trade and roll")
-_and roll(_half(trade))
+and roll(_half(trade))
 sdr> /parse('do half of a trade twice')
 _fractional(2, _half(trade))
 sdr> /parse('do half of a trade twice and roll')
-_and roll(_fractional(2, _half(trade)))
+and roll(_fractional(2, _half(trade)))
 sdr> ///
 sdr> /// precedence levels
 sdr> /parse("trade twice and roll")
-_and roll(_fractional(2, trade))
+and roll(_fractional(2, trade))
 sdr> /parse("trade and roll twice")
-_fractional(2, _and roll(trade))
+_fractional(2, and roll(trade))
 sdr> /parse("boys roll away the girls")
 _roll away(BOY, GIRL)
 sdr> ///
 sdr> /// "anyone anything" concept
 sdr> /parse("centers square thru and roll")
-anyone while others(CENTER, _and roll(_full_square_thru), nothing)
+anyone while others(CENTER, and roll(_full_square_thru), nothing)
 sdr> /parse("centers centers run")
 anyone while others(CENTER, run(CENTER), nothing)
 sdr> ///
@@ -39,15 +39,15 @@ anyone while others(CENTER, _roll away(CENTER, END), nothing)
 sdr> ///
 sdr> /// precedence of <anyone> <anything> -vs- roll and mirror
 sdr> /parse("centers trade while the ends trade and roll")
-anyone while others(CENTER, trade, _and roll(trade))
+anyone while others(CENTER, trade, and roll(trade))
 sdr> /parse("mirror centers trade while the ends trade")
 mirror(anyone while others(CENTER, trade, trade))
 sdr> ///
 sdr> /// precedence of mirror -vs- left
 sdr> /parse("left swing thru and roll")
-_and roll(left(swing thru))
+and roll(left(swing thru))
 sdr> /parse("mirror swing thru and roll")
-mirror(_and roll(swing thru))
+mirror(and roll(swing thru))
 sdr> ///
 sdr> /// trade down the line:
 sdr> /parse('boys trade down the line')
@@ -59,6 +59,6 @@ anyone while others(BOY, trade, nothing)
 sdr> ///
 sdr> /// precedence of "as couples" vs roll
 sdr> /parse('as couples trade and roll')
-_and roll(as couples(trade))
+and roll(as couples(trade))
 sdr> /// XXX: as couples swing and mix?
 sdr> /exit

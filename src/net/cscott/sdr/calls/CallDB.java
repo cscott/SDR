@@ -121,11 +121,11 @@ public class CallDB {
      *  js> db.parse(Program.BASIC, "do one half of a trade")
      *  (Apply (Expr _fractional '1/2 'trade))
      *  js> db.parse(Program.PLUS, "do one half of a trade and roll")
-     *  (Apply (Expr _and roll (Expr _fractional '1/2 'trade)))
+     *  (Apply (Expr and roll (Expr _fractional '1/2 'trade)))
      *  js> db.parse(Program.PLUS, "trade twice and roll")
-     *  (Apply (Expr _and roll (Expr _fractional '2 'trade)))
+     *  (Apply (Expr and roll (Expr _fractional '2 'trade)))
      *  js> db.parse(Program.PLUS, "trade and roll twice")
-     *  (Apply (Expr _fractional '2 (Expr _and roll 'trade)))
+     *  (Apply (Expr _fractional '2 (Expr and roll 'trade)))
      * @doc.test Semicolon-separated calls are also used in the typed
      *  (not the spoken) grammar:
      *  js> db = CallDB.INSTANCE ; undefined
@@ -134,9 +134,9 @@ public class CallDB {
      * @doc.test Parentheses can be used in the typed (not spoken) grammar:
      *  js> db = CallDB.INSTANCE ; undefined
      *  js> db.parse(Program.PLUS, "do one half of a trade and roll")
-     *  (Apply (Expr _and roll (Expr _fractional '1/2 'trade)))
+     *  (Apply (Expr and roll (Expr _fractional '1/2 'trade)))
      *  js> db.parse(Program.PLUS, "do one half of a ( trade and roll )")
-     *  (Apply (Expr _fractional '1/2 (Expr _and roll 'trade)))
+     *  (Apply (Expr _fractional '1/2 (Expr and roll 'trade)))
      * @doc.test Ensure we throw an exception if the call is unrecognized or
      *  not on level:
      *  js> db = CallDB.INSTANCE ; undefined

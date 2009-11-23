@@ -19,4 +19,4 @@ def: split counter rotate
 def: single wheel
   in: 4
   ipart:
-    call: _and roll(_hinge)
+    call: and roll(_hinge)
