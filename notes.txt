@@ -1162,11 +1162,11 @@ to do:
       to throw a BadCallException (hard?)
       - collect "lines touched" set and pass up to top level, so we
         can touch only the lines which were part of a successful Opt.
- s) EQUALS/CALL_IS => NUM_EQUALS, STR_EQUALS
+ x) EQUALS/CALL_IS => NUM_EQUALS, STR_EQUALS
     SELECTION_PATTERN => PATTERN_EQUALS(PATTERN(SELECTED), '_x__')
      (add 'don't care' character -- '?' or '.')
     PATTERN(ROLL) => 'rlrl', PATTERN(SWEEP) => 'rlrl'
-    use PATTERN(SWEEP) to define "sweep 1/4" (FROM FACING COUPLES:...)
+ s1)  use PATTERN(SWEEP) to define "sweep 1/4" (FROM FACING COUPLES:...)
  t) add post-condition nodes to graph, evaluated as "do child, then
     test condition on resulting formation".  IfAfter() or maybe just
     a boolean in the If node for "eval after".

@@ -50,8 +50,7 @@ def: _peel and step
     from: BOX, 2x2 /* XXX: 2x2 doesn't define LEADERS/TRAILERS =( */
       condition: or(PROGRAM AT LEAST(c1), NOT(TBONED(ALL))), \
                  "T-boned formations not allowed below C1"
-      condition: or(SELECTION_PATTERN(TRAILER, x__x), \
-                    SELECTION_PATTERN(TRAILER, _xx_)), \
+      condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
                  "Trailers must step to a hand hold"
       select: LEADER
         prim: out 1, 1, out 1/4
@@ -76,10 +75,10 @@ def: track(n)
   spoken: track <n=number>
   condition: not(or(greater(0,[n]),greater([n],4))), \
              "Can't track less than 0 or greater than 4"
-  condition: or(PROGRAM AT LEAST(c3b),equal([n],2)), \
+  condition: or(PROGRAM AT LEAST(c3b),equal num([n],2)), \
              "Only track 2 is allowed below C3B"
   from: COMPLETED DOUBLE PASS THRU
-    call: _tag(tandem(partner trade), _multiply_num([n], 1/4))
+    call: _tag(tandem(partner trade), _multiply num([n], 1/4))
   example: track(0)
     before:
     ! <a<b D>C>

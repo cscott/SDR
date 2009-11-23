@@ -27,7 +27,7 @@ def: anyone while others(sel, c1, c2=nothing)
                  (while the (others|<anyone>) <c2=anything>)?
   // special case "everybody" as a filler word.
   from: ANY
-    condition: AND(CALL IS([sel], ALL), CALL IS([c2], nothing))
+    condition: AND(EQUAL CALL([sel], ALL), EQUAL CALL([c2], nothing))
     call: [c1]
   // special case HEADS and SIDES from static square
   from: STATIC SQUARE
@@ -45,11 +45,11 @@ def: anyone while others(sel, c1, c2=nothing)
   from: CENTER HALF
     // same as above, but special cased because END and OUTSIDE tags aren't
     // applied by the CENTER HALF matcher.
-    condition: OR(CALL IS([sel], END), CALL IS([sel], OUTSIDE))
+    condition: OR(EQUAL CALL([sel], END), EQUAL CALL([sel], OUTSIDE))
     call: _quasi concentric([c2],[c1])
   from: ANY // ugly hack to support "boys trade" == "boys trade down the line"
-    condition: CALL IS([c1], trade), "Not a trade"
-    condition: CALL IS([c2], nothing), "Not just a trade"
+    condition: EQUAL CALL([c1], trade), "Not a trade"
+    condition: EQUAL CALL([c2], nothing), "Not just a trade"
     call: trade down the line([sel])
   from: ANY
     call: _anyone while others([sel],[c1],[c2])
@@ -58,14 +58,14 @@ def: anyone while others(sel, c1, c2=nothing)
 def: _anyone while others static square(sel, c1, c2)
   // special case 'heads promenade half way while the sides...'
   from: STATIC SQUARE
-    condition: AND(CALL IS([sel], HEAD), CALL IS([c1], promenade half way))
+    condition: AND(EQUAL CALL([sel], HEAD), EQUAL CALL([c1], promenade half way))
     //call: _anyone while others([sel],[c1],and(sides start, [c2]))
     select: HEAD
       call: [c1]
     select: SIDE
       call: sides start, _centers([c2])
   from: STATIC SQUARE
-    condition: AND(CALL IS([sel], SIDE), CALL IS([c1], promenade half way))
+    condition: AND(EQUAL CALL([sel], SIDE), EQUAL CALL([c1], promenade half way))
     //call: _anyone while others([sel],[c1],and(heads start, [c2]))
     select: SIDE
       call: [c1]
@@ -73,10 +73,10 @@ def: _anyone while others static square(sel, c1, c2)
       call: heads start, _centers([c2])
   // special case 'heads square thru...' from static square
   from: STATIC SQUARE
-    condition: CALL IS([sel], HEAD)
+    condition: EQUAL CALL([sel], HEAD)
     call: heads start, anyone while others([sel],[c1],[c2])
   from: STATIC SQUARE
-    condition: CALL IS([sel], SIDE)
+    condition: EQUAL CALL([sel], SIDE)
     call: sides start, anyone while others([sel],[c1],[c2])
 
 // local helpers
@@ -108,7 +108,7 @@ def: sides start
 // callerlab #2: CIRCLE FAMILY
 def: circle left(n)
   spoken: circle left <n=fraction>
-  call: _fractional(_multiply_num([n],4), _circle left 1/4)
+  call: _fractional(_multiply num([n],4), _circle left 1/4)
 def: circle right(n)
   spoken: circle right <n=fraction>
   call: mirror(circle left([n]))
@@ -176,10 +176,7 @@ def: swing
   from: GENERAL LINE
     condition: PROGRAM AT LEAST(A2), "Only partner swing allowed below A2"
     condition: AND(NOT(TBONED(ALL)), \
-                   OR(SELECTION PATTERN(BEAU, ____), \
-                      SELECTION PATTERN(BEAU, __xx), \
-                      SELECTION PATTERN(BEAU, xx__), \
-                      SELECTION PATTERN(BEAU, xxxx))), \
+                   MATCH(_SELECTION PATTERN(BEAU), "____|__xx|xx__|xxxx")), \
                "End and adjacent center must be in mini-wave"
     in: 3
     call: trade
@@ -200,8 +197,7 @@ def: partner swing
 def: _break out from swing
   in: 2
   from: RH MINIWAVE
-    condition: OR(SELECTION PATTERN(BOY, x_), \
-                  SELECTION PATTERN(BOY, _x)), "Same sex swing!"
+    condition: MATCH(_SELECTION PATTERN(BOY), "x_|_x"), "Same sex swing!"
     select: GIRL
       prim: 0, 0, right
       prim: 0, 0, right
@@ -293,11 +289,11 @@ def: _single file promenade 1/8
       prim:  2, 2, none, force-roll-left
 
 def: _single promenade(n)
-  call: _fractional(_multiply_num([n], 4), _single promenade 1/4)
+  call: _fractional(_multiply num([n], 4), _single promenade 1/4)
 def: _single star promenade(n)
-  call: _fractional(_multiply_num([n], 4), _single star promenade 1/4)
+  call: _fractional(_multiply num([n], 4), _single star promenade 1/4)
 def: _single file promenade(n)
-  call: _fractional(_multiply_num([n], 8), _single file promenade 1/8)
+  call: _fractional(_multiply num([n], 8), _single file promenade 1/8)
 
 def: _promenade(n)
   from: STATIC SQUARE
@@ -324,14 +320,14 @@ def: promenade home
   ipart:
     from: ANY // use ANY to guarantee no rotation
       // we're going to the head beau's home.
-      condition: OR(SELECTION PATTERN(DANCER 1, ___x____), \
-                    SELECTION PATTERN(DANCER 2, ___x____))
+      condition: OR(MATCH(_SELECTION PATTERN(DANCER 1), ___x____), \
+                    MATCH(_SELECTION PATTERN(DANCER 2), ___x____))
       from: PROMENADE, STAR PROMENADE
         in: 4
         call: as couples(_and roll(_single promenade 1/4))
     from: ANY // no rotation
-      condition: OR(SELECTION PATTERN(DANCER 1, _____x__), \
-                    SELECTION PATTERN(DANCER 2, _____x__))
+      condition: OR(MATCH(_SELECTION PATTERN(DANCER 1), _____x__), \
+                    MATCH(_SELECTION PATTERN(DANCER 2), _____x__))
       from: PARALLEL LH TWO-FACED LINES
         in: 4
         call: as couples(_and roll(_single promenade 1/4))
@@ -365,8 +361,8 @@ def: star promenade home
   ipart:
     from: ANY // use ANY to guarantee no rotation
       // we're going to the head beau's home.
-      condition: OR(SELECTION PATTERN(DANCER 1, ___x____), \
-                    SELECTION PATTERN(DANCER 2, ___x____))
+      condition: OR(MATCH(_SELECTION PATTERN(DANCER 1), ___x____), \
+                    MATCH(_SELECTION PATTERN(DANCER 2), ___x____))
       from: PROMENADE, STAR PROMENADE
         in: 4
         call: as couples(_and roll(_single star promenade 1/4))
@@ -379,7 +375,7 @@ def: single file promenade home
   spoken: single file promenade (home)?
   ipart:
     from: ANY // use ANY to guarantee no rotation
-      condition: SELECTION PATTERN(DANCER 1, __x_____)
+      condition: MATCH(_SELECTION PATTERN(DANCER 1), __x_____)
       from: SINGLE FILE PROMENADE, LH COLUMN
         in: 4
         call: _and roll(_single file promenade(1/4))
@@ -553,7 +549,7 @@ def: u turn back
 def: courtesy turn(n=3/4)
   spoken: courtesy turn (<n=fraction>)?
   from: FACING DANCERS
-    call: _in(_multiply_num([n],8), \
+    call: _in(_multiply num([n],8), \
               and(_start courtesy turn, courtesy turn([n])))
   from: COUPLE
     call: _fractional([n], _courtesy turn 4/4)
@@ -586,7 +582,7 @@ def: four ladies chain(sel,n=1/2)
       condition: ARE([sel], BELLE), "Named dancers must be belles"
       condition: NOT(GREATER(1/4, [n])), "Must chain at least 1/4"
       call: _start belles chain
-      call: _in(_multiply_num(8,[n]),\
+      call: _in(_multiply num(8,[n]),\
                 _centers(reverse(_single star promenade([n]))))
       call: _finish belles chain, _in(4, courtesy turn(3/4))
 def: _start belles chain
@@ -688,7 +684,7 @@ def: _grand square face(sel)
 def: face grand square(sel, n=32)
   // XXX boys face grand square, etc?
   spoken: <sel=heads_or_sides> face grand square ( <n=number> steps )?
-    call: _fractional(_multiply_num([n],1/32), \
+    call: _fractional(_multiply num([n],1/32), \
           _grand square(_grand square face([sel]), _grand square face([sel])))
 
 // callerlab #22: STAR THRU
@@ -731,7 +727,7 @@ def: square thru(n)
   from: FACING COUPLES
     condition: greater([n], 1)
     ipart: // does square thru N have N distinct parts?
-      call: _in(2, _sq_thru_part), left(square thru(_subtract_num([n],1)))
+      call: _in(2, _sq_thru_part), left(square thru(_subtract num([n],1)))
 
 def: _sq_thru_part
   ipart:
@@ -945,8 +941,7 @@ def: trade down the line(sel)
   spoken: <sel=anyone> trade down the line
   in: 4
   from: 1x4
-    condition: AND(OR(SELECTION PATTERN([sel], _x_x), \
-                      SELECTION PATTERN([sel], x_x_)), \
+    condition: AND(MATCH(_SELECTION PATTERN([sel]), "_x_x|x_x_"), \
                    NOT(TBONED([sel])))
     select: [sel]
       prim: in 2, 2, in
@@ -955,7 +950,7 @@ def: trade down the line(sel)
       prim: 0, 0, none
       prim: 0, 0, none
   from: 1x4
-    condition: AND(SELECTION PATTERN([sel], x__x), NOT(TBONED([sel])))
+    condition: AND(MATCH(_SELECTION PATTERN([sel]), x__x), NOT(TBONED([sel])))
     select: [sel]
       prim: in 3, 3, in
       prim: in 3, 3, in
@@ -964,9 +959,7 @@ def: trade down the line(sel)
       prim: 0, 0, none
   // these cases should really be "trade" not "trade down the line"
   from: 1x4
-    condition: AND(OR(SELECTION PATTERN([sel], xx__), \
-                      SELECTION PATTERN([sel], __xx), \
-                      SELECTION PATTERN([sel], _xx_)), \
+    condition: AND(MATCH(_SELECTION PATTERN([sel]), "xx__|__xx|_xx_"), \
                    NOT(TBONED([sel])))
     select: [sel]
       prim: in 1, 1, in
@@ -1107,9 +1100,9 @@ def: touch
 def: _touch(n) // touch 3/4 is mainstream, not basic
   // timing: 2 per quarter
   spoken: touch <n=fraction>
-  condition: or(equal([n],1/4), program at least(MAINSTREAM)), \
+  condition: or(equal num([n],1/4), program at least(MAINSTREAM)), \
              "Only touch 1/4 is allowed at Basic"
-  call: _in(_multiply_num([n], 8), \
+  call: _in(_multiply num([n], 8), \
             and(touch, _fractional([n], _cast 4/4)))
 
 // callerlab #51: CIRCULATE FAMILY (see BMS addendum)

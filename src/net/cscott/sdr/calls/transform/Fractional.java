@@ -88,7 +88,7 @@ public class Fractional extends TransformVisitor<Fraction> {
             // special case; just multiply fractions
             return new Apply
                 (new Expr("_fractional",
-                          new Expr("_multiply_num",
+                          new Expr("_multiply num",
                                    apply.call.args.get(0), Expr.literal(f)),
                           apply.call.args.get(1)));
         }

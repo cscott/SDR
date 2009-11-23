@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.ast.Expr;
@@ -86,16 +87,16 @@ public abstract class PredicateList {
      * Numerical equality.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr equal \'"1 1/2" \'1 1/2)');
-     *  (Expr equal '1 1/2 '1 1/2)
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr equal num \'"1 1/2" \'1 1/2)');
+     *  (Expr equal num '1 1/2 '1 1/2)
      *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  true
-     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr equal \'"1 1/2" \'2)');
-     *  (Expr equal '1 1/2 '2)
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr equal num \'"1 1/2" \'2)');
+     *  (Expr equal num '1 1/2 '2)
      *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
      *  false
      */
-    public final static Predicate EQUAL = new _Predicate("equal") {
+    public final static Predicate EQUAL_NUM = new _Predicate("equal num") {
         @Override
         public boolean evaluate(DanceState ds, List<Expr> args) throws EvaluationException {
             assert args.size()==2;
@@ -109,7 +110,7 @@ public abstract class PredicateList {
         }
     };
     /**
-     * Numerical comparison.
+     * Numerical "greater than" comparison.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
      *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr greater \'"1 1/2" \'"1 1/2")');
@@ -134,6 +135,98 @@ public abstract class PredicateList {
             return argsAreConstant(Fraction.class, args);
         }
     };
+    /**
+     * Numerical "less than" comparison.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr less \'"1 1/2" \'"1 1/2")');
+     *  (Expr less '1 1/2 '1 1/2)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
+     *  false
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr less '1 1/2 '2)");
+     *  (Expr less '1 1/2 '2)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
+     *  true
+     */
+    public final static Predicate LESS = new _Predicate("less") {
+        @Override
+        public boolean evaluate(DanceState ds, List<Expr> args) throws EvaluationException {
+            assert args.size()==2;
+            Fraction f0 = args.get(0).evaluate(Fraction.class, ds);
+            Fraction f1 = args.get(1).evaluate(Fraction.class, ds);
+            return f0.compareTo(f1) < 0;
+        }
+        @Override
+        public boolean isConstant(List<Expr> args) {
+            return argsAreConstant(Fraction.class, args);
+        }
+    };
+
+    // string operators
+    /**
+     * Case-insensitive string equality.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr equal str \'"abc" \'ABC)');
+     *  (Expr equal str 'abc 'ABC)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
+     *  true
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf('(Expr equal str \'"abc" \'xyz)');
+     *  (Expr equal str 'abc 'xyz)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
+     *  false
+     */
+    public final static Predicate EQUAL_STR = new _Predicate("equal str") {
+        @Override
+        public boolean evaluate(DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            assert args.size()==2;
+            String s0 = args.get(0).evaluate(String.class, ds);
+            String s1 = args.get(1).evaluate(String.class, ds);
+            return s0.equalsIgnoreCase(s1);
+        }
+        @Override
+        public boolean isConstant(List<Expr> args) {
+            return argsAreConstant(String.class, args);
+        }
+    };
+    /** Case-insensitive regular expression string match.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET); undefined;
+     *  js> function test(str, pat) {
+     *    >   let c = net.cscott.sdr.calls.ast.AstNode.valueOf(
+     *    >           "(Expr MATCH '"+str+" '\""+pat+"\")");
+     *    >    return PredicateList.valueOf(c.atom).evaluate(ds, c.args)
+     *    > }
+     *  js> test('ABC', 'DEF')
+     *  false
+     *  js> test('BOY', 'BOY')
+     *  true
+     *  js> // match is case-insensitive
+     *  js> test('boy', 'BOY') && test('BOY', 'boy')
+     *  true
+     *  js> // regular expressions
+     *  js> test('boy', 'b.y')
+     *  true
+     *  js> test('buoys', 'b.*s')
+     *  true
+     */
+    public final static Predicate MATCH = new _Predicate("match") {
+        @Override
+        public boolean evaluate(DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            assert args.size()==2;
+            String s = args.get(0).evaluate(String.class, ds);
+            String pattern = args.get(1).evaluate(String.class, ds);
+            Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+            return p.matcher(s).matches();
+        }
+        @Override
+        public boolean isConstant(List<Expr> args) {
+            return argsAreConstant(String.class, args);
+        }
+    };
+
     // n-ary operators.
     /**
      * Short-circuit boolean conjunction.
@@ -226,63 +319,6 @@ public abstract class PredicateList {
             return ds.dance.getProgram().includes(p);
         }
     };
-    /**
-     * Check the order of the selected dancers within the given formation.
-     * @doc.test
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
-     *  js> SD = StandardDancer; undefined
-     *  js> // rotate the formation 1/2 just to get rid of the original tags
-     *  js> f = FormationList.RH_OCEAN_WAVE; f.toStringDiagram()
-     *  ^    v    ^    v
-     *  js> // label those dancers
-     *  js> f= f.mapStd([SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
-     *    >              SD.COUPLE_3_BOY, SD.COUPLE_3_GIRL]); f.toStringDiagram()
-     *  1B^  1Gv  3B^  3Gv
-     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
-     *  js> function test(sel, pat) {
-     *    >   let c = net.cscott.sdr.calls.ast.AstNode.valueOf(
-     *    >           "(Expr SELECTION PATTERN '"+sel+" '"+pat+")");
-     *    >    return PredicateList.valueOf(c.atom).evaluate(ds, c.args)
-     *    > }
-     *  js> test('BOY', '____')
-     *  false
-     *  js> test('BOY', 'x_x_')
-     *  true
-     *  js> test('BOY', '_x_x')
-     *  false
-     *  js> test('CENTER', '_xx_')
-     *  true
-     *  js> test('HEAD', 'xxxx')
-     *  true
-     *  js> test('SIDE', '____')
-     *  true
-     *  js> test('COUPLE 1', 'xx__')
-     *  true
-     *  js> test('SIDE', '_xx_')
-     *  false
-     */
-    public final static Predicate SELECTION_PATTERN = new _Predicate("selection pattern") {
-        @Override
-        public boolean evaluate(DanceState ds, List<Expr> args) throws EvaluationException {
-            assert args.size()==2;
-            Selector selector = args.get(0).evaluate(Selector.class, ds);
-
-            TaggedFormation tf = TaggedFormation.coerce(ds.currentFormation());
-            Set<Dancer> selected = selector.select(tf);
-            String pattern = args.get(1).evaluate(String.class, ds);
-            if (pattern.length() != tf.dancers().size())
-                return false;
-            // check each dancer against the corresponding character in the
-            // pattern.
-            int i=0;
-            for (Dancer d : tf.sortedDancers()) {
-                boolean t1 = selected.contains(d);
-                boolean t2 = pattern.charAt(i++) != '_';
-                if (t1!=t2) return false;
-            }
-            return true;
-        }
-    };
     /** Check whether the tagged dancers are t-boned.
      * @doc.test
      *  js> importPackage(net.cscott.sdr.util); // for Fraction
@@ -372,7 +408,7 @@ public abstract class PredicateList {
     /** Check the identify of a call provided as an argument.
      *  Used in a hack to implement "boys trade".
      */
-    public final static Predicate CALL_IS = new _Predicate("call is") {
+    public final static Predicate EQUAL_CALL = new _Predicate("equal call") {
         /** This is a case-insensitive tree comparison. */
         @Override
         public boolean evaluate(DanceState ds, List<Expr> args) {

@@ -144,12 +144,14 @@ def: by golly
   // it's more general than the "standard" definition and allows by golly
   // following couple up, r&l thru, etc.
   from: FACING COUPLES
-    condition: ROLL IS(RIGHT) // all selected dancers can roll right
+    // all selected dancers can roll right
+    condition: MATCH(_ROLL PATTERN(), RRRR)
     ipart:
       call: veer left
       call: 1/2 tag
   from: FACING COUPLES
-    condition: ROLL IS(LEFT) // all selected dancers can roll left
+    // all selected dancers can roll left
+    condition: MATCH(_ROLL PATTERN(), LLLL)
     ipart:
       call: veer right
       call: left 1/2 tag

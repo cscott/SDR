@@ -48,6 +48,8 @@ import net.cscott.sdr.util.Fraction;
 }
 @lexer::header {
 package net.cscott.sdr.calls.ast;
+
+import static org.apache.commons.lang.StringEscapeUtils.unescapeJava;
 }
 @lexer::members {
     public AstLexer(String s) {
@@ -269,8 +271,8 @@ INT
     : ('0'..'9')+
     ;
 STRING
-    : '"' .* '"'
-        { setText(getText().substring(1,getText().length()-1)); }
+    : '"' ((~('\\'|'"'))|('\\' . ))* '"'
+        { setText(unescapeJava(getText().substring(1,getText().length()-1))); }
     ;
 IDENT
     : ('A'..'Z'|'a'..'z'|'_')('A'..'Z'|'a'..'z'|'_'|'0'..'9')*

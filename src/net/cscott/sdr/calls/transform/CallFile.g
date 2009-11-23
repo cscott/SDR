@@ -140,6 +140,8 @@ tokens {
 
 @lexer::header {
     package net.cscott.sdr.calls.transform;
+
+    import static org.apache.commons.lang.StringEscapeUtils.unescapeJava;
 }
 @lexer::members {
     /** Have we seen the line-initial whitespace yet? */
@@ -571,8 +573,8 @@ or_body_seq
     ;
 
 cond_msg
-    : COMMA! LBRACK! number^ RBRACK! QUOTED_STR
-    | COMMA QUOTED_STR -> ^(NUMBER["1"] QUOTED_STR)
+    : COMMA! LBRACK! number^ RBRACK! simple_words
+    | COMMA simple_words -> ^(NUMBER["1"] simple_words)
     | -> ^(NUMBER["0"])
     ;
 
@@ -690,11 +692,6 @@ INTEGER
     : {afterIndent}?=>
       ('0'..'9')+
     ;
-QUOTED_STR
-    : {afterIndent}?=>
-      '"' (~('"'|'\\'))* '"'
-          { setText(getText().substring(1, getText().length()-1)); }
-    ;
 
 // newline processing
 fragment NL
@@ -754,6 +751,9 @@ NONE:      {afterPrim}?=> 'none';
 IDENT
   : {afterIndent}?=>
     ('_'|'a'..'z'|'A'..'Z') ('_'|'a'..'z'|'A'..'Z'|'0'..'9'|'-')*
+  | {afterIndent}?=>
+    '"' ((~('\\'|'"'))|('\\' . ))* '"'
+        { setText(unescapeJava(getText().substring(1,getText().length()-1))); }
   ;
 
 // Operators

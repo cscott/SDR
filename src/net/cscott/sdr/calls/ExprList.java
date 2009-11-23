@@ -3,6 +3,7 @@ package net.cscott.sdr.calls;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Expr;
@@ -16,6 +17,8 @@ public abstract class ExprList {
         new LinkedHashMap<String,ExprFunc>();
     private final static Map<String, ExprFunc<Fraction>> exprMathFuncs =
         new LinkedHashMap<String,ExprFunc<Fraction>>();
+    private final static Map<String, ExprFunc<String>> exprStringFuncs =
+        new LinkedHashMap<String,ExprFunc<String>>();
 
     /** This method evaluates {@link Expr} nodes. */
     public static <T> T evaluate(String atom, Class<T> type,
@@ -37,12 +40,15 @@ public abstract class ExprList {
     private static final <T> ExprFunc<? extends T> lookup(String atom,
                                                           Class<T> type)
         throws EvaluationException {
-        final String atomP = atom.toLowerCase().replace(' ', '_');
+        final String atomP = atom.toLowerCase();
         if (exprGenericFuncs.containsKey(atomP))
             return (ExprFunc<? extends T>) exprGenericFuncs.get(atomP);
         if (type.isAssignableFrom(Fraction.class) &&
-            exprMathFuncs.containsKey(atomP))
-            return (ExprFunc<? extends T>) exprMathFuncs.get(atomP);
+                exprMathFuncs.containsKey(atomP))
+                return (ExprFunc<? extends T>) exprMathFuncs.get(atomP);
+        if (type.isAssignableFrom(String.class) &&
+                exprStringFuncs.containsKey(atomP))
+                return (ExprFunc<? extends T>) exprStringFuncs.get(atomP);
         if (type.isAssignableFrom(Boolean.class))
             try {
                 return (ExprFunc<? extends T>) (ExprFunc<Boolean>)
@@ -156,12 +162,12 @@ public abstract class ExprList {
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
      *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
-     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _add_num '2 '1)")
-     *  (Expr _add_num '2 '1)
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _add num '2 '1)")
+     *  (Expr _add num '2 '1)
      *  js> c.evaluate(fc, ds).toProperString()
      *  3
      */
-    public static final ExprFunc<Fraction> _ADD_NUM = new MathFunc("_add_num") {
+    public static final ExprFunc<Fraction> _ADD_NUM = new MathFunc("_add num") {
         @Override
         Fraction doOp(Fraction f1, Fraction f2) { return f1.add(f2); }
         @Override
@@ -175,12 +181,12 @@ public abstract class ExprList {
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
      *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
-     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _multiply_num '3 '2)")
-     *  (Expr _multiply_num '3 '2)
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _multiply num '3 '2)")
+     *  (Expr _multiply num '3 '2)
      *  js> c.evaluate(fc, ds).toProperString()
      *  6
      */
-    public static final ExprFunc<Fraction> _MULTIPLY_NUM = new MathFunc("_multiply_num") {
+    public static final ExprFunc<Fraction> _MULTIPLY_NUM = new MathFunc("_multiply num") {
         @Override
         Fraction doOp(Fraction f1, Fraction f2) { return f1.multiply(f2); }
         @Override
@@ -194,12 +200,12 @@ public abstract class ExprList {
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
      *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
-     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _subtract_num '3 '2)")
-     *  (Expr _subtract_num '3 '2)
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _subtract num '3 '2)")
+     *  (Expr _subtract num '3 '2)
      *  js> c.evaluate(fc, ds).toProperString()
      *  1
      */
-    public static final ExprFunc<Fraction> _SUBTRACT_NUM = new MathFunc("_subtract_num") {
+    public static final ExprFunc<Fraction> _SUBTRACT_NUM = new MathFunc("_subtract num") {
         @Override
         Fraction doOp(Fraction f1, Fraction f2) { return f1.subtract(f2); }
         @Override
@@ -213,12 +219,12 @@ public abstract class ExprList {
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
      *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
-     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _divide_num '3 '2)")
-     *  (Expr _divide_num '3 '2)
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _divide num '3 '2)")
+     *  (Expr _divide num '3 '2)
      *  js> c.evaluate(fc, ds).toProperString()
      *  1 1/2
      */
-    public static final ExprFunc<Fraction> _DIVIDE_NUM = new MathFunc("_divide_num") {
+    public static final ExprFunc<Fraction> _DIVIDE_NUM = new MathFunc("_divide num") {
         @Override
         Fraction doOp(Fraction f1, Fraction f2) { return f1.divide(f2); }
         @Override
@@ -227,4 +233,107 @@ public abstract class ExprList {
         public int minArgs() { return 2; }
     };
     static { exprMathFuncs.put(_DIVIDE_NUM.getName(), _DIVIDE_NUM); }
+
+    private static abstract class PatternFunc<T> extends ExprFunc<String> {
+        private final String name;
+        PatternFunc(String name) { this.name = name; }
+        @Override
+        public String getName() { return name; }
+        @Override
+        public String evaluate(Class<? super String> type, DanceState ds,
+                               List<Expr> args) throws EvaluationException {
+            T closure = parseArgs(ds, args);
+            TaggedFormation tf = TaggedFormation.coerce(ds.currentFormation());
+            StringBuilder sb = new StringBuilder();
+            for (Dancer d : tf.sortedDancers())
+                sb.append(dancerToString(tf, d, closure));
+            return sb.toString();
+        }
+        protected abstract String dancerToString(TaggedFormation tf, Dancer d,
+                                                 T closure);
+        protected T parseArgs(DanceState ds, List<Expr> args)
+            throws EvaluationException { return null; }
+    }
+    public static final ExprFunc<String> _ROLL_PATTERN =
+        new PatternFunc<Void>("_roll pattern") {
+        @Override
+        protected String dancerToString(TaggedFormation tf, Dancer d, Void v) {
+            Position p = tf.location(d);
+            if (p.flags.contains(Position.Flag.ROLL_LEFT))
+                return "L";
+            if (p.flags.contains(Position.Flag.ROLL_RIGHT))
+                return "R";
+            return "_";
+        }
+    };
+    static { exprStringFuncs.put(_ROLL_PATTERN.getName(), _ROLL_PATTERN); }
+
+    public static final ExprFunc<String> _SWEEP_PATTERN =
+        new PatternFunc<Void>("_sweep pattern") {
+        @Override
+        protected String dancerToString(TaggedFormation tf, Dancer d, Void v) {
+            Position p = tf.location(d);
+            if (p.flags.contains(Position.Flag.SWEEP_LEFT))
+                return "L";
+            if (p.flags.contains(Position.Flag.SWEEP_RIGHT))
+                return "R";
+            return "_";
+        }
+    };
+    static { exprStringFuncs.put(_SWEEP_PATTERN.getName(), _SWEEP_PATTERN); }
+
+    /**
+     * Check the order of the selected dancers within the given formation.
+     * @doc.test
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> SD = StandardDancer; undefined
+     *  js> // rotate the formation 1/2 just to get rid of the original tags
+     *  js> f = FormationList.RH_OCEAN_WAVE; f.toStringDiagram()
+     *  ^    v    ^    v
+     *  js> // label those dancers
+     *  js> f= f.mapStd([SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
+     *    >              SD.COUPLE_3_BOY, SD.COUPLE_3_GIRL]); f.toStringDiagram()
+     *  1B^  1Gv  3B^  3Gv
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
+     *  js> function test(sel, pat) {
+     *    >   let c = net.cscott.sdr.calls.ast.AstNode.valueOf(
+     *    >           "(Expr MATCH (Expr _SELECTION PATTERN '"+sel+") '\""+pat+"\")");
+     *    >    return PredicateList.valueOf(c.atom).evaluate(ds, c.args)
+     *    > }
+     *  js> test('BOY', '____')
+     *  false
+     *  js> test('BOY', 'x_x_')
+     *  true
+     *  js> test('BOY', '_x_x')
+     *  false
+     *  js> test('CENTER', '_xx_')
+     *  true
+     *  js> test('HEAD', 'xxxx')
+     *  true
+     *  js> test('SIDE', '____')
+     *  true
+     *  js> test('COUPLE 1', 'xx__')
+     *  true
+     *  js> test('SIDE', '_xx_')
+     *  false
+     *  js> // wildcards
+     *  js> test('BOY', 'x...')
+     *  true
+     */
+    public static final ExprFunc<String> _SELECTION_PATTERN =
+        new PatternFunc<Set<Dancer>>("_selection pattern") {
+        protected Set<Dancer> parseArgs(DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            Selector selector =
+                SelectorList.OR.evaluate(Selector.class, ds, args);
+            TaggedFormation tf = TaggedFormation.coerce(ds.currentFormation());
+            return selector.select(tf);
+        }
+        @Override
+        protected String dancerToString(TaggedFormation tf, Dancer d,
+                                        Set<Dancer> selected) {
+            return selected.contains(d) ? "X" : "_";
+        }
+    };
+    static { exprStringFuncs.put(_SELECTION_PATTERN.getName(), _SELECTION_PATTERN); }
 }

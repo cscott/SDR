@@ -161,11 +161,11 @@ def: _tag(atc, n)
     call: [atc], _finish_tag([n])
 def: _finish_tag(n)
   from: SINGLE DOUBLE PASS THRU
-    condition: EQUAL([n], 0)
+    condition: EQUAL NUM([n], 0)
     call: nothing
   from: SINGLE DOUBLE PASS THRU
     condition: GREATER([n], 0)
-    call: _fractional(_multiply_num(4,[n]), _extend)
+    call: _fractional(_multiply num(4,[n]), _extend)
 // or else: n=0->atc; else fractional(n, part(atc,extend), part(extend), part(extend), part(extend))
 
 def: _atc tag
