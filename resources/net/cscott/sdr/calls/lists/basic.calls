@@ -969,22 +969,27 @@ def: trade down the line(sel)
       prim: 0, 0, none
 
 def: trade
-  from: COUPLE
-    in: 4
-    prim: in 1,1,in
-    prim: in 1,1,in
-  from: MINIWAVE
-    in: 4
-    prim: in 1,1,in
-    prim: in 1,1,in
+  from: mixed(COUPLE, RH_MINIWAVE, LH_MINIWAVE)
+    from: COUPLE
+      call: partner trade
+    from: MINIWAVE
+      call: _miniwave trade
 
 def: couples trade
   in: 6
   call: as couples(trade)
 
+def: _miniwave trade
+  from: MINIWAVE
+    in: 4
+    prim: in 1,1,in
+    prim: in 1,1,in
+
 def: partner trade
   from: COUPLE
-    call: trade
+    in: 4
+    prim: in 1,1,in
+    prim: in 1,1,in
 
 // callerlab #42: WHEEL AND DEAL FAMILY
 def: wheel and deal

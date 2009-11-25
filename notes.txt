@@ -1104,7 +1104,7 @@ to do:
  x) test circle left/right, test run (in all its glory), test trade
     from quarter tag
  j1) t-boned cross runs (needs select X&Y, see (w))
- j2) trade from quarter tag. (needs matcher from multiple formations (y))
+ xx) trade from quarter tag. (needs matcher from multiple formations (y))
  xx) separate insertion point and playback cursor.
  k2) have a 'keep playing' flag that is set when you press play but
     cleared when you manually scrub to a point. if you receive more

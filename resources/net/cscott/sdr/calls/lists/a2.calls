@@ -2,6 +2,12 @@ program: a2
 
 /* 'swing' is defined in basic.calls */
 
+def: slip
+  // "from general lines with centers forming a miniwave only"
+  in: 3
+  from: 1x4
+    call: _quasi concentric(_miniwave trade, nothing)
+
 /*
 def: split counter rotate
   in: 4
