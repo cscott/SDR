@@ -11,11 +11,10 @@
  *   extend-level at line 16
  *   hinge-1 at line 36
  *   peel-the-top-1 at line 32
- *   roll at line 22
  *   run-1 at line 24
  *   siamese-1 at line 30
- *   sweep-1 at line 32
- *   sweep-2 at line 17
+ *   sweep-2 at line 42
+ *   sweep-3 at line 23
  *   trade-2 at line 13
  *   vaya-con-dios at line 39
  */

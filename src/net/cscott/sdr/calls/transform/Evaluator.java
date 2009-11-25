@@ -158,9 +158,9 @@ import org.junit.runner.RunWith;
  *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
  *  |1B^  4Gv  3G^  4Bv  2B^  1Gv  2G^  3Bv
  *  js> ds.movements(StandardDancer.COUPLE_1_BOY)
- *  [DancerPath[from=-1,-3,w,to=-7,-3,nw,[ROLL_RIGHT],time=2,pointOfRotation=FOUR_DANCERS], DancerPath[from=-7,-3,nw,[ROLL_RIGHT],to=-7,0,n,[ROLL_RIGHT],time=2,pointOfRotation=FOUR_DANCERS]]
+ *  [DancerPath[from=-1,-3,w,to=-7,-3,nw,[ROLL_RIGHT, SWEEP_LEFT],time=2,pointOfRotation=FOUR_DANCERS], DancerPath[from=-7,-3,nw,[ROLL_RIGHT, SWEEP_LEFT],to=-7,0,n,[ROLL_RIGHT, SWEEP_LEFT],time=2,pointOfRotation=FOUR_DANCERS]]
  *  js> ds.movements(StandardDancer.COUPLE_4_GIRL)
- *  [DancerPath[from=-1,-1,e,to=-1,0,n,[ROLL_LEFT],time=1 1/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-1,0,n,[ROLL_LEFT],to=-3,1,nw,[ROLL_LEFT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-3,1,nw,[ROLL_LEFT],to=-4,1,w,[ROLL_LEFT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-4,1,w,[ROLL_LEFT],to=-5,0,s,[ROLL_LEFT],time=1 1/3,pointOfRotation=FOUR_DANCERS]]
+ *  [DancerPath[from=-1,-1,e,to=-1,0,n,[ROLL_LEFT, SWEEP_RIGHT],time=1 1/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-1,0,n,[ROLL_LEFT, SWEEP_RIGHT],to=-3,1,nw,[ROLL_LEFT, SWEEP_RIGHT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-3,1,nw,[ROLL_LEFT, SWEEP_RIGHT],to=-4,1,w,[ROLL_LEFT, SWEEP_RIGHT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-4,1,w,[ROLL_LEFT, SWEEP_RIGHT],to=-5,0,s,[ROLL_LEFT, SWEEP_RIGHT],time=1 1/3,pointOfRotation=FOUR_DANCERS]]
  * @doc.test Four-person "pass thru":
  *  js> importPackage(net.cscott.sdr.calls);
  *  js> ds = new DanceState(new DanceProgram(Program.BASIC), Formation.FOUR_SQUARE); undefined;

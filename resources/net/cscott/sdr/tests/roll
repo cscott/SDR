@@ -62,4 +62,21 @@ sdr> roll
 | 4B^  1B^
 | 
 | 4G<  1G<
+sdr> /// test that swing thru preserves roll for everyone
+sdr> centers left touch 1/4
+| 3G>  2G>
+| 
+| 4B<  1B<
+| 
+| 3B>  2B>
+| 
+| 4G<  1G<
+sdr> swing thru and roll
+| 4Bv  1Bv
+| 
+| 4Gv  1Gv
+| 
+| 3G^  2G^
+| 
+| 3B^  2B^
 sdr> /exit

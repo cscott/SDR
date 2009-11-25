@@ -51,8 +51,8 @@ public abstract class PlusList {
     public static final Call ROLL = new PlusCall("_roll") {
 	// the lists say 2 beats for 'roll', but that's way too long.
 	// try one instead.
-        final Prim rightRoll = Prim.valueOf("(Prim 0, 0, right, 1)");
-        final Prim leftRoll = Prim.valueOf("(Prim 0, 0, left, 1)");
+        final Prim rightRoll = Prim.valueOf("(Prim 0, 0, right, 1, preserve-sweep)");
+        final Prim leftRoll = Prim.valueOf("(Prim 0, 0, left, 1, preserve-sweep)");
         @Override
         public int getMinNumberOfArguments() { return 0; }
         @Override

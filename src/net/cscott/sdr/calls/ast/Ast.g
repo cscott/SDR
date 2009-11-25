@@ -275,7 +275,7 @@ STRING
         { setText(unescapeJava(getText().substring(1,getText().length()-1))); }
     ;
 IDENT
-    : ('A'..'Z'|'a'..'z'|'_')('A'..'Z'|'a'..'z'|'_'|'0'..'9')*
+    : ('A'..'Z'|'a'..'z'|'_')('A'..'Z'|'a'..'z'|'_'|'0'..'9'|'-')*
     ;
 
 WS: ( ' ' | '\t' | '\r' | '\n' )+ { skip(); };

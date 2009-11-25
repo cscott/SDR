@@ -1101,8 +1101,8 @@ to do:
  h1) fix axis adjustment in concentric
  x) tandem
  xx) fix roll/sweep in tandem/as couples/etc.
- i2) roll should preserve sweep (recycle, wheel & deal)
- i3) hinge should set sweep (or hinge&roll should)
+ xx) roll should preserve sweep (recycle, wheel & deal)
+ xx) hinge should set sweep (or hinge&roll should)
  x) test circle left/right, test run (in all its glory), test trade
     from quarter tag
  j1) t-boned cross runs (needs select X&Y, see (w))
@@ -1118,17 +1118,17 @@ to do:
     position. Probably should switch to breathed diamond spots. (see (aa))
  m1) peel the top ending in diamond ("do half a peel the top")
  n) roll failures (roll/trade-and-roll tests):
- n1) top-level evaluator should clear all roll directions if next call
-     is not 'roll' (or other roll-dependent call -- by golly?)
+ xx) top-level evaluator should clear all roll directions if next call
+     is not 'roll' (or other roll-dependent call -- by golly?) [2009-11-25: NO]
      * or maybe should have separate 'nothing-clear-roll' and
        'nothing-keep-roll' calls, and use 'nothing-clear-roll' in
        places like the <anyone> <anything> concept and for the
-       non-moving dancers in 'trade down the line'
+       non-moving dancers in 'trade down the line' [2009-11-25: YES]
      * Better: add a KEEP ROLL prim flag.  Swing thru, etc, should
-       do _anyone anything(CENTER, foo, _nothing keep roll)
-       - The 'roll' concept should be careful only to delete 'nothings'
+       do _anyone anything(CENTER, foo, _nothing keep roll) [2009-11-25: YES]
+  n2)    The 'roll' concept should be careful only to delete 'nothings'
          which KEEP ROLL (also look @ the dancerSync method)
-     * SD says: "When "roll_transparent" is used on a part of a "seq"
+  n3) SD says: "When "roll_transparent" is used on a part of a "seq"
        definition, that call must have the property that anyone who is
        marked roll-neutral (that is, with an "M" roll letter), must
        not have moved at all, and must consider this part not to have

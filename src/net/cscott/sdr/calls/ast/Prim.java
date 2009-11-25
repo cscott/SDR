@@ -68,6 +68,14 @@ public class Prim extends SeqCall {
 	 */
 	FORCE_ROLL_NONE,
 	/**
+	 * Keep the roll direction from the previous path.
+	 */
+	PRESERVE_ROLL,
+	/**
+	 * Keep the sweep direction from the previous path.
+	 */
+	PRESERVE_SWEEP,
+	/**
 	 * Begin the movement with a sashay (instead of stepping forward).
 	 */
 	SASHAY_START,
@@ -127,12 +135,14 @@ public class Prim extends SeqCall {
 	// sanity-checking
         assert ((this.flags.contains(Flag.FORCE_ROLL_RIGHT)?1:0)+
                 (this.flags.contains(Flag.FORCE_ROLL_LEFT)?1:0)+
-                (this.flags.contains(Flag.FORCE_ROLL_NONE)?1:0)) <= 1 :
-	"FORCE_ROLL_RIGHT, FORCE_ROLL_LEFT, and FORCE_ROLL_NONE are exclusive.";
+                (this.flags.contains(Flag.FORCE_ROLL_NONE)?1:0)+
+                (this.flags.contains(Flag.PRESERVE_ROLL)?1:0)) <= 1 :
+	"FORCE_ROLL_RIGHT, FORCE_ROLL_LEFT, FORCE_ROLL_NONE, and PRESERVE_ROLL are exclusive.";
     }
     public static final Prim STAND_STILL =
         new Prim(Direction.ASIS,Fraction.ZERO, Direction.ASIS,Fraction.ZERO,
-		 Direction.ASIS,ExactRotation.ZERO, Fraction.ONE);
+		 Direction.ASIS,ExactRotation.ZERO, Fraction.ONE,
+		 Flag.PRESERVE_ROLL, Flag.PRESERVE_SWEEP);
     // support visitor
     @Override
     public <T> SeqCall accept(TransformVisitor<T> v, T t) {

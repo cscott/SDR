@@ -246,6 +246,10 @@ def: _REAL recycle // xxx
 def: recycle // xxx cheat definition, for the present
   in: 4
   ipart: // this definition isn't valid for fractionalization
-    call: hinge, _box circulate, quarter in
+    call: hinge, _box circulate, _recycle face in
+def: _recycle face in
+  in: 2
+  from: 2x2
+   prim: 0, 0, in, preserve-sweep
 
 ////////// end of mainstream list //////////////

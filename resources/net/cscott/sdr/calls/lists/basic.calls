@@ -4,6 +4,9 @@ program: basic
 def: nothing
  prim: 0,0,none
 
+def: _nothing preserve roll
+ prim: 0,0,none,preserve-roll
+
 def: face right
   in: 2
   prim: 0,0,right
@@ -861,7 +864,8 @@ def: swing thru
   in: 6
   // XXX DEFINE ME: also from alamo ring
   from: RH OCEAN WAVE
-    call: _right arm turn 1/2, _centers(_left arm turn 1/2)
+    call: _right arm turn 1/2
+    call: anyone while others(CENTER,_left arm turn 1/2,_nothing preserve roll)
   from: LH OCEAN WAVE
     call: _centers(_right arm turn 1/2), _left arm turn 1/2
 
@@ -1128,6 +1132,7 @@ def: touch
 
 def: _touch(n) // touch 3/4 is mainstream, not basic
   // timing: 2 per quarter
+  optional: LEFT
   spoken: touch <n=fraction>
   condition: or(equal num([n],1/4), program at least(MAINSTREAM)), \
              "Only touch 1/4 is allowed at Basic"
