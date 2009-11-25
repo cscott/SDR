@@ -1169,7 +1169,7 @@ to do:
     SELECTION_PATTERN => PATTERN_EQUALS(PATTERN(SELECTED), '_x__')
      (add 'don't care' character -- '?' or '.')
     PATTERN(ROLL) => 'rlrl', PATTERN(SWEEP) => 'rlrl'
- s1)  use PATTERN(SWEEP) to define "sweep 1/4" (FROM FACING COUPLES:...)
+ xx)  use PATTERN(SWEEP) to define "sweep 1/4" (FROM FACING COUPLES:...)
  t) add post-condition nodes to graph, evaluated as "do child, then
     test condition on resulting formation".  IfAfter() or maybe just
     a boolean in the If node for "eval after".
