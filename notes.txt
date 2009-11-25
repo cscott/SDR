@@ -1105,7 +1105,7 @@ to do:
  xx) hinge should set sweep (or hinge&roll should)
  x) test circle left/right, test run (in all its glory), test trade
     from quarter tag
- j1) t-boned cross runs (needs select X&Y, see (w))
+ xx) t-boned cross runs (needs select X&Y, see (w))
  xx) trade from quarter tag. (needs matcher from multiple formations (y))
  xx) separate insertion point and playback cursor.
  k2) have a 'keep playing' flag that is set when you press play but

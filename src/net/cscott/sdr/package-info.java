@@ -11,7 +11,6 @@
  *   extend-level at line 16
  *   hinge-1 at line 36
  *   peel-the-top-1 at line 32
- *   run-1 at line 24
  *   siamese-1 at line 30
  *   sweep-2 at line 42
  *   sweep-3 at line 23
