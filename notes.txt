@@ -1115,8 +1115,9 @@ to do:
  x) peel the top, from boxes and zees
  xx) "ends fold" is broken.
  m) diamond circulate, w/ adjustment from 'half of ends cross run'
-    position. Probably should switch to breathed diamond spots. (see (aa))
+    position.
  m1) peel the top ending in diamond ("do half a peel the top")
+ m2) fix breathing of twin diamonds
  n) roll failures (roll/trade-and-roll tests):
  xx) top-level evaluator should clear all roll directions if next call
      is not 'roll' (or other roll-dependent call -- by golly?) [2009-11-25: NO]

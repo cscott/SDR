@@ -33,5 +33,11 @@ sdr> peel the top
 sdr> /program = Program.C1
 C1
 sdr> peel the top
-XXX: nice diamond
+|      2G>
+| 2B^       1Bv
+|      1G<
+| 
+|      3G>
+| 3B^       4Bv
+|      4G<
 sdr> /exit

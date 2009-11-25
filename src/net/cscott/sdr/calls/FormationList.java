@@ -17,16 +17,14 @@ import org.junit.runner.RunWith;
  * @doc.test Almost all standard formations are maximally "breathed in".
  *  This includes single diamonds, which are defined on a 2x3 grid, but
  *  twin diamonds have unbreathed points.
+ *  (EXPECT FAIL: our breather is pushing in the points of twin diamonds)
  *  js> FormationList = FormationListJS.initJS(this); undefined;
  *  js> for (f in Iterator(FormationList.all)) {
  *    >   if (!Breather.breathe(f).equals(f)) {
  *    >     print("Unbreathed formation: "+f.getName());
  *    >   }
  *    > }
- *  Unbreathed formation: RH TWIN DIAMONDS
- *  Unbreathed formation: LH TWIN DIAMONDS
- *  Unbreathed formation: RH TWIN FACING DIAMONDS
- *  Unbreathed formation: LH TWIN FACING DIAMONDS
+ *  js> // note: no output from the above
  * @doc.test Canonical formations should be centered.
  *  js> FormationList = FormationListJS.initJS(this); undefined;
  *  js> for (f in Iterator(FormationList.all)) {
