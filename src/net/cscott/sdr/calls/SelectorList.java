@@ -162,6 +162,39 @@ public class SelectorList {
     };
     static { addToList(OR); }
 
+    /** Complex selector: do a formation match and select tagged dancers from
+     *  the match -- but don't change the dance state.  Most useful for
+     *  'ends in' conditions, which don't have a TaggedFormation handy. */
+    public static ExprFunc<Selector> FORMATION = new ExprFunc<Selector>() {
+        @Override
+        public String getName() { return "formation"; }
+        @Override
+        public Selector evaluate(Class<? super Selector> type,
+                                 final DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            if (args.size()!=2)
+                throw new EvaluationException("needs two arguments");
+            final Matcher m = args.get(0).evaluate(Matcher.class, ds);
+            final Selector s = args.get(1).evaluate(Selector.class, ds);
+            return new Selector() {
+                @Override
+                public Set<Dancer> select(TaggedFormation tf) {
+                    try {
+                        FormationMatch fm = m.match(tf);
+                        Set<Dancer> d = new LinkedHashSet<Dancer>();
+                        for (TaggedFormation ntf : fm.matches.values())
+                            d.addAll(s.select(ntf));
+                        return d;
+                    } catch (NoMatchException nme) {
+                        // hm, didn't match, so say no dancers matched
+                        return Collections.emptySet();
+                    }
+                }
+            };
+        }
+    };
+    static { addToList(FORMATION); }
+
     // Keep a list of Selector functions. //////////////////////
     private static String normalize(String s) {
         return s.toLowerCase().replace('_', ' ').intern();
