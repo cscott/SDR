@@ -48,4 +48,7 @@ sdr> heads trade
 | 4B>  1G>
 sdr> /// sweep right, compound call, words for 'a quarter'
 sdr> wheel and deal and sweep a quarter
+| 4Bv  4Gv  1Gv  1Bv
+| 
+| 3B^  3G^  2G^  2B^
 sdr> /exit

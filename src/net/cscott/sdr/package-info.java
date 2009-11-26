@@ -12,7 +12,6 @@
  *   hinge-1 at line 36
  *   peel-the-top-1 at line 32
  *   siamese-1 at line 30
- *   sweep-2 at line 42
  *   sweep-3 at line 23
  *   trade-2 at line 13
  *   vaya-con-dios at line 39

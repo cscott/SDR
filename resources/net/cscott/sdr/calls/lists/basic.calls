@@ -55,6 +55,11 @@ def: anyone while others(sel, c1, c2=nothing)
     condition: EQUAL CALL([c2], nothing), "Not just a trade"
     call: trade down the line([sel])
   from: ANY
+    select: [sel]
+      call: [c1]
+    select: OTHERS
+      call: [c2]
+  from: ANY
     call: _anyone while others([sel],[c1],[c2])
 
 // break static square cases out into a special call for efficiency
@@ -953,16 +958,20 @@ def: trade down the line(sel)
     select: OTHERS
       prim: 0, 0, none
       prim: 0, 0, none
-  // these cases should really be "trade" not "trade down the line"
+  // XXX: these cases are really "trade" not "trade down the line"
+  // but this solves some problems while 'do your part' isn't implemented
   from: 1x4
-    condition: AND(MATCH(_SELECTION PATTERN([sel]), "xx__|__xx|_xx_"), \
+    condition: AND(MATCH(_SELECTION PATTERN([sel]), "xx__|__xx"), \
                    NOT(TBONED([sel])))
-    select: [sel]
-      prim: in 1, 1, in
-      prim: in 1, 1, in
-    select: OTHERS
-      prim: 0, 0, none
-      prim: 0, 0, none
+    from: 1x2
+     select: [sel]
+      call: trade
+     select: OTHERS
+      call: nothing
+  from: 1x4
+    condition: AND(MATCH(_SELECTION PATTERN([sel]), "_xx_"), \
+                   NOT(TBONED([sel])))
+    call: _centers(trade)
 
 def: trade
   from: mixed(COUPLE, RH_MINIWAVE, LH_MINIWAVE)
