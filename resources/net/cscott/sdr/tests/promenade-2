@@ -1,0 +1,44 @@
+More promenade tests.
+
+sdr> heads lead right ; veer left
+| 4B>  1B>
+| 
+| 4G>  1G>
+| 
+| 3G<  2G<
+| 
+| 3B<  2B<
+sdr> trade
+| 4G<  1G<
+| 
+| 4B<  1B<
+| 
+| 3B>  2B>
+| 
+| 3G>  2G>
+sdr> centers trade
+| 4G<  1G<
+| 
+| 3B<  2B<
+| 
+| 4B>  1B>
+| 
+| 3G>  2G>
+sdr> half sashay  
+| 3B<  2B<
+| 
+| 4G<  1G<
+| 
+| 3G>  2G>
+| 
+| 4B>  1B>
+sdr> /// promenade until a couple 1 dancer is a beau
+sdr> promenade home
+|      4Bv  3Gv
+| 
+| 2G>            3B<
+| 
+| 1B>            4G<
+| 
+|      1G^  2B^
+sdr> /exit

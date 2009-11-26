@@ -72,32 +72,41 @@ sdr> box circulate
 | 2G^  4Bv
 | 
 | 3G^  3Bv
+sdr> centers zoom
+| 1B^  1Gv
+| 
+| 2G^  4Bv
+| 
+| 2B^  4Gv
+| 
+| 3G^  3Bv
 sdr> single file circulate
-| 2B^  1Bv
+| 2G^  1Bv
 | 
-| 2G^  1Gv
+| 2B^  1Gv
 | 
-| 3G^  4Gv
+| 3G^  4Bv
 | 
-| 3B^  4Bv
+| 3B^  4Gv
 sdr> zoom
-| 2G^  1Gv
+| 2B^  1Gv
 | 
-| 2B^  1Bv
+| 2G^  1Bv
 | 
-| 3B^  4Bv
+| 3B^  4Gv
 | 
-| 3G^  4Gv
+| 3G^  4Bv
 sdr> reverse single file promenade home
 |      3Gv  3Bv
 | 
-| 4G>            2B<
-| 
 | 4B>            2G<
+| 
+| 4G>            2B<
 | 
 |      1B^  1G^
 sdr> /// we're home!
 sdr> /program = Program.PLUS // for 'track 2'
+PLUS
 sdr> heads lead right
 | 4B>  3G<  1B>  2G<
 | 

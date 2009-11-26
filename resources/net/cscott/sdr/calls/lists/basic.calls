@@ -323,72 +323,87 @@ def: _start promenade from facing
       prim: -1, 1, right
       prim:  0, 0, right
 
+// do a call *only if it leaves us at home*
+// this is how we implement the base case of promenade home, etc.
+def: _finish at home(who, what)
+  // we're going to the head beau's (belle's) home.
+  ends in: MATCH(_SELECTION PATTERN \
+                 (and(formation(STATIC SQUARE, [who]), or(DANCER 1,DANCER 2))),\
+                 "______(_x|x_)")
+  call: [what]
+
+// Continue to 'promenade home' (or whatever) after checking to ensure
+// dancer 1 or 2 is a beau (or belle).  This ensures that our recursion
+// will terminate!
+def: _promenade check(formation, who, what)
+  from: [formation]
+    condition: OR(ARE(DANCER 1, [who]), ARE(DANCER 2, [who])), "Whose home?"
+    call: [what]
+
 // as basic defs say, we always go at least 1/4
-def: promenade home
+def: _promenade home(sel)
   ipart:
     from: ANY // use ANY to guarantee no rotation
-      // we're going to the head beau's home.
-      condition: OR(MATCH(_SELECTION PATTERN(DANCER 1), ___x____), \
-                    MATCH(_SELECTION PATTERN(DANCER 2), ___x____))
-      from: PROMENADE, STAR PROMENADE
-        in: 4
-        call: as couples(and roll(_single promenade 1/4))
-    from: ANY // no rotation
-      condition: OR(MATCH(_SELECTION PATTERN(DANCER 1), _____x__), \
-                    MATCH(_SELECTION PATTERN(DANCER 2), _____x__))
-      from: PARALLEL LH TWO-FACED LINES
-        in: 4
-        call: as couples(and roll(_single promenade 1/4))
-    // XXX: might need to add extra patterns here to prevent overshoot
-    //      if promenading home from exactly 1/4 away from other starting
-    //      formations -- or use IfAfter?
+      // only successful if we end at home
+      call: _finish at home([sel], and(_promenade(1/4), as couples(roll)))
     from: ANY
-      call: _promenade(1/4), _promenade check
+      call: _promenade(1/4)
+      call: _promenade check(PROMENADE, [sel], _promenade home([sel]))
 
-// Continue to 'promenade home' after checking to ensure dancer 1 or 2
-// is a beau.  This ensures that our recursion will terminate!
-def: _promenade check
-  from: PROMENADE
-    condition: OR(ARE(DANCER 1, BEAU), ARE(DANCER 2, BEAU)), "Whose home?"
-    call: promenade home
+def: promenade home
+  call: _promenade home(BEAU) // promenade until couple 1 is a beau
+def: wrong way promenade home
+  spoken: (wrong way|reverse) promenade (home?)
+  call: mirror(_promenade home(BELLE))
 
 def: promenade half way
+  optional: REVERSE
   in: 8
   ipart:
     call: _promenade(1/2), 1/2(wheel around)
 
-def: wrong way promenade
-  call: mirror(promenade home)
-
-def: _star promenade(n)
+def: star promenade(n)
   spoken: star promenade <n=fraction>
   call: as couples(_single star promenade([n]))
 
 // we always go at least 1/4, like for promenade home
-def: star promenade home
+def: _star promenade home(sel)
   ipart:
     from: ANY // use ANY to guarantee no rotation
-      // we're going to the head beau's home.
-      condition: OR(MATCH(_SELECTION PATTERN(DANCER 1), ___x____), \
-                    MATCH(_SELECTION PATTERN(DANCER 2), ___x____))
-      from: PROMENADE, STAR PROMENADE
-        in: 4
-        call: as couples(and roll(_single star promenade 1/4))
+      call: _finish at home([sel], and(star promenade(1/4), as couples(roll)))
     from: ANY
-      call: _star promenade(1/4), star promenade home
+      call: star promenade(1/4)
+      call: _promenade check(STAR PROMENADE, [sel], _star promenade home([sel]))
+
+def: star promenade home
+  call: _star promenade home(BEAU)
+
+def: wrong way star promenade
+  spoken: (reverse|wrong way) star promenade (home?)
+  call: mirror(_star promenade home(BELLE))
 
 // we always go at least 1/4, like for promenade home
-def: single file promenade home
-  optional: REVERSE
-  spoken: single file promenade (home)?
+def: _finish single file promenade home(pattern)
+  // we're going to the head *boys'* home, since beau/belle is meaningless
+  // for single file promenade
+  ends in: MATCH(_SELECTION PATTERN(DANCER 1), [pattern])
+  call: and roll(_fractional(2, _single file promenade 1/8))
+
+def: _single file promenade home(pattern)
   ipart:
     from: ANY // use ANY to guarantee no rotation
-      condition: MATCH(_SELECTION PATTERN(DANCER 1), __x_____)
-      from: SINGLE FILE PROMENADE, LH COLUMN
-        in: 4
-        call: and roll(_single file promenade(1/4))
+      in: 4
+      call: _finish single file promenade home([pattern])
     from: ANY
-      call: _single file promenade 1/8, single file promenade home
+      call: _single file promenade 1/8, _single file promenade home([pattern])
+
+def: single file promenade home
+  spoken: single file promenade (home)?
+  call: _single file promenade home("______x_")
+
+def: reverse single file promenade home
+  spoken: reverse single file promenade (home)?
+  call: mirror(_single file promenade home("_______x"))
 
 def: promenade inside(sel)
   // what formation does this end in?
@@ -408,6 +423,10 @@ def: _finish promenade inside
   in: 4
   from: LH SINGLE PROMENADE
     prim: -2, 2, none, force-roll-left
+
+def: reverse promenade inside(sel)
+  spoken: four <sel=genders> reverse promenade inside
+  call: mirror(promenade inside([sel]))
 
 // callerlab #7: ALLEMANDE FAMILY
 // XXX in circle choreo, boys prefer turning to the left, girls to the right
