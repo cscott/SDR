@@ -88,6 +88,30 @@ public class SelectorList {
     };
     static { addToList(OTHERS); }
 
+    /** Selector combiner: select dancers who <i>don't</i> match the selector
+     *  argument. */
+    public static ExprFunc<Selector> NOT = new ExprFunc<Selector>() {
+        @Override
+        public String getName() { return "not"; }
+        @Override
+        public Selector evaluate(Class<? super Selector> type,
+                                 final DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            if (args.size()!=1)
+                throw new EvaluationException("only one argument to not");
+            final Selector arg = args.get(0).evaluate(Selector.class, ds);
+            return new Selector() {
+                @Override
+                public Set<Dancer> select(TaggedFormation tf) {
+                    Set<Dancer> d = new LinkedHashSet<Dancer>(tf.dancers());
+                    d.removeAll(arg.select(tf));
+                    return d;
+                }
+            };
+        }
+    };
+    static { addToList(NOT); }
+
     /** Selector combiner: select dancers who match all of the selector
      *  arguments. */
     public static ExprFunc<Selector> AND = new ExprFunc<Selector>() {
