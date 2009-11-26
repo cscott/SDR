@@ -272,18 +272,30 @@ public abstract class Evaluator {
              * throw a BadCallException. (Does not impose a part boundary.) */
             @Override
             public Evaluator visit(If iff, DanceState ds) {
+                DanceState nds = ds;
+                if (iff.when==If.When.AFTER) {
+                    nds = ds.cloneAndClear();
+                    new Standard(iff.child).evaluateAll(nds);
+                }
                 // evaluate the predicate
                 boolean predicate;
                 try {
-                    predicate = iff.condition.evaluate(Boolean.class, ds);
+                    predicate = iff.condition.evaluate(Boolean.class, nds);
                 } catch (EvaluationException e) {
                     assert false : "Expression failed to evaluate: "+iff;
                     throw new BadCallException("Couldn't evaluate expression");
                 }
                 if (!predicate)
                     throw new BadCallException(iff.message, iff.priority);
-                Comp c = iff.child;
-                return c.accept(this, ds); // keep going
+                if (iff.when==If.When.BEFORE) {
+                    return iff.child.accept(this, nds); // keep going
+                }
+                assert iff.when==If.When.AFTER;
+                // transfer state from nds to ds
+                for (Dancer d : nds.dancers())
+                    for (DancerPath dp : nds.movements(d))
+                        ds.add(d, dp);
+                return null;
             }
             /**
              * Evaluate the child in a substate, and then adjust its timing.

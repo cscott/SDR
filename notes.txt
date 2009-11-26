@@ -1170,10 +1170,11 @@ to do:
      (add 'don't care' character -- '?' or '.')
     PATTERN(ROLL) => 'rlrl', PATTERN(SWEEP) => 'rlrl'
  xx)  use PATTERN(SWEEP) to define "sweep 1/4" (FROM FACING COUPLES:...)
- t) add post-condition nodes to graph, evaluated as "do child, then
+ x) add post-condition nodes to graph, evaluated as "do child, then
     test condition on resulting formation".  IfAfter() or maybe just
     a boolean in the If node for "eval after".
     -- allow 'ends in:' as a special case of this
+       [2009-11-25: 'ends in: formation(COUPLE)']
     -- 'ends in' could eventually be used to choreograph backwards:
        take the current formation, match against all the known ends
        in, for those that match look at their 'from' clauses and try

@@ -250,8 +250,13 @@ one_par returns [B<ParCall> pc]
 res returns [B<? extends Comp> c]
     : ^(IN f=number p=pieces)
     { $c = mkIn(f, p); }
-    | ^(IF cd=expr_body ^(n=NUMBER msg=simple_words?) p=pieces)
-    { $c = mkIf(cd, Fraction.valueOf(n.getText()), msg==null?null:msg, p); }
+    | ^(IF w=ifwhen cd=expr_body ^(n=NUMBER msg=simple_words?) p=pieces)
+    { $c = mkIf(w, cd, Fraction.valueOf(n.getText()), msg==null?null:msg, p); }
+    ;
+fragment
+ifwhen returns [If.When r]
+    : BEFORE { $r = If.When.BEFORE; }
+    | AFTER  { $r = If.When.AFTER; }
     ;
 
 simple_words returns [String r]

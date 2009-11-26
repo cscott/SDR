@@ -4,8 +4,8 @@
  * @doc.test Simple conversion:
  *  js> new AstParser("(Seq (Prim -1, in 1, none, 1))").ast()
  *  (Seq (Prim -1, in 1, none, 1))
- *  js> new AstParser("(If (Expr true) (Seq (Apply 'nothing)))").ast()
- *  (If (Expr true) (Seq (Apply 'nothing)))
+ *  js> new AstParser("(If 'BEFORE (Expr true) (Seq (Apply 'nothing)))").ast()
+ *  (If 'BEFORE (Expr true) (Seq (Apply 'nothing)))
  *  js> new AstParser("(Expr multiple words (Expr arg 1) (Expr arg 2))").ast()
     (Expr multiple words (Expr arg 1) (Expr arg 2))
  * @doc.test White space is ignored:
@@ -14,10 +14,10 @@
  * @doc.test Call names, predicates, formations, etc can be quoted:
  *  js> new AstParser("(Expr \"Expr\" (Expr \"If\") (Expr \"Prim\"))").ast()
  *  (Expr Expr (Expr If) (Expr Prim))
- *  js> new AstParser('(If (Expr true) (Seq (Apply \'nothing)) "Message!" 1/2)').ast()
- *  (If (Expr true) (Seq (Apply 'nothing)) "Message!" 1/2)
- *  js> new AstParser('(If (Expr true) (Seq (Apply \'nothing)) "Message!")').ast()
- *  (If (Expr true) (Seq (Apply 'nothing)) "Message!")
+ *  js> new AstParser('(If \'AFTER (Expr true) (Seq (Apply \'nothing)) "Message!" 1/2)').ast()
+ *  (If 'AFTER (Expr true) (Seq (Apply 'nothing)) "Message!" 1/2)
+ *  js> new AstParser('(If \'BEFORE (Expr true) (Seq (Apply \'nothing)) "Message!")').ast()
+ *  (If 'BEFORE (Expr true) (Seq (Apply 'nothing)) "Message!")
  * @doc.test Keywords ought to be ignored in call names, etc.
  *  js> new AstParser("(Expr Expr (Expr If) (Expr Prim))").ast()
  *  (Expr Expr (Expr If) (Expr Prim))
@@ -132,10 +132,17 @@ prim_flag returns [Prim.Flag r]
 
 if_ returns [If r]
     : {input.LT(2).getText().equalsIgnoreCase("If")}?
-        '(' IDENT expr child=comp (msg=STRING (pri=number)?)? ')'
-        { $r = (msg==null) ? new If($expr.r, $child.r) :
-               (pri==null) ? new If($expr.r, $child.r, $msg.text) :
-               new If($expr.r, $child.r, $msg.text, $pri.r); }
+        '(' IDENT ifwhen expr child=comp (msg=STRING (pri=number)?)? ')'
+        { $r = (msg==null) ? new If($ifwhen.r, $expr.r, $child.r) :
+               (pri==null) ? new If($ifwhen.r, $expr.r, $child.r, $msg.text) :
+               new If($ifwhen.r, $expr.r, $child.r, $msg.text, $pri.r); }
+    ;
+fragment
+ifwhen returns [If.When r]
+    : {input.LT(2).getText().equalsIgnoreCase("after")}?
+        '\'' IDENT { $r = If.When.AFTER; }
+    | {input.LT(2).getText().equalsIgnoreCase("before")}?
+        '\'' IDENT { $r = If.When.BEFORE; }
     ;
 in returns [In r]
     : {input.LT(2).getText().equalsIgnoreCase("In")}?

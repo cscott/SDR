@@ -100,11 +100,12 @@ abstract class BuilderHelper {
             }
         }, isConstant(args));
     }
-    static B<If> mkIf(final B<Expr> cond, final Fraction priority,
+    static B<If> mkIf(final If.When when,
+		      final B<Expr> cond, final Fraction priority,
                       final String msg, final B<? extends Comp> child) {
         return optimize(new B<If>() {
             public If build(List<Expr> fargs) {
-                return new If(cond.build(fargs), child.build(fargs),
+                return new If(when, cond.build(fargs), child.build(fargs),
                               msg, priority);
             }
         }, cond.isConstant() && child.isConstant());

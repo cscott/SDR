@@ -496,19 +496,18 @@ fragment pieces_factor
 res
     : IN^ COLON! number pieces
     | CONDITION COLON expr_body cond_msg pieces
-        -> ^(IF expr_body cond_msg pieces)
+        -> ^(IF BEFORE expr_body cond_msg pieces)
+    | ENDS IN COLON expr_body cond_msg pieces
+        -> ^(IF AFTER expr_body cond_msg pieces)
     ;
 
 // informational
-// XXX not yet integrated into grammar probably safest to treat as a
-// 'res' like IN, but then ENDS IN should come *first* (we'd rather
-// like it to come last, as a suffix to a one_opt, but that causes
-// ambiguities).  ASSERT is very similar to CONDITION except that it
+// XXX not yet integrated into grammar
+// (we'd rather ENDS IN to come last, as a suffix to a one_opt, but that
+// causes ambiguities)
+// ASSERT is very similar to CONDITION except that it
 // indicates a programmer error, rather than a simple "can't do that
 // from here"
-endsin
-    : ENDS^ IN! COLON! expr_body
-    ;
 assertion
     : ASSERT^ COLON! expr_body cond_msg
     ;
@@ -519,7 +518,7 @@ opt
         -> ^(OPT one_opt+)
     ;
 fragment one_opt
-    : FROM^ COLON! or_body_seq pieces_term //( endsin! )? //XXX see above
+    : FROM^ COLON! or_body_seq pieces_term
     ;
 
 seq

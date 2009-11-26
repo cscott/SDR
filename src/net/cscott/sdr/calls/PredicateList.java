@@ -433,6 +433,38 @@ public abstract class PredicateList {
         public boolean isConstant(List<Expr> args) { return true; }
     };
 
+    /** Check that the current dance state matches the specified formation
+     *  (actually {@link Matcher}).
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET); undefined;
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr FORMATION 'STATIC SQUARE)");
+     *  (Expr FORMATION 'STATIC SQUARE)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
+     *  true
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr FORMATION 'COUPLE)");
+     *  (Expr FORMATION 'COUPLE)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
+     *  true
+     *  js> c = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr FORMATION 'RH MINIWAVE)");
+     *  (Expr FORMATION 'RH MINIWAVE)
+     *  js> PredicateList.valueOf(c.atom).evaluate(ds, c.args)
+     *  false
+     */
+    public final static Predicate FORMATION = new _Predicate("formation") {
+        @Override
+        public boolean evaluate(DanceState ds, List<Expr> args)
+        throws EvaluationException {
+            assert args.size()==1;
+            Matcher m = args.get(0).evaluate(Matcher.class, ds);
+            try {
+                m.match(ds.currentFormation());
+                return true;
+            } catch (NoMatchException nme) {
+                return false;
+            }
+        }
+    };
+
     /** Return the {@link Predicate} function with the given (case-insensitive)
      *  name.
      * @throws IllegalArgumentException if no predicate with the given name is
