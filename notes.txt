@@ -1208,8 +1208,9 @@ to do:
         canonical shape?
      -- select "center 4", ensure they're a wave, and then move
         outside 4 to the appropriate diamond spots (same for "center 2")
- bb) facing couples/wave (and vice versa) conversions.
+ xx) facing couples/wave (and vice versa) conversions.
      -- do these manually for appropriate calls? (handles recycle)
+        [2009-11-30 YES]
      -- def of right pull by: from RH_MINIWAVE: extend
                               from FACING DANCER: touch, right pull by
  xx) use a uniform Expr type as the argument of

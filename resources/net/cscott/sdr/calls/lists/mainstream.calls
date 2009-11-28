@@ -21,8 +21,7 @@ def: turn thru
 def: spin the top
   optional: LEFT
   in: 8 // from wave
-  from: RH OCEAN WAVE, LH OCEAN WAVE // any hand
-    call: swing, fan the top
+  call: _wave swing, fan the top
 
 // callerlab #58: CENTERS IN
 

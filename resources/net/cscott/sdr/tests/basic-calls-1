@@ -64,7 +64,7 @@ sdr> centers circulate
 | 
 | 3G^  3Bv
 sdr> /// same thing:
-sdr> box circulate
+sdr> centers box circulate
 | 1B^  1Gv
 | 
 | 2B^  4Gv

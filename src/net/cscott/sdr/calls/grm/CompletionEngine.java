@@ -73,6 +73,10 @@ import net.cscott.sdr.util.Tools;
  *  trade <cardinal>
  *  trade and roll
  *  trade and sweep <fraction>
+ *  trade by
+ *  trade by <cardinal>
+ *  trade by and roll
+ *  trade by and sweep <fraction>
  *  trade the wave
  *  trade the wave <cardinal>
  *  trade the wave and roll
@@ -86,6 +90,10 @@ import net.cscott.sdr.util.Tools;
  *  trade <cardinal>
  *  trade and roll
  *  trade and sweep <fraction>
+ *  trade by
+ *  trade by <cardinal>
+ *  trade by and roll
+ *  trade by and sweep <fraction>
  *  trade the wave
  *  trade the wave <cardinal>
  *  trade the wave and roll

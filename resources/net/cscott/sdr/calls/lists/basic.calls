@@ -55,6 +55,7 @@ def: anyone while others(sel, c1, c2=nothing)
     condition: EQUAL CALL([c2], nothing), "Not just a trade"
     call: trade down the line([sel])
   from: ANY
+    condition: GREATER(NUM DANCERS([sel]), 0)
     select: [sel]
       call: [c1]
     select: OTHERS
@@ -177,20 +178,27 @@ def: dosado to a wave
 //     <anything> is dosado below the true level of 'to a wave'
 
 // callerlab #5: SWING
-// XXX: ambiguity with A2 swing, we'll try to tell by program
-//      level and starting formation which is meant.
-// XXX: what direction should we face at end?
+
+// ambiguity with A2 swing, we'll try to tell by program
+// level and starting formation which is meant.
 def: swing
-  from: GENERAL LINE
+  from: GENERAL LINE, FACING COUPLES
     condition: PROGRAM AT LEAST(A2), "Only partner swing allowed below A2"
-    condition: AND(NOT(TBONED(ALL)), \
-                   MATCH(_SELECTION PATTERN(BEAU), "____|__xx|xx__|xxxx")), \
-               "End and adjacent center must be in mini-wave"
-    in: 3
-    call: trade
+    call: _wave swing
   from: FACING DANCERS, RH MINIWAVE
     call: partner swing
 
+def: _wave swing // specifically not a partner swing
+  in: 3
+  from: GENERAL LINE
+    condition: AND(NOT(TBONED(ALL)), \
+                   MATCH(_SELECTION PATTERN(BEAU), "____|__xx|xx__|xxxx")), \
+               "End and adjacent center must be in mini-wave"
+    call: trade
+  from: FACING COUPLES
+    call: touch, _wave swing
+
+// XXX: what direction should we face at end?
 def: partner swing
   spoken: (partner swing) | (swing your partner) | (swing (the|your) corner)
   in: 6
@@ -451,9 +459,13 @@ def: _left arm turn 1/2
 def: pass thru
   optional: LEFT
   in: 2
-  from: FACING DANCERS
-    prim: 0, 1, none
-    prim: 0, 1, none
+  // note: can't start pass thru from LH MINIWAVE
+  from: mixed(FACING DANCERS, RH MINIWAVE)
+    from: FACING DANCERS
+      prim: 0, 1, none
+      prim: 0, 1, none
+    from: MINIWAVE
+      call: step thru // "rear back and..."
 
 def: pull by
   call: pass thru // at least until i implement hand holds
@@ -548,7 +560,7 @@ def: roll away
 // XXX: same general idea holds for t-boned formations.
 def: u turn back
   in: 2
-  from: 2x2, 1x2
+  from: 2x2, 1x2 // XXX use 'allow unmatched dancers'
     select: BEAU
       prim: 0, 0, right
       prim: 0, 0, right
@@ -748,21 +760,24 @@ def: see saw
 def: square thru(n)
   optional: LEFT
   spoken: square thru <n=number> (hands (around|round)?)?
-  from: FACING COUPLES
+  from: FACING COUPLES, RH OCEAN WAVE
     condition: and(greater([n],0),not(greater([n],1)))
     call: _fractional([n], _in(2, pull by))
-  from: FACING COUPLES
+  from: FACING COUPLES, RH OCEAN WAVE
     condition: greater([n], 1)
     ipart: // does square thru N have N distinct parts?
       call: _in(2, _sq_thru_part), left(square thru(_subtract num([n],1)))
 
 def: _sq_thru_part
   ipart:
-    // definition is:
-    //  call: pull by, quarter in
-    // but looks better if we blend the quarter in
-    prim: 0, 1, none
-    prim: 0, 1, in
+    from: FACING COUPLES
+      // definition is:
+      //  call: pull by, quarter in
+      // but looks better if we blend the quarter in
+      prim: 0, 1, none
+      prim: 0, 1, in
+    from: ANY // fall back to real definition, so "rear back and..." works
+      call: pull by, quarter in
 
 def: _full_square_thru
   optional: LEFT
@@ -815,7 +830,15 @@ def: box the gnat
   in: 4
   from: FACING DANCERS
     condition: not(or(ALL(BOY), ALL(GIRL))), "Same sex boxing!"
-    call: and roll(_touch(1/4)) // modulo styling
+    call: touch, box the gnat
+  from: RH MINIWAVE
+    condition: not(or(ALL(BOY), ALL(GIRL))), "Same sex boxing!"
+    select: BOY
+      prim: in 1,1,right
+      prim: 0,0,right
+    select: GIRL
+      prim: in 1,1,left,sashay-finish
+      prim: 0,0,left
 
 // callerlab #35: OCEAN WAVE FAMILY (see BMS addendum)
 
@@ -892,6 +915,8 @@ def: swing thru
     call: anyone while others(CENTER,_left arm turn 1/2,_nothing preserve roll)
   from: LH OCEAN WAVE
     call: _centers(_right arm turn 1/2), _left arm turn 1/2
+  from: FACING COUPLES
+    call: step to a wave, swing thru
 
 // callerlab #40: RUN FAMILY
 
@@ -951,7 +976,6 @@ def: _designees cross run
     select: and(DESIGNATED, END)
         prim: in 3, 1, in
         prim: in 1, 1, in
-      // XXX: with t-boned cross run, the 'in' breaks. gah.
     select: OTHERS
       call: _designees run
 
@@ -1142,7 +1166,15 @@ def: _single veer left
   call: _extend
   
 // callerlab #49: TRADE BY
-// XXX DEFINE ME
+// XXX: callerlab says "any formation in which two couples are facing each
+//                      other and the other two are facing out"
+// obvious candidates: TRADE BY, RH 3/4 TAG
+def: trade by
+  optional: LEFT
+  in: 4
+  from: CENTER HALF
+    condition: TRUE(), "Outside couples must face out" // XXX write me
+    call: _quasi concentric(pass thru, partner trade)
 
 // callerlab #50: TOUCH 1/4
 def: touch
@@ -1194,7 +1226,9 @@ def: split circulate
     call: _box circulate // on each side.
 
 def: box circulate
-  call: _centers(_box circulate)
+  condition: equal num(NUM DANCERS(), 4), \
+    "Perhaps you mean to say CENTERS box circulate?"
+  call: _box circulate
 
 def: _box circulate
   // for internal use: this is the 2x2 version of circulate

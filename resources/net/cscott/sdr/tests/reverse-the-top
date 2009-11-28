@@ -1,0 +1,19 @@
+Simple test of reverse the top.
+
+sdr> /program=Program.C3B
+C3B
+sdr> heads lead right
+| 4B>  3G<  1B>  2G<
+| 
+| 4G>  3B<  1G>  2B<
+sdr> reverse the top
+| 4G^  3Bv  4B^  3Gv  1G^  2Bv  1B^  2Gv
+sdr> reverse the top
+| 3B>  2B>
+| 
+| 4G<  1G<
+| 
+| 3G>  2G>
+| 
+| 4B<  1B<
+sdr> /exit

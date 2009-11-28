@@ -129,6 +129,10 @@ public abstract class C1List {
             Set<Dancer> centerDancers = f.tagged(Tag.CENTER);
             Set<Dancer> endDancers = new HashSet<Dancer>(f.dancers());
             endDancers.removeAll(centerDancers); // all those who aren't CENTERs
+            if (centerDancers.isEmpty())
+                throw new BadCallException("No centers!");
+            if (endDancers.isEmpty())
+                throw new BadCallException("Everyone is a center!");
             Formation centerF = f.select(centerDancers).onlySelected();
             Formation endF = f.select(endDancers).onlySelected();
             // xxx should look at whether "eventual ends" (ie, the centers when

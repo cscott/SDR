@@ -234,6 +234,24 @@ public abstract class ExprList {
     };
     static { exprMathFuncs.put(_DIVIDE_NUM.getName(), _DIVIDE_NUM); }
 
+    // square-dance related functions
+    public static final ExprFunc<Fraction> NUM_DANCERS = new ExprFunc<Fraction>() {
+        @Override
+        public String getName() { return "num dancers"; }
+        @Override
+        public Fraction evaluate(Class<? super Fraction> type, DanceState ds,
+                List<Expr> args) throws EvaluationException {
+            if (args.size()>1)
+                throw new EvaluationException("too many arguments");
+            Selector s = (args.isEmpty() ? Expr.literal("all") : args.get(0))
+                .evaluate(Selector.class, ds);
+            Set<Dancer> d =
+                s.select(TaggedFormation.coerce(ds.currentFormation()));
+            return Fraction.valueOf(d.size());
+        }
+    };
+    static { exprMathFuncs.put(NUM_DANCERS.getName(), NUM_DANCERS); }
+
     private static abstract class PatternFunc<T> extends ExprFunc<String> {
         private final String name;
         PatternFunc(String name) { this.name = name; }

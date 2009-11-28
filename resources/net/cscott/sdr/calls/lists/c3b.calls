@@ -252,8 +252,9 @@ def: reverse the pass
     !   v   v
 
 def: reverse the top
-  call: fan the top
-  call: swing
+  ends in: formation(or(RH OCEAN WAVE, LH OCEAN WAVE))
+    call: fan the top
+    call: _wave swing
   //ends in: WAVE // XXX grammar doesn't admit this yet
   example: reverse the top
     before:
