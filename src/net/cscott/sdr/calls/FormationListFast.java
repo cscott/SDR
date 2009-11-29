@@ -271,6 +271,28 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-1), ExactRotation.SOUTH), Tag.TRAILER, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.LEADER, Tag.END));
 
+    public static final NamedTaggedFormation _1x8 =
+        new NamedTaggedFormation("1x8",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-7), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-5), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(5), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(7), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_4));
+
+    public static final NamedTaggedFormation _2x4 =
+        new NamedTaggedFormation("2x4",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_4));
+
     public static final NamedTaggedFormation STATIC_SQUARE =
         new NamedTaggedFormation("STATIC SQUARE",
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), ExactRotation.SOUTH), Tag.BELLE),
@@ -852,6 +874,8 @@ abstract class FormationListFast {
             FormationListFast.LH_SINGLE_THREE_QUARTER_TAG,
             FormationListFast.SINGLE_DOUBLE_PASS_THRU,
             FormationListFast.COMPLETED_SINGLE_DOUBLE_PASS_THRU,
+            FormationListFast._1x8,
+            FormationListFast._2x4,
             FormationListFast.STATIC_SQUARE,
             FormationListFast.SINGLE_FILE_PROMENADE,
             FormationListFast.REVERSE_SINGLE_FILE_PROMENADE,

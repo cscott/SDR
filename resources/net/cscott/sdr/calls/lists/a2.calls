@@ -22,6 +22,28 @@ def: split counter rotate
     // XXX!
 */
 
+def: box counter rotate(n=1/4)
+  spoken: box counter rotate (<n=fraction>)?
+  condition: equal num(NUM DANCERS(), 4), \
+             "Perhaps you mean to say CENTERS box counter rotate?"
+  from: 2x2 // just "counter rotate" if not in a box
+    call: counter rotate([n])
+
+def: split counter rotate(n=1/4)
+  spoken: split counter rotate (<n=fraction>)?
+  // really, what we should be doing is determining the long axis of the
+  // formation, and splitting it in the middle of that axis.
+  from: 2x4
+    from: 2x2
+      call: counter rotate([n])
+  from: 1x8
+    from: 1x4
+      call: counter rotate([n])
+  from: TWIN DIAMONDS, TWIN FACING DIAMONDS, \
+        POINT TO POINT DIAMONDS, POINT TO POINT FACING DIAMONDS
+    from: MIXED DIAMOND
+      call: counter rotate([n])
+
 def: single wheel
   in: 4
   ipart:

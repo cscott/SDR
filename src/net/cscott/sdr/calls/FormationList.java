@@ -66,7 +66,9 @@ import org.junit.runner.RunWith;
  *    >            .replace("3/4","THREE_QUARTER")
  *    >            .replace("1x2", "_1x2")
  *    >            .replace("1x4", "_1x4")
+ *    >            .replace("1x8", "_1x8")
  *    >            .replace("2x2", "_2x2")
+ *    >            .replace("2x4", "_2x4")
  *    >            .equals(name));
  *    > })
  *  true
@@ -79,7 +81,9 @@ import org.junit.runner.RunWith;
  *    >                .replace("3/4","THREE_QUARTER")
  *    >                .replace("1x2", "_1_X2")
  *    >                .replace("1x4", "_1_X4")
- *    >                .replace("2x2", "_2_X2"));
+ *    >                .replace("1x8", "_1_X8")
+ *    >                .replace("2x2", "_2_X2")
+ *    >                .replace("2x4", "_2_X4"));
  *    >   try {
  *    >     if (Matcher.valueOf(name).toString() != f.getName())
  *    >        print("Matcher name mismatch: "+f.getName());

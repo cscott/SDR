@@ -1121,10 +1121,21 @@ def: flutter wheel
   in: 8
   from: FACING COUPLES
     ipart:
-      call: 1/2(wheel around)
-      call: _centers(_right arm turn 1/2)
-      call: 2(split counter rotate)
-      call: 1/2(wheel around)
+      call: _start a flutter wheel
+      call: counter rotate(1/4)
+      call: mirror(1/2(wheel around))
+      call: circle left(1/4) // make sure we end with sweep
+
+def: _start a flutter wheel
+  in: 3 // arbitrary just sets fraction relative to rest of flutterwheel
+  from: FACING COUPLES
+    select: BEAU
+      prim: 1, -1, none
+      prim:  0,  0, left
+    select: BELLE
+      prim: -2, 1, none
+      prim:  1, 1, right
+
 
 // callerlab #47: SWEEP A QUARTER
 def: sweep(n)

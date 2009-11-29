@@ -250,6 +250,17 @@ public abstract class MatcherList {
         OR("SINGLE 3/4 TAG", RH_SINGLE_THREE_QUARTER_TAG, LH_SINGLE_THREE_QUARTER_TAG);
 
     // 8-person matchers
+
+    // this matcher has an extra underscore because the parser treats it
+    // as two items: the number one, and the identifier x8.
+    public static final Matcher _1_X8 =
+        Tagger.autotag2
+            (GeneralFormationMatcher.makeMatcher(FormationList._1x8));
+    // this matcher has an extra underscore because the parser treats it
+    // as two items: the number two, and the identifier x4.
+    public static final Matcher _2_X4 =
+        Tagger.autotag2
+            (GeneralFormationMatcher.makeMatcher(FormationList._2x4));
     public static final Matcher STATIC_SQUARE =
         GeneralFormationMatcher.makeMatcher(FormationList.STATIC_SQUARE);
     public static final Matcher SINGLE_FILE_PROMENADE =
