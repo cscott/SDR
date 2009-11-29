@@ -417,6 +417,11 @@ public class Breather {
      *  -2 1/3,2,w  1 2/3,2,w  -3,0,n,[ROLL_RIGHT]  -1,0,s,[ROLL_RIGHT]  1,0,n,[ROLL_RIGHT]  3,0,s,[ROLL_RIGHT]  -1 2/3,-2,e  2 1/3,-2,e
      */
     public static Formation breathe(Formation f) {
+        // special case for 1/8-off formations
+        if (isOneEighthRotated(f)) {
+            Formation ff = breathe(f.rotate(ExactRotation.ONE_EIGHTH));
+            return ff.rotate(ExactRotation.ONE_EIGHTH.negate());
+        }
         List<FormationPiece> fpl = new ArrayList<FormationPiece>
             (f.dancers().size());
         for (Dancer d: f.dancers()) {
@@ -427,6 +432,13 @@ public class Breather {
             fpl.add(new FormationPiece(in, out));
         }
         return breathe(fpl);
+    }
+    private static boolean isOneEighthRotated(Formation f) {
+        Rotation E = Rotation.fromAbsoluteString("x");
+        for (Dancer d : f.dancers())
+            if (!E.includes(f.location(d).facing))
+                return false;
+        return true;
     }
     /**
      * Take a set of input formation pieces and substitute the

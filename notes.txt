@@ -1200,7 +1200,7 @@ to do:
      formation unrotated, to snap to squared set spots again.
  x) siamese concept -- multiple simultaneous formations in
     GeneralFormationMatcher
- z) Breather.breathe() should look at facing directions, and if
+ x) Breather.breathe() should look at facing directions, and if
      they're 1/8 off, rotate,breathe,unrotate.
  aa) diamond/quarter tag conversions
      -- automatic in the diamond/tag matchers?

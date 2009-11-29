@@ -53,11 +53,13 @@ sdr> girls run
 sdr> fan the top
 | 4Bv  3G^  4Gv  3B^  1Bv  2G^  1Gv  2B^
 sdr> do half of a fan the top
-|                3B`                 2B`
+|                               2B`
 | 
-|           3GQ                 2GQ
+|                3B`       2GQ
 | 
-|      4G`                 1G`
+|           3GQ       1G`
 | 
-| 4BQ                 1BQ
+|      4G`       1BQ
+| 
+| 4BQ
 sdr> /exit
