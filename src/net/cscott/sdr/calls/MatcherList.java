@@ -283,6 +283,12 @@ public abstract class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.THAR);
     public static final Matcher WRONG_WAY_THAR =
         GeneralFormationMatcher.makeMatcher(FormationList.WRONG_WAY_THAR);
+    public static final Matcher RIGHT_AND_LEFT_GRAND =
+        GeneralFormationMatcher.makeMatcher(FormationList.RIGHT_AND_LEFT_GRAND);
+    public static final Matcher RIGHT_AND_LEFT_GRAND_DIAMOND =
+        GeneralFormationMatcher.makeMatcher(FormationList.RIGHT_AND_LEFT_GRAND_DIAMOND);
+    public static final Matcher LEFT_AND_RIGHT_GRAND =
+        GeneralFormationMatcher.makeMatcher(FormationList.LEFT_AND_RIGHT_GRAND);
     public static final Matcher FACING_LINES =
         GeneralFormationMatcher.makeMatcher(FormationList.FACING_LINES);
     public static final Matcher EIGHT_CHAIN_THRU =

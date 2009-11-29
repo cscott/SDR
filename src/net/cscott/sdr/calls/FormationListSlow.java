@@ -260,17 +260,41 @@ abstract class FormationListSlow {
         create("LH ALAMO RING", f(" sn ","w  w","e  e"," sn "),
                 WhetherTagger.AUTO_TAGS);
     public static final NamedTaggedFormation PROMENADE = // callerlab #18
-        xofy("PROMENADE", LH_SINGLE_PROMENADE, COUPLE);
+        xofy("PROMENADE", LH_SINGLE_PROMENADE, COUPLE,
+                t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
+                t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation WRONG_WAY_PROMENADE =
-        xofy("WRONG WAY PROMENADE", RH_SINGLE_PROMENADE, COUPLE);
+        xofy("WRONG WAY PROMENADE", RH_SINGLE_PROMENADE, COUPLE,
+                t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
+                t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation STAR_PROMENADE =
-        xofy("STAR PROMENADE", LH_STAR, COUPLE);
+        xofy("STAR PROMENADE", LH_STAR, COUPLE,
+                t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
+                t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation WRONG_WAY_STAR_PROMENADE =
-        xofy("WRONG WAY STAR PROMENADE", RH_STAR, COUPLE);
+        xofy("WRONG WAY STAR PROMENADE", RH_STAR, COUPLE,
+                t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
+                t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation THAR =
-        xofy("THAR", LH_STAR, LH_MINIWAVE);
+        xofy("THAR", LH_STAR, LH_MINIWAVE,
+                t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
+                t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation WRONG_WAY_THAR =
-        xofy("WRONG WAY THAR", LH_STAR, RH_MINIWAVE);
+        xofy("WRONG WAY THAR", LH_STAR, RH_MINIWAVE,
+                t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
+                t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
+    public static final NamedTaggedFormation RIGHT_AND_LEFT_GRAND =
+        xofy("RIGHT AND LEFT GRAND", LH_SINGLE_PROMENADE, RH_MINIWAVE,
+                t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
+                t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
+    public static final NamedTaggedFormation RIGHT_AND_LEFT_GRAND_DIAMOND =
+        xofy("RIGHT AND LEFT GRAND DIAMOND", LH_DIAMOND, RH_MINIWAVE,
+                t(0, END, POINT), t(1, CENTER, POINT), t(2, END), t(3, CENTER),
+                t(4, CENTER), t(5, END), t(6, CENTER, POINT), t(7, END, POINT));
+    public static final NamedTaggedFormation LEFT_AND_RIGHT_GRAND =
+        xofy("LEFT AND RIGHT GRAND", LH_SINGLE_PROMENADE, LH_MINIWAVE,
+                t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
+                t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation FACING_LINES = // callerlab #22
         xofy("FACING LINES", FACING_COUPLES, COUPLE,
                 t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),

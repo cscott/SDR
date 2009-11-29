@@ -234,7 +234,7 @@ def: _single promenade 1/4
       prim: -1, 2, left
   // all other formations ought to end in LH SINGLE PROMENADE
   // all roll directions should be left
-  // XXX: enforce with IfAfter?
+  // XXX: enforce with 'ends in'?
   from: LH STAR
     prim: -1, 2, left
   from: LH BOX
@@ -276,7 +276,7 @@ def: _single star promenade 1/4
     prim: -1, 1, left
   // all other formations ought to end in LH STAR
   // all roll directions should be left
-  // XXX: enforce with IfAfter?
+  // XXX: enforce with 'ends in'?
   from: LH SINGLE PROMENADE
     prim: -2, 1, left
   from: LH DIAMOND
@@ -295,7 +295,7 @@ def: _single file promenade 1/8
       prim:  0, 2, none, force-roll-left
   // all other formations ought to end in SINGLE FILE PROMENADE
   // all roll directions should be left
-  // XXX: enforce with IfAfter?
+  // XXX: enforce with 'ends in'?
   from: LH COLUMN
     select: NUMBER 1
       prim: -2, 0, left, sashay-start
@@ -450,7 +450,101 @@ def: _left arm turn 1/2
   call: left(_right arm turn 1/2)
 
 // callerlab #9: RIGHT AND LEFT GRAND FAMILY
-// XXX DEFINE ME
+def: _start right and left grand
+  in: 4
+  ends in: formation(RIGHT AND LEFT GRAND)
+  from: RIGHT AND LEFT GRAND
+    select: CENTER
+      prim:  2, 4, left 1/8 // from 2,0 to 4,4
+      prim: -3, 1, left 1/8 // from 4,4 to 0,2
+    select: OTHERS
+      prim: 2, 2, right 1/8 // from 4,0 to 2,-2
+      prim: 0, 2, right 1/8 // from 2,-2 to 0,-4
+  from: WRONG WAY THAR
+    select: CENTER
+      prim: 3, 4, left 1/8 // from 1,0 to 4,4
+      prim: -3, 1, left 1/8 // from 4,4 to 0,2
+    select: OTHERS
+      prim: 1, 2, right 1/8 // from 3,0 to 2,-2
+      prim: 0, 2, right 1/8 // from 2,-2 to 0,-4
+  // diamond-like starting formation
+  from: RIGHT AND LEFT GRAND DIAMOND
+    select: and(CENTER, POINT)
+      prim:  2, 4, left 1/8 // from 2,0 to 4,4
+      prim: -3, 1, left 1/8 // from 4,4 to 0,2
+    select: CENTER // not a point
+      prim: 3, 4, left 1/8 // from 1,0 to 4,4
+      prim: -3, 1, left 1/8 // from 4,4 to 0,2
+    select: POINT
+      prim: 2, 2, right 1/8 // from 4,0 to 2,-2
+      prim: 0, 2, right 1/8 // from 2,-2 to 0,-4
+    select: OTHERS // not a center, not a point
+      prim: 1, 2, right 1/8 // from 3,0 to 2,-2
+      prim: 0, 2, right 1/8 // from 2,-2 to 0,-4
+  from: PARALLEL RH WAVES
+    select: and(CENTER, TRAILER)
+      prim: 3, 1, none // from 1,-1 to 4,0
+      prim: -2, 2, left 1/8 // from 4,0 to 2,2
+    select: and(CENTER, LEADER)
+      prim: -1, 3, left 1/4 // from 1,1 to 0,4
+      prim: -2, 2, left 1/8 // from 0,4 to 2,-2
+    select: and(END, TRAILER)
+      prim: 1, 1, none // from 3,1 to 2,0
+      prim: -2, 4, right 1/8 // from 2,0 to 4,-4
+    select: and(END, LEADER)
+      prim: 3, 1, right 1/4 // from 3,-1 to 0,-2
+      prim: -2, 4, right 1/8 // from 0,-2 to -4,-4
+
+def: _finish right and left grand(who)
+  in: 4
+  from: RIGHT AND LEFT GRAND
+    condition: ARE(CENTER, [who]), "Wrong way!"
+    select: CENTER
+      prim:  2, 4, left 1/8 // from 0,2 to -4,4
+      prim: -2, 1, left 1/8 // from -4,4 to -3,1
+    select: OTHERS
+      prim: 2, 2, right 1/8 // from 0,-4 to -2,-2
+      prim: 0, 1, right 1/8 // from -2,-2 to -3, -1
+
+def: _turn and touch
+  in: 2
+  from: TRADE BY // special case 'cuz mixed(FACING DANCERS, COUPLE) is ambiguous
+    call: _quasi concentric(touch, _hinge)
+  from: mixed(FACING DANCERS, RH MINIWAVE)
+    from: FACING DANCERS
+      call: touch
+    from: RH MINIWAVE
+      call: nothing
+  from: mixed(FACING DANCERS, RH MINIWAVE, COUPLE)
+    from: FACING DANCERS
+      call: touch
+    from: RH MINIWAVE
+      call: nothing
+    from: COUPLE
+      call: 1/2(partner trade)
+
+def: _right and left grand(centers)
+  in: 10
+  ipart:
+    from: ANY // try no adjustment
+      call: _start right and left grand
+      call: _finish right and left grand([centers])
+    from: ANY // try 'touch' adjustment
+      call: _turn and touch
+      call: _start right and left grand
+      call: _finish right and left grand([centers])
+
+def: right and left grand
+  call: _right and left grand(BOY)
+
+def: wrong way grand
+  call: _right and left grand(GIRL)
+
+def: weave the ring
+  call: right and left grand // modulo hand-holds
+
+def: left and right grand
+  call: mirror(right and left grand)
 
 // callerlab #10: STAR FAMILY
 // XXX DEFINE ME
