@@ -68,18 +68,20 @@ def: _anyone while others static square(sel, c1, c2)
   // special case 'heads promenade half way while the sides...'
   from: STATIC SQUARE
     condition: AND(EQUAL CALL([sel], HEAD), EQUAL CALL([c1], promenade half way))
-    //call: _anyone while others([sel],[c1],and(sides start, [c2]))
-    select: HEAD
-      call: [c1]
-    select: SIDE
-      call: sides start, _centers([c2])
+    call: sides start
+    call: anyone while others([sel], _outsides promenade half way, [c2])
+  from: STATIC SQUARE
+    condition: AND(EQUAL CALL([sel], HEAD), EQUAL CALL([c1], reverse(promenade half way)))
+    call: sides start
+    call: anyone while others([sel], reverse(_outsides promenade half way), [c2])
   from: STATIC SQUARE
     condition: AND(EQUAL CALL([sel], SIDE), EQUAL CALL([c1], promenade half way))
-    //call: _anyone while others([sel],[c1],and(heads start, [c2]))
-    select: SIDE
-      call: [c1]
-    select: HEAD
-      call: heads start, _centers([c2])
+    call: heads start
+    call: anyone while others([sel], _outsides promenade half way, [c2])
+  from: STATIC SQUARE
+    condition: AND(EQUAL CALL([sel], SIDE), EQUAL CALL([c1], reverse(promenade half way)))
+    call: heads start
+    call: anyone while others([sel], reverse(_outsides promenade half way), [c2])
   // special case 'heads square thru...' from static square
   from: STATIC SQUARE
     condition: EQUAL CALL([sel], HEAD)
@@ -397,6 +399,13 @@ def: wrong way promenade home
   spoken: (wrong way|reverse) promenade (home?)
   call: mirror(_promenade home(BELLE))
 
+def: _outsides promenade half way
+  // used for outer concentric promenade
+  in: 8
+  ipart:
+    from: FACING COUPLES
+      call: 1/2(reverse(wheel around)), counter rotate(1/2), 1/2(wheel around)
+
 def: promenade half way
   optional: REVERSE
   in: 8
@@ -579,7 +588,7 @@ def: weave the ring
   call: right and left grand // modulo hand-holds
 
 def: left and right grand
-  call: mirror(right and left grand)
+  call: mirror(wrong way grand)
 
 // callerlab #10: STAR FAMILY
 // XXX DEFINE ME
