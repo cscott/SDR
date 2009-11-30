@@ -223,6 +223,11 @@ def: _break out from swing
 // callerlab #6: PROMENADE FAMILY
 
 // this is the four-person call.
+def: _single promenade 1/8
+  in: 2
+  from: LH SINGLE PROMENADE
+    prim: 0, 2, left 1/8
+
 def: _single promenade 1/4
   in: 4
   from: LH SINGLE PROMENADE
@@ -270,6 +275,11 @@ def: _single promenade 1/4
         prim: -2, 2, left
 
 // another 4-person promenade
+def: _single star promenade 1/8
+  in: 2
+  from: LH STAR
+    prim: 0, 1, left 1/8
+
 def: _single star promenade 1/4
   in: 4
   from: LH STAR
@@ -304,10 +314,26 @@ def: _single file promenade 1/8
     select: NUMBER 3, NUMBER 4
       prim:  2, 2, none, force-roll-left
 
+// promenade some number of 1/4s, plus an extra 1/8 at the end if needed.
 def: _single promenade(n)
-  call: _fractional(_multiply num([n], 4), _single promenade 1/4)
+  from: ANY
+    condition: equal num(_fraction(_multiply num([n], 4)), 0)
+    call: _fractional(_multiply num([n], 4), _single promenade 1/4)
+  from: ANY
+    call: _fractional(_floor(_multiply num([n], 4)), _single promenade 1/4)
+    call: _fractional(_multiply num(2, _fraction(_multiply num([n], 4))), \
+                      _single promenade 1/8)
+
+// promenade some number of 1/4s, plus an extra 1/8 at the end if needed.
 def: _single star promenade(n)
-  call: _fractional(_multiply num([n], 4), _single star promenade 1/4)
+  from: ANY
+    condition: equal num(_fraction(_multiply num([n], 4)), 0)
+    call: _fractional(_multiply num([n], 4), _single star promenade 1/4)
+  from: ANY
+    call: _fractional(_floor(_multiply num([n], 4)), _single star promenade 1/4)
+    call: _fractional(_multiply num(2, _fraction(_multiply num([n], 4))), \
+                      _single star promenade 1/8)
+
 def: _single file promenade(n)
   call: _fractional(_multiply num([n], 8), _single file promenade 1/8)
 
@@ -338,14 +364,18 @@ def: _finish at home(who, what)
   ends in: MATCH(_SELECTION PATTERN \
                  (and(formation(STATIC SQUARE, [who]), or(DANCER 1,DANCER 2))),\
                  "______(_x|x_)")
+  ends in: MATCH(_FACING PATTERN(), "vv......")
   call: [what]
 
 // Continue to 'promenade home' (or whatever) after checking to ensure
 // dancer 1 or 2 is a beau (or belle).  This ensures that our recursion
 // will terminate!
 def: _promenade check(formation, who, what)
-  from: [formation]
-    condition: OR(ARE(DANCER 1, [who]), ARE(DANCER 2, [who])), "Whose home?"
+  // could use 'from: {NO SUB} [formation]' here.
+  // if we were to do a sub-formation match, it would scramble the rotation
+  // of the formation, and we need the rotation to know when we're home.
+  condition: OR(ARE(DANCER 1, formation([formation], [who])), \
+                ARE(DANCER 2, formation([formation], [who]))), "Whose home?"
     call: [what]
 
 // as basic defs say, we always go at least 1/4
@@ -354,6 +384,9 @@ def: _promenade home(sel)
     from: ANY // use ANY to guarantee no rotation
       // only successful if we end at home
       call: _finish at home([sel], and(_promenade(1/4), as couples(roll)))
+    from: ANY // use ANY to guarantee no rotation
+      // only successful if we end at home
+      call: _finish at home([sel], and(_promenade(3/8), as couples(roll)))
     from: ANY
       call: _promenade(1/4)
       call: _promenade check(PROMENADE, [sel], _promenade home([sel]))
@@ -379,6 +412,8 @@ def: _star promenade home(sel)
   ipart:
     from: ANY // use ANY to guarantee no rotation
       call: _finish at home([sel], and(star promenade(1/4), as couples(roll)))
+    from: ANY // use ANY to guarantee no rotation
+      call: _finish at home([sel], and(star promenade(3/8), as couples(roll)))
     from: ANY
       call: star promenade(1/4)
       call: _promenade check(STAR PROMENADE, [sel], _star promenade home([sel]))

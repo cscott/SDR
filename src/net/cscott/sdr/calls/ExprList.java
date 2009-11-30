@@ -234,6 +234,77 @@ public abstract class ExprList {
     };
     static { exprMathFuncs.put(_DIVIDE_NUM.getName(), _DIVIDE_NUM); }
 
+    /**
+     * Simple math: return integer part of a fraction.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _floor '3 3/4)")
+     *  (Expr _floor '3 3/4)
+     *  js> c.evaluate(fc, ds).toProperString()
+     *  3
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _floor (Expr _subtract num '0 '3 3/4))")
+     *  (Expr _floor (Expr _subtract num '0 '3 3/4))
+     *  js> c.evaluate(fc, ds).toProperString()
+     *  -4
+     */
+    public static final ExprFunc<Fraction> _FLOOR = new ExprFunc<Fraction>() {
+        @Override
+        public String getName() { return "_floor"; }
+        @Override
+        public Fraction evaluate(Class<? super Fraction> type,
+                                 DanceState ds, List<Expr> args)
+                throws EvaluationException {
+            if (!type.isAssignableFrom(Fraction.class))
+                throw new EvaluationException("Type mismatch");
+            if (args.size() != 1)
+                throw new EvaluationException("Wrong # of arguments");
+            Fraction f = args.get(0).evaluate(Fraction.class, ds);
+            return Fraction.valueOf(f.floor());
+        }
+        @Override
+        public boolean isConstant(Class<? super Fraction> type, List<Expr> args){
+            return args.get(0).isConstant(Fraction.class);
+        }
+    };
+    static { exprMathFuncs.put(_FLOOR.getName(), _FLOOR); }
+
+    /**
+     * Simple math: return fractional part of a number.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _fraction '3 3/4)")
+     *  (Expr _fraction '3 3/4)
+     *  js> c.evaluate(fc, ds).toProperString()
+     *  3/4
+     *  js> // note that (floor(n) + fraction(n)) = n
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _fraction (Expr _subtract num '0 '3 3/4))")
+     *  (Expr _fraction (Expr _subtract num '0 '3 3/4))
+     *  js> c.evaluate(fc, ds).toProperString()
+     *  1/4
+     */
+    public static final ExprFunc<Fraction> _FRACTION = new ExprFunc<Fraction>() {
+        @Override
+        public String getName() { return "_fraction"; }
+        @Override
+        public Fraction evaluate(Class<? super Fraction> type,
+                                 DanceState ds, List<Expr> args)
+                throws EvaluationException {
+            if (!type.isAssignableFrom(Fraction.class))
+                throw new EvaluationException("Type mismatch");
+            if (args.size() != 1)
+                throw new EvaluationException("Wrong # of arguments");
+            Fraction f = args.get(0).evaluate(Fraction.class, ds);
+            return f.subtract(Fraction.valueOf(f.floor()));
+        }
+        @Override
+        public boolean isConstant(Class<? super Fraction> type, List<Expr> args){
+            return args.get(0).isConstant(Fraction.class);
+        }
+    };
+    static { exprMathFuncs.put(_FRACTION.getName(), _FRACTION); }
+
     // square-dance related functions
     public static final ExprFunc<Fraction> NUM_DANCERS = new ExprFunc<Fraction>() {
         @Override
@@ -299,6 +370,16 @@ public abstract class ExprList {
         }
     };
     static { exprStringFuncs.put(_SWEEP_PATTERN.getName(), _SWEEP_PATTERN); }
+
+    public static final ExprFunc<String> _FACING_PATTERN =
+        new PatternFunc<Void>("_facing pattern") {
+        @Override
+        protected String dancerToString(TaggedFormation tf, Dancer d, Void v) {
+            Position p = tf.location(d);
+            return ""+p.facing.toDiagramChar();
+        }
+    };
+    static { exprStringFuncs.put(_FACING_PATTERN.getName(), _FACING_PATTERN); }
 
     /**
      * Check the order of the selected dancers within the given formation.

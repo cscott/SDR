@@ -180,7 +180,7 @@ public class SelectorList {
                 @Override
                 public Set<Dancer> select(TaggedFormation tf) {
                     try {
-                        FormationMatch fm = m.match(tf);
+                        FormationMatch fm = m.match(Breather.breathe(tf));
                         Set<Dancer> d = new LinkedHashSet<Dancer>();
                         for (TaggedFormation ntf : fm.matches.values())
                             d.addAll(s.select(ntf));

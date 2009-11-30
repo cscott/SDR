@@ -75,13 +75,15 @@ sdr> trade
 sdr> /resolveStep
 Right and Left Grand
 sdr> right and left grand
-|      1G>  1B<
+|      2BL       1GQ
 | 
-| 2Bv            4Gv
+| 2G7                 1B`
 | 
-| 2G^            4B^
 | 
-|      3B>  3G<
+| 
+| 3BQ                 4GL
+| 
+|      3G`       4B7
 sdr> promenade home
 |      3Gv  3Bv
 | 
