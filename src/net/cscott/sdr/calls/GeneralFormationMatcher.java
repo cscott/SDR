@@ -368,7 +368,10 @@ public class GeneralFormationMatcher {
                 inP = warpF.warp(goP, Fraction.ZERO);
                 Dancer inD = mi.inputPositionMap.get(zeroRotation(inP));
                 // warp back to get an exact rotation for this version of goal
-                goP = warpB.warp(input.location(inD), Fraction.ZERO);
+                Position goPr = warpB.warp(input.location(inD), Fraction.ZERO);
+                // to avoid distortion for 1/8 off formations, take only the
+                // rotation (and flags) from this new goP
+                goP = goPr.relocate(goP.x, goP.y, goPr.facing);
                 // add to this subformation.
                 subPos.put(inD, goP);
                 subTag.addAll(inD, om.gi.goal.tags(goD));
