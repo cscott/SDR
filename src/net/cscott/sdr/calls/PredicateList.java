@@ -56,6 +56,16 @@ public abstract class PredicateList {
         @Override
         public boolean isConstant(List<Expr> args) { return true; }
     };
+    // another 'true', used to set breakpoints during debugging
+    public final static Predicate BREAKPOINT = new _Predicate("breakpoint") {
+        @Override
+        public boolean evaluate(DanceState ds, List<Expr> args) {
+            assert args.isEmpty();
+            return true;
+        }
+        @Override
+        public boolean isConstant(List<Expr> args) { return true; }
+    };
     // one-arg operators
     /**
      * Boolean negation.
