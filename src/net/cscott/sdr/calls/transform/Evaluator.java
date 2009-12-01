@@ -308,11 +308,17 @@ public abstract class Evaluator {
                 if (inRemoved != in)
                     return inRemoved.accept(this, ds);
                 // otherwise:
+                Fraction desiredTime;
+                try {
+                    desiredTime = in.count.evaluate(Fraction.class, ds);
+                } catch (EvaluationException e) {
+                    throw new BadCallException("Evaluation error: "+e);
+                }
                 DanceState nds = ds.cloneAndClear();
                 new Standard(in.child).evaluateAll(nds);
                 // figure out how much we have to adjust the timing
                 Fraction finalTime = nds.currentTime();
-                Fraction multiplier = in.count.divide(finalTime);
+                Fraction multiplier = desiredTime.divide(finalTime);
                 // okay, iterate through all the dancer paths and adjust them
                 // XXX: would be more efficient if we grouped the paths by
                 //      time

@@ -11,16 +11,16 @@ import net.cscott.sdr.util.Fraction;
  * @version $Id: In.java,v 1.6 2006-10-17 16:29:05 cananian Exp $
  */
 public class In extends Comp {
-    public final Fraction count;
+    public final Expr count;
     public final Comp child;
     
-    public In(Fraction count, Comp child) {
+    public In(Expr count, Comp child) {
         super(IN);
         this.count = count;
         this.child = child;
     }
     public In(int i, Seq seq) {
-        this(Fraction.valueOf(i), seq);
+        this(Expr.literal(Fraction.valueOf(i)), seq);
     }
     @Override
     public <T> Comp accept(TransformVisitor<T> v, T t) {
@@ -33,10 +33,10 @@ public class In extends Comp {
     }
     @Override
     public String argsToString() {
-        return count.toProperString()+" "+child.toString();
+        return count.toString()+" "+child.toString();
     }
     /** Factory: creates new In only if it would differ from this. */
-    public In build(Fraction count, Comp child) {
+    public In build(Expr count, Comp child) {
         if (this.count.equals(count) && this.child==child)
             return this;
         return new In(count, child);

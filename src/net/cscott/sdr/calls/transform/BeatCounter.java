@@ -9,6 +9,7 @@ import java.util.Set;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.AstNode;
 import net.cscott.sdr.calls.ast.Comp;
@@ -84,7 +85,11 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     @Override
     public Fraction visit(In in, Void v) {
         // ignore child's length, and use the length of the 'in' instead.
-        return in.count;
+        try {
+            return in.count.evaluate(Fraction.class, ds);
+        } catch (EvaluationException e) {
+            throw new CantCountBeatsException("can't evaluate in");
+        }
     }
     @Override
     public Fraction visit(Opt opt, Void v) {

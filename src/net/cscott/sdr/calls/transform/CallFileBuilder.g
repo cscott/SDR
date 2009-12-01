@@ -248,7 +248,7 @@ one_par returns [B<ParCall> pc]
     ;
 // restrictions/timing
 res returns [B<? extends Comp> c]
-    : ^(IN f=number p=pieces)
+    : ^(IN f=expr_body p=pieces)
     { $c = mkIn(f, p); }
     | ^(IF w=ifwhen cd=expr_body ^(n=NUMBER msg=simple_words?) p=pieces)
     { $c = mkIf(w, cd, Fraction.valueOf(n.getText()), msg==null?null:msg, p); }

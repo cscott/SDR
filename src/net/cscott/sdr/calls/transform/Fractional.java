@@ -42,9 +42,9 @@ import org.junit.runner.RunWith;
  *  js> call = net.cscott.sdr.calls.CallDB.INSTANCE.lookup(callname)
  *  dosado[basic]
  *  js> comp = call.getEvaluator(null, java.util.Arrays.asList()).simpleExpansion()
- *  (In 6 (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH) (Prim 1, -1, none, 1, SASHAY_START) (Prim -1, -1, none, 1, SASHAY_FINISH)))))
+ *  (In '6 (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH) (Prim 1, -1, none, 1, SASHAY_START) (Prim -1, -1, none, 1, SASHAY_FINISH)))))
  *  js> comp.accept(new Fractional(ds), Fraction.ONE_QUARTER)
- *  (In 1 1/2 (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START)))))
+ *  (In (Expr _multiply num '1/4 '6) (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START)))))
  *  js> try {
  *    >   comp.accept(new Fractional(ds), Fraction.ONE_THIRD)
  *    > } catch (e) {
@@ -58,7 +58,8 @@ public class Fractional extends TransformVisitor<Fraction> {
     public Fractional(DanceState ds) { this.ds = ds; }
     @Override
     public In visit(In in, Fraction f) {
-        return in.build(in.count.multiply(f), in.child.accept(this, f));
+        return in.build(new Expr("_multiply num", Expr.literal(f), in.count),
+                        in.child.accept(this, f));
     }
     @Override
     public Prim visit(Prim p, Fraction f) {

@@ -146,7 +146,7 @@ ifwhen returns [If.When r]
     ;
 in returns [In r]
     : {input.LT(2).getText().equalsIgnoreCase("In")}?
-        '(' IDENT count=number child=comp ')'
+        '(' IDENT count=expr child=comp ')'
         { $r = new In($count.r, $child.r); }
     ;
 opt returns [Opt r]

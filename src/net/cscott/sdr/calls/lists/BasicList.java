@@ -96,7 +96,6 @@ public abstract class BasicList {
         @Override
         public Evaluator getEvaluator(DanceState ds, List<Expr> args)
             throws EvaluationException {
-            Fraction time = args.get(0).evaluate(Fraction.class, ds);
             Evaluator arg = args.get(1).evaluate(Evaluator.class, ds);
             // if this is a simple call, expand it directly
             Comp result;
@@ -105,7 +104,7 @@ public abstract class BasicList {
             // for complicated calls, use a Seq(Apply(...))
             else
                 result = new Seq(new Apply(args.get(1)));
-            return new Evaluator.Standard(new In(time, result));
+            return new Evaluator.Standard(new In(args.get(0), result));
         }
         @Override
         public int getMinNumberOfArguments() {
@@ -276,7 +275,7 @@ public abstract class BasicList {
      *  js> a = new Expr("_fractional", Expr.literal("1 1/2"), a1)
      *  (Expr _fractional '1 1/2 'dosado)
      *  js> BasicList._FRACTIONAL.getEvaluator(ds, a.args).simpleExpansion()
-     *  (Seq (Part false (Seq (Apply 'dosado) (Part true (In 3 (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))))))
+     *  (Seq (Part false (Seq (Apply 'dosado) (Part true (In (Expr _multiply num '1/2 '6) (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))))))
      */
     public static final Call _FRACTIONAL = new BasicCall("_fractional") {
         @Override

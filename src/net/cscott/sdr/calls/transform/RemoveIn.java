@@ -4,7 +4,9 @@
 package net.cscott.sdr.calls.transform;
 
 import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.util.*;
 import java.util.*;
@@ -24,17 +26,17 @@ import org.junit.runner.RunWith;
  *  js> a = new Apply(new Expr("_fractional", Expr.literal("1/2"), Expr.literal("dosado")))
  *  (Apply (Expr _fractional '1/2 'dosado))
  *  js> def = a.evaluator(ds).simpleExpansion()
- *  (In 3 (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))
+ *  (In (Expr _multiply num '1/2 '6) (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))
  *  js> def = RemoveIn.removeIn(ds, def)
- *  (Opt (From 'FACING DANCERS (In 3 (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))
+ *  (Opt (From 'FACING DANCERS (In '3 (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))
  *  js> def = RemoveIn.removeIn(ds, def.children.get(0).child)
  *  (Seq (Prim -1, 1, none, 1 1/2, SASHAY_START) (Prim 1, 1, none, 1 1/2, SASHAY_FINISH))
  * @doc.test Proper handling of Part:
  *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
- *  js> a = AstNode.valueOf('(In 1 (Seq (Part false (Seq (Prim 0, 1, none, 1) (Prim 0, 1, in 1/4, 1)))))')
- *  (In 1 (Seq (Part false (Seq (Prim 0, 1, none, 1) (Prim 0, 1, in 1/4, 1)))))
+ *  js> a = AstNode.valueOf('(In \'1 (Seq (Part false (Seq (Prim 0, 1, none, 1) (Prim 0, 1, in 1/4, 1)))))')
+ *  (In '1 (Seq (Part false (Seq (Prim 0, 1, none, 1) (Prim 0, 1, in 1/4, 1)))))
  *  js> RemoveIn.removeIn(ds, a)
  *  (Seq (Part false (Seq (Prim 0, 1, none, 1/2) (Prim 0, 1, in 1/4, 1/2))))
  */
@@ -52,9 +54,11 @@ public class RemoveIn extends TransformVisitor<Fraction> {
     public static Comp removeIn(DanceState ds, In in) {
         RemoveIn ri = new RemoveIn(ds);
         try {
-            return in.child.accept(ri,in.count);
+            return in.child.accept(ri,in.count.evaluate(Fraction.class, ds));
         } catch (BeatCounter.CantCountBeatsException ccbe) {
             return in; // bail!
+        } catch (EvaluationException e) {
+            throw new BadCallException("Can't evaluate in: "+e);
         }
     }
 
@@ -105,7 +109,7 @@ public class RemoveIn extends TransformVisitor<Fraction> {
     public Par visit(Par p, Fraction f) {
         List<ParCall> l=new ArrayList<ParCall>();
         for (ParCall pc : p.children)
-            l.add(new ParCall(pc.selector, new In(f, pc.child)));
+            l.add(new ParCall(pc.selector, new In(Expr.literal(f), pc.child)));
         return p.build(l);
     }
     // don't recurse down Opt, so we don't do more work than we need to on
@@ -114,7 +118,7 @@ public class RemoveIn extends TransformVisitor<Fraction> {
     public Opt visit(Opt o, Fraction f) {
         List<OptCall> l=new ArrayList<OptCall>();
         for (OptCall oc : o.children)
-            l.add(new OptCall(oc.matcher, new In(f, oc.child)));
+            l.add(new OptCall(oc.matcher, new In(Expr.literal(f), oc.child)));
         return o.build(l);
     }
     // f is target # of beats

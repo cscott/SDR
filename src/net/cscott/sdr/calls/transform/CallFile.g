@@ -5,7 +5,7 @@
  *  js> new CallFileParser("program: basic").calllist().getTree().toStringTree()
  *  (CALLLIST (program basic))
  *  js> new CallFileParser("program: basic\ndef: _courtesy turn 4/4\n  in:8\n  call: wheelaround").calllist().getTree().toStringTree()
- *  (CALLLIST (program basic (def (ITEM _courtesy turn 4/4) (in 8 (SEQ (call (EXPR (ITEM wheelaround))))))))
+ *  (CALLLIST (program basic (def (ITEM _courtesy turn 4/4) (in (EXPR (ITEM 8)) (SEQ (call (EXPR (ITEM wheelaround))))))))
  * @doc.test The 'and' concept is applied to successive calls joined by commas:
  *  js> new CallFileParser("program: basic\ndef: foo\n call: bar,bat").calllist().getTree().toStringTree()
  *  (CALLLIST (program basic (def (ITEM foo) (SEQ (call (EXPR (ITEM and) LPAREN (EXPR (ITEM bar)) (EXPR (ITEM bat))))))))
@@ -58,13 +58,13 @@
  * @doc.test Grammar precedence 1: INs bind tightly, FROMs do not:
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cp("def:foo\n in: 8\n in: 4\n call: bar")
- *  (def (ITEM foo) (in 8 (in 4 (SEQ (call (EXPR (ITEM bar)))))))
+ *  (def (ITEM foo) (in (EXPR (ITEM 8)) (in (EXPR (ITEM 4)) (SEQ (call (EXPR (ITEM bar)))))))
  *  js> cp("def:foo\n in: 4\n from: RH_BOX\n  call: bar\n from: LH_BOX\n  call: bat")
- *  (def (ITEM foo) (in 4 (OPT (from (EXPR (ITEM RH_BOX)) (SEQ (call (EXPR (ITEM bar))))) (from (EXPR (ITEM LH_BOX)) (SEQ (call (EXPR (ITEM bat))))))))
+ *  (def (ITEM foo) (in (EXPR (ITEM 4)) (OPT (from (EXPR (ITEM RH_BOX)) (SEQ (call (EXPR (ITEM bar))))) (from (EXPR (ITEM LH_BOX)) (SEQ (call (EXPR (ITEM bat))))))))
  * @doc.test Grammar precedence: SEQs bind least tightly:
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cp("def:foo\n in: 4\n from: RH_MINIWAVE\n call: trade\n from: RH_BOX\n call: bar")
- *  (def (ITEM foo) (in 4 (OPT (from (EXPR (ITEM RH_MINIWAVE)) (SEQ (call (EXPR (ITEM trade))))) (from (EXPR (ITEM RH_BOX)) (SEQ (call (EXPR (ITEM bar))))))))
+ *  (def (ITEM foo) (in (EXPR (ITEM 4)) (OPT (from (EXPR (ITEM RH_MINIWAVE)) (SEQ (call (EXPR (ITEM trade))))) (from (EXPR (ITEM RH_BOX)) (SEQ (call (EXPR (ITEM bar))))))))
  * @doc.test FROM(CONDITION..) requires indentation.
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cfp=new CallFileParser("def:foo\n in:4\n from:RH_BOX\n condition:true\n call: bar")
@@ -494,7 +494,7 @@ fragment pieces_factor
 
 /// restrictions/timing
 res
-    : IN^ COLON! number pieces
+    : IN^ COLON! expr_body pieces
     | CONDITION COLON expr_body cond_msg pieces
         -> ^(IF BEFORE expr_body cond_msg pieces)
     | ENDS IN COLON expr_body cond_msg pieces

@@ -110,12 +110,12 @@ abstract class BuilderHelper {
             }
         }, cond.isConstant() && child.isConstant());
     }
-    static B<In> mkIn(final Fraction count, final B<? extends Comp> child) {
+    static B<In> mkIn(final B<Expr> count, final B<? extends Comp> child) {
         return optimize(new B<In>() {
             public In build(List<Expr> fargs) {
-                return new In(count, child.build(fargs));
+                return new In(count.build(fargs), child.build(fargs));
             }
-        }, child.isConstant());
+        }, count.isConstant() && child.isConstant());
     }
     static B<Opt> mkOpt(final List<B<OptCall>> children) {
         return optimize(new B<Opt>() {
@@ -129,7 +129,7 @@ abstract class BuilderHelper {
             public OptCall build(List<Expr> fargs) {
                 return new OptCall(matcher.build(fargs), child.build(fargs));
             }
-        }, child.isConstant());
+        }, matcher.isConstant() && child.isConstant());
     }
     static B<Par> mkPar(final List<B<ParCall>> children) {
         return optimize(new B<Par>() {
