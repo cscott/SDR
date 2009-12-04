@@ -17,7 +17,6 @@ import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Prim;
-import net.cscott.sdr.calls.transform.EvalPrim;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.SdrToString;
 import net.cscott.sdr.util.Tools.ListMultiMap;

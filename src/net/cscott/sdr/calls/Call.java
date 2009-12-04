@@ -6,7 +6,6 @@ import java.util.List;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.grm.Rule;
-import net.cscott.sdr.calls.transform.Evaluator;
 
 /** The {@link Call} class includes 'simple calls' (like HINGE) which
  * take no arguments, 'complex calls' (like SQUARE THRU) which take a

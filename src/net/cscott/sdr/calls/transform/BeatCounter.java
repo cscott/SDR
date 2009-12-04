@@ -9,6 +9,7 @@ import java.util.Set;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.AstNode;

@@ -7,7 +7,6 @@ import java.util.Set;
 
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Expr;
-import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.util.Fraction;
 
 public abstract class ExprList {

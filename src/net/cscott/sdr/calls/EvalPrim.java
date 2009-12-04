@@ -1,14 +1,9 @@
-package net.cscott.sdr.calls.transform;
+package net.cscott.sdr.calls;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.cscott.jdoctest.JDoctestRunner;
-import net.cscott.sdr.calls.Dancer;
-import net.cscott.sdr.calls.DancerPath;
-import net.cscott.sdr.calls.ExactRotation;
-import net.cscott.sdr.calls.Formation;
-import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.DancerPath.PointOfRotation;
 import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.ast.Prim.Direction;
@@ -22,7 +17,6 @@ import org.junit.runner.RunWith;
  * @author C. Scott Ananian
  * @version $Id: EvalPrim.java,v 1.1 2007-03-07 22:11:09 cananian Exp $
  * @doc.test Partner trade:
- *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> fm = MatcherList.COUPLE.match(Formation.FOUR_SQUARE); undefined
  *  js> f=[ff for (ff in Iterator(fm.matches.values()))
@@ -57,7 +51,6 @@ import org.junit.runner.RunWith;
  *  1Gv  1Bv
  * @doc.test Check that sweep direction computation doesn't crash if
  *  a dancer ends up on the center point:
- *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> f = Formation.FOUR_SQUARE ; undefined
  *  js> // first part of partner trade
@@ -65,7 +58,6 @@ import org.junit.runner.RunWith;
  *    >                      AstNode.valueOf('(Prim -1, 1, left, 3)'))
  *  DancerPath[from=1,-1,n,to=0,0,w,[ROLL_LEFT],time=3,pointOfRotation=FOUR_DANCERS]
  * @doc.test Check that in/out motions are computed correctly:
- *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> fm = MatcherList.COUPLE.match(Formation.FOUR_SQUARE); undefined
  *  js> f=[ff for (ff in Iterator(fm.matches.values()))
@@ -81,7 +73,6 @@ import org.junit.runner.RunWith;
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1b.to).move(StandardDancer.COUPLE_1_GIRL, p1g.to); f.toStringDiagram()
  *  1B>  1G>
  * @doc.test Check that roll/sweep work, even if you turn more than 360 degrees:
- *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> f=Formation.SQUARED_SET.select(StandardDancer.COUPLE_1_BOY,
  *    >       StandardDancer.COUPLE_1_GIRL).onlySelected(); f.toStringDiagram()
@@ -143,7 +134,6 @@ import org.junit.runner.RunWith;
  * @doc.test Scoot back. Note: trailers can't roll at finish; and the
  *  first (extend) part of the call doesn't have a sweep direction because the
  *  dancers don't end up facing the center.
- *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> f = Formation.FOUR_SQUARE; f.toStringDiagram()
  *  3Gv  3Bv
@@ -235,7 +225,6 @@ import org.junit.runner.RunWith;
  *  1G>  1Bv
  * @doc.test Prims which "stand still" preserve roll by including the
  *  PRESERVE_ROLL flag.
- *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> fm = MatcherList.COUPLE.match(Formation.FOUR_SQUARE); undefined
  *  js> f=[ff for (ff in Iterator(fm.matches.values()))
@@ -261,7 +250,6 @@ import org.junit.runner.RunWith;
  *  1B<  1G^
  * @doc.test Tricky 45-degree off Prim.  This is the outsides part of a fan the
  *  top, broken in halves.
- *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> FormationList = FormationListJS.initJS(this); undefined;
  *  js> f = FormationList.SINGLE_DANCER; d = f.dancers().iterator().next();

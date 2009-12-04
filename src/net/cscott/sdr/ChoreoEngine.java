@@ -4,7 +4,6 @@ import net.cscott.jutil.MultiMap;
 import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Seq;
-import net.cscott.sdr.calls.transform.Evaluator;
 /** 
  * {@link ChoreoEngine} specifies the interface through which the choreography
  * engine communicates with the rest of the SDR application.

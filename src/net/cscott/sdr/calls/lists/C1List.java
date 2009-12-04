@@ -17,6 +17,7 @@ import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.DancerPath;
+import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationList;
@@ -33,7 +34,6 @@ import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.lists.A1List.SolidEvaluator;
 import net.cscott.sdr.calls.lists.A1List.SolidMatch;
 import net.cscott.sdr.calls.lists.A1List.SolidType;
-import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 

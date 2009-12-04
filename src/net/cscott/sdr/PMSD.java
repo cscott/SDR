@@ -27,6 +27,7 @@ import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.DanceProgram;
 import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.StandardDancer;
@@ -34,7 +35,6 @@ import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.grm.CompletionEngine;
-import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.toolbox.DWResolver;
 import net.cscott.sdr.util.ListUtils;
 

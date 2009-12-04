@@ -50,7 +50,7 @@ import static net.cscott.sdr.util.Tools.*;
  *    >   // get next call from current formation
  *    >   let nextCall = DWResolver.resolveStep(ds.currentFormation());
  *    >   if (nextCall == "Right and Left Grand") return (steps+1);
- *    >   net.cscott.sdr.calls.transform.Evaluator.parseAndEval(ds, nextCall);
+ *    >   net.cscott.sdr.calls.Evaluator.parseAndEval(ds, nextCall);
  *    >   // keep dancing.
  *    >   return dance(ds, steps+1);
  *    > }

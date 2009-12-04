@@ -8,6 +8,8 @@ import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.DancerPath;
+import net.cscott.sdr.calls.EvalPrim;
+import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Program;
@@ -17,8 +19,6 @@ import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.grm.Rule;
-import net.cscott.sdr.calls.transform.EvalPrim;
-import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.util.Fraction;
 
 /**

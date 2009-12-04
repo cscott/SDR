@@ -7,6 +7,7 @@ import java.util.Set;
 
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ast.Apply;

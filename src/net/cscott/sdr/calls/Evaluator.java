@@ -1,4 +1,4 @@
-package net.cscott.sdr.calls.transform;
+package net.cscott.sdr.calls;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,20 +12,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import net.cscott.jdoctest.JDoctestRunner;
-import net.cscott.sdr.calls.BadCallException;
-import net.cscott.sdr.calls.Breather;
-import net.cscott.sdr.calls.CallDB;
-import net.cscott.sdr.calls.DanceState;
-import net.cscott.sdr.calls.Dancer;
-import net.cscott.sdr.calls.DancerPath;
-import net.cscott.sdr.calls.Formation;
-import net.cscott.sdr.calls.FormationList;
-import net.cscott.sdr.calls.FormationMatch;
-import net.cscott.sdr.calls.Matcher;
-import net.cscott.sdr.calls.NoMatchException;
-import net.cscott.sdr.calls.Position;
-import net.cscott.sdr.calls.TaggedFormation;
-import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.AstNode;
@@ -41,6 +27,8 @@ import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
+import net.cscott.sdr.calls.transform.RemoveIn;
+import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.ListUtils;
 
@@ -61,7 +49,6 @@ import org.junit.runner.RunWith;
  *
  * @author C. Scott Ananian
  * @doc.test Simplest invocation: "heads start" from squared set.
- *  js> importPackage(net.cscott.sdr.calls);
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
  *  js> ds.currentFormation().toStringDiagram("|");
  *  |     3Gv  3Bv
@@ -82,7 +69,6 @@ import org.junit.runner.RunWith;
  *  |
  *  |4G>  1B^  1G^  2B<
  * @doc.test "Heads pair off" from squared set.
- *  js> importPackage(net.cscott.sdr.calls);
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
  *  js> ds.currentFormation().toStringDiagram("|");
  *  |     3Gv  3Bv
@@ -103,7 +89,6 @@ import org.junit.runner.RunWith;
  *  |
  *  |4G>  1B<  1G>  2B<
  * @doc.test More complex calls from facing couples.
- *  js> importPackage(net.cscott.sdr.calls);
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.FOUR_SQUARE); undefined;
  *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
  *  |3Gv  3Bv
@@ -126,7 +111,6 @@ import org.junit.runner.RunWith;
  *  |3G>  3B<
  * @doc.test Recursive evaluation with fractionalization, left concept,
  *  breathing, etc:
- *  js> importPackage(net.cscott.sdr.calls);
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.FOUR_SQUARE); undefined;
  *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
  *  |3Gv  3Bv
@@ -142,7 +126,6 @@ import org.junit.runner.RunWith;
  *  |
  *  |1G>
  * @doc.test Matching waves; fan the top; even timing:
- *  js> importPackage(net.cscott.sdr.calls);
  *  js> ds = new DanceState(new DanceProgram(Program.A1), Formation.SQUARED_SET); undefined;
  *  js> Evaluator.parseAndEval(ds, "heads pair off; do half of a pass thru");
  *  js> ds = ds.cloneAndClear(Breather.breathe(ds.currentFormation())); undefined
@@ -162,7 +145,6 @@ import org.junit.runner.RunWith;
  *  js> ds.movements(StandardDancer.COUPLE_4_GIRL)
  *  [DancerPath[from=-1,-1,e,to=-1,0,n,[ROLL_LEFT, SWEEP_RIGHT],time=1 1/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-1,0,n,[ROLL_LEFT, SWEEP_RIGHT],to=-3,1,nw,[ROLL_LEFT, SWEEP_RIGHT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-3,1,nw,[ROLL_LEFT, SWEEP_RIGHT],to=-4,1,w,[ROLL_LEFT, SWEEP_RIGHT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-4,1,w,[ROLL_LEFT, SWEEP_RIGHT],to=-5,0,s,[ROLL_LEFT, SWEEP_RIGHT],time=1 1/3,pointOfRotation=FOUR_DANCERS]]
  * @doc.test Four-person "pass thru":
- *  js> importPackage(net.cscott.sdr.calls);
  *  js> ds = new DanceState(new DanceProgram(Program.BASIC), Formation.FOUR_SQUARE); undefined;
  *  js> Evaluator.parseAndEval(ds, "pass thru")
  *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
