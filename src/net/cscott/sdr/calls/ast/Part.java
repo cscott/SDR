@@ -1,6 +1,6 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.ast.TokenTypes.PART;
+import static net.cscott.sdr.calls.parser.AstTokenTypes.PART;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;

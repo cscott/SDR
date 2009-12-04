@@ -14,7 +14,7 @@ import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ast.Apply;
-import net.cscott.sdr.calls.transform.CallFileBuilder;
+import net.cscott.sdr.calls.parser.CallFileBuilder;
 import net.cscott.sdr.util.Tools;
 import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
 

@@ -1,6 +1,6 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.transform.CallFileLexer.FROM;
+import static net.cscott.sdr.calls.parser.CallFileLexer.FROM;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 

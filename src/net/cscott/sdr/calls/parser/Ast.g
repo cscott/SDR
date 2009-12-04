@@ -27,13 +27,14 @@
  */
 grammar Ast;
 @parser::header {
-package net.cscott.sdr.calls.ast;
+package net.cscott.sdr.calls.parser;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import net.cscott.sdr.calls.ast.*;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Predicate;
 import net.cscott.sdr.calls.Matcher;
@@ -47,7 +48,7 @@ import net.cscott.sdr.util.Fraction;
     }
 }
 @lexer::header {
-package net.cscott.sdr.calls.ast;
+package net.cscott.sdr.calls.parser;
 
 import static org.apache.commons.lang.StringEscapeUtils.unescapeJava;
 }

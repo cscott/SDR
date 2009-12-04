@@ -1,6 +1,6 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.transform.AstTokenTypes.PAR;
+import static net.cscott.sdr.calls.parser.AstTokenTypes.PAR;
 
 import java.util.Arrays;
 import java.util.Collections;

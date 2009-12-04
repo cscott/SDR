@@ -1,6 +1,6 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.transform.CallFileLexer.APPLY;
+import static net.cscott.sdr.calls.parser.CallFileLexer.APPLY;
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;

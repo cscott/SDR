@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.Call;
+import net.cscott.sdr.calls.parser.CallFileBuilder;
 
 /** This class contains the code to parse and load a call list. */
 @RunWith(value=JDoctestRunner.class)

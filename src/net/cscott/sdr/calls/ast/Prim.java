@@ -1,6 +1,6 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.transform.CallFileLexer.PRIM;
+import static net.cscott.sdr.calls.parser.CallFileLexer.PRIM;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,6 +8,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import net.cscott.sdr.calls.ExactRotation;
+import net.cscott.sdr.calls.parser.AstParser;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;

@@ -1,6 +1,6 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.transform.AstTokenTypes.IF;
+import static net.cscott.sdr.calls.parser.AstTokenTypes.IF;
 
 import org.junit.runner.RunWith;
 

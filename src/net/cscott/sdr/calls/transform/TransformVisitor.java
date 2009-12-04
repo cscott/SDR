@@ -1,11 +1,22 @@
 package net.cscott.sdr.calls.transform;
 
-import static net.cscott.sdr.calls.transform.AstTokenTypes.PART;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.cscott.sdr.calls.BadCallException;
-import net.cscott.sdr.calls.ast.*;
+import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.ast.Comp;
+import net.cscott.sdr.calls.ast.Expr;
+import net.cscott.sdr.calls.ast.If;
+import net.cscott.sdr.calls.ast.In;
+import net.cscott.sdr.calls.ast.Opt;
+import net.cscott.sdr.calls.ast.OptCall;
+import net.cscott.sdr.calls.ast.Par;
+import net.cscott.sdr.calls.ast.ParCall;
+import net.cscott.sdr.calls.ast.Part;
+import net.cscott.sdr.calls.ast.Prim;
+import net.cscott.sdr.calls.ast.Seq;
+import net.cscott.sdr.calls.ast.SeqCall;
 
 /**
  * {@link TransformVisitor} is a superclass to eliminate

@@ -68,7 +68,7 @@
  * @doc.test FROM(CONDITION..) requires indentation.
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cfp=new CallFileParser("def:foo\n in:4\n from:RH_BOX\n condition:true\n call: bar")
-*   net.cscott.sdr.calls.transform.CallFileParser@12a0f6c
+*   net.cscott.sdr.calls.parser.CallFileParser@12a0f6c
  *  js> cfp.def() ; undefined
  *  js> cfp.getNumberOfSyntaxErrors()
  *  1
@@ -124,7 +124,7 @@ tokens {
     EXPR;
 }
 @parser::header {
-    package net.cscott.sdr.calls.transform;
+    package net.cscott.sdr.calls.parser;
     import java.util.ArrayList;
     import java.util.List;
     import org.antlr.runtime.tree.Tree;
@@ -139,7 +139,7 @@ tokens {
 }
 
 @lexer::header {
-    package net.cscott.sdr.calls.transform;
+    package net.cscott.sdr.calls.parser;
 
     import static org.apache.commons.lang.StringEscapeUtils.unescapeJava;
 }
@@ -240,7 +240,7 @@ tokens {
       *  0.-1: <EOF>
       * @doc.test Keywords only apply before colons:
       *  js> cl = new CallFileLexer("def: def")
-      *  net.cscott.sdr.calls.transform.CallFileLexer@ce5b1c
+      *  net.cscott.sdr.calls.parser.CallFileLexer@ce5b1c
       *  js> cl.nextToken().getType() == cl.DEF
       *  true
       *  js> cl.nextToken().getType() == cl.COLON
@@ -255,7 +255,7 @@ tokens {
       *  0.-1: <EOF>
       * @doc.test Special keywords available only after 'prim':
       *  js> cl = new CallFileLexer("out", false)
-      *  net.cscott.sdr.calls.transform.CallFileLexer@1f3aa07
+      *  net.cscott.sdr.calls.parser.CallFileLexer@1f3aa07
       *  js> cl.nextToken().getType() == cl.INITIAL_WS
       *  true
       *  js> cl.nextToken().getType() == cl.IDENT
@@ -263,7 +263,7 @@ tokens {
       *  js> cl.nextToken().getType()
       *  -1
       *  js> cl = new CallFileLexer("prim: out", false)
-      *  net.cscott.sdr.calls.transform.CallFileLexer@1fc2fb
+      *  net.cscott.sdr.calls.parser.CallFileLexer@1fc2fb
       *  js> cl.nextToken().getType() == cl.INITIAL_WS
       *  true
       *  js> cl.nextToken().getType() == cl.PRIM

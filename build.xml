@@ -97,7 +97,7 @@ Square Dance Revolution build file.
     <target name="maint-clean" depends="init,clean,clean.grm"
 	    description="Removes ANTLR generated files">
         <delete>
-	  <fileset dir="src/net/cscott/sdr/calls/transform/"
+	  <fileset dir="src/net/cscott/sdr/calls/parser/"
 		   includes="CallFileBuilder.java CallFileParser.java
 			     CallFileLexer.java CallFile__.g *.tokens"
 		   />
@@ -149,14 +149,14 @@ Square Dance Revolution build file.
     <!-- compile the source code -->
     <target name="compile.base" depends="init,version"
             description="Compiles the code in ${src_dir} to ${classes_dir}">
-    <antlr3 target="src/net/cscott/sdr/calls/ast/Ast.g">
+    <antlr3 target="src/net/cscott/sdr/calls/parser/Ast.g">
 		<classpath refid="classpath.path" />
     </antlr3>
-    <antlr3 target="src/net/cscott/sdr/calls/transform/CallFile.g">
+    <antlr3 target="src/net/cscott/sdr/calls/parser/CallFile.g">
 		<classpath refid="classpath.path" />
     </antlr3>
-    <antlr3 target="src/net/cscott/sdr/calls/transform/CallFileBuilder.g"
-            libdirectory="src/net/cscott/sdr/calls/transform" >
+    <antlr3 target="src/net/cscott/sdr/calls/parser/CallFileBuilder.g"
+            libdirectory="src/net/cscott/sdr/calls/parser" >
 		<classpath refid="classpath.path" />
     </antlr3>
 	    <mkdir dir="${classes_dir}" />
@@ -271,7 +271,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
       <cobertura-instrument todir="${instrumented_dir}"
 			    datafile="${instrumented_dir}/cobertura.ser">
 	<!-- we get an over-size method error in class file
-	     net/cscott/sdr/calls/transform/CallFileLexer$DFA9
+	     net/cscott/sdr/calls/parser/CallFileLexer$DFA9
          and net/cscott/sdr/calls/lists/C4GrammarParser, so
 	     we'll ignore them. -->
 	<fileset dir="${classes_dir}">

@@ -3,6 +3,7 @@ package net.cscott.sdr.calls.ast;
 import org.junit.runner.RunWith;
 
 import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.sdr.calls.parser.AstParser;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 
@@ -10,7 +11,6 @@ import net.cscott.sdr.calls.transform.ValueVisitor;
  * <code>AstNode</code> is the abstract base class for abstract syntax
  * tree nodes representing parsed call definitions and components.
  * @author C. Scott Ananian
- * @version $Id: AstNode.java,v 1.1 2006-10-17 16:29:05 cananian Exp $
  */
 @RunWith(value=JDoctestRunner.class)
 public abstract class AstNode {
@@ -53,6 +53,7 @@ public abstract class AstNode {
     /**
      * Parse AST tree from string; inverse of {@link #toString}.
      * @throws IllegalArgumentException if the given string value doesn't parse
+     * @see net.cscott.sdr.calls.parser.AstParser for examples and doc tests.
      */
     public static AstNode valueOf(String s) throws IllegalArgumentException {
 	AstNode result = null;

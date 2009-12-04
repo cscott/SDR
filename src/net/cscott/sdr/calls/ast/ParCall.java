@@ -1,6 +1,6 @@
 package net.cscott.sdr.calls.ast;
 
-import static net.cscott.sdr.calls.transform.CallFileLexer.SELECT;
+import static net.cscott.sdr.calls.parser.CallFileLexer.SELECT;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Selector;

@@ -1,7 +1,7 @@
 package net.cscott.sdr.calls.lists;
 
 import static java.util.Arrays.asList;
-import static net.cscott.sdr.calls.transform.CallFileLexer.PART;
+import static net.cscott.sdr.calls.parser.CallFileLexer.PART;
 import static net.cscott.sdr.util.Tools.foreach;
 
 import java.util.ArrayList;

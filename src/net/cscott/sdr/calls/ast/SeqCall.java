@@ -1,7 +1,6 @@
 package net.cscott.sdr.calls.ast;
 
 import net.cscott.sdr.calls.transform.TransformVisitor;
-import net.cscott.sdr.util.Fraction;
 
 /** This is the common superclass of all AST elements which can appear
  * in a <code>Seq</code>.

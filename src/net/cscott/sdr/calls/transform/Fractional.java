@@ -1,6 +1,6 @@
 package net.cscott.sdr.calls.transform;
 
-import static net.cscott.sdr.calls.transform.CallFileLexer.PART;
+import static net.cscott.sdr.calls.parser.CallFileLexer.PART;
 
 import java.util.ArrayList;
 import java.util.Arrays;

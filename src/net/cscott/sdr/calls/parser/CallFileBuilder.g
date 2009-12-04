@@ -47,9 +47,9 @@ options {
     ASTLabelType = CommonTree;
 }
 @header {
-package net.cscott.sdr.calls.transform;
+package net.cscott.sdr.calls.parser;
 
-import static net.cscott.sdr.calls.transform.BuilderHelper.*;
+import static net.cscott.sdr.calls.parser.BuilderHelper.*;
 import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.ast.*;
 import static net.cscott.sdr.calls.ast.Part.Divisibility.*;
