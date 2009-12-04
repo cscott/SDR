@@ -71,7 +71,7 @@ public abstract class TransformVisitor<T> {
         return pc.build(pc.selector.accept(this, t), pc.child.accept(this, t));
     }
     public SeqCall visit(Part p, T t) {
-        return p.build(p.isDivisible, p.child.accept(this, t));
+        return p.build(p.divisibility, p.howMany.accept(this, t), p.child.accept(this, t));
     }
     public SeqCall visit(Prim p, T t) {
         return p; // leaf
@@ -83,11 +83,6 @@ public abstract class TransformVisitor<T> {
             // if any call in a Seq is bad, then the whole
             // thing is bad.
             l.add(sc.accept(this, t));
-        }
-        // OPTIMIZATION: SEQ(PART(c)) = c
-        if (l.size()==1 && l.get(0).type==PART) {
-            Part p = (Part) l.get(0);
-            if (p.isDivisible) return p.child;
         }
         return s.build(l);
     }

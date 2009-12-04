@@ -52,6 +52,7 @@ package net.cscott.sdr.calls.transform;
 import static net.cscott.sdr.calls.transform.BuilderHelper.*;
 import net.cscott.sdr.calls.*;
 import net.cscott.sdr.calls.ast.*;
+import static net.cscott.sdr.calls.ast.Part.Divisibility.*;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.grm.SimplifyGrm;
@@ -216,10 +217,12 @@ one_seq returns [B<? extends SeqCall> sc]
     : ^(PRIM (dx=direction)? x=number (dy=direction)? y=number (dr=direction | r=rotation) rotamt=number ^(ATTRIBS ( prim_flag[a] )* ) )
     { $sc=mkPrim(d(dx), x, d(dy), y, d(dr), new ExactRotation(ifNull(r,Fraction.ONE).multiply(rotamt)), a); }
     | ^(CALL call_body) { $sc=$call_body.ast; }
-    | ^(PART p=pieces)
-    { $sc = mkPart(true, p); /* divisible part */}
-    | ^(IPART p=pieces)
-    { $sc = mkPart(false, p); /* indivisible part */}
+    | ^(PART eb=expr_body p=pieces)
+    { $sc = mkPart(DIVISIBLE, eb, p); /* divisible part */}
+    | ^(IPART eb=expr_body p=pieces)
+    { $sc = mkPart(INDIVISIBLE, eb, p); /* indivisible part */}
+    | ^(XPART eb=expr_body p=pieces)
+    { $sc = mkPart(INDETERMINATE, eb, p); /* indivisible part */}
     ;
 
 direction returns [BDirection d]

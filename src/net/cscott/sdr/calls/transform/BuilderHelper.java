@@ -19,9 +19,11 @@ import net.cscott.sdr.calls.ast.OptCall;
 import net.cscott.sdr.calls.ast.Par;
 import net.cscott.sdr.calls.ast.ParCall;
 import net.cscott.sdr.calls.ast.Part;
+import static net.cscott.sdr.calls.ast.Part.Divisibility.*;
 import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
+import net.cscott.sdr.calls.ast.Part.Divisibility;
 import net.cscott.sdr.calls.ast.Prim.Direction;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.util.Fraction;
@@ -145,10 +147,10 @@ abstract class BuilderHelper {
             }
         }, child.isConstant() && selector.isConstant());
     }
-    static B<Part> mkPart(final boolean isDivisible, final B<? extends Comp> child) {
+    static B<Part> mkPart(final Divisibility divisible, final B<Expr> howMany, final B<? extends Comp> child) {
         return optimize(new B<Part>() {
             public Part build(List<Expr> fargs) {
-                return new Part(isDivisible, child.build(fargs));
+                return new Part(divisible, howMany.build(fargs), child.build(fargs));
             }
         }, child.isConstant());
     }

@@ -24,6 +24,7 @@ import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.In;
 import net.cscott.sdr.calls.ast.Part;
+import static net.cscott.sdr.calls.ast.Part.Divisibility.*;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.calls.grm.Grm;
@@ -275,7 +276,7 @@ public abstract class BasicList {
      *  js> a = new Expr("_fractional", Expr.literal("1 1/2"), a1)
      *  (Expr _fractional '1 1/2 'dosado)
      *  js> BasicList._FRACTIONAL.getEvaluator(ds, a.args).simpleExpansion()
-     *  (Seq (Part false (Seq (Apply 'dosado) (Part true (In (Expr _multiply num '1/2 '6) (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))))))
+     *  (Seq (Part 'INDETERMINATE '1 (Seq (Apply 'dosado) (Part 'DIVISIBLE '1 (In (Expr _multiply num '1/2 '6) (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))))))
      */
     public static final Call _FRACTIONAL = new BasicCall("_fractional") {
         @Override
@@ -308,11 +309,11 @@ public abstract class BasicList {
             // OPTIMIZATION: SEQ(PART(c)) = c
             if (l.size()==1 && l.get(0).type==PART) {
                 Part p = (Part) l.get(0);
-                if (p.isDivisible)
+                if (p.divisibility==DIVISIBLE)
                     result = p.child;
             } else if (!isDivisible)
                 // we don't support subdivision of "swing thru 2 1/2"
-                result = new Seq(new Part(isDivisible, result));
+                result = new Seq(new Part(INDETERMINATE, Fraction.ONE, result));
             return new Evaluator.Standard(result);
         }
         @Override

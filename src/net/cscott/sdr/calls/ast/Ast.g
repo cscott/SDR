@@ -107,9 +107,19 @@ apply returns [Apply r]
     ;
 part returns [Part r]
     : {input.LT(2).getText().equalsIgnoreCase("Part")}?
-        '(' IDENT divisible=bool child=comp ')'
-        { $r = new Part($divisible.r, $child.r); }
+        '(' IDENT divisibility howMany=expr child=comp ')'
+        { $r = new Part($divisibility.r, $howMany.r, $child.r); }
     ;
+fragment
+divisibility returns [Part.Divisibility r]
+    : {input.LT(2).getText().equalsIgnoreCase("indivisible")}?
+        '\'' IDENT { $r = Part.Divisibility.INDIVISIBLE; }
+    | {input.LT(2).getText().equalsIgnoreCase("indeterminate")}?
+        '\'' IDENT { $r = Part.Divisibility.INDETERMINATE; }
+    | {input.LT(2).getText().equalsIgnoreCase("divisible")}?
+        '\'' IDENT { $r = Part.Divisibility.DIVISIBLE; }
+    ;
+
 prim returns [Prim r]
 @init { boolean passRight = true, forceArc = false; }
     : {input.LT(2).getText().equalsIgnoreCase("Prim")}?
@@ -252,13 +262,6 @@ in_out returns [boolean in, boolean out]
         IDENT { $in=true; }
     | {input.LT(1).getText().equalsIgnoreCase("out")}?
         IDENT { $out=true; }
-    ;
-fragment
-bool returns [Boolean r]
-    : {input.LT(1).getText().equalsIgnoreCase("true")}?
-        IDENT { $r = Boolean.TRUE; }
-    | {input.LT(1).getText().equalsIgnoreCase("false")}?
-        IDENT { $r = Boolean.FALSE; }
     ;
 fragment
 simple_word returns [String r]

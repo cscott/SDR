@@ -120,8 +120,13 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     }
     @Override
     public Fraction visit(Part p, Void v) {
-        // note that we ignore length of parts
-        return Fraction.ONE;
+        // note that we ignore actual length of parts, we just divide evenly
+        // among the parts
+        try {
+            return p.howMany.evaluate(Fraction.class, ds);
+        } catch (EvaluationException e) {
+            throw new CantCountBeatsException("can't evaluate parts");
+        }
     }
     @Override
     public Fraction visit(Prim p, Void v) {

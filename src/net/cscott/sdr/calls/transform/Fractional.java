@@ -5,6 +5,7 @@ import static net.cscott.sdr.calls.transform.CallFileLexer.PART;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -12,11 +13,13 @@ import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.ExactRotation;
+import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.In;
 import net.cscott.sdr.calls.ast.Part;
+import static net.cscott.sdr.calls.ast.Part.Divisibility.*;
 import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
@@ -76,9 +79,16 @@ public class Fractional extends TransformVisitor<Fraction> {
     public Part visit(Part p, Fraction f) {
         if (Fraction.ONE.equals(f))
             return p;
-        if (p.isDivisible)
+        switch (p.divisibility) {
+        case DIVISIBLE:
             return (Part) super.visit(p, f);
-        throw new BadCallException("Can't divide indivisible part");
+        case INDETERMINATE:
+            assert false : "should never recurse into seq containing indeterminate part";
+        default:
+            assert false : "case not handled in divisibility enum";
+        case INDIVISIBLE:
+            throw new BadCallException("Can't divide indivisible part");
+        }
     }
     @Override
     public SeqCall visit(Apply apply, Fraction f) {
@@ -119,7 +129,7 @@ public class Fractional extends TransformVisitor<Fraction> {
         if (!e.hasSimpleExpansion())
             throw new BadCallException("Can't fractionalize complex concept");
         // okay, this concept can be simply expanded...
-        Part result = new Part(true,e.simpleExpansion().accept(this, f));
+        Part result = new Part(DIVISIBLE,Fraction.ONE,e.simpleExpansion().accept(this, f));
         return result;
     }
     /** A list of concepts which it is safe to hoist fractionalization through.
@@ -133,15 +143,38 @@ public class Fractional extends TransformVisitor<Fraction> {
             ));
     @Override
     public Comp visit(Seq s, Fraction f) {
-        assert f.compareTo(Fraction.ONE) <= 0;
-        f = f.multiply(Fraction.valueOf(s.children.size()));
-        List<SeqCall> l = new ArrayList<SeqCall>(s.children.size());
+        if (f.compareTo(Fraction.ONE)==0)
+            return s;
+        assert f.compareTo(Fraction.ONE) < 0;
+        // go through the children and count up parts, accounting for the
+        // 'howMany' field of any Parts.
+        Fraction totalParts = Fraction.ZERO;
+        List<Fraction> childParts = new ArrayList<Fraction>(s.children.size());
         for (SeqCall child : s.children) {
-            if (f.compareTo(Fraction.ONE) >= 0) {
+            Fraction part;
+            if (child.isIndeterminate())
+                throw new BadCallException
+                    ("Number of parts is not well-defined.");
+            try {
+                part = child.parts().evaluate(Fraction.class, ds);
+            } catch (EvaluationException e) {
+                assert false : "bad call definition";
+                throw new BadCallException("Can't evaluate number of parts");
+            }
+            childParts.add(part); // list addition
+            totalParts = totalParts.add(part); // numeric addition
+        }
+
+        f = f.multiply(totalParts);
+        List<SeqCall> l = new ArrayList<SeqCall>(s.children.size());
+        Iterator<Fraction> it = childParts.iterator();
+        for (SeqCall child : s.children) {
+            Fraction part = it.next();
+            if (f.compareTo(part) >= 0) {
                 l.add(child);
-                f = f.subtract(Fraction.ONE);
-            } else if (f.compareTo(Fraction.ZERO) != 0) {
-                l.add(child.accept(this, f));
+                f = f.subtract(part);
+            } else if (f.compareTo(Fraction.ZERO) > 0) {
+                l.add(child.accept(this, f.divide(part)));
                 f = Fraction.ZERO;
             }
         }
@@ -150,7 +183,16 @@ public class Fractional extends TransformVisitor<Fraction> {
         // OPTIMIZATION: SEQ(PART(c)) = c
         if (l.size()==1 && l.get(0).type==PART) {
             Part p = (Part) l.get(0);
-            if (p.isDivisible) return p.child;
+            if (p.divisibility==DIVISIBLE &&
+                p.howMany.isConstant(Fraction.class)) {
+                try {
+                    if (p.howMany.evaluate(Fraction.class, ds)
+                            .compareTo(Fraction.ONE) == 0)
+                        return p.child;
+                } catch (EvaluationException e) {
+                    assert false : "constant shouldn't be failing to eval";
+                }
+            }
         }
         return s.build(l);
     }

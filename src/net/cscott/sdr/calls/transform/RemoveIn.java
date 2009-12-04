@@ -35,10 +35,10 @@ import org.junit.runner.RunWith;
  *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
- *  js> a = AstNode.valueOf('(In \'1 (Seq (Part false (Seq (Prim 0, 1, none, 1) (Prim 0, 1, in 1/4, 1)))))')
- *  (In '1 (Seq (Part false (Seq (Prim 0, 1, none, 1) (Prim 0, 1, in 1/4, 1)))))
+ *  js> a = AstNode.valueOf('(In \'1 (Seq (Part \'INDIVISIBLE \'1 (Seq (Prim 0, 1, none, 1) (Prim 0, 1, in 1/4, 1)))))')
+ *  (In '1 (Seq (Part 'INDIVISIBLE '1 (Seq (Prim 0, 1, none, 1) (Prim 0, 1, in 1/4, 1)))))
  *  js> RemoveIn.removeIn(ds, a)
- *  (Seq (Part false (Seq (Prim 0, 1, none, 1/2) (Prim 0, 1, in 1/4, 1/2))))
+ *  (Seq (Part 'INDIVISIBLE '1 (Seq (Prim 0, 1, none, 1/2) (Prim 0, 1, in 1/4, 1/2))))
  */
 @RunWith(value=JDoctestRunner.class)
 public class RemoveIn extends TransformVisitor<Fraction> {

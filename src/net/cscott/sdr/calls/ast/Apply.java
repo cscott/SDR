@@ -10,6 +10,7 @@ import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.transform.Evaluator;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
+import net.cscott.sdr.util.Fraction;
 
 import org.junit.runner.RunWith;
 
@@ -59,6 +60,10 @@ public class Apply extends SeqCall {
         super(APPLY);
         this.call = call;
     }
+    @Override
+    public Expr parts() { return Expr.literal(Fraction.ONE); }
+    @Override
+    public boolean isIndeterminate() { return false; }
 
     @Override
     public <T> SeqCall accept(TransformVisitor<T> v, T t) {

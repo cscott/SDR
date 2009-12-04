@@ -139,6 +139,11 @@ public class Prim extends SeqCall {
                 (this.flags.contains(Flag.PRESERVE_ROLL)?1:0)) <= 1 :
 	"FORCE_ROLL_RIGHT, FORCE_ROLL_LEFT, FORCE_ROLL_NONE, and PRESERVE_ROLL are exclusive.";
     }
+    @Override
+    public Expr parts() { return Expr.literal(Fraction.ONE); }
+    @Override
+    public boolean isIndeterminate() { return false; }
+
     public static final Prim STAND_STILL =
         new Prim(Direction.ASIS,Fraction.ZERO, Direction.ASIS,Fraction.ZERO,
 		 Direction.ASIS,ExactRotation.ZERO, Fraction.ONE,

@@ -528,8 +528,14 @@ seq
 fragment one_seq
     : PRIM^ COLON! prim_body
     | CALL^ COLON! and_body_seq
-    | PART^ COLON! pieces_factor
-    | IPART^ COLON! pieces_factor
+    | PART^ COLON! how_many pieces_factor
+    | IPART^ COLON! how_many pieces_factor
+    | XPART^ COLON! how_many pieces_factor
+    ;
+fragment how_many
+    : expr_body
+    // if not present, default is 1
+    | -> ^(EXPR ^(ITEM ^(NUMBER["1"])))
     ;
 
 par
@@ -732,6 +738,7 @@ CONDITION: {afterIndent && beforeColon}?=> 'condition' ;
 CALL:      {afterIndent && beforeColon}?=> 'call' ;
 PART:      {afterIndent && beforeColon}?=> 'part' ;
 IPART:     {afterIndent && beforeColon}?=> 'ipart' ;
+XPART:     {afterIndent && beforeColon}?=> 'xpart' ;
 PRIM:      {afterIndent && beforeColon}?=> 'prim' { afterPrim=true;};
 PROGRAM:   {afterIndent && beforeColon}?=> 'program' ;
 OPTIONAL:  {afterIndent && beforeColon}?=> 'optional' ;
