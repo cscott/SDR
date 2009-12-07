@@ -277,7 +277,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	<fileset dir="${classes_dir}">
           <include name="**/*.class" />
 	  <exclude name="**/CallFileLexer*.class" />
-	  <exclude name="**/C4GrammarParser*.class" />
+	  <exclude name="**/lists/*GrammarParser*.class" />
 	</fileset>
       </cobertura-instrument>
     </target>
