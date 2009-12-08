@@ -1189,6 +1189,13 @@ to do:
        (if so, we need to add a name to the match so we can name the formation
         if evaluation fails.  Maybe "next()" method on the matcher
         instead so we can preserve failure reasons.)
+ v1) FROM flags: COMMIT, DONT BREATHE DURING?
+       commit applies to a OptCall and prevents the parent opt from
+       proceeding to the next OptCall(s) if that OptCall matched.
+       (regardless of whether a BadCallException was eventually thrown)
+       This can be used to control recursion.
+ v2) Matcher functions: NO SUB, BREATHE (before)
+ v3) Switch to "breathe after" model, in place of "breathe before"?
  x) 'select' is or-of-ands.  'select: DESIGNATED & BEAU, DESIGNATED & BELLE'
      PersonSelector for 'select'
          (expr for 'select')
@@ -1241,6 +1248,61 @@ to do:
  xx) Move Evaluator from calls.transform to calls
      Move all generated parsers to calls.parser
      Add ref from AstNode.valueOf() to AstParser class.
+ ii) /reload() command in PMSD to reload definitions from resource files
+ jj) "print" in SDRweb which emits a PMSD transcript
+ kk) Matcher takes DanceState, so that some matchers can add slight
+     adjustment movements.  OptCall must clone the DanceState before
+     giving it to the Matcher.
+     - circle choreo matcher
+     - diamond matcher (see aa, m)
+     - quarter tag matcher
+ ll) Emit movie in some format, superimpose on actual dancers to
+     determine if timings match
+ mm) PMSD test case that prints our timings, for comparison to
+     Callerlab's.  EG:
+     sdr> timing('pass thru', 'SQUARED SET')
+     8
+     sdr> timing('pass thru', 'LINES FACING IN')
+     4
+     (takes the formation name, and just assigns dancers to it in the
+     first symmetric permutation: 1B 1G 2B 2G...)
+ nn) memcache intermediate dance states in SDRweb so that:
+      long sequences can be retried and eventually complete
+      time to add one call is O(1) instead of O(N)
+ oo) implement "boys start pass to the center", "finish a ...", "like a ..."
+     (ie, "just the first part", "all but the first part", "just the last part")
+     maybe return a list of the "top level" parts of the call.
+     see http://www.ceder.net/def/callparts.php4
+ pp) fix 'chain down the line' (heads lead right, left touch, boys
+     chain down the line)
+ qq) sq thru/sw thru from mixed: ie
+      heads right and left thru, sides hinge, square thru
+      heads right and left thru, sides hinge, swing thru
+     def: _mixed touch(f)
+       from: ANY
+         ends in: formation([f])
+         from: mixed(...)
+ rr) tweak formationlistfast to have doc comments w/ ASCII diagrams of
+     each formation as doctest output of toStringDiagram (name dancers?)
+ ss) pseudocalls:
+       you're home (checks, scores)
+       go home (scatter to nearest squared set spot then insertion
+                sort w/ two-person trades)
+       bow to your partner and your corner too (exit)
+ tt) O SPOTS general matcher
+ uu) crossfire from 3-and-1 lines with center in a miniwave and ends
+     facing out.
+ vv) 2-by-1 magic transfer the column from 3x2 magic column
+ xx) concentric foo and roll, where lines/columns adjustment is needed:
+     result depends on relative priority of concentric and roll
+ yy) grand walk and dodge (bogus) (don moger)
+ zz) "boys start a pass to the center" with miniwave initially on outside.
+     (don moger)
+ aaa) box transfer/checkmate from couples back to back (don moger)
+      "leads part is trade and pass in"
+ bbb) pass the ocean, ends do your part half trade the wave. turn the
+      star 3/4.
+ ccc) ted's singing call w/ the hard crossfire (illegal?)
 -------
 heads x:
   from squared_set:
