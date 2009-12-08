@@ -1,0 +1,236 @@
+/** Add css rules here for your application. */
+body, html {
+  height: 100%;
+}
+html {
+  -webkit-text-size-adjust: none;
+}
+body {
+  background: #fff;
+  color: black;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: small;
+  margin:0; padding:0;
+}
+
+/* proper layering */
+#div-ztop {
+  z-index: 1;
+}
+.callList {
+  position: relative;
+  top: 0; left: 0;
+  z-index: 2;
+}
+#div-top {
+  z-index: 3;
+}
+.gwt-MenuBarPopup, .gwt-SuggestBoxPopup { z-index: 4; }
+.login-popup { z-index: 6; position: relative; top: 0; left: 0; }
+/* end layering */
+
+/* positioning */
+#div-top {
+   position: fixed;
+   top: 0;
+   width: 100%;
+   background: white;
+   border-bottom: 1px solid #bbb;
+}
+#div-calllist {
+   padding-top: 50px;
+   position: relative;
+   top: 0; left: 0;
+}
+#div-canvas {
+   position: fixed;
+   bottom: 0;
+   top: 0;
+   width: 100%;
+}
+#div-canvas-inner {
+   /* provides anchoring point for absolute panel inside */
+   position: relative;
+}
+#div-canvas .canvasPanel {
+   width: 100%;
+}
+#div-playbar {
+   position: fixed;
+   bottom: 0;
+   left: 0;
+   width: 100%;
+}
+div.dance-floor {
+   height: 99%;
+   width: 99%;
+   overflow: visible !important;
+}
+
+/* login popup */
+.login-popup {
+   background: white;
+}
+.login-popup .login-popup-caption,
+.login-popup .login-popup-frame {
+   border: none;
+}
+.login-popup .login-popup-frame {
+   width: 100%;
+   height: 100%;
+}
+/* call list */
+.callList {
+   border-right: 3px solid #ddd;
+   border-bottom: 3px solid #ddd;
+}
+
+/* call list header row */
+.callListHeader {
+  background-color: #2062B8;
+  color: white;
+  font-weight: bold;
+  //position: fixed;
+}
+/* Call prompt */
+.callEntry {
+  font-weight: bold;
+}
+
+/* Label showing the level */
+.levelLabel {
+  padding: 3px;
+  margin: 3px;
+  border: 3px solid #ddd;
+  font-weight: bold;
+}
+
+/* iphone hacks */
+#div-calllist .callList tbody {
+  overflow: auto;
+}
+
+/*************** slider style *********************/
+/**
+ * Applied to SliderBar.
+ */
+.gwt-SliderBar-shell {
+        height: 34pt;
+        width: 50%;
+}
+
+.gwt-SliderBar-shell .gwt-SliderBar-line {
+        border: 1px solid black;
+        background-color: white;
+        height: 4px;
+        width: 95%;
+        top: 22pt;
+        overflow: hidden;
+}
+
+.gwt-SliderBar-shell .gwt-SliderBar-line-disabled {
+        border: 1px solid gray;
+}
+
+.gwt-SliderBar-shell .gwt-SliderBar-knob {
+        top: 14pt;
+        width: 11px;
+        height: 21px;
+        z-index: 1;
+        cursor: pointer;
+}
+
+.gwt-SliderBar-shell .gwt-SliderBar-tick {
+        top: 16pt;
+        width: 1px;
+        height: 6pt;
+        background: black;
+        overflow: hidden;
+}
+
+.gwt-SliderBar-shell .gwt-SliderBar-tick-disabled {
+        background: gray;
+}
+
+.gwt-SliderBar-shell .gwt-SliderBar-label {
+        top: 2pt;
+        font-size: 8pt;
+        cursor: default;
+}
+
+.gwt-SliderBar-shell-focused {
+}
+
+.gwt-SliderBar-shell .gwt-SliderBar-line-sliding {
+        cursor: pointer;
+}
+/* shrink wrap the play button around its icon */
+button.playButton {
+        padding: 2px 0 0 0;
+}
+/* call list table styling */
+table.callList {
+        border-spacing: 0;
+}
+/* highlight the current call */
+.callList .highlight {
+        background: #e3e8f3;
+        font-weight: bold;
+        color: #444;
+}
+/* draw insertion point above appropriate call */
+.callList .insertionPoint td {
+        border-top: 3px solid #2062B8;
+}
+/* use a grey border if the last call is also the header (ie new sequence) */
+.callList .last-valid.last-call.callListHeader td,
+.callList .callListHeader td {
+        border-bottom: 2px solid #ddd;
+}
+/* draw red line under last valid call */
+.callList .last-valid td {
+        border-bottom: 3px solid red;
+}
+/* suppress red line if the last valid call is also the last call */
+.callList .last-valid.last-call td {
+        border-bottom: 0;
+}
+
+/* bits of stuff in the call list which is not a call */
+.callList .not-a-call {
+        font-style: italic;
+        color: #888;
+}
+
+/* error message at top of dance floor */
+.errorMsg {
+        color: black;
+        background: #f88;
+        font-weight: bold;
+        border-bottom: 2px solid red;
+        padding: 2px;
+        /* for those browsers that understand opacity */
+        background-color: rgba(255,128,128,0.9);
+}
+/* the name of the current call */
+.currentCall {
+        font-size: 150%;
+        /* for browsers that understand opacity */
+        background-color: rgba(255,255,255,0.8);
+        border-bottom: 2px solid rgba(0,0,0,0.1);
+}
+.messagePanel {
+        width: 100%;
+}
+/* ----- dancer styling ----- */
+.dancer-background, .dancer-number {
+   width: 100%;
+   height: 100%;
+}
+.dancer-number {
+   /* only table cells can be vertically aligned */
+   text-align: center;
+   font-weight: bold;
+   vertical-align: middle;
+   font-size: 14px;
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>SDRweb.html</welcome-file>
+  </welcome-file-list>
+  
+  <!-- Servlets -->
+  <servlet>
+    <servlet-name>danceService</servlet-name>
+    <servlet-class>net.cscott.sdr.webapp.server.DanceEngineServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>danceService</servlet-name>
+    <url-pattern>/sdrweb/dance</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>storageServlet</servlet-name>
+    <servlet-class>net.cscott.sdr.webapp.server.SequenceStorageServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>storageServlet</servlet-name>
+    <url-pattern>/sdrweb/storage</url-pattern>
+  </servlet-mapping>
+
+  <!-- from SDK -->
+  <!--
+  <servlet>
+    <servlet-name>remoteLoggingServiceImpl</servlet-name>
+    <servlet-class>com.google.gwt.libideas.logging.server.RemoteLoggingServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>remoteLoggingServiceImpl</servlet-name>
+    <url-pattern>/sdrweb/logging</url-pattern>
+  </servlet-mapping>
+  -->
+
+</web-app>

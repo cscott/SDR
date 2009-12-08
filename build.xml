@@ -88,7 +88,7 @@ Square Dance Revolution build file.
 	  <fileset dir="${basedir}" includes="TEST-*.txt" />
 	</delete>
 	<!-- eclipse writes here, so as not to fight with ant -->
-	<delete dir="bin.eclipse" />
+	<delete dir="war/WEB-INF/classes" />
 	<!-- from dist targets -->
 	<delete>
 	  <fileset dir="${basedir}"
@@ -162,7 +162,7 @@ Square Dance Revolution build file.
 	    <mkdir dir="${classes_dir}" />
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
-		   excludes="**/package-info.java"
+		   excludes="**/package-info.java **/thunk/**/*.java **/webapp/**/*.java"
 		   deprecation="on" source="1.5" target="1.5" debug="true">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
@@ -200,6 +200,8 @@ Square Dance Revolution build file.
                  access="${javadoc.access}" nodeprecated="false"
 		 failonerror="true"
                  author="true" use="true" version="true" breakiterator="true">
+	  <package name="net.cscott.sdr.*" />
+	  <excludepackage name="net.cscott.sdr.webapp.*" />
 	  <bottom><![CDATA[
              Copyright &copy; 2006-2009 C. Scott Ananian
 <script type="text/javascript">
@@ -424,6 +426,9 @@ window['JAVADOC_BASE'] = '{@docRoot}';
       <if>
 	<filesmatch file1="resources/net/cscott/sdr/tests/index~"
 		    file2="resources/net/cscott/sdr/tests/index" />
+	<then>
+	  <delete file="resources/net/cscott/sdr/tests/index~" />
+	</then>
 	<else>
 	  <move file="resources/net/cscott/sdr/tests/index~"
 		tofile="resources/net/cscott/sdr/tests/index" />
@@ -452,10 +457,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		  <fileset dir="src/net/cscott/sdr/calls/lists/"
 			   includes="*.g" />
 		</sourcefiles>
-		<mapper dir="src/net/cscott/sdr/calls/lists"
-			type="glob" from="*.g" to="*GrammarParser.java" />
-		<mapper dir="src/net/cscott/sdr/calls/lists"
-			type="glob" from="*.g" to="*GrammarLexer.java" />
+		<mapper type="glob" from="*.g" to="*Parser.java" />
+		<mapper type="glob" from="*.g" to="*Lexer.java" />
 	      </outofdate>
 	      <sequential>
 		<antlr3 target="@{grammar.file}">
@@ -466,6 +469,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    <!-- build newly-generated grammars -->
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
+		   includes="net/cscott/sdr/calls/lists/*.java"
 		   excludes="**/package-info.java"
 		   deprecation="on" source="1.5" target="1.5" debug="true">
                    <compilerarg value="-Xlint:unchecked"/>

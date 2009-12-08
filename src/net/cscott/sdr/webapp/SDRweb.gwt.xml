@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.6.4//EN" "http://google-web-toolkit.googlecode.com/svn/tags/1.6.4/distro-source/core/src/gwt-module.dtd">
+<module rename-to='sdrweb'>
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.gwt.user.User'/>
+
+  <!-- Inherit the default GWT style sheet.  You can change       -->
+  <!-- the theme of your GWT application by uncommenting          -->
+  <!-- any one of the following lines.                            -->
+  <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+  <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+  <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+
+  <!-- Other module inherits                                      -->
+  <inherits name='net.cscott.SDR'/> <!-- for CompletionEngine, etc -->
+  <inherits name='com.google.gwt.widgetideas.GWTCanvas'/> <!-- canvas -->
+  <inherits name="com.google.gwt.widgetideas.BasicWidget"/><!-- slider -->
+
+  <!-- Determine if canvas is supported. -->
+  <define-property name="canvas.support" values="yes,no"/>
+  <property-provider name="canvas.support"><![CDATA[
+      try {
+        /* our test might fail on IE, but we actually support it */
+        var ua = navigator.userAgent.toLowerCase();
+        if (ua.indexOf("msie") != -1)
+                return "yes";
+        /* catch GWT's hosted mode browser, which doesn't support canvas */
+        var elem = document.createElement('canvas');
+        if (elem==null ||
+            elem.toString() == "[object HTMLUnknownElement]")
+                return "no";
+      } catch (e) { }
+      return "yes";
+  ]]></property-provider>
+  <!-- Replace canvas in hosted mode -->
+  <replace-with class="net.cscott.sdr.webapp.client.DancerCanvas">
+    <when-type-is class="net.cscott.sdr.webapp.client.Dancer"/>
+  </replace-with>
+  <replace-with class="net.cscott.sdr.webapp.client.DancerSimple">
+    <when-type-is class="net.cscott.sdr.webapp.client.Dancer"/>
+    <when-property-is name="canvas.support" value="no"/>
+  </replace-with>
+
+  <!-- Specify the app entry point class.                         -->
+  <entry-point class='net.cscott.sdr.webapp.client.SDRweb'/>
+
+  <!-- Source path -->
+  <source path="client" />
+</module>

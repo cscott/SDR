@@ -17,3 +17,6 @@ build.properties
 sdr.keystore
 sdr.jnlp
 TEST-*.txt
+war/sdrweb
+war/sdr
+war/WEB-INF/classes
