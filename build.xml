@@ -446,7 +446,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		    <path refid="classpath.path"/>
                   </classpath>
 	    </java>
-	    <for param="grammar.file" parallel="true">
+	    <for param="grammar.file">
 	      <outofdate>
 		<sourcefiles>
 		  <fileset dir="src/net/cscott/sdr/calls/lists/"
