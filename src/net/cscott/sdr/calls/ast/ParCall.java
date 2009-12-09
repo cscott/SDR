@@ -8,7 +8,7 @@ import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 
-/** <code>ParCall</code> bundles a selector with a
+/** {@link ParCall} bundles a selector with a
  * {@link Comp}.  A {@link ParCall} applies
  * the child to dancers which match the given
  * {@link Selector}s.

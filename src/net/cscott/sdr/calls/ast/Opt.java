@@ -9,7 +9,7 @@ import java.util.List;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 /**
- * <code>Opt</code> is a list of call options.  Each option has
+ * {@link Opt} is a list of call options.  Each option has
  * an associated formation.  This first option whose formation is matchable
  * against the current formation is used to perform the call; the rest are
  * ignored.

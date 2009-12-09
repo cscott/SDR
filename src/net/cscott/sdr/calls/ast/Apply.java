@@ -15,7 +15,7 @@ import net.cscott.sdr.util.Fraction;
 import org.junit.runner.RunWith;
 
 /**
- * {@code Apply} represents a invocation of a call or concept, with
+ * {@link Apply} represents a invocation of a call or concept, with
  * zero or more arguments. The {@link Apply#call call} field of the
  * {@code Apply} gives an expression for the call (which can be
  * converted to a {@link Call} object with {@link CallDB#lookup(String)} or to

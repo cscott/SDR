@@ -20,6 +20,8 @@ import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.LL;
 import net.cscott.sdr.util.Point;
 
+/** Helper class to add common {@link TaggedFormation.Tag}s automatically to
+ *  {@link TaggedFormation}s. */
 public abstract class Tagger {
     private Tagger() { /* no instances */ }
     

@@ -201,6 +201,7 @@ public class DancerPath {
         /** The point of rotation is about the center point of the square. */
         SQUARE_CENTER
     }
+    /** Special movement properties of a {@link DancerPath}. */
     public static enum Flag {
         /** Start movement with a sashay instead of stepping forward. */
         SASHAY_START,

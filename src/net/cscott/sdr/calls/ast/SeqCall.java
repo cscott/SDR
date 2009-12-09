@@ -2,8 +2,9 @@ package net.cscott.sdr.calls.ast;
 
 import net.cscott.sdr.calls.transform.TransformVisitor;
 
-/** This is the common superclass of all AST elements which can appear
- * in a <code>Seq</code>.
+/**
+ * {@link SeqCall} is the common superclass of all AST elements which can
+ * appear in a {@link Seq}.
  * @author C. Scott Ananian
  * @version $Id: SeqCall.java,v 1.3 2006-10-17 16:29:05 cananian Exp $
  */

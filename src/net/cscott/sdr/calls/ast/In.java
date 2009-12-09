@@ -5,8 +5,8 @@ import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
 
-/** <code>In</code> alters the timing of its child such that it
- * executes in exactly <code>count</code> beats.
+/** {@link In} alters the timing of its child such that it
+ * executes its {@link In#child} in exactly {@link In#count} beats.
  * @author C. Scott Ananian
  * @version $Id: In.java,v 1.6 2006-10-17 16:29:05 cananian Exp $
  */

@@ -5,15 +5,15 @@ import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
 /**
- * {@link Part} denotes an fractional part of a call.  The {@code Part} also denotes
+ * {@link Part} denotes an fractional part of a call.  The {@link Part} also denotes
  * timing: each part executes in the same amount of time (unless modified by
- * {@link In}. <code>Part</code> has exactly one child, which is a
- * {@link Comp}.  The <code>howMany</code> argument is usually 1 but
+ * {@link In}. {@link Part} has exactly one child, which is a
+ * {@link Comp}.  The {@link Part#howMany} argument is usually 1 but
  * allows non-standard divisions: for example, "swing and mix" is a three-part
  * call of which the final "mix" counts for two parts.
  * <p>
  * The {@link Part#divisibility} argument has three values.  If it is
- * {@link Divisibility#DIVISIBLE}, calls inside this {@code Part} can be
+ * {@link Divisibility#DIVISIBLE}, calls inside this {@link Part} can be
  * further fractionalized.  In the "swing and mix" example, both the "swing"
  * and the "mix" can be further divided, allowing "1/6 swing and mix" and
  * "2/3 swing and mix" to be valid.  If {@link Part#divisibility} is

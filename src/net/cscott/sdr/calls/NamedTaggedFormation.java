@@ -13,7 +13,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.junit.runner.RunWith;
 
 /**
- * Helper class to associate a standard name with a canonical
+ * Associates a name with a canonical
  * formation.  This makes string representations more compact!
  * @doc.test Fetch tagged dancers from a TaggedFormation:
  *  js> FormationList = FormationListJS.initJS(this); undefined;

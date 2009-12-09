@@ -171,6 +171,9 @@ public class Breather {
 
     /*-----------------------------------------------------------------------*/
 
+    /** A component to be breathed into a complete formation.  Each
+     *  {@link FormationPiece} contains a position and a formation to be
+     *  inserted at that position. */
     public static class FormationPiece {
         /** Input formation piece. The original formation is a simple
          * superposition of these. */

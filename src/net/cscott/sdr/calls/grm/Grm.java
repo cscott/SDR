@@ -176,6 +176,8 @@ public abstract class Grm {
     }
     /** Multiplicity marker: a*, a+, or a?. */
     public static class Mult extends Grm {
+	/** Type of multiplicity marker: {@link Type#STAR}, {@link Type#PLUS},
+	 *  or {@link Type#QUESTION}. */
         public enum Type {
             STAR('*'), PLUS('+'), QUESTION('?');
             public final char value;

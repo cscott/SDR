@@ -9,7 +9,7 @@ import java.util.List;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 /**
- * <code>Seq</code> is the serial composition of primitive call pieces.
+ * {@link Seq} is the serial composition of primitive call pieces.
  * @author C. Scott Ananian
  * @version $Id: Seq.java,v 1.5 2006-10-17 16:29:05 cananian Exp $
  */

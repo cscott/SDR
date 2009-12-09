@@ -17,9 +17,9 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * A Prim represents a primitive action: a certain distance travelled
+ * A {@link Prim} represents a primitive action: a certain distance traveled
  * forward and to the side, while rotating a certain amount, performed
- * in a certain number of beats.  PRIM is a leaf node in a our AST.
+ * in a certain number of beats.  {@link Prim} is a leaf node in a our AST.
  * @author C. Scott Ananian
  * @version $Id: Prim.java,v 1.12 2007-03-07 19:56:21 cananian Exp $
  */
@@ -34,6 +34,8 @@ public class Prim extends SeqCall {
          * center" and negative is "away from the center". */
         IN,
     };
+    /** The {@link Flag} enumeration represents various properties of the
+     *  movement described by this {@link Prim}. */
     public static enum Flag {
 	/** This flag indicates that this motion involves a left
 	 * shoulder pass (left/mirror concepts, "cross" calls which

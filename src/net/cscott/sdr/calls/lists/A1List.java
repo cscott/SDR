@@ -82,7 +82,10 @@ public abstract class A1List {
         }
     };
 
+    /** How members of the solid formation move in a {@link SolidEvaluator}. */
     public static enum SolidType { SOLID, TWOSOME };
+    /** Whether all members of the formation are expected to be part of
+     *  a solid using a {@link SolidEvaluator}, or just some of them. */
     public static enum SolidMatch { SOME, ALL };
     /** Evaluator for couples/tandem/solid formations. */
     public static class SolidEvaluator extends Evaluator {

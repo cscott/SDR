@@ -9,6 +9,7 @@ import net.cscott.sdr.util.Tools;
 
 import java.util.*;
 
+/** Basic optimizations for a grammar rule. */
 public class SimplifyGrm extends GrmVisitor<Grm> {
     public static Grm simplify(Grm g) {
         return g.accept(new SimplifyGrm());

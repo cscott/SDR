@@ -34,6 +34,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(value=JDoctestRunner.class)
 public class TaggedFormation extends Formation {
+    /** Dancer descriptions based on position in the {@link Formation}. */
     public enum Tag {
         // "primitive" dancer tags
         // the Dancer object (not the Formation) is

@@ -4,6 +4,10 @@ import net.cscott.jdoctest.JDoctestRunner;
 
 import org.junit.runner.RunWith;
 
+/** Enumeration of square dance programs.  Every call belongs to one or more
+ *  square dance programs, which are usually arranged in a hierarchy such
+ *  that each successive program contains all the calls from all previous
+ *  programs. */
 @RunWith(value=JDoctestRunner.class)
 public enum Program {
     // There are probably other programs that could be used here:

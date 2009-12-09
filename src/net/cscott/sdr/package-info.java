@@ -1,5 +1,6 @@
 /**
- * This package contains the main class ({@link net.cscott.sdr.App}) as well as interface
+ * This package contains the main game class ({@link net.cscott.sdr.App}) and
+ * a text UI ({@link net.cscott.sdr.PMSD}), as well as interface
  * definitions needed to tie the various pieces together.
  * @doc.test Run all PMSD test cases:
  *  (fail-first development: note which cases are currently failing)

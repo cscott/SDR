@@ -9,6 +9,10 @@ import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.util.Fraction;
 
+/**
+ * The {@link ExprList} contains {@link ExprFunc} defintions and the
+ * basic machinery used to evaluate generic {@link Expr}s.
+ */
 public abstract class ExprList {
     /** Map of all the {@link ExprFunc}s defined here. */
     @SuppressWarnings("unchecked")

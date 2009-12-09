@@ -9,7 +9,7 @@ import java.util.List;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 /**
- * <code>Par</code> is a list of call pieces.  Each piece has
+ * {@link Par} is a list of call pieces.  Each piece has
  * an associated selector.  Every member of the formation must match
  * at least one selector.  Each person executes the piece corresponding to
  * the first selector which matches them, in parallel.

@@ -9,7 +9,7 @@ import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
 
-/** <code>If</code> rejects its child as suitable for execution from
+/** {@link If} rejects its child as suitable for execution from
  * the current formation unless its condition evaluates true.
  * @author C. Scott Ananian
  * @doc.test An If with no message

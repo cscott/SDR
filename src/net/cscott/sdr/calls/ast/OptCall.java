@@ -4,8 +4,8 @@ import static net.cscott.sdr.calls.parser.CallFileLexer.FROM;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 
-/** <code>OptCall</code> bundles a formation condition with a
- * <code>Comp</code>.
+/** {@link OptCall} bundles a formation condition with a
+ * {@link Comp}.
  * @author C. Scott Ananian
  * @version $Id: OptCall.java,v 1.7 2006-10-19 18:44:50 cananian Exp $
  */

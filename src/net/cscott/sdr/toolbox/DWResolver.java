@@ -85,6 +85,7 @@ import static net.cscott.sdr.util.Tools.*;
 public class DWResolver {
     private DWResolver() { }
 
+    /** Return the next call needed to resolve the given formation. */
     public static String resolveStep(Formation f) {
         // step 1: are we in RH waves?  if no, half tag
         FormationMatch fm;

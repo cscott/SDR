@@ -13,6 +13,9 @@ import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
 
+/** {@link Expr} represents an expression to be computed at evaluation time.
+ *  The value of an {@link Expr} may depend on the {@link DanceState} at the
+ *  time it is evaluated. */
 public class Expr extends AstNode {
     public final String atom;
     public final List<Expr> args;

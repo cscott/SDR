@@ -6,6 +6,8 @@ import net.cscott.jutil.MultiMap;
 import net.cscott.sdr.calls.grm.Grm.Mult;
 import net.cscott.sdr.calls.grm.Grm.Nonterminal;
 
+/** Emit Java Speech API representation of post-processed natural language
+ *  grammar for calls. */
 public class EmitJSAPI extends AbstractEmit {
     private EmitJSAPI() { }
     public static String emit(String parserName, List<RuleAndAction> l) {

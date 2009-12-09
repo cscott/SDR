@@ -8,7 +8,7 @@ import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 
 /**
- * <code>AstNode</code> is the abstract base class for abstract syntax
+ * {@link AstNode} is the abstract base class for abstract syntax
  * tree nodes representing parsed call definitions and components.
  * @author C. Scott Ananian
  */
