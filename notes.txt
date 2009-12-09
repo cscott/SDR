@@ -1077,7 +1077,6 @@ to do:
     overlap during insert, and trade from a two-faced tidal line
     should *not* create triple boxes (ie, the formations should
     remain centered during the insert)
- x) fix whatever I broke with the RemoveIn transformation recently
  f) use priority sensibly when displaying error messages
     I think the rule should be to display all the priority N messages,
     where N is the highest priority encountered?  Probably just
@@ -1088,32 +1087,16 @@ to do:
     error" class (which pulls the one most useful/highest pri message)
     and "error detail" class (which shows the whole tree, like we're
     doing now)
- x) centers/ends.  heads/sides
- xx) make heads/sides part of the 'anyone' grammar production.
-     (have to remove the hard coded 'heads <foo>' rules)
  g2) _anyone_others concept: "do your part"?
- x) concentric/quasi-concentric
-     use CENTER_HALF matcher, remove those dancers and breathe the
-     remaining ones.  Now do the call in both of the resulting
-     formations.  Open up a vertical/horizontal line (depending on
-     concentric rules) in the resulting 'ends' formations and squeeze
-     the centers back in there.
  h1) fix axis adjustment in concentric
- x) tandem
- xx) fix roll/sweep in tandem/as couples/etc.
  xx) roll should preserve sweep (recycle, wheel & deal)
  xx) hinge should set sweep (or hinge&roll should)
- x) test circle left/right, test run (in all its glory), test trade
-    from quarter tag
  xx) t-boned cross runs (needs select X&Y, see (w))
  xx) trade from quarter tag. (needs matcher from multiple formations (y))
- xx) separate insertion point and playback cursor.
  k2) have a 'keep playing' flag that is set when you press play but
     cleared when you manually scrub to a point. if you receive more
     call data and were stopped at the end but the 'keep playing' bit
     is set, start playing. (see git e5f9f473b591a678d71ee6b385596034cd61833f)
- x) peel the top, from boxes and zees
- xx) "ends fold" is broken.
  m) diamond circulate, w/ adjustment from 'half of ends cross run'
     position.
  m1) peel the top ending in diamond ("do half a peel the top")
@@ -1140,8 +1123,6 @@ to do:
        flag is to make the centers hinge part of peel/trail to a
        diamond work correctly, so that the new points can roll."
 
- xx) roll should breathe before trying to roll, otherwise it can
-     screw up collision resolution.
  p) CFLAG1_FUDGE_TO_Q_TAG from Sd/database.h:
     // setup is to fudged from a suitably populated 3x4 into a 1/4 tag.
     // The intention is that one can do "plenty" after doing a "1/2 press ahead"
@@ -1150,8 +1131,6 @@ to do:
     // or schema_in_out_triple_squash.  See the call "quick step part 2".
     // It also means that a short6 is to be fudged to a 2x3.  See the call
     // "quick step part 1".
- x) define LEADERS/TRAILERS/BEAUS/BELLES in 2x2 matcher.
-    (and retest first part of peel the top)
  r) compute coverage metrics over the call definitions
     - make fake classes for coberatura:
       ClassData cd = net.sourceforce.coberatura.coveragedata.ProjectData
@@ -1165,22 +1144,6 @@ to do:
       to throw a BadCallException (hard?)
       - collect "lines touched" set and pass up to top level, so we
         can touch only the lines which were part of a successful Opt.
- x) EQUALS/CALL_IS => NUM_EQUALS, STR_EQUALS
-    SELECTION_PATTERN => PATTERN_EQUALS(PATTERN(SELECTED), '_x__')
-     (add 'don't care' character -- '?' or '.')
-    PATTERN(ROLL) => 'rlrl', PATTERN(SWEEP) => 'rlrl'
- xx)  use PATTERN(SWEEP) to define "sweep 1/4" (FROM FACING COUPLES:...)
- x) add post-condition nodes to graph, evaluated as "do child, then
-    test condition on resulting formation".  IfAfter() or maybe just
-    a boolean in the If node for "eval after".
-    -- allow 'ends in:' as a special case of this
-       [2009-11-25: 'ends in: formation(COUPLE)']
-    -- 'ends in' could eventually be used to choreograph backwards:
-       take the current formation, match against all the known ends
-       in, for those that match look at their 'from' clauses and try
-       all 96 possible symmetric permutations to find the one which
-       results in the current formation.
- xx) reorder defs to match callerlab docs
  v) 'from' takes flags (curly brackets before Matcher expression)
      - UNBREATHED is a FROM flag.
      x 'mixed(...)' operator for from.
@@ -1196,17 +1159,12 @@ to do:
        This can be used to control recursion.
  v2) Matcher functions: NO SUB, BREATHE (before)
  v3) Switch to "breathe after" model, in place of "breathe before"?
- x) 'select' is or-of-ands.  'select: DESIGNATED & BEAU, DESIGNATED & BELLE'
-     PersonSelector for 'select'
-         (expr for 'select')
- xx  rename Selector -> Matcher
-         (also, expr for 'from')
- x) _circle choreo concept that automagically adjusts 1/8 off circles
+ w) _circle choreo concept that automagically adjusts 1/8 off circles
       do a 'circle left 1/8', then do the call and rotate all the
      intermediate formations right 1/8, then circle left 1/8 the final
      formation unrotated, to snap to squared set spots again.
- x) siamese concept -- multiple simultaneous formations in
-    GeneralFormationMatcher
+     [2009-12-09: we can do 1/8-off choreo now, so only the initial
+      rotation-and-adjust to squared spots is necessary.]
  x) Breather.breathe() should look at facing directions, and if
      they're 1/8 off, rotate,breathe,unrotate.
  aa) diamond/quarter tag conversions
@@ -1220,24 +1178,6 @@ to do:
         [2009-11-30 YES]
      -- def of right pull by: from RH_MINIWAVE: extend
                               from FACING DANCER: touch, right pull by
- xx) use a uniform Expr type as the argument of
-     Opt/Par/Apply/Condition.
-         class Expr {
-         String atom;
-         T evaluate(Class<T> type, DanceState ds, List<Expr> args)
-         }
-     this will return a Matcher for From (by looking it up in
-     MatcherList, and if not found, evaluating the Expr as a
-     Formation (looking up in FormationList) and creating a
-     GeneralFormationMatcher from that, a Call for Apply
-     (looking it up in CallDB), a Predicate for If, etc.
-     evaluate(Fraction.class, ...) can draw on a single list of
-     numeric functions.  We can have a single RefExpr type and an
-         Expr substitute(Expr, List<Expr> args) (beta expansion?)
-     so we can handle refs in If/Predicate/Apply/Par/Opt/wherever.
-     Matcher combiners (AND, etc) are also defined in MatcherList?
-     Or else in an ExprList?
-     ** where do we define MatcherCombiner?
  dd) Expr.intern() using InternedExpr subclass
  ee) Thunks?  Hook up subst() so we can replace an expr w/ a literal
      when rewriting?  Or just map intern'ed Exprs -> Values (so our
@@ -1245,15 +1185,12 @@ to do:
  ff) Rename 'cardinal' rule to "numeric_adverb" or "times"
  gg) Refs in Exprs using special (Expr ref (Expr 1)); put binding
      environment in DanceState (and cache binding vals once evaluated?)
- xx) Move Evaluator from calls.transform to calls
-     Move all generated parsers to calls.parser
-     Add ref from AstNode.valueOf() to AstParser class.
  ii) /reload() command in PMSD to reload definitions from resource files
  jj) "print" in SDRweb which emits a PMSD transcript
  kk) Matcher takes DanceState, so that some matchers can add slight
      adjustment movements.  OptCall must clone the DanceState before
      giving it to the Matcher.
-     - circle choreo matcher
+     - circle choreo matcher (see w)
      - diamond matcher (see aa, m)
      - quarter tag matcher
  ll) Emit movie in some format, superimpose on actual dancers to
@@ -1404,8 +1341,6 @@ Run diff from kickoff.  In run if no designee in your formation, nobody moves.
 x Add designator stack, tag, and with_designated concept.
 x Redefine run in terms of designers_run
 
-x Add parse function to PMSD.
-
 Add a from-no-breathing node/concept (see (c) above)
 
 For triple box, either suppress breathing at top level (breathed a
@@ -1465,7 +1400,7 @@ Want to be able to suppress:
      way 2: "already breathed" flag on formation.
      way 3: only breathe @ top level if there are collisions.
 ---------
-Who's calling
+Profiling: Who's calling
   net.cscott.sdr.calls.TaggedFormation.move(TaggedFormation.java:35)
 it's a hotspot for allocation (of TaggedFormation objects).
 
@@ -1473,3 +1408,9 @@ Who's calling Breather.breathe() ?  There are 10,000 calls unaccounted
 for.
 
 Who's constructing jline.ConsoleReader in JDoctest?
+---------
+    -- 'ends in' could eventually be used to choreograph backwards:
+       take the current formation, match against all the known ends
+       in, for those that match look at their 'from' clauses and try
+       all 96 possible symmetric permutations to find the one which
+       results in the current formation.
