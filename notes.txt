@@ -1303,6 +1303,10 @@ to do:
  bbb) pass the ocean, ends do your part half trade the wave. turn the
       star 3/4.
  ccc) ted's singing call w/ the hard crossfire (illegal?)
+ ddd) flutterwheel animation.  JW thinks it goes:
+      vv     v       >                            ^v
+      ^^ -> ^v -> ^     v (dia girls centers) ->  ^v -> counter rotate & roll
+            ^        <
 -------
 heads x:
   from squared_set:
