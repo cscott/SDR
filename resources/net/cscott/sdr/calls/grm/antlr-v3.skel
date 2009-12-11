@@ -139,8 +139,8 @@ integer returns [Fraction f]
 	;
 INT	: ('0'..'9')+ ;
 
-cardinal returns [Expr a]
-	: f=a_cardinal { a=Expr.literal(f); }
+times returns [Expr a]
+	: f=one_times { a=Expr.literal(f); }
 	// hacks for typing (not spoken)
 	// COMMENTED OUT BECAUSE INTRODUCES AMBIGUITIES WITH
 	//  "square thru 3" / "breaker 3" etc.
@@ -150,7 +150,8 @@ cardinal returns [Expr a]
 	| i=integer ('times'|'time')
 	*/
 	;
-a_cardinal returns [Fraction f]
+fragment
+one_times returns [Fraction f]
 	: 'once' 'and' f2=a_fraction { f=Fraction.valueOf(1); if (f2!=null) f=f.add(f2); }
 	| 'twice' ('and' f2=a_fraction)? { f=Fraction.valueOf(2); if (f2!=null) f=f.add(f2); }
 	| f1=a_digit_greater_than_two ('and' f2=a_fraction)? 'times' { f=f1; }

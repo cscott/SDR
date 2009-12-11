@@ -30,7 +30,7 @@ grammar @CLASSNAME@;
 <fraction> =
 	(a|one) (half|third|quarter) |
 	two (thirds|quarters) | three quarters ;
-<cardinal> =
+<times> =
 	once and <fraction> |
 	twice [and <fraction>] |
 	<digit_greater_than_two> [and <fraction>] times ;

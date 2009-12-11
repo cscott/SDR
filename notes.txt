@@ -1182,7 +1182,7 @@ to do:
  ee) Thunks?  Hook up subst() so we can replace an expr w/ a literal
      when rewriting?  Or just map intern'ed Exprs -> Values (so our
      tree grows as O(N) but our compute doesn't?)
- ff) Rename 'cardinal' rule to "numeric_adverb" or "times"
+ xx) Rename 'cardinal' rule to "numeric_adverb" or "times"
  gg) Refs in Exprs using special (Expr ref (Expr 1)); put binding
      environment in DanceState (and cache binding vals once evaluated?)
  ii) /reload() command in PMSD to reload definitions from resource files

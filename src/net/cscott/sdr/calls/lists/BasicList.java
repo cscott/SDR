@@ -321,7 +321,7 @@ public abstract class BasicList {
         @Override
         public Rule getRule() {
             String rule = "do <0=fraction> (of (a|an)?)? <1=anything>" +
-                          "| <1=anything> <0=cardinal>";
+                          "| <1=anything> <0=times>";
             Grm g = Grm.parse(rule);
             return new Rule("anything", g, Fraction.valueOf(-10));
         }
