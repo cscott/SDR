@@ -42,7 +42,7 @@ public class EmitJava extends AbstractEmit {
                               new Grm.Nonterminal("anything", -1),
                               new Grm.Terminal(")"))));
         m.put("people", Grm.parse("<genders> | <heads_or_sides> | <all>"));
-        m.put("heads or sides", Grm.parse("heads | sides"));
+        m.put("heads_or_sides", Grm.parse("heads | sides"));
         m.put("two_select", Grm.parse("(head|side) <genders> | (center|end) <genders> | very centers | center two"));
         m.put("genders", Grm.parse("<boys> | <girls>"));
         m.put("boys", Grm.parse("boys | men"));
