@@ -467,7 +467,7 @@ public abstract class PredicateList {
             assert args.size()==1;
             Matcher m = args.get(0).evaluate(Matcher.class, ds);
             try {
-                m.match(ds.currentFormation());
+                m.match(Breather.breathe(ds.currentFormation()));
                 return true;
             } catch (NoMatchException nme) {
                 return false;
