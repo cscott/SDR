@@ -8,8 +8,10 @@ program: mainstream
 def: turn thru
   optional: LEFT
   in: 4 // from mini-wave; 6 from facing?
-  from: FACING DANCERS
-  call: touch, trade, _extend
+  from: RH MINIWAVE
+    call: trade, _extend
+  from: ANY
+    call: _mixed touch, turn thru
 
 // callerlab #55: EIGHT CHAIN THRU
 // XXX DEFINE ME

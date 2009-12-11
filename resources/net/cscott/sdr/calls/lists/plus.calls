@@ -40,8 +40,8 @@ def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
   from: DIAMOND // XXX actually from 'SPLIT 4' which is 4 dancers on each side
     ipart:
       call: _quasi concentric(_in(4, cast(3/4)), _in(4, cast(1/4)))
-  from: FACING COUPLES
-    call: touch, fan the top
+  from: ANY
+    call: _mixed touch, fan the top
 
 def: peel the top
   in: 6

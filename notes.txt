@@ -1212,7 +1212,7 @@ to do:
      see http://www.ceder.net/def/callparts.php4
  pp) fix 'chain down the line' (heads lead right, left touch, boys
      chain down the line)
- qq) sq thru/sw thru from mixed: ie
+ xx) sq thru/sw thru from mixed: ie
       heads right and left thru, sides hinge, square thru
       heads right and left thru, sides hinge, swing thru
      def: _mixed touch(f)
@@ -1230,9 +1230,9 @@ to do:
  uu) crossfire from 3-and-1 lines with center in a miniwave and ends
      facing out.
  vv) 2-by-1 magic transfer the column from 3x2 magic column
- xx) concentric foo and roll, where lines/columns adjustment is needed:
+ yy) concentric foo and roll, where lines/columns adjustment is needed:
      result depends on relative priority of concentric and roll
- yy) grand walk and dodge (bogus) (don moger)
+ yy1) grand walk and dodge (bogus) (don moger)
  zz) "boys start a pass to the center" with miniwave initially on outside.
      (don moger)
  aaa) box transfer/checkmate from couples back to back (don moger)

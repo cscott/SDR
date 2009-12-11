@@ -197,21 +197,22 @@ def: _wave swing // specifically not a partner swing
                    MATCH(_SELECTION PATTERN(BEAU), "____|__xx|xx__|xxxx")), \
                "End and adjacent center must be in mini-wave"
     call: trade
-  from: FACING COUPLES
-    call: touch, _wave swing
+  from: ANY
+    condition: not(formation(RH MINIWAVE)) // control recursion
+    call: _mixed touch, _wave swing
 
 // XXX: what direction should we face at end?
 def: partner swing
   spoken: (partner swing) | (swing your partner) | (swing (the|your) corner)
   in: 6
   ipart:
-    from: FACING DANCERS
-      call: touch, partner swing
     from: RH MINIWAVE
       // XXX: want "_cast_to_promenade", but that requires matching in the
       //      whole formation (so we can still tell where promenade
       //      direction is)
       call: cast(6/4), _break out from swing
+    from: ANY
+      call: _turn and touch, partner swing
 def: _break out from swing
   in: 2
   from: RH MINIWAVE
@@ -552,6 +553,7 @@ def: _finish right and left grand(who)
 
 def: _turn and touch
   in: 2
+  ends in: formation(RH MINIWAVE), "Didn't end right"
   from: TRADE BY // special case 'cuz mixed(FACING DANCERS, COUPLE) is ambiguous
     call: _quasi concentric(touch, _hinge)
   from: mixed(FACING DANCERS, RH MINIWAVE)
@@ -597,13 +599,18 @@ def: left and right grand
 def: pass thru
   optional: LEFT
   in: 2
-  // note: can't start pass thru from LH MINIWAVE
+  // define the common case first: we've got two parts there
+  from: FACING DANCERS
+    prim: 0, 1, none
+    prim: 0, 1, none
+  // from mixed formation, this is indivisible
   from: mixed(FACING DANCERS, RH MINIWAVE)
-    from: FACING DANCERS
-      prim: 0, 1, none
-      prim: 0, 1, none
-    from: MINIWAVE
-      call: step thru // "rear back and..."
+    xpart: 2
+      from: FACING DANCERS
+        prim: 0, 1, none
+        prim: 0, 1, none
+      from: RH MINIWAVE
+        call: step thru // "rear back and..."
 
 def: pull by
   call: pass thru // at least until i implement hand holds
@@ -898,22 +905,27 @@ def: see saw
 def: square thru(n)
   optional: LEFT
   spoken: square thru <n=number> (hands (around|round)?)?
-  from: FACING COUPLES, RH OCEAN WAVE
+  from: ANY
     condition: and(greater([n],0),not(greater([n],1)))
     call: _fractional([n], _in(2, pull by))
-  from: FACING COUPLES, RH OCEAN WAVE
+  from: ANY
     condition: greater([n], 1)
     ipart: // does square thru N have N distinct parts?
       call: _in(2, _sq_thru_part), left(square thru(_subtract num([n],1)))
 
 def: _sq_thru_part
+  // definition is:
+  //  call: pull by, quarter in
+  // but looks better if we blend the quarter in
   ipart:
     from: FACING COUPLES
-      // definition is:
-      //  call: pull by, quarter in
-      // but looks better if we blend the quarter in
       prim: 0, 1, none
       prim: 0, 1, in
+    from: RH OCEAN WAVE
+      select: CENTER
+        prim: 0, 1, in
+      select: END
+        prim: in 2, 1, in
     from: ANY // fall back to real definition, so "rear back and..." works
       call: pull by, quarter in
 
@@ -966,9 +978,6 @@ def: _quarter wheel
 // callerlab #34: BOX THE GNAT
 def: box the gnat
   in: 4
-  from: FACING DANCERS
-    condition: not(or(ALL(BOY), ALL(GIRL))), "Same sex boxing!"
-    call: touch, box the gnat
   from: RH MINIWAVE
     condition: not(or(ALL(BOY), ALL(GIRL))), "Same sex boxing!"
     select: BOY
@@ -977,6 +986,8 @@ def: box the gnat
     select: GIRL
       prim: in 1,1,left,sashay-finish
       prim: 0,0,left
+  from: ANY
+    call: _mixed touch, box the gnat
 
 // callerlab #35: OCEAN WAVE FAMILY (see BMS addendum)
 
@@ -1053,8 +1064,8 @@ def: swing thru
     call: anyone while others(CENTER,_left arm turn 1/2,_nothing preserve roll)
   from: LH OCEAN WAVE
     call: _centers(_right arm turn 1/2), _left arm turn 1/2
-  from: FACING COUPLES
-    call: step to a wave, swing thru
+  from: ANY
+    call: _mixed touch, swing thru
 
 // callerlab #40: RUN FAMILY
 
@@ -1339,6 +1350,18 @@ def: _touch(n) // touch 3/4 is mainstream, not basic
              "Only touch 1/4 is allowed at Basic"
   call: _in(_multiply num([n], 8), \
             and(touch, _fractional([n], _cast 4/4)))
+
+def: _mixed touch // used as part of ocean wave/facing couples adjustment
+  condition: not(formation(RH MINIWAVE)) // must be doing *something*
+  from: ANY
+    ends in: formation(RH MINIWAVE) // control recursion
+    from: FACING DANCERS // simple case
+      call: touch
+    from: mixed(RH MINIWAVE, FACING DANCERS)
+      from: FACING DANCERS
+        call: touch
+      from: RH MINIWAVE
+        call: nothing
 
 // callerlab #51: CIRCULATE FAMILY (see BMS addendum)
 
