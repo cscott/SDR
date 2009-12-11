@@ -1219,7 +1219,7 @@ to do:
        from: ANY
          ends in: formation([f])
          from: mixed(...)
- rr) tweak formationlistfast to have doc comments w/ ASCII diagrams of
+ xx) tweak formationlistfast to have doc comments w/ ASCII diagrams of
      each formation as doctest output of toStringDiagram (name dancers?)
  ss) pseudocalls:
        you're home (checks, scores)

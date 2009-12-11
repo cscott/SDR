@@ -634,16 +634,30 @@ abstract class FormationListSlow {
         pw.println("import java.util.Collections;");
         pw.println("import java.util.List;");
         pw.println();
+        pw.println("import org.junit.runner.RunWith;");
+        pw.println();
+        pw.println("import net.cscott.jdoctest.JDoctestRunner;");
+        pw.println();
         pw.println("import net.cscott.sdr.calls.TaggedFormation.Tag;");
         pw.println("import static net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;");
         pw.println("import net.cscott.sdr.util.Fraction;");
         pw.println();
         pw.println("/** Compiled version of {@link FormationListSlow}. */");
+        pw.println("@RunWith(value=JDoctestRunner.class)");
         pw.println("abstract class FormationListFast {");
     }
     private static void emitOne(PrintWriter pw, String fieldName,
                                 NamedTaggedFormation ntf) {
         String escapedName = escapeJava(ntf.getName());
+        pw.println("    /** "+ntf.getName()+" formation.");
+        pw.println("      * @doc.test");
+        pw.println("      *  js> FormationList = FormationListJS.initJS(this); undefined;");
+        pw.println("      *  js> tf = FormationList."+fieldName+"; tf.toStringDiagram('|');");
+        pw.println(ntf.toStringDiagram("      *  |"));
+        pw.println("      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\\n');");
+        for (Dancer d : ntf.sortedDancers())
+            pw.println("      *  "+new ArrayList<Tag>(ntf.tags(d)));
+        pw.println("      */");
         pw.println("    public static final NamedTaggedFormation "+fieldName+" =");
         pw.print  ("        new NamedTaggedFormation(\""+escapedName+"\"");
         for (Dancer d : ntf.sortedDancers()) {
@@ -661,6 +675,7 @@ abstract class FormationListSlow {
         pw.println();
     }
     private static void emitAll(PrintWriter pw, List<String> allFormations) {
+        pw.println("    /** List of all formations defined here. */");
         pw.println("    public static final List<NamedTaggedFormation> all =");
         pw.println("        Collections.unmodifiableList(Arrays.asList(");
         boolean first = true;

@@ -132,6 +132,7 @@ import org.junit.runner.RunWith;
 public abstract class FormationList extends FormationListFast {
     // no implementation: all the interesting stuff is in FormationListSlow.
     
+    /** Return the named formation.  Case-insensitive. */
     public static NamedTaggedFormation valueOf(String s) {
         s = s.toUpperCase()
              .replace(' ','_')
