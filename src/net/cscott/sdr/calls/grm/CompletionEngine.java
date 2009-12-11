@@ -371,11 +371,15 @@ public class CompletionEngine {
 		return true;
             }
             // special match for <digit>, <EOF> (others?)
+	    // these are 'pseudo-terminals'
             if (nonterm.ruleName.equals("EOF"))
                 // <EOF> matches iff we've grabbed all the partial input.
                 return cs.partialInput.isEmpty();
             if (nonterm.ruleName.equals("<NULL>"))
                 return true; // trivial match
+            if (nonterm.ruleName.equals("NUMBER"))
+		// we would have matched it against FRACTION token above.
+                return false;
             // if "no terminals past partialInput yet" then we'll grab the
             // nt from the GrmDB and recurse; otherwise we'll return
             // "<"+nonterm.prettyname+">" in the completion string & true.
@@ -399,7 +403,10 @@ public class CompletionEngine {
                 return true;
             }
             Grm g = rules.get(nonterm.ruleName);
-            if (g==null) return false; // XXX MISSING RULE
+            if (g==null) {
+                assert false : "missing rule: "+nonterm.ruleName;
+                return false;
+            }
             return g.accept(this);
         }
         @Override
