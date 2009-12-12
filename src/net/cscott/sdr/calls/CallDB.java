@@ -67,6 +67,11 @@ public class CallDB {
         Collections.unmodifiableCollection(db.values());
 
     private CallDB() {
+        this.reload();
+    }
+    /** Reload call definitions from resource files and classes. */
+    public void reload() {
+        this.db.clear();
         // okay, first load the call definition lists.
         CallFileLoader.load(resource("basic"), db);
         CallFileLoader.load(resource("mainstream"), db);

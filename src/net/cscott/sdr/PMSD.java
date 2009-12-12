@@ -135,19 +135,27 @@ public class PMSD {
     /** Class holding properties accessible from the {@link PMSD} front-end. */
     public static class State extends ScriptableObject {
         // rhino bookkeeping.
-        public State() {}
+        public State() { reset(); }
         @Override
         public String getClassName() { return "State"; }
 
         // private/internal state
-        DanceState ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET);
+        DanceState ds;
         boolean _isDone = false;
         boolean _errorDetails = false;
         boolean _formationDetails = false;
+        private void reset() {
+            this.ds = new DanceState(new DanceProgram(Program.PLUS),
+                                     Formation.SQUARED_SET);
+        }
 
         // javascript api.
         public Object jsGet_ds() {
             return Context.javaToJS(ds, this);
+        }
+        public Object jsGet_reset() {
+            this.reset();
+            return Context.getUndefinedValue();
         }
         public Object jsGet_exit() {
             // abuse the getter mechanism by using it to perform a side-effect
@@ -234,6 +242,11 @@ public class PMSD {
             Apply a = CallDB.INSTANCE.parse(ds.dance.getProgram(), calltext);
             return a.toShortString();
         }
+        /** Reload call definitions from resource files. */
+        public Object jsGet_reload() {
+            CallDB.INSTANCE.reload();
+            return Context.getUndefinedValue();
+        }
 
         /** Runs the test in this same context, so that we can (for example)
          *  set {@code /errorDetails=true} and then run the test to get more
@@ -246,8 +259,7 @@ public class PMSD {
 		return "* " + testName + " not found";
             // execute it!  (reusing current state)
             // (but reset formation and program, since tests expect that)
-            this.ds = new DanceState(new DanceProgram(Program.PLUS),
-                                     Formation.SQUARED_SET);
+            this.reset();
             return runTest(this, testName, testCase);
 	}
 
