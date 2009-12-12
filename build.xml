@@ -461,9 +461,16 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		<mapper type="glob" from="*.g" to="*Lexer.java" />
 	      </outofdate>
 	      <sequential>
-		<antlr3 target="@{grammar.file}">
+		<antlr3 target="@{grammar.file}"
+			conversiontimeout="10000">
 		  <classpath refid="classpath.path" />
 		</antlr3>
+		<java classname="net.cscott.sdr.calls.grm.AntlrPostProcessor">
+		  <arg value="@{grammar.file}" />
+		  <classpath>
+		    <path refid="classpath.path"/>
+		  </classpath>
+		</java>
 	      </sequential>
 	    </for>
 	    <!-- build newly-generated grammars -->
