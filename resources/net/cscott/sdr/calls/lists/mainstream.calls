@@ -69,7 +69,7 @@ def: walk and dodge
 def: walk others dodge(sel)
   spoken: <sel=anyone> walk (others|<anyone>) dodge
   in: 4
-  from: BOX, FACING COUPLES
+  from: 2x2
     condition: ARE([sel], TRAILER), "Named dancers can't walk!"
     select: [sel]
       prim: 0,1,none

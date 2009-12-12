@@ -49,7 +49,7 @@ public class EmitJava extends AbstractEmit {
         m.put("girls", Grm.parse("girls | ladies"));
         m.put("all", Grm.parse("all | every (one|body) | everybody | everyone"));
         m.put("wave_select", Grm.parse("centers | ends"));
-        m.put("anyone", Grm.parse("<people> | <wave_select>"));
+        m.put("anyone", Grm.parse("<people> | <wave_select> | <two_select>"));
         m.put("number", Grm.parse("<digit> and <fraction>|<digit>|<fraction>|<NUMBER>"));
         m.put("digit", Grm.parse("one | two | <digit_greater_than_two>"));
         m.put("digit_greater_than_two", Grm.parse("three | four | five | six | seven | eight | nine"));

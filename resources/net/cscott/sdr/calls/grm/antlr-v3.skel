@@ -59,8 +59,8 @@ heads_or_sides returns [Expr r]
         | 'sides' { r = Expr.literal("SIDE"); }
         ;
 two_select returns [Expr r]
-        : a=head_or_side b=genders { r = new Expr("&", a, b); }
-        | a=center_or_end b=genders { r = new Expr("&", a, b); }
+        : a=head_or_side b=genders { r = new Expr("and", a, b); }
+        | a=center_or_end b=genders { r = new Expr("and", a, b); }
         | 'very' 'centers' { r = Expr.literal("VERY_CENTER"); }
         | 'center' 'two' { r = Expr.literal("VERY_CENTER"); }
         ;
@@ -89,7 +89,7 @@ wave_select returns [Expr a]
 	| 'ends' { a = Expr.literal("END"); }
 	;
 anyone returns [Expr r]
-	: a=people {r=a;} | a=wave_select {r=a;} ;
+	: a=people {r=a;} | a=wave_select {r=a;} | a=two_select {r=a;};
 number returns [Expr a]
 	: f=a_number { a = Expr.literal(f); }
 	// hacks for typing (not spoken)

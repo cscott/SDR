@@ -20,7 +20,7 @@ grammar @CLASSNAME@;
 <girls> = girls | ladies {girls};
 <all> = all | every (one|body) {all};
 <wave_select> = centers | ends;
-<anyone> = <people> | <wave_select> ;
+<anyone> = <people> | <wave_select> | <two_select>;
 <number> = <digit> and <fraction>
 	| <digit>
 	| <fraction>

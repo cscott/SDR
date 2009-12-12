@@ -1,0 +1,23 @@
+Test of an unusual walk and dodge, followed by an unusual circulate.
+
+sdr> heads boys walk others dodge
+| 4B>  1B^  3Gv  2G<
+| 
+| 4G>  1G^  3Bv  2B<
+sdr> sides trade and roll
+| 4Gv  1B^  3Gv  2Bv
+| 
+| 4B^  1G^  3Bv  2G^
+sdr> girls walk boys dodge
+| 1B^  1G^  2Bv  2G^
+| 
+| 4Gv  4B^  3Gv  3Bv
+sdr> circulate
+| 2Gv  4B^  1Gv  1Bv
+| 
+| 3B^  3G^  2Bv  4G^
+sdr> side boys run
+| 4Bv  2Gv  1Gv  1Bv
+| 
+| 3B^  3G^  4G^  2B^
+sdr> /exit
