@@ -254,12 +254,12 @@ public abstract class MatcherList {
     // this matcher has an extra underscore because the parser treats it
     // as two items: the number one, and the identifier x8.
     public static final Matcher _1_X8 =
-        Tagger.autotag2
+        Tagger.autotag4
             (GeneralFormationMatcher.makeMatcher(FormationList._1x8));
     // this matcher has an extra underscore because the parser treats it
     // as two items: the number two, and the identifier x4.
     public static final Matcher _2_X4 =
-        Tagger.autotag2
+        Tagger.autotag4
             (GeneralFormationMatcher.makeMatcher(FormationList._2x4));
     public static final Matcher STATIC_SQUARE =
         GeneralFormationMatcher.makeMatcher(FormationList.STATIC_SQUARE);

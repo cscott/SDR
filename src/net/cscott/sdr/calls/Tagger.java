@@ -34,9 +34,7 @@ public abstract class Tagger {
         case 8:
             // XXX: add center 2, outer 6
         case 4:
-            // XXX: add centers & ends? only if we find waves
-            //      exactly (center wave in a twin diamond does not
-            //      have centers & ends unless it is selected exactly)
+            tag4(f, tags);
         case 2:
             tag2(f, tags);
         default: // skip
@@ -52,38 +50,74 @@ public abstract class Tagger {
         assert false : "unimplemented";
     }
 
-    /** Return a new matcher which adds two-person tags
+    /** Return a new matcher which adds 1x2 tags
      *  (BEAU/BELLE/LEADER/TRAILER) to the generic formation matched by the
      *  given {@link Matcher}.
      */
-    public static Matcher autotag2(final Matcher s) {
-        return new Matcher() {
+    public static Matcher autotag2(Matcher s) {
+        return new AutoMatcher(s) {
             @Override
-            public FormationMatch match(Formation f) throws NoMatchException {
-                // first match with the child matcher.
-                FormationMatch fm = s.match(f);
-                // now go through the match and add autotags to the pieces.
-                Map<Dancer,TaggedFormation> nmatches =
-                    new LinkedHashMap<Dancer,TaggedFormation>();
-                for (Dancer metaDancer : fm.meta.dancers()) {
-                    TaggedFormation tf = fm.matches.get(metaDancer);
-                    MultiMap<Dancer,Tag> nTags =
-                        new GenericMultiMap<Dancer,Tag>
-                            (Factories.<Dancer,Collection<Tag>>linkedHashMapFactory(),
-                             Factories.enumSetFactory(Tag.class));
-                    tag2(tf, nTags);
-                    nmatches.put(metaDancer, tf.addTags(nTags));
-                }
-                return new FormationMatch(fm.meta, nmatches, fm.unmatched);
+            public void tag(TaggedFormation tf, MultiMap<Dancer, Tag> nTags) {
+                tag2(tf, nTags);
             }
-            @Override
-            public String getName() { return s.toString(); }
         };
     }
 
-    /** Discover 2-person tags (BEAU/BELLE/LEADER/TRAILER) in the given
+    /** Return a new matcher which adds 1x2 and 1x4 tags
+     *  (BEAU/BELLE/LEADER/TRAILER/NUMBER 1/2/3/4/CENTER/END) to the generic
+     *  formation matched by the given {@link Matcher}.
+     */
+    public static Matcher autotag4(Matcher s) {
+        return new AutoMatcher(s) {
+            @Override
+            public void tag(TaggedFormation tf, MultiMap<Dancer, Tag> nTags) {
+                tag2(tf, nTags);
+                tag4(tf, nTags);
+            }
+        };
+    }
+
+    private static abstract class AutoMatcher extends Matcher {
+        private final Matcher s;
+        AutoMatcher(Matcher s) { this.s = s; }
+        @Override
+        public String getName() { return s.toString(); }
+        @Override
+        public FormationMatch match(Formation f) throws NoMatchException {
+            // first match with the child matcher.
+            FormationMatch fm = s.match(f);
+            // now go through the match and add autotags to the pieces.
+            Map<Dancer,TaggedFormation> nmatches =
+                new LinkedHashMap<Dancer,TaggedFormation>();
+            for (Dancer metaDancer : fm.meta.dancers()) {
+                TaggedFormation tf = fm.matches.get(metaDancer);
+                MultiMap<Dancer,Tag> nTags =
+                    new GenericMultiMap<Dancer,Tag>
+                (Factories.<Dancer,Collection<Tag>>linkedHashMapFactory(),
+                        Factories.enumSetFactory(Tag.class));
+                this.tag(tf, nTags);
+                nmatches.put(metaDancer, tf.addTags(nTags));
+            }
+            return new FormationMatch(fm.meta, nmatches, fm.unmatched);
+        }
+        public abstract void tag(TaggedFormation tf, MultiMap<Dancer,Tag> nTags);
+    }
+
+    /** Discover 1x2 tags (BEAU/BELLE/LEADER/TRAILER) in the given
      *  formation. */
     public static void tag2(Formation f, MultiMap<Dancer,Tag> tags) {
+        tagN(2, f, tags);
+    }
+    /** Discover 1x4 tags (NUMBER_1/2/3/4, CENTER/END) in the given
+     *  formation. */
+    public static void tag4(Formation f, MultiMap<Dancer,Tag> tags) {
+        tagN(4, f, tags);
+    }
+
+    private static void tagN(int n, Formation f, MultiMap<Dancer,Tag> tags) {
+        assert n==2 || n==4;
+        Formation template = (n==2) ? template2 : (n==4) ? template4 : null;
+        int toff = (n==2) ? 0 : (n==4) ? 2 : -1;
         // match against our beau/belle pattern.
         LL<Dancer> allDancers = LL.create(f.sortedDancers());
         Map<Point,Dancer> where = new HashMap<Point,Dancer>();
@@ -95,7 +129,7 @@ public abstract class Tagger {
                 // rotate the template formation and attempt a match.
                 Fraction extraRot = Fraction.valueOf(i, 8);
                 Formation t = template.rotate(new ExactRotation(extraRot));
-                Match m = match(f, where, pos2pt(t.location(dancer[1])),
+                Match m = match(f, where, n, toff, pos2pt(t.location(dancer[toff+1])),
                                 extraRot.negate(), allDancers, noMatch);
                 // add tags from this match
                 tags.addAll(m.tags);
@@ -144,20 +178,19 @@ public abstract class Tagger {
             this.assigned = assigned;
         }
         /** Create a new match which maps the given dancers to tags. */
-        Match add(Dancer d0, Tag t0, Dancer d1, Tag t1) {
+        Match add(Dancer d0, Tag t0) {
             assert !assigned.contains(d0);
-            assert !assigned.contains(d1);
             MultiMap<Dancer,Tag> nTags = mmf.makeMultiMap(tags); // fast
             if (t0!=null) nTags.add(d0, t0);
-            if (t1!=null) nTags.add(d1, t1);
-            PersistentSet<Dancer> nAssigned = assigned.add(d0).add(d1);
+            PersistentSet<Dancer> nAssigned = assigned.add(d0);
             return new Match(mmf, nTags, nAssigned);
         }
     }
-    /** Attempt to extend the given partialMatch by examing the next dancer
+    /** Attempt to extend the given partialMatch by examining the next dancer
      *  in the 'remaining' list. */
     private static Match match(Formation f,
                                Map<Point, Dancer> where,
+                               int templateSize, int templateOffset,
                                Point offset, Fraction extraRot,
                                LL<Dancer> remaining,
                                Match partialMatch) {
@@ -170,19 +203,31 @@ public abstract class Tagger {
         Match nBest1 = null;
         if (!partialMatch.assigned.contains(d0)) {
             // this dancer can be assigned.  try to make it into a match.
+            boolean possible = true;
             Point p0 = pos2pt(f.location(d0));
-            Point p1 = p0.add(offset);
-            if (where.containsKey(p1) &&
-                !partialMatch.assigned.contains(where.get(p1))) {
-                // hey, there's a complete match here.  assign d0 and d1
-                Dancer d1 = where.get(p1);
-                Rotation r0 = f.location(d0).facing.add(extraRot);
-                Rotation r1 = f.location(d1).facing.add(extraRot);
-                Tag t0 = dancerTags.get(dancer[0]).get(r0);
-                Tag t1 = dancerTags.get(dancer[1]).get(r1);
+            Point p1 = p0;
+            for (int i=1; i<templateSize; i++) {
+                p1 = p1.add(offset);
+                if ((!where.containsKey(p1)) ||
+                    partialMatch.assigned.contains(where.get(p1))) {
+                    possible = false;
+                    break;
+                }
+            }
+            if (possible) {
+                // hey, there's a complete match here.  assign d0, d1, ...
+                Match m = partialMatch;
+                p1 = p0;
+                for (int i=0; i<templateSize; i++) {
+                    Dancer d1 = where.get(p1);
+                    Rotation r1 = f.location(d1).facing.add(extraRot);
+                    Tag t1 = dancerTags.get(dancer[i+templateOffset]).get(r1);
+                    m = m.add(d1, t1);
+                    p1 = p1.add(offset);
+                }
                 // recurse after adding these dancers/tags to the partialMatch
-                nBest1 = match(f, where, offset, extraRot, remaining.tail,
-                               partialMatch.add(d0, t0, d1, t1));
+                nBest1 = match(f, where, templateSize, templateOffset,
+                               offset, extraRot, remaining.tail, m);
                 // quit early if there's no way to beat the nBest1 match
                 // without assigning dancer d0.
                 if (remaining.tail.size() < nBest1.assigned.size())
@@ -190,13 +235,13 @@ public abstract class Tagger {
             }
         }
         // okay, try to finish the match, skipping dancer d0
-        Match nBest0 = match(f, where, offset, extraRot, remaining.tail,
-                             partialMatch);
+        Match nBest0 = match(f, where, templateSize, templateOffset,
+                             offset, extraRot, remaining.tail, partialMatch);
 
         // return the better match among nBest0 and nBest1
         if (nBest1 == null) return nBest0;
         if (nBest0.assigned.size() == nBest1.assigned.size())
-            throw new NoMatchException("general couple", "ambiguous");
+            throw new NoMatchException("general "+templateSize, "ambiguous");
         return (nBest0.assigned.size() > nBest1.assigned.size()) ?
                 nBest0 : nBest1;
     }
@@ -211,20 +256,47 @@ public abstract class Tagger {
     }
     /** Our private stash of phantom dancers. */
     private static final Dancer[] dancer = new Dancer[] {
-        new PhantomDancer(), new PhantomDancer()
+        new PhantomDancer(), new PhantomDancer(),
+        new PhantomDancer(), new PhantomDancer(),
+        new PhantomDancer(), new PhantomDancer(),
     };
     /** Our two-dancer template formation. */
-    private static final Formation template =
+    private static final Formation template2 =
         new Formation(m(p(dancer[0], pos(0, 0, "o")),
                         p(dancer[1], pos(2, 0, "o"))));
+    /** Our four-dancer template formation. */
+    private static final Formation template4 =
+        new Formation(m(p(dancer[2], pos(0, 0, "o")),
+                        p(dancer[3], pos(2, 0, "o")),
+                        p(dancer[4], pos(4, 0, "o")),
+                        p(dancer[5], pos(6, 0, "o"))));
     /** Map rotations of dancers in the template to appropriate tags. */
+    @SuppressWarnings("unchecked")
     private static final Map<Dancer,Map<Rotation,Tag>> dancerTags =
-        m(p(dancer[0], m(p((Rotation)ExactRotation.NORTH, Tag.BEAU),
-                           p((Rotation)ExactRotation.SOUTH, Tag.BELLE),
-                           p((Rotation)ExactRotation.EAST, Tag.TRAILER),
-                           p((Rotation)ExactRotation.WEST, Tag.LEADER))),
+        m(// two-dancer tags
+          p(dancer[0], m(p((Rotation)ExactRotation.NORTH, Tag.BEAU),
+                         p((Rotation)ExactRotation.SOUTH, Tag.BELLE),
+                         p((Rotation)ExactRotation.EAST, Tag.TRAILER),
+                         p((Rotation)ExactRotation.WEST, Tag.LEADER))),
           p(dancer[1], m(p((Rotation)ExactRotation.NORTH, Tag.BELLE),
-                           p((Rotation)ExactRotation.SOUTH, Tag.BEAU),
-                           p((Rotation)ExactRotation.EAST, Tag.LEADER),
-                           p((Rotation)ExactRotation.WEST, Tag.TRAILER))));
+                         p((Rotation)ExactRotation.SOUTH, Tag.BEAU),
+                         p((Rotation)ExactRotation.EAST, Tag.LEADER),
+                         p((Rotation)ExactRotation.WEST, Tag.TRAILER))),
+          // four-dancer tags
+          p(dancer[2], m(p((Rotation)ExactRotation.NORTH, Tag.END),
+                         p((Rotation)ExactRotation.SOUTH, Tag.END),
+                         p((Rotation)ExactRotation.EAST, Tag.NUMBER_4),
+                         p((Rotation)ExactRotation.WEST, Tag.NUMBER_1))),
+          p(dancer[3], m(p((Rotation)ExactRotation.NORTH, Tag.CENTER),
+                         p((Rotation)ExactRotation.SOUTH, Tag.CENTER),
+                         p((Rotation)ExactRotation.EAST, Tag.NUMBER_3),
+                         p((Rotation)ExactRotation.WEST, Tag.NUMBER_2))),
+          p(dancer[4], m(p((Rotation)ExactRotation.NORTH, Tag.CENTER),
+                         p((Rotation)ExactRotation.SOUTH, Tag.CENTER),
+                         p((Rotation)ExactRotation.EAST, Tag.NUMBER_2),
+                         p((Rotation)ExactRotation.WEST, Tag.NUMBER_3))),
+          p(dancer[5], m(p((Rotation)ExactRotation.NORTH, Tag.END),
+                         p((Rotation)ExactRotation.SOUTH, Tag.END),
+                         p((Rotation)ExactRotation.EAST, Tag.NUMBER_1),
+                         p((Rotation)ExactRotation.WEST, Tag.NUMBER_4))));
 }

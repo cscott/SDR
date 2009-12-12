@@ -366,48 +366,56 @@ abstract class FormationListSlow {
     // xxx do we want all variants here, or just the "canonical" ones?
     public static final NamedTaggedFormation RH_QUARTER_TAG = // callerlab #37(a)
 	_ends_in(xofy("RH 1/4 TAG", RH_MINIWAVE, RH_SINGLE_QUARTER_TAG,
+                      WhetherTagger.NO_AUTO_TAGS,
 		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
 		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
 		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
 		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
     public static final NamedTaggedFormation LH_QUARTER_TAG = // callerlab #37(a)
 	_ends_in(xofy("LH 1/4 TAG", LH_MINIWAVE, LH_SINGLE_QUARTER_TAG,
+                      WhetherTagger.NO_AUTO_TAGS,
 		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
 		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
 		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
 		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
     public static final NamedTaggedFormation RH_THREE_QUARTER_TAG = // callerlab #38(a)
 	_ends_in(xofy("RH 3/4 TAG", RH_MINIWAVE, RH_SINGLE_THREE_QUARTER_TAG,
+                      WhetherTagger.NO_AUTO_TAGS,
 		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
 		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
 		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
 		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
     public static final NamedTaggedFormation LH_THREE_QUARTER_TAG = // callerlab #38(b)
 	_ends_in(xofy("LH 3/4 TAG", LH_MINIWAVE, LH_SINGLE_THREE_QUARTER_TAG,
+                      WhetherTagger.NO_AUTO_TAGS,
 		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
 		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
 		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
 		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
     public static final NamedTaggedFormation RH_QUARTER_LINE = // callerlab #39(a)
 	_ends_in(xofy("RH 1/4 LINE", RH_SINGLE_QUARTER_TAG, COUPLE,
+                      WhetherTagger.NO_AUTO_TAGS,
 		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
 		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
 		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
 		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
     public static final NamedTaggedFormation LH_QUARTER_LINE = // callerlab #39(b)
 	_ends_in(xofy("LH 1/4 LINE", LH_SINGLE_QUARTER_TAG, COUPLE,
+                      WhetherTagger.NO_AUTO_TAGS,
 		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
 		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
 		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
 		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
     public static final NamedTaggedFormation RH_THREE_QUARTER_LINE = // callerlab #39(a)
 	_ends_in(xofy("RH 3/4 LINE", RH_SINGLE_THREE_QUARTER_TAG, COUPLE,
+                      WhetherTagger.NO_AUTO_TAGS,
 		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
 		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
 		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
 		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
     public static final NamedTaggedFormation LH_THREE_QUARTER_LINE = // callerlab #39(b)
 	_ends_in(xofy("LH 3/4 LINE", LH_SINGLE_THREE_QUARTER_TAG, COUPLE,
+                      WhetherTagger.NO_AUTO_TAGS,
 		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
 		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
 		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
@@ -543,7 +551,10 @@ abstract class FormationListSlow {
      * "no additional tags".
      */
     private static NamedTaggedFormation xofy(final String name, Formation x, TaggedFormation y, NumAndTags... tags){
-        return addTags(name, _xofy(x,y), WhetherTagger.AUTO_TAGS, tags);
+        return xofy(name, x, y, WhetherTagger.AUTO_TAGS, tags);
+    }
+    private static NamedTaggedFormation xofy(final String name, Formation x, TaggedFormation y, WhetherTagger wt, NumAndTags... tags){
+        return addTags(name, _xofy(x,y), wt, tags);
     }
     private static enum WhetherTagger { AUTO_TAGS, NO_AUTO_TAGS; }
     private static NamedTaggedFormation addTags(final String name, final Formation f,
