@@ -1370,12 +1370,16 @@ def: _mixed touch // used as part of ocean wave/facing couples adjustment
 def: circulate // all-8
   spoken: (all eight)? circulate
   in: 4
-  from: PARALLEL GENERAL LINES
-    call: concentric(_box circulate)
-  from: GENERAL COLUMNS
-    call: column circulate
-  from: 2x2
-    call: _box circulate
+  from: ANY
+    condition: equal num(NUM DANCERS(), 8)
+    from: PARALLEL GENERAL LINES
+      call: concentric(_box circulate)
+    from: GENERAL COLUMNS
+      call: column circulate
+  from: ANY
+    condition: equal num(NUM DANCERS(), 4)
+    from: 2x2
+      call: _box circulate
 
 def: column circulate
   from: GENERAL COLUMNS

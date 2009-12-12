@@ -240,6 +240,14 @@ abstract class FormationListSlow {
         create("2x4", f("++++","++++"), WhetherTagger.NO_AUTO_TAGS,
                 t(0, OUTSIDE_4), t(1, CENTER), t(2, CENTER), t(3, OUTSIDE_4),
                 t(4, OUTSIDE_4), t(5, CENTER), t(6, CENTER), t(7, OUTSIDE_4));
+    public static final NamedTaggedFormation PARALLEL_GENERAL_LINES =
+        create("PARALLEL GENERAL LINES", f("||||","||||"), WhetherTagger.NO_AUTO_TAGS,
+                t(0, OUTSIDE_4), t(1, CENTER), t(2, CENTER), t(3, OUTSIDE_4),
+                t(4, OUTSIDE_4), t(5, CENTER), t(6, CENTER), t(7, OUTSIDE_4));
+    public static final NamedTaggedFormation GENERAL_COLUMNS =
+        create("GENERAL COLUMNS", f("||","||","||","||"), WhetherTagger.NO_AUTO_TAGS,
+                t(0, OUTSIDE_4), t(1, OUTSIDE_4), t(2, CENTER), t(3, CENTER),
+                t(4, CENTER), t(5, CENTER), t(6, OUTSIDE_4), t(7, OUTSIDE_4));
     public static final NamedTaggedFormation STATIC_SQUARE = // callerlab #14
         create("STATIC SQUARE", f(" ss ","e  w","e  w"," nn "),
                 WhetherTagger.AUTO_TAGS);

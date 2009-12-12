@@ -261,6 +261,12 @@ public abstract class MatcherList {
     public static final Matcher _2_X4 =
         Tagger.autotag4
             (GeneralFormationMatcher.makeMatcher(FormationList._2x4));
+    public static final Matcher PARALLEL_GENERAL_LINES =
+        Tagger.autotag4
+            (GeneralFormationMatcher.makeMatcher(FormationList.PARALLEL_GENERAL_LINES));
+    public static final Matcher GENERAL_COLUMNS =
+        Tagger.autotag4
+            (GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_COLUMNS));
     public static final Matcher STATIC_SQUARE =
         GeneralFormationMatcher.makeMatcher(FormationList.STATIC_SQUARE);
     public static final Matcher SINGLE_FILE_PROMENADE =
@@ -700,14 +706,4 @@ public abstract class MatcherList {
     public static final Matcher LH_SPLIT_3_AND_1 = _STUB_;
     public static final Matcher RH_3_AND_1 = _STUB_;
     public static final Matcher RH_SPLIT_3_AND_1 = _STUB_;
-    public static final Matcher PARALLEL_GENERAL_LINES =
-	// XXX: 3-and-1 lines, t-bones of various kinds
-        // xxx: match against ||||
-        //                    |||| ?
-        OR("PARALLEL GENERAL LINES", FACING_LINES, LINES_FACING_OUT, PARALLEL_WAVES,
-	   PARALLEL_TWO_FACED_LINES, INVERTED_LINES);
-    public static final Matcher GENERAL_COLUMNS =
-	// XXX: magic columns of various kinds, t-bones
-	OR("GENERAL COLUMNS", COLUMN, EIGHT_CHAIN_THRU, TRADE_BY, DOUBLE_PASS_THRU,
-	   COMPLETED_DOUBLE_PASS_THRU);
 }

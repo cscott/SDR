@@ -841,6 +841,66 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_4));
 
+    /** PARALLEL GENERAL LINES formation.
+      * @doc.test
+      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> tf = FormationList.PARALLEL_GENERAL_LINES; tf.toStringDiagram('|');
+      *  ||    |    |    |
+      *  |
+      *  ||    |    |    |
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_4]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_4]
+      *  [OUTSIDE_4]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_4]
+      */
+    public static final NamedTaggedFormation PARALLEL_GENERAL_LINES =
+        new NamedTaggedFormation("PARALLEL GENERAL LINES",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(1), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4));
+
+    /** GENERAL COLUMNS formation.
+      * @doc.test
+      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> tf = FormationList.GENERAL_COLUMNS; tf.toStringDiagram('|');
+      *  ||    |
+      *  |
+      *  ||    |
+      *  |
+      *  ||    |
+      *  |
+      *  ||    |
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_4]
+      *  [OUTSIDE_4]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_4]
+      *  [OUTSIDE_4]
+      */
+    public static final NamedTaggedFormation GENERAL_COLUMNS =
+        new NamedTaggedFormation("GENERAL COLUMNS",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4));
+
     /** STATIC SQUARE formation.
       * @doc.test
       *  js> FormationList = FormationListJS.initJS(this); undefined;
@@ -2484,6 +2544,8 @@ abstract class FormationListFast {
             FormationListFast.COMPLETED_SINGLE_DOUBLE_PASS_THRU,
             FormationListFast._1x8,
             FormationListFast._2x4,
+            FormationListFast.PARALLEL_GENERAL_LINES,
+            FormationListFast.GENERAL_COLUMNS,
             FormationListFast.STATIC_SQUARE,
             FormationListFast.SINGLE_FILE_PROMENADE,
             FormationListFast.REVERSE_SINGLE_FILE_PROMENADE,
