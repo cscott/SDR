@@ -1244,6 +1244,15 @@ to do:
       vv     v       >                            ^v
       ^^ -> ^v -> ^     v (dia girls centers) ->  ^v -> counter rotate & roll
             ^        <
+ eee) partner swing animation:
+      1) touch
+      2) use with_designated to designate those *not* facing the
+         center (nosub)
+      3) from: RH MINIWAVE
+          select: DESIGNATED
+            call: partner swing 1/8 (or 1/4)
+          select: OTHERS
+            call: nothing
 -------
 heads x:
   from squared_set:
