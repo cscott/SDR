@@ -30,17 +30,4 @@
     <servlet-name>storageServlet</servlet-name>
     <url-pattern>/sdrweb/storage</url-pattern>
   </servlet-mapping>
-
-  <!-- from SDK -->
-  <!--
-  <servlet>
-    <servlet-name>remoteLoggingServiceImpl</servlet-name>
-    <servlet-class>com.google.gwt.libideas.logging.server.RemoteLoggingServiceImpl</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>remoteLoggingServiceImpl</servlet-name>
-    <url-pattern>/sdrweb/logging</url-pattern>
-  </servlet-mapping>
-  -->
-
 </web-app>

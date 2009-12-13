@@ -56,8 +56,8 @@
 	<classpathentry kind="lib" path="/home/cananian/jdk1.6.0_11/lib/tools.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-runtime-3.2.jar" sourcepath="lib/dev/antlr-3.2-src.jar"/>
 	<classpathentry kind="lib" path="lib/dev/antlr-3.2.jar" sourcepath="lib/dev/antlr-3.2-src.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-incubator-march-02-2009.jar"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/gwt-incubator-july-14-2009.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
