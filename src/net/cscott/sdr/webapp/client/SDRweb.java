@@ -31,6 +31,8 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -45,7 +47,7 @@ import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTMLTable;
-import com.google.gwt.user.client.ui.ImageBundle;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
@@ -187,7 +189,8 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         callBar.setWidth("100%");
         Label callLabel = new Label("Call: ");
         callLabel.setHorizontalAlignment(Label.ALIGN_RIGHT);
-        Button callGo = new Button(imageBundle.icon_add().getHTML());
+        Button callGo = new Button
+            (AbstractImagePrototype.create(imageBundle.icon_add()).getHTML());
         callEntry.setWidth("98%");
         callEntry.setStyleName("callEntry");
         callEntry.getElement().setAttribute("autocorrect", "off");
@@ -271,7 +274,8 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         topMsgs.setStyleName("messagePanel");
 
         final ImagePrototypeElement playElement =
-            imageBundle.icon_media_play().createElement();
+            AbstractImagePrototype.create(imageBundle.icon_media_play())
+            .createElement();
         final Button playButton = new Button();
         playButton.getElement().appendChild(playElement);
         model.addPlayStatusChangeHandler(new PlayStatusChangeHandler() {
@@ -283,10 +287,10 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 wasPlay = isPlay;
                 // updating just the image src/title/alt instead of replacing
                 // the entire <img> element causes less flashing on gecko
-                AbstractImagePrototype p = isPlay ?
+                ImageResource p = isPlay ?
                         imageBundle.icon_media_play() :
                         imageBundle.icon_media_pause();
-                p.applyTo(playElement);
+                AbstractImagePrototype.create(p).applyTo(playElement);
             }});
         playButton.addStyleName("playButton");
         playButton.addClickHandler(new ClickHandler(){
@@ -598,7 +602,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
             rf.removeStyleName(row, "last-call");
             fcf.setColSpan(row, 0, 1);
             PushButton removeButton = new PushButton
-                (imageBundle.icon_close_button().createImage());
+                (new Image(imageBundle.icon_close_button()));
             removeButton.setStyleName("removeButton");
             final int ci = callIndex; // for use in click handler
             removeButton.addClickHandler(new ClickHandler(){
@@ -693,11 +697,15 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         }
         public abstract void retry();
     }
-    public interface SdrImageBundle extends ImageBundle {
-        public AbstractImagePrototype icon_add();
-        public AbstractImagePrototype icon_close_button();
-        public AbstractImagePrototype icon_media_pause();
-        public AbstractImagePrototype icon_media_play();
+    public interface SdrImageBundle extends ClientBundle {
+        @Source("icon_add.png")
+        public ImageResource icon_add();
+        @Source("icon_close_button.png")
+        public ImageResource icon_close_button();
+        @Source("icon_media_pause.png")
+        public ImageResource icon_media_pause();
+        @Source("icon_media_play.png")
+        public ImageResource icon_media_play();
     }
     public final SdrImageBundle imageBundle = GWT.create(SdrImageBundle.class);
 }
