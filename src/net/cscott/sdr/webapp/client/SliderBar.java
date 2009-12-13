@@ -26,6 +26,8 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -33,7 +35,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.widgetideas.client.ResizableWidget;
 import com.google.gwt.widgetideas.client.ResizableWidgetCollection;
 
@@ -151,29 +152,30 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
   }
 
   /**
-   * An {@link ImageBundle} that provides images for {@link SliderBar}.
+   * An {@link ClientBundle} that provides images for {@link SliderBar}.
    */
-  public static interface SliderBarImages extends ImageBundle {
+  public static interface SliderBarImages extends ClientBundle {
     /**
      * An image used for the sliding knob.
      * 
      * @return a prototype of this image
      */
-    AbstractImagePrototype slider();
+    @Source("slider.gif")
+    ImageResource slider();
 
     /**
      * An image used for the sliding knob.
      * 
      * @return a prototype of this image
      */
-    AbstractImagePrototype sliderDisabled();
+    ImageResource sliderDisabled();
 
     /**
      * An image used for the sliding knob while sliding.
      * 
      * @return a prototype of this image
      */
-    AbstractImagePrototype sliderSliding();
+    ImageResource sliderSliding();
   }
 
   /**
@@ -314,7 +316,7 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
     DOM.setElementProperty(lineElement, "className", "gwt-SliderBar-line");
 
     // Create the knob
-    images.slider().applyTo(knobImage);
+    AbstractImagePrototype.create(images.slider()).applyTo(knobImage);
     Element knobElement = knobImage.getElement();
     DOM.appendChild(getElement(), knobElement);
     DOM.setStyleAttribute(knobElement, "position", "absolute");
@@ -597,10 +599,10 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
     if (enabled) {
-      images.slider().applyTo(knobImage);
+      AbstractImagePrototype.create(images.slider()).applyTo(knobImage);
       DOM.setElementProperty(lineElement, "className", "gwt-SliderBar-line");
     } else {
-      images.sliderDisabled().applyTo(knobImage);
+      AbstractImagePrototype.create(images.sliderDisabled()).applyTo(knobImage);
       DOM.setElementProperty(lineElement, "className",
           "gwt-SliderBar-line gwt-SliderBar-line-disabled");
     }
@@ -936,7 +938,7 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
           "gwt-SliderBar-line gwt-SliderBar-line-sliding");
       DOM.setElementProperty(knobImage.getElement(), "className",
           "gwt-SliderBar-knob gwt-SliderBar-knob-sliding");
-      images.sliderSliding().applyTo(knobImage);
+      AbstractImagePrototype.create(images.sliderSliding()).applyTo(knobImage);
     }
     /* snap to a step position */
     long numSteps = Math.round((curValue-minValue)/stepSize);
@@ -955,7 +957,7 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
 
       DOM.setElementProperty(knobImage.getElement(), "className",
           "gwt-SliderBar-knob");
-      images.slider().applyTo(knobImage);
+      AbstractImagePrototype.create(images.slider()).applyTo(knobImage);
     }
   }
 
