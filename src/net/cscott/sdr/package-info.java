@@ -17,6 +17,5 @@
  *   trade-2 at line 13
  *   trade-by at line 43
  *   vaya-con-dios at line 39
- *   walk-1 at line 20
  */
 package net.cscott.sdr;
