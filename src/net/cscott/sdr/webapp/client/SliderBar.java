@@ -320,8 +320,6 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
     DOM.setStyleAttribute(knobElement, "position", "absolute");
     DOM.setElementProperty(knobElement, "className", "gwt-SliderBar-knob");
 
-    // Make this a resizable widget
-    ResizableWidgetCollection.get().add(this);
     sinkEvents(Event.MOUSEEVENTS | Event.KEYEVENTS | Event.FOCUSEVENTS);
   }
 
@@ -751,7 +749,13 @@ public class SliderBar extends FocusPanel implements ResizableWidget,
   protected void onLoad() {
     // Reset the position attribute of the parent element
     DOM.setStyleAttribute(getElement(), "position", "relative");
+    ResizableWidgetCollection.get().add(this);
     redraw();
+  }
+
+  @Override
+  protected void onUnload() {
+    ResizableWidgetCollection.get().remove(this);
   }
 
   /**
