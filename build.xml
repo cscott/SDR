@@ -66,15 +66,11 @@ Square Dance Revolution build file.
     </target>
 
     <!-- delete generated files -->
-    <target name="clean" depends="init"
+    <target name="clean" depends="init,clean.flf"
             description="Removes the generated class files and javadoc">
         <!-- version numbers -->
         <delete file="src/net/cscott/sdr/Version.java" />
         <delete file="sdr.jnlp" />
-	<!-- optimized FormationList -->
-	<copy file="src/net/cscott/sdr/calls/FormationListFast.stub"
-	      tofile="src/net/cscott/sdr/calls/FormationListFast.java"
-              overwrite="true" />
 	<!-- classes and api docs -->
 	<delete dir="${classes_dir}" />
 	<delete dir="${api_dir}" />
@@ -483,6 +479,17 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		   <classpath refid="classpath.path" />
 	    </javac>
     </target>
+    <target name="clean.grm" depends="init"
+	    description="Remove generated natural language grammars">
+        <delete>
+	  <fileset dir="resources/net/cscott/sdr/recog/"
+		   includes="*.gram" excludes="sdr.gram" />
+	  <fileset dir="src/net/cscott/sdr/calls/lists/"
+		   includes="*Grammar.g *Grammar__.g *.tokens
+			     *GrammarLexer.java *GrammarParser.java
+                             *Grm.java" />
+	</delete>
+    </target>
 
     <!-- ********* Build the optimized FormationList. ********** -->
     <target name="compile.flf"
@@ -505,21 +512,14 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		   <classpath refid="classpath.path" />
 	    </javac>
     </target>
-
-
-    <target name="clean.grm" depends="init"
-	    description="Remove generated natural language grammars">
-        <delete>
-	  <fileset dir="resources/net/cscott/sdr/recog/"
-		   includes="*.gram" excludes="sdr.gram" />
-	  <fileset dir="src/net/cscott/sdr/calls/lists/"
-		   includes="*Grammar.g *Grammar__.g *.tokens
-			     *GrammarLexer.java *GrammarParser.java
-                             *Grm.java" />
-	</delete>
+    <target name="clean.flf"
+	    description="Remove optimized FormationList">
+      <copy file="src/net/cscott/sdr/calls/FormationListFast.stub"
+	    tofile="src/net/cscott/sdr/calls/FormationListFast.java"
+            overwrite="true" />
     </target>
 
-    <!-- bundle up all files for distribution -->
+    <!-- *********  Bundle up all files for distribution ******** -->
     <target name="dist" depends="jar,javadoc">
       <delete file="ChangeLog" />
       <exec executable="git" output="ChangeLog">
