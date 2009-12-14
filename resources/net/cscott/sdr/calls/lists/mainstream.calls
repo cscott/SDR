@@ -17,7 +17,20 @@ def: turn thru
 // XXX DEFINE ME
 
 // callerlab #56: PASS TO THE CENTER
-// XXX DEFINE ME
+def: pass to the center
+  optional: LEFT
+  call: pass thru
+  call: _finish pass to the center
+
+def: _finish pass to the center
+  condition: EQUAL NUM(NUM DANCERS(), 8)
+  // very generous definition here, but note that I don't use
+  // quasi-concentric; I want 'outsides', not "ends of lines"
+  from: CENTER HALF
+    select: CENTER
+      call: nothing
+    select: OTHERS
+      call: trade
 
 // callerlab #57: SPIN THE TOP
 def: spin the top

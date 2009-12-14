@@ -11,6 +11,8 @@
  *   cross-fold-1 at line 20
  *   extend-level at line 16
  *   hinge-1 at line 36
+ *   pass-to-the-center-2 at line 8
+ *   pass-to-the-center-3 at line 26
  *   peel-the-top-1 at line 32
  *   siamese-1 at line 30
  *   sweep-3 at line 23
