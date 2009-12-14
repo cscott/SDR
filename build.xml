@@ -24,10 +24,13 @@ Square Dance Revolution build file.
     </path>
     <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
+    <!-- load the variable definitions from another file -->
+    <property file="build.properties" />
+    <!-- local copy of GAE ant macros -->
+    <import file="${gae.sdk}/config/user/ant-macros.xml" optional="true" />
+
     <!-- define some variables for the script -->
     <target name="init">
-      <!-- load the variable definitions from another file -->
-      <property file="build.properties" />
       <!-- define other variables -->
       <property name="api_dir"            value="${basedir}/api"/>
       <property name="lib_dir"            value="${basedir}/lib"/>
@@ -59,6 +62,16 @@ Square Dance Revolution build file.
         </fileset>
 	<pathelement path="${jdk.home}/lib/tools.jar"/>
       </path>
+      <path id="gwt.path">
+	<pathelement location="${gwt.sdk}/gwt-user.jar"/>
+	<fileset dir="${gwt.sdk}" includes="gwt-dev*.jar"/>
+	<fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
+      </path>
+      <path id="gae.path">
+	<pathelement location="${gae.sdk}/lib/appengine-tools-api.jar" />
+	<fileset dir="${gae.sdk}/lib" includes="shared/**/*.jar" />
+	<fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
+      </path>
     </target>
 
     <target name="none">
@@ -66,7 +79,7 @@ Square Dance Revolution build file.
     </target>
 
     <!-- delete generated files -->
-    <target name="clean" depends="init,clean.flf"
+    <target name="clean" depends="init,clean.flf,clean.gwt"
             description="Removes the generated class files and javadoc">
         <!-- version numbers -->
         <delete file="src/net/cscott/sdr/Version.java" />
@@ -545,6 +558,102 @@ window['JAVADOC_BASE'] = '{@docRoot}';
       </tar>
     </target>
         
+    <!-- **************** GWT/GAE web UI stuff ************* -->
+    <target name="compile.jdo" depends="compile"
+	    description="JDO-enhance the SDRweb web server">
+      <!-- sync up war classes -->
+      <copy todir="war/WEB-INF/classes">
+	<fileset dir="${classes_dir}" />
+	<fileset dir="${src_dir}" includes="META-INF/**/*" />
+	<fileset dir="${src_dir}" includes="log4j.properties" />
+	<fileset dir="${src_dir}" includes="**/*.gwt.xml" />
+	<fileset dir="${src_dir}" includes="net/cscott/sdr/webapp/**/*.png" />
+	<fileset dir="${src_dir}" includes="net/cscott/sdr/webapp/**/*.ico" />
+      </copy>
+      <!-- move library files into war/WEB-INF/lib -->
+      <copy todir="war/WEB-INF/lib">
+	<fileset dir="${lib_dir}"
+		 includes="antlr-runtime-*.jar commons-lang-*.jar jutil.jar"/>
+	<fileset dir="${lib_dir}/dev"
+		 includes="junit-*.jar" />
+      </copy>
+      <!-- compile GAE stuff -->
+      <javac srcdir="${src_dir}" destdir="war/WEB-INF/classes"
+	     includes="net/cscott/sdr/webapp/server/**/*.java"
+	     deprecation="on" source="1.5" target="1.5" debug="true">
+	<classpath>
+	  <pathelement location="war/WEB-INF/classes" />
+	  <fileset dir="war/WEB-INF/lib" includes="*.jar"/>
+	  <path refid="gae.path" />
+	  <path refid="gwt.path" />
+	</classpath>
+      </javac>
+      <enhance failonerror="true">
+	<classpath>
+	  <pathelement location="war/WEB-INF/classes" />
+	  <path refid="classpath.path" />
+	  <path refid="gae.path" />
+	</classpath>
+	<fileset dir="war/WEB-INF/classes"
+		 includes="net/cscott/sdr/webapp/**/*.class"/>
+      </enhance>
+    </target>
+
+    <target name="compile.gwt" depends="compile.jdo"
+	    description="Compile web UI to javascript">
+      <java failonerror="true" fork="true"
+	    classname="com.google.gwt.dev.Compiler">
+	<classpath>
+          <pathelement location="src"/>
+          <pathelement location="src/net/cscott/sdr/webapp/client/thunk"/>
+          <pathelement location="war/WEB-INF/classes"/>
+          <path refid="classpath.path"/>
+          <path refid="gwt.path"/>
+	</classpath>
+	<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+	<jvmarg value="-Xmx256M"/>
+	<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+	<arg value="net.cscott.sdr.webapp.SDRweb"/>
+      </java>
+    </target>
+    <target name="clean.gwt"
+	    description="Delete generated files from JDO/GWT compilation">
+      <delete dir="war/sdrweb" />
+      <delete dir="war/sdr" />
+      <delete dir="war/WEB-INF/classes" />
+    </target>
+
+    <target name="run.devmode" depends="compile.jdo"
+	    description="Run web UI development mode">
+      <!-- start up dev mode -->
+      <java failonerror="true" fork="true"
+	    classname="com.google.gwt.dev.DevMode">
+	<classpath>
+	  <pathelement location="src"/> <!-- for GWT source files -->
+          <pathelement location="src/net/cscott/sdr/webapp/client/thunk"/>
+	  <pathelement location="war/WEB-INF/classes" /> <!-- for enhanced -->
+	  <path refid="classpath.path" />
+	  <path refid="gwt.path" />
+	</classpath>
+	<jvmarg value="-Xmx256M"/>
+	<arg value="-startupUrl"/>
+	<arg value="SDRweb.html"/>
+	<arg value="-war"/>
+	<arg value="war"/>
+	<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+	<!--
+	<arg value="-logdir"/><arg value="warlog"/>
+	<arg value="-logLevel"/><arg value="ALL"/>
+	-->
+	<arg value="net.cscott.sdr.webapp.SDRweb"/>
+      </java>
+    </target>
+
+    <target name="gae.update" depends="compile.gwt"
+	    description="Uploads the SDR web UI to App Engine.">
+      <appcfg action="update" war="war" />
+    </target>
+
     <!-- **************** java web start stuff ************* -->
 
     <!-- generate signing key; only needs to be done once -->
