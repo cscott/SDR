@@ -34,7 +34,7 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
     public ExactRotation negate() {
 	return (ExactRotation) super.negate();
     }
-    /** Normalize rotation to the range 0-1. */
+    /** Normalize rotation to the range [0, 1). */
     @Override
     public ExactRotation normalize() {
 	return (ExactRotation) super.normalize();

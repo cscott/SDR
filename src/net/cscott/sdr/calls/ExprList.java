@@ -5,15 +5,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.Point;
 
 /**
- * The {@link ExprList} contains {@link ExprFunc} defintions and the
+ * The {@link ExprList} contains {@link ExprFunc} definitions and the
  * basic machinery used to evaluate generic {@link Expr}s.
  */
-public abstract class ExprList {
+@RunWith(value=JDoctestRunner.class)
+public class ExprList {
+    private ExprList() { assert false; }
+
     /** Map of all the {@link ExprFunc}s defined here. */
     @SuppressWarnings("unchecked")
     private final static Map<String, ExprFunc> exprGenericFuncs =
@@ -385,11 +392,119 @@ public abstract class ExprList {
     static { exprStringFuncs.put(_FACING_PATTERN.getName(), _FACING_PATTERN); }
 
     /**
+     * Check whether dancers are facing "in" or "out" of the center of the
+     * formation.  Dancers facing south or west in the top-right quadrant
+     * (positive x and y) are facing "in", dancers facing north or east in
+     * the top quadrant are facing "out".  Where in/out direction can not be
+     * determined, this function uses an "x".
+     * @doc.test
+     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> SD = StandardDancer; undefined
+     *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _INOUT PATTERN)");
+     *  (Expr _INOUT PATTERN)
+     *  js> f=FormationList.PARALLEL_RH_WAVES ; f.toStringDiagram()
+     *  ^    v    ^    v
+     *
+     *  ^    v    ^    v
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
+     *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
+     *  oioiioio
+     *  js> f = FormationList.TRADE_BY; f.toStringDiagram()
+     *  ^    ^
+     *
+     *  v    v
+     *
+     *  ^    ^
+     *
+     *  v    v
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
+     *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
+     *  ooiiiioo
+     *  js> f = Formation.SQUARED_SET ; f.toStringDiagram()
+     *       3Gv  3Bv
+     *
+     *  4B>            2G<
+     *
+     *  4G>            2B<
+     *
+     *       1B^  1G^
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
+     *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
+     *  iiiiiiii
+     *  js> f = Formation.SQUARED_SET.rotate(ExactRotation.ONE_EIGHTH) ; f.toStringDiagram()
+     *       4BQ       3GL
+     *  
+     *  4GQ                 3BL
+     *  
+     *  
+     *  
+     *  1B7                 2G`
+     *  
+     *       1G7       2B`
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
+     *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
+     *  iiiiiiii
+     */
+    public static final ExprFunc<String> _INOUT_PATTERN =
+        new PatternFunc<Void>("_inout pattern") {
+        @Override
+        protected String dancerToString(TaggedFormation tf, Dancer d, Void v) {
+            return ""+inOut(tf.location(d));
+        }
+        private char inOut(Position p) {
+            if (!p.facing.isExact()) return 'x';
+            // normalize to positive quadrant
+            ExactRotation facing = (ExactRotation) p.facing;
+            Point location = new Point(p.x, p.y);
+            if (location.x.compareTo(Fraction.ZERO) < 0) {
+                location = new Point(location.x.negate(), location.y);
+                facing = facing.negate();
+            }
+            if (location.y.compareTo(Fraction.ZERO) < 0) {
+                location = new Point(location.x, location.y.negate());
+                // -(f+1/4)-1/4 = -f-1/2
+                facing = facing.negate().subtract(Fraction.ONE_HALF);
+            }
+            // okay, now we're in positive quadrant.  Here: s/w is 'in' and
+            // n/e is 'out'.  (We handle the axes specially.)
+            if (location.x.compareTo(Fraction.ZERO) == 0) {
+                if (location.y.compareTo(Fraction.ZERO) == 0)
+                    return 'x'; // origin doesn't have in/out
+                Fraction n = facing.minSweep(ExactRotation.NORTH).abs();
+                Fraction s = facing.minSweep(ExactRotation.SOUTH).abs();
+                if (n.compareTo(Fraction.ONE_QUARTER) <= 0)
+                    return 'o';
+                if (s.compareTo(Fraction.ONE_QUARTER) <= 0)
+                    return 'i';
+                return 'x';
+            }
+            if (location.y.compareTo(Fraction.ZERO) == 0) {
+                Fraction e = facing.minSweep(ExactRotation.EAST).abs();
+                Fraction w = facing.minSweep(ExactRotation.WEST).abs();
+                if (w.compareTo(Fraction.ONE_QUARTER) <= 0)
+                    return 'i';
+                if (e.compareTo(Fraction.ONE_QUARTER) <= 0)
+                    return 'o';
+                return 'x';
+            }
+            facing = facing.normalize();
+            assert facing.amount.compareTo(Fraction.ZERO) >= 0;
+            assert facing.amount.compareTo(Fraction.ONE) < 0;
+            if (facing.amount.compareTo(Fraction.ONE_QUARTER) <= 0)
+                return 'o';
+            if (facing.amount.compareTo(Fraction.ONE_HALF) >= 0 &&
+                facing.amount.compareTo(Fraction.THREE_QUARTERS) <= 0)
+                return 'i';
+            return 'x';
+        }
+    };
+    static { exprStringFuncs.put(_INOUT_PATTERN.getName(), _INOUT_PATTERN); }
+
+    /**
      * Check the order of the selected dancers within the given formation.
      * @doc.test
      *  js> FormationList = FormationListJS.initJS(this); undefined;
      *  js> SD = StandardDancer; undefined
-     *  js> // rotate the formation 1/2 just to get rid of the original tags
      *  js> f = FormationList.RH_OCEAN_WAVE; f.toStringDiagram()
      *  ^    v    ^    v
      *  js> // label those dancers

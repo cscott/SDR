@@ -1339,8 +1339,12 @@ def: trade by
   optional: LEFT
   in: 4
   from: CENTER HALF
-    condition: TRUE(), "Outside couples must face out" // XXX write me
-    call: _quasi concentric(pass thru, partner trade)
+    call: _quasi concentric(pass thru, _finish trade by)
+
+def: _finish trade by
+  condition: MATCH(_INOUT PATTERN(), "oooo"), \
+             "Outside couples must face out"
+  call: partner trade
 
 // callerlab #50: TOUCH 1/4
 def: touch
