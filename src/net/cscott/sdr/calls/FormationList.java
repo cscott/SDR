@@ -138,9 +138,12 @@ public abstract class FormationList extends FormationListFast {
              .replace(' ','_')
              .replace("1/4","QUARTER")
              .replace("3/4","THREE_QUARTER")
-             .replace("1x2", "_1X2")
-             .replace("1x4", "_1X4")
-             .replace("2x2", "_2X2");
+             .replace("1X2", "_1x2")
+             .replace("1X4", "_1x4")
+             .replace("2X2", "_2x2")
+             .replace("1_X2", "_1x2")
+             .replace("1_X4", "_1x4")
+             .replace("2_X2", "_2x2");
         try {
             return (NamedTaggedFormation)
                 FormationList.class.getField(s).get(null);
