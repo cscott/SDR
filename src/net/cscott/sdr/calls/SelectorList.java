@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Expr;
@@ -161,6 +162,41 @@ public class SelectorList {
         }
     };
     static { addToList(OR); }
+
+    /** Select dancers matched on a regex match against a dancer pattern.
+     *  @see ExprList#_FACING_PATTERN
+     *  @see ExprList#_ROLL_PATTERN
+     *  @see ExprList#_INOUT_PATTERN
+     */
+    public static ExprFunc<Selector> MATCH = new ExprFunc<Selector>() {
+        @Override
+        public String getName() { return "match"; }
+        @Override
+        public Selector evaluate(Class<? super Selector> type,
+                                 final DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            if (args.size()!=2)
+                throw new EvaluationException("needs two arguments");
+            final String dancers = args.get(0).evaluate(String.class, ds);
+            final Pattern pattern = Pattern.compile
+                (args.get(1).evaluate(String.class, ds),
+                 Pattern.CASE_INSENSITIVE);
+            return new Selector() {
+                @Override
+                public Set<Dancer> select(TaggedFormation tf) {
+                    Set<Dancer> result = new LinkedHashSet<Dancer>();
+                    List<Dancer> sortedDancers = tf.sortedDancers();
+                    for (int i=0; i<sortedDancers.size(); i++) {
+                        String d = dancers.substring(i, i+1);
+                        if (pattern.matcher(d).matches())
+                            result.add(sortedDancers.get(i));
+                    }
+                    return result;
+                }
+            };
+        }
+    };
+    static { addToList(MATCH); }
 
     /** Complex selector: do a formation match and select tagged dancers from
      *  the match -- but don't change the dance state.  Most useful for

@@ -1,0 +1,95 @@
+Test of partner swing.
+
+sdr> trade ; trade and roll
+|      3G>  3B<
+| 
+| 4Bv            2Gv
+| 
+| 4G^            2B^
+| 
+|      1B>  1G<
+sdr> swing
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> promenade home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> do half of a trade
+|           3G>
+| 
+|           3B<
+| 
+| 4G^  4Bv       2B^  2Gv
+| 
+|           1B>
+| 
+|           1G<
+sdr> right and left grand
+|      1G>  1B<
+| 
+| 2Bv            4Gv
+| 
+| 2G^            4B^
+| 
+|      3B>  3G<
+sdr> swing your partner
+|      1Gv  1Bv
+| 
+| 2B>            4G<
+| 
+| 2G>            4B<
+| 
+|      3B^  3G^
+sdr> promenade home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> heads lead right ; swing thru
+| 3G>  2G>
+| 
+| 3B<  2B<
+| 
+| 4B>  1B>
+| 
+| 4G<  1G<
+sdr> right and left grand
+|      1BL       4GQ
+| 
+| 1G7                 4B`
+| 
+| 
+| 
+| 2BQ                 3GL
+| 
+|      2G`       3B7
+sdr> partner swing
+|           4G<
+| 
+| 1Gv  1Bv  4B<
+| 
+|      2B>  3B^  3G^
+| 
+|      2G>
+sdr> promenade home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> /exit

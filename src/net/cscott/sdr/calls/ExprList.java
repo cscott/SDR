@@ -446,9 +446,17 @@ public class ExprList {
      *  iiiiiiii
      */
     public static final ExprFunc<String> _INOUT_PATTERN =
-        new PatternFunc<Void>("_inout pattern") {
+        new PatternFunc<Set<Dancer>>("_inout pattern") {
+        protected Set<Dancer> parseArgs(DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            Selector selector =
+                SelectorList.AND.evaluate(Selector.class, ds, args);
+            TaggedFormation tf = TaggedFormation.coerce(ds.currentFormation());
+            return selector.select(tf);
+        }
         @Override
-        protected String dancerToString(TaggedFormation tf, Dancer d, Void v) {
+        protected String dancerToString(TaggedFormation tf, Dancer d, Set<Dancer> who) {
+            if (!who.contains(d)) return "";
             return ""+inOut(tf.location(d));
         }
         private char inOut(Position p) {
