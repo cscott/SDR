@@ -327,6 +327,10 @@ def: _single promenade(n)
     condition: equal num(_fraction(_multiply num([n], 4)), 0)
     call: _fractional(_multiply num([n], 4), _single promenade 1/4)
   from: ANY
+    condition: greater(1/4, [n])
+    call: _fractional(_multiply num(2, _fraction(_multiply num([n], 4))), \
+                      _single promenade 1/8)
+  from: ANY
     call: _fractional(_floor(_multiply num([n], 4)), _single promenade 1/4)
     call: _fractional(_multiply num(2, _fraction(_multiply num([n], 4))), \
                       _single promenade 1/8)

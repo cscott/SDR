@@ -54,6 +54,10 @@ def: cast(n)
       condition: equal num(_fraction(_multiply num([n], 4)), 0)
       call: _fractional([n], _cast 4/4)
     from: ANY
+      condition: greater(1/4, [n])
+      call: _fractional(_multiply num(2, _fraction(_multiply num([n], 4))), \
+                        _cast 1/8)
+    from: ANY
       // cast off some number of 1/4s, plus an extra 1/8 (or portion) at the end
       // if needed
       call: _fractional(_divide num(_floor(_multiply num([n], 4)), 4), \
@@ -68,17 +72,18 @@ def: _cast 1/8
       call: _miniwave cast 1/8
     from: GENERAL LINE
       call: _with designated(END, _designated end cast 1/8)
+// 1/8 casts breathe better on a 1-unit grid, rather than a 2-unit grid
 def: _miniwave cast 1/8
   in: 1
   from: MINIWAVE
-    prim: 0, 1, in 1/8
+    prim: in 1/2, 1/2, in 1/8
 def: _beau cast 1/8
   in: 1
   from: COUPLE
     select: BEAU // pivot
       prim: 0, 0, left 1/8
     select: BELLE // pusher
-      prim: 0, 2, left 1/8
+      prim: -1, 1, left 1/8
 def: _designated end cast 1/8
   in: 1
   from: mixed(RH MINIWAVE, LH MINIWAVE, COUPLE)
