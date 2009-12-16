@@ -117,6 +117,30 @@ abstract class FormationListSlow {
         xofy("RH BOX", RH_MINIWAVE, TANDEM);
     public static final NamedTaggedFormation LH_BOX = // callerlab #11
         xofy("LH BOX", LH_MINIWAVE, TANDEM);
+    public static final NamedTaggedFormation RH_IN_PINWHEEL =
+	create("RH IN PINWHEEL",
+	       d(-1, +1, "e", BEAU, TRAILER),
+	       d(+1, +1, "s", BEAU, TRAILER),
+	       d(-1, -1, "n", BEAU, TRAILER),
+	       d(+1, -1, "w", BEAU, TRAILER));
+    public static final NamedTaggedFormation LH_IN_PINWHEEL =
+	create("LH IN PINWHEEL",
+	       d(-1, +1, "s", BELLE, TRAILER),
+	       d(+1, +1, "w", BELLE, TRAILER),
+	       d(-1, -1, "e", BELLE, TRAILER),
+	       d(+1, -1, "n", BELLE, TRAILER));
+    public static final NamedTaggedFormation RH_OUT_PINWHEEL =
+	create("RH OUT PINWHEEL",
+	       d(-1, +1, "n", BEAU, LEADER),
+	       d(+1, +1, "e", BEAU, LEADER),
+	       d(-1, -1, "w", BEAU, LEADER),
+	       d(+1, -1, "s", BEAU, LEADER));
+    public static final NamedTaggedFormation LH_OUT_PINWHEEL =
+	create("LH OUT PINWHEEL",
+	       d(-1, +1, "w", BELLE, LEADER),
+	       d(+1, +1, "n", BELLE, LEADER),
+	       d(-1, -1, "s", BELLE, LEADER),
+	       d(+1, -1, "e", BELLE, LEADER));
     public static final NamedTaggedFormation RH_SINGLE_QUARTER_ZEE =
         create("RH SINGLE 1/4 ZEE",
                 d(+1, 2, "s", BEAU, TRAILER),

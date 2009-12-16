@@ -276,6 +276,10 @@ def: _single promenade 1/4
       select: TRAILER
         prim: 1, 0, none, sashay-start sashay-finish force-roll-left
         prim: -2, 2, left
+  from: LH IN PINWHEEL
+    prim: 1, 1, none, force-roll-left
+  from: LH OUT PINWHEEL
+    prim: -1, 1, left
 
 // another 4-person promenade
 def: _single star promenade 1/8
