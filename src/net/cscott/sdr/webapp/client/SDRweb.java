@@ -556,6 +556,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         final double totalMillis = (end-start)*(60*1000/*one minute*/)/BPM;
         if (totalMillis < 100) {
             model.setPlaying(false);
+            model.setSliderPos(end);
             model.setHighlightedCall(model.getEngineResults().firstInvalidCall);
             return;
         }
