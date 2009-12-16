@@ -281,7 +281,7 @@ def: _swing more
     call: cast(1/4)
 
 def: _finish break out from swing
-  in: 2
+  in: 1
   from: RH MINIWAVE
     condition: not(or(are(ALL, BOY), are(ALL, GIRL))), "Same-sex swing"
     select: GIRL
@@ -337,16 +337,25 @@ def: _single promenade 1/4
       prim:  1, 2, none, force-roll-left
   from: LH SINGLE THREE QUARTER ZEE
     ipart:
+      call: _zee adjust to promenade, _single promenade 1/4
+  from: LH IN PINWHEEL, LH OUT PINWHEEL
+    ipart:
+      call: _pinwheel adjust to promenade, _single promenade 1/4
+
+// split out into a separate call to get the timing right (real quick)
+def: _zee adjust to promenade
+  from: LH SINGLE THREE QUARTER ZEE
+    in: 1
       select: LEADER
         prim: -1, 0, left, sashay-start
-        prim: -2, 2, left
       select: TRAILER
         prim: 1, 0, none, sashay-start sashay-finish force-roll-left
-        prim: -2, 2, left
-  from: LH IN PINWHEEL
-    prim: 1, 1, none, force-roll-left
-  from: LH OUT PINWHEEL
-    prim: -1, 1, left
+
+// split out into a separate call to get the timing right (real quick)
+def: _pinwheel adjust to promenade
+  from: LH IN PINWHEEL, LH OUT PINWHEEL
+    in: 1
+      prim: out 1, 1, none, sashay-start sashay-finish force-roll-left
 
 // another 4-person promenade
 def: _single star promenade 1/8
