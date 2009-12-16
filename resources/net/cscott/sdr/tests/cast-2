@@ -1,0 +1,28 @@
+Test "cast off n/8".
+
+sdr> heads lead right ; extend
+| 4B>  1B>
+| 
+| 3G<  2G<
+| 
+| 4G>  1G>
+| 
+| 3B<  2B<
+sdr> cast off 3/8
+| 3G7       2G7
+| 
+|      4BL       1BL
+| 
+| 3B7       2B7
+| 
+|      4GL       1GL
+sdr> side girls run
+| 3G7       1BL
+| 
+|      4BL       2GL
+| 
+| 4G7       2B7
+| 
+|      3B7       1GL
+sdr> /// XXX add 'extend' once we get 1/4 tag adjustments
+sdr> /exit
