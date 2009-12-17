@@ -1,9 +1,21 @@
 program: mainstream
 
-// callerlab #53: CLOVERLEAF
-// XXX DEFINE ME
+// callerlab #52: CLOVERLEAF
+// XXX: missing 4-person variant
+def: cloverleaf
+  in: 8
+  call: tandem(_single cloverleaf)
 
-// callerlab #54: TURN THRU
+def: _single cloverleaf
+  from: BACK TO BACK COUPLES // XXX suppress breathing
+    ipart:
+      prim: 0, 1, none    // 1,1,n -> 2,1,n "first step forward"
+      prim: out 1, 1, out // 2,1,n -> 3,2,e
+      prim: in 1, 1, in   // 3,2,e -> 2,3,s
+      prim: in 1, 1, in   // 2,3,s -> 1,2,w
+      prim: 0, 1, none    // 1,2,w -> 1,1,w
+
+// callerlab #53: TURN THRU
 
 def: turn thru
   optional: LEFT
@@ -13,10 +25,30 @@ def: turn thru
   from: ANY
     call: _mixed touch, turn thru
 
-// callerlab #55: EIGHT CHAIN THRU
-// XXX DEFINE ME
+// callerlab #54: EIGHT CHAIN THRU / EIGHT CHAIN 1, 2, 3
+def: eight chain thru
+  call: eight chain(8)
 
-// callerlab #56: PASS TO THE CENTER
+def: eight chain(n)
+  spoken: eight chain <n=number>
+  in: _multiply num([n], 20/8)
+  call: _fractional(_divide num([n], 2), _eight chain 2)
+
+def: _eight chain 2
+  call: _eight chain odd, _eight chain even
+
+def: _eight chain odd
+  // XXX removed ends in, because it interferes with fractionalization
+  //ends in: formation(TRADE BY), "Can't Eight Chain from here"
+  condition: EQUAL NUM(NUM DANCERS(), 8)
+  call: right pull by
+
+def: _eight chain even
+  in: 3
+  from: TRADE BY
+    call: _quasi concentric(_in(3, left pull by), _in(3, courtesy turn(1/2)))
+
+// callerlab #55: PASS TO THE CENTER
 def: pass to the center
   optional: LEFT
   call: pass thru
@@ -32,15 +64,43 @@ def: _finish pass to the center
     select: OTHERS
       call: trade
 
-// callerlab #57: SPIN THE TOP
-def: spin the top
+// callerlab #56: SINGLE HINGE / COUPLES HINGE
+
+def: _hinge
   optional: LEFT
-  in: 8 // from wave
-  call: _wave swing, fan the top
+  in: 2
+  call: 1/2(trade)
+def: hinge
+  from: mixed(RH MINIWAVE, LH MINIWAVE)
+    call: _hinge
+  from: mixed(RH MINIWAVE, LH MINIWAVE, COUPLE)
+    condition: PROGRAM AT LEAST(A1), "Partner hinge not allowed below A1"
+    call: _hinge
 
-// callerlab #58: CENTERS IN
+def: couples hinge
+  in: 3
+  call: as couples(_hinge)
 
-// callerlab #59: CAST OFF THREE QUARTERS
+def: couples left hinge
+  call: left(couples hinge)
+
+// callerlab #57: CENTERS IN
+def: centers in
+  spoken: (put)? centers in
+  in: 2
+  call: _with designated(MATCH(_INOUT PATTERN(), "o"), _designees in)
+
+def: _designees in
+  in: 2
+  from: 2x2
+    condition: equal num(2, NUM DANCERS(and(DESIGNATED, TRAILER))), \
+               "The centers must be a couple"
+    select: and(DESIGNATED, TRAILER)
+      prim: 0, 2, none
+    select: OTHERS
+      prim: out 2, 0, none, sashay-start sashay-finish
+
+// callerlab #58: CAST OFF THREE QUARTERS
 
 // cast 3/4 is mainstream -- what level is "cast 1/4"
 // and/or "cast 1/2"?  We'll follow SD in calling these
@@ -134,6 +194,12 @@ def: _designated end cast 4/4
       condition: ARE(DESIGNATED, BELLE)
       call: mirror(_beau cast 4/4)
 
+// callerlab #59: SPIN THE TOP
+def: spin the top
+  optional: LEFT
+  in: 8 // from wave
+  call: _wave swing, fan the top
+
 // callerlab #60: WALK AND DODGE
 def: walk and dodge
   in: 4
@@ -161,7 +227,6 @@ def: walk others dodge(sel)
 // pretend that slide thru has two parts.
 def: slide thru
   in: 4
-  from: FACING DANCERS
   part:
     call: pass thru
   part:
@@ -211,6 +276,7 @@ def: _designees cross fold
       prim: 0,0,none
 
 // callerlab #63: DIXIE STYLE TO AN OCEAN WAVE
+// XXX: or facing tandems
 def: dixie style
   spoken: dixie style (to a wave)?
   in: 6
@@ -260,7 +326,7 @@ def: _tag the line(n)
   condition: GREATER(1, [n])
   call: _tag(_atc tag, [n])
 
-// callerlab #66: HALF TAG THE LINE
+// callerlab #66: HALF TAG
 
 def: half tag
   optional: LEFT
@@ -287,29 +353,9 @@ def: scoot back
   from: SINGLE QUARTER TAG, QUARTER TAG
     call: _extend, trade, _extend
 
-// callerlab #68: HINGE FAMILY
+// callerlab #68: RECYCLE
 
-def: _hinge
-  optional: LEFT
-  in: 2
-  call: 1/2(trade)
-def: hinge
-  from: MINIWAVE
-    call: _hinge
-  from: COUPLE
-    condition: PROGRAM AT LEAST(A1), "Partner hinge not allowed below A1"
-    call: _hinge
-
-def: couples hinge
-  in: 3
-  call: as couples(_hinge)
-
-def: couples left hinge
-  call: left(couples hinge)
-
-// callerlab #69: RECYCLE
-
-def: _REAL recycle // xxx
+def: _wave recycle REAL DEFINITION // xxx
   in: 4
   ipart:
     call: fold(CENTER), breathe
@@ -317,7 +363,8 @@ def: _REAL recycle // xxx
     call: counter rotate 1/4
   ipart:
     call: roll
-def: recycle // xxx cheat definition, for the present
+
+def: _wave recycle // xxx cheat definition, for the present
   in: 4
   ipart: // this definition isn't valid for fractionalization
     call: hinge, _box circulate, _recycle face in
@@ -325,5 +372,12 @@ def: _recycle face in
   in: 2
   from: 2x2
    prim: 0, 0, in, preserve-sweep
+
+def: recycle
+  from: ANY
+    call: _wave recycle
+  from: ANY
+    condition: PROGRAM AT LEAST(A2), "Box recycle not allowed below A2"
+    call: box recycle
 
 ////////// end of mainstream list //////////////

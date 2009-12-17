@@ -1253,6 +1253,8 @@ to do:
             call: partner swing 1/8 (or 1/4)
           select: OTHERS
             call: nothing
+ fff) Interaction of "ends in:" and "_fractional" -- suppress? don't
+      allow fractionalization?
 -------
 heads x:
   from squared_set:
