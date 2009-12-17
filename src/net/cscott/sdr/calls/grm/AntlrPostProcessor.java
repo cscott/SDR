@@ -27,7 +27,7 @@ public class AntlrPostProcessor {
         // ok, look for the big initializers
         String nContents = p.matcher(contents).replaceAll(replacement);
         if (!contents.equals(nContents)) {
-            System.err.println("Writing: "+f);
+            System.err.println("Rewriting: "+f.getName());
             Writer fw = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
             fw.write(nContents);
             fw.close();
@@ -35,7 +35,7 @@ public class AntlrPostProcessor {
     }
     private static Pattern p = Pattern.compile
         ("^(\\s*?)static final String\\[\\] (DFA[0-9]+_transitionS) = \\{(.*?)\\};$",
-	 Pattern.MULTILINE | Pattern.DOTALL);
+         Pattern.MULTILINE | Pattern.DOTALL);
     private static String replacement =
         "$1private static class $2Class {\n"+
         "$1    static final String[] value = {$3};\n" +
