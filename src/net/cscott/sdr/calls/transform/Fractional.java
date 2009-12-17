@@ -46,15 +46,15 @@ import org.junit.runner.RunWith;
  *  js> call = net.cscott.sdr.calls.CallDB.INSTANCE.lookup(callname)
  *  dosado[basic]
  *  js> comp = call.getEvaluator(null, java.util.Arrays.asList()).simpleExpansion()
- *  (In '6 (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH) (Prim 1, -1, none, 1, SASHAY_START) (Prim -1, -1, none, 1, SASHAY_FINISH)))))
+ *  (In '6 (Opt (From 'RH MINIWAVE (Seq (Part 'INDIVISIBLE '1 (Seq (Apply '_finish dosado))))) (From 'ANY (Seq (Part 'INDIVISIBLE '1 (Seq (Apply '_mixed touch))) (Part 'DIVISIBLE '3 (Seq (Apply '_finish dosado)))))))
  *  js> comp.accept(new Fractional(ds), Fraction.ONE_QUARTER)
- *  (In (Expr _multiply num '1/4 '6) (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START)))))
+ *  (In (Expr _multiply num '1/4 '6) (Opt (From 'ANY (Seq (Part 'INDIVISIBLE '1 (Seq (Apply '_mixed touch)))))))
  *  js> try {
  *    >   comp.accept(new Fractional(ds), Fraction.ONE_THIRD)
  *    > } catch (e) {
  *    >   print(e.javaException)
  *    > }
- *  net.cscott.sdr.calls.BadCallException: No formation options left: Primitives cannot be subdivided
+ *  net.cscott.sdr.calls.BadCallException: No formation options left: No formation options left: Primitives cannot be subdivided
  */
 @RunWith(value=JDoctestRunner.class)
 public class Fractional extends TransformVisitor<Fraction> {

@@ -40,7 +40,7 @@ sdr> heads lead right
 | 2B>  3G<  1B>  4G<
 | 
 | 2G>  3B<  1G>  4B<
-sdr> reverse flutter wheel
+sdr> reverse flutterwheel
 | 2B>  2G<  1B>  1G<
 | 
 | 3G>  3B<  4G>  4B<

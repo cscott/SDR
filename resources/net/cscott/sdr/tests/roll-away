@@ -32,7 +32,7 @@ sdr> roll away
 | 4G>  1G>
 | 
 | 3B>  2B>
-sdr> do half of a girls roll away the boys
+sdr> do half of a girls roll the boys away
 | 4B>  3G<  1B>  2G<
 | 
 | 4G>  3B<  1G>  2B<
@@ -56,7 +56,7 @@ sdr> girls run
 | 3B<  2B<
 | 
 | 3G<  2G<
-sdr> ends roll away the centers
+sdr> ends roll the centers away
 | 4B>  1B>
 | 
 | 4G>  1G>
@@ -64,7 +64,7 @@ sdr> ends roll away the centers
 | 3G<  2G<
 | 
 | 3B<  2B<
-sdr> centers reverse roll away the ends
+sdr> centers reverse roll the ends away
 | 4G>  1G>
 | 
 | 4B>  1B>
@@ -72,6 +72,6 @@ sdr> centers reverse roll away the ends
 | 3B<  2B<
 | 
 | 3G<  2G<
-sdr> boys roll away the girls
+sdr> boys roll the girls away
 * Invalid formation (COUPLE (Those doing the rolling must be beaus), TWO-FACED LINE (Those doing the rolling must be beaus))
 sdr> /exit

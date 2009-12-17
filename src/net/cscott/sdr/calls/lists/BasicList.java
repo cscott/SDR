@@ -276,7 +276,7 @@ public abstract class BasicList {
      *  js> a = new Expr("_fractional", Expr.literal("1 1/2"), a1)
      *  (Expr _fractional '1 1/2 'dosado)
      *  js> BasicList._FRACTIONAL.getEvaluator(ds, a.args).simpleExpansion()
-     *  (Seq (Part 'INDETERMINATE '1 (Seq (Apply 'dosado) (Part 'DIVISIBLE '1 (In (Expr _multiply num '1/2 '6) (Opt (From 'FACING DANCERS (Seq (Prim -1, 1, none, 1, SASHAY_START) (Prim 1, 1, none, 1, SASHAY_FINISH)))))))))
+     *  (Seq (Part 'INDETERMINATE '1 (Seq (Apply 'dosado) (Part 'DIVISIBLE '1 (In (Expr _multiply num '1/2 '6) (Opt (From 'ANY (Seq (Part 'INDIVISIBLE '1 (Seq (Apply '_mixed touch))) (Part 'DIVISIBLE '3 (In (Expr _multiply num '1/3 '6) (Opt (From 'RH MINIWAVE (Seq (Prim 1, 1, none, 1, SASHAY_FINISH))))))))))))))
      */
     public static final Call _FRACTIONAL = new BasicCall("_fractional") {
         @Override

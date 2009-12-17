@@ -83,6 +83,9 @@ def: _anyone while others static square(sel, c1, c2)
     call: heads start
     call: anyone while others([sel], reverse(_outsides promenade half way), [c2])
   // special case 'heads square thru...' from static square
+  // XXX: "Dancers should return to Squared Set spots for Head Ladies Chain,
+  //       Heads Right and Left Thru, Heads Pass Thru, or Heads Square Thru 3."
+  //       ...or Heads Dosado
   from: STATIC SQUARE
     condition: EQUAL CALL([sel], HEAD)
     call: heads start, anyone while others([sel],[c1],[c2])
@@ -116,13 +119,24 @@ def: sides start
   select: OTHERS
    prim: 0, 0, none // stay where they are
 
-// callerlab #2: CIRCLE FAMILY
+// callerlab #1: CIRCLE LEFT / CIRCLE RIGHT
 def: circle left(n)
-  spoken: circle left <n=fraction>
+  spoken: circle (to the)? left <n=fraction> way?
   call: _fractional(_multiply num([n],4), _circle left 1/4)
 def: circle right(n)
-  spoken: circle right <n=fraction>
+  spoken: circle (to the)? right <n=fraction> way?
   call: mirror(circle left([n]))
+
+def: circle four(n)
+  spoken: circle four <n=fraction> way?
+  from: FACING COUPLES
+    call: _fractional(_multiply num([n],4), _circle left 1/4)
+
+def: circle two(n)
+  // "single circle" wording is "improper"
+  spoken: single circle <n=fraction>
+  from: FACING DANCERS
+    call: _fractional(_multiply num([n],4), _circle left 1/4)
 
 def: _circle left 1/4
  from: STATIC SQUARE
@@ -145,8 +159,9 @@ def: _circle left 1/4
    in: 2 // not well specified
      prim: -1,1,right,sashay-start sashay-finish
 
-// callerlab #3: FORWARD AND BACK
+// callerlab #2: FORWARD AND BACK
 def: forward and back
+  spoken: (forward and back) | (up to the middle and back)
   in: 8
   from: FACING COUPLES, STATIC SQUARE // XXX: SUPPRESS BREATHING
     call: _forward 1, _pause, _back 1, _pause
@@ -160,26 +175,32 @@ def: _pause
   in: 1
   prim: 0, 0, none
 
-// callerlab #4: DOSADO (see BMS addendum)
-def: dosado
-  optional: LEFT
+// callerlab #3: DOSADO / DOSADO TO A WAVE
+def: _finish dosado
   in: 6
-  from: FACING DANCERS
-    prim: -1, 1,none,sashay-start
+  from: RH MINIWAVE
     prim:  1, 1,none,sashay-finish
     prim:  1,-1,none,sashay-start
     prim: -1,-1,none,sashay-finish
-
-/*
-def: dosado to a wave
+def: dosado
+  optional: LEFT
   in: 6
-  part:
-    call: 3/4 (dosado)
-*/ // ambiguous =(
+  from: RH MINIWAVE
+    ipart: // how many parts does dosado have, if from miniwave?
+      call: _finish dosado
+  from: ANY
+    ipart:
+      call: _mixed touch
+    part: 3
+      call: _finish dosado
+
 // XXX add <anything> to a wave production here, and enforce that
 //     <anything> is dosado below the true level of 'to a wave'
+def: dosado to a wave
+  in: 6
+    call: dosado, step to a wave
 
-// callerlab #5: SWING
+// callerlab #4: SWING
 
 // ambiguity with A2 swing, we'll try to tell by program
 // level and starting formation which is meant.
@@ -290,7 +311,7 @@ def: _finish break out from swing
     select: BOY
       prim: 0, 0, none
 
-// callerlab #6: PROMENADE FAMILY
+// callerlab #5: PROMENADE FAMILY
 
 // this is the four-person call.
 def: _single promenade 1/8
@@ -565,20 +586,36 @@ def: reverse promenade inside(sel)
   spoken: four <sel=genders> reverse promenade inside
   call: mirror(promenade inside([sel]))
 
-// callerlab #7: ALLEMANDE FAMILY
+// callerlab #6: ALLEMANDE FAMILY
 // XXX in circle choreo, boys prefer turning to the left, girls to the right
-// XXX DEFINE ME
+//     (callerlab case 2)
+def: allemande left
+  spoken: (allemande left)|(left allemande)
+  in: 4 // half
+  ipart:
+    from: LH MINIWAVE
+      call: _miniwave trade, step thru
+    from: ANY
+      call: mirror(_turn and touch), _miniwave trade, step thru
 
-// callerlab #8: ARM TURNS
-def: _right arm turn 1/2
-  in: 4
+// callerlab #7: ARM TURNS
+
+def: arm turn(n)
+  spoken: arm turn <n=fraction>
+  from: MINIWAVE
+    call: _in(_multiply num([n],4), cast([n]))
+
+def: left arm turn(n)
+  spoken: left arm turn <n=fraction>
+  from: LH MINIWAVE
+    call: arm turn([n])
+
+def: right arm turn(n)
+  spoken: right arm turn <n=fraction>
   from: RH MINIWAVE
-  call: trade // modulo hand hold
+    call: arm turn([n])
 
-def: _left arm turn 1/2
-  call: left(_right arm turn 1/2)
-
-// callerlab #9: RIGHT AND LEFT GRAND FAMILY
+// callerlab #8: RIGHT AND LEFT GRAND FAMILY
 def: _start right and left grand
   in: 4
   ends in: formation(RIGHT AND LEFT GRAND)
@@ -676,10 +713,10 @@ def: weave the ring
 def: left and right grand
   call: mirror(wrong way grand)
 
-// callerlab #10: STAR FAMILY
+// callerlab #9: LEFT-HAND STAR / RIGHT-HAND STAR
 // XXX DEFINE ME
 
-// callerlab #11: PASS THRU
+// callerlab #10: PASS THRU
 def: pass thru
   optional: LEFT
   in: 2
@@ -704,10 +741,7 @@ def: left pull by
   call: left(pull by)
 
 
-// callerlab #12: SPLIT THE OUTSIDE COUPLE/SPLIT TWO (see BMS addendum)
-// XXX DEFINE ME
-
-// callerlab #13: HALF SASHAY FAMILY
+// callerlab #11: HALF SASHAY FAMILY
 def: half sashay
   optional: REVERSE
   in: 4
@@ -731,19 +765,20 @@ def: _roll away(sel1,sel2)
   // Not reversable: the call would be "boys reverse roll away", not
   //                 "reverse boys roll away"
   // (also "reversable" messes with the precedence level)
-  spoken: <sel1=anyone> roll away the <sel2=anyone>
+  spoken: <sel1=anyone> roll (the|that) <sel2=anyone> away
   from: COUPLE, TWO-FACED LINE /* allows "ends roll away the centers" */
     condition: ARE([sel1],BEAU), [1] "Those doing the rolling must be beaus"
     condition: ARE([sel2],BELLE), [1] "Those rolling away must be belles"
     call: roll away // ignore the selectors
 
 def: _reverse roll away(sel1,sel2)
-  spoken: <sel1=anyone> reverse roll away the <sel2=anyone>
+  spoken: <sel1=anyone> reverse roll (the|that) <sel2=anyone> away
   from: COUPLE, TWO-FACED LINE /* allows "centers reverse roll away the ends" */
     condition: ARE([sel1],BELLE), [1] "Those doing the rolling must be belles"
     condition: ARE([sel2],BEAU), [1] "Those rolling away must be beaus"
     call: reverse(roll away) // ignore the selectors
 
+// XXX _circle choreo
 def: roll away
   optional: REVERSE
   in: 4
@@ -781,7 +816,7 @@ def: roll away
 
 // XXX DEFINE ME ladies in, men sashay
 
-// callerlab #14: TURN BACK FAMILY
+// callerlab #12: TURN BACK FAMILY
 
 // XXX: from a single quarter tag, currently no one can roll
 //      what should happen is that the miniwave rolls toward the
@@ -807,10 +842,14 @@ def: u turn back
 
 // XXX DEFINE ME: "gents or ladies backtrack"
 
-// callerlab #15: SEPARATE (see BMS addendum)
+// callerlab #13: SEPARATE (see BMS addendum)
+// XXX DEFINE ME: around 1 or 2 to a line
+// XXX DEFINE ME: around 1 or 2 and come into the middle
+
+// callerlab #14: SPLIT TWO (see BMS addendum)
 // XXX DEFINE ME
 
-// callerlab #16: COURTESY TURN
+// callerlab #15: COURTESY TURN
 // XXX definition says that 'courtesy turn' without a fraction means
 //    "turn to the center of the formation in which it is working"
 //    use a pattern predicate for in/out?
@@ -834,7 +873,7 @@ def: _courtesy turn 4/4
   in: 8
   call: 2(wheel around) // modulo hand hold
 
-// callerlab #17: LADIES CHAIN FAMILY
+// callerlab #16: LADIES CHAIN FAMILY
 def: two ladies chain(sel)
   spoken: two <sel=genders> chain // 'two ladies chain'
   in: 8
@@ -871,15 +910,23 @@ def: _finish belles chain
 def: chain down the line
   in: 8
   from: RH TWO-FACED LINE
-    call: _centers(_right arm turn 1/2), courtesy turn(3/4)
+    call: _centers(right arm turn(1/2)), courtesy turn(3/4)
   from: LH OCEAN WAVE
-    call: _quasi concentric(_right arm turn 1/2, u turn back)
+    call: _quasi concentric(right arm turn(1/2), u turn back)
     call: courtesy turn(3/4)
 
-// callerlab #18: DO PASO
-// XXX DEFINE ME
+// callerlab #17: DO PASO
+// XXX: how do we do the 'no courtesy turn' version in the text ui?
+//      in the game UI, we'd have a special 'call waiting' predicate.
+// XXX: WRITE ME
+def: _do paso(last=courtesy turn)
+  // SS from start to finish of courtesy turn 16 to next call 12
+  call: _do paso face and left touch
+  call: left(turn thru)
+  call: mirror(left allemande)
+  call: [last]
 
-// callerlab #19: LEAD RIGHT
+// callerlab #18: LEAD RIGHT
 def: lead right
   in: 4
   call: as couples(_single lead right)
@@ -892,16 +939,116 @@ def: _single lead right
     prim:    1,  0, right 1/8
     prim: -1/2,1/2, right 1/8
 
-// callerlab #20: RIGHT AND LEFT THRU
+// callerlab #19: VEER LEFT / VEER RIGHT
+// XXX: callerlab definition permits this from facing dancers?!
+def: veer left
+  in: 2
+  call: as couples(_single veer left)
+
+def: veer right
+  call: mirror(veer left)
+
+def: _single veer left
+  from: FACING DANCERS, LH MINIWAVE
+  call: _extend
+
+// callerlab #20: BEND THE LINE
+def: bend the line
+  in: 4
+  call: as couples(_single bend)
+
+def: _single bend
+  from: COUPLE, MINIWAVE
+    prim: 0, 0, in
+
+def: bend the big line
+  in: 6
+  call: as couples(bend the line)
+
+/// XXX "lines of 6, bend the line"
+
+// callerlab #21: CIRCULATE FAMILY
+
+// XXX from t-boned columns, the #3 dancer split circs instead of column cir.
+//     definition should be FROM: 2x4
+def: circulate // all-8
+  spoken: (all eight)? circulate
+  in: 4
+  from: ANY
+    condition: equal num(NUM DANCERS(), 8)
+    from: PARALLEL GENERAL LINES
+      call: concentric(_box circulate)
+    from: GENERAL COLUMNS
+      call: column circulate
+  from: ANY
+    condition: equal num(NUM DANCERS(), 4)
+    from: 2x2
+      call: _box circulate
+
+def: column circulate
+  from: GENERAL COLUMNS
+    select: NUMBER 1
+      call: _lead circ
+    select: OTHERS
+      call: _trail circ
+def: single file circulate
+  call: column circulate
+
+def: _lead circ // leaders part of a box/column circulate
+  prim: in 1, 1, in
+  prim: in 1, 1, in
+def: _trail circ // trailers part of a box/column circulate
+  prim: 0,1,none
+  prim: 0,1,none
+
+def: split circulate
+  from: PARALLEL GENERAL LINES, GENERAL COLUMNS, ANY
+    call: _box circulate // on each side.
+
+def: box circulate
+  condition: equal num(NUM DANCERS(), 4), \
+    "Perhaps you mean to say CENTERS box circulate?"
+  call: _box circulate
+
+def: _box circulate
+  // for internal use: this is the 2x2 version of circulate
+  in: 4 // not official
+  from: 2x2
+    select: LEADER
+      call: _lead circ
+    select: TRAILER
+      call: _trail circ
+
+def: couples circulate
+  call: as couples(circulate)
+
+// callerlab #22: RIGHT AND LEFT THRU
 def: right and left thru
   in: 6
-  from: FACING COUPLES
-  call: right pull by, courtesy turn(1/2)
+  call: right pull by, _finish right and left thru(1/2)
+
+def: _finish right and left thru(n=1/2)
+  from: BACK TO BACK COUPLES
+    call: courtesy turn([n])
+
+def: right and left thru and a quarter more
+  in: 8
+  call:  right pull by, _finish right and left thru(3/4)
+
+def: right and left thru full turn
+  spoken: right and left thru full turn (around)?
+  in: 10
+  call:  right pull by, _finish right and left thru(4/4)
 
 def: left and right thru
   call: left(right and left thru)
+def: left and right thru and a quarter more
+  call: left(right and left thru and a quarter more)
+def: left and right thru full turn
+  spoken: left and right thru full turn (around)?
+  call: left(right and left thru full turn)
 
-// callerlab #21: GRAND SQUARE
+// callerlab #23: GRAND SQUARE
 def: grand square
   from: STATIC SQUARE
     condition: FALSE(), "Who should face in?"
@@ -955,35 +1102,26 @@ def: face grand square(sel, n=32)
     call: _fractional(_multiply num([n],1/32), \
           _grand square(_grand square face([sel]), _grand square face([sel])))
 
-// callerlab #22: STAR THRU
+// callerlab #24: STAR THRU
 def: star thru
   in: 4
   from: FACING DANCERS
     condition: not(or(ALL(BOY), ALL(GIRL))), "Same sex star thru!"
     call: slide thru // modulo styling
 
-// callerlab #23: CIRCLE TO A LINE
+// callerlab #25: CIRCLE TO A LINE
 // XXX DEFINE ME
 
-// callerlab #24: BEND THE LINE
-def: bend the line
-  in: 4
-  call: as couples(_single bend)
-
-def: _single bend
-  from: COUPLE, MINIWAVE
-    prim: 0, 0, in
-
-// callerlab #25: ALL AROUND THE CORNER
+// callerlab #26: WALK AROUND THE CORNER
 // XXX DEFINE ME
 
-// callerlab #26: SEE SAW
+// callerlab #27: SEE SAW
 def: see saw
   spoken: see saw (your own)?
   in: 8
   call: mirror(all around the corner)
 
-// callerlab #27: SQUARE THRU FAMILY
+// callerlab #28: SQUARE THRU FAMILY
 
 // timing of square thru is "2 beats per hand"
 def: square thru(n)
@@ -1018,7 +1156,7 @@ def: _full_square_thru
   spoken: square thru
   call: square thru(4)
 
-// callerlab #28: CALIFORNIA TWIRL
+// callerlab #29: CALIFORNIA TWIRL
 def: california twirl
   in: 4
   from: COUPLE
@@ -1026,7 +1164,7 @@ def: california twirl
     condition: ARE(BELLE, GIRL), "Girls must be belles"
     call: partner trade // apart from styling, that is.
 
-// callerlab #29: DIVE THRU
+// callerlab #30: DIVE THRU
 // XXX: callerlab says, "the couple whose back is to the center of the square
 //      (unless a specific couple is directed) makes an arch..."
 //      Are there other formations this can be done from?  Should we support
@@ -1037,7 +1175,7 @@ def: dive thru
     // (how can we express the overlap?)
     call: _in(2, pass thru), _in(4, _ends(california twirl))
 
-// callerlab #30: WHEEL AROUND
+// callerlab #31: WHEEL AROUND
 def: wheel around
   optional: REVERSE
   in: 4
@@ -1050,30 +1188,91 @@ def: _quarter wheel
     select: BELLE
       prim: -1, 1, left
 
-// callerlab #31: THAR FAMILY (see BMS addendum)
+// callerlab #32: THAR FAMILY
 // XXX DEFINE ME
 
-// callerlab #32: SHOOT THE STAR
+// callerlab #33: SHOOT THE STAR
 // XXX DEFINE ME
 
-// callerlab #33: SLIP THE CLUTCH
+// callerlab #34: SLIP THE CLUTCH
 // XXX DEFINE ME
 
-// callerlab #34: BOX THE GNAT
+// callerlab #35: BOX THE GNAT
 def: box the gnat
   in: 4
-  from: RH MINIWAVE
-    condition: not(or(ALL(BOY), ALL(GIRL))), "Same sex boxing!"
-    select: BOY
-      prim: in 1,1,right
-      prim: 0,0,right
-    select: GIRL
-      prim: in 1,1,left,sashay-finish
-      prim: 0,0,left
-  from: ANY
-    call: _mixed touch, box the gnat
+  ipart:
+    from: RH MINIWAVE
+      condition: not(or(ALL(BOY), ALL(GIRL))), "Same sex boxing!"
+      select: BOY
+        prim: in 1,1,right
+        prim: 0,0,right
+      select: GIRL
+        prim: in 1,1,left,sashay-finish
+        prim: 0,0,left
+    from: ANY
+      call: _mixed touch, box the gnat
 
-// callerlab #35: OCEAN WAVE FAMILY (see BMS addendum)
+// callerlab #36: TRADE FAMILY
+
+def: trade down the line(sel)
+  spoken: <sel=anyone> trade down the line
+  in: 4
+  from: 1x4
+    condition: AND(MATCH(_SELECTION PATTERN([sel]), "_x_x|x_x_"), \
+                   NOT(TBONED([sel])))
+    select: [sel]
+      prim: in 2, 2, in
+      prim: in 2, 2, in
+    select: OTHERS
+      prim: 0, 0, none
+      prim: 0, 0, none
+  from: 1x4
+    condition: AND(MATCH(_SELECTION PATTERN([sel]), x__x), NOT(TBONED([sel])))
+    select: [sel]
+      prim: in 3, 3, in
+      prim: in 3, 3, in
+    select: OTHERS
+      prim: 0, 0, none
+      prim: 0, 0, none
+  // XXX: these cases are really "trade" not "trade down the line"
+  // but this solves some problems while 'do your part' isn't implemented
+  from: 1x4
+    condition: AND(MATCH(_SELECTION PATTERN([sel]), "xx__|__xx"), \
+                   NOT(TBONED([sel])))
+    from: 1x2
+     select: [sel]
+      call: trade
+     select: OTHERS
+      call: nothing
+  from: 1x4
+    condition: AND(MATCH(_SELECTION PATTERN([sel]), "_xx_"), \
+                   NOT(TBONED([sel])))
+    call: _centers(trade)
+
+def: trade
+  from: mixed(COUPLE, RH_MINIWAVE, LH_MINIWAVE)
+    from: COUPLE
+      call: partner trade
+    from: MINIWAVE
+      call: _miniwave trade
+
+def: couples trade
+  in: 6
+  call: as couples(trade)
+
+def: _miniwave trade
+  from: MINIWAVE
+    in: 4
+    prim: in 1,1,in
+    prim: in 1,1,in
+
+def: partner trade
+  from: COUPLE
+    in: 4
+    prim: in 1,1,in
+    prim: in 1,1,in
+
+// callerlab #37: OCEAN WAVE FAMILY (see BMS addendum)
 
 def: step to a wave
   in: 2 // not official
@@ -1090,52 +1289,8 @@ def: balance
   prim: 0, 1/2, none
   prim: 0,-1/2, none // modulo styling -- and breathing?
 
-// callerlab #36: ALAMO RING FORMATION (see BMS addendum)
+// callerlab #38: ALAMO STYLE
 // XXX DEFINE ME
-
-// callerlab #37: PASS THE OCEAN
-def: pass the ocean
-  in: 4
-  call: pass thru, quarter in, _extend
-
-// callerlab #38: EXTEND
-def: extend
-  optional: LEFT
-    // at basic/mainstream, extend is from 1/4 tag only
-    from: QUARTER TAG
-      call: _extend
-    from: ANY
-      condition: PROGRAM AT LEAST(PLUS), "Not allowed below Plus"
-      call: _extend
-
-def: _extend // the general case
-  in: 2
-  from: SINGLE DOUBLE PASS THRU
-    select: LEADER
-      prim: -1,1, none
-    select: TRAILER
-      prim: 0,1, none
-  from: LH BOX, LH MINIWAVE, LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG
-    call: mirror(_extend)
-  from: RH BOX
-    select: LEADER
-      prim: 1,1, none
-    select: TRAILER
-      prim: 0,1, none
-  from: RH MINIWAVE
-    prim: 1,1, none
-  from: FACING DANCERS
-    prim: -1,1,none
-  from: RH SINGLE QUARTER TAG
-    select: CENTER
-      prim: 0, 1, none
-    select: END
-      prim: -1, 1, none
-  from: RH SINGLE THREE QUARTER TAG
-    select: CENTER
-      prim: 1, 1, none
-    select: END
-      prim: 0, 1, none
 
 // callerlab #39: SWING THRU FAMILY
 
@@ -1144,10 +1299,10 @@ def: swing thru
   in: 6
   // XXX DEFINE ME: also from alamo ring
   from: RH OCEAN WAVE
-    call: _right arm turn 1/2
-    call: anyone while others(CENTER,_left arm turn 1/2,_nothing preserve roll)
+    call: right arm turn(1/2)
+    call: anyone while others(CENTER,left arm turn(1/2),_nothing preserve roll)
   from: LH OCEAN WAVE
-    call: _centers(_right arm turn 1/2), _left arm turn 1/2
+    call: _centers(right arm turn(1/2)), left arm turn(1/2)
   from: ANY
     call: _mixed touch, swing thru
 
@@ -1218,85 +1373,71 @@ def: _designees cross run
     select: OTHERS
       call: _designees run
 
-// callerlab #41: TRADE FAMILY
-
-def: trade down the line(sel)
-  spoken: <sel=anyone> trade down the line
+// callerlab #41: PASS THE OCEAN
+def: pass the ocean
   in: 4
-  from: 1x4
-    condition: AND(MATCH(_SELECTION PATTERN([sel]), "_x_x|x_x_"), \
-                   NOT(TBONED([sel])))
-    select: [sel]
-      prim: in 2, 2, in
-      prim: in 2, 2, in
-    select: OTHERS
-      prim: 0, 0, none
-      prim: 0, 0, none
-  from: 1x4
-    condition: AND(MATCH(_SELECTION PATTERN([sel]), x__x), NOT(TBONED([sel])))
-    select: [sel]
-      prim: in 3, 3, in
-      prim: in 3, 3, in
-    select: OTHERS
-      prim: 0, 0, none
-      prim: 0, 0, none
-  // XXX: these cases are really "trade" not "trade down the line"
-  // but this solves some problems while 'do your part' isn't implemented
-  from: 1x4
-    condition: AND(MATCH(_SELECTION PATTERN([sel]), "xx__|__xx"), \
-                   NOT(TBONED([sel])))
-    from: 1x2
-     select: [sel]
-      call: trade
-     select: OTHERS
-      call: nothing
-  from: 1x4
-    condition: AND(MATCH(_SELECTION PATTERN([sel]), "_xx_"), \
-                   NOT(TBONED([sel])))
-    call: _centers(trade)
+  condition: or(PROGRAM AT LEAST(PLUS), formation(FACING COUPLES)), \
+             "Ocean wave rule not allowed here below plus"
+  call: pass thru, quarter in, step to a wave
 
-def: trade
-  from: mixed(COUPLE, RH_MINIWAVE, LH_MINIWAVE)
-    from: COUPLE
-      call: partner trade
-    from: MINIWAVE
-      call: _miniwave trade
+// callerlab #42: EXTEND
+def: extend
+  optional: LEFT
+    // at basic/mainstream, extend is from 1/4 tag only
+    from: QUARTER TAG
+      call: _extend
+    from: ANY
+      condition: PROGRAM AT LEAST(PLUS), "Not allowed below Plus"
+      call: _extend
 
-def: couples trade
-  in: 6
-  call: as couples(trade)
+def: _extend // the general case
+  in: 2
+  from: SINGLE DOUBLE PASS THRU
+    select: LEADER
+      prim: -1,1, none
+    select: TRAILER
+      prim: 0,1, none
+  from: LH BOX, LH MINIWAVE, LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG
+    call: mirror(_extend)
+  from: RH BOX
+    select: LEADER
+      prim: 1,1, none
+    select: TRAILER
+      prim: 0,1, none
+  from: RH MINIWAVE
+    prim: 1,1, none
+  from: FACING DANCERS
+    prim: -1,1,none
+  from: RH SINGLE QUARTER TAG
+    select: CENTER
+      prim: 0, 1, none
+    select: END
+      prim: -1, 1, none
+  from: RH SINGLE THREE QUARTER TAG
+    select: CENTER
+      prim: 1, 1, none
+    select: END
+      prim: 0, 1, none
 
-def: _miniwave trade
-  from: MINIWAVE
-    in: 4
-    prim: in 1,1,in
-    prim: in 1,1,in
-
-def: partner trade
-  from: COUPLE
-    in: 4
-    prim: in 1,1,in
-    prim: in 1,1,in
-
-// callerlab #42: WHEEL AND DEAL FAMILY
+// callerlab #43: WHEEL AND DEAL FAMILY
 def: wheel and deal
   in: 4
   call: as couples(single wheel)
 
-// callerlab #43: DOUBLE PASS THRU
+// callerlab #44: DOUBLE PASS THRU
 def: double pass thru
   in: 4
   call: tandem(pass thru)
 
-// callerlab #44: FIRST COUPLE GO LEFT/RIGHT (see BMS addendum)
+// callerlab #45: FIRST COUPLE GO LEFT/RIGHT (see BMS addendum)
 def: first couple go left next couple go left
   // ends in promenade
-  in: 6 // XXX no callerlab timing given
+  in: 6
   from: COMPLETED DOUBLE PASS THRU
     call: as couples(_single go left left)
 def: first couple go left next couple go right
   // ends in facing lines
-  in: 6 // XXX no callerlab timing given
+  in: 6
   from: COMPLETED DOUBLE PASS THRU
     call: as couples(_single go left right)
 def: first couple go right next couple go right
@@ -1329,7 +1470,7 @@ def: _single go left right
         prim:  1, 1, right // to 2, 1
         prim:  1, 0, none, force-roll-right sashay-start sashay-finish
 
-// callerlab #45: ZOOM
+// callerlab #46: ZOOM
 def: zoom
   in: 4
   from: BOX, TANDEM COUPLES
@@ -1354,18 +1495,18 @@ def: _right single zoom
       ipart:
         prim: 0,1,none
 
-// callerlab #46: FLUTTERWHEEL FAMILY
-def: flutter wheel
+// callerlab #47: FLUTTERWHEEL / REVERSE FLUTTERWHEEL
+def: flutterwheel
   optional: REVERSE
   in: 8
   from: FACING COUPLES
     ipart:
-      call: _start a flutter wheel
+      call: _start a flutterwheel
       call: counter rotate(1/4)
       call: mirror(1/2(wheel around))
       call: circle left(1/4) // make sure we end with sweep
 
-def: _start a flutter wheel
+def: _start a flutterwheel
   in: 3 // arbitrary just sets fraction relative to rest of flutterwheel
   from: FACING COUPLES
     select: BEAU
@@ -1376,7 +1517,7 @@ def: _start a flutter wheel
       prim:  1, 1, right
 
 
-// callerlab #47: SWEEP A QUARTER
+// callerlab #48: SWEEP A QUARTER
 def: sweep(n)
   spoken: sweep <n=fraction>
   condition: AND(GREATER([n],0), GREATER(1, [n])), \
@@ -1403,18 +1544,6 @@ def: and sweep(c, n)
   spoken: [-10] <c=anything> and sweep <n=fraction>
     call: [c], sweep([n])
 
-// callerlab #48: VEER FAMILY
-def: veer left
-  in: 2
-  call: as couples(_single veer left)
-
-def: veer right
-  call: mirror(veer left)
-
-def: _single veer left
-  from: FACING DANCERS, LH MINIWAVE
-  call: _extend
-  
 // callerlab #49: TRADE BY
 // XXX: callerlab says "any formation in which two couples are facing each
 //                      other and the other two are facing out"
@@ -1458,68 +1587,15 @@ def: _mixed touch // used as part of ocean wave/facing couples adjustment
       from: RH MINIWAVE
         call: nothing
 
-// callerlab #51: CIRCULATE FAMILY (see BMS addendum)
-
-// XXX from t-boned columns, the #3 dancer split circs instead of column cir.
-//     definition should be FROM: 2x4
-def: circulate // all-8
-  spoken: (all eight)? circulate
-  in: 4
-  from: ANY
-    condition: equal num(NUM DANCERS(), 8)
-    from: PARALLEL GENERAL LINES
-      call: concentric(_box circulate)
-    from: GENERAL COLUMNS
-      call: column circulate
-  from: ANY
-    condition: equal num(NUM DANCERS(), 4)
-    from: 2x2
-      call: _box circulate
-
-def: column circulate
-  from: GENERAL COLUMNS
-    select: NUMBER 1
-      call: _lead circ
-    select: OTHERS
-      call: _trail circ
-def: single file circulate
-  call: column circulate
-
-def: _lead circ // leaders part of a box/column circulate
-  prim: in 1, 1, in
-  prim: in 1, 1, in
-def: _trail circ // trailers part of a box/column circulate
-  prim: 0,1,none
-  prim: 0,1,none
-
-def: split circulate
-  from: PARALLEL GENERAL LINES, GENERAL COLUMNS, ANY
-    call: _box circulate // on each side.
-
-def: box circulate
-  condition: equal num(NUM DANCERS(), 4), \
-    "Perhaps you mean to say CENTERS box circulate?"
-  call: _box circulate
-
-def: _box circulate
-  // for internal use: this is the 2x2 version of circulate
-  in: 4 // not official
-  from: 2x2
-    select: LEADER
-      call: _lead circ
-    select: TRAILER
-      call: _trail circ
-
-def: couples circulate
-  call: as couples(circulate)
-
-// callerlab #52: FERRIS WHEEL
+// callerlab #51: FERRIS WHEEL
 
 // ferris wheel should be: call: ferris(wheel and deal)
 // but ferris is a hard concept to program, and c3b and/or c4 to boot.
 // XXX: we'll use the simpler stretch definition for now.
 def: ferris wheel
-  call: stretch(wheel and deal)
+  in: 6
+  //call: stretch(wheel and deal)
+  call: as couples(_single ferris wheel)
   example: ferris wheel
     before:
     !  ^ ^
@@ -1536,5 +1612,19 @@ def: ferris wheel
     !  C c
     !  ^ ^
     !  D d
+
+def: _single ferris wheel
+  ipart:
+    call: and roll(_start single ferris wheel)
+
+def: _start single ferris wheel
+  in: 5
+  from: BOX
+    select: LEADER
+      prim: 0, 1, none
+      prim: in 1, 1, in
+    select: TRAILER
+      prim: 0, 1, none
+      prim: in 1, 1, in
 
 ///////////////////  end of basic list   ///////////////////////

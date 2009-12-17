@@ -7,9 +7,9 @@ program: mainstream
 
 def: turn thru
   optional: LEFT
+  in: 4
   from: RH MINIWAVE
-    in: 4 // from mini-wave; 6 from facing?
-    call: trade, _extend
+    call: right arm turn(1/2), step thru
   from: ANY
     call: _mixed touch, turn thru
 

@@ -20,7 +20,7 @@ sdr> /parse("trade twice and roll")
 and roll(_fractional(2, trade))
 sdr> /parse("trade and roll twice")
 _fractional(2, and roll(trade))
-sdr> /parse("boys roll away the girls")
+sdr> /parse("boys roll the girls away")
 _roll away(BOY, GIRL)
 sdr> ///
 sdr> /// "anyone anything" concept
@@ -32,9 +32,9 @@ sdr> ///
 sdr> /// tricky roll away examples
 sdr> /parse("centers roll away")
 anyone while others(CENTER, roll away, nothing)
-sdr> /parse("centers roll away the ends")
+sdr> /parse("centers roll the ends away")
 _roll away(CENTER, END)
-sdr> /parse("centers centers roll away the ends")
+sdr> /parse("centers centers roll the ends away")
 anyone while others(CENTER, _roll away(CENTER, END), nothing)
 sdr> ///
 sdr> /// precedence of <anyone> <anything> -vs- roll and mirror
