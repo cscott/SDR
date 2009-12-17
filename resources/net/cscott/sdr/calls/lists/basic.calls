@@ -1446,6 +1446,7 @@ def: _touch(n) // touch 3/4 is mainstream, not basic
             and(touch, _fractional([n], _cast 4/4)))
 
 def: _mixed touch // used as part of ocean wave/facing couples adjustment
+  in: 2
   condition: not(formation(RH MINIWAVE)) // must be doing *something*
   from: ANY
     ends in: formation(RH MINIWAVE) // control recursion
