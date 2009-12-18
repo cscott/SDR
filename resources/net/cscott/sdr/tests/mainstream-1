@@ -1,4 +1,4 @@
-Basic tests of mainstream calls 52-62.
+Tests of mainstream calls 52-62.
 
 sdr> /program = Program.MAINSTREAM
 MAINSTREAM

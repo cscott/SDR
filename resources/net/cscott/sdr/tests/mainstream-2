@@ -1,0 +1,131 @@
+Tests of mainstream calls 53-68.
+
+sdr> /program = Program.MAINSTREAM
+MAINSTREAM
+sdr> heads lead left
+| 4B>  1G<  3B>  2G<
+| 
+| 4G>  1B<  3G>  2B<
+sdr> dixie style to a wave
+| 1Gv  4B^  1Bv  4G^  2Gv  3B^  2Bv  3G^
+sdr> spin the top
+| 1B<  2B<
+| 
+| 4G>  3G>
+| 
+| 1G<  2G<
+| 
+| 4B>  3B>
+sdr> spin chain thru
+| 4G<  3G<
+| 
+| 2B>  3B>
+| 
+| 1B<  4B<
+| 
+| 1G>  2G>
+sdr> tag the line face right
+| 1B>  4B>
+| 
+| 1G>  2G>
+| 
+| 4G<  3G<
+| 
+| 2B<  3B<
+sdr> half tag
+| 4G^  1Bv  3G^  4Bv
+| 
+| 2B^  1Gv  3B^  2Gv
+sdr> scoot back
+| 1B^  4Gv  4B^  3Gv
+| 
+| 1G^  2Bv  2G^  3Bv
+sdr> recycle
+| 4Gv  1Bv
+| 
+| 3G^  4B^
+| 
+| 2Bv  1Gv
+| 
+| 3B^  2G^
+sdr> left touch 1/4
+| 3G<  4B<
+| 
+| 4G>  1B>
+| 
+| 3B<  2G<
+| 
+| 2B>  1G>
+sdr> half tag
+| 3B^  3Gv  2G^  4Bv
+| 
+| 2B^  4Gv  1G^  1Bv
+sdr> centers trade while the ends circulate
+| 2B^  2Gv  3G^  3Bv
+| 
+| 1B^  1Gv  4G^  4Bv
+sdr> swing thru once and a half
+| 3B^  2Gv  3G^  2Bv
+| 
+| 4B^  1Gv  4G^  1Bv
+sdr> recycle
+| 2Gv  3Bv
+| 
+| 2B^  3G^
+| 
+| 1Gv  4Bv
+| 
+| 1B^  4G^
+sdr> square thru 3
+| 3B^  2G^
+| 
+| 3Gv  2Bv
+| 
+| 4B^  1G^
+| 
+| 4Gv  1Bv
+sdr> /// XXX THIS NEXT CALL SHOULDN'T BE NECESSARY
+sdr> ends face in
+| 3B>  2G<
+| 
+| 3Gv  2Bv
+| 
+| 4B^  1G^
+| 
+| 4G>  1B<
+sdr> left allemande
+| 3B<  2G>
+| 
+| 3G^  2B^
+| 
+| 4Bv  1Gv
+| 
+| 4G<  1B>
+sdr> /// XXX THIS NEXT CALL SHOULDN'T BE NECESSARY
+sdr> ends face in
+| 3Bv  2Gv
+| 
+| 3G^  2B^
+| 
+| 4Bv  1Gv
+| 
+| 4G^  1B^
+sdr> right and left grand
+|      1BL       4GQ
+| 
+| 1G7                 4B`
+| 
+| 
+| 
+| 2BQ                 3GL
+| 
+|      2G`       3B7
+sdr> promenade home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> /exit

@@ -276,23 +276,34 @@ def: _designees cross fold
       prim: 0,0,none
 
 // callerlab #63: DIXIE STYLE TO AN OCEAN WAVE
-// XXX: or facing tandems
 def: dixie style
   spoken: dixie style (to a wave)?
   in: 6
-  from: FACING COUPLES
-  ipart: // "girls right pull by"
-    select: BEAU
-      prim: 1,-1,none
-      prim: 0,-1,none
-    select: BELLE
-      prim: -2,1,none
-      prim: 1,1,none
   ipart:
-    call: mirror(_touch(1/4))
+    from: SINGLE DOUBLE PASS THRU
+      call: _centers(right pull by)
+      call: left(_touch(1/4))
+    from: ANY
+      call: _in(2, _start dixie style), _in(4, dixie style)
+
+// "The right hand dancer steps forward and to the left to become the lead
+//  dancer in a tandem"
+def: _start dixie style
+  from: FACING COUPLES
+    ends in: formation(SINGLE DOUBLE PASS THRU)
+    select: BELLE
+      prim: in 1, 0, none, sashay-start sashay-finish
+    select: BEAU
+      prim: in 1, -2, none, sashay-finish
 
 // callerlab #64: SPIN CHAIN THRU
-// XXX DEFINE ME
+def: spin chain thru
+  in: 16
+  // "native" timing: 3+6+3+6=18.  Reduce to 16 by shortening swing/slip.
+  part:
+    call: _in(2, _wave swing)
+  part: 3
+    call: _in(14, _centers(and(cast(3/4), _in(2, slip), cast(3/4))))
 
 // callerlab #65: TAG THE LINE
 
@@ -325,6 +336,19 @@ def: _tag the line(n)
   spoken: tag the line <n=fraction>
   condition: GREATER(1, [n])
   call: _tag(_atc tag, [n])
+
+def: tag the line in
+  spoken: tag the line (face)? in
+  call: tag the line, face in
+def: tag the line out
+  spoken: tag the line (face)? out
+  call: tag the line, face out
+def: tag the line right
+  spoken: tag the line (face)? right
+  call: tag the line, face right
+def: tag the line left
+  spoken: tag the line (face)? left
+  call: tag the line, face left
 
 // callerlab #66: HALF TAG
 
