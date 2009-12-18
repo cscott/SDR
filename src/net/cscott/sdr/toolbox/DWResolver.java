@@ -42,7 +42,7 @@ import static net.cscott.sdr.util.Tools.*;
  *    >        for each (f in fs)]; undefined;
  *  js> // look at first step from each formation
  *  js> s = [DWResolver.resolveStep(ff) for each (ff in fs)]; s.slice(0,5)
- *  Trade,Centers Trade,Centers Trade,Acey Deucey,Half Tag
+ *  Trade,Half Tag,Half Tag,Acey Deucey,Half Tag
  *  js> // compute number of calls until resolve for each starting formation
  *  js> // we could memoize intermediate results, but we're lazy.
  *  js> function dance(ds, steps) {
@@ -55,7 +55,7 @@ import static net.cscott.sdr.util.Tools.*;
  *    >   return dance(ds, steps+1);
  *    > }
  *  js> nums = [dance(ds, 0) for each (ds in dss)]; nums.slice(0,5)
- *  2,3,6,4,5
+ *  2,6,5,4,5
  *  js> // the minimum ought to be one: from some formation, a RLG is possible
  *  js> Math.min.apply(null, nums)
  *  1
@@ -67,19 +67,19 @@ import static net.cscott.sdr.util.Tools.*;
  *  js> nums.map(function(e) { sum+=e; count+=1; }); sum/count;
  *  5.25
  *  js> // formations which require the maximum number of calls:
- *  js> // (the first here is a 'sides lead right, swing thru, hinge,
+ *  js> // (the first here is a 'sides lead right, touch 1/4,
  *  js> //  spin chain and exchange the gears')
  *  js> for (let i=0; i<nums.length; i++)
  *    >   if (nums[i]==max) print(i+":\n"+fs[i].toStringDiagram()+"\n");
- *  30:
- *  2B^  2Gv  1B^  3Gv
- *
- *  1G^  3Bv  4G^  4Bv
- *
- *  80:
- *  3G^  2Bv  2G^  3Bv
- *
- *  1B^  4Gv  4B^  1Gv
+ *  25:
+ *  1G^  2Bv  4G^  1Bv
+ *  
+ *  3B^  2Gv  4B^  3Gv
+ *  
+ *  81:
+ *  4B^  2Gv  3B^  1Gv
+ *  
+ *  3G^  1Bv  4G^  2Bv
  */
 @RunWith(value=JDoctestRunner.class)
 public class DWResolver {
@@ -109,12 +109,9 @@ public class DWResolver {
         List<StandardDancer> wave1 = foreach(waves.get(1).sortedDancers(),
                 standardDancerFilter);
         assert wave0.size()==4 && wave1.size()==4;
-        // step 2: boys together or girls together? if no, centers trade
-        if (wave0.get(0).isBoy() != wave0.get(1).isBoy() &&
-            wave0.get(0).isBoy() != wave0.get(3).isBoy())
-            return "Centers Trade";
-        // step 3: boys or girls together in center? if no, half tag
-        // XXX: awkward for centers?
+        // steps 2-3: boys or girls together in center? if no, half tag
+	//         once or twice.
+        // XXX: "half tag" / "left half tag" would flow better.
         if (wave0.get(1).isBoy() != wave0.get(2).isBoy())
             return "Half Tag";
         // at this point: RH BGGB or GBBG waves
