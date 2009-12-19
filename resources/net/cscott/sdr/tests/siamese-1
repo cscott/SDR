@@ -2,7 +2,7 @@ Tests for siamese.
 
 sdr> /program=Program.C1
 C1
-sdr> heads start
+sdr> heads right and left thru twice
 | 4B>  3Gv  3Bv  2G<
 | 
 | 4G>  1B^  1G^  2B<

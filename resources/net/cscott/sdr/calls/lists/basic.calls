@@ -68,19 +68,19 @@ def: _anyone while others static square(sel, c1, c2)
   // special case 'heads promenade half way while the sides...'
   from: STATIC SQUARE
     condition: AND(EQUAL CALL([sel], HEAD), EQUAL CALL([c1], promenade half way))
-    call: sides start
+    call: _sides start
     call: anyone while others([sel], _outsides promenade half way, [c2])
   from: STATIC SQUARE
     condition: AND(EQUAL CALL([sel], HEAD), EQUAL CALL([c1], reverse(promenade half way)))
-    call: sides start
+    call: _sides start
     call: anyone while others([sel], reverse(_outsides promenade half way), [c2])
   from: STATIC SQUARE
     condition: AND(EQUAL CALL([sel], SIDE), EQUAL CALL([c1], promenade half way))
-    call: heads start
+    call: _heads start
     call: anyone while others([sel], _outsides promenade half way, [c2])
   from: STATIC SQUARE
     condition: AND(EQUAL CALL([sel], SIDE), EQUAL CALL([c1], reverse(promenade half way)))
-    call: heads start
+    call: _heads start
     call: anyone while others([sel], reverse(_outsides promenade half way), [c2])
   // special case 'heads square thru...' from static square
   // XXX: "Dancers should return to Squared Set spots for Head Ladies Chain,
@@ -88,10 +88,10 @@ def: _anyone while others static square(sel, c1, c2)
   //       ...or Heads Dosado
   from: STATIC SQUARE
     condition: EQUAL CALL([sel], HEAD)
-    call: heads start, anyone while others([sel],[c1],[c2])
+    call: _heads start, anyone while others([sel],[c1],[c2])
   from: STATIC SQUARE
     condition: EQUAL CALL([sel], SIDE)
-    call: sides start, anyone while others([sel],[c1],[c2])
+    call: _sides start, anyone while others([sel],[c1],[c2])
 
 // local helpers
 def: _anyone(sel, c1)
@@ -103,7 +103,7 @@ def: _ends(c)
   from: CENTER HALF
     call: _anyone(END, [c])
 
-def: heads start
+def: _heads start
  from: STATIC SQUARE
   in: 2
   select: HEAD
@@ -111,7 +111,7 @@ def: heads start
   select: OTHERS
    prim: 0, 0, none // stay where they are
 
-def: sides start
+def: _sides start
  from: STATIC SQUARE
   in: 2
   select: SIDE
