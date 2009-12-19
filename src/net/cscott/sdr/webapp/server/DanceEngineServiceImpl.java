@@ -32,6 +32,11 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class DanceEngineServiceImpl extends RemoteServiceServlet
     implements DanceEngineService {
 
+    /** Reload call definitions. */
+    public void reloadDB() {
+        CallDB.INSTANCE.reload();
+    }
+
     /** An angle multiplier used when transforming a standard formation
      *  to this dance type. */
     public static Fraction angleMult(StartingFormationType sft) {

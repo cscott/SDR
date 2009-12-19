@@ -10,6 +10,11 @@ public interface DanceEngineServiceAsync {
      */
     public void dance(Sequence s, int sequenceNumber,
                       AsyncCallback<EngineResults> async);
+    /**
+     * Reload the dance engine's call definitions.  Used for debugging after
+     * local edits to the call definitions have been made.
+     */
+    public void reloadDB(AsyncCallback<Void> async);
 
     // eventually there may be other dance-engine tasks, like 'resolve'
     // or 'classify formation' (at home, allemande left, dixie grand, etc)

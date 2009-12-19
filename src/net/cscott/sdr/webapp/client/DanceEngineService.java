@@ -12,6 +12,12 @@ public interface DanceEngineService extends RemoteService {
      */
     public EngineResults dance(Sequence s, int sequenceNumber);
 
+    /**
+     * Reload the dance engine's call definitions.  Used for debugging after
+     * local edits to the call definitions have been made.
+     */
+    public void reloadDB();
+
     // eventually there may be other dance-engine tasks, like 'resolve'
     // or 'classify formation' (at home, allemande left, dixie grand, etc)
 }

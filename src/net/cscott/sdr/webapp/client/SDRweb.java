@@ -80,15 +80,16 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
     DockPanel playBar = new DockPanel();
     Animation animation = null;
 
-    final Model model = new Model(GWT.<DanceEngineServiceAsync>create
-                                  (DanceEngineService.class)) {
+    final DanceEngineServiceAsync danceEngine =
+        GWT.create(DanceEngineService.class);
+    final SequenceStorageServiceAsync storageService =
+        GWT.create(SequenceStorageService.class);
+    final Model model = new Model(danceEngine) {
         @Override
         public void handleFailure(Throwable caught) {
             Window.alert(caught.toString());
         }
     };
-    SequenceStorageServiceAsync storageService =
-        GWT.create(SequenceStorageService.class);
 
     public boolean confirmDiscard() {
         if (!model.isDirty()) return true; // nothing to save
@@ -122,11 +123,24 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 // better-formatted version, and print *that*
                 Window.print();
             }});
+        /*
         fileMenu.addItem("Locate", new Command() {
             public void execute() {
                 getLocation(new EAsyncCallback<GeoPt>(){
                     public void onSuccess(GeoPt result) {
                         Window.alert("Got location: "+result.latitude+","+result.longitude);
+                    }});
+            }});
+         */
+        // XXX: only add this menu entry in "debug" mode.
+        fileMenu.addItem("Server refresh", new Command() {
+            public void execute() {
+                danceEngine.reloadDB(new EAsyncCallback<Void>(){
+                    @Override
+                    public void onSuccess(Void result) {
+                        Window.alert("Call database reloaded");
+                        // reload dance sequence results
+                        model.fireEvent(new SequenceChangeEvent());
                     }});
             }});
         fileMenu.addItem("Logout", new Command() {
