@@ -22,10 +22,10 @@
  *  js> a = new Apply(new Expr("run", Expr.literal("boy")))
  *  (Apply (Expr run 'boy))
  *  js> a.evaluator(null).simpleExpansion()
- *  (In '4 (Opt (From (Expr or '1 x4 'BOX 'COUPLE 'MINIWAVE '1 x2) (Seq (Apply (Expr _with designated 'boy '_designees run))))))
+ *  (In '4 (Opt (From (Expr or '1 x4 '2 x4 'BOX (Expr mixed 'COUPLE 'RH MINIWAVE 'LH MINIWAVE) '1 x2) (Seq (Apply (Expr _with designated 'boy '_designees run))))))
  *  js> a = new Apply(new Expr("_fractional", Expr.literal("1/2"), a.call))
  *  (Apply (Expr _fractional '1/2 (Expr run 'boy)))
  *  js> a.evaluator(null).simpleExpansion()
- *  (In (Expr _multiply num '1/2 '4) (Opt (From (Expr or '1 x4 'BOX 'COUPLE 'MINIWAVE '1 x2) (Seq (Apply (Expr _with designated 'boy (Expr _fractional '1/2 '_designees run)))))))
+ *  (In (Expr _multiply num '1/2 '4) (Opt (From (Expr or '1 x4 '2 x4 'BOX (Expr mixed 'COUPLE 'RH MINIWAVE 'LH MINIWAVE) '1 x2) (Seq (Apply (Expr _with designated 'boy (Expr _fractional '1/2 '_designees run)))))))
  */
 package net.cscott.sdr.calls;

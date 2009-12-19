@@ -95,11 +95,22 @@ def: _designees in
   from: 2x2
     condition: equal num(2, NUM DANCERS(and(DESIGNATED, TRAILER))), \
                "The centers must be a couple"
-    condition: not(tboned(ALL)), "T-boned variant not yet implemented"
-    select: and(DESIGNATED, TRAILER)
-      prim: 0, 2, none
-    select: OTHERS
-      prim: out 2, 0, none, sashay-start sashay-finish
+    from: 2x2
+      condition: MATCH(_FACING PATTERN(DESIGNATED, TRAILER), "[<>]+"), "EW"
+      select: and(DESIGNATED, TRAILER)
+        prim: 0, 2, none
+      select: MATCH(_FACING PATTERN(), "[<>]") // same as designees
+        prim: out 2, 0, none, sashay-start sashay-finish
+      select: MATCH(_FACING PATTERN(), "[v^]") // t-boned to designees
+        prim: 0, out 2, none
+    from: 2x2
+      condition: MATCH(_FACING PATTERN(DESIGNATED, TRAILER), "[v^]+"), "NS"
+      select: and(DESIGNATED, TRAILER)
+        prim: 0, 2, none
+      select: MATCH(_FACING PATTERN(), "[v^]") // same as designees
+        prim: out 2, 0, none, sashay-start sashay-finish
+      select: MATCH(_FACING PATTERN(), "[<>]") // t-boned to designees
+        prim: 0, out 2, none
 
 // callerlab #58: CAST OFF THREE QUARTERS
 

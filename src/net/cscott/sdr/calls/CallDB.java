@@ -81,6 +81,7 @@ public class CallDB {
         CallFileLoader.load(resource("c1"), db);
         CallFileLoader.load(resource("c2"), db);
         CallFileLoader.load(resource("c3b"), db);
+        CallFileLoader.load(resource("c4"), db);
         // now load complex calls and concepts.
         loadFromClass(BasicList.class);
         loadFromClass(MainstreamList.class);

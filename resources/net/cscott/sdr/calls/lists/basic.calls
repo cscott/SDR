@@ -119,6 +119,15 @@ def: _sides start
   select: OTHERS
    prim: 0, 0, none // stay where they are
 
+def: down the middle(sel, c=nothing)
+  spoken: <sel=heads_or_sides> down the middle ((and)? <c=anything>)?
+  from: STATIC SQUARE
+    call: _anyone while others static square([sel], [c], nothing)
+  from: 2x4
+    condition: are([sel], NUMBER 4)
+    call: _with designated([sel], _designees in)
+    call: _centers([c])
+
 // callerlab #1: CIRCLE LEFT / CIRCLE RIGHT
 def: circle left(n)
   spoken: circle (to the)? left <n=fraction> way?
@@ -1314,15 +1323,18 @@ def: swing thru
 def: run(sel)
   spoken: <sel=anyone> run
   in: 4
-  from: 1x4, BOX, COUPLE, MINIWAVE, 1x2
-    // do the select from the line so that 'centers' works right
+  from: 1x4, 2x4, BOX, mixed(COUPLE, RH MINIWAVE, LH MINIWAVE), 1x2
+    // do the select from the 1x4 and 2x4 so that 'centers' works right
     call: _with designated([sel], _designees run)
 
 // we can't use in/out in primitives here because (1) centers of waves
 // run out, while ends of waves run in, and (2) the "run-around" dancer
 // stands on the centerline of the formation at one point.
+// XXX: we really want a "designated and the dancer they are next to"
+//      matcher here, to handle certain complex t-boned runs with
+//      otherwise ambiguous 1x2 matches.
 def: _designees run
-  from: 1x2
+  from: mixed(COUPLE, RH MINIWAVE, LH MINIWAVE), 1x2
     from: ANY
       // unlike kickoff, if no one is designated, no one does anything
       condition: ARE(DESIGNATED, NONE), "Run w/ no designated dancers"

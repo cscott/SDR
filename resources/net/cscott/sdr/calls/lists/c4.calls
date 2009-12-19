@@ -1,0 +1,14 @@
+program: c4
+
+def: curlique
+  in: 4
+  from: RH MINIWAVE
+    condition: not(or(all(BOY), all(GIRL))), "Same sex curlique!"
+    select: BOY
+      prim: 1, 1, right
+    select: GIRL
+      prim: 1, 1, left, sashay-finish
+      prim: 0, 0, left
+      prim: 0, 0, left
+  from: ANY
+    call: _mixed touch, curlique

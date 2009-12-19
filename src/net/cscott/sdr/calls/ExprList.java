@@ -353,10 +353,27 @@ public class ExprList {
         protected T parseArgs(DanceState ds, List<Expr> args)
             throws EvaluationException { return null; }
     }
-    public static final ExprFunc<String> _ROLL_PATTERN =
-        new PatternFunc<Void>("_roll pattern") {
+    private static abstract class SubsetPatternFunc extends PatternFunc<Set<Dancer>> {
+        SubsetPatternFunc(String name) { super(name); }
         @Override
-        protected String dancerToString(TaggedFormation tf, Dancer d, Void v) {
+        protected Set<Dancer> parseArgs(DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            Selector selector =
+                SelectorList.AND.evaluate(Selector.class, ds, args);
+            TaggedFormation tf = TaggedFormation.coerce(ds.currentFormation());
+            return selector.select(tf);
+        }
+        @Override
+        protected String dancerToString(TaggedFormation tf, Dancer d, Set<Dancer> who) {
+            if (!who.contains(d)) return "";
+            return ""+dancerToString(tf, d);
+        }
+        protected abstract String dancerToString(TaggedFormation tf, Dancer d);
+    }
+    public static final ExprFunc<String> _ROLL_PATTERN =
+        new SubsetPatternFunc("_roll pattern") {
+        @Override
+        protected String dancerToString(TaggedFormation tf, Dancer d) {
             Position p = tf.location(d);
             if (p.flags.contains(Position.Flag.ROLL_LEFT))
                 return "L";
@@ -368,9 +385,9 @@ public class ExprList {
     static { exprStringFuncs.put(_ROLL_PATTERN.getName(), _ROLL_PATTERN); }
 
     public static final ExprFunc<String> _SWEEP_PATTERN =
-        new PatternFunc<Void>("_sweep pattern") {
+        new SubsetPatternFunc("_sweep pattern") {
         @Override
-        protected String dancerToString(TaggedFormation tf, Dancer d, Void v) {
+        protected String dancerToString(TaggedFormation tf, Dancer d) {
             Position p = tf.location(d);
             if (p.flags.contains(Position.Flag.SWEEP_LEFT))
                 return "L";
@@ -382,9 +399,9 @@ public class ExprList {
     static { exprStringFuncs.put(_SWEEP_PATTERN.getName(), _SWEEP_PATTERN); }
 
     public static final ExprFunc<String> _FACING_PATTERN =
-        new PatternFunc<Void>("_facing pattern") {
+        new SubsetPatternFunc("_facing pattern") {
         @Override
-        protected String dancerToString(TaggedFormation tf, Dancer d, Void v) {
+        protected String dancerToString(TaggedFormation tf, Dancer d) {
             Position p = tf.location(d);
             return ""+p.facing.toDiagramChar();
         }
@@ -446,17 +463,9 @@ public class ExprList {
      *  iiiiiiii
      */
     public static final ExprFunc<String> _INOUT_PATTERN =
-        new PatternFunc<Set<Dancer>>("_inout pattern") {
-        protected Set<Dancer> parseArgs(DanceState ds, List<Expr> args)
-            throws EvaluationException {
-            Selector selector =
-                SelectorList.AND.evaluate(Selector.class, ds, args);
-            TaggedFormation tf = TaggedFormation.coerce(ds.currentFormation());
-            return selector.select(tf);
-        }
+        new SubsetPatternFunc("_inout pattern") {
         @Override
-        protected String dancerToString(TaggedFormation tf, Dancer d, Set<Dancer> who) {
-            if (!who.contains(d)) return "";
+        protected String dancerToString(TaggedFormation tf, Dancer d) {
             return ""+inOut(tf.location(d));
         }
         private char inOut(Position p) {
