@@ -56,7 +56,8 @@ public abstract class PredicateList {
         @Override
         public boolean isConstant(List<Expr> args) { return true; }
     };
-    // another 'true', used to set breakpoints during debugging
+    /** Another synonym for {@link PredicateList#TRUE}, used to set breakpoints
+     *  during debugging. */
     public final static Predicate BREAKPOINT = new _Predicate("breakpoint") {
         @Override
         public boolean evaluate(DanceState ds, List<Expr> args) {
