@@ -42,44 +42,66 @@ import static net.cscott.sdr.util.Tools.*;
  *    >        for each (f in fs)]; undefined;
  *  js> // look at first step from each formation
  *  js> s = [DWResolver.resolveStep(ff) for each (ff in fs)]; s.slice(0,5)
- *  Trade,Half Tag,Half Tag,Acey Deucey,Half Tag
+ *  Trade,Hinge,Hinge,Acey Deucey,Half Tag
  *  js> // compute number of calls until resolve for each starting formation
  *  js> // we could memoize intermediate results, but we're lazy.
- *  js> function dance(ds, steps) {
+ *  js> function dance(ds, steps, verbose) {
  *    >   if (steps > 30) throw new Error("Doesn't resolve!");
  *    >   // get next call from current formation
  *    >   let nextCall = DWResolver.resolveStep(ds.currentFormation());
+ *    >   if (verbose) print(nextCall);
  *    >   if (nextCall == "Right and Left Grand") return (steps+1);
  *    >   net.cscott.sdr.calls.Evaluator.parseAndEval(ds, nextCall);
  *    >   // keep dancing.
- *    >   return dance(ds, steps+1);
+ *    >   return dance(ds, steps+1, verbose);
  *    > }
  *  js> nums = [dance(ds, 0) for each (ds in dss)]; nums.slice(0,5)
- *  2,6,5,4,5
+ *  2,2,5,4,5
  *  js> // the minimum ought to be one: from some formation, a RLG is possible
  *  js> Math.min.apply(null, nums)
  *  1
  *  js> // and the largest number of calls to resolve is:
  *  js> max = Math.max.apply(null, nums)
- *  9
+ *  8
  *  js> // average:
  *  js> let [sum,count] = [0,0]
- *  js> nums.map(function(e) { sum+=e; count+=1; }); sum/count;
- *  5.25
+ *  js> nums.map(function(e) { sum+=e; count+=1; }); (sum/count).toFixed(2);
+ *  4.92
  *  js> // formations which require the maximum number of calls:
- *  js> // (the first here is a 'sides lead right, touch 1/4,
+ *  js> // (the first here is a 'sides lead right, swing thru 1 1/4,
  *  js> //  spin chain and exchange the gears')
  *  js> for (let i=0; i<nums.length; i++)
  *    >   if (nums[i]==max) print(i+":\n"+fs[i].toStringDiagram()+"\n");
- *  25:
- *  1G^  2Bv  4G^  1Bv
+ *  30:
+ *  2B^  2Gv  1B^  3Gv
  *  
- *  3B^  2Gv  4B^  3Gv
+ *  1G^  3Bv  4G^  4Bv
  *  
- *  81:
- *  4B^  2Gv  3B^  1Gv
+ *  45:
+ *  3B^  2Bv  3G^  4Gv
  *  
- *  3G^  1Bv  4G^  2Bv
+ *  2G^  1Gv  4B^  1Bv
+ *  
+ *  80:
+ *  3G^  2Bv  2G^  3Bv
+ *  
+ *  1B^  4Gv  4B^  1Gv
+ *  
+ *  95:
+ *  3G^  2Gv  2B^  3Bv
+ *  
+ *  1B^  4Bv  4G^  1Gv
+ *  js> // emit one of the 'longest resolves'
+ *  js> ds = new DanceState(new DanceProgram(Program.PLUS), fs[30]); undefined;
+ *  js> dance(ds, 0, true); undefined;
+ *  Hinge
+ *  Swing Thru
+ *  Swing Thru
+ *  Acey Deucey
+ *  Trade
+ *  Swing Thru
+ *  Swing Thru
+ *  Right and Left Grand
  */
 @RunWith(value=JDoctestRunner.class)
 public class DWResolver {
@@ -109,9 +131,17 @@ public class DWResolver {
         List<StandardDancer> wave1 = foreach(waves.get(1).sortedDancers(),
                 standardDancerFilter);
         assert wave0.size()==4 && wave1.size()==4;
-        // steps 2-3: boys or girls together in center? if no, half tag
-	//         once or twice.
-        // XXX: "half tag" / "left half tag" would flow better.
+        // step 2: boys together or girls together? if no, hinge
+        //         (this step can be skipped if you're learning the technique;
+        //          one or two half tags will also get us to
+        //          same-genders-in-center RH waves -- but it shortens the
+        //          resolve by a call when recognized.)
+        if (wave0.get(0).isBoy() != wave0.get(1).isBoy() &&
+            wave0.get(0).isBoy() != wave0.get(3).isBoy())
+            return "Hinge";
+
+        // step 3: boys or girls together in center? if no, half tag
+        // XXX: flow?
         if (wave0.get(1).isBoy() != wave0.get(2).isBoy())
             return "Half Tag";
         // at this point: RH BGGB or GBBG waves
