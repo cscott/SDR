@@ -5,6 +5,7 @@ sdr> /// "test case" is used as input by runAllTests() to enumerate
 sdr> /// all the tests to run.
 sdr> ///
 sdr> /listTests("resources/net/cscott/sdr/tests")
+allemande-1
 as-couples-1
 basic-calls-1
 basic-calls-2
@@ -20,6 +21,7 @@ concentric-1
 cross-fold-1
 cross-run-1
 dixie-style
+dopaso-1
 dw-resolve
 eight-chain
 extend-basic

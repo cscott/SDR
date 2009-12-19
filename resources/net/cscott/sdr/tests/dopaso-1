@@ -1,0 +1,40 @@
+Dopaso resolve using DW resolve technique (as written up by Clark).
+
+sdr> heads lead right ; dixie style
+| 3Gv  4B^  3Bv  4G^  2Gv  1B^  2Bv  1G^
+sdr> hinge ; sides u-turn back ; dixie style ; sides roll twice
+| 1Bv  4Bv  1Gv  4Gv
+| 
+| 2G^  3G^  2B^  3B^
+sdr> dixie style
+| 3G<  3B<
+| 
+| 4B>  4G>
+| 
+| 2G<  2B<
+| 
+| 1B>  1G>
+sdr> /// here's where the resolve starts
+sdr> half tag
+| 2G^  3Gv  2B^  3Bv
+| 
+| 1B^  4Bv  1G^  4Gv
+sdr> half tag
+| 2G>  3G>
+| 
+| 2B<  3B<
+| 
+| 1B>  4B>
+| 
+| 1G<  4G<
+sdr> trade the wave
+| 1B<  4B<
+| 
+| 1G>  4G>
+| 
+| 2G<  3G<
+| 
+| 2B>  3B>
+sdr> do paso
+sdr> roll promenade home
+sdr> /exit

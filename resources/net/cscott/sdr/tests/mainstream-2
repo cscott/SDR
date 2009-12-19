@@ -84,15 +84,6 @@ sdr> square thru 3
 | 4B^  1G^
 | 
 | 4Gv  1Bv
-sdr> /// XXX THIS NEXT CALL SHOULDN'T BE NECESSARY
-sdr> ends face in
-| 3B>  2G<
-| 
-| 3Gv  2Bv
-| 
-| 4B^  1G^
-| 
-| 4G>  1B<
 sdr> left allemande
 | 3B<  2G>
 | 
@@ -101,15 +92,6 @@ sdr> left allemande
 | 4Bv  1Gv
 | 
 | 4G<  1B>
-sdr> /// XXX THIS NEXT CALL SHOULDN'T BE NECESSARY
-sdr> ends face in
-| 3Bv  2Gv
-| 
-| 3G^  2B^
-| 
-| 4Bv  1Gv
-| 
-| 4G^  1B^
 sdr> right and left grand
 |      1BL       4GQ
 | 

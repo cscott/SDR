@@ -95,6 +95,7 @@ def: _designees in
   from: 2x2
     condition: equal num(2, NUM DANCERS(and(DESIGNATED, TRAILER))), \
                "The centers must be a couple"
+    condition: not(tboned(ALL)), "T-boned variant not yet implemented"
     select: and(DESIGNATED, TRAILER)
       prim: 0, 2, none
     select: OTHERS
@@ -277,6 +278,7 @@ def: _designees cross fold
 
 // callerlab #63: DIXIE STYLE TO AN OCEAN WAVE
 def: dixie style
+  optional: REVERSE
   spoken: dixie style (to a wave)?
   in: 6
   ipart:

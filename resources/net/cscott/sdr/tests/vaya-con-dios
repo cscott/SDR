@@ -36,6 +36,13 @@ sdr> circle left 1/4
 | 
 |      3G^  4B^
 sdr> left allemande
+|      2B<  1G>
+| 
+| 2G^            1B^
+| 
+| 3Bv            4Gv
+| 
+|      3G<  4B>
 sdr> weave the ring
 sdr> dosado
 sdr> promenade home
@@ -46,9 +53,16 @@ sdr> promenade home
 | 4G>            2B<
 | 
 |      1B^  1G^
-sdr> /// figure
+sdr> /reset // now, the figure
 sdr> heads promenade half way
-sdr> down the middle curli-q
+| 1Gv  1Bv
+| 
+| 4B>  2G<
+| 
+| 4G>  2B<
+| 
+| 3B^  3G^
+sdr> heads down the middle curli-q
 sdr> center boys run
 sdr> right and left thru
 sdr> veer left
