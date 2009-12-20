@@ -24,6 +24,11 @@
  * @doc.test Parsing complicated Prims:
  *  js> new AstParser("(Seq (Prim 1 1/2, 1/2, left, 1, PASS_LEFT, FORCE_ARC, FORCE_ROLL_RIGHT))").ast()
  *  (Seq (Prim 1 1/2, 1/2, left, 1, PASS_LEFT, FORCE_ARC, FORCE_ROLL_RIGHT))
+ * @doc.test Parsing OptCall and ParCall:
+ *  js> new AstParser("(Opt (From 'CIRCLE ADJUST (Seq (Apply 'nothing))))").ast()
+ *  (Opt (From 'CIRCLE ADJUST (Seq (Apply 'nothing))))
+ *  js> new AstParser("(Par (Select 'BOY (Seq (Apply 'nothing))))").ast()
+ *  (Par (Select 'BOY (Seq (Apply 'nothing))))
  */
 grammar Ast;
 @parser::header {
@@ -79,12 +84,12 @@ comp returns [Comp r]
     | seq { $r=$seq.r; }
     ;
 optcall returns [OptCall r]
-    : {input.LT(2).getText().equalsIgnoreCase("OptCall")}?
+    : {input.LT(2).getText().equalsIgnoreCase("From")}?
         '(' IDENT expr child=comp ')'
         { $r=new OptCall($expr.r, $child.r); }
     ;
 parcall returns [ParCall r]
-    : {input.LT(2).getText().equalsIgnoreCase("ParCall")}?
+    : {input.LT(2).getText().equalsIgnoreCase("Select")}?
         '(' IDENT expr child=comp ')'
         { $r=new ParCall($expr.r, $child.r); }
     ;
