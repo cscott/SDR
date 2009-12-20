@@ -460,8 +460,14 @@ public class GeneralFormationMatcher {
             }
             // first goal dancer has a rotation modulus which is 1/N for some
             // N.  This means we need to try N other rotations for matches.
-            this.numExtra = goal.location
-                (goalDancers.get(0)).facing.modulus.getDenominator();
+            Fraction highestModulus =
+                goal.location(goalDancers.get(0)).facing.modulus;
+            if (highestModulus.compareTo(Fraction.ZERO) != 0) {
+                this.numExtra = highestModulus.getDenominator();
+            } else {
+                // all phantoms.  Try all rotations by 1/8.
+                this.numExtra = 8;
+            }
         }
     }
     private static class MatchInfo {
