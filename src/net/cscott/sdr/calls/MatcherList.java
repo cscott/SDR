@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.cscott.jdoctest.JDoctestRunner;
@@ -116,7 +118,9 @@ import org.junit.runner.RunWith;
  *   [ph: BEAU; ph: BEAU]
  */
 @RunWith(value=JDoctestRunner.class)
-public abstract class MatcherList {
+public class MatcherList {
+    private MatcherList() {}
+
     // universal matcher
     public static final Matcher ANY = new Matcher() {
         public FormationMatch match(Formation f) throws NoMatchException {
@@ -285,6 +289,8 @@ public abstract class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.RH_ALAMO_RING);
     public static final Matcher LH_ALAMO_RING =
         GeneralFormationMatcher.makeMatcher(FormationList.LH_ALAMO_RING);
+    public static final Matcher O_SPOTS =
+        GeneralFormationMatcher.makeMatcher(FormationList.O_SPOTS);
     public static final Matcher PROMENADE =
         GeneralFormationMatcher.makeMatcher(FormationList.PROMENADE);
     public static final Matcher WRONG_WAY_PROMENADE =
@@ -690,6 +696,70 @@ public abstract class MatcherList {
             return args.get(0).isConstant(type);
         }
     };
+
+    /** Support circle choreography by matching a squared set
+     * "the other way".
+     * @doc.test Apply CIRCLE_ADJUST matcher to a SQUARED_SET:
+     *  js> MatcherList.CIRCLE_ADJUST.match(Formation.SQUARED_SET);
+     *  AA7
+     *  AA:
+     *          3Bv  2Gv
+     *     
+     *     3G>            2B<
+     *     
+     *     4B>            1G<
+     *     
+     *          4G^  1B^
+     * @doc.test "Do nothing" after the circle adjust, to show what formation
+     *  child calls will see.
+     *  js> comp = net.cscott.sdr.calls.ast.AstNode.valueOf(
+     *    >        "(Opt (From 'CIRCLE ADJUST (Seq (Apply 'nothing))))");
+     *  (Opt (From 'CIRCLE ADJUST (Seq (Apply 'nothing))))
+     *  js> ds = new DanceState(new DanceProgram(Program.BASIC), Formation.SQUARED_SET); undefined;
+     *  js> e = new Evaluator.Standard(comp); e.evaluateAll(ds);
+     *  js> ds.currentFormation().toStringDiagram("|");
+     *  |     3GQ       3BL
+     *  |
+     *  |4BQ                 2GL
+     *  |
+     *  |
+     *  |
+     *  |4G7                 2B`
+     *  |
+     *  |     1B7       1G`
+     */
+    public static final Matcher CIRCLE_ADJUST = new Matcher() {
+        @Override
+        public String getName() { return "_circle adjust"; }
+        @Override
+        public FormationMatch match(Formation f) throws NoMatchException {
+            /*
+             *    0 1
+             *  2     3
+             *  4     5
+             *    6 7
+             */
+            int[] r = new int[] { 1, 3, 0, 5, 2, 7, 4, 6 };
+            FormationMatch fm = MatcherList.O_SPOTS.match(f);
+            assert fm.meta.dancers().size() == 1;
+            Dancer metaD = fm.meta.dancers().iterator().next();
+            TaggedFormation from = fm.matches.get(metaD);
+            List<Dancer> sortedDancers = from.sortedDancers();
+            assert sortedDancers.size() == r.length;
+            Map<Dancer,Dancer> rotated = new HashMap<Dancer,Dancer>();
+            for (int i=0 ; i < sortedDancers.size() ; i++) {
+                rotated.put(sortedDancers.get(i), sortedDancers.get(r[i]));
+            }
+            TaggedFormation to = from.map(rotated);
+            Position p = fm.meta.location(metaD)
+                .turn(Fraction.ONE_EIGHTH, false);
+            return new FormationMatch
+                (new Formation(m(p(metaD, p))), m(p(metaD, to)),
+                 Collections.<Dancer>emptySet());
+        }
+    };
+
+    /** Parse names of {@link Matcher} combination functions. */
     public static ExprFunc<Matcher> valueOf(String s) {
         s = s.toLowerCase().intern();
         if (s == "mixed")

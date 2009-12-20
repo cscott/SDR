@@ -291,6 +291,9 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation LH_ALAMO_RING =
         create("LH ALAMO RING", f(" sn ","w  w","e  e"," sn "),
                 WhetherTagger.AUTO_TAGS);
+    public static final NamedTaggedFormation O_SPOTS =
+        create("O SPOTS", f(" oo ","o  o","o  o"," oo "),
+                WhetherTagger.NO_AUTO_TAGS);
     public static final NamedTaggedFormation PROMENADE = // callerlab #18
         xofy("PROMENADE", LH_SINGLE_PROMENADE, COUPLE,
                 t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),

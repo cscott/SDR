@@ -1141,6 +1141,38 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.BELLE),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BELLE));
 
+    /** O SPOTS formation.
+      * @doc.test
+      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> tf = FormationList.O_SPOTS; tf.toStringDiagram('|');
+      *  |     o    o
+      *  |
+      *  |o              o
+      *  |
+      *  |o              o
+      *  |
+      *  |     o    o
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      */
+    public static final NamedTaggedFormation O_SPOTS =
+        new NamedTaggedFormation("O SPOTS",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), Rotation.fromAbsoluteString("o"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(3), Rotation.fromAbsoluteString("o"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), Rotation.fromAbsoluteString("o"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(1), Rotation.fromAbsoluteString("o"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("o"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("o"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("o"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("o"))));
+
     /** PROMENADE formation.
       * @doc.test
       *  js> FormationList = FormationListJS.initJS(this); undefined;
@@ -2635,6 +2667,7 @@ abstract class FormationListFast {
             FormationListFast.REVERSE_SINGLE_FILE_PROMENADE,
             FormationListFast.RH_ALAMO_RING,
             FormationListFast.LH_ALAMO_RING,
+            FormationListFast.O_SPOTS,
             FormationListFast.PROMENADE,
             FormationListFast.WRONG_WAY_PROMENADE,
             FormationListFast.STAR_PROMENADE,
