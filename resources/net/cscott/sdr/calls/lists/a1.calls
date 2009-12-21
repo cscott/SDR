@@ -1,5 +1,13 @@
 program: a1
 
+// this is higher precedence version of roll which binds looser than whatever's
+// inside the anything; eg: "as couples trade and individually roll" is
+// and individually roll(as couples(trade))
+// put on the a1 list with "as couples" because it's not needed below this.
+def: and individually roll(c)
+  spoken: [-15] <c=anything> and individually roll
+  call: _roll([c])
+
 def: quarter right
   in: 2
   prim: 0,0,right

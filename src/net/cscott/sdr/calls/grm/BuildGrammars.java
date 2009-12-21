@@ -71,7 +71,9 @@ public class BuildGrammars {
         // okay, now rewrite each rule to implement proper precedence level.
         for (RuleAndAction ra : rules) {
             int prec = precLevel.get(ra.rule.prec);
-            if (!hasNontermRefs(ra.rule.rhs)) prec = highestPrec;
+            if (ra.rule.prec.compareTo(Fraction.ZERO)==0 &&
+		!hasNontermRefs(ra.rule.rhs))
+		prec = highestPrec;
             ra.rule = rewriteForPrec(ra.rule, prec); 
         }
         // remove left recursion, step 1:

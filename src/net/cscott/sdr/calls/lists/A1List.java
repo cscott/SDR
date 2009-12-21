@@ -72,7 +72,7 @@ public abstract class A1List {
         @Override
         public Rule getRule() {
             Grm g = Grm.parse("as couples <0=anything>");
-            return new Rule("anything", g, Fraction.valueOf(-10));
+            return new Rule("anything", g, Fraction.valueOf(-15));
         }
         @Override
         public Evaluator getEvaluator(DanceState ds, List<Expr> args) {

@@ -1,6 +1,7 @@
 program: plus
 
 def: roll
+  spoken: [-10] roll
   from: ANY // make sure we've breathed before we roll
     call: _roll
 def: and roll(c)

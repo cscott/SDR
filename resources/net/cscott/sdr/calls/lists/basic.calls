@@ -26,7 +26,7 @@ def: face out
 // work out grammar implications
 def: anyone while others(sel, c1, c2=nothing)
   /* default to 'nothing' if the 'while...' isn't present */
-  spoken: [-15] <sel=anyone> <c1=anything> \
+  spoken: [-20] <sel=anyone> <c1=anything> \
                  (while the (others|<anyone>) <c2=anything>)?
   // special case "everybody" as a filler word.
   from: ANY
@@ -120,7 +120,7 @@ def: _sides start
    prim: 0, 0, none // stay where they are
 
 def: down the middle(sel, c=nothing)
-  spoken: <sel=heads_or_sides> down the middle ((and)? <c=anything>)?
+  spoken: [-20] <sel=heads_or_sides> down the middle ((and)? <c=anything>)?
   from: STATIC SQUARE
     call: _anyone while others static square([sel], [c], nothing)
   from: 2x4
@@ -1531,7 +1531,7 @@ def: _start a flutterwheel
 
 // callerlab #48: SWEEP A QUARTER
 def: sweep(n)
-  spoken: sweep <n=fraction>
+  spoken: [-10] sweep <n=fraction>
   condition: AND(GREATER([n],0), GREATER(1, [n])), \
              "Must sweep some number of quarters"
   // two beats per quarter

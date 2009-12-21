@@ -22,6 +22,15 @@ sdr> /parse("trade and roll twice")
 _fractional(2, and roll(trade))
 sdr> /parse("boys roll the girls away")
 _roll away(BOY, GIRL)
+sdr> /// tandem binds looser than 'roll'; if you want
+sdr> /// something else, call "tandem trade and invidually roll"
+sdr> ///  or "tandem trade ; roll"
+sdr> /parse("tandem trade and roll")
+tandem(and roll(trade))
+sdr> /parse("tandem trade and individually roll")
+and individually roll(tandem(trade))
+sdr> /parse("tandem roll")
+tandem(roll)
 sdr> ///
 sdr> /// "anyone anything" concept
 sdr> /parse("centers square thru and roll")
@@ -37,11 +46,19 @@ _roll away(CENTER, END)
 sdr> /parse("centers centers roll the ends away")
 anyone while others(CENTER, _roll away(CENTER, END), nothing)
 sdr> ///
-sdr> /// precedence of <anyone> <anything> -vs- roll and mirror
+sdr> /// precedence of <anyone> <anything> -vs- roll
 sdr> /parse("centers trade while the ends trade and roll")
 anyone while others(CENTER, trade, and roll(trade))
-sdr> /parse("mirror centers trade while the ends trade")
-mirror(anyone while others(CENTER, trade, trade))
+sdr> ///
+sdr> /// precedence of 'down the middle and ...'
+sdr> /parse("sides down the middle")
+down the middle(SIDE, nothing)
+sdr> /parse("heads down the middle and as couples touch 1/4")
+down the middle(HEAD, as couples(_touch(1/4)))
+sdr> ///
+sdr> /// precedence of mirror
+sdr> /parse("mirror tandem trade")
+mirror(tandem(trade))
 sdr> ///
 sdr> /// precedence of mirror -vs- left
 sdr> /parse("left swing thru and roll")
@@ -59,6 +76,6 @@ anyone while others(BOY, trade, nothing)
 sdr> ///
 sdr> /// precedence of "as couples" vs roll
 sdr> /parse('as couples trade and roll')
-and roll(as couples(trade))
+as couples(and roll(trade))
 sdr> /// XXX: as couples swing and mix?
 sdr> /exit
