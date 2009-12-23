@@ -185,10 +185,10 @@ abstract class FormationListSlow {
                d( 0,-2,"w",POINT));
     public static final NamedTaggedFormation RH_FACING_DIAMOND =
         create("RH FACING DIAMOND",
-               d( 0, 2,"e",POINT),
-               d(-1, 0,"s",BELLE,CENTER),
-               d(+1, 0,"n",BELLE,CENTER),
-               d( 0,-2,"w",POINT));
+               d( 0, 2,"w",POINT),
+               d(-1, 0,"n",BEAU,CENTER),
+               d(+1, 0,"s",BEAU,CENTER),
+               d( 0,-2,"e",POINT));
     public static final NamedTaggedFormation LH_DIAMOND =
         create("LH DIAMOND",
                d( 0, 2,"w",POINT),
@@ -197,10 +197,10 @@ abstract class FormationListSlow {
                d( 0,-2,"e",POINT));
     public static final NamedTaggedFormation LH_FACING_DIAMOND =
         create("LH FACING DIAMOND",
-               d( 0, 2,"w",POINT),
-               d(-1, 0,"n",BEAU,CENTER),
-               d(+1, 0,"s",BEAU,CENTER),
-               d( 0,-2,"e",POINT));
+               d( 0, 2,"e",POINT),
+               d(-1, 0,"s",BELLE,CENTER),
+               d(+1, 0,"n",BELLE,CENTER),
+               d( 0,-2,"w",POINT));
     public static final NamedTaggedFormation RH_STAR =
         create("RH STAR",
                 d( 0, 1, "e"),
