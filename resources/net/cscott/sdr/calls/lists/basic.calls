@@ -1058,12 +1058,13 @@ def: left and right thru full turn
   call: left(right and left thru full turn)
 
 // callerlab #23: GRAND SQUARE
-def: grand square
+def: grand square(n=24)
+  spoken: grand square ( <n=number> steps )?
   from: STATIC SQUARE
     condition: FALSE(), "Who should face in?"
     call: nothing
   from: O DOUBLE PASS THRU
-    call: _grand square(nothing, nothing)
+    call: _fractional(_multiply num([n],1/24), _grand square(nothing, nothing))
 
 def: _grand square(first, last)
   ipart:
@@ -1105,10 +1106,10 @@ def: _grand square face(sel)
   select: OTHERS
     prim: 0, 0, none
 
-def: face grand square(sel, n=32)
+def: face grand square(sel, n=24)
   // XXX boys face grand square, etc?
   spoken: <sel=heads_or_sides> face grand square ( <n=number> steps )?
-    call: _fractional(_multiply num([n],1/32), \
+    call: _fractional(_multiply num([n],1/24), \
           _grand square(_grand square face([sel]), _grand square face([sel])))
 
 // callerlab #24: STAR THRU
