@@ -8,20 +8,6 @@ def: slip
   from: 1x4
     call: _quasi concentric(_miniwave trade, nothing)
 
-/*
-def: split counter rotate
-  in: 4
-  from: GENERAL LINE
-    select: CENTER
-      from: COUPLE, RH MINIWAVE, LH MINIWAVE
-        select: BEAU
-          prim: 1,1,right
-        select: BELLE
-          prim: -1,1,left
-    select: END
-    // XXX!
-*/
-
 def: box counter rotate(n=1/4)
   spoken: box counter rotate (<n=fraction>)?
   condition: equal num(NUM DANCERS(), 4), \
@@ -43,6 +29,50 @@ def: split counter rotate(n=1/4)
         POINT TO POINT DIAMONDS, POINT TO POINT FACING DIAMONDS
     from: MIXED DIAMOND
       call: counter rotate([n])
+
+// mini busy isn't really strongly related to keep busy: the leaders part
+// is very different.
+def: mini busy
+  // 3 parts
+  ipart:
+    call: _start mini busy
+  ipart: // XXX need to define CENTER LINE here.
+    call: _quasi concentric(_centers(hinge), press ahead)
+  ipart: // XXX again, define CENTER DIAMOND
+    call: _quasi concentric(flip the diamond, quarter in)
+
+// XXX vic & callerlab would also like to be able to do a minibusy from
+//     inverted lines (centers facing in) and vic would like to do it
+//     from parallel waves as well.
+def: _start mini busy
+  from: PARALLEL TWO FACED LINES
+    select: TRAILER
+      prim: 0, 1, none
+    select: LEADER
+      prim: 0, 1, in
+  from: ENDS OUT INVERTED LINES, PARALLEL WAVES
+    condition: FALSE(), "Not implemented"
+    call: nothing
+
+def: remake
+  optional: LEFT
+  part: 2
+    call: quarter thru
+  part:
+    // XXX: not grand means don't allow matches whose bounds include the origin
+    //      unless total # of dancers is 4 or less
+    from: matcher(allow unmatched, not grand, RH MINIWAVE)
+      call: right arm turn(3/4)
+
+def: grand remake
+  part: 2
+    call: grand quarter thru
+  part:
+    from: allow unmatched(RH MINIWAVE)
+      call: right arm turn(3/4)
+
+def: grand left remake
+  call: mirror(grand remake)
 
 def: single wheel
   in: 4

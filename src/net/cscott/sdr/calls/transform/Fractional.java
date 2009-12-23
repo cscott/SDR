@@ -106,7 +106,8 @@ public class Fractional extends TransformVisitor<Fraction> {
         }
         // optimization: some concepts are safe to hoist fractionalization thru
         if (safeConcepts.contains(apply.call.atom)) {
-            if (apply.call.atom.equals("_with designated"))
+            if (apply.call.atom.equals("_with designated") ||
+		apply.call.atom.equals("_anyone"))
                 // two args, subcall is last one
                 return new Apply
                     (new Expr(apply.call.atom, apply.call.args.get(0),
@@ -136,7 +137,7 @@ public class Fractional extends TransformVisitor<Fraction> {
     /** A list of concepts which it is safe to hoist fractionalization through.
      That is, "1/2(as couples(swing thru))" == "as couples(1/2(swing thru))". */
     private static Set<String> safeConcepts = new HashSet<String>(Arrays.asList(
-            "as couples","tandem","_with designated",
+            "as couples","tandem","_with designated","_anyone",
             "reverse", "left", "mirror",
             "_quasi concentric", "_concentric", "_cross concentric",
             "concentric", "cross concentric"

@@ -27,3 +27,58 @@ def: pair off
   in: 2
   from: ANY // center of the formation
     prim: 0,0,out
+
+def: mix
+  call: cross run(CENTER), _finish mix
+def: _finish mix
+  in: 3
+  from: 1x4
+    call: _quasi concentric(trade, _nothing preserve roll)
+
+def: quarter thru
+  optional: LEFT
+  call: _quarter thru(1/4)
+def: grand quarter thru
+  call: _grand quarter thru(1/4)
+def: grand left quarter thru
+  call: mirror(grand quarter thru)
+def: three quarter thru
+  optional: LEFT
+  call: _quarter thru(3/4)
+def: grand three quarter thru
+  call: _grand quarter thru(3/4)
+def: grand left three quarter thru
+  call: mirror(grand three quarter thru)
+
+def: _grand quarter thru(n)
+  part:
+    from: allow unmatched(RH MINIWAVE)
+      call: right arm turn([n])
+  part:
+    from: allow unmatched(LH MINIWAVE)
+      call: left arm turn(1/2)
+
+// this definition is trickier, because we need to stay in our 4-person
+// formation
+// XXX from RH wave-based triangles, etc.
+def: _quarter thru(n)
+  from: ANY
+    condition: equal num(_mod num([n], 1/2), 1/4)
+    from: RH BOX
+      call: right arm turn([n])
+      call: anyone while others(CENTER, left arm turn(1/2), \
+                                _nothing preserve roll)
+    from: RH FACING DIAMOND
+      call: _centers(right arm turn([n]))
+      call: left arm turn(1/2)
+    from: PARALLEL LH WAVES
+      call: _centers(_quarter thru([n]))
+  from: ANY
+    condition: equal num(_mod num([n], 1/2), 0)
+    from: RH OCEAN WAVE
+      call: right arm turn([n])
+      call: anyone while others(CENTER, left arm turn(1/2), \
+                                _nothing preserve roll)
+    from: LH OCEAN WAVE
+      call: _centers(right arm turn([n]))
+      call: left arm turn(1/2)

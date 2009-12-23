@@ -17,7 +17,7 @@ import net.cscott.sdr.calls.lists.C1List.ConcentricType;
  * and concept definitions which are on the 'C2' program.
  * Note that "simple" calls and concepts are defined in
  * the resource file at
- * <a href="doc-files/c1.calls"><code>net/cscott/sdr/calls/lists/c2.calls</code></a>;
+ * <a href="doc-files/c2.calls"><code>net/cscott/sdr/calls/lists/c2.calls</code></a>;
  * this class contains only those definitions for which an
  * executable component is required.
  * @author C. Scott Ananian

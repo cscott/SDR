@@ -18,7 +18,9 @@ import net.cscott.sdr.calls.lists.A2List;
 import net.cscott.sdr.calls.lists.BasicList;
 import net.cscott.sdr.calls.lists.C1List;
 import net.cscott.sdr.calls.lists.C2List;
+import net.cscott.sdr.calls.lists.C3aList;
 import net.cscott.sdr.calls.lists.C3bList;
+import net.cscott.sdr.calls.lists.C4List;
 import net.cscott.sdr.calls.lists.MainstreamList;
 import net.cscott.sdr.calls.lists.PlusList;
 import net.cscott.sdr.calls.transform.CallFileLoader;
@@ -80,6 +82,7 @@ public class CallDB {
         CallFileLoader.load(resource("a2"), db);
         CallFileLoader.load(resource("c1"), db);
         CallFileLoader.load(resource("c2"), db);
+        CallFileLoader.load(resource("c3a"), db);
         CallFileLoader.load(resource("c3b"), db);
         CallFileLoader.load(resource("c4"), db);
         // now load complex calls and concepts.
@@ -90,7 +93,9 @@ public class CallDB {
         loadFromClass(A2List.class);
         loadFromClass(C1List.class);
         loadFromClass(C2List.class);
+        loadFromClass(C3aList.class);
         loadFromClass(C3bList.class);
+        loadFromClass(C4List.class);
     }
     private static URL resource(String name) {
         return CallDB.class.getClassLoader().getResource("net/cscott/sdr/calls/lists/"+name+".calls");

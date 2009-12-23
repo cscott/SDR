@@ -12,3 +12,7 @@ def: curlique
       prim: 0, 0, left
   from: ANY
     call: _mixed touch, curlique
+
+def: retain your lane
+  from: CENTER HALF
+    call: _quasi concentric(remake, 2(circulate))

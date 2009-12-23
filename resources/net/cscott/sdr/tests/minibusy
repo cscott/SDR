@@ -1,0 +1,22 @@
+Minibusy.
+
+sdr> /program=Program.A2
+A2
+sdr> heads lead right ; veer left
+| 4B>  1B>
+| 
+| 4G>  1G>
+| 
+| 3G<  2G<
+| 
+| 3B<  2B<
+sdr> do 1/3 of a mini-busy
+|      4B>  1Bv
+| 
+|      4G>  1Gv
+| 
+| 3G^  2G<
+| 
+| 3B^  2B<
+sdr> /// XXX that's all we can do at the moment.
+sdr> /exit

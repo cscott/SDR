@@ -1,0 +1,17 @@
+program: c3a
+
+def: keep busy
+  call: busy(and(_centers(hinge), flip the diamond, step and fold))
+  example: keep busy
+    before:
+    ! ^ ^
+    ! A a d D
+    ! ^ ^ v v
+    ! B b c C
+    !     v v
+    after:
+    ! ^   ^
+    ! C d D a
+    ! ^ v ^ v
+    ! c B b A
+    !   v   v

@@ -138,7 +138,55 @@ def: boomerang
     ! <c C>
     ! <A a>
 
-/* skipping "busy <anything>" and "by golly" */
+// XXX vic provides a more general definition which involves "make a compact
+//     formation".  We're using the standard def.
+def: busy(c)
+  spoken: busy <c=anything>
+  ipart:
+    call: _start busy, _finish busy([c])
+  example: busy single wheel
+    before:
+    ! ^ ^
+    ! A a B b
+    ! ^ ^ v v
+    ! d D c C
+    !     v v
+    after:
+    ! ^   ^
+    ! C d B a
+    ! ^ v ^ v
+    ! c D b A
+    !   v   v
+  example: busy mix
+    before:
+    ! ^ ^
+    ! A a B b
+    ! ^ ^ v v
+    ! d D c C
+    !     v v
+    after:
+    ! ^
+    ! C ^ ^     a
+    ! ^ B b d D v
+    ! c     v v A
+    !           v
+
+def: _start busy
+  from: PARALLEL LH TWO FACED LINES
+    call: mirror(_start busy)
+  from: PARALLEL RH TWO FACED LINES
+    select: TRAILER
+      prim: 0, 1, none
+    select: and(LEADER, BEAU)
+      prim: 4, 1, right
+    select: and(LEADER, BELLE)
+      prim: 0, 1, right, sashay-finish
+
+def: _finish busy(c)
+  from: CENTER HALF
+    call: _concentric([c], counter rotate(1/4))
+
+// XXX: allow "<anything> by golly"?
 def: by golly
   // this alternate definition for by golly is borrowed by vic ceder
   // it's more general than the "standard" definition and allows by golly
@@ -148,13 +196,13 @@ def: by golly
     condition: MATCH(_ROLL PATTERN(), RRRR)
     ipart:
       call: veer left
-      call: 1/2 tag
+      call: half tag
   from: FACING COUPLES
     // all selected dancers can roll left
     condition: MATCH(_ROLL PATTERN(), LLLL)
     ipart:
       call: veer right
-      call: left 1/2 tag
+      call: left(half tag)
   example: recycle, by golly
     before:
     ! ^   ^
@@ -193,6 +241,20 @@ def: by golly
 
 /* .... */
 
+def: change lanes
+  call: _blend(retain your lane, spread)
+
+def: change the centers
+  call: change the(slip)
+def: change the wave
+  call: change the(swing)
+
+def: change the(c) // XXX NOL Vic Ceder 1992
+  spoken: change the <c=anything>
+  call: _wave swing, slip, cross run(CENTER), [c]
+
+/* .... */
+
 def: explode the diamond
   from: TWIN DIAMONDS, TWIN FACING DIAMONDS
     //ends in: ENDS IN INVERTED LINES
@@ -212,23 +274,8 @@ def: explode the diamond
 /* .... */
 def: reverse the pass
   from: TANDEM COUPLES
-    select: LEADER
-      part:
-        call: trade
-      part:
-        call: pass thru
-      part: // should be divisible in half
-        call: nothing
-        call: nothing
-    select: TRAILER
-      part: // should be divisible in two
-        call: nothing
-        call: nothing
-      part:
-        call: pass thru
-      part:
-        call: trade
-    //ends in: TANDEM COUPLES
+    //ends in: formation(TANDEM COUPLES) // XXX breaks fractionalization
+    call: _with designated(LEADER, _designated leaders reverse the pass)
   example: reverse the pass
     before:
     ! ^ ^
@@ -251,11 +298,14 @@ def: reverse the pass
     ! C a c A
     !   v   v
 
+def: _designated leaders reverse the pass
+  call: _anyone(DESIGNATED, trade)
+  call: pass thru
+  call: _anyone(not(DESIGNATED), trade)
+
 def: reverse the top
-  ends in: formation(or(RH OCEAN WAVE, LH OCEAN WAVE))
-    call: fan the top
-    call: _wave swing
-  //ends in: WAVE // XXX grammar doesn't admit this yet
+  ends in: formation(or(RH OCEAN WAVE, LH OCEAN WAVE)) // XXX breaks fractionalization
+  call: fan the top, _wave swing
   example: reverse the top
     before:
     ! A><c

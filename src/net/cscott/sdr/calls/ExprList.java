@@ -243,6 +243,28 @@ public class ExprList {
         public int minArgs() { return 2; }
     };
     static { exprMathFuncs.put(_DIVIDE_NUM.getName(), _DIVIDE_NUM); }
+    /**
+     * Simple math: modulo.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _mod num '3/4 '1/2)")
+     *  (Expr _mod num '3/4 '1/2)
+     *  js> c.evaluate(fc, ds).toProperString()
+     *  1/4
+     */
+    public static final ExprFunc<Fraction> _MOD_NUM = new MathFunc("_mod num") {
+        @Override
+        Fraction doOp(Fraction f1, Fraction f2) {
+            Fraction f = f1.divide(f2);
+            return f.subtract(Fraction.valueOf(f.floor())).multiply(f2);
+        }
+        @Override
+        public int maxArgs() { return 2; }
+        @Override
+        public int minArgs() { return 2; }
+    };
+    static { exprMathFuncs.put(_MOD_NUM.getName(), _MOD_NUM); }
 
     /**
      * Simple math: return integer part of a fraction.
