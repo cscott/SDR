@@ -3,6 +3,8 @@ package net.cscott.sdr.calls.grm;
 import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -11,6 +13,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import net.cscott.jutil.MultiMap;
+import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.grm.Grm.Alt;
 import net.cscott.sdr.calls.grm.Grm.Concat;
@@ -116,7 +119,11 @@ public class EmitJava extends AbstractEmit {
     };
     public String emit() {
         // emit all the grammars
-        for (Program p: grmTable.keySet()) {
+	Collection<Program> pp = grmTable.keySet();
+	if (DevSettings.ONLY_C4_GRAMMAR)
+	    pp = Arrays.asList(Program.values());
+
+        for (Program p: pp) {
             sb.append("    public static final Map<String,Grm> ");
             sb.append(p.name());
             sb.append(";");
@@ -150,7 +157,17 @@ public class EmitJava extends AbstractEmit {
             sb.append(");");
             sb.append(NL);
         }
+	if (DevSettings.ONLY_C4_GRAMMAR) {
+	    for (Program p : Program.values()) {
+		if (p==Program.C4) continue;
+		sb.append(INDENT);
+		sb.append(p.name());
+		sb.append(" = _C4;");
+		sb.append(NL);
+	    }
+	}
         sb.append("    }"+NL);
+
         // substitute the rules & the classname into the skeleton
         String result = subst("java.skel", sb.toString(), "All");
         // done.
