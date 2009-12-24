@@ -563,7 +563,11 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    description="JDO-enhance the SDRweb web server">
       <!-- sync up war classes -->
       <copy todir="war/WEB-INF/classes">
-	<fileset dir="${classes_dir}" />
+	<fileset dir="${classes_dir}">
+          <!-- save space to fit into the GAE limits -->
+	  <exclude name="net/cscott/sdr/sound/**/*" />
+	  <exclude name="net/cscott/sdr/recog/**/*" />
+	</fileset>
 	<fileset dir="${src_dir}" includes="META-INF/**/*" />
 	<fileset dir="${src_dir}" includes="log4j.properties" />
 	<fileset dir="${src_dir}" includes="**/*.gwt.xml" />
