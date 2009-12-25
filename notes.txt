@@ -1254,7 +1254,18 @@ to do:
           select: OTHERS
             call: nothing
  fff) Interaction of "ends in:" and "_fractional" -- suppress? don't
-      allow fractionalization?
+      allow fractionalization? remove ends in?
+ ggg) annotate/document precedence levels:
+       - "only with level call", ie
+           "tandem <anything> and individually roll"
+         but not "<anything> and individually roll"
+       - "once only": "<anything> and roll" but not
+          "<anything> and roll and roll"
+ hhh) replace leftable/reversable with explicit "left X"/"reverse X"
+      calls (ie duplicate rules to preserve precedence relationships)
+ iii) (trade and roll) twice -vs- trade and (roll twice)
+      do the following twice: trade, roll
+
 -------
 heads x:
   from squared_set:
