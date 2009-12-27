@@ -308,7 +308,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    depends="jar">
 	    <java jar="${basedir}/${ant.project.name}.jar"
 	          fork="true"
-		  maxmemory="256m">
+		  maxmemory="512m">
 		  <sysproperty key="java.library.path" value="lib/jme"/>
                   <!--<sysproperty key="frontend" value="epFrontEnd"/>-->
 		  <classpath refid="classpath.path"/>
