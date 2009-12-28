@@ -50,7 +50,7 @@
     <component name="searchManager" 
         type="edu.cmu.sphinx.decoder.search.SimpleBreadthFirstSearchManager">
         <property name="logMath" value="logMath"/>
-        <property name="linguist" value="flatLinguist"/>
+        <property name="linguist" value="dflatLinguist"/>
         <property name="pruner" value="trivialPruner"/>
         <property name="scorer" value="threadedScorer"/>
         <property name="activeListFactory" value="activeList"/>
@@ -80,15 +80,20 @@
     <!-- The linguist  configuration                              -->
     <!-- ******************************************************** -->
     
-    <component name="flatLinguist" 
-                type="edu.cmu.sphinx.linguist.flat.FlatLinguist">
+    <component name="dflatLinguist"
+                type="edu.cmu.sphinx.linguist.dflat.DynamicFlatLinguist">
         <property name="logMath" value="logMath"/>
         <property name="grammar" value="jsgfGrammar"/>
         <property name="acousticModel" value="wsj"/>
         <property name="wordInsertionProbability" 
                 value="${wordInsertionProbability}"/>
+        <property name="silenceInsertionProbability"
+                  value="${silenceInsertionProbability}"/>
         <property name="languageWeight" value="${languageWeight}"/>
         <property name="unitManager" value="unitManager"/>
+        <property name="addOutOfGrammarBranch" value="false"/>
+        <property name="outOfGrammarProbability" value="1E-20"/>
+        <property name="phoneInsertionProbability" value="1E-10"/>
     </component>
         
     
@@ -96,11 +101,11 @@
     <!-- The Grammar  configuration                               -->
     <!-- ******************************************************** -->
             
-    <component name="jsgfGrammar" type="edu.cmu.sphinx.jsapi.JSGFGrammar">
+    <component name="jsgfGrammar" type="edu.cmu.sphinx.jsgf.JSGFGrammar">
         <property name="dictionary" value="dictionary"/>
         <property name="grammarLocation" 
              value="resource:/net.cscott.sdr.recog.SphinxDemo!/net/cscott/sdr/recog/"/>
-        <property name="grammarName" value="C4"/>
+        <property name="grammarName" value="Basic"/>
 	<property name="logMath" value="logMath"/>
     </component>
     

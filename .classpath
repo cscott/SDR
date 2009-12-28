@@ -3,12 +3,7 @@
 	<classpathentry excluding="**/*__.g|**/*~|net/cscott/sdr/webapp/client/thunk/" kind="src" path="src"/>
 	<classpathentry excluding="**/*~" kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/sphinx/jsapi.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://java.sun.com/products/java-media/speech/forDevelopers/jsapi-doc/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/sphinx/sphinx4.jar">
+	<classpathentry kind="lib" path="lib/sphinx/sphinx4.jar" sourcepath="/Sphinx4/src/sphinx4">
 		<attributes>
 			<attribute name="javadoc_location" value="http://cmusphinx.sourceforge.net/sphinx4/javadoc/"/>
 		</attributes>

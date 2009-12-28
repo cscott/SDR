@@ -18,7 +18,7 @@ import edu.cmu.sphinx.decoder.search.Token;
 import edu.cmu.sphinx.frontend.Data;
 import edu.cmu.sphinx.frontend.FloatData;
 import edu.cmu.sphinx.frontend.util.Microphone;
-import edu.cmu.sphinx.jsapi.JSGFGrammar;
+import edu.cmu.sphinx.jsgf.JSGFGrammar;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.props.ConfigurationManager;
@@ -72,7 +72,7 @@ public class RecogThread extends Thread {
         /* get the JSGF grammar component */
         JSGFGrammar jsgfGrammar =
             (JSGFGrammar) cm.lookup("jsgfGrammar");
-        jsgfGrammar.dumpRandomSentences(100);
+        //jsgfGrammar.dumpRandomSentences(10);
         
         if (!microphone.startRecording()) {
             recognizer.deallocate();

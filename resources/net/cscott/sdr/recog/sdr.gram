@@ -1,4 +1,4 @@
-#JSGF V1.0;
+#JSGF V1.0 UTF-8;
 
 /**
  * JSGF Grammar for SDR - 4 person Mainstream
@@ -32,7 +32,7 @@ public <call> =
 	(<people>|<wave_select>) [cross] run |
 	[<people>|partner|couples|<wave_select>] trade |
 	zoom |
-	[reverse] flutter wheel |
+	[reverse] flutterwheel |
 	veer [left|right] |
 	[left] touch (one|a) quarter |
 	[split | box] circulate |
