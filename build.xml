@@ -457,6 +457,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		  <!-- enable assertions when building grammars -->
 		  <jvmarg value="-ea:net.cscott..." />
                   <classpath>
+		    <!-- dictionary source files are found in lib/sphinx -->
+		    <pathelement location="lib/sphinx" />
 		    <path refid="classpath.path"/>
                   </classpath>
 	    </java>
@@ -491,12 +493,17 @@ window['JAVADOC_BASE'] = '{@docRoot}';
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
 	    </javac>
+	    <copy todir="${classes_dir}">
+              <fileset dir="${resources_dir}" />
+	    </copy>
     </target>
     <target name="clean.grm" depends="init"
 	    description="Remove generated natural language grammars">
         <delete>
 	  <fileset dir="resources/net/cscott/sdr/recog/"
 		   includes="*.gram" excludes="sdr.gram" />
+	  <fileset dir="resources/net/cscott/sdr/recog/"
+		   includes="sdrdict" />
 	  <fileset dir="src/net/cscott/sdr/calls/lists/"
 		   includes="*Grammar.g *Grammar__.g *.tokens
 			     *GrammarLexer.java *GrammarParser.java

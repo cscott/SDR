@@ -45,6 +45,8 @@ public class BuildGrammars {
         }
         writeFile("src/net/cscott/sdr/calls/lists/AllGrm.java",
                   EmitJava.INSTANCE.emit());
+        writeFile("resources/net/cscott/sdr/recog/sdrdict",
+                  EmitDictionary.INSTANCE.emit());
         System.err.println("Done.");
     }
     public static void build(Program program)
@@ -129,6 +131,8 @@ public class BuildGrammars {
                 EmitJSAPI.emit(programName, rules));
         // emit as Java source for writing completion engines
         EmitJava.INSTANCE.collect(program, rules);
+        // emit trimmed pronunciation dictionary
+        EmitDictionary.INSTANCE.collect(program, rules);
     }
     
     private static List<RuleAndAction> mkAction(Call c)
