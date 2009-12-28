@@ -38,7 +38,7 @@ class AbstractEmit extends ToStringVisitor {
         try {
             InputStream is = getClass().getResourceAsStream(skeleton);
             assert is!=null : "can't find "+skeleton+" resource";
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             while(true) {
                 String line = br.readLine();
                 if (line==null) break;

@@ -297,7 +297,7 @@ public class BuildGrammars {
 	try {
 	    if (f.exists() && f.length() == contents.length()) {
 		// compare existing contents
-		Reader r=new InputStreamReader(new FileInputStream(f), "utf-8");
+		Reader r=new InputStreamReader(new FileInputStream(f), "UTF-8");
 		try {
 		    if (readFully(r).equals(contents)) {
 			System.err.println("Already up to date: "+filename);
@@ -309,7 +309,7 @@ public class BuildGrammars {
 	    /* ignore error during comparison; just write! */
 	}
         System.err.println("Writing: "+filename);
-	Writer fw = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
+	Writer fw = new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
         fw.write(contents);
         fw.close();
     }
