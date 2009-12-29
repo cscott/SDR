@@ -91,9 +91,10 @@
                   value="${silenceInsertionProbability}"/>
         <property name="languageWeight" value="${languageWeight}"/>
         <property name="unitManager" value="unitManager"/>
-        <property name="addOutOfGrammarBranch" value="false"/>
+        <property name="addOutOfGrammarBranch" value="true"/>
         <property name="outOfGrammarProbability" value="1E-20"/>
         <property name="phoneInsertionProbability" value="1E-10"/>
+	<property name="phoneLoopAcousticModel" value="wsj"/>
     </component>
         
     
@@ -105,7 +106,7 @@
         <property name="dictionary" value="dictionary"/>
         <property name="grammarLocation" 
              value="resource:/net.cscott.sdr.recog.SphinxDemo!/net/cscott/sdr/recog/"/>
-        <property name="grammarName" value="Basic"/>
+        <property name="grammarName" value="menu"/>
 	<property name="logMath" value="logMath"/>
     </component>
     
@@ -148,23 +149,6 @@
     <component name="unitManager" 
         type="edu.cmu.sphinx.linguist.acoustic.UnitManager"/>
 
-    <!-- ******************************************************** -->
-    <!-- The frontend configuration                               -->
-    <!-- ******************************************************** -->
-    
-    <component name="frontEnd" type="edu.cmu.sphinx.frontend.FrontEnd">
-        <propertylist name="pipeline">
-            <item>microphone </item>
-            <item>premphasizer </item>
-            <item>windower </item>
-            <item>fft </item>
-            <item>melFilterBank </item>
-            <item>dct </item>
-            <item>liveCMN </item>
-            <item>featureExtraction </item>
-        </propertylist>
-    </component>
-    
     <!-- ******************************************************** -->
     <!-- The live frontend configuration                          -->
     <!-- ******************************************************** -->

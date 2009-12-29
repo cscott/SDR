@@ -67,7 +67,7 @@ public class App {
         // create voice recognition thread
         try { sphinxSync.await(); }
         catch (Exception e) { assert false : e; /* broken barrier! */ }
-        RecogThread rt = new RecogThread(ds, input, rendezvousLM);
+        RecogThread rt = new RecogThread(input, rendezvousLM);
         rt.start();
 
         // Now start processing input, handing resulting formations to the
@@ -103,35 +103,39 @@ public class App {
         // to extract TimedPositions for each dancer, which are
         // given to the AnimDancers.
         private void doNextCall() throws InterruptedException {
-            String lastCall = ""; String message = "";
+            String bestGuess = null, message = null;
             // get the next input
             PossibleCommand pc = input.getNextCommand();
             // go through the possibilities, and see if any is a valid call.
-            if (pc.getUserInput() == PossibleCommand.UNCLEAR_UTTERANCE) {
-                sendToHUD("I couldn't hear you");
-                return;
-            }
             while (pc != null) {
+                String thisGuess = pc.getUserInput();
+                if (thisGuess == PossibleCommand.UNCLEAR_UTTERANCE) {
+                    sendToHUD("I couldn't hear you");
+                    return;
+                }
                 try {
-                    Apply a = pc.getApply();
-                    if (a==null) throw new BadCallException("Parsing error");
-                    sendResults(choreo.execute(a, score));
+                    sendResults(choreo.execute(thisGuess, score));
 
                     // this was a good call!
-                    sendToHUD(pc.getUserInput());
-                    score.goodCallGiven(a, pc.getStartTime(), pc.getEndTime());
+                    sendToHUD(thisGuess);
+                    score.goodCallGiven(choreo.lastCall(), pc.getStartTime(), pc.getEndTime());
                     return;
                 } catch (BadCallException be) {
-                    lastCall = pc.getUserInput();
-                    message = be.getMessage();
+                    if (bestGuess==null ||
+                        (message==null && be.getMessage()!=null)) {
+                        bestGuess = thisGuess;
+                        message = be.getMessage();
+                    }
                     // try the next possibility.
                 }
                 pc = pc.next();
             }
             // if we get here, then we had a bad call
-            // (none of the possibilites were good)
-            assert lastCall != null;
-            score.illegalCallGiven(lastCall, message);
+            // (none of the possibilities were good)
+            assert bestGuess != null;
+            if (message==null) message="Unknown problem";
+            score.illegalCallGiven(bestGuess, message);
+            sendToHUD(bestGuess+": "+message);
             return;
         }
         private void sendToHUD(String s) {

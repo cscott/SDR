@@ -1,0 +1,12 @@
+#JSGF V1.0 UTF-8;
+
+/**
+ * JSGF Grammar for SDR - Menu commands
+ */
+
+grammar menu;
+
+public <cmd> =
+       square up |
+       exit |
+       quit {exit} ;

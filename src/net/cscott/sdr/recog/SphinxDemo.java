@@ -56,6 +56,7 @@ public class SphinxDemo {
             /* get the JSGF grammar component */
             JSGFGrammar jsgfGrammar =
                 (JSGFGrammar) cm.lookup("jsgfGrammar");
+            jsgfGrammar.loadJSGF("Plus");
 
             jsgfGrammar.dumpRandomSentences(10);
 

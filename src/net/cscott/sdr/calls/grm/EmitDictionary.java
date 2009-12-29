@@ -32,7 +32,9 @@ public class EmitDictionary extends AbstractEmit {
                 "boys","men","girls","ladies","all","every","one","body","ends",
                 "one","two","three","four","five","six","seven","eight","nine",
                 "a","half","third","quarter","thirds","quarters","once","and",
-                "twice","times"
+                "twice","times",
+		// from the "menu" command grammar
+		"square","up","quit","exit"
                 ));
     }
     public void collect(Program program, List<RuleAndAction> l) {

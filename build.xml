@@ -501,7 +501,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    description="Remove generated natural language grammars">
         <delete>
 	  <fileset dir="resources/net/cscott/sdr/recog/"
-		   includes="*.gram" excludes="sdr.gram" />
+		   includes="*.gram" excludes="sdr.gram menu.gram" />
 	  <fileset dir="resources/net/cscott/sdr/recog/"
 		   includes="sdrdict" />
 	  <fileset dir="src/net/cscott/sdr/calls/lists/"

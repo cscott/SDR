@@ -23,14 +23,16 @@ public class ChoreoEngine {
      * earliest first).  No dancer will turn more than 1 wall (90 degrees)
      * between formations. All times in the {@code TimedFormation}s will be
      * absolute.
-     * @param call  The (sequence of) call(s) to perform.
+     * @param unparsedCall  The (sequence of) call(s) to perform.
      * @return a time-stamped list of result formations, with absolute times.
      * @throws BadCallException if (some part of) the given call is impossible
      *  from the given start formation.
      */ 
     public MultiMap<Dancer,DancerPath>
-    execute(Apply call, ScoreAccumulator score)
+    execute(String unparsedCall, ScoreAccumulator score)
     throws BadCallException {
+        if (true) return null;
+        Apply call = CallDB.INSTANCE.parse(ds.dance.getProgram(), unparsedCall);
         Evaluator e = new Evaluator.Standard(new Seq(call));
         // XXX: we don't actually want to do evaluateAll(); we want to
         //      return a continuation which will do evaluate() as needed,
@@ -41,4 +43,5 @@ public class ChoreoEngine {
         // before we return it.
         return null;
     }
+    public Apply lastCall() { return null; }
 }

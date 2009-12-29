@@ -27,9 +27,12 @@ public class CommandInput {
      * input routines and the choreography engine. */
     public CommandInput() { }
     
-    /** This is the actual queue we'll use for synchronization. */
-    private final BlockingQueue<PossibleCommand> queue =
+    /** This is the actual cmdQueue we'll use for synchronization. */
+    private final BlockingQueue<PossibleCommand> cmdQueue =
         new LinkedBlockingQueue<PossibleCommand>();
+    private final BlockingQueue<InputMode> modeQueue =
+        new LinkedBlockingQueue<InputMode>();
+
     /**
      * Called by input methods (voice recognition, keyboard input,
      * filer readers, etc) when they have another (set of)
@@ -38,7 +41,7 @@ public class CommandInput {
     public void addCommand(PossibleCommand c) {
         while (true)
             try {
-                queue.put(c);
+                cmdQueue.put(c);
                 return;
             } catch (InterruptedException e) {
                 assert false : "should never happen";
@@ -49,35 +52,28 @@ public class CommandInput {
      * @return the next possible command.
      */
     public PossibleCommand getNextCommand() throws InterruptedException {
-        return queue.take();
+        return cmdQueue.take();
     }
-    // helper methods.
-    /** Create a PossibleCommand from an unparsed user input, along with the
-     * 'next worst' PossibleCommand.  Does the parsing lazily, so that we
-     * don't parse unless the "better" PossibleCommands don't work out. */
-    public PossibleCommand commandFromUnparsed
-    (final DanceProgram ds, final String userInput,
-     final long startTime, final long endTime, final PossibleCommand next) {
-        PossibleCommand pc = new PossibleCommand() {
-            @Override
-            public String getUserInput() { return userInput; }
-            @Override
-            public long getStartTime() { return startTime; }
-            @Override
-            public long getEndTime() { return endTime; }
-            @Override
-            public Apply getApply() throws BadCallException {
-                if (cache==null)
-                    cache=CallDB.INSTANCE.parse(ds.getProgram(), userInput);
-                return cache; 
+
+    /** Tell the input method that a new set of calls is valid.  If the
+     *  {@code dp} parameter is null, then we are at the main menu, waiting
+     *  for a "square up" command. */
+    public void switchMode(InputMode mode) {
+        while (true)
+            try {
+                modeQueue.put(mode);
+                return;
+            } catch (InterruptedException e) {
+                assert false : "should never happen";
             }
-            private transient Apply cache=null;
-            @Override
-            public PossibleCommand next() { return next; }
-        };
-        return pc; // careful: the first one might return null for getApply()
     }
-    
+
+    /** Get a new input mode, if there is one; otherwise return null. */
+    public InputMode getMode() {
+        InputMode newMode = modeQueue.poll();
+        return newMode;
+    }
+
     /** A {@link PossibleCommand} is an {@link Apply} corresponding to
      * the most likely interpretation of the user's input.  If this
      * {@link Apply} is inapplicable to the given formation, we can
@@ -99,11 +95,21 @@ public class CommandInput {
         /** Return the time the user input was complete, in milliseconds since
          * the epoch. */
         public abstract long getEndTime();
-        /** Return the parsed command possibility; throwing
-         *  {@link BadCallException} if there is a problem with the parse. */
-        public abstract Apply getApply() throws BadCallException;
         /** Return the next possible command, or null if there are no more. */
         public abstract PossibleCommand next();
+
+        /** Return the parsed command possibility; throwing
+         *  {@link BadCallException} if there is a problem with the parse. */
+        public final Apply getApply(DanceProgram dp) throws BadCallException {
+            if (cache==null) {
+                String userInput = getUserInput();
+                if (userInput.equals(UNCLEAR_UTTERANCE))
+                    throw new BadCallException("I can't hear you");
+                cache = CallDB.INSTANCE.parse(dp.getProgram(), userInput);
+            }
+            return cache;
+        }
+        private transient Apply cache=null;
 
         public final Iterator<PossibleCommand> iterator() {
             return new PCIterator(this);
@@ -119,5 +125,15 @@ public class CommandInput {
                 PossibleCommand npc=pc; pc=pc.next(); return npc;
             }
         }
+    }
+    /** Representation of different input modes.  Each mode recognizes a
+     *  different set of commands.  At the moment modes correspond to dance
+     *  programs, with the exception that the {@code null} dance program
+     *  corresponds to "main menu" mode, where the "square up" and "exit"
+     *  commands are recognized.
+     */
+    public abstract static class InputMode {
+        public abstract DanceProgram danceProgram();
+        public abstract boolean mainMenu();
     }
 }

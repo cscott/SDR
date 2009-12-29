@@ -1436,3 +1436,6 @@ Who's constructing jline.ConsoleReader in JDoctest?
        in, for those that match look at their 'from' clauses and try
        all 96 possible symmetric permutations to find the one which
        results in the current formation.
+---------
+Interesting sphinx4 commits:
+241ee41dcf9e - VUMeter

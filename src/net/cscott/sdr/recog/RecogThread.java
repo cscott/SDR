@@ -10,10 +10,8 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 import net.cscott.sdr.CommandInput;
+import net.cscott.sdr.CommandInput.InputMode;
 import net.cscott.sdr.CommandInput.PossibleCommand;
-import net.cscott.sdr.calls.BadCallException;
-import net.cscott.sdr.calls.DanceProgram;
-import net.cscott.sdr.calls.ast.Apply;
 import edu.cmu.sphinx.decoder.search.Token;
 import edu.cmu.sphinx.frontend.Data;
 import edu.cmu.sphinx.frontend.FloatData;
@@ -29,14 +27,13 @@ import edu.cmu.sphinx.util.props.PropertyException;
  * for SDR.  We use the Sphinx-4 endpointer,
  * which automatically segments incoming audio into utterances and silences.
  */
+// XXX we'll want to provide some way to configure the microphone.
 public class RecogThread extends Thread {
-    private final DanceProgram ds;
     private final CommandInput input;
     private final BlockingQueue<LevelMonitor> rendezvous;
 
-    public RecogThread(DanceProgram ds, CommandInput input,
-            BlockingQueue<LevelMonitor> rendezvous) {
-        this.ds = ds;
+    public RecogThread(CommandInput input,
+                       BlockingQueue<LevelMonitor> rendezvous) {
         this.input = input;
         this.rendezvous = rendezvous;
     }
@@ -63,12 +60,14 @@ public class RecogThread extends Thread {
         
         Recognizer recognizer = (Recognizer) cm.lookup("recognizer");
         Microphone microphone = (Microphone) cm.lookup("microphone");
-        // send the level monitor over on the rendezvous queue.
-        rendezvous.offer((LevelMonitor)cm.lookup("levelMonitor"));
         
-        /* allocate the resource necessary for the recognizer */
+        /* allocate the resources necessary for the recognizer */
+        /* this also compiles the grammars, etc. */
         recognizer.allocate();
         
+        // send the level monitor over on the rendezvous queue.
+        rendezvous.offer((LevelMonitor)cm.lookup("levelMonitor"));
+
         /* get the JSGF grammar component */
         JSGFGrammar jsgfGrammar =
             (JSGFGrammar) cm.lookup("jsgfGrammar");
@@ -80,6 +79,16 @@ public class RecogThread extends Thread {
         }
         /* the microphone will keep recording until the thread exits */
         while (true) {
+            /* Check for a new input mode, and change grammars if necessary. */
+            InputMode mode = input.getMode();
+            if (mode!=null) {
+                String grmName;
+                if (mode.mainMenu())
+                    grmName = "menu";
+                else
+                    grmName = mode.danceProgram().getProgram().toTitleCase();
+                jsgfGrammar.loadJSGF(grmName);
+            }
             /*
              * This method will return when the end of speech
              * is reached. Note that the endpointer will determine
@@ -126,8 +135,7 @@ public class RecogThread extends Thread {
                 long endTime = lastFeature.getCollectTime();
                 // note that we construct pc backwards from worst to best
                 // so that the best ends up at the head.
-                pc = input.commandFromUnparsed
-                (ds, resultText, startTime, endTime, pc);
+                pc = spokenCmd(resultText, startTime, endTime, pc);
             }
             input.addCommand(pc);
             System.err.println("---");
@@ -141,13 +149,27 @@ public class RecogThread extends Thread {
             @Override
             public PossibleCommand next() { return null; }
             @Override
-            public Apply getApply() throws BadCallException {
-                throw new BadCallException("unclear utterance");
-            }
-            @Override
             public long getEndTime() { return time; }
             @Override
             public long getStartTime() { return time; }
+        };
+    }
+    /** Create a PossibleCommand from an unparsed user input, along with the
+     * 'next worst' PossibleCommand.  Does the parsing lazily, so that we
+     * don't parse unless the "better" PossibleCommands don't work out. */
+    private static PossibleCommand spokenCmd(final String userInput,
+                                             final long startTime,
+                                             final long endTime,
+                                             final PossibleCommand next) {
+        return new PossibleCommand() {
+            @Override
+            public String getUserInput() { return userInput; }
+            @Override
+            public long getStartTime() { return startTime; }
+            @Override
+            public long getEndTime() { return endTime; }
+            @Override
+            public PossibleCommand next() { return next; }
         };
     }
 }
