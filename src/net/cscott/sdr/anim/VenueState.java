@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 
 import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.Version;
+import net.cscott.sdr.anim.GameSettings.GameMode;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationList;
@@ -18,6 +19,7 @@ import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
+import com.jme.input.MouseInput;
 import com.jme.light.PointLight;
 import com.jme.math.FastMath;
 import com.jme.math.Matrix3f;
@@ -61,11 +63,15 @@ public class VenueState extends CameraGameState {
     protected Timer timer;
     /** Music-synced timer. */
     protected BeatTimer beatTimer;
+    /** Game settings. */
+    protected final GameSettings settings;
 
-    public VenueState(BeatTimer beatTimer) {
+    public VenueState(GameSettings settings, BeatTimer beatTimer) {
         super("Venue");
+        this.settings = settings;
         this.beatTimer = beatTimer;
         initState();
+        initInput();
     }
     private void initState() {
         /* Get local copy of the Display System. */
@@ -210,7 +216,8 @@ public class VenueState extends CameraGameState {
         
         rootNode.updateGeometricState( 0.0f, true );
         rootNode.updateRenderState();
-        
+    }
+    public void initInput() {
         // key bindings.
         
         // Assign F5 to the command "caller camera"

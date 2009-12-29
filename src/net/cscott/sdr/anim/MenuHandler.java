@@ -1,5 +1,7 @@
 package net.cscott.sdr.anim;
 
+import net.cscott.sdr.anim.GameSettings.GameMode;
+
 import com.jme.input.InputHandler;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
@@ -15,24 +17,13 @@ public class MenuHandler extends InputHandler {
     }
 
     private void setKeyBindings() {
-        KeyBindingManager.getKeyBindingManager().set("exit", KeyInput.KEY_ESCAPE);
-        addAction( new ExitAction(), "exit", false );
-
         KeyBindingManager.getKeyBindingManager().set("enter", KeyInput.KEY_RETURN);
         addAction( new EnterAction(), "enter", false );
     }
 
-    private static class ExitAction extends InputAction {
-        public void performAction( InputActionEvent evt ) {
-            System.exit(0); // XXX:
-            //TestGameStateSystem.exit();
-        }
-    }
-
     private class EnterAction extends InputAction {
         public void performAction( InputActionEvent evt ) {
-            game.hudState.setActive(true);
-            game.menuState.setActive(false);
+            game.settings.setMode(GameMode.DANCING);
         }
     }
 }

@@ -9,6 +9,7 @@ import net.cscott.sdr.anim.TextureText.JustifyX;
 import net.cscott.sdr.anim.TextureText.JustifyY;
 import net.cscott.sdr.util.Fraction;
 
+import com.jme.input.MouseInput;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Spatial;
@@ -119,6 +120,7 @@ public class HUDState extends BaseState {
     @Override
     protected void onActivate() {
         display.setTitle(Version.PACKAGE_STRING+": Let's Play!");
+        MouseInput.get().setCursorVisible(false); // hide cursor during game
     }
     @Override
     protected void stateUpdate(float tpf) {

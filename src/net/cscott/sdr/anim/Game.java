@@ -9,6 +9,7 @@ import java.util.logging.Level;
 
 import net.cscott.sdr.App;
 import net.cscott.sdr.BeatTimer;
+import net.cscott.sdr.anim.GameSettings.GameMode;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.FormationList;
 import net.cscott.sdr.recog.LevelMonitor;
@@ -39,6 +40,8 @@ public class Game extends FixedFramerateGame {
     private final Timer timer = Timer.getTimer();
     /** Timer sync'ed to music. */
     private BeatTimer beatTimer;
+    /** Various user-adjustable settings. */
+    final GameSettings settings;
     MenuState menuState;
     VenueState venueState;
     HUDState hudState;
@@ -64,6 +67,7 @@ public class Game extends FixedFramerateGame {
         this.rendezvousLM = rendezvousLM;
         this.musicSync = musicSync;
         this.sphinxSync = sphinxSync;
+        this.settings = new GameSettings(this);
     }
     /** Creates display, sets up camera, and binds keys. */
     protected void initSystem() {
@@ -111,6 +115,7 @@ public class Game extends FixedFramerateGame {
             /* ignore: must be running on pre-1.6 jdk */
         }
     }
+    public final String getName() { return "Square Dance Revolution"; }
  
 
     @Override
@@ -129,6 +134,7 @@ public class Game extends FixedFramerateGame {
         loading.setActive(true);
 	loading.setProgress(0,"Loading..."); // center the progress bar.
         GameStateManager.getInstance().attachChild(loading);
+        MouseInput.get().setCursorVisible(true); // show the mouse during loading
 
         final GameTaskQueueManager queueMan =GameTaskQueueManager.getManager();
         new Thread() {
@@ -167,11 +173,11 @@ public class Game extends FixedFramerateGame {
                 BeatTimer beatTimer = getBeatTimer();// wait for our beat timer
 
                 inc("Loading venue...");
-                venueState = new VenueState(beatTimer);
+                venueState = new VenueState(settings, beatTimer);
                 attach(venueState,true);
                 if (App.DEBUG) attach(new DebugState(),true);
 
-                inc("Waiting for Sphinx...");
+                inc("Loading speech models...");
                 try {
                     sphinxSync.await(); // release sphinx thread
                 } catch (Exception e) { assert false : e; } // broken barrier!
@@ -260,8 +266,11 @@ public class Game extends FixedFramerateGame {
         // global quit.
         if (KeyBindingManager.getKeyBindingManager()
                 .isValidCommand( "exit", false ) ) {
+            if (settings.getMode()==GameMode.MAIN_MENU)
                 finish();
-            }
+            else
+                settings.setMode(GameMode.MAIN_MENU);
+        }
     }
     
     public BeatTimer getBeatTimer() {

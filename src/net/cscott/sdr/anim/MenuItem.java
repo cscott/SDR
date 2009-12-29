@@ -20,11 +20,14 @@ public class MenuItem extends Node {
     private final TextureText label, value;
     private final MenuArrow leftArrow, rightArrow;
     private final String[] valueText;
-    private int which = 0;
+    private int which;
     private boolean isEnabled = false;
-    public MenuItem(String nodeName, String labelText, BaseState st, String... valueText) {
+    public MenuItem(String nodeName, String labelText, BaseState st, int initialValue, String... valueText) {
         super(nodeName+"/Node");
         this.valueText = valueText;
+        this.which = initialValue;
+        if (this.which < 0 || this.which >= valueText.length)
+            this.which = 0; // safety first!
         // menu label
         this.label = st._mkText(nodeName+"/label:", labelText, 128,
                 JustifyX.LEFT, JustifyY.MIDDLE, st.x(83-320),st.y(0),st.x(280),st.y(44));
@@ -35,14 +38,11 @@ public class MenuItem extends Node {
         this.leftArrow = new MenuArrow
         (nodeName+"/arrow/left", st, true);
         leftArrow.getLocalTranslation().set(st.x(468-75-1-320),st.y(0),0);
-        this.leftArrow.setCullMode(CULL_ALWAYS);
         this.attachChild(leftArrow);
 
         this.rightArrow = new MenuArrow
         (nodeName+"/arrow/right", st, false);
         rightArrow.getLocalTranslation().set(st.x(468+75+1-320),st.y(0),0);
-        if (valueText.length<=1)
-            this.rightArrow.setCullMode(CULL_ALWAYS);
         this.attachChild(rightArrow);
 
         // menu values
@@ -50,6 +50,8 @@ public class MenuItem extends Node {
                 JustifyX.CENTER, JustifyY.MIDDLE, st.x(468-320), 0, st.x(150),st.y(24));
         value.setColor(new ColorRGBA(1,1,0,1));
         this.attachChild(value);
+        // set initial values
+        update(false);
     }
     public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
@@ -58,19 +60,19 @@ public class MenuItem extends Node {
         this.value.setColor(new ColorRGBA(1,1,isEnabled?.5f:0,1));
     }
     protected String getValue(int which) { return valueText[which]; }
-    private void update() {
+    private void update(boolean doEvent) {
         this.value.setText(getValue(which));
         this.leftArrow.setCullMode((which==0)?CULL_ALWAYS:CULL_NEVER);
         this.rightArrow.setCullMode((which==valueText.length-1)?CULL_ALWAYS:CULL_NEVER);
-        onChange(which);
+        if (doEvent) onChange(which);
     }
     public void inc() {
         // XXX: flash right arrow?
-        if (which<valueText.length-1) { which++; update(); }
+        if (which<valueText.length-1) { which++; update(true); }
     }
     public void dec() {
         // XXX: flash left arrow?
-        if (which>0) { which--; update(); }
+        if (which>0) { which--; update(true); }
     }
     /** Subclasses can override this method to get notification of state
      * changes. */

@@ -1,6 +1,11 @@
 package net.cscott.sdr.anim;
 
 import net.cscott.sdr.Version;
+import net.cscott.sdr.anim.GameSettings.DanceLevelSetting;
+import net.cscott.sdr.anim.GameSettings.DancerStyleSetting;
+import net.cscott.sdr.anim.GameSettings.DifficultySetting;
+import net.cscott.sdr.anim.GameSettings.MusicSetting;
+import net.cscott.sdr.anim.GameSettings.VenueSetting;
 import net.cscott.sdr.anim.TextureText.JustifyX;
 import net.cscott.sdr.anim.TextureText.JustifyY;
 
@@ -10,6 +15,7 @@ import com.jme.input.InputHandler;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
 import com.jme.input.Mouse;
+import com.jme.input.MouseInput;
 import com.jme.input.action.InputAction;
 import com.jme.input.action.InputActionEvent;
 import com.jme.input.action.KeyInputAction;
@@ -30,9 +36,12 @@ import com.jmex.game.state.GameState;
  * @version $Id: MenuState.java,v 1.13 2007-03-07 19:56:01 cananian Exp $
  */
 public class MenuState extends BaseState {
+    // use a custom-drawn cursor, or the system cursor?
+    private static final boolean CUSTOM_CURSOR=false;
 
     public MenuState(Game game) {
         super(Version.PACKAGE_NAME+" Menu");
+        this.game = game;
         initInput(game);
         initStar();
         initMenus();
@@ -41,6 +50,7 @@ public class MenuState extends BaseState {
         rootNode.updateGeometricState(0, true);
     }
         
+    private final Game game;
     /** The cursor node which holds the mouse gotten from input. */
     private Node cursor;
 
@@ -60,6 +70,7 @@ public class MenuState extends BaseState {
      */
     public void onActivate() {
         display.setTitle(Version.PACKAGE_STRING+" Main Menu");
+        MouseInput.get().setCursorVisible(!CUSTOM_CURSOR);
     }
         
     /**
@@ -71,6 +82,7 @@ public class MenuState extends BaseState {
         mouse = new AbsoluteMouse("Mouse Input", display.getWidth(),
                 display.getHeight());
         mouse.registerWithInputHandler( input );
+
         KeyBindingManager.getKeyBindingManager().set( "menu_up",
                 KeyInput.KEY_UP );
         KeyBindingManager.getKeyBindingManager().set( "menu_down",
@@ -145,7 +157,9 @@ public class MenuState extends BaseState {
     /**
      * Creates a pretty cursor.
      */
-    private void initCursor() {             
+    private void initCursor() {
+        if (!CUSTOM_CURSOR) return;
+
         Texture texture =
             TextureManager.loadTexture(
                     MenuState.class.getClassLoader().getResource(
@@ -160,10 +174,10 @@ public class MenuState extends BaseState {
         mouse.setRenderState(ts);
         mouse.setRenderState(mkAlpha());
         mouse.setLocalScale(new Vector3f(1, 1, 1));
-        
+
         cursor = new Node("Cursor");
         cursor.attachChild( mouse );
-        
+
         rootNode.attachChild(cursor);
     }
     
@@ -178,9 +192,15 @@ public class MenuState extends BaseState {
         // top one at y center 446
         // bottom one y center 127
         // 6 ovals.  64 pixels between. bottom at 127
-        menu = new MenuItem[6];
-        String[] labels = { "Judging Difficulty", "Dancers", "Venue", "Dance Level", "Music", "Microphone" };
-        String[][] values = { {"Easy","Moderate","Hard"}, {"Checkers"}, {"Mountains"}, {"4-dancer Basic","4-dancer Mainstream","4-dancer Plus","8-dancer Basic","8-dancer Mainstream","8-dancer Plus"}, {"No Music","Saturday Night"}, {"Line Input","Mic Input","USB Input"} };
+        menu = new MenuItem[] {
+            new DifficultyMenuItem(),
+            new DancerStyleMenuItem(),
+            new VenueMenuItem(),
+            new DanceLevelMenuItem(),
+            new MusicMenuItem(),
+            new MicrophoneMenuItem()
+        };
+        assert menu.length == 6;
         for (int i=0; i<6; i++) {
             float y = y(127+64*i);
             RedOval ro = new RedOval("menu/oval", x(509),y(50));
@@ -194,7 +214,6 @@ public class MenuState extends BaseState {
         for (int i=0; i<menu.length; i++) {
             float y = y(127+64*i);
             // menu label
-            menu[i] = new MenuItem("menu/item "+i, labels[i], this, values[i]);
             menu[i].getLocalTranslation().set(x(320),y,0);
             rootNode.attachChild(menu[i]);
             MouseInputAction mia = menu[i].getMouseInputAction();
@@ -231,5 +250,80 @@ public class MenuState extends BaseState {
         selectTarget = nTarget;
         menu[selectTarget].setEnabled(true);
         selectShade.getLocalTranslation().set(x(320),y(127+64*selectTarget),0);
+    }
+    // various menu items
+    class DifficultyMenuItem extends _MenuItem {
+        DifficultyMenuItem() {
+            super("Judging Difficulty", game.settings.getDifficulty(),
+                  DifficultySetting.values());
+        }
+        @Override
+        public void onChange(int which) {
+            game.settings.setDifficulty(DifficultySetting.values()[which]);
+        }
+    }
+    class DancerStyleMenuItem extends _MenuItem {
+        DancerStyleMenuItem() {
+            super("Dancers", game.settings.getDancerStyle(),
+                  DancerStyleSetting.values());
+        }
+        @Override
+        public void onChange(int which) {
+            game.settings.setDancerStyle(DancerStyleSetting.values()[which]);
+        }
+    }
+    class VenueMenuItem extends _MenuItem {
+        VenueMenuItem() {
+            super("Venue", game.settings.getVenue(),
+                  VenueSetting.values());
+        }
+        @Override
+        public void onChange(int which) {
+            game.settings.setVenue(VenueSetting.values()[which]);
+        }
+    }
+    class DanceLevelMenuItem extends _MenuItem {
+        DanceLevelMenuItem() {
+            super("Dance Level", game.settings.getDanceLevel(),
+                  DanceLevelSetting.values());
+        }
+        @Override
+        public void onChange(int which) {
+            game.settings.setDanceLevel(DanceLevelSetting.values()[which]);
+        }
+    }
+    class MusicMenuItem extends _MenuItem {
+        MusicMenuItem() {
+            super("Music", game.settings.getMusic(),
+                  MusicSetting.values());
+        }
+        @Override
+        public void onChange(int which) {
+            game.settings.setMusic(MusicSetting.values()[which]);
+        }
+    }
+    class MicrophoneMenuItem extends MenuItem {
+        MicrophoneMenuItem() {
+            // XXX get list of microphones
+            super("menu/Microphone", "Microphone", MenuState.this,
+                  game.settings.getMicrophone()+1, "Default");
+        }
+        @Override
+        public void onChange(int which) {
+            game.settings.setMicrophone(which-1);
+        }
+    }
+    class _MenuItem extends MenuItem {
+        _MenuItem(String name, Enum<?> initialValue, Enum<?>[] values) {
+            super("menu/"+name, name, MenuState.this,
+                  initialValue.ordinal(), enumToString(values));
+        }
+    }
+    // helper
+    private static String[] enumToString(Enum<?>[] enums) {
+        String[] result = new String[enums.length];
+        for (int i=0; i<enums.length; i++)
+            result[i] = enums[i].toString();
+        return result;
     }
 }
