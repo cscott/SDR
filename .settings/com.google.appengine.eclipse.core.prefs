@@ -1,5 +1,5 @@
-#Sat Dec 19 12:58:21 EST 2009
+#Tue Dec 29 16:59:53 EST 2009
 eclipse.preferences.version=1
 filesCopiedToWebInfLib=datanucleus-appengine-1.0.4.1.final.jar|datanucleus-core-1.1.5.jar|datanucleus-jpa-1.1.5.jar|geronimo-jpa_3.0_spec-1.1.1.jar|geronimo-jta_1.1_spec-1.1.1.jar|jdo2-api-2.3-eb.jar|appengine-api-1.0-sdk-1.3.0.jar|appengine-api-labs-1.3.0.jar
 ormEnhancementInclusions=src/
-validationExclusions=src/net/cscott/sdr/anim/|src/net/cscott/sdr/PMSD.java|src/net/cscott/sdr/sound/|src/net/cscott/sdr/calls/grm/BuildGrammars.java|src/net/cscott/sdr/App.java|src/net/cscott/sdr/calls/grm/AntlrPostProcessor.java
+validationExclusions=src/net/cscott/sdr/anim/|src/net/cscott/sdr/PMSD.java|src/net/cscott/sdr/sound/|src/net/cscott/sdr/calls/grm/BuildGrammars.java|src/net/cscott/sdr/App.java|src/net/cscott/sdr/calls/grm/AntlrPostProcessor.java|src/net/cscott/sdr/recog/

@@ -15,8 +15,8 @@ import net.cscott.sdr.CommandInput.PossibleCommand;
 import edu.cmu.sphinx.decoder.search.Token;
 import edu.cmu.sphinx.frontend.Data;
 import edu.cmu.sphinx.frontend.FloatData;
-import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.jsgf.JSGFGrammar;
+import edu.cmu.sphinx.linguist.dflat.DynamicFlatLinguist;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.props.ConfigurationManager;
@@ -27,15 +27,25 @@ import edu.cmu.sphinx.util.props.PropertyException;
  * for SDR.  We use the Sphinx-4 endpointer,
  * which automatically segments incoming audio into utterances and silences.
  */
-// XXX we'll want to provide some way to configure the microphone.
+// XXX want to force an endpoint as soon as input.setMode() is called.
+//     otherwise the first utterance will be parsed with the wrong grammar.
 public class RecogThread extends Thread {
     private final CommandInput input;
-    private final BlockingQueue<LevelMonitor> rendezvous;
+    private final BlockingQueue<Control> rendezvous;
 
     public RecogThread(CommandInput input,
-                       BlockingQueue<LevelMonitor> rendezvous) {
+                       BlockingQueue<Control> rendezvous) {
         this.input = input;
         this.rendezvous = rendezvous;
+        this.setDaemon(true);
+    }
+    public class Control {
+        public final LevelMonitor levelMonitor;
+        public final Microphone microphone;
+        Control(LevelMonitor lm, Microphone m) {
+            this.levelMonitor = lm;
+            this.microphone = m;
+        }
     }
     @Override
     public void run() {
@@ -66,17 +76,14 @@ public class RecogThread extends Thread {
         recognizer.allocate();
         
         // send the level monitor over on the rendezvous queue.
-        rendezvous.offer((LevelMonitor)cm.lookup("levelMonitor"));
+        LevelMonitor levelMonitor = (LevelMonitor) cm.lookup("levelMonitor");
+        rendezvous.offer(new Control(levelMonitor, microphone));
 
         /* get the JSGF grammar component */
         JSGFGrammar jsgfGrammar =
             (JSGFGrammar) cm.lookup("jsgfGrammar");
         //jsgfGrammar.dumpRandomSentences(10);
         
-        if (!microphone.startRecording()) {
-            recognizer.deallocate();
-            throw new RuntimeException("Can't start microphone");
-        }
         /* the microphone will keep recording until the thread exits */
         while (true) {
             /* Check for a new input mode, and change grammars if necessary. */
@@ -88,6 +95,8 @@ public class RecogThread extends Thread {
                 else
                     grmName = mode.danceProgram().getProgram().toTitleCase();
                 jsgfGrammar.loadJSGF(grmName);
+                // XXX work around bug in DynamicFlatLinguist
+                ((DynamicFlatLinguist) cm.lookup("dflatLinguist")).allocate();
             }
             /*
              * This method will return when the end of speech

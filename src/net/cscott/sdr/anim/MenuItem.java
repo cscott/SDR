@@ -19,7 +19,7 @@ import com.jme.scene.Node;
 public class MenuItem extends Node {
     private final TextureText label, value;
     private final MenuArrow leftArrow, rightArrow;
-    private final String[] valueText;
+    private String[] valueText;
     private int which;
     private boolean isEnabled = false;
     public MenuItem(String nodeName, String labelText, BaseState st, int initialValue, String... valueText) {
@@ -53,12 +53,20 @@ public class MenuItem extends Node {
         // set initial values
         update(false);
     }
+    protected void refreshValues(int newWhich, String[] newValues, boolean emitChanged) {
+        this.valueText = newValues;
+        this.which = newWhich;
+        this.update(emitChanged);
+    }
     public void setEnabled(boolean isEnabled) {
+        if (isEnabled == this.isEnabled) return;
         this.isEnabled = isEnabled;
         float l = isEnabled ? 1f : .95f;
         this.label.setColor(new ColorRGBA(l, l, l, 1));
         this.value.setColor(new ColorRGBA(1,1,isEnabled?.5f:0,1));
+        onHoverChange(isEnabled);
     }
+    protected int getWhich() { return which; }
     protected String getValue(int which) { return valueText[which]; }
     private void update(boolean doEvent) {
         this.value.setText(getValue(which));
@@ -77,6 +85,9 @@ public class MenuItem extends Node {
     /** Subclasses can override this method to get notification of state
      * changes. */
     protected void onChange(int which) { }
+    /** Subclasses can override this method to get notification of hover
+     *  events. */
+    protected void onHoverChange(boolean isEnabled) { }
     
     /////////// InputActions
     public MouseInputAction getMouseInputAction() {

@@ -1,5 +1,7 @@
 package net.cscott.sdr.anim;
 
+import java.util.List;
+
 import net.cscott.sdr.Version;
 import net.cscott.sdr.anim.GameSettings.DanceLevelSetting;
 import net.cscott.sdr.anim.GameSettings.DancerStyleSetting;
@@ -8,6 +10,7 @@ import net.cscott.sdr.anim.GameSettings.MusicSetting;
 import net.cscott.sdr.anim.GameSettings.VenueSetting;
 import net.cscott.sdr.anim.TextureText.JustifyX;
 import net.cscott.sdr.anim.TextureText.JustifyY;
+import net.cscott.sdr.recog.Microphone.NameAndLine;
 
 import com.jme.image.Texture;
 import com.jme.input.AbsoluteMouse;
@@ -304,13 +307,41 @@ public class MenuState extends BaseState {
     }
     class MicrophoneMenuItem extends MenuItem {
         MicrophoneMenuItem() {
-            // XXX get list of microphones
             super("menu/Microphone", "Microphone", MenuState.this,
-                  game.settings.getMicrophone()+1, "Default");
+                  game.settings.getMicrophone(),
+                  lineToString(game.settings.getAvailableMicrophones()));
         }
         @Override
         public void onChange(int which) {
-            game.settings.setMicrophone(which-1);
+            game.settings.setMicrophone(which);
+        }
+        @Override
+        public void onHoverChange(boolean isEnabled) {
+            if (!isEnabled) return;
+            refresh();
+        }
+        private void refresh() {
+            List<NameAndLine> avail = game.settings.getAvailableMicrophones();
+            String[] newNames = lineToString(avail);
+            int oldWhich = getWhich();
+            String oldName = getValue(oldWhich);
+            int newWhich = 0;
+            boolean emitChanged = true;
+            if (oldWhich >= 0 && oldWhich < newNames.length &&
+                oldName.equals(newNames[oldWhich])) {
+                // keep same which, don't emit 'changed' signal.
+                newWhich = oldWhich;
+                emitChanged = false;
+            } else {
+                // try to find a new which
+                for (int i=0; i < newNames.length; i++) {
+                    if (oldName.equals(newNames[i])) {
+                        newWhich = i;
+                        break;
+                    }
+                }
+            }
+            refreshValues(newWhich, newNames, emitChanged);
         }
     }
     class _MenuItem extends MenuItem {
@@ -324,6 +355,13 @@ public class MenuState extends BaseState {
         String[] result = new String[enums.length];
         for (int i=0; i<enums.length; i++)
             result[i] = enums[i].toString();
+        return result;
+    }
+    private static String[] lineToString(List<NameAndLine> mics) {
+        String[] result = new String[mics.size()];
+        for (int i=0; i<mics.size(); i++)
+            result[i] = mics.get(i).name;
+        if (result.length==0) return new String[] { "No microphone found" };
         return result;
     }
 }

@@ -1,8 +1,12 @@
 package net.cscott.sdr.anim;
 
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.recog.Microphone;
+import net.cscott.sdr.recog.RecogThread;
+import net.cscott.sdr.recog.Microphone.NameAndLine;
 
 /** The {@link GameSettings} class manages the menu system for adjusting the
  *  various game settings, and tracks the current mode of play.
@@ -10,6 +14,7 @@ import net.cscott.sdr.calls.Program;
 public class GameSettings {
     private final Game game;
     private final Preferences p;
+    private Microphone microphone;
     private GameMode mode;
 
     /** Create a new GameSettings, with default values taken from the user
@@ -20,6 +25,10 @@ public class GameSettings {
         this.p = Preferences.userRoot().node(game.getName());
         // starts at main menu
         this.mode = GameMode.MAIN_MENU;
+    }
+    void finishInit(RecogThread.Control control) {
+        this.microphone = control.microphone;
+        setMicrophone(getMicrophone());
     }
 
     // get/change the game mode.
@@ -36,13 +45,19 @@ public class GameSettings {
 
     // settings adjustable at the start menu
 
-    /** Which microphone to use. -1 indicates the "default" microphone;
-     *  other integers select a specific mixer. */
+    /** Which microphone to use. */
     public void setMicrophone(int which) {
+        List<NameAndLine> avail = getAvailableMicrophones();
+        if (which < 0 || which >= avail.size()) which=0;
         p.putInt("microphone", which);
+        if (which < avail.size())
+            this.microphone.switchMixer(avail.get(which));
     }
     public int getMicrophone() {
-        return p.getInt("microphone", -1/* "default" */);
+        return p.getInt("microphone", 0/* "default" */);
+    }
+    public List<NameAndLine> getAvailableMicrophones() {
+        return this.microphone.availableMixers();
     }
 
     /** What type of music (if any) to play. */

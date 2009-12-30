@@ -12,8 +12,8 @@
 
 package net.cscott.sdr.recog;
 
-import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.jsgf.JSGFGrammar;
+import edu.cmu.sphinx.linguist.dflat.DynamicFlatLinguist;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.props.ConfigurationManager;
@@ -56,42 +56,43 @@ public class SphinxDemo {
             /* get the JSGF grammar component */
             JSGFGrammar jsgfGrammar =
                 (JSGFGrammar) cm.lookup("jsgfGrammar");
-            jsgfGrammar.loadJSGF("Plus");
+            jsgfGrammar.loadJSGF("Mainstream");
+            // XXX work around bug in DynamicFlatLinguist
+            ((DynamicFlatLinguist) cm.lookup("dflatLinguist")).allocate();
 
             jsgfGrammar.dumpRandomSentences(10);
 
             /* the microphone will keep recording until the program exits */
-	    if (microphone.startRecording()) {
+            // start the recording by selecting a mixer (the first one)
+            microphone.switchMixer(microphone.availableMixers().get(0));
 
-		System.out.println
-		    ("Give a two-couple Mainstream call.");
+            System.out.println("Give a Mainstream call.");
 
-		while (true) {
-		    System.out.println
-			("Start speaking. Press Ctrl-C to quit.\n");
+            while (true) {
+                System.out.println
+                ("Start speaking. Press Ctrl-C to quit, or say \"Bow to your partner\".\n");
 
-                    /*
-                     * This method will return when the end of speech
-                     * is reached. Note that the endpointer will determine
-                     * the end of speech.
-                     */ 
-		    Result result = recognizer.recognize();
-		    
-		    if (result != null) {
-                        // we can use result.getResults() to get N possible
-                        // results.  (See source code for
-                        // Result.getBestFinalResultNoFiller() for details).
-			String resultText = result.getBestFinalResultNoFiller();
-			System.out.println("You said: " + resultText + "\n");
-		    } else {
-			System.out.println("I can't hear what you said.\n");
-		    }
-		}
-	    } else {
-		System.out.println("Cannot start microphone.");
-		recognizer.deallocate();
-		System.exit(1);
-	    }
+                /*
+                 * This method will return when the end of speech
+                 * is reached. Note that the endpointer will determine
+                 * the end of speech.
+                 */
+                Result result = recognizer.recognize();
+
+                if (result != null) {
+                    // we can use result.getResults() to get N possible
+                    // results.  (See source code for
+                    // Result.getBestFinalResultNoFiller() for details).
+                    String resultText = result.getBestFinalResultNoFiller();
+                    System.out.println("You said: " + resultText + "\n");
+                    if (resultText.equalsIgnoreCase("exit") ||
+                        resultText.toLowerCase().startsWith("bow to "))
+                        break;
+                } else {
+                    System.out.println("I can't hear what you said.\n");
+                }
+            }
+            recognizer.deallocate();
         } catch (IOException e) {
             System.err.println("Problem when loading SphinxDemo: " + e);
             e.printStackTrace();

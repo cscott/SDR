@@ -23,6 +23,11 @@ def: face out
   in: 2
   prim: 0,0,out
 
+// meta-commands
+def: bow to your partner
+  spoken: bow to (your|the) partner (and (your|the) corner too)?
+  call: nothing
+
 // work out grammar implications
 def: anyone while others(sel, c1, c2=nothing)
   /* default to 'nothing' if the 'while...' isn't present */

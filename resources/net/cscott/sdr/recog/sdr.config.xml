@@ -92,8 +92,8 @@
         <property name="languageWeight" value="${languageWeight}"/>
         <property name="unitManager" value="unitManager"/>
         <property name="addOutOfGrammarBranch" value="true"/>
-        <property name="outOfGrammarProbability" value="1E-20"/>
-        <property name="phoneInsertionProbability" value="1E-10"/>
+        <property name="outOfGrammarProbability" value="1E-40"/>
+        <property name="phoneInsertionProbability" value="1E-20"/>
 	<property name="phoneLoopAcousticModel" value="wsj"/>
     </component>
         
@@ -215,9 +215,7 @@
                type="edu.cmu.sphinx.frontend.feature.DeltasFeatureExtractor"/>
        
     <component name="microphone" 
-               type="edu.cmu.sphinx.frontend.util.Microphone">
-        <property name="closeBetweenUtterances" value="false"/>
-    </component>
+               type="net.cscott.sdr.recog.Microphone" />
 
     
     <!-- ******************************************************* -->

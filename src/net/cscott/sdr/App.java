@@ -14,8 +14,6 @@ import net.cscott.sdr.calls.DancerPath;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.TimedFormation;
-import net.cscott.sdr.calls.ast.Apply;
-import net.cscott.sdr.recog.LevelMonitor;
 import net.cscott.sdr.recog.RecogThread;
 import net.cscott.sdr.sound.MidiThread;
 
@@ -44,14 +42,14 @@ public class App {
         ChoreoEngine choreo = new ChoreoEngine(ds, Formation.FOUR_SQUARE);
 
         // Start the game thread.
-        BlockingQueue<LevelMonitor> rendezvousLM =
-            new ArrayBlockingQueue<LevelMonitor>(1);
+        BlockingQueue<RecogThread.Control> rendezvousRT =
+            new ArrayBlockingQueue<RecogThread.Control>(1);
         BlockingQueue<BeatTimer> rendezvousBT =
             new ArrayBlockingQueue<BeatTimer>(1);
         CyclicBarrier musicSync = new CyclicBarrier(2);
         CyclicBarrier sphinxSync = new CyclicBarrier(2);
         final Game game =
-            new Game(rendezvousBT, rendezvousLM, musicSync, sphinxSync);
+            new Game(rendezvousBT, rendezvousRT, musicSync, sphinxSync);
         new Thread() { // THIS IS THE GRAPHICS THREAD
             @Override public void run() {
                 game.start();
@@ -67,7 +65,7 @@ public class App {
         // create voice recognition thread
         try { sphinxSync.await(); }
         catch (Exception e) { assert false : e; /* broken barrier! */ }
-        RecogThread rt = new RecogThread(input, rendezvousLM);
+        RecogThread rt = new RecogThread(input, rendezvousRT);
         rt.start();
 
         // Now start processing input, handing resulting formations to the

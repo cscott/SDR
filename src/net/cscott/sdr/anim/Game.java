@@ -13,6 +13,7 @@ import net.cscott.sdr.anim.GameSettings.GameMode;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.FormationList;
 import net.cscott.sdr.recog.LevelMonitor;
+import net.cscott.sdr.recog.RecogThread;
 
 import com.jme.app.FixedFramerateGame;
 import com.jme.image.Image;
@@ -46,7 +47,7 @@ public class Game extends FixedFramerateGame {
     VenueState venueState;
     HUDState hudState;
     MusicState musicState;
-    private final BlockingQueue<LevelMonitor> rendezvousLM;
+    private final BlockingQueue<RecogThread.Control> rendezvousRT;
     private final BlockingQueue<BeatTimer> rendezvousBT;
     private final CyclicBarrier musicSync, sphinxSync;
 
@@ -55,7 +56,7 @@ public class Game extends FixedFramerateGame {
      * {@link LevelMonitor} (presumably from the speech-recognition thread).
      */ 
     public Game(BlockingQueue<BeatTimer> rendezvousBT,
-            BlockingQueue<LevelMonitor> rendezvousLM,
+            BlockingQueue<RecogThread.Control> rendezvousRT,
             CyclicBarrier musicSync,
             CyclicBarrier sphinxSync) {
         LoggingSystem.getLogger().setLevel(java.util.logging.Level.WARNING);
@@ -64,7 +65,7 @@ public class Game extends FixedFramerateGame {
         this.setDialogBehaviour
             (FIRSTRUN_OR_NOCONFIGFILE_SHOW_PROPS_DIALOG, url);
         this.rendezvousBT = rendezvousBT;
-        this.rendezvousLM = rendezvousLM;
+        this.rendezvousRT = rendezvousRT;
         this.musicSync = musicSync;
         this.sphinxSync = sphinxSync;
         this.settings = new GameSettings(this);
@@ -181,15 +182,16 @@ public class Game extends FixedFramerateGame {
                 try {
                     sphinxSync.await(); // release sphinx thread
                 } catch (Exception e) { assert false : e; } // broken barrier!
-                LevelMonitor lm;
+                RecogThread.Control control;
                 while(true)
                     try {
-                        lm = rendezvousLM.take(); // wait for our LevelMonitor
+                        control = rendezvousRT.take(); // wait for our LevelMonitor
                         break;
                     } catch (InterruptedException e) { /* try again */ }
+                settings.finishInit(control);
                 
                 inc("Loading scrolling notes...");
-                musicState = new MusicState(beatTimer, lm);
+                musicState = new MusicState(beatTimer, control.levelMonitor);
                 
                 inc("Creating HUD...");
                 hudState = new HUDState(beatTimer);
