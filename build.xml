@@ -206,6 +206,13 @@ Square Dance Revolution build file.
                 <fileset dir="${resources_dir}/net/cscott/sdr/calls/lists"
                          includes="*.calls" />
         </copy>
+	<!-- copy PMSD test cases to doc-files -->
+        <mkdir dir="${src_dir}/net/cscott/sdr/doc-files" />
+        <copy todir="${src_dir}/net/cscott/sdr/doc-files">
+          <fileset dir="${resources_dir}/net/cscott/sdr/tests"
+		   excludes="*~" />
+        </copy>
+	<!-- run javadoc -->
 	<mkdir dir="${api_dir}" />
 	<echo message="${javadoc.access}" file="${api_dir}/access" />
 	<javadoc sourcepath="${src_dir}"
