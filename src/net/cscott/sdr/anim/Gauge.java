@@ -59,7 +59,7 @@ public class Gauge extends Node {
         try {
             Class<?> c = Class.forName("java.awt.LinearGradientPaint");
             Class<?> cm = Class.forName("java.awt.MultipleGradientPaint$CycleMethod");
-            Constructor cc = c.getConstructor
+            Constructor<?> cc = c.getConstructor
             (float.class, float.class, float.class, float.class,
              float[].class, Color[].class, cm);
             Object o = cm.getEnumConstants()[1];

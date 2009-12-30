@@ -7,7 +7,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
 import java.util.logging.Level;
 
-import net.cscott.sdr.App;
 import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.anim.GameSettings.GameMode;

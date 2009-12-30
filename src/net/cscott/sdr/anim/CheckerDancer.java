@@ -35,9 +35,8 @@ public class CheckerDancer extends AnimDancer {
     public CheckerDancer(DisplaySystem display, StandardDancer dancer) {
         super(dancer);
         init(display); // set up dancer.
-        // have each dancer be slighly off the beat, for more realism.
-        //footOffset = Fraction.valueOf(new Random().nextInt(10)-5,40);
-        footOffset = Fraction.ZERO;
+        // have each dancer be slightly off the beat, for more realism.
+        footOffset = true ? Fraction.ZERO : Fraction.valueOf(new Random().nextInt(10)-5,40);
     }
 
     private void init(DisplaySystem display) {

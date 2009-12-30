@@ -1,13 +1,11 @@
 package net.cscott.sdr.anim;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.Version;
-import net.cscott.sdr.anim.GameSettings.GameMode;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationList;
@@ -19,7 +17,6 @@ import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
-import com.jme.input.MouseInput;
 import com.jme.light.PointLight;
 import com.jme.math.FastMath;
 import com.jme.math.Matrix3f;

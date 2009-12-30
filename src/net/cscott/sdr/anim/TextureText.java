@@ -10,7 +10,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.nio.FloatBuffer;
-import java.util.concurrent.Callable;
 
 import com.jme.app.SimpleGame;
 import com.jme.image.Texture;
@@ -19,7 +18,6 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.state.LightState;
-import com.jme.util.GameTaskQueueManager;
 import com.jme.util.geom.BufferUtils;
 
 /** {@link TextureText} renders text to a textured quad.  This allows great
