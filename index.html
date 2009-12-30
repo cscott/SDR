@@ -10,6 +10,9 @@
   <link rel="shortcut icon" href="http://cscott.net/favicon.ico" />
   <link rel="alternate" type="application/atom+xml" title="Commits to SDR"
         href="http://github.com/feeds/cscott/commits/SDR/master" />
+  <style type="text/css">
+dl.inline dt { float: left; padding-right: .2em; }
+  </style>
 </head>
 <body bgcolor="white">
 <h1 align="center">Square Dance Revolution<br /><font size="-1">A Square
@@ -46,10 +49,11 @@ of SDR.  You can try it out at
 <a href="http://square-dance.appspot.com">square-dance.appspot.com</a>.
 Like the rest of SDR, it's probably not actually useful for anything yet.</p>
 
-<p>SDR is currently at version 0.5.  You can
+<p>SDR is currently at version 0.6.  You can
 <a href="sdr-latest/">download the latest version</a>,
 see <a href="sdr-latest/ChangeLog.txt">changes in the latest release</a>,
-recent changes at <a href="https://www.ohloh.net/p/sdr/commits">ohloh</a> or
+more recent changes at
+<a href="https://www.ohloh.net/p/sdr/commits">ohloh</a> or
 <a href="http://github.com/cscott/SDR/commits/master">github</a>,
 or browse the <a href="sdr-latest/doc">API documentation on-line</a>.
 SDR is licensed under the <a href="http://www.gnu.org">GNU</a>
@@ -110,12 +114,29 @@ git-clone <a href="git://github.com/cscott/SDR.git">git://github.com/cscott/SDR.
 </pre>
 
 <h3>Version Archive</h3>
-<p><a href="sdr-0.1">SDR 0.1</a>, initial mockup.</p>
-<p><a href="sdr-0.2">SDR 0.2</a>, more gui mockup.</p>
-<p><a href="sdr-0.21">SDR 0.21</a>, still in development.</p>
-<p><a href="sdr-0.3">SDR 0.3</a>, lots of test cases added!</p>
-<p><a href="sdr-0.4">SDR 0.4</a>, breathing implemented.</p>
-<p><a href="sdr-0.5">SDR 0.5</a>, web frontend, more engine work.</p>
+<dl class="inline">
+<dt><a href="sdr-0.1">SDR 0.1</a>,</dt><dd>initial mockup.</dd>
+<dt><a href="sdr-0.2">SDR 0.2</a>,</dt><dd>more gui mockup.</dd>
+<dt><a href="sdr-0.21">SDR 0.21</a>,</dt><dd>still in development.</dd>
+<dt><a href="sdr-0.3">SDR 0.3</a>,</dt><dd>lots of test cases added!</dd>
+<dt><a href="sdr-0.4">SDR 0.4</a>,</dt><dd>breathing implemented.</dd>
+<dt><a href="sdr-0.5">SDR 0.5</a>,</dt><dd>web frontend, more engine work.</dd>
+<dt><a href="sdr-0.6">SDR 0.6</a>,</dt><dd>definitions for almost all of
+Mainstream; merged <a href="http://square-dance.appspot.com">web
+frontend</a> and implemented bigon, <a
+href="http://www.tiac.net/~mabaker/hexagon.html">hexagon</a>, and
+octagon dance modes; added <a
+href="sdr-latest/doc/net/cscott/sdr/PMSD.html">PMSD</a> text-based
+interface and <a href="sdr-latest/doc/net/cscott/sdr/doc-files/">test
+cases</a> based on it; implemented <a
+href="sdr-latest/doc/net/cscott/sdr/toolbox/DWResolver.html">resolver</a>
+based on Dave Wilson's <a
+href="http://www.tiac.net/~mabaker/ocean-wave-resolution.html">ocean
+wave method</a>; reimplemented square breathing based on <a
+href="http://cassowary.sourceforge.net/">Cassowary constraint
+solver</a>.</dd>
+
+</dl>
 
 <hr />
 <div align="right">
