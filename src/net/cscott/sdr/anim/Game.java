@@ -9,6 +9,7 @@ import java.util.logging.Level;
 
 import net.cscott.sdr.App;
 import net.cscott.sdr.BeatTimer;
+import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.anim.GameSettings.GameMode;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.FormationList;
@@ -176,7 +177,7 @@ public class Game extends FixedFramerateGame {
                 inc("Loading venue...");
                 venueState = new VenueState(settings, beatTimer);
                 attach(venueState,true);
-                if (App.DEBUG) attach(new DebugState(),true);
+                if (DevSettings.GRAPHICS_DEBUG) attach(new DebugState(),true);
 
                 inc("Loading speech models...");
                 try {

@@ -28,7 +28,6 @@ import net.cscott.sdr.sound.MidiThread;
  * @version $Id: App.java,v 1.12 2006-11-13 04:28:15 cananian Exp $
  */
 public class App {
-    public static final boolean DEBUG=true;
     /**
      * The main entry point for the application.
      * @param args unused
