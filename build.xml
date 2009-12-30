@@ -183,10 +183,19 @@ Square Dance Revolution build file.
 
     <!-- run the javadoc tool on the source code -->
     <target name="chk-javadoc" depends="init" >
-      <uptodate property="javadoc.notRequired"
-                targetfile="${api_dir}/index.html">
-        <srcfiles dir="${src_dir}" includes="**/*.java **/*.html" />
-      </uptodate>
+      <echo message="${javadoc.access}" file=".test-access" />
+      <if>
+	<and>
+	  <filesmatch file1="${api_dir}/access" file2=".test-access"/>
+	  <uptodate targetfile="${api_dir}/index.html">
+            <srcfiles dir="${src_dir}" includes="**/*.java **/*.html" />
+	  </uptodate>
+	</and>
+	<then>
+	  <property name="javadoc.notRequired" value="true" />
+	</then>
+      </if>
+      <delete file=".test-access" />
     </target>
     <target name="javadoc"
 	    depends="compile,instrument,chk-javadoc" unless="javadoc.notRequired"
@@ -198,8 +207,8 @@ Square Dance Revolution build file.
                          includes="*.calls" />
         </copy>
 	<mkdir dir="${api_dir}" />
+	<echo message="${javadoc.access}" file="${api_dir}/access" />
 	<javadoc sourcepath="${src_dir}"
-		 packagenames="net.cscott.sdr.*"
 		 destdir="${api_dir}"
                  windowtitle="SDR ${version} documentation"
 		 doctitle="Square Dance Revolution!"
