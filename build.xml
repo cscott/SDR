@@ -547,22 +547,42 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	<arg value="--stat" />
 	<arg value="-C" /> <!-- "-C -C" is nice, but it takes 2m to run! -->
       </exec>
+      <exec executable="git">
+	<arg value="archive"/>
+	<arg value="--prefix=${package}-${version}/"/>
+	<arg value="--output=${package}-${version}-git.tar"/>
+	<arg value="HEAD" />
+      </exec>
       <tar destfile="${package}-${version}.tar.gz" compression="gzip">
+	<!-- include all git-controlled files -->
+	<tarfileset src="${package}-${version}-git.tar"
+                    excludes="pax_global_header" />
+	<!-- include some generated files -->
         <tarfileset dir="api" prefix="${package}-${version}/api" />
-        <tarfileset dir="src" prefix="${package}-${version}/src"
-                    includes="**/*.java **/*.html **/*.java.in **/*.g
-			      **/*.js **/*.css"
-                    excludes="CVS" />
-        <tarfileset dir="resources" prefix="${package}-${version}/resources"
-                    excludes="CVS **/*~" />
-        <tarfileset dir="lib" prefix="${package}-${version}/lib"
-                    excludes="CVS **/*~" />
         <tarfileset dir="." prefix="${package}-${version}"
-         includes="README AUTHORS COPYING ChangeLog NEWS sdr.Manifest
-                   build.xml .antlr-eclipse .classpath .project .settings/**/*
-		   run-shell.sh upload.sh **/.gitignore images/*.svg
-                   notes.txt sdr.jar sample.build.properties sdr.jnlp.in" />
+		    includes="ChangeLog sdr.jar sdr.jnlp" />
+        <tarfileset dir="src" prefix="${package}-${version}/src"
+                    includes="net/cscott/sdr/Version.java
+                              net/cscott/sdr/calls/lists/AllGrm.java
+                              net/cscott/sdr/calls/lists/*.g
+                              net/cscott/sdr/calls/lists/*GrammarLexer.java
+                              net/cscott/sdr/calls/lists/*GrammarParser.java
+                              net/cscott/sdr/calls/parser/AstLexer.java
+                              net/cscott/sdr/calls/parser/AstParser.java
+                              net/cscott/sdr/calls/parser/CallFileLexer.java
+                              net/cscott/sdr/calls/parser/CallFileParser.java
+                              net/cscott/sdr/calls/parser/CallFileBuilder.java
+			      **/*.tokens" />
+        <tarfileset dir="resources" prefix="${package}-${version}/resources"
+                    includes="net/cscott/sdr/recog/Basic.gram
+                              net/cscott/sdr/recog/Mainstream.gram
+                              net/cscott/sdr/recog/Plus.gram
+                              net/cscott/sdr/recog/A?.gram
+                              net/cscott/sdr/recog/C?.gram
+                              net/cscott/sdr/recog/C3?.gram
+                              net/cscott/sdr/recog/sdrdict" />
       </tar>
+      <delete file="${package}-${version}-git.tar" />
     </target>
         
     <!-- **************** GWT/GAE web UI stuff ************* -->
