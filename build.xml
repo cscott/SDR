@@ -550,19 +550,62 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 
     <!-- *********  Bundle up all files for distribution ******** -->
     <target name="dist" depends="jar,javadoc">
+      <!-- check various conditions to ensure we don't release with
+           debugging code lying around. -->
+      <!-- check javadoc access level -->
+      <fail message="javadoc.access should be 'protected' for a release">
+	<condition>
+	  <not>
+            <equals arg1="${javadoc.access}" arg2="protected" />
+	  </not>
+        </condition>
+      </fail>
+      <!-- check that repo is clean and committed -->
+      <exec executable="git" resultproperty="git1.exit">
+	<arg value="diff"/>
+	<arg value="--shortstat"/>
+	<arg value="--exit-code"/>
+      </exec>
+      <fail message="git repo is not clean">
+	<condition>
+	  <isfailure code="${git1.exit}" />
+	</condition>
+      </fail>
+      <exec executable="git" resultproperty="git2.exit">
+	<arg value="diff"/>
+	<arg value="--cached"/>
+	<arg value="--shortstat"/>
+	<arg value="--exit-code"/>
+      </exec>
+      <fail message="git repo is not fully committed">
+	<condition>
+	  <isfailure code="${git2.exit}" />
+	</condition>
+      </fail>
+      <!-- check dev settings -->
+      <fail message="some DevSettings are true (turn off before release)">
+	<condition>
+	  <isfileselected file="${src_dir}/net/cscott/sdr/DevSettings.java">
+	    <contains text="true" casesensitive="true" />
+	  </isfileselected>
+	</condition>
+      </fail>
+
+      <!-- okay! let's make the dist! -->
       <delete file="ChangeLog" />
       <exec executable="git" output="ChangeLog">
 	<arg value="log" />
 	<arg value="--stat" />
 	<arg value="-C" /> <!-- "-C -C" is nice, but it takes 2m to run! -->
       </exec>
-      <exec executable="git">
+      <exec executable="git" failonerror="true">
 	<arg value="archive"/>
 	<arg value="--prefix=${package}-${version}/"/>
 	<arg value="--output=${package}-${version}-git.tar"/>
 	<arg value="HEAD" />
       </exec>
-      <tar destfile="${package}-${version}.tar.gz" compression="gzip">
+      <tar destfile="${package}-${version}.tar.gz"
+	   compression="gzip" longfile="gnu" >
 	<!-- include all git-controlled files -->
 	<tarfileset src="${package}-${version}-git.tar"
                     excludes="pax_global_header" />

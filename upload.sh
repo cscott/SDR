@@ -2,13 +2,8 @@
 # Version number is kept in build.xml.  Change it there.
 PACKAGE=sdr
 VERSION=$(ant echo-version | fgrep "Current version is: " | sed -e 's/^.*Current version is: //')
-# make sure generated version number is up-to-date
-# (can't we do this in the ant build file?)
-if [ build.xml -nt sdr.jnlp ]; then
-  /bin/rm sdr.jnlp src/net/cscott/sdr/Version.java
-fi
 # build prerequisites
-ant dist src-jar sign-jars
+ant dist src-jar sign-jars || exit $?
 if [ sdr-libs.jar -nt sdr-libs.jar.pack.gz ]; then
   echo "Packing..." # this saves about 4M of download (~16%)
   /bin/rm -f sdr-libs.jar.pack.gz
@@ -28,7 +23,7 @@ touch ${PACKAGE}-${VERSION}/VERSION_${VERSION}
                 > ${PACKAGE}-${VERSION}/ChangeLog.txt
 # sources & binaries
 cp ${PACKAGE}-${VERSION}.tar.gz ${PACKAGE}-${VERSION}/
-gunzip ${PACKAGE}-${VERSION}/${PACKAGE}-${VERSION}.tar.gz
+gunzip ${PACKAGE}-${VERSION}/${PACKAGE}-${VERSION}.tar.gz && \
 gzip --rsyncable ${PACKAGE}-${VERSION}/${PACKAGE}-${VERSION}.tar
 ( cd ${PACKAGE}-${VERSION} && \
     ln -s ${PACKAGE}-${VERSION}.tar.gz ${PACKAGE}.tar.gz )
@@ -68,6 +63,6 @@ Content-Type: x-java-archive
 Content-Encoding: pack200-gzip
 EOF
 # transfer to the distribution machine.
-rsync -avyz --delete-after --copy-dest=sdr-0.4 ${PACKAGE}-${VERSION} cscott.net:public_html/Projects/SDR/
-
-/bin/rm -rf ${PACKAGE}-${VERSION}
+rsync -avyz --delete-after --copy-dest=sdr-0.5 ${PACKAGE}-${VERSION} cscott.net:public_html/Projects/SDR/ && \
+/bin/rm -rf ${PACKAGE}-${VERSION} && \
+echo "Upload of ${PACKAGE} ${VERSION} successful."
