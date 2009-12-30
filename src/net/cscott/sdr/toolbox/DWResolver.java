@@ -19,8 +19,9 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
 import static net.cscott.sdr.util.Tools.*;
 
 /**
- * Resolve a square using a modified version of Dave Wilson's ocean wave
- * resolution technique.
+ * Resolve a square using a modified version of Dave Wilson's
+ * <a href="http://www.tiac.net/~mabaker/ocean-wave-resolution.html">ocean
+ * wave resolution technique</a>.
  * @author C. Scott Ananian
  * @doc.test Show that this resolves from all RH ocean waves, and compute
  *  statistics.
