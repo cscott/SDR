@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.recog.LevelMonitor;
@@ -20,7 +19,6 @@ import com.jme.math.Vector3f;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.TextureState;
-import com.jme.util.GameTaskQueueManager;
 import com.jme.util.TextureManager;
 import com.jme.util.geom.BufferUtils;
 
@@ -146,9 +144,10 @@ public class MusicState extends BaseState {
         nowNote.setCullMode(partialBeat.compareTo(Fraction.ONE_HALF) < 0 ?
                 Spatial.CULL_NEVER : Spatial.CULL_ALWAYS);
         // draw microphone levels.
-        float bpf = currentBeat.floatValue()-lastBeat;
-        if (levelMonitor!=null) drawLevels(bpf/*beats per frame*/);
-        lastBeat = currentBeat.floatValue();
+        float nowBeat = currentBeat.floatValue();
+        float bpf = nowBeat-lastBeat;
+        if (drawLevels(bpf/*beats per frame*/))
+            lastBeat = nowBeat;
         
         rootNode.updateGeometricState(tpf, true);
     }
@@ -157,9 +156,14 @@ public class MusicState extends BaseState {
 
     /** How wide the "levels" display should be. */
     private static final int LEVELS_WIDTH=52;
-    private static final int LEVELS_HEIGHT=45;
-    private void drawLevels(float bpf) {
+    private static final int LEVELS_HEIGHT=41;
+    /** How many dB down the bottom of the level graph should be.
+     *  80db is about 1/SHORT_MAX. */
+    private static final double MIN_DB=-80;
+    private boolean drawLevels(float bpf) {
+        if (levelMonitor==null) return true;
         levelMonitor.getLevels(levels);
+        if (levels.size()==0) return false; // wait for data
         // 128 pixels = 2 beats.
         // compute how many pixels to fill from # of beats since last frame
         int nCols = Math.min(LEVELS_WIDTH,Math.round(128*bpf/2));
@@ -176,10 +180,17 @@ public class MusicState extends BaseState {
         for (int i=0; i<nCols; i++) {
             int x=LEVELS_WIDTH-nCols+i+1;
             // find max level in this bucket.
-            double max=0;// so log doesn't freak
             int jmin=i*levels.size()/nCols, jmax=(i+1)*levels.size()/nCols;
+            double max=levels.get(jmin).level;
             for (int j=jmin; j<jmax; j++)
                 max = Math.max(max, levels.get(j).level);
+            max = Math.min(max, 1); // should already have been 0-1
+            // adjust to log scale.
+            if (max > 0) {
+                max = 20*Math.log10(max);
+                // shift zero
+                max = (max-MIN_DB)/(-MIN_DB);
+            }
             // draw line corresponding to this bucket
             g2.setColor(levelColor((float)max));
             int disp = (int) Math.round(max*LEVELS_HEIGHT);
@@ -190,14 +201,15 @@ public class MusicState extends BaseState {
         // clean up.
         g2.dispose();
         levels.clear();
+        return true;
     }
     private final List<LevelMeasurement> levels =
         new ArrayList<LevelMeasurement>(128);
     /** Find a color for the given level 0-1.  Interpolate green->yellow->red. */
     private Color levelColor(float val) {
         float[] start = c1, end = c2; 
-        if (val>.5f) { start=c2; end=c3; val-=.5f; }
-        val*=2;
+        if (val>.75f) { start=c2; end=c3; val-=.75f; val *= 4; }
+        else val*=4/3.;
         return new Color(
                 start[0]*(1-val) + end[0]*(val),
                 start[1]*(1-val) + end[1]*(val),
@@ -207,5 +219,5 @@ public class MusicState extends BaseState {
     private static final float[] c1 = Color.GREEN.getRGBComponents(null);
     private static final float[] c2 = Color.YELLOW.getRGBComponents(null);
     private static final float[] c3 = Color.RED.getRGBComponents(null);
-    static { c2[3]=0.5f; /* add some alpha */ }
+    static { c1[3]=0.4f; c2[3]=0.7f; c3[3]=0.8f; /* add some alpha */ }
 }
