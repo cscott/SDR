@@ -26,9 +26,9 @@ import edu.cmu.sphinx.frontend.DoubleData;
 import edu.cmu.sphinx.frontend.util.DataUtil;
 
 /** {@link Microphone} allows on-the-fly selection of different Sphinx input
- *  sources.  We hardcode some of the adjustable properties of
- *  {@link edu.cmu.sphinx.frontend.util.Microphone}, but provide on-the-fly
- *  adjustability.
+ *  sources.  We hardcode some of the adjustable properties of the stock
+ *  Sphinx {@link edu.cmu.sphinx.frontend.util.Microphone}, but provide
+ *  on-the-fly source selection.
  */
 public class Microphone extends BaseDataProcessor {
     private BlockingQueue<Data> audioQueue;
@@ -83,8 +83,12 @@ public class Microphone extends BaseDataProcessor {
         switchQueue.add(nal);
     }
 
+    /** A {@link TargetDataLine} for audio capture, along with a
+     *  human-friendly name for this source. */
     public static class NameAndLine {
+	/** Human-readable name for this input source. */
         public final String name;
+	/** AudioSystem representation of input source. */
         public final TargetDataLine line;
         NameAndLine(String name, TargetDataLine line) {
             this.name = name;

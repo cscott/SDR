@@ -11,9 +11,9 @@ import edu.cmu.sphinx.frontend.*;
  * and keeps a record of the maximum level of each data packet.  This
  * is used by the graphical front end to display current input levels.
  * @author C. Scott Ananian
- * @version $Id: LevelMonitor.java,v 1.2 2006-11-10 00:55:00 cananian Exp $
  */
 public class LevelMonitor extends BaseDataProcessor {
+    /** A volume measurement of an audio frame. */
     public static class LevelMeasurement {
         /** Time, in milliseconds since midnight, January 1, 1970, when
          *  the data for this level measurement was taken. */
