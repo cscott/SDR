@@ -151,6 +151,8 @@ public class RecogThread extends Thread {
             for (Token t : tokens) {
                 // get the words in the result
                 String resultText = t.getWordPathNoFiller();
+                if (resultText.equals("<unk>"))
+                    continue;
                 System.err.println("HEARD: "+resultText);
                 // find the start and end times for this result
                 FloatData firstFeature = null, lastFeature = null;
@@ -168,6 +170,7 @@ public class RecogThread extends Thread {
                 // so that the best ends up at the head.
                 pc = spokenCmd(resultText, startTime, endTime, pc);
             }
+            if (pc==null) pc = errorCmd();
             input.addCommand(pc);
             System.err.println("---");
         }
