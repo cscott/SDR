@@ -333,7 +333,7 @@ public abstract class PredicateList {
     /** Check whether the tagged dancers are t-boned.
      * @doc.test
      *  js> importPackage(net.cscott.sdr.util); // for Fraction
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> SD = StandardDancer; undefined
      *  js> // rotate the formation 1/2 just to get rid of the original tags
      *  js> f = FormationList.RH_OCEAN_WAVE; f.toStringDiagram()

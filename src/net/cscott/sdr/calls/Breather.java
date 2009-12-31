@@ -88,7 +88,7 @@ public class Breather {
      *
      * @doc.test Insert COUPLEs, then TANDEMs into a RH_OCEAN_WAVE.  Then, for
      *  a challenge, insert TANDEMs into a DIAMOND to give a t-bone column:
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> function xofy(meta, f) {
      *    >   var i=0
      *    >   var m=new java.util.LinkedHashMap()
@@ -221,7 +221,7 @@ public class Breather {
      *
      * @doc.test From couples back to back, step out; then breathe in:
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> f = FormationList.BACK_TO_BACK_COUPLES ; f.toStringDiagram()
      *  ^    ^
      *  
@@ -240,7 +240,7 @@ public class Breather {
      *  v    v
      * @doc.test From facing couples, take half a step in; breathe out:
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> f = FormationList.FACING_COUPLES ; f.toStringDiagram()
      *  v    v
      *  
@@ -256,7 +256,7 @@ public class Breather {
      *  ^    ^
      * @doc.test From single three quarter tag, step out; then breathe in:
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> f = FormationList.RH_SINGLE_THREE_QUARTER_TAG ; f.toStringDiagram()
      *    ^
      *  
@@ -281,7 +281,7 @@ public class Breather {
      *    v
      * @doc.test From single quarter tag, take half a step in; breathe out:
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> f = FormationList.RH_SINGLE_QUARTER_TAG ; f.toStringDiagram()
      *    v
      *  
@@ -302,7 +302,7 @@ public class Breather {
      *    ^
      * @doc.test From right-hand diamond, take half a step in; breathe out:
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> f = FormationList.RH_DIAMOND ; f.toStringDiagram("|", Formation.dancerNames)
      *  |  >
      *  |
@@ -324,7 +324,7 @@ public class Breather {
      *  |  <
      * @doc.test From right-hand diamond, take 1 1/2 steps in; breathe out to stars:
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> f = FormationList.RH_DIAMOND ; f.toStringDiagram("|", Formation.dancerNames)
      *  |  >
      *  |
@@ -342,7 +342,7 @@ public class Breather {
      *  |  <
      * @doc.test Facing dancers step forward; resolve collision.
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> f = FormationList.FACING_DANCERS ; f.toStringDiagram()
      *  v
      *  
@@ -360,7 +360,7 @@ public class Breather {
      * @doc.test Facing couples step forward with a left-shoulder pass;
      *  resolve collision and breathe.
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> f = FormationList.FACING_COUPLES ; f.toStringDiagram()
      *  v    v
      *  
@@ -454,7 +454,7 @@ public class Breather {
      * pass-left flag is set for the {@link Position}s involved.
      * @doc.test Triangle point breathes to center of the base:
      *  js> importPackage(net.cscott.sdr.util)
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> f2 = new Formation(Tools.m(
      *    >         Tools.p(StandardDancer.COUPLE_2_BOY, Position.getGrid(1,-1,"n")),
      *    >         Tools.p(StandardDancer.COUPLE_2_GIRL, Position.getGrid(3,-1,"n"))))

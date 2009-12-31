@@ -437,7 +437,7 @@ public class ExprList {
      * the top quadrant are facing "out".  Where in/out direction can not be
      * determined, this function uses an "x".
      * @doc.test
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> SD = StandardDancer; undefined
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _INOUT PATTERN)");
      *  (Expr _INOUT PATTERN)
@@ -542,7 +542,7 @@ public class ExprList {
     /**
      * Check the order of the selected dancers within the given formation.
      * @doc.test
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> SD = StandardDancer; undefined
      *  js> f = FormationList.RH_OCEAN_WAVE; f.toStringDiagram()
      *  ^    v    ^    v

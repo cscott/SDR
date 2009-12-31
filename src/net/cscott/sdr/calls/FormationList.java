@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 import net.cscott.jdoctest.JDoctestRunner;
 
 import org.junit.runner.RunWith;
+import org.mozilla.javascript.Scriptable;
 
 /**
  * A list of common formations, specified with phantoms.
@@ -18,7 +19,7 @@ import org.junit.runner.RunWith;
  *  This includes single diamonds, which are defined on a 2x3 grid, but
  *  twin diamonds have unbreathed points.
  *  (EXPECT FAIL: our breather is pushing in the points of twin diamonds)
- *  js> FormationList = FormationListJS.initJS(this); undefined;
+ *  js> FormationList = FormationList.js(this); undefined;
  *  js> for (f in Iterator(FormationList.all)) {
  *    >   if (!Breather.breathe(f).equals(f)) {
  *    >     print("Unbreathed formation: "+f.getName());
@@ -26,7 +27,7 @@ import org.junit.runner.RunWith;
  *    > }
  *  js> // note: no output from the above
  * @doc.test Canonical formations should be centered.
- *  js> FormationList = FormationListJS.initJS(this); undefined;
+ *  js> FormationList = FormationList.js(this); undefined;
  *  js> for (f in Iterator(FormationList.all)) {
  *    >   if (!f.isCentered()) {
  *    >     print("Uncentered formation: "+f.getName());
@@ -36,7 +37,7 @@ import org.junit.runner.RunWith;
  * @doc.test Canonical formations should be oriented so that "most"
  *  dancers are facing north or south.  This seems to match standard
  *  diagrams best.
- *  js> FormationList = FormationListJS.initJS(this); undefined;
+ *  js> FormationList = FormationList.js(this); undefined;
  *  js> ns = Rotation.fromAbsoluteString("|");
  *  0 mod 1/2
  *  js> for (f in Iterator(FormationList.all)) {
@@ -74,7 +75,7 @@ import org.junit.runner.RunWith;
  *  true
  * @doc.test There should be a matcher for every formation. (Although there
  *  are more matchers than there are formations.)
- *  js> FormationList = FormationListJS.initJS(this); undefined;
+ *  js> FormationList = FormationList.js(this); undefined;
  *  js> for (f in Iterator(FormationList.all)) {
  *    >   let name = (f.getName()
  *    >                .replace("1/4","QUARTER")
@@ -152,6 +153,13 @@ public abstract class FormationList extends FormationListFast {
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("No such formation: "+s);
         }
+    }
+
+    /** Javascript helper.
+     * @see FormationListJS
+     */
+    public static Scriptable js(Scriptable scope) {
+        return FormationListJS.initJS(scope, FormationList.class);
     }
 
     /** Show all the defined formations. */

@@ -17,7 +17,7 @@ import net.cscott.sdr.util.Fraction;
 abstract class FormationListFast {
     /** SINGLE DANCER formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.SINGLE_DANCER; tf.toStringDiagram('|');
       *  |^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -29,7 +29,7 @@ abstract class FormationListFast {
 
     /** GENERAL PARTNERS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_PARTNERS; tf.toStringDiagram('|');
       *  ||    |
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -43,7 +43,7 @@ abstract class FormationListFast {
 
     /** 1x2 formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList._1x2; tf.toStringDiagram('|');
       *  |+    +
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -57,7 +57,7 @@ abstract class FormationListFast {
 
     /** COUPLE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.COUPLE; tf.toStringDiagram('|');
       *  |^    ^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -71,7 +71,7 @@ abstract class FormationListFast {
 
     /** FACING DANCERS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.FACING_DANCERS; tf.toStringDiagram('|');
       *  |v
       *  |
@@ -87,7 +87,7 @@ abstract class FormationListFast {
 
     /** BACK TO BACK DANCERS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.BACK_TO_BACK_DANCERS; tf.toStringDiagram('|');
       *  |^
       *  |
@@ -103,7 +103,7 @@ abstract class FormationListFast {
 
     /** TANDEM formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.TANDEM; tf.toStringDiagram('|');
       *  |^
       *  |
@@ -119,7 +119,7 @@ abstract class FormationListFast {
 
     /** RH MINIWAVE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_MINIWAVE; tf.toStringDiagram('|');
       *  |^    v
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -133,7 +133,7 @@ abstract class FormationListFast {
 
     /** LH MINIWAVE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_MINIWAVE; tf.toStringDiagram('|');
       *  |v    ^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -147,7 +147,7 @@ abstract class FormationListFast {
 
     /** GENERAL LINE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_LINE; tf.toStringDiagram('|');
       *  ||    |    |    |
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -165,7 +165,7 @@ abstract class FormationListFast {
 
     /** 1x4 formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList._1x4; tf.toStringDiagram('|');
       *  |+    +    +    +
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -183,7 +183,7 @@ abstract class FormationListFast {
 
     /** 2x2 formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList._2x2; tf.toStringDiagram('|');
       *  |+    +
       *  |
@@ -203,7 +203,7 @@ abstract class FormationListFast {
 
     /** FACING COUPLES formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.FACING_COUPLES; tf.toStringDiagram('|');
       *  |v    v
       *  |
@@ -223,7 +223,7 @@ abstract class FormationListFast {
 
     /** BACK TO BACK COUPLES formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.BACK_TO_BACK_COUPLES; tf.toStringDiagram('|');
       *  |^    ^
       *  |
@@ -243,7 +243,7 @@ abstract class FormationListFast {
 
     /** TANDEM COUPLES formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.TANDEM_COUPLES; tf.toStringDiagram('|');
       *  |^    ^
       *  |
@@ -263,7 +263,7 @@ abstract class FormationListFast {
 
     /** RH OCEAN WAVE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_OCEAN_WAVE; tf.toStringDiagram('|');
       *  |^    v    ^    v
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -281,7 +281,7 @@ abstract class FormationListFast {
 
     /** LH OCEAN WAVE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_OCEAN_WAVE; tf.toStringDiagram('|');
       *  |v    ^    v    ^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -299,7 +299,7 @@ abstract class FormationListFast {
 
     /** RH BOX formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_BOX; tf.toStringDiagram('|');
       *  |^    v
       *  |
@@ -319,7 +319,7 @@ abstract class FormationListFast {
 
     /** LH BOX formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_BOX; tf.toStringDiagram('|');
       *  |v    ^
       *  |
@@ -339,7 +339,7 @@ abstract class FormationListFast {
 
     /** RH IN PINWHEEL formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_IN_PINWHEEL; tf.toStringDiagram('|');
       *  |>    v
       *  |
@@ -359,7 +359,7 @@ abstract class FormationListFast {
 
     /** LH IN PINWHEEL formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_IN_PINWHEEL; tf.toStringDiagram('|');
       *  |v    <
       *  |
@@ -379,7 +379,7 @@ abstract class FormationListFast {
 
     /** RH OUT PINWHEEL formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_OUT_PINWHEEL; tf.toStringDiagram('|');
       *  |^    >
       *  |
@@ -399,7 +399,7 @@ abstract class FormationListFast {
 
     /** LH OUT PINWHEEL formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_OUT_PINWHEEL; tf.toStringDiagram('|');
       *  |<    ^
       *  |
@@ -419,7 +419,7 @@ abstract class FormationListFast {
 
     /** RH SINGLE 1/4 ZEE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_SINGLE_QUARTER_ZEE; tf.toStringDiagram('|');
       *  |     v
       *  |
@@ -441,7 +441,7 @@ abstract class FormationListFast {
 
     /** LH SINGLE 1/4 ZEE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_SINGLE_QUARTER_ZEE; tf.toStringDiagram('|');
       *  |v
       *  |
@@ -463,7 +463,7 @@ abstract class FormationListFast {
 
     /** RH SINGLE 3/4 ZEE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_SINGLE_THREE_QUARTER_ZEE; tf.toStringDiagram('|');
       *  |^
       *  |
@@ -485,7 +485,7 @@ abstract class FormationListFast {
 
     /** LH SINGLE 3/4 ZEE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_SINGLE_THREE_QUARTER_ZEE; tf.toStringDiagram('|');
       *  |     ^
       *  |
@@ -507,7 +507,7 @@ abstract class FormationListFast {
 
     /** RH TWO-FACED LINE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_TWO_FACED_LINE; tf.toStringDiagram('|');
       *  |^    ^    v    v
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -525,7 +525,7 @@ abstract class FormationListFast {
 
     /** LH TWO-FACED LINE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_TWO_FACED_LINE; tf.toStringDiagram('|');
       *  |v    v    ^    ^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -543,7 +543,7 @@ abstract class FormationListFast {
 
     /** SINGLE INVERTED LINE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.SINGLE_INVERTED_LINE; tf.toStringDiagram('|');
       *  |v    ^    ^    v
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -561,7 +561,7 @@ abstract class FormationListFast {
 
     /** RH DIAMOND formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_DIAMOND; tf.toStringDiagram('|');
       *  |  >
       *  |
@@ -583,7 +583,7 @@ abstract class FormationListFast {
 
     /** RH FACING DIAMOND formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_FACING_DIAMOND; tf.toStringDiagram('|');
       *  |  <
       *  |
@@ -605,7 +605,7 @@ abstract class FormationListFast {
 
     /** LH DIAMOND formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_DIAMOND; tf.toStringDiagram('|');
       *  |  <
       *  |
@@ -627,7 +627,7 @@ abstract class FormationListFast {
 
     /** LH FACING DIAMOND formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_FACING_DIAMOND; tf.toStringDiagram('|');
       *  |  >
       *  |
@@ -649,7 +649,7 @@ abstract class FormationListFast {
 
     /** RH STAR formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_STAR; tf.toStringDiagram('|');
       *  |  >
       *  |^    v
@@ -669,7 +669,7 @@ abstract class FormationListFast {
 
     /** LH STAR formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_STAR; tf.toStringDiagram('|');
       *  |  <
       *  |v    ^
@@ -689,7 +689,7 @@ abstract class FormationListFast {
 
     /** RH SINGLE PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_SINGLE_PROMENADE; tf.toStringDiagram('|');
       *  |     >
       *  |
@@ -711,7 +711,7 @@ abstract class FormationListFast {
 
     /** LH SINGLE PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_SINGLE_PROMENADE; tf.toStringDiagram('|');
       *  |     <
       *  |
@@ -733,7 +733,7 @@ abstract class FormationListFast {
 
     /** RH SINGLE 1/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_SINGLE_QUARTER_TAG; tf.toStringDiagram('|');
       *  |  v
       *  |
@@ -755,7 +755,7 @@ abstract class FormationListFast {
 
     /** LH SINGLE 1/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_SINGLE_QUARTER_TAG; tf.toStringDiagram('|');
       *  |  v
       *  |
@@ -777,7 +777,7 @@ abstract class FormationListFast {
 
     /** RH SINGLE 3/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_SINGLE_THREE_QUARTER_TAG; tf.toStringDiagram('|');
       *  |  ^
       *  |
@@ -799,7 +799,7 @@ abstract class FormationListFast {
 
     /** LH SINGLE 3/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_SINGLE_THREE_QUARTER_TAG; tf.toStringDiagram('|');
       *  |  ^
       *  |
@@ -821,7 +821,7 @@ abstract class FormationListFast {
 
     /** SINGLE DOUBLE PASS THRU formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.SINGLE_DOUBLE_PASS_THRU; tf.toStringDiagram('|');
       *  |v
       *  |
@@ -845,7 +845,7 @@ abstract class FormationListFast {
 
     /** COMPLETED SINGLE DOUBLE PASS THRU formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.COMPLETED_SINGLE_DOUBLE_PASS_THRU; tf.toStringDiagram('|');
       *  |^
       *  |
@@ -869,7 +869,7 @@ abstract class FormationListFast {
 
     /** 1x8 formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList._1x8; tf.toStringDiagram('|');
       *  |+    +    +    +    +    +    +    +
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -895,7 +895,7 @@ abstract class FormationListFast {
 
     /** 2x4 formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList._2x4; tf.toStringDiagram('|');
       *  |+    +    +    +
       *  |
@@ -923,7 +923,7 @@ abstract class FormationListFast {
 
     /** PARALLEL GENERAL LINES formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.PARALLEL_GENERAL_LINES; tf.toStringDiagram('|');
       *  ||    |    |    |
       *  |
@@ -951,7 +951,7 @@ abstract class FormationListFast {
 
     /** GENERAL COLUMNS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_COLUMNS; tf.toStringDiagram('|');
       *  ||    |
       *  |
@@ -983,7 +983,7 @@ abstract class FormationListFast {
 
     /** STATIC SQUARE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.STATIC_SQUARE; tf.toStringDiagram('|');
       *  |     v    v
       *  |
@@ -1015,7 +1015,7 @@ abstract class FormationListFast {
 
     /** SINGLE FILE PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.SINGLE_FILE_PROMENADE; tf.toStringDiagram('|');
       *  |     <    <
       *  |
@@ -1047,7 +1047,7 @@ abstract class FormationListFast {
 
     /** REVERSE SINGLE FILE PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.REVERSE_SINGLE_FILE_PROMENADE; tf.toStringDiagram('|');
       *  |     >    >
       *  |
@@ -1079,7 +1079,7 @@ abstract class FormationListFast {
 
     /** RH ALAMO RING formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_ALAMO_RING; tf.toStringDiagram('|');
       *  |     ^    v
       *  |
@@ -1111,7 +1111,7 @@ abstract class FormationListFast {
 
     /** LH ALAMO RING formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_ALAMO_RING; tf.toStringDiagram('|');
       *  |     v    ^
       *  |
@@ -1143,7 +1143,7 @@ abstract class FormationListFast {
 
     /** O SPOTS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.O_SPOTS; tf.toStringDiagram('|');
       *  |     o    o
       *  |
@@ -1175,7 +1175,7 @@ abstract class FormationListFast {
 
     /** PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.PROMENADE; tf.toStringDiagram('|');
       *  |          <
       *  |
@@ -1209,7 +1209,7 @@ abstract class FormationListFast {
 
     /** WRONG WAY PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.WRONG_WAY_PROMENADE; tf.toStringDiagram('|');
       *  |          >
       *  |
@@ -1243,7 +1243,7 @@ abstract class FormationListFast {
 
     /** STAR PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.STAR_PROMENADE; tf.toStringDiagram('|');
       *  |       <
       *  |
@@ -1275,7 +1275,7 @@ abstract class FormationListFast {
 
     /** WRONG WAY STAR PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.WRONG_WAY_STAR_PROMENADE; tf.toStringDiagram('|');
       *  |       >
       *  |
@@ -1307,7 +1307,7 @@ abstract class FormationListFast {
 
     /** THAR formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.THAR; tf.toStringDiagram('|');
       *  |       <
       *  |
@@ -1339,7 +1339,7 @@ abstract class FormationListFast {
 
     /** WRONG WAY THAR formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.WRONG_WAY_THAR; tf.toStringDiagram('|');
       *  |       >
       *  |
@@ -1371,7 +1371,7 @@ abstract class FormationListFast {
 
     /** RIGHT AND LEFT GRAND formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RIGHT_AND_LEFT_GRAND; tf.toStringDiagram('|');
       *  |          >
       *  |
@@ -1405,7 +1405,7 @@ abstract class FormationListFast {
 
     /** RIGHT AND LEFT GRAND DIAMOND formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RIGHT_AND_LEFT_GRAND_DIAMOND; tf.toStringDiagram('|');
       *  |       >
       *  |
@@ -1439,7 +1439,7 @@ abstract class FormationListFast {
 
     /** LEFT AND RIGHT GRAND formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LEFT_AND_RIGHT_GRAND; tf.toStringDiagram('|');
       *  |          <
       *  |
@@ -1473,7 +1473,7 @@ abstract class FormationListFast {
 
     /** FACING LINES formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.FACING_LINES; tf.toStringDiagram('|');
       *  |v    v    v    v
       *  |
@@ -1501,7 +1501,7 @@ abstract class FormationListFast {
 
     /** EIGHT CHAIN THRU formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.EIGHT_CHAIN_THRU; tf.toStringDiagram('|');
       *  |v    v
       *  |
@@ -1533,7 +1533,7 @@ abstract class FormationListFast {
 
     /** TRADE BY formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.TRADE_BY; tf.toStringDiagram('|');
       *  |^    ^
       *  |
@@ -1565,7 +1565,7 @@ abstract class FormationListFast {
 
     /** DOUBLE PASS THRU formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.DOUBLE_PASS_THRU; tf.toStringDiagram('|');
       *  |v    v
       *  |
@@ -1597,7 +1597,7 @@ abstract class FormationListFast {
 
     /** COMPLETED DOUBLE PASS THRU formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.COMPLETED_DOUBLE_PASS_THRU; tf.toStringDiagram('|');
       *  |^    ^
       *  |
@@ -1629,7 +1629,7 @@ abstract class FormationListFast {
 
     /** LINES FACING OUT formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LINES_FACING_OUT; tf.toStringDiagram('|');
       *  |^    ^    ^    ^
       *  |
@@ -1657,7 +1657,7 @@ abstract class FormationListFast {
 
     /** PARALLEL RH WAVES formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.PARALLEL_RH_WAVES; tf.toStringDiagram('|');
       *  |^    v    ^    v
       *  |
@@ -1685,7 +1685,7 @@ abstract class FormationListFast {
 
     /** PARALLEL LH WAVES formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.PARALLEL_LH_WAVES; tf.toStringDiagram('|');
       *  |v    ^    v    ^
       *  |
@@ -1713,7 +1713,7 @@ abstract class FormationListFast {
 
     /** PARALLEL RH TWO-FACED LINES formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.PARALLEL_RH_TWO_FACED_LINES; tf.toStringDiagram('|');
       *  |^    ^    v    v
       *  |
@@ -1741,7 +1741,7 @@ abstract class FormationListFast {
 
     /** PARALLEL LH TWO-FACED LINES formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.PARALLEL_LH_TWO_FACED_LINES; tf.toStringDiagram('|');
       *  |v    v    ^    ^
       *  |
@@ -1769,7 +1769,7 @@ abstract class FormationListFast {
 
     /** RH COLUMN formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_COLUMN; tf.toStringDiagram('|');
       *  |^    v
       *  |
@@ -1801,7 +1801,7 @@ abstract class FormationListFast {
 
     /** LH COLUMN formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_COLUMN; tf.toStringDiagram('|');
       *  |v    ^
       *  |
@@ -1833,7 +1833,7 @@ abstract class FormationListFast {
 
     /** ENDS IN INVERTED LINES formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.ENDS_IN_INVERTED_LINES; tf.toStringDiagram('|');
       *  |v    ^    ^    v
       *  |
@@ -1861,7 +1861,7 @@ abstract class FormationListFast {
 
     /** ENDS OUT INVERTED LINES formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.ENDS_OUT_INVERTED_LINES; tf.toStringDiagram('|');
       *  |^    v    v    ^
       *  |
@@ -1889,7 +1889,7 @@ abstract class FormationListFast {
 
     /** RH 1/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_QUARTER_TAG; tf.toStringDiagram('|');
       *  |     v    v
       *  |
@@ -1919,7 +1919,7 @@ abstract class FormationListFast {
 
     /** LH 1/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_QUARTER_TAG; tf.toStringDiagram('|');
       *  |     v    v
       *  |
@@ -1949,7 +1949,7 @@ abstract class FormationListFast {
 
     /** RH 3/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_THREE_QUARTER_TAG; tf.toStringDiagram('|');
       *  |     ^    ^
       *  |
@@ -1979,7 +1979,7 @@ abstract class FormationListFast {
 
     /** LH 3/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_THREE_QUARTER_TAG; tf.toStringDiagram('|');
       *  |     ^    ^
       *  |
@@ -2009,7 +2009,7 @@ abstract class FormationListFast {
 
     /** RH 1/4 LINE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_QUARTER_LINE; tf.toStringDiagram('|');
       *  |     v    v
       *  |
@@ -2039,7 +2039,7 @@ abstract class FormationListFast {
 
     /** LH 1/4 LINE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_QUARTER_LINE; tf.toStringDiagram('|');
       *  |     v    v
       *  |
@@ -2069,7 +2069,7 @@ abstract class FormationListFast {
 
     /** RH 3/4 LINE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_THREE_QUARTER_LINE; tf.toStringDiagram('|');
       *  |     ^    ^
       *  |
@@ -2099,7 +2099,7 @@ abstract class FormationListFast {
 
     /** LH 3/4 LINE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_THREE_QUARTER_LINE; tf.toStringDiagram('|');
       *  |     ^    ^
       *  |
@@ -2129,7 +2129,7 @@ abstract class FormationListFast {
 
     /** RH TWIN DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_TWIN_DIAMONDS; tf.toStringDiagram('|');
       *  |  >         >
       *  |
@@ -2159,7 +2159,7 @@ abstract class FormationListFast {
 
     /** LH TWIN DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_TWIN_DIAMONDS; tf.toStringDiagram('|');
       *  |  <         <
       *  |
@@ -2189,7 +2189,7 @@ abstract class FormationListFast {
 
     /** RH POINT-TO-POINT DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_POINT_TO_POINT_DIAMONDS; tf.toStringDiagram('|');
       *  |  >
       *  |
@@ -2225,7 +2225,7 @@ abstract class FormationListFast {
 
     /** RH POINT-TO-POINT FACING DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_POINT_TO_POINT_FACING_DIAMONDS; tf.toStringDiagram('|');
       *  |  <
       *  |
@@ -2261,7 +2261,7 @@ abstract class FormationListFast {
 
     /** LH POINT-TO-POINT DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_POINT_TO_POINT_DIAMONDS; tf.toStringDiagram('|');
       *  |  <
       *  |
@@ -2297,7 +2297,7 @@ abstract class FormationListFast {
 
     /** LH POINT-TO-POINT FACING DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_POINT_TO_POINT_FACING_DIAMONDS; tf.toStringDiagram('|');
       *  |  >
       *  |
@@ -2333,7 +2333,7 @@ abstract class FormationListFast {
 
     /** RH TWIN FACING DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_TWIN_FACING_DIAMONDS; tf.toStringDiagram('|');
       *  |  <         <
       *  |
@@ -2363,7 +2363,7 @@ abstract class FormationListFast {
 
     /** LH TWIN FACING DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_TWIN_FACING_DIAMONDS; tf.toStringDiagram('|');
       *  |  >         >
       *  |
@@ -2393,7 +2393,7 @@ abstract class FormationListFast {
 
     /** RH TIDAL WAVE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_TIDAL_WAVE; tf.toStringDiagram('|');
       *  |^    v    ^    v    ^    v    ^    v
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -2419,7 +2419,7 @@ abstract class FormationListFast {
 
     /** LH TIDAL WAVE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_TIDAL_WAVE; tf.toStringDiagram('|');
       *  |v    ^    v    ^    v    ^    v    ^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -2445,7 +2445,7 @@ abstract class FormationListFast {
 
     /** RH TIDAL TWO-FACED LINE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_TIDAL_TWO_FACED_LINE; tf.toStringDiagram('|');
       *  |^    ^    v    v    ^    ^    v    v
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -2471,7 +2471,7 @@ abstract class FormationListFast {
 
     /** LH TIDAL TWO-FACED LINE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_TIDAL_TWO_FACED_LINE; tf.toStringDiagram('|');
       *  |v    v    ^    ^    v    v    ^    ^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -2497,7 +2497,7 @@ abstract class FormationListFast {
 
     /** RH TIDAL LINE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_TIDAL_LINE; tf.toStringDiagram('|');
       *  |^    ^    ^    ^    v    v    v    v
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -2523,7 +2523,7 @@ abstract class FormationListFast {
 
     /** LH TIDAL LINE formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_TIDAL_LINE; tf.toStringDiagram('|');
       *  |v    v    v    v    ^    ^    ^    ^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -2549,7 +2549,7 @@ abstract class FormationListFast {
 
     /** O DOUBLE PASS THRU formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.O_DOUBLE_PASS_THRU; tf.toStringDiagram('|');
       *  |     v    v
       *  |
@@ -2581,7 +2581,7 @@ abstract class FormationListFast {
 
     /** BUTTERFLY DOUBLE PASS THRU formation.
       * @doc.test
-      *  js> FormationList = FormationListJS.initJS(this); undefined;
+      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.BUTTERFLY_DOUBLE_PASS_THRU; tf.toStringDiagram('|');
       *  |v              v
       *  |

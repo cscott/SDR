@@ -76,7 +76,7 @@ public class GeneralFormationMatcher {
      * @throws NoMatchException if there is no way to match the goal formation
      *   with the given input
      * @doc.test A successful match with no phantoms or unmatched dancers:
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> GeneralFormationMatcher.doMatch(Formation.SQUARED_SET,
      *    >                                 FormationList.COUPLE,
      *    >                                 false, false)
@@ -98,7 +98,7 @@ public class GeneralFormationMatcher {
      *     1B^  1G^
      *   [1B: BEAU; 1G: BELLE]
      * @doc.test A successful match with some unmatched dancers:
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> GeneralFormationMatcher.doMatch(FormationList.RH_TWIN_DIAMONDS,
      *    >                                 FormationList.RH_MINIWAVE,
      *    >                                 true, false)
@@ -122,7 +122,7 @@ public class GeneralFormationMatcher {
      *  FF: (unmatched)
      *     ^
      * @doc.test When possible, symmetry is preserved in the result:
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> GeneralFormationMatcher.doMatch(FormationList.PARALLEL_RH_WAVES,
      *    >                                 FormationList.RH_MINIWAVE,
      *    >                                 false, false)
@@ -182,7 +182,7 @@ public class GeneralFormationMatcher {
     /** Allow multiple simultaneous goal formations.
      * @doc.test A successful match on a Siamese Diamond.
      *  js> importPackage(net.cscott.sdr.util); // for Fraction
-     *  js> FormationList = FormationListJS.initJS(this); undefined;
+     *  js> FormationList = FormationList.js(this); undefined;
      *  js> f = Formation.SQUARED_SET; undefined
      *  js> for each (d in StandardDancer.values()) {
      *    >   if (d.isHead()) continue;

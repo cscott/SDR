@@ -494,7 +494,7 @@ public class PMSD {
             global.init(cx);
 	    String initStmts =
 		"importPackage(net.cscott.sdr.calls);\n"+
-		"FormationList = FormationListJS.initJS(this);";
+		"FormationList = FormationList.js(this);";
             cx.evaluateString(global, initStmts,
                               "<init>", 0, null);
             // add the 'State' object to the scope chain
