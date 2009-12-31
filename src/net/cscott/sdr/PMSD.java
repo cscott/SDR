@@ -31,11 +31,9 @@ import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.StandardDancer;
-import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.grm.CompletionEngine;
-import net.cscott.sdr.toolbox.DWResolver;
 import net.cscott.sdr.util.ListUtils;
 
 import org.junit.runner.RunWith;
@@ -142,8 +140,6 @@ public class PMSD {
         // private/internal state
         DanceState ds;
         boolean _isDone = false;
-        boolean _errorDetails = false;
-        boolean _formationDetails = false;
         private void reset() {
             this.ds = new DanceState(new DanceProgram(Program.PLUS),
                                      Formation.SQUARED_SET);
@@ -174,20 +170,6 @@ public class PMSD {
             if (p==ds.dance.getProgram()) return;
             ds = new DanceState(new DanceProgram(p), ds.currentFormation());
         }
-        public boolean jsGet_errorDetails() {
-            return this._errorDetails;
-        }
-        public void jsSet_errorDetails(Object val) {
-            Boolean b = (Boolean) Context.jsToJava(val, Boolean.TYPE);
-            this._errorDetails = b.booleanValue();
-        }
-        public boolean jsGet_formationDetails() {
-            return this._formationDetails;
-        }
-        public void jsSet_formationDetails(Object val) {
-            Boolean b = (Boolean) Context.jsToJava(val, Boolean.TYPE);
-            this._formationDetails = b.booleanValue();
-        }
         public void jsSet_formation(Object val) {
             Formation f = (Formation) Context.jsToJava(val, Formation.class);
             ds = new DanceState(ds.dance, f);
@@ -196,7 +178,12 @@ public class PMSD {
         // ugly toString() value of the formation.
         public String jsFunction_setFormation(Object val) {
             jsSet_formation(val);
-            return jsGet_printFormation();
+            return printFormation();
+        }
+        // helper to invoke the javascript printFormation getter
+        private String printFormation() {
+            return Context.toString
+                (ScriptableObject.getProperty(this, "printFormation"));
         }
         // overloaded method to allow easy substitution of real dancers into
         // abstract formations from FormationList.
@@ -209,7 +196,7 @@ public class PMSD {
             StandardDancer d3 = jsToDancer(dancer3);
             StandardDancer d4 = jsToDancer(dancer4);
             ds = new DanceState(ds.dance, f.mapStd(d1, d2, d3, d4));
-            return jsGet_printFormation();
+            return printFormation();
         }
         private StandardDancer jsToDancer(Object val) {
             // try to convert directly
@@ -220,32 +207,6 @@ public class PMSD {
                 double ordinal = Context.toNumber(val);
                 return StandardDancer.values()[(int)ordinal];
             }
-        }
-        public String jsGet_printFormation() {
-            return ds.currentFormation().toStringDiagram("| ");
-        }
-        public String jsGet_printFormationDetails() {
-            return ds.currentFormation().toStringDiagramWithDetails("| ");
-        }
-
-        /** Prints out one step of a resolve from here. Currently uses
-         *  Dave Wilson's ocean wave resolution method.
-         *  @see net.cscott.sdr.toolbox.DWResolver
-         */
-        public String jsGet_resolveStep() {
-            return DWResolver.resolveStep(ds.currentFormation());
-        }
-        /** Helper to write parsing tests.
-         *  @see net.cscott.sdr.calls.CallDB#parse(Program,String)
-         */
-        public String jsFunction_parse(String calltext) {
-            Apply a = CallDB.INSTANCE.parse(ds.dance.getProgram(), calltext);
-            return a.toShortString();
-        }
-        /** Reload call definitions from resource files. */
-        public Object jsGet_reload() {
-            CallDB.INSTANCE.reload();
-            return Context.getUndefinedValue();
         }
 
         /** Runs the test in this same context, so that we can (for example)
@@ -261,17 +222,6 @@ public class PMSD {
             // (but reset formation and program, since tests expect that)
             this.reset();
             return runTest(this, testName, testCase);
-	}
-
-	/** Runs each test in its own javascript context, to ensure
-	 *  independence between tests.
-	 */
-	public String jsFunction_runAllTests() {
-	    try {
-		return runAllTests();
-	    } catch (IOException e) {
-		return e.getMessage();
-	    }
 	}
 
         // special helper to list test cases
@@ -409,7 +359,7 @@ public class PMSD {
         };
         try {
             if (s==null)
-                repl(rw);
+                repl(rw, false/* no welcome message */);
             else
                 repl(Context.getCurrentContext(), s, rw);
         } catch (IOException ioe) {
@@ -480,27 +430,34 @@ public class PMSD {
                 };
             }
         }
-        rw.writer().println("Welcome to "+Version.PACKAGE_STRING);
-        repl(rw);
+        repl(rw, true /* interactive */);
     }
     /** The main read-eval-print loop.
      *  Creates a new JavaScript score/context. */
-    public static void repl(ReaderWriter rw) throws IOException {
+    public static void repl(ReaderWriter rw, boolean interactive)
+        throws IOException {
         // initialize Rhino
         Context cx = Context.enter();
         try {
             cx.setLanguageVersion(Context.VERSION_1_7); // js 1.7 by default
             Global global = new Global();
             global.init(cx);
-	    String initStmts =
-		"importPackage(net.cscott.sdr.calls);\n"+
-		"FormationList = FormationList.js(this);";
-            cx.evaluateString(global, initStmts,
-                              "<init>", 0, null);
-            // add the 'State' object to the scope chain
+            ScriptableObject.putProperty(global, "writer", rw.writer());
+            // create the 'State' object
             ScriptableObject.defineClass(global, State.class);
             State s = (State) cx.newObject(global, "State");
+            ScriptableObject.putProperty(global, "state", s);
+            // run javascript startup code to flesh out the state object,
+            // define commands, etc.
+            Reader in = new InputStreamReader
+                (PMSD.class.getResourceAsStream("pmsd.js"), "UTF-8");
+            cx.evaluateReader(global, in, "<init>", 0, null);
+            // add the 'State' object to the scope chain
             s.setParentScope(global);
+            // print friendly welcome message!
+            if (interactive)
+                ScriptableObject.callMethod(global, "welcome", new Object[0]);
+            // start REPL loop
             repl(cx, s, rw);
         } catch (Throwable t) {
             rw.writer().println("* Unhandled exception: "+t.getMessage());
@@ -554,12 +511,12 @@ public class PMSD {
                 try {
                     Comp c = new Seq(CallDB.INSTANCE.parse(s.ds.dance.getProgram(), line));
                     Evaluator.breathedEval(s.ds.currentFormation(), c).evaluateAll(s.ds);
-                    if (s._formationDetails)
-                        pw.println(s.jsGet_printFormationDetails());
-                    else
-                        pw.println(s.jsGet_printFormation());
+                    // invoke printFormation on state object
+                    pw.println(Context.toString(ScriptableObject.getProperty(s, "printFormation")));
                 } catch (BadCallException bce) {
-                    pw.println("* "+bce.getMessage());
+                    // invoke formatBCE on state object.
+                    Object msg = ScriptableObject.callMethod(s, "formatBCE", new Object[] { bce });
+                    pw.println("* "+Context.toString(msg));
                 } catch (Throwable t) {
                     pw.println("* "+t.getMessage());
                     t.printStackTrace(pw);

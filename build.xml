@@ -177,6 +177,11 @@ Square Dance Revolution build file.
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
 	    </javac>
+	    <!-- bundle these into the jar -->
+	    <copy todir="${resources_dir}/net/cscott/sdr">
+	      <fileset dir="." includes="AUTHORS COPYING" />
+	    </copy>
+	    <!-- copy resources into the bin directory -->
             <copy todir="${classes_dir}">
               <fileset dir="${resources_dir}" />
             </copy>
@@ -634,7 +639,9 @@ window['JAVADOC_BASE'] = '{@docRoot}';
                               net/cscott/sdr/calls/parser/CallFileBuilder.java
 			      **/*.tokens" />
         <tarfileset dir="resources" prefix="${package}-${version}/resources"
-                    includes="net/cscott/sdr/recog/Basic.gram
+                    includes="net/cscott/sdr/AUTHORS
+                              net/cscott/sdr/COPYING
+                              net/cscott/sdr/recog/Basic.gram
                               net/cscott/sdr/recog/Mainstream.gram
                               net/cscott/sdr/recog/Plus.gram
                               net/cscott/sdr/recog/A?.gram
