@@ -124,6 +124,12 @@ public class EmitJava extends AbstractEmit {
 	    pp = Arrays.asList(Program.values());
 
         for (Program p: pp) {
+            sb.append("    /** Map from nonterminal names to grammar ");
+            sb.append("productions for the ");
+            sb.append(p.name());
+            sb.append(NL);
+            sb.append("     *  dance program. */");
+            sb.append(NL);
             sb.append("    public static final Map<String,Grm> ");
             sb.append(p.name());
             sb.append(";");

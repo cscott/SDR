@@ -9,7 +9,10 @@ import java.util.List;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.util.Tools;
 
-/** Post-processed grammar for all dance programs. */
+/** Post-processed grammar for all dance programs.  These grammars should be
+ *  accessed via {@link net.cscott.sdr.calls.grm.Grm#grammar(Program)} method;
+ *  the contents are described there.
+ */
 public class AllGrm /*extends GrmDB*/ {
 @RULES@
 }
