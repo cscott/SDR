@@ -12,9 +12,14 @@ $ cp sample.build.properties build.properties
 <edit build.properties to set jdk.home appropriately>
 $ ant jar
 
-And then use the text UI:
+And then use the text UI (example transcripts in
+resources/net/cscott/sdr/tests):
 
 $ ./run-pmsd.sh
+
+To run the web UI (in development mode):
+
+$ ant run.devmode
 
 To run the game:
 
