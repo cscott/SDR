@@ -114,7 +114,8 @@ Square Dance Revolution build file.
         <delete>
 	  <fileset dir="src/net/cscott/sdr/calls/parser/"
 		   includes="CallFileBuilder.java CallFileParser.java
-			     CallFileLexer.java CallFile__.g *.tokens"
+			     CallFileLexer.java CallFile__.g *.tokens
+			     AstLexer.java AstParser.java"
 		   />
 	</delete>
     </target>
