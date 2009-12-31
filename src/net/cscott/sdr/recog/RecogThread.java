@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import net.cscott.sdr.CommandInput;
 import net.cscott.sdr.CommandInput.InputMode;
@@ -32,6 +33,8 @@ import edu.cmu.sphinx.util.props.PropertyException;
 public class RecogThread extends Thread {
     private final CommandInput input;
     private final BlockingQueue<Control> rendezvous;
+    private final BlockingQueue<InputMode> modeQueue =
+        new LinkedBlockingQueue<InputMode>();
 
     public RecogThread(CommandInput input,
                        BlockingQueue<Control> rendezvous) {
@@ -79,6 +82,24 @@ public class RecogThread extends Thread {
         LevelMonitor levelMonitor = (LevelMonitor) cm.lookup("levelMonitor");
         rendezvous.offer(new Control(levelMonitor, microphone));
 
+        // get the SpeechInterrupter component.
+        final SpeechInterrupter speechInterrupter =
+            (SpeechInterrupter) cm.lookup("speechInterrupter");
+        new Thread() {
+            { setDaemon(true); }
+            @Override
+            public void run() {
+                while (true) {
+                    // block waiting for new input mode
+                    InputMode mode = input.getMode();
+                    // push it onto our non-blocking queue
+                    modeQueue.add(mode);
+                    // interrupt recognition in progress.
+                    speechInterrupter.interrupt();
+                }
+            }
+        }.start();
+
         /* get the JSGF grammar component */
         JSGFGrammar jsgfGrammar =
             (JSGFGrammar) cm.lookup("jsgfGrammar");
@@ -87,13 +108,14 @@ public class RecogThread extends Thread {
         /* the microphone will keep recording until the thread exits */
         while (true) {
             /* Check for a new input mode, and change grammars if necessary. */
-            InputMode mode = input.getMode();
+            InputMode mode = modeQueue.poll();
             if (mode!=null) {
                 String grmName;
                 if (mode.mainMenu())
                     grmName = "menu";
                 else
-                    grmName = mode.danceProgram().getProgram().toTitleCase();
+                    grmName = mode.program().toTitleCase();
+                System.err.println("SWITCHING GRAMMARS: "+grmName);
                 jsgfGrammar.loadJSGF(grmName);
                 // XXX work around bug in DynamicFlatLinguist
                 ((DynamicFlatLinguist) cm.lookup("dflatLinguist")).allocate();

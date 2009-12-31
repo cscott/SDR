@@ -4,6 +4,7 @@ import net.cscott.jutil.UnmodifiableIterator;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.DanceProgram;
+import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ast.Apply;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -68,10 +69,14 @@ public class CommandInput {
             }
     }
 
-    /** Get a new input mode, if there is one; otherwise return null. */
+    /** Get a new input mode, waiting if necessary. */
     public InputMode getMode() {
-        InputMode newMode = modeQueue.poll();
-        return newMode;
+        while (true)
+            try {
+                return modeQueue.take();
+            } catch (InterruptedException e) {
+                // retry
+            }
     }
 
     /** A {@link PossibleCommand} is an {@link Apply} corresponding to
@@ -133,7 +138,7 @@ public class CommandInput {
      *  commands are recognized.
      */
     public abstract static class InputMode {
-        public abstract DanceProgram danceProgram();
+        public abstract Program program();
         public abstract boolean mainMenu();
     }
 }

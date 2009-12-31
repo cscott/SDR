@@ -3,6 +3,9 @@ package net.cscott.sdr.anim;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import net.cscott.sdr.CommandInput;
+import net.cscott.sdr.CommandInput.InputMode;
+import net.cscott.sdr.calls.DanceProgram;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.recog.Microphone;
 import net.cscott.sdr.recog.RecogThread;
@@ -13,14 +16,16 @@ import net.cscott.sdr.recog.Microphone.NameAndLine;
  */
 public class GameSettings {
     private final Game game;
+    private final CommandInput input;
     private final Preferences p;
     private Microphone microphone;
     private GameMode mode;
 
     /** Create a new GameSettings, with default values taken from the user
      *  preferences. */
-    GameSettings(Game game) {
+    GameSettings(Game game, CommandInput input) {
         this.game = game;
+        this.input = input;
         // read defaults from persistent properties
         this.p = Preferences.userRoot().node(game.getName());
         // starts at main menu
@@ -38,6 +43,21 @@ public class GameSettings {
         this.mode = gm;
         this.game.hudState.setActive(this.mode==GameMode.DANCING);
         this.game.menuState.setActive(this.mode==GameMode.MAIN_MENU);
+        if (this.mode==GameMode.DANCING) {
+            this.input.switchMode(new InputMode() {
+                @Override
+                public Program program() { return getDanceLevel().program; }
+                @Override
+                public boolean mainMenu() { return false; }
+            });
+        } else {
+            this.input.switchMode(new InputMode() {
+                @Override
+                public Program program() { return null; }
+                @Override
+                public boolean mainMenu() { return true; }
+            });
+        }
     }
     public GameMode getMode() {
         return this.mode;

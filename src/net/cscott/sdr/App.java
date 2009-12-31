@@ -14,6 +14,7 @@ import net.cscott.sdr.calls.DancerPath;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.TimedFormation;
+import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.recog.RecogThread;
 import net.cscott.sdr.sound.MidiThread;
 
@@ -48,7 +49,7 @@ public class App {
         CyclicBarrier musicSync = new CyclicBarrier(2);
         CyclicBarrier sphinxSync = new CyclicBarrier(2);
         final Game game =
-            new Game(rendezvousBT, rendezvousRT, musicSync, sphinxSync);
+            new Game(input, rendezvousBT, rendezvousRT, musicSync, sphinxSync);
         new Thread() { // THIS IS THE GRAPHICS THREAD
             @Override public void run() {
                 game.start();
@@ -69,7 +70,11 @@ public class App {
 
         // Now start processing input, handing resulting formations to the
         // game thread.
-        ChoreoThread ct = new ChoreoThread(input, choreo, null);
+        ChoreoThread ct = new ChoreoThread(input, choreo, new ScoreAccumulator(){
+            public void goodCallGiven(Apply theCall, long startTime, long endTime) {
+            }
+            public void illegalCallGiven(String theBadCall, String message) {
+            }});
         ct.start();
 
         // now we should wait around until the game is over, and call

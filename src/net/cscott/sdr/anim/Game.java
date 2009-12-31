@@ -8,6 +8,7 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.logging.Level;
 
 import net.cscott.sdr.BeatTimer;
+import net.cscott.sdr.CommandInput;
 import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.anim.GameSettings.GameMode;
 import net.cscott.sdr.calls.CallDB;
@@ -55,7 +56,7 @@ public class Game extends FixedFramerateGame {
      * get a {@link BeatTimer} (presumably from the music player thread) and a
      * {@link LevelMonitor} (presumably from the speech-recognition thread).
      */ 
-    public Game(BlockingQueue<BeatTimer> rendezvousBT,
+    public Game(CommandInput input, BlockingQueue<BeatTimer> rendezvousBT,
             BlockingQueue<RecogThread.Control> rendezvousRT,
             CyclicBarrier musicSync,
             CyclicBarrier sphinxSync) {
@@ -68,7 +69,7 @@ public class Game extends FixedFramerateGame {
         this.rendezvousRT = rendezvousRT;
         this.musicSync = musicSync;
         this.sphinxSync = sphinxSync;
-        this.settings = new GameSettings(this);
+        this.settings = new GameSettings(this, input);
     }
     /** Creates display, sets up camera, and binds keys. */
     protected void initSystem() {

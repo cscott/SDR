@@ -158,6 +158,7 @@
             <item>levelMonitor </item>
             <item>speechClassifier </item>
             <item>speechMarker </item>
+            <item>speechInterrupter </item>
             <item>nonSpeechDataFilter </item>
             <item>premphasizer </item>
             <item>windower </item>
@@ -188,7 +189,9 @@
                type="edu.cmu.sphinx.frontend.endpoint.SpeechMarker" >
         <property name="speechTrailer" value="50"/>
     </component>
-    
+
+    <component name="speechInterrupter"
+               type="net.cscott.sdr.recog.SpeechInterrupter" />
     
     <component name="premphasizer" 
                type="edu.cmu.sphinx.frontend.filter.Preemphasizer"/>
