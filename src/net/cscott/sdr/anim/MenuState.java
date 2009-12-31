@@ -3,11 +3,11 @@ package net.cscott.sdr.anim;
 import java.util.List;
 
 import net.cscott.sdr.Version;
-import net.cscott.sdr.anim.GameSettings.DanceLevelSetting;
-import net.cscott.sdr.anim.GameSettings.DancerStyleSetting;
-import net.cscott.sdr.anim.GameSettings.DifficultySetting;
-import net.cscott.sdr.anim.GameSettings.MusicSetting;
-import net.cscott.sdr.anim.GameSettings.VenueSetting;
+import net.cscott.sdr.Settings.DanceLevelSetting;
+import net.cscott.sdr.Settings.DancerStyleSetting;
+import net.cscott.sdr.Settings.DifficultySetting;
+import net.cscott.sdr.Settings.MusicSetting;
+import net.cscott.sdr.Settings.VenueSetting;
 import net.cscott.sdr.anim.TextureText.JustifyX;
 import net.cscott.sdr.anim.TextureText.JustifyY;
 import net.cscott.sdr.recog.Microphone.NameAndLine;

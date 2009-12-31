@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.CommandInput;
 import net.cscott.sdr.DevSettings;
-import net.cscott.sdr.anim.GameSettings.GameMode;
+import net.cscott.sdr.Settings.GameMode;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.FormationList;
 import net.cscott.sdr.recog.LevelMonitor;

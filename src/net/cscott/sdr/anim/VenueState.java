@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import net.cscott.sdr.BeatTimer;
+import net.cscott.sdr.Settings;
 import net.cscott.sdr.Version;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.Formation;
@@ -61,9 +62,9 @@ public class VenueState extends CameraGameState {
     /** Music-synced timer. */
     protected BeatTimer beatTimer;
     /** Game settings. */
-    protected final GameSettings settings;
+    protected final Settings settings;
 
-    public VenueState(GameSettings settings, BeatTimer beatTimer) {
+    public VenueState(Settings settings, BeatTimer beatTimer) {
         super("Venue");
         this.settings = settings;
         this.beatTimer = beatTimer;

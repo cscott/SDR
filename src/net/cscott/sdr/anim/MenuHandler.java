@@ -1,6 +1,6 @@
 package net.cscott.sdr.anim;
 
-import net.cscott.sdr.anim.GameSettings.GameMode;
+import net.cscott.sdr.Settings.GameMode;
 
 import com.jme.input.InputHandler;
 import com.jme.input.KeyBindingManager;
