@@ -85,18 +85,22 @@ def: _anyone while others static square(sel, c1, c2)
   // special case 'heads promenade half way while the sides...'
   from: STATIC SQUARE
     condition: AND(EQUAL CALL([sel], HEAD), EQUAL CALL([c1], promenade half way))
+    in: 8
     call: _sides start
     call: anyone while others([sel], _outsides promenade half way, [c2])
   from: STATIC SQUARE
     condition: AND(EQUAL CALL([sel], HEAD), EQUAL CALL([c1], reverse(promenade half way)))
+    in: 8
     call: _sides start
     call: anyone while others([sel], reverse(_outsides promenade half way), [c2])
   from: STATIC SQUARE
     condition: AND(EQUAL CALL([sel], SIDE), EQUAL CALL([c1], promenade half way))
+    in: 8
     call: _heads start
     call: anyone while others([sel], _outsides promenade half way, [c2])
   from: STATIC SQUARE
     condition: AND(EQUAL CALL([sel], SIDE), EQUAL CALL([c1], reverse(promenade half way)))
+    in: 8
     call: _heads start
     call: anyone while others([sel], reverse(_outsides promenade half way), [c2])
   // special case 'heads square thru...' from static square
@@ -147,11 +151,17 @@ def: down the middle(sel, c=nothing)
 
 // callerlab #1: CIRCLE LEFT / CIRCLE RIGHT
 def: circle left(n)
-  spoken: circle (to the)? left <n=fraction> way?
+  spoken: circle (to the)? left <n=fraction>
   call: _fractional(_multiply num([n],4), _circle left 1/4)
 def: circle right(n)
-  spoken: circle (to the)? right <n=fraction> way?
+  spoken: circle (to the)? right <n=fraction>
   call: mirror(circle left([n]))
+def: circle left half way
+  spoken: circle (to the)? left half way
+  call: circle left(1/2)
+def: circle right half way
+  spoken: circle (to the)? right half way
+  call: circle right(1/2)
 
 def: circle four(n)
   spoken: circle four <n=fraction> way?
@@ -174,6 +184,10 @@ def: _circle left 1/4
      select: BELLE
        prim: -2,0,none,sashay-start sashay-finish force-roll-right
        prim: -2,2,right,sashay-start sashay-finish
+ from: 2x4
+   in: 4
+   ipart:
+     call: _centers back out, _circle left 1/4
  from: FACING COUPLES
    in: 2
    ipart:
@@ -919,7 +933,7 @@ def: two ladies chain(sel)
 
 def: four ladies chain(sel,n=1/2)
   spoken: four <sel=genders> chain (<n=fraction>)?
-  // timing = 6 + 2 per 1/4
+  // timing = 4 + 2 per 1/4
   ipart:
     from: STATIC SQUARE // XXX or circle (adjust?)
       condition: ARE([sel], BELLE), "Named dancers must be belles"
@@ -927,16 +941,20 @@ def: four ladies chain(sel,n=1/2)
       call: _start belles chain
       call: _in(_multiply num(8,[n]),\
                 _centers(reverse(_single star promenade([n]))))
-      call: _finish belles chain, _in(4, courtesy turn(3/4))
+      call: _finish belles chain, _in(3, courtesy turn(3/4))
+    from: 2x4
+      in: _add num(4, _multiply num(8, [n]))
+      call: _centers back out, four ladies chain([sel], [n])
+
 def: _start belles chain
-  in: 1
+  in: 1/2
   from: STATIC SQUARE
     select: BELLE
       prim: in 1, 2, left
     select: BEAU
       prim: in 1, 0, none, sashay-start sashay-finish
 def: _finish belles chain
-  in: 1
+  in: 1/2
   from: CENTER HALF
     select: CENTER
       prim: -1, 0, none, sashay-start sashay-finish
