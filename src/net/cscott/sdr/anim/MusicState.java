@@ -190,6 +190,7 @@ public class MusicState extends BaseState {
                 max = 20*Math.log10(max);
                 // shift zero
                 max = (max-MIN_DB)/(-MIN_DB);
+                if (max < 0) max = 0;
             }
             // draw line corresponding to this bucket
             g2.setColor(levelColor((float)max));
@@ -207,6 +208,8 @@ public class MusicState extends BaseState {
         new ArrayList<LevelMeasurement>(128);
     /** Find a color for the given level 0-1.  Interpolate green->yellow->red. */
     private Color levelColor(float val) {
+        if (val < 0) val = 0;
+        if (val > 1) val = 1;
         float[] start = c1, end = c2; 
         if (val>.75f) { start=c2; end=c3; val-=.75f; val *= 4; }
         else val*=4/3.;
