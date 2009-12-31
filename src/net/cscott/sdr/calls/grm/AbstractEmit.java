@@ -50,7 +50,8 @@ class AbstractEmit extends ToStringVisitor {
         Matcher m = pat.matcher(sb);
         sb = new StringBuffer();
         while (m.find()) {
-            m.appendReplacement(sb, m.group(1).equals("RULES")?rules:className);
+            m.appendReplacement(sb, Matcher.quoteReplacement
+                                (m.group(1).equals("RULES")?rules:className));
         }
         m.appendTail(sb);
         // done!

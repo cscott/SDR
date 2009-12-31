@@ -431,6 +431,28 @@ public class ExprList {
     static { exprStringFuncs.put(_FACING_PATTERN.getName(), _FACING_PATTERN); }
 
     /**
+     * The {@link #_COUPLE_NUM_PATTERN} is mostly for determining when we're
+     * "at home".
+     * @doc.test Dancers in pattern are in "reading order":
+     *  js> let expr = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _COUPLE NUM PATTERN)");
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET); undefined
+     *  js> sc = java.lang.Class.forName("java.lang.String")
+     *  class java.lang.String
+     *  js> expr.evaluate(sc, ds)
+     *  33424211
+     */
+    public static final ExprFunc<String> _COUPLE_NUM_PATTERN =
+        new SubsetPatternFunc("_couple num pattern") {
+        @Override
+        protected String dancerToString(TaggedFormation tf, Dancer d) {
+            if (!(d instanceof StandardDancer))
+                return " ";
+            return ""+((StandardDancer)d).coupleNumber();
+        }
+    };
+    static { exprStringFuncs.put(_COUPLE_NUM_PATTERN.getName(), _COUPLE_NUM_PATTERN); }
+
+    /**
      * Check whether dancers are facing "in" or "out" of the center of the
      * formation.  Dancers facing south or west in the top-right quadrant
      * (positive x and y) are facing "in", dancers facing north or east in
@@ -541,7 +563,15 @@ public class ExprList {
 
     /**
      * Check the order of the selected dancers within the given formation.
-     * @doc.test
+     * @doc.test Dancers in pattern are in "reading order":
+     *  js> let expr = net.cscott.sdr.calls.ast.AstNode.valueOf(
+     *    >           "(Expr _SELECTION PATTERN 'BOY)");
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET); undefined
+     *  js> sc = java.lang.Class.forName("java.lang.String")
+     *  class java.lang.String
+     *  js> expr.evaluate(sc, ds)
+     *  _XX__XX_
+     * @doc.test Examples using the MATCH predicate:
      *  js> FormationList = FormationList.js(this); undefined;
      *  js> SD = StandardDancer; undefined
      *  js> f = FormationList.RH_OCEAN_WAVE; f.toStringDiagram()

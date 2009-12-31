@@ -28,6 +28,18 @@ def: bow to your partner
   spoken: bow to (your|the) partner (and (your|the) corner too)?
   call: nothing
 
+// XXX: singing call progression?
+def: at home
+  spoken: (at | (you are) | "you're" ) home
+  from: STATIC SQUARE
+    condition: MATCH(_SELECTION PATTERN(BOY), "_XX__XX_"), \
+               "Couples aren't normal"
+    condition: MATCH(_COUPLE NUM PATTERN(), "33424211"), \
+               "No we're not!"
+    call: nothing
+  from: ANY
+    call: _centers back out, at home
+
 // work out grammar implications
 def: anyone while others(sel, c1, c2=nothing)
   /* default to 'nothing' if the 'while...' isn't present */
@@ -172,6 +184,16 @@ def: _circle left 1/4
  from: FACING DANCERS
    in: 2 // not well specified
      prim: -1,1,right,sashay-start sashay-finish
+
+def: _centers back out
+  in: 2
+  from: 2x4
+    condition: match(_facing pattern(), ">vv<>\\^\\^<")
+    ends in: formation(STATIC SQUARE)
+    select: CENTER
+      prim: 0, -2, none // "press back"
+    select: OTHERS
+      prim: 0, 0, none // stay where they are
 
 // callerlab #2: FORWARD AND BACK
 def: forward and back

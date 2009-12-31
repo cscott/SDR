@@ -76,7 +76,7 @@ public class EmitANTLRv3 extends AbstractEmit {
     @Override
     public String visit(Terminal t) {
         // quote literals.
-        return "'"+t.literal+"'";
+        return quote(t.literal);
     }
     @Override
     public String visit(Mult mult) {
@@ -92,5 +92,9 @@ public class EmitANTLRv3 extends AbstractEmit {
         }
         sb.append(nt.ruleName);
         return sb.toString();
+    }
+    private static String quote(String s) {
+        // XXX use full ANTLR escaping if we ever need it
+        return "'" + s.replace("'", "\\'") + "'";
     }
 }

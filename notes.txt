@@ -1439,3 +1439,14 @@ Who's constructing jline.ConsoleReader in JDoctest?
 ---------
 Interesting sphinx4 commits:
 241ee41dcf9e - VUMeter
+---------
+Singing call progression:
+
+option 1) instead of tweaking the "you're home" call, implement this
+as a post-processing concept, like octagon.  Shift the girls *in the
+start formation*, so that "you're home" really resolves them to their
+actual partners, to the dance engine at least.
+
+option 2) add "girl offset" to the DanceState, and have "you're home"
+factor in the proper girl offset when determining whether dancers are
+at home.
