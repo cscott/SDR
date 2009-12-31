@@ -22,11 +22,10 @@ touch ${PACKAGE}-${VERSION}/VERSION_${VERSION}
 (date ; echo "Released $PACKAGE $VERSION" ; echo " " ; cat ChangeLog)\
                 > ${PACKAGE}-${VERSION}/ChangeLog.txt
 # sources & binaries
-cp ${PACKAGE}-${VERSION}.tar.gz ${PACKAGE}-${VERSION}/
+cp ${PACKAGE}-${VERSION}.tar.gz ${PACKAGE}-${VERSION}/ && \
 gunzip ${PACKAGE}-${VERSION}/${PACKAGE}-${VERSION}.tar.gz && \
-gzip --rsyncable ${PACKAGE}-${VERSION}/${PACKAGE}-${VERSION}.tar
-( cd ${PACKAGE}-${VERSION} && \
-    ln -s ${PACKAGE}-${VERSION}.tar.gz ${PACKAGE}.tar.gz )
+gzip --rsyncable ${PACKAGE}-${VERSION}/${PACKAGE}-${VERSION}.tar && \
+ln -s ${PACKAGE}-${VERSION}.tar.gz ${PACKAGE}-${VERSION}/${PACKAGE}.tar.gz
 cp ${PACKAGE}.jar ${PACKAGE}-src.jar ${PACKAGE}-${VERSION}/
 # Java web start stuff
 cp sdr.jnlp ${PACKAGE}-${VERSION}/
