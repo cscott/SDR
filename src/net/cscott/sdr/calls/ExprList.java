@@ -622,4 +622,39 @@ public class ExprList {
         }
     };
     static { exprStringFuncs.put(_SELECTION_PATTERN.getName(), _SELECTION_PATTERN); }
+
+    /**
+     * The {@link #_PROPERTY} function interrogates the dance engine's
+     * environment, as exposed by {@link DanceState#property(String, String)}.
+     * @doc.test
+     *  js> let expr = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _PROPERTY 'foo 'bar)");
+     *  js> sc = java.lang.Class.forName("java.lang.String"); undefined
+     *  js> // default dance state contains no property mappings
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET); undefined
+     *  js> expr.evaluate(sc, ds)
+     *  bar
+     *  js> // construct a simple property map
+     *  js> m = new java.util.HashMap(); m.put('foo', 'bat'); m.toString();
+     *  {foo=bat}
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET, m); undefined
+     *  js> expr.evaluate(sc, ds)
+     *  bat
+     */
+    public static final ExprFunc<String> _PROPERTY = new ExprFunc<String>() {
+        @Override
+        public String getName() { return "_property"; }
+        @Override
+        public String evaluate(Class<? super String> type, DanceState ds,
+                               List<Expr> args) throws EvaluationException {
+            if (args.size() < 1)
+                throw new EvaluationException("not enough arguments");
+            if (args.size() > 2)
+                throw new EvaluationException("too many arguments");
+            String propName = args.get(0).evaluate(String.class, ds);
+            String defaultValue = (args.size() < 2) ? "" :
+                    args.get(1).evaluate(String.class, ds);
+            return ds.property(propName, defaultValue);
+        }
+    };
+    static { exprStringFuncs.put(_PROPERTY.getName(), _PROPERTY); }
 }

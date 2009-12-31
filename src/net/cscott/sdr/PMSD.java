@@ -14,11 +14,15 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -132,7 +136,7 @@ public class PMSD {
     private PMSD() {}
     /** Class holding properties accessible from the {@link PMSD} front-end. */
     public static class State extends ScriptableObject {
-        // rhino bookkeeping.
+        private final Map<String,String> properties = new PropertyMap();
         public State() { reset(); }
         @Override
         public String getClassName() { return "State"; }
@@ -142,7 +146,8 @@ public class PMSD {
         boolean _isDone = false;
         private void reset() {
             this.ds = new DanceState(new DanceProgram(Program.PLUS),
-                                     Formation.SQUARED_SET);
+                                     Formation.SQUARED_SET,
+                                     properties);
         }
 
         // javascript api.
@@ -168,11 +173,12 @@ public class PMSD {
             else
                 p = (Program) Context.jsToJava(val, Program.class);
             if (p==ds.dance.getProgram()) return;
-            ds = new DanceState(new DanceProgram(p), ds.currentFormation());
+            ds = new DanceState(new DanceProgram(p), ds.currentFormation(),
+                                properties);
         }
         public void jsSet_formation(Object val) {
             Formation f = (Formation) Context.jsToJava(val, Formation.class);
-            ds = new DanceState(ds.dance, f);
+            ds = new DanceState(ds.dance, f, properties);
         }
         // this is just a workaround to prevent javascript from echoing the
         // ugly toString() value of the formation.
@@ -195,7 +201,7 @@ public class PMSD {
             StandardDancer d2 = jsToDancer(dancer2);
             StandardDancer d3 = jsToDancer(dancer3);
             StandardDancer d4 = jsToDancer(dancer4);
-            ds = new DanceState(ds.dance, f.mapStd(d1, d2, d3, d4));
+            ds = new DanceState(ds.dance, f.mapStd(d1, d2, d3, d4), properties);
             return printFormation();
         }
         private StandardDancer jsToDancer(Object val) {
@@ -237,6 +243,34 @@ public class PMSD {
                 sb.append("\n");
             }
             return sb.toString();
+        }
+
+        // reflect 'state.props' object as a map
+        class PropertyMap extends AbstractMap<String,String> {
+            @Override
+            public String get(Object key) {
+                String name = Context.toString(key);
+                Object val = ScriptableObject.getProperty(props(), name);
+                if (val == Scriptable.NOT_FOUND) return null; // not here!
+                return Context.toString(val);
+            }
+            @Override
+            public Set<Map.Entry<String, String>> entrySet() {
+                Set<Map.Entry<String,String>> result =
+                    new HashSet<Map.Entry<String,String>>();
+                for (Object key : ScriptableObject.getPropertyIds(props())) {
+                    if (!(key instanceof String)) continue;
+                    String name = (String) key;
+                    String value = get(name);
+                    result.add(new SimpleImmutableEntry<String,String>
+                                (name, value));
+                }
+                return Collections.unmodifiableSet(result);
+            }
+            private Scriptable props() {
+                Object o = ScriptableObject.getProperty(State.this, "props");
+                return (Scriptable) o; // must be a map.
+            }
         }
     }
 

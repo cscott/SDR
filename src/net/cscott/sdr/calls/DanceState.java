@@ -33,13 +33,17 @@ import static net.cscott.sdr.util.Tools.mml;
 public class DanceState {
     public final DanceProgram dance;
     private final NavigableMap<Fraction, Formation> formations;
-    @SuppressWarnings("unused")
     private final ListMultiMap<Dancer, TimedAction> actions; // XXX?
     private final Map<Dancer, NavigableMap<Fraction, DancerPath>> movements;
     // this is used to keep track of a 'designated dancer' stack
     private final Stack<Set<Dancer>> designatedStack;
+    /** This is an interface into the environment of the dance engine.
+     *  If a {@link java.util.concurrent.ConcurrentMap} is used, then the
+     *  environment can be updated asynchronously. */
+    private final Map<String,String> properties;
 
-    public DanceState(DanceProgram dance, Formation f) {
+    public DanceState(DanceProgram dance, Formation f,
+                      Map<String,String> properties) {
         this.dance = dance;
         this.formations = new TreeMap<Fraction,Formation>();
         this.formations.put(Fraction.ZERO, f);
@@ -51,7 +55,13 @@ public class DanceState {
             this.movements.put(d, new TreeMap<Fraction,DancerPath>());
         // xxx: initialize actions?
         this.designatedStack = new Stack<Set<Dancer>>();
+        this.properties = properties;
     }
+    // convenience constructor.
+    public DanceState(DanceProgram dance, Formation f) {
+        this(dance, f, Collections.<String,String>emptyMap());
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, SdrToString.STYLE)
@@ -98,7 +108,7 @@ public class DanceState {
      */
     public DanceState cloneAndClear(Formation formation) {
         // XXX: should revisit this?
-        DanceState nds = new DanceState(dance, formation);
+        DanceState nds = new DanceState(dance, formation, properties);
         for (Set<Dancer> designated : this.designatedStack)
             nds.pushDesignated(designated);
         return nds;
@@ -142,6 +152,13 @@ public class DanceState {
         for (Dancer d : fm.matches.keySet())
             nMatches.put(d, this.tagDesignated(fm.matches.get(d)));
         return new FormationMatch(fm.meta, nMatches, fm.unmatched);
+    }
+    /** Access the environment's property map.
+     *  @see ExprList#_PROPERTY
+     */
+    public String property(String name, String defaultValue) {
+        String v = properties.get(name);
+        return (v==null) ? defaultValue : v;
     }
 
     /**

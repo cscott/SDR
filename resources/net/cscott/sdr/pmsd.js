@@ -6,6 +6,9 @@
 
 importPackage(net.cscott.sdr.calls);
 FormationList = FormationList.js(this);
+state.props = { }
+// set call-pending so that circle left & etc always stop promptly.
+state.props["call-pending"] = true;
 
 // utility functions
 function print() {
