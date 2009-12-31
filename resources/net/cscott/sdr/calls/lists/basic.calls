@@ -163,6 +163,16 @@ def: circle right half way
   spoken: circle (to the)? right half way
   call: circle right(1/2)
 
+// for interactive use: these will keep circling until another call is given
+def: circle left forever
+  spoken: circle left
+  call: _if(match(_property(call-pending, true), true), \
+            circle left(1/4), and(circle left(1/4), circle left forever))
+def: circle right forever
+  spoken: circle right
+  call: _if(match(_property(call-pending, true), true), \
+            circle right(1/4), and(circle right(1/4), circle right forever))
+
 def: circle four(n)
   spoken: circle four <n=fraction> way?
   from: FACING COUPLES

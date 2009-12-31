@@ -130,6 +130,30 @@ public class ExprList {
     };
     static { exprGenericFuncs.put(LITERAL.getName(), LITERAL); }
 
+    // this is a generic cond function, for implementing conditional loops
+    // without Opt/OptCall (which are not tail-recursive)
+    @SuppressWarnings("unchecked")
+    public static final ExprFunc _IF = new ExprFunc() {
+        @Override
+        public String getName() { return "_if"; }
+        @Override
+        public Object evaluate(Class type, DanceState ds, List args)
+            throws EvaluationException {
+            if (args.size() != 3)
+                throw new EvaluationException("needs 3 arguments");
+            Expr condExpr = (Expr) args.get(0);
+            Expr trueExpr = (Expr) args.get(1);
+            Expr falseExpr = (Expr) args.get(2);
+            // evaluate first args as a boolean
+            boolean cond = condExpr.evaluate(Boolean.class, ds);
+            if (cond)
+                return trueExpr.evaluate(type, ds);
+            else
+                return falseExpr.evaluate(type, ds);
+        }
+    };
+    static { exprGenericFuncs.put(_IF.getName(), _IF); }
+
     // mathematics
     private static abstract class MathFunc extends ExprFunc<Fraction> {
         private final String name;
