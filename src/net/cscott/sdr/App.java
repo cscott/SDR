@@ -40,6 +40,9 @@ public class App {
         // This is the choreography engine.
         DanceProgram ds = new DanceProgram(Program.BASIC);
         ChoreoEngine choreo = new ChoreoEngine(ds, Formation.FOUR_SQUARE);
+        // score & display
+        HUD hud = new HUD();
+        ScoreAccumulator score = new ScoreAccumulator(hud);
 
         // Start the game thread.
         BlockingQueue<RecogThread.Control> rendezvousRT =
@@ -49,7 +52,7 @@ public class App {
         CyclicBarrier musicSync = new CyclicBarrier(2);
         CyclicBarrier sphinxSync = new CyclicBarrier(2);
         final Game game =
-            new Game(input, rendezvousBT, rendezvousRT, musicSync, sphinxSync);
+            new Game(input, hud, rendezvousBT, rendezvousRT, musicSync, sphinxSync);
         new Thread() { // THIS IS THE GRAPHICS THREAD
             @Override public void run() {
                 game.start();
@@ -70,11 +73,7 @@ public class App {
 
         // Now start processing input, handing resulting formations to the
         // game thread.
-        ChoreoThread ct = new ChoreoThread(input, choreo, new ScoreAccumulator(){
-            public void goodCallGiven(Apply theCall, long startTime, long endTime) {
-            }
-            public void illegalCallGiven(String theBadCall, String message) {
-            }});
+        ChoreoThread ct = new ChoreoThread(input, choreo, score);
         ct.start();
 
         // now we should wait around until the game is over, and call
@@ -120,7 +119,7 @@ public class App {
 
                     // this was a good call!
                     sendToHUD(thisGuess);
-                    score.goodCallGiven(choreo.lastCall(), pc.getStartTime(), pc.getEndTime());
+                    score.goodCallGiven(choreo.lastCall(), choreo.currentFormation(), pc.getStartTime(), pc.getEndTime());
                     return;
                 } catch (BadCallException be) {
                     if (bestGuess==null ||

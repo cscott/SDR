@@ -59,7 +59,8 @@ public class Game extends FixedFramerateGame {
      * get a {@link BeatTimer} (presumably from the music player thread) and a
      * {@link LevelMonitor} (presumably from the speech-recognition thread).
      */ 
-    public Game(CommandInput input, BlockingQueue<BeatTimer> rendezvousBT,
+    public Game(CommandInput input, HUD hud,
+            BlockingQueue<BeatTimer> rendezvousBT,
             BlockingQueue<RecogThread.Control> rendezvousRT,
             CyclicBarrier musicSync,
             CyclicBarrier sphinxSync) {
@@ -73,7 +74,7 @@ public class Game extends FixedFramerateGame {
         this.musicSync = musicSync;
         this.sphinxSync = sphinxSync;
         this.settings = new GameSettings(this, input);
-        this.hud = new HUD();
+        this.hud = hud;
     }
     /** Creates display, sets up camera, and binds keys. */
     protected void initSystem() {

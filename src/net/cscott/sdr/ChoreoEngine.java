@@ -44,4 +44,5 @@ public class ChoreoEngine {
         return null;
     }
     public Apply lastCall() { return null; }
+    public Formation currentFormation() { return null; }
 }

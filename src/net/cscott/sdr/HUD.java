@@ -1,5 +1,8 @@
 package net.cscott.sdr;
 
+import java.util.AbstractMap;
+import java.util.Map;
+
 /** The {@link HUD} class encapsulates all the values displayed by the
  *  game's "heads up display".  It decouples these values from the code
  *  which displays them, and allows for thread-safe communication between
@@ -29,7 +32,6 @@ public class HUD {
     // [0-1000]
     private int score = 0;
     public synchronized void setScore(int score) { this.score = score; }
-    public synchronized void addToScore(int amount) { this.score += amount; }
     public synchronized int getScore() { return this.score; }
 
     private String notice = null;
@@ -45,9 +47,20 @@ public class HUD {
         this.noticeUntil = System.currentTimeMillis() + timeout;
     }
 
-    private String currentCall = null;
-    public synchronized String getCurrentCall() { return this.currentCall; }
-    public synchronized void setCurrentCall(String currentCall) { this.currentCall = currentCall; }
+    private Map.Entry<String, MessageType> message = null;
+    public synchronized Map.Entry<String,MessageType> getMessage() { return this.message; }
+    public synchronized void setMessage(String message, MessageType type) {
+        this.message = new AbstractMap.SimpleImmutableEntry<String,MessageType>(message, type);
+    }
+    /** What type of message this is. */
+    public enum MessageType {
+        /** A successfully recognized, correct call. */
+        CALL,
+        /** Helpful advice on what to do next. */
+        ADVICE,
+        /** An incorrect call, or other problem. */
+        ERROR
+    };
 
     private String bonus = null;
     public synchronized String getBonus() { return this.bonus; }

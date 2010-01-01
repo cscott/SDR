@@ -34,7 +34,7 @@ public class GameSettings extends Settings {
         this.game.hudState.setActive(gm==GameMode.DANCING);
         this.game.menuState.setActive(gm==GameMode.MAIN_MENU);
         if (gm==GameMode.DANCING) {
-            this.game.hud.setScore(1234567);
+            // XXX call ScoreAccumulator.resetScore()?
             this.game.hud.setNotice("Let's go!", 5000);
             this.input.switchMode(new InputMode() {
                 @Override

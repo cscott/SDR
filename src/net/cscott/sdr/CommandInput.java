@@ -73,6 +73,7 @@ public class CommandInput {
     public InputMode getMode() {
         while (true)
             try {
+                // XXX inform the ScoreAccumulator/ChoreoEngine?
                 return modeQueue.take();
             } catch (InterruptedException e) {
                 // retry

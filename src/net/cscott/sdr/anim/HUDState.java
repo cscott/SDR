@@ -2,9 +2,11 @@ package net.cscott.sdr.anim;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
+import java.util.Map.Entry;
 
 import net.cscott.sdr.HUD;
 import net.cscott.sdr.Version;
+import net.cscott.sdr.HUD.MessageType;
 import net.cscott.sdr.anim.TextureText.JustifyX;
 import net.cscott.sdr.anim.TextureText.JustifyY;
 
@@ -55,7 +57,7 @@ public class HUDState extends BaseState {
         mkTopTitle("SEQUENCE LENGTH",x(16+2*148), y(466));
         mkTopTitle("SCORE", x(490), y(466));
 
-        this.scoreText = mkText("Score display: ", "0", 128, JustifyX.RIGHT, JustifyY.TOP, x(640-8),y(464), x(196),y(56));
+        this.scoreText = mkText("Score display: ", "0", 128, JustifyX.RIGHT, JustifyY.TOP, x(640-6),y(464), x(196),y(56));
 
         mkText("F1 for help, Esc to quit", 64, JustifyX.RIGHT, JustifyY.BOTTOM, x(640),y(0), x(200), y(14));
 
@@ -114,22 +116,37 @@ public class HUDState extends BaseState {
     private int lastScore = 0;
     private void updateScore(int score) {
         if (score == lastScore) return;
-        // format the score prettily
-        this.scoreText.setText(scoreFormat.format(score).toString());
+        // format the score prettily; limit display to 0-1999999
+        int displayScore = score < 0 ? 0 : score >= 2000000 ? 1999999 : score;
+        this.scoreText.setText(scoreFormat.format(displayScore).toString());
         lastScore = score;
     }
     private static final DecimalFormat scoreFormat =new DecimalFormat("#,###");
 
-    private String lastCall = null;
-    private void updateCall(String call) {
-        if (call == lastCall) return;
-        if (call == null || call.length() == 0) {
+    private String lastMessage = null;
+    private MessageType lastMessageType = null;
+    private void updateCall(String message, MessageType messageType) {
+        if (message == lastMessage && messageType == lastMessageType) return;
+        if (message == null || message.length() == 0) {
             this.callText.setCullMode(Spatial.CULL_ALWAYS);
         } else {
-            this.callText.setText(call);
+            this.callText.setText(message);
             this.callText.setCullMode(Spatial.CULL_NEVER);
+            ColorRGBA c = ColorRGBA.magenta; // should never see this!
+            switch (messageType) {
+            case CALL:
+                c = ColorRGBA.white; break;
+            case ADVICE:
+                c = ColorRGBA.yellow; break;
+            case ERROR:
+                c = ColorRGBA.red; break;
+            default:
+                assert false;
+            }
+            this.callText.setColor(c);
         }
-        lastCall = call;
+        lastMessage = message;
+        lastMessageType = messageType;
     }
 
     private String lastBonus = null;
@@ -138,7 +155,7 @@ public class HUDState extends BaseState {
         if (bonus == null || bonus.length() == 0) {
             this.bonusText.setCullMode(Spatial.CULL_ALWAYS);
         } else {
-            this.bonusText.setText(bonus);
+            this.bonusText.setText("BONUS: "+bonus);
             this.bonusText.setCullMode(Spatial.CULL_NEVER);
         }
         lastBonus = bonus;
@@ -153,7 +170,8 @@ public class HUDState extends BaseState {
     protected void stateUpdate(float tpf) {
         updateNotice(hud.getNotice());
         updateScore(hud.getScore());
-        updateCall(hud.getCurrentCall());
+        Entry<String, MessageType> message = hud.getMessage();
+        updateCall(message.getKey(), message.getValue());
         updateBonus(hud.getBonus());
 
         timeFlowGauge.update(hud.getFlow());
