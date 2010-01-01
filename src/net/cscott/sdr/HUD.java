@@ -1,4 +1,4 @@
-package net.cscott.sdr.anim;
+package net.cscott.sdr;
 
 /** The {@link HUD} class encapsulates all the values displayed by the
  *  game's "heads up display".  It decouples these values from the code

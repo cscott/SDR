@@ -3,6 +3,7 @@ package net.cscott.sdr.anim;
 import java.awt.Color;
 import java.text.DecimalFormat;
 
+import net.cscott.sdr.HUD;
 import net.cscott.sdr.Version;
 import net.cscott.sdr.anim.TextureText.JustifyX;
 import net.cscott.sdr.anim.TextureText.JustifyY;
