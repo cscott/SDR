@@ -10,6 +10,7 @@ import edu.cmu.sphinx.frontend.Data;
 import edu.cmu.sphinx.frontend.DataEndSignal;
 import edu.cmu.sphinx.frontend.DataProcessingException;
 import edu.cmu.sphinx.frontend.DataStartSignal;
+import edu.cmu.sphinx.frontend.DoubleData;
 import edu.cmu.sphinx.frontend.Signal;
 import edu.cmu.sphinx.frontend.endpoint.SpeechEndSignal;
 import edu.cmu.sphinx.frontend.endpoint.SpeechStartSignal;
@@ -45,11 +46,18 @@ public class SpeechInterrupter extends BaseDataProcessor {
 	    return data;
 	if (inData &&
 	    interruptQueue.drainTo(new ArrayList<Interruption>()) != 0) {
+	    // work around bug in AbstractFeatureExtractor.getData/processFirstCepstrum
+	    // which throws an ArrayStoreException in Arrays.fill if a
+	    // SpeechStartSignal is immediately followed by a SpeechEndSignal.
+	    // So we pad with a frame of silence.
+	    Data pad = new DoubleData(new double[320]);
 	    if (inSpeech) {
+                dataQueue.add(pad);
 		dataQueue.add(new SpeechEndSignal());
 		dataQueue.add(new SpeechStartSignal());
 	    } else {
 		dataQueue.add(new SpeechStartSignal());
+                dataQueue.add(pad);
 		dataQueue.add(new SpeechEndSignal());
 	    }
 	    return getData();
