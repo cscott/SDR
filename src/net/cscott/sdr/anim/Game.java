@@ -44,6 +44,8 @@ public class Game extends FixedFramerateGame {
     private BeatTimer beatTimer;
     /** Various user-adjustable settings. */
     final GameSettings settings;
+    /** HUD display. */
+    final HUD hud;
     MenuState menuState;
     VenueState venueState;
     HUDState hudState;
@@ -70,6 +72,7 @@ public class Game extends FixedFramerateGame {
         this.musicSync = musicSync;
         this.sphinxSync = sphinxSync;
         this.settings = new GameSettings(this, input);
+        this.hud = new HUD();
     }
     /** Creates display, sets up camera, and binds keys. */
     protected void initSystem() {
@@ -195,7 +198,7 @@ public class Game extends FixedFramerateGame {
                 musicState = new MusicState(beatTimer, control.levelMonitor);
                 
                 inc("Creating HUD...");
-                hudState = new HUDState(beatTimer);
+                hudState = new HUDState(hud);
                 attach(hudState,false);
                 
                 inc("Loading menus...");

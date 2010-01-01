@@ -10,6 +10,10 @@ import net.cscott.sdr.recog.Microphone;
 import net.cscott.sdr.recog.RecogThread;
 import net.cscott.sdr.recog.Microphone.NameAndLine;
 
+/** This subclass of {@link Settings} contains the Game UI-specific parts of
+ *  the settings.  When a setting is changed, this class ensures that the
+ *  proper parts of the UI are updated.
+ */
 public class GameSettings extends Settings {
     private final Game game;
     private final CommandInput input;
@@ -30,6 +34,8 @@ public class GameSettings extends Settings {
         this.game.hudState.setActive(gm==GameMode.DANCING);
         this.game.menuState.setActive(gm==GameMode.MAIN_MENU);
         if (gm==GameMode.DANCING) {
+            this.game.hud.setScore(1234567);
+            this.game.hud.setNotice("Let's go!", 5000);
             this.input.switchMode(new InputMode() {
                 @Override
                 public Program program() { return getDanceLevel().program; }
