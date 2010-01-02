@@ -15,16 +15,23 @@ import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.DancerPath;
+import net.cscott.sdr.calls.EvalPrim;
 import net.cscott.sdr.calls.Evaluator;
+import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Formation;
+import net.cscott.sdr.calls.FormationList;
+import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.Selector;
+import net.cscott.sdr.calls.StandardDancer;
+import static net.cscott.sdr.calls.StandardDancer.*;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.In;
 import net.cscott.sdr.calls.ast.Part;
+import net.cscott.sdr.calls.ast.Prim;
 import static net.cscott.sdr.calls.ast.Part.Divisibility.*;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
@@ -34,6 +41,7 @@ import net.cscott.sdr.calls.lists.C1List.ConcentricEvaluator;
 import net.cscott.sdr.calls.lists.C1List.ConcentricType;
 import net.cscott.sdr.calls.transform.Fractional;
 import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.Point;
 import net.cscott.sdr.util.Tools.F;
 
 import org.junit.runner.RunWith;
@@ -326,8 +334,8 @@ public abstract class BasicList {
             return new Rule("anything", g, Fraction.valueOf(-10));
         }
     };
-    // grammar tweak: allow "do half of a ..." in addition to the
-    // longer-winded "do one half of a..." or "do a half of a..."
+    /** Grammar tweak: allow "do half of a ..." in addition to the
+     * longer-winded "do one half of a..." or "do a half of a...". */
     public static final Call _HALF = new BasicCall("_half") {
         @Override
         public Evaluator getEvaluator(DanceState ds, List<Expr> args)
@@ -344,5 +352,87 @@ public abstract class BasicList {
             Grm g = Grm.parse(rule);
             return new Rule("anything", g, Fraction.valueOf(-10));
         }
+    };
+    /** Used for 'scramble home' call. */
+    public static final Call _SCRAMBLE_HOME = new BasicCall("_scramble home") {
+        @Override
+        public int getMinNumberOfArguments() { return 0; }
+        @Override
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            return new Evaluator() {
+                @Override
+                public Evaluator evaluate(DanceState ds) {
+                    Formation currentFormation = ds.currentFormation();
+                    for (Dancer d : currentFormation.dancers()) {
+                        if (!(d instanceof StandardDancer)) continue;
+                        StandardDancer sd = (StandardDancer) d;
+                        Position current = currentFormation.location(sd);
+                        Position target = targetFormation.location(sd);
+                        Fraction time = Fraction.ZERO;
+                        DancerPath dp;
+
+                        // roll if needed to face w/in 1/4 of proper direction.
+                        ExactRotation curR = (ExactRotation) current.facing;
+                        ExactRotation tarR = (ExactRotation) target.facing;
+                        Fraction sweep = curR.minSweep(tarR);
+                        if (sweep.abs().compareTo(Fraction.ONE_QUARTER) > 0) {
+                            dp = rollToTarget(current, target);
+                            ds.add(sd, dp);
+                            current = dp.to;
+                            curR = (ExactRotation) current.facing;
+                            time = time.add(dp.time);
+                        }
+
+                        // odd special case: sometimes the 1/4-off rotations
+                        // leaves the dancer initially walking *backwards*
+                        // turn 1/4 more if necessary to prevent that.
+                        dp = new DancerPath(current, target, time, null);
+                        Point initialTangent = dp.tangentStart();
+                        ExactRotation initialDir = ExactRotation.fromXY
+                            (initialTangent.x, initialTangent.y);
+                        sweep = curR.minSweep(initialDir);
+                        if (sweep.abs().compareTo(Fraction.ONE_QUARTER) > 0) {
+                            dp = rollToTarget(current, target);
+                            ds.add(sd, dp);
+                            current = dp.to;
+                            time = time.add(dp.time);
+                        }
+
+                        // now make a DancerPath for the rest of the distance
+                        // travel speed is 1 unit/beat, so estimate appropriate
+                        // path time based on distance to travel
+                        Fraction dist2 = target.x.subtract(current.x).pow(2);
+                        dist2 = dist2.add(target.y.subtract(current.y).pow(2));
+                        double dist = Math.sqrt(dist2.doubleValue());
+                        if (false)
+                            time = Fraction.valueOf(Math.ceil(dist));
+                        else {
+                            // XXX using real times screws up breathing.  Use fixed
+                            //     time for now.
+                            time = Fraction.THREE.subtract(time);
+                        }
+                        dp = new DancerPath(current, target, time, null);
+                        ds.add(sd, dp);
+                    }
+                    return null;
+                }
+                private DancerPath rollToTarget(Position current, Position target) {
+                    ExactRotation curR = (ExactRotation) current.facing;
+                    ExactRotation tarR = (ExactRotation) target.facing;
+                    Fraction sweep = curR.minSweep(tarR);
+                    // can't rotate more than 1/4 in each step.
+                    if (sweep.compareTo(Fraction.ONE_QUARTER) > 0)
+                        sweep = Fraction.ONE_QUARTER;
+                    if (sweep.compareTo(Fraction.mONE_QUARTER) < 0)
+                        sweep = Fraction.mONE_QUARTER;
+                    Position newPos = current.turn(sweep, false);
+                    return new DancerPath(current, newPos, Fraction.ONE, null);
+                }
+            };
+        }
+        final Formation targetFormation =
+            FormationList.STATIC_SQUARE_FACING_OUT.mapStd
+            (COUPLE_3_BOY, COUPLE_3_GIRL, COUPLE_4_GIRL, COUPLE_2_BOY);
     };
 }

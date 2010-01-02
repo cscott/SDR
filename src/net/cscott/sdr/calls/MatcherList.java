@@ -281,6 +281,8 @@ public class MatcherList {
             (GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_COLUMNS));
     public static final Matcher STATIC_SQUARE =
         GeneralFormationMatcher.makeMatcher(FormationList.STATIC_SQUARE);
+    public static final Matcher STATIC_SQUARE_FACING_OUT =
+        GeneralFormationMatcher.makeMatcher(FormationList.STATIC_SQUARE_FACING_OUT);
     public static final Matcher SINGLE_FILE_PROMENADE =
         GeneralFormationMatcher.makeMatcher(FormationList.SINGLE_FILE_PROMENADE);
     public static final Matcher REVERSE_SINGLE_FILE_PROMENADE =

@@ -1013,6 +1013,38 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BEAU),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BELLE));
 
+    /** STATIC SQUARE FACING OUT formation.
+      * @doc.test
+      *  js> FormationList = FormationList.js(this); undefined;
+      *  js> tf = FormationList.STATIC_SQUARE_FACING_OUT; tf.toStringDiagram('|');
+      *  |     ^    ^
+      *  |
+      *  |<              >
+      *  |
+      *  |<              >
+      *  |
+      *  |     v    v
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [BEAU]
+      *  [BELLE]
+      *  [BELLE]
+      *  [BEAU]
+      *  [BEAU]
+      *  [BELLE]
+      *  [BELLE]
+      *  [BEAU]
+      */
+    public static final NamedTaggedFormation STATIC_SQUARE_FACING_OUT =
+        new NamedTaggedFormation("STATIC SQUARE FACING OUT",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), ExactRotation.NORTH), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(3), ExactRotation.NORTH), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), ExactRotation.WEST), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(1), ExactRotation.EAST), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-1), ExactRotation.WEST), Tag.BEAU),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-1), ExactRotation.EAST), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.BELLE),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.BEAU));
+
     /** SINGLE FILE PROMENADE formation.
       * @doc.test
       *  js> FormationList = FormationList.js(this); undefined;
@@ -2663,6 +2695,7 @@ abstract class FormationListFast {
             FormationListFast.PARALLEL_GENERAL_LINES,
             FormationListFast.GENERAL_COLUMNS,
             FormationListFast.STATIC_SQUARE,
+            FormationListFast.STATIC_SQUARE_FACING_OUT,
             FormationListFast.SINGLE_FILE_PROMENADE,
             FormationListFast.REVERSE_SINGLE_FILE_PROMENADE,
             FormationListFast.RH_ALAMO_RING,

@@ -31,6 +31,7 @@ def: bow to your partner
 // XXX: singing call progression?
 def: at home
   spoken: (at | (you are) | "you're" ) home
+  in: 4
   from: STATIC SQUARE
     condition: MATCH(_SELECTION PATTERN(BOY), "_XX__XX_"), \
                "Couples aren't normal"
@@ -39,6 +40,26 @@ def: at home
     call: nothing
   from: ANY
     call: _centers back out, at home
+
+def: go home
+  spoken: (go home) | (square your set)
+  ipart:
+    call: _scramble home // actually to sashayed home, facing out
+    call: _in(2, trade)
+
+// game attract loop
+def: _attract
+  call: circle left(1/2)
+  call: _anyone(HEAD, right and left thru)
+  call: circle left(1/2)
+  call: _anyone(SIDE, right and left thru)
+  call: four ladies chain(GIRL, 1/2)
+  call: _anyone(HEAD, promenade half way)
+  call: four ladies chain(GIRL, 1/2)
+  call: _anyone(SIDE, right and left thru)
+  call: _in(8, at home)
+  call: _if(match(_property(call-pending, true), true), nothing, \
+            _attract) // tail recursion!
 
 // work out grammar implications
 def: anyone while others(sel, c1, c2=nothing)

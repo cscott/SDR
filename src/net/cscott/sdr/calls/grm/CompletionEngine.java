@@ -55,6 +55,10 @@ import net.cscott.sdr.util.Tools;
  *  square thru <number> hands round <times>
  *  square thru <number> hands round and roll
  *  square thru <number> hands round and sweep <fraction>
+ *  square your set
+ *  square your set <times>
+ *  square your set and roll
+ *  square your set and sweep <fraction>
  *  js> c("square thru 1 1/2 h");
  *  square thru 1 1/2 hands
  *  square thru 1 1/2 hands <times>

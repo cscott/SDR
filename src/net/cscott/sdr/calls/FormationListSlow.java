@@ -275,6 +275,9 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation STATIC_SQUARE = // callerlab #14
         create("STATIC SQUARE", f(" ss ","e  w","e  w"," nn "),
                 WhetherTagger.AUTO_TAGS);
+    public static final NamedTaggedFormation STATIC_SQUARE_FACING_OUT =
+        create("STATIC SQUARE FACING OUT", f(" nn ","w  e","w  e"," ss "),
+                WhetherTagger.AUTO_TAGS);
     // XXX circle, callerlab #15 (we use STATIC SQUARE for this)
     public static final NamedTaggedFormation SINGLE_FILE_PROMENADE = // callerlab #16
         create("SINGLE FILE PROMENADE", f(" ww ","s  n","s  n"," ee "),
