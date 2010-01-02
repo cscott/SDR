@@ -180,6 +180,12 @@ public abstract class Evaluator {
         assert !hasSimpleExpansion();
         throw new IllegalArgumentException("Does not have a simple expansion");
     }
+    @Override
+    public String toString() {
+        if (hasSimpleExpansion())
+            return this.getClass().getName()+"("+simpleExpansion()+")";
+        return super.toString();
+    }
 
     public final void evaluateAll(DanceState ds) {
         for(Evaluator e = this; e!=null; )
@@ -230,7 +236,11 @@ public abstract class Evaluator {
         @Override
         public boolean hasSimpleExpansion() { return true; }
         @Override
-        public Comp simpleExpansion() { return (Comp) continuation; }
+        public Comp simpleExpansion() {
+            if (continuation instanceof SeqCall)
+                return new Seq((SeqCall)continuation);
+            return (Comp) continuation;
+        }
         @Override
         public Evaluator evaluate(DanceState ds) {
             return this.continuation.accept(new StandardVisitor(),ds);
@@ -480,6 +490,17 @@ public abstract class Evaluator {
         public Evaluator evaluate(DanceState ds) {
             Evaluator e = head.evaluate(ds);
             return (e!=null) ? new EvaluatorChain(e, this.next) : this.next;
+        }
+        @Override
+        public boolean hasSimpleExpansion() {
+            return head.hasSimpleExpansion() && next.hasSimpleExpansion();
+        }
+        @Override
+        public Comp simpleExpansion() {
+            return new Seq(new Part(Part.Divisibility.DIVISIBLE, Fraction.ONE,
+                                    head.simpleExpansion()),
+                           new Part(Part.Divisibility.DIVISIBLE, Fraction.ONE,
+                                    next.simpleExpansion()));
         }
     }
     /** Implements {@link Opt}: evaluates a call in a meta formation. */
