@@ -16,9 +16,9 @@ public abstract class StringEscapeUtils {
                 else if (c==' ' || c=='/' || c=='-' || c=='+')
                     sb.append(c); // some specific safe characters
                 else if (c<256) // this handles quotes, slashes, and other nasties
-                    sb.append(String.format("\\\\%03o", (int) c));
+                    sb.append(String.format("\\%03o", (int) c));
                 else // make the world safe for unicode
-                    sb.append(String.format("\\\\"+"u%04x", (int) c));
+                    sb.append(String.format("\\"+"u%04x", (int) c));
             }
             //sb.append('"');
             return sb.toString();
