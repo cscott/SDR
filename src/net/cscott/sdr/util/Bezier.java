@@ -21,6 +21,14 @@ public class Bezier {
     }
     /** Evaluate a cubic bezier with the given four control points.  The time
      * argument should be between 0 and 1, inclusive. */
+    public static double cubicInterp(double p0, double p1, double p2, double p3, double t){
+        if (t<0) t = 0;
+        if (t>1) t = 1;
+        double onem = 1 - t;
+        return p0*onem*onem*onem + 3*p1*t*onem*onem + 3*p2*t*t*onem + p3*t*t*t;
+    }
+    /** Evaluate a cubic bezier with the given four control points.  The time
+     * argument should be between 0 and 1, inclusive. */
     public static Fraction cubicInterp(Fraction p0, Fraction p1,
                                        Fraction p2, Fraction p3, Fraction t) {
         if (t.compareTo(Fraction.ZERO) < 0) t = Fraction.ZERO;
@@ -57,6 +65,14 @@ public class Bezier {
         if (t<0) t = 0;
         if (t>1) t = 1;
         float onem = 1 - t;
+        return p0*onem*onem + 2*p1*t*onem + p2*t*t;
+    }
+    /** Evaluate a quadratic bezier with the given three control points.  The
+     * time argument should be between 0 and 1, inclusive. */
+    public static double quadInterp(double p0, double p1, double p2, double t) {
+        if (t<0) t = 0;
+        if (t>1) t = 1;
+        double onem = 1 - t;
         return p0*onem*onem + 2*p1*t*onem + p2*t*t;
     }
     /** Evaluate a quadratic bezier with the given three control points.  The
@@ -105,6 +121,40 @@ public class Bezier {
                 return new Point
                     (cubicInterp(p[0].x, p[1].x, p[2].x, p[3].x, t),
                      cubicInterp(p[0].y, p[1].y, p[2].y, p[3].y, t));
+            default:
+                throw new RuntimeException
+                    ("Higher-order beziers not supported.");
+            }
+        }
+        /** Evaluate one dimension of the given Bezier in floating point. */
+        public double evaluateX(double t) {
+            switch (degree()) {
+            case 0:
+            case 1: return raise().evaluateX(t);
+            case 2: return quadInterp(p[0].x.doubleValue(),
+                                      p[1].x.doubleValue(),
+                                      p[2].x.doubleValue(), t);
+            case 3: return cubicInterp(p[0].x.doubleValue(),
+                                       p[1].x.doubleValue(),
+                                       p[2].x.doubleValue(),
+                                       p[3].x.doubleValue(), t);
+            default:
+                throw new RuntimeException
+                    ("Higher-order beziers not supported.");
+            }
+        }
+        /** Evaluate one dimension of the given Bezier in floating point. */
+        public double evaluateY(double t) {
+            switch (degree()) {
+            case 0:
+            case 1: return raise().evaluateY(t);
+            case 2: return quadInterp(p[0].y.doubleValue(),
+                                      p[1].y.doubleValue(),
+                                      p[2].y.doubleValue(), t);
+            case 3: return cubicInterp(p[0].y.doubleValue(),
+                                       p[1].y.doubleValue(),
+                                       p[2].y.doubleValue(),
+                                       p[3].y.doubleValue(), t);
             default:
                 throw new RuntimeException
                     ("Higher-order beziers not supported.");
