@@ -371,7 +371,7 @@ public class GeneralFormationMatcher {
                 Position goPr = warpB.warp(input.location(inD), Fraction.ZERO);
                 // to avoid distortion for 1/8 off formations, take only the
                 // rotation (and flags) from this new goP
-                goP = goPr.relocate(goP.x, goP.y, goPr.facing);
+                goP = goPr.relocate(goP.x, goP.y, goPr.facing.normalize());
                 // add to this subformation.
                 subPos.put(inD, goP);
                 subTag.addAll(inD, om.gi.goal.tags(goD));
@@ -393,7 +393,7 @@ public class GeneralFormationMatcher {
             Position inP = input.location(d);
             Position goP = Position.getGrid(0,0,"n");
             ExactRotation rr = (ExactRotation) // i know this is a no-op.
-		inP.facing.subtract(goP.facing.amount);
+		inP.facing.subtract(goP.facing.amount).normalize();
 
             Dancer dd = new PhantomDancer();
             TaggedFormation tf = new TaggedFormation
