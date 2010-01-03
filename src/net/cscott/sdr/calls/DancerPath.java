@@ -309,6 +309,12 @@ public class DancerPath {
     public static ExactRotation midPoint(ExactRotation a, ExactRotation b) {
         return a.add(a.minSweep(b).divide(Fraction.TWO));
     }
+    /** Return a low-level {@link DancerBezierPath} for this
+     *  {@link DancerPath}. */
+    public DancerBezierPath bezier(Fraction startTime) {
+        return new DancerBezierPath
+            (startTime, time, bezierPath(), bezierDirection());
+    }
     /** Return a 2D bezier describing the dancer's complete path.  The 't'
      *  parameter of the bezier should vary from 0 to 1 over {@link #time}
      *  beats.
