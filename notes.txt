@@ -1450,3 +1450,6 @@ actual partners, to the dance engine at least.
 option 2) add "girl offset" to the DanceState, and have "you're home"
 factor in the proper girl offset when determining whether dancers are
 at home.
+----
+DW resolve: if sight couples are all in a trapezoid, then "locker's
+choice" brings them together into the same wave (but genders aren't together)
