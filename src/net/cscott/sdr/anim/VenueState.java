@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import net.cscott.sdr.BeatTimer;
+import net.cscott.sdr.DanceFloor;
 import net.cscott.sdr.Settings;
 import net.cscott.sdr.Version;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.Formation;
-import net.cscott.sdr.calls.FormationList;
-import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.StandardDancer;
 import net.cscott.sdr.util.Fraction;
 
@@ -63,11 +62,15 @@ public class VenueState extends CameraGameState {
     protected BeatTimer beatTimer;
     /** Game settings. */
     protected final Settings settings;
+    /** Communication with the choreography engine. */
+    protected final DanceFloor danceFloor;
 
-    public VenueState(Settings settings, BeatTimer beatTimer) {
+    public VenueState(Settings settings, BeatTimer beatTimer,
+                      DanceFloor danceFloor) {
         super("Venue");
         this.settings = settings;
         this.beatTimer = beatTimer;
+        this.danceFloor = danceFloor;
         initState();
         initInput();
     }
@@ -179,39 +182,10 @@ public class VenueState extends CameraGameState {
         Formation f = Formation.SQUARED_SET;
         //for (Dancer d : f.dancers()) {
         for (Dancer d : StandardDancer.values()) {
-            AnimDancer ad = new CheckerDancer(display, (StandardDancer) d);
+            AnimDancer ad = new CheckerDancer(danceFloor, (StandardDancer) d, display);
             dancers.add(ad);
             rootNode.attachChild(ad.node);
-            ad.addPosition(Fraction.ZERO, f.location(d));
         }
-	// nice animation demo
-	int time = 5;
-	for (Formation ff : new Formation[] {
-		FormationList.STATIC_SQUARE,
-		FormationList.PROMENADE,
-		FormationList.THAR,
-		FormationList.FACING_LINES,
-		FormationList.RH_QUARTER_TAG,
-		FormationList.RH_TWIN_DIAMONDS,
-		FormationList.RH_POINT_TO_POINT_DIAMONDS,
-		FormationList.RH_TIDAL_WAVE,
-		FormationList.EIGHT_CHAIN_THRU,
-		FormationList.ENDS_IN_INVERTED_LINES,
-		FormationList.LH_COLUMN,
-		FormationList.FACING_LINES,
-		FormationList.STATIC_SQUARE,
-		FormationList.PROMENADE,
-		FormationList.THAR,
-	    }) {
-	    List<Dancer> ld = ff.sortedDancers();
-	    for (AnimDancer ad: dancers) {
-		Position p = ff.location(ld.get(ad.dancer.ordinal()));
-		ad.addPosition(Fraction.valueOf(time), p);
-		ad.addPosition(Fraction.valueOf(time+1), p);
-	    }
-	    time += 5;
-	}
-        
         rootNode.updateGeometricState( 0.0f, true );
         rootNode.updateRenderState();
     }
@@ -270,6 +244,7 @@ public class VenueState extends CameraGameState {
         
         // update dancer locations.
         Fraction beats = beatTimer.getCurrentBeat();
+        danceFloor.notifyBeat(beats); // wake up the choreography thread
         for (AnimDancer ad : dancers)
             ad.update(beats);
     }

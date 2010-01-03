@@ -2,9 +2,8 @@ package net.cscott.sdr.anim;
 
 import java.util.Random;
 
+import net.cscott.sdr.DanceFloor;
 import net.cscott.sdr.calls.StandardDancer;
-import net.cscott.sdr.calls.TimedPosition;
-import net.cscott.sdr.util.Bezier;
 import net.cscott.sdr.util.Fraction;
 
 import com.jme.bounding.BoundingBox;
@@ -32,8 +31,8 @@ import com.jme.util.TextureManager;
 public class CheckerDancer extends AnimDancer {
     private final Fraction footOffset;
 
-    public CheckerDancer(DisplaySystem display, StandardDancer dancer) {
-        super(dancer);
+    public CheckerDancer(DanceFloor danceFloor, StandardDancer dancer, DisplaySystem display) {
+        super(danceFloor, dancer);
         init(display); // set up dancer.
         // have each dancer be slightly off the beat, for more realism.
         footOffset = true ? Fraction.ZERO : Fraction.valueOf(new Random().nextInt(10)-5,40);
@@ -131,45 +130,13 @@ public class CheckerDancer extends AnimDancer {
     }
     
     @Override
-    public void update(Fraction time) {
-        TimedPosition nextPos = getNextPosition(time);
-        TimedPosition lastPos = getLastPosition();
-        if (lastPos==null) { this.node.disableAllChildren(); return; }
+    public void update(Fraction time, float x, float y, float rot) {
         this.node.setActiveChild(0);
         // interpolate translation and rotation based on bezier curve
         Vector3f translation;
         Matrix3f rotation = new Matrix3f();
-        if (nextPos == null) {
-            translation = new Vector3f
-            (lastPos.position.x.floatValue(), lastPos.position.y.floatValue(), 0f);
-            rotation.fromAngleNormalAxis
-            (-lastPos.position.facing.amount.floatValue()*2*FastMath.PI, new Vector3f(0f,0f,1f));
-        } else {
-            // interpolate between nextPos and lastPos, based on time.
-            float p0x = lastPos.position.x.floatValue(); // start
-            float p0y = lastPos.position.y.floatValue();
-            float p3x = nextPos.position.x.floatValue(); 
-            float p3y = nextPos.position.y.floatValue(); 
-
-            float speedFactor = BEZIER_FACTOR * FastMath.sqrt((p3x-p0x)*(p3x-p0x)+(p3y-p0y)*(p3y-p0y));
-            float lastRot = lastPos.position.facing.amount.floatValue()*2*FastMath.PI;
-            float p1x = p0x + speedFactor*FastMath.sin(lastRot);
-            float p1y = p0y + speedFactor*FastMath.cos(lastRot);
-            float nextRot = nextPos.position.facing.amount.floatValue()*2*FastMath.PI;
-            float p2x = p3x - speedFactor*FastMath.sin(nextRot);
-            float p2y = p3y - speedFactor*FastMath.cos(nextRot);
-
-            float t = time.subtract(lastPos.time)
-            .divide(nextPos.time.subtract(lastPos.time)).floatValue();
-            
-            float tx = Bezier.cubicInterp(p0x,p1x,p2x,p3x,t);
-            float ty = Bezier.cubicInterp(p0y,p1y,p2y,p3y,t);
-            translation = new Vector3f(tx,ty,0);
-            float dx = Bezier.cubicDeriv(p0x,p1x,p2x,p3x,t);
-            float dy = Bezier.cubicDeriv(p0y,p1y,p2y,p3y,t);
-            float angle = FastMath.atan2(dx,dy);
-            rotation.fromAngleNormalAxis(-angle,new Vector3f(0,0,1f));
-        }
+        translation = new Vector3f(x, y, 0f);
+        rotation.fromAngleNormalAxis(-rot, new Vector3f(0f,0f,1f));
         // add in a bouncy footstep
         time = time.add(footOffset); // randomize slightly off beat
         float foot = Fraction.valueOf(time.getProperNumerator(),time.getDenominator()).floatValue();

@@ -1,9 +1,25 @@
 package net.cscott.sdr;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import net.cscott.jutil.MultiMap;
-import net.cscott.sdr.calls.*;
+import net.cscott.sdr.calls.BadCallException;
+import net.cscott.sdr.calls.CallDB;
+import net.cscott.sdr.calls.DanceProgram;
+import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.Dancer;
+import net.cscott.sdr.calls.DancerBezierPath;
+import net.cscott.sdr.calls.DancerPath;
+import net.cscott.sdr.calls.Evaluator;
+import net.cscott.sdr.calls.Formation;
+import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.Seq;
+import net.cscott.sdr.util.Fraction;
+
 /** 
  * {@link ChoreoEngine} specifies the interface through which the choreography
  * engine communicates with the rest of the SDR application.
@@ -11,9 +27,12 @@ import net.cscott.sdr.calls.ast.Seq;
  * @version $Id: ChoreoEngine.java,v 1.2 2006-11-10 00:56:07 cananian Exp $
  */
 public class ChoreoEngine {
+    private AttractThread at;
     private DanceState ds;
-    public ChoreoEngine(DanceProgram dp, Formation f) {
+    public ChoreoEngine(DanceProgram dp, Formation f, DanceFloor danceFloor) {
         this.ds = new DanceState(dp, f);
+        this.at = new AttractThread(danceFloor);
+        at.start();
     }
     
     /**
@@ -45,4 +64,39 @@ public class ChoreoEngine {
     }
     public Apply lastCall() { return null; }
     public Formation currentFormation() { return null; }
+
+    class AttractThread extends Thread {
+        private final Fraction MARGIN = Fraction.TWO; // two beats ahead
+        final DanceFloor danceFloor;
+        AttractThread(DanceFloor danceFloor) { this.danceFloor = danceFloor; }
+        @Override
+        public void run() {
+            Evaluator e = new Evaluator.Standard
+                (new Seq(new Apply(Expr.literal("_attract"))));
+            ConcurrentMap<String,String> props =
+                new ConcurrentHashMap<String,String>();
+            props.put("call-pending", "false");
+            DanceState ds = new DanceState
+                (new DanceProgram(Program.PLUS), Formation.SQUARED_SET, props);
+            Fraction offsetTime = danceFloor.waitForBeat(Fraction.ZERO);
+            // round to multiple of 8 beats so we start on a phrase.
+            offsetTime = Fraction.valueOf((offsetTime.intValue()/8)*8 + 8);
+
+            while (e != null) {
+                e = e.evaluate(ds);
+                ds.syncDancers();
+                for (Dancer d : ds.dancers()) {
+                    Fraction startTime = offsetTime;
+                    for (DancerPath dp : ds.movements(d)) {
+                        DancerBezierPath dbp = dp.bezier(startTime);
+                        startTime = startTime.add(dp.time);
+                        danceFloor.addPath(d, dbp);
+                    }
+                }
+                offsetTime = offsetTime.add(ds.currentTime());
+                danceFloor.waitForBeat(offsetTime.subtract(MARGIN));
+                ds = ds.cloneAndClear();
+            }
+        }
+    }
 }

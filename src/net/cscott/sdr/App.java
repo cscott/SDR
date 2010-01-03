@@ -14,7 +14,6 @@ import net.cscott.sdr.calls.DancerPath;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.TimedFormation;
-import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.recog.RecogThread;
 import net.cscott.sdr.sound.MidiThread;
 
@@ -37,9 +36,12 @@ public class App {
         // This class synchronizes communication between the
         // input method, and the choreography engine.
         CommandInput input = new CommandInput();
+        // This class synchronizes communication between the
+        // choreography engine and the animated dancers
+        DanceFloor danceFloor = new DanceFloor();
         // This is the choreography engine.
         DanceProgram ds = new DanceProgram(Program.BASIC);
-        ChoreoEngine choreo = new ChoreoEngine(ds, Formation.FOUR_SQUARE);
+        ChoreoEngine choreo = new ChoreoEngine(ds, Formation.FOUR_SQUARE, danceFloor);
         // score & display
         HUD hud = new HUD();
         ScoreAccumulator score = new ScoreAccumulator(hud);
@@ -52,7 +54,7 @@ public class App {
         CyclicBarrier musicSync = new CyclicBarrier(2);
         CyclicBarrier sphinxSync = new CyclicBarrier(2);
         final Game game =
-            new Game(input, hud, rendezvousBT, rendezvousRT, musicSync, sphinxSync);
+            new Game(input, hud, danceFloor, rendezvousBT, rendezvousRT, musicSync, sphinxSync);
         new Thread() { // THIS IS THE GRAPHICS THREAD
             @Override public void run() {
                 game.start();

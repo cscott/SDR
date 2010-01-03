@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.cscott.sdr.DanceFloor;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Formation;
@@ -184,12 +185,13 @@ public class SdrGame extends SdrBaseGame {
         Formation f = Formation.SQUARED_SET;
         //for (Dancer d : f.dancers()) {
         for (Dancer d : StandardDancer.values()) {
-            AnimDancer ad = new CheckerDancer(display, (StandardDancer) d);
+            AnimDancer ad = new CheckerDancer(new DanceFloor(), (StandardDancer) d, display);
             dancers.add(ad);
             rootNode.attachChild(ad.node);
-            ad.addPosition(Fraction.ZERO, f.location(d));
+            // XXX ANIMDANCER INTERFACE HAS CHANGED
+            //ad.addPosition(Fraction.ZERO, f.location(d));
         }
-        if (true) {
+        /*
         // dancer[5] is COUPLE 3 GIRL, starting at (-1,3,1/2)
         for (int i=0; i<40; i+=8) {
         dancers.get(5).addPosition(Fraction.valueOf(i+2), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), ExactRotation.THREE_QUARTERS));
@@ -197,7 +199,7 @@ public class SdrGame extends SdrBaseGame {
         dancers.get(5).addPosition(Fraction.valueOf(i+6), new Position(Fraction.valueOf(-3), Fraction.valueOf(4), ExactRotation.ONE_QUARTER));
         dancers.get(5).addPosition(Fraction.valueOf(i+8), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), ExactRotation.ONE_HALF));
         }
-        }
+        */
         
         initialTime = timer.getTimeInSeconds();
         

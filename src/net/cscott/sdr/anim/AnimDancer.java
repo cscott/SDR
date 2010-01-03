@@ -1,17 +1,14 @@
 package net.cscott.sdr.anim;
 
-import java.util.Queue;
-import java.util.concurrent.PriorityBlockingQueue;
-
-import com.jme.scene.Node;
-import com.jme.scene.SwitchNode;
-
 import net.cscott.sdr.BeatTimer;
-import net.cscott.sdr.calls.Action;
-import net.cscott.sdr.calls.Position;
+import net.cscott.sdr.DanceFloor;
+import net.cscott.sdr.calls.DancerBezierPath;
 import net.cscott.sdr.calls.StandardDancer;
 import net.cscott.sdr.calls.TimedPosition;
 import net.cscott.sdr.util.Fraction;
+
+import com.jme.scene.Node;
+import com.jme.scene.SwitchNode;
 
 /** An {@link AnimDancer} encapsulates all the information needed to
  * display and animate a single dancer.  It is given a list of
@@ -26,54 +23,46 @@ public abstract class AnimDancer {
     public final StandardDancer dancer;
     /** The scene graph {@link Node} corresponding to this animated dancer. */
     public final SwitchNode node;
-    /** Internal queue for position updates. */
-    private final Queue<TimedPosition> posQueue =
-        new PriorityBlockingQueue<TimedPosition>();
-    /** The last position of this dancer. */
-    private TimedPosition lastPos = null;
-    
-    protected AnimDancer(StandardDancer dancer) {
+    /** The {@link DanceFloor} containing position information for the dancers.
+     */
+    public final DanceFloor danceFloor;
+    /** Extra speedup time, to make motion smooth. */
+    private double factor;
+    /** The start time of the last motion we saw. */
+    private Fraction lastStart = null;
+
+    protected AnimDancer(DanceFloor danceFloor, StandardDancer dancer) {
+        this.danceFloor = danceFloor;
         this.dancer = dancer;
         this.node = new SwitchNode(dancer.toString());
     }
+    /** Subclasses should implement this to draw the dancer. */
+    public abstract void update(Fraction time, float x, float y, float rot);
 
     /** Update the node based on the current beat time.
      * This method is called from the rendering thread. */
-    public abstract void update(Fraction time);
-
-    /** Add a new position target.  This method is called from the
-     * choreography thread. */
-    // NOTE: should always add a TimedPosition corresponding to the
-    // 'current formation' at the *start* of the call, in case there
-    // was a delay between the end of the last call and this.  This
-    // ensures that the dancers do not "jump" into the new position.
-    public void addPosition(Fraction time, Position target) {
-            posQueue.add(new TimedPosition(target, time, true));
-    }
-    
-    /** Add a new timed action.  This method is called from the choreography
-     * thread, as well as from the personality thread. */
-    public void addAction(Fraction time, Action target) {
-        assert false : "unimplemented"; // XXX unimplemented
-    }
-    
-    /** Get the next position with time greater than or equal to the given
-     * time.  May update the value returned by
-     * {@link AnimDancer#getLastPosition()}.  Returns null if there is no
-     * position more recent than that returned by
-     * {@link AnimDancer#getLastPosition()}.
-     */
-    public TimedPosition getNextPosition(Fraction time) {
-        while (true) {
-            TimedPosition nextPos = posQueue.peek();
-            if (nextPos==null || nextPos.time.compareTo(time) > 0)
-                return nextPos; // done!
-            // otherwise, update lastPos & try again.
-            // safe race here: an even earlier pos may have been added
-            lastPos = posQueue.poll();
+    public void update(Fraction time) {
+        DancerBezierPath dbp = danceFloor.location(dancer, time);
+        if (dbp==null) {
+            // dancer is not currently visible.
+            this.node.disableAllChildren();
+            return;
         }
-    }
-    public TimedPosition getLastPosition() {
-        return lastPos;
+        double t = time.doubleValue();
+        double start = dbp.startTime.doubleValue();
+        double duration = dbp.duration.doubleValue();
+        // fixup t based on when we first saw this next bezier path, to
+        // avoid sudden jumps in position.
+        if (lastStart==null || dbp.startTime.compareTo(lastStart) != 0) {
+            // new motion.
+            lastStart = dbp.startTime;
+            factor = t - start;
+        }
+        if (t < (start+duration) && (duration > factor)) {
+            double progress = (t - (start+factor)) / (duration - factor);
+            t = t - (factor * (1 - progress));
+        }
+        update(time, (float) dbp.evaluateX(t), (float) dbp.evaluateY(t),
+               (float) dbp.evaluateAngle(t));
     }
 }

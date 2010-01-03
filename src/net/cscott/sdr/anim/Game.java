@@ -9,6 +9,7 @@ import java.util.logging.Level;
 
 import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.CommandInput;
+import net.cscott.sdr.DanceFloor;
 import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.HUD;
 import net.cscott.sdr.Settings.GameMode;
@@ -47,6 +48,8 @@ public class Game extends FixedFramerateGame {
     final GameSettings settings;
     /** HUD display. */
     final HUD hud;
+    /** Dancer motions */
+    final DanceFloor danceFloor;
     MenuState menuState;
     VenueState venueState;
     HUDState hudState;
@@ -59,7 +62,7 @@ public class Game extends FixedFramerateGame {
      * get a {@link BeatTimer} (presumably from the music player thread) and a
      * {@link LevelMonitor} (presumably from the speech-recognition thread).
      */ 
-    public Game(CommandInput input, HUD hud,
+    public Game(CommandInput input, HUD hud, DanceFloor danceFloor,
             BlockingQueue<BeatTimer> rendezvousBT,
             BlockingQueue<RecogThread.Control> rendezvousRT,
             CyclicBarrier musicSync,
@@ -75,6 +78,7 @@ public class Game extends FixedFramerateGame {
         this.sphinxSync = sphinxSync;
         this.settings = new GameSettings(this, input);
         this.hud = hud;
+        this.danceFloor = danceFloor;
     }
     /** Creates display, sets up camera, and binds keys. */
     protected void initSystem() {
@@ -180,7 +184,7 @@ public class Game extends FixedFramerateGame {
                 BeatTimer beatTimer = getBeatTimer();// wait for our beat timer
 
                 inc("Loading venue...");
-                venueState = new VenueState(settings, beatTimer);
+                venueState = new VenueState(settings, beatTimer, danceFloor);
                 attach(venueState,true);
                 if (DevSettings.GRAPHICS_DEBUG) attach(new DebugState(),true);
 
