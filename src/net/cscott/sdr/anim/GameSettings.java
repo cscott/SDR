@@ -28,30 +28,6 @@ public class GameSettings extends Settings {
         this.microphone = control.microphone;
         setMicrophone(getMicrophone());
     }
-    @Override
-    public boolean setMode(GameMode gm) {
-        if (!super.setMode(gm)) return false; // no change
-        this.game.hudState.setActive(gm==GameMode.DANCING);
-        this.game.menuState.setActive(gm==GameMode.MAIN_MENU);
-        if (gm==GameMode.DANCING) {
-            // XXX call ScoreAccumulator.resetScore()?
-            this.game.hud.setNotice("Let's go!", 5000);
-            this.input.switchMode(new InputMode() {
-                @Override
-                public Program program() { return getDanceLevel().program; }
-                @Override
-                public boolean mainMenu() { return false; }
-            });
-        } else {
-            this.input.switchMode(new InputMode() {
-                @Override
-                public Program program() { return null; }
-                @Override
-                public boolean mainMenu() { return true; }
-            });
-        }
-        return true;
-    }
 
     @Override
     public void setMicrophone(int which) {

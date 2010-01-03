@@ -12,7 +12,8 @@ import net.cscott.sdr.CommandInput;
 import net.cscott.sdr.DanceFloor;
 import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.HUD;
-import net.cscott.sdr.Settings.GameMode;
+import net.cscott.sdr.Mode;
+import net.cscott.sdr.Mode.GameMode;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.FormationList;
 import net.cscott.sdr.recog.LevelMonitor;
@@ -45,7 +46,10 @@ public class Game extends FixedFramerateGame {
     /** Timer sync'ed to music. */
     private BeatTimer beatTimer;
     /** Various user-adjustable settings. */
-    final GameSettings settings;
+    public final GameSettings settings;
+    /** Current game mode. */
+    public final Mode mode;
+    private GameMode lastMode = GameMode.MAIN_MENU;
     /** HUD display. */
     final HUD hud;
     /** Dancer motions */
@@ -62,7 +66,7 @@ public class Game extends FixedFramerateGame {
      * get a {@link BeatTimer} (presumably from the music player thread) and a
      * {@link LevelMonitor} (presumably from the speech-recognition thread).
      */ 
-    public Game(CommandInput input, HUD hud, DanceFloor danceFloor,
+    public Game(CommandInput input, HUD hud, DanceFloor danceFloor, Mode mode,
             BlockingQueue<BeatTimer> rendezvousBT,
             BlockingQueue<RecogThread.Control> rendezvousRT,
             CyclicBarrier musicSync,
@@ -79,6 +83,7 @@ public class Game extends FixedFramerateGame {
         this.settings = new GameSettings(this, input);
         this.hud = hud;
         this.danceFloor = danceFloor;
+        this.mode = mode;
     }
     /** Creates display, sets up camera, and binds keys. */
     protected void initSystem() {
@@ -230,6 +235,7 @@ public class Game extends FixedFramerateGame {
                 .setExecuteAll(true);
 
                 inc("Loading complete.");
+                mode.switchToMenu();
             }
             private void attach(final GameState state,final boolean active){
                 queueMan.update(new Callable<Void>() {
@@ -257,7 +263,14 @@ public class Game extends FixedFramerateGame {
         /* Execute anything on the update queue. */
         GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE)
             .execute();
-        // Update the current game state.
+        /* Mode switch? */
+        GameMode thisMode = mode.getMode();
+        if (thisMode != lastMode && thisMode != GameMode.LOADING) {
+            this.hudState.setActive(thisMode==GameMode.DANCING);
+            this.menuState.setActive(thisMode==GameMode.MAIN_MENU);
+            lastMode = thisMode;
+        }
+        /* Update the current game state. */
         GameStateManager.getInstance().update(tpf);
     }
     @Override
@@ -278,10 +291,10 @@ public class Game extends FixedFramerateGame {
         // global quit.
         if (KeyBindingManager.getKeyBindingManager()
                 .isValidCommand( "exit", false ) ) {
-            if (settings.getMode()==GameMode.MAIN_MENU)
+            if (mode.getMode()==GameMode.MAIN_MENU)
                 finish();
             else
-                settings.setMode(GameMode.MAIN_MENU);
+                mode.switchToMenu();
         }
     }
     

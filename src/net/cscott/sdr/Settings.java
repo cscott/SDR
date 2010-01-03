@@ -9,26 +9,12 @@ import net.cscott.sdr.calls.Program;
  */
 public abstract class Settings {
     private final Preferences p;
-    private GameMode mode;
 
     /** Create a new Settings, with default values taken from the user
      *  preferences. */
     protected Settings(String prefName) {
         // read defaults from persistent properties
         this.p = Preferences.userRoot().node(prefName);
-        // starts at main menu
-        this.mode = GameMode.MAIN_MENU;
-    }
-
-    // get/change the game mode.
-    public enum GameMode { MAIN_MENU, DANCING }; // XXX other menus, special challenge modes or whatever
-    public boolean setMode(GameMode gm) {
-        if (gm==this.mode) return false;
-        this.mode = gm;
-        return true;
-    }
-    public GameMode getMode() {
-        return this.mode;
     }
 
     // settings adjustable at the start menu

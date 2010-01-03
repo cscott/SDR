@@ -1,7 +1,5 @@
 package net.cscott.sdr.anim;
 
-import net.cscott.sdr.Settings.GameMode;
-
 import com.jme.input.InputHandler;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
@@ -23,7 +21,7 @@ public class MenuHandler extends InputHandler {
 
     private class EnterAction extends InputAction {
         public void performAction( InputActionEvent evt ) {
-            game.settings.setMode(GameMode.DANCING);
+            game.mode.switchToDancing(game.settings);
         }
     }
 }
