@@ -34,6 +34,7 @@ public class SpeechInterrupter extends BaseDataProcessor {
     /** Thread-safe queue to buffer incoming data & record interruptions. */
     private final BlockingQueue<Data> dataQueue =
         new LinkedBlockingQueue<Data>();
+    private Data padPacket = null;
 
     /** Are we in a speech segment now? */
     private boolean inSpeech = false;
@@ -63,20 +64,21 @@ public class SpeechInterrupter extends BaseDataProcessor {
 	    }
 	    if (data instanceof Interruption) {
 	        if (!inData) continue; // we haven't gotten started yet
+	        if (padPacket==null) continue; // get at least 1 packet first
 	        if (interrupting) continue; // throw away runs
 	        interrupting = true;
 	        // work around bug in AbstractFeatureExtractor.getData/processFirstCepstrum
 	        // which throws an ArrayStoreException in Arrays.fill if a
 	        // SpeechStartSignal is immediately followed by a SpeechEndSignal.
 	        // So we pad with a frame of silence.
-	        Data pad = new DoubleData(new double[320]);
 	        if (inSpeech) {
-	            pushbackQueue.add(pad);
+                    pushbackQueue.add(padPacket);
 	            pushbackQueue.add(new SpeechEndSignal());
 	            pushbackQueue.add(new SpeechStartSignal());
+                    pushbackQueue.add(padPacket);
 	        } else {
 	            pushbackQueue.add(new SpeechStartSignal());
-	            pushbackQueue.add(pad);
+                    pushbackQueue.add(padPacket);
 	            pushbackQueue.add(new SpeechEndSignal());
 	        }
 	        continue; // go back and pull from the pushbackQueue
@@ -91,7 +93,8 @@ public class SpeechInterrupter extends BaseDataProcessor {
 	            inSpeech = true;
 	        if (data instanceof SpeechEndSignal)
 	            inSpeech = false;
-	    }
+	    } else if (inData && padPacket == null)
+	        padPacket = data;
 	    return data;
 	}
     }
