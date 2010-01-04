@@ -16,15 +16,20 @@ public abstract class Settings {
         // read defaults from persistent properties
         this.p = Preferences.userRoot().node(prefName);
     }
+    protected Object lock() { return p; }
 
     // settings adjustable at the start menu
 
     /** Which microphone to use. */
     public void setMicrophone(int which) {
-        p.putInt("microphone", which);
+        synchronized (p) {
+            p.putInt("microphone", which);
+        }
     }
     public int getMicrophone() {
-        return p.getInt("microphone", 0/* "default" */);
+        synchronized (p) {
+            return p.getInt("microphone", 0/* "default" */);
+        }
     }
 
     /** What type of music (if any) to play. */
@@ -126,17 +131,21 @@ public abstract class Settings {
     // helper methods to get/set enumeration preferences.
     private static <T extends Enum<T>> T getPref(Preferences p, String key,
                                          Class<T> enumType, T defaultValue) {
-        T result = defaultValue;
-        String v = p.get(key, null);
-        if (v!=null)
-            try {
-                result = Enum.valueOf(enumType, v);
-            } catch (IllegalArgumentException e) {
-                // ignore the bad pref.
-            }
-        return result;
+        synchronized(p) {
+            T result = defaultValue;
+            String v = p.get(key, null);
+            if (v!=null)
+                try {
+                    result = Enum.valueOf(enumType, v);
+                } catch (IllegalArgumentException e) {
+                    // ignore the bad pref.
+                }
+                return result;
+        }
     }
     private static <T extends Enum<T>> void setPref(Preferences p, String key, T value) {
-        p.put(key, value.name());
+        synchronized(p) {
+            p.put(key, value.name());
+        }
     }
 }

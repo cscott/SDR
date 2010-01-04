@@ -1,10 +1,15 @@
 package net.cscott.sdr;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import net.cscott.jutil.MultiMap;
+import net.cscott.sdr.CommandInput.InputMode;
 import net.cscott.sdr.CommandInput.PossibleCommand;
+import net.cscott.sdr.HUD.MessageType;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.DanceProgram;
@@ -28,21 +33,89 @@ import net.cscott.sdr.util.Fraction;
  * @version $Id: ChoreoEngine.java,v 1.2 2006-11-10 00:56:07 cananian Exp $
  */
 public class ChoreoEngine {
-    private ChoreoThread at;
+    private DanceThread danceThread;
     private DanceState ds;
+    private final DanceFloor danceFloor;
     private final ScoreAccumulator score;
     private final HUD hud;
-    private final Mode mode;
+    public final Mode mode;
     public ChoreoEngine(DanceProgram dp, Formation f, DanceFloor danceFloor,
-                        ScoreAccumulator score, HUD hud, Mode mode,
+                        ScoreAccumulator score, HUD hud,
                         CommandInput input) {
+        this.danceFloor = danceFloor;
         this.score = score;
         this.hud = hud;
-        this.mode = mode;
+        this.mode = new Mode(input, this);
         this.ds = new DanceState(dp, f);
-        this.at = new ChoreoThread(danceFloor);
-        at.start();
+        this.danceThread = null;
+        switchToMenu();
         new InputThread(input, this, score).start();
+    }
+
+    private BlockingQueue<DanceThread> danceQueue =
+        new LinkedBlockingQueue<DanceThread>();
+
+    private synchronized void waitUntilStopped() {
+        if (danceThread == null) return;
+        danceThread.stopDancing();
+        while (true) {
+            try {
+                danceThread.join();
+                danceThread = null;
+                return;
+            } catch (InterruptedException e) {
+                /* keep waiting */
+            }
+        }
+    }
+
+    private void startNewDanceThread(DanceThread dt) {
+        danceQueue.add(dt); // this defines ordering
+        synchronized (this) {
+            waitUntilStopped();
+            assert danceThread == null;
+            while (true)
+                try {
+                    dt = danceQueue.take();
+                    break;
+                } catch (InterruptedException e) { /* repeat */ }
+            dt.start();
+            danceThread = dt;
+        }
+    }
+
+    public CountDownLatch switchToMenu() {
+        final CountDownLatch done = new CountDownLatch(1);
+        new Thread() {
+            @Override
+            public void run() {
+                Evaluator e = new Evaluator.Standard
+                    (new Seq(new Apply(Expr.literal("_attract"))));
+                startNewDanceThread
+                    (new DanceThread(new DanceProgram(Program.PLUS), e));
+                done.countDown(); // signal
+            }
+        }.start();
+        return done;
+    }
+    public CountDownLatch switchToDancing() {
+        final CountDownLatch done = new CountDownLatch(1);
+        new Thread() {
+            @Override
+            public void run() {
+                // XXX
+                Evaluator e = new Evaluator.Standard
+                    (new Seq(new Apply(Expr.literal("nothing"))));
+                synchronized (ChoreoEngine.this) {
+                startNewDanceThread
+                    (new DanceThread(new DanceProgram(Program.PLUS), e));
+                score.resetScore(Program.PLUS);
+                }
+                //hud.setNotice("Let's go!", 5000);
+                done.countDown(); // signal.
+            }
+        }.start();
+        return done;
     }
     
     /**
@@ -75,21 +148,35 @@ public class ChoreoEngine {
     public Apply lastCall() { return null; }
     public Formation currentFormation() { return null; }
 
-    class ChoreoThread extends Thread {
+    class DanceThread extends Thread {
         private final ConcurrentMap<String,String> props =
             new ConcurrentHashMap<String,String>();
         private final Fraction MARGIN = Fraction.TWO; // dance two beats ahead
-        private final DanceFloor danceFloor;
-        ChoreoThread(DanceFloor danceFloor) {
+        private final DanceState initialDanceState;
+        private final Evaluator initialEvaluator;
+        private boolean isEnding, goingHome;
+        DanceThread(DanceProgram dp, Evaluator e) {
             props.put("call-pending", "false");
-            this.danceFloor = danceFloor;
+            this.initialDanceState = new DanceState
+                (dp, Formation.SQUARED_SET, props);
+            this.initialEvaluator = e;
+            this.isEnding = false;
+            this.goingHome = false;
+            this.setDaemon(true);
         }
+
+        public synchronized void stopDancing() {
+            this.isEnding = true;
+            props.put("call-pending", "true");
+        }
+        private synchronized boolean isEnding() {
+            return this.isEnding;
+        }
+
         @Override
         public void run() {
-            Evaluator e = new Evaluator.Standard
-                (new Seq(new Apply(Expr.literal("_attract"))));
-            DanceState ds = new DanceState
-                (new DanceProgram(Program.PLUS), Formation.SQUARED_SET, props);
+            DanceState ds = initialDanceState;
+            Evaluator e = initialEvaluator;
             Fraction offsetTime = danceFloor.waitForBeat(Fraction.ZERO);
             // round to multiple of 8 beats so we start on a phrase.
             offsetTime = Fraction.valueOf((offsetTime.intValue()/8)*8 + 8);
@@ -108,23 +195,71 @@ public class ChoreoEngine {
                 offsetTime = offsetTime.add(ds.currentTime());
                 danceFloor.waitForBeat(offsetTime.subtract(MARGIN));
                 ds = ds.cloneAndClear();
+                if (this.isEnding()) {
+                    if (!goingHome) {
+                        // go home!
+                        e = new Evaluator.Standard(new Seq(new Apply(Expr.literal("go home"))));
+                        goingHome = true;
+                    }
+                } else { // !isEnding
+                    if (e==null) {
+                        // align dancers to the beat
+                        offsetTime = Fraction.valueOf(offsetTime.floor());
+                        // do nothing for a beat
+                        e = new Evaluator.Standard(new Seq(new Apply(Expr.literal("nothing"))));
+                        // subtract timeliness points.
+                        score.dancersWaiting();
+                    }
+                }
             }
+            danceFloor.waitForBeat(offsetTime);
         }
     }
-    private static class InputThread extends Thread {
+    private class InputThread extends Thread {
         private final CommandInput input;
         private final ChoreoEngine choreo;
         private final ScoreAccumulator score;
-        private boolean done = false;
 
         InputThread(CommandInput input, ChoreoEngine choreo,
                      ScoreAccumulator score) {
             this.input = input; this.choreo = choreo; this.score = score;
+            this.setDaemon(true);
         }
 
-        public synchronized void shutdown() {
-            done = true;
-            this.interrupt();
+        private void doOneInput() {
+            PossibleCommand pc;
+            while (true) {
+                try {
+                    pc = input.getNextCommand();
+                    break;
+                } catch (InterruptedException e) {
+                    continue; // try again!
+                }
+            }
+            InputMode im = pc.getMode();
+            // XXX what if mode is new?
+            for ( ; pc != null; pc = pc.next()) {
+                if (processInput(pc))
+                    return;
+            }
+            processFail();
+        }
+        private boolean processInput(PossibleCommand pc) {
+            String thisGuess = pc.getUserInput();
+            System.err.println("PROCESS INPUT "+thisGuess);
+            if (thisGuess == null)
+                return false;
+            if (thisGuess == PossibleCommand.UNCLEAR_UTTERANCE) {
+                hud.setMessage("I couldn't hear you", MessageType.ADVICE);
+                return false;
+            }
+            // XXX look at mode, process command
+            if (pc.getMode().mainMenu() && thisGuess.equals("square up"))
+                mode.switchToDancing();
+            return true;
+        }
+        private void processFail() {
+
         }
 
         private void doNextCall() throws InterruptedException {
@@ -135,28 +270,36 @@ public class ChoreoEngine {
             while (pc != null) {
                 String thisGuess = pc.getUserInput();
                 if (thisGuess == PossibleCommand.UNCLEAR_UTTERANCE) {
-                    sendToHUD("I couldn't hear you");
+                    hud.setMessage("I couldn't hear you", MessageType.ADVICE);
                     return;
                 }
-                try {
-                    sendResults(choreo.execute(thisGuess, score));
+                switch (mode.getMode()) {
+                case MAIN_MENU:
+                    if (thisGuess.equals("square up"))
+                        mode.switchToDancing();
+                    break;
+                case DANCING:
+                    try {
+                        //sendResults(choreo.execute(thisGuess, score));
 
-                    // this was a good call!
-                    sendToHUD(thisGuess);
-                    score.goodCallGiven(choreo.lastCall(), choreo.currentFormation(), pc.getStartTime(), pc.getEndTime());
-                    return;
-                } catch (BadCallException be) {
-                    if (bestGuess==null ||
-                        (message==null && be.getMessage()!=null)) {
-                        bestGuess = thisGuess;
-                        message = be.getMessage();
+                        // this was a good call!
+                        sendToHUD(thisGuess);
+                        score.goodCallGiven(choreo.lastCall(), choreo.currentFormation(), pc.getStartTime(), pc.getEndTime());
+                        return;
+                    } catch (BadCallException be) {
+                        if (bestGuess==null ||
+                            (message==null && be.getMessage()!=null)) {
+                            bestGuess = thisGuess;
+                            message = be.getMessage();
+                        }
+                        // try the next possibility.
                     }
-                    // try the next possibility.
                 }
                 pc = pc.next();
             }
             // if we get here, then we had a bad call
             // (none of the possibilities were good)
+            // XXX IF MODE IS MAIN MENU
             assert bestGuess != null;
             if (message==null) message="Unknown problem";
             score.illegalCallGiven(bestGuess, message);
@@ -167,23 +310,12 @@ public class ChoreoEngine {
             // TODO: write me!
             System.err.println("HUD: "+s);
         }
-        private TimedFormation sendResults(MultiMap<Dancer,DancerPath> l) {
-            // TODO: step 1: adjust timing as needed if 'start' is no longer in the future.
-            // TODO: step 2: go through the formations and pull out individual dancer actions
-            // TODO: step 3: send the dancer actions to the AnimDancer objects.
-            return null;//l.get(l.size()-1);
-        }
 
         @Override
         public void run() {
-            while (!done) {
-                try {
-                    doNextCall();
-                } catch (InterruptedException e) {
-                    /* go around again & check our 'done' flag. */
-                }
+            while (true) {
+                doOneInput();
             }
         }
     }
-
 }

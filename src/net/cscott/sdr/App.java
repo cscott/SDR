@@ -33,14 +33,14 @@ public class App {
         // This class synchronizes communication between the
         // input method, and the choreography engine.
         CommandInput input = new CommandInput();
-        Mode mode = new Mode(input);
         // This class synchronizes communication between the
         // choreography engine and the animated dancers
         DanceFloor danceFloor = new DanceFloor();
         // This is the choreography engine.
         DanceProgram ds = new DanceProgram(Program.BASIC);
         ChoreoEngine choreo = new ChoreoEngine
-            (ds, Formation.FOUR_SQUARE, danceFloor, score, hud, mode, input);
+            (ds, Formation.FOUR_SQUARE, danceFloor, score, hud, input);
+        Mode mode = choreo.mode;
 
         // Start the game thread.
         BlockingQueue<RecogThread.Control> rendezvousRT =

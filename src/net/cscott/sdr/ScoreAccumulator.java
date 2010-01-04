@@ -53,4 +53,7 @@ public class ScoreAccumulator {
         if (score < 0) score = 0;
         this.hud.setScore(score);
     }
+    public void dancersWaiting() {
+        addToScore(-10);
+    }
 }

@@ -84,6 +84,7 @@ public class Game extends FixedFramerateGame {
         this.hud = hud;
         this.danceFloor = danceFloor;
         this.mode = mode;
+        mode.setSettings(this.settings);
     }
     /** Creates display, sets up camera, and binds keys. */
     protected void initSystem() {

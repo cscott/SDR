@@ -21,7 +21,7 @@ public class MenuHandler extends InputHandler {
 
     private class EnterAction extends InputAction {
         public void performAction( InputActionEvent evt ) {
-            game.mode.switchToDancing(game.settings);
+            game.mode.switchToDancing();
         }
     }
 }

@@ -13,6 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import net.cscott.sdr.CommandInput;
 import net.cscott.sdr.CommandInput.InputMode;
 import net.cscott.sdr.CommandInput.PossibleCommand;
+import net.cscott.sdr.calls.Program;
 import edu.cmu.sphinx.decoder.search.Token;
 import edu.cmu.sphinx.frontend.Data;
 import edu.cmu.sphinx.frontend.FloatData;
@@ -91,7 +92,7 @@ public class RecogThread extends Thread {
             public void run() {
                 while (true) {
                     // block waiting for new input mode
-                    InputMode mode = input.getMode();
+                    InputMode mode = input.waitForMode();
                     // push it onto our non-blocking queue
                     modeQueue.add(mode);
                     // interrupt recognition in progress.
@@ -106,19 +107,26 @@ public class RecogThread extends Thread {
         //jsgfGrammar.dumpRandomSentences(10);
         
         /* the microphone will keep recording until the thread exits */
+        InputMode mode = new InputMode() {
+            @Override
+            public boolean mainMenu() { return true; }
+            @Override
+            public Program program() { return null; }
+        };
         while (true) {
             /* Check for a new input mode, and change grammars if necessary. */
-            InputMode mode = modeQueue.poll();
-            if (mode!=null) {
+            InputMode nMode = modeQueue.poll();
+            if (nMode != null) {
                 String grmName;
-                if (mode.mainMenu())
+                if (nMode.mainMenu())
                     grmName = "menu";
                 else
-                    grmName = mode.program().toTitleCase();
+                    grmName = nMode.program().toTitleCase();
                 System.err.println("SWITCHING GRAMMARS: "+grmName);
                 jsgfGrammar.loadJSGF(grmName);
                 // XXX work around bug in DynamicFlatLinguist
                 ((DynamicFlatLinguist) cm.lookup("dflatLinguist")).allocate();
+                mode = nMode;
             }
             /*
              * This method will return when the end of speech
@@ -128,7 +136,7 @@ public class RecogThread extends Thread {
             Result result = recognizer.recognize();
             if (result==null) {
                 // XXX: HUD: "I couldn't hear you"
-                input.addCommand(errorCmd());
+                input.addCommand(errorCmd(mode));
                 continue;
             }
             
@@ -138,7 +146,7 @@ public class RecogThread extends Thread {
                 tokens.add((Token)t); // typecast; sphinx has a loose type
             if (tokens.isEmpty()) {
                 // XXX: HUD: "I couldn't hear you"
-                input.addCommand(errorCmd());
+                input.addCommand(errorCmd(mode));
                 continue;
             }
             /* sort so the worst (lowest score) is first */
@@ -168,14 +176,14 @@ public class RecogThread extends Thread {
                 long endTime = lastFeature.getCollectTime();
                 // note that we construct pc backwards from worst to best
                 // so that the best ends up at the head.
-                pc = spokenCmd(resultText, startTime, endTime, pc);
+                pc = spokenCmd(resultText, startTime, endTime, mode, pc);
             }
-            if (pc==null) pc = errorCmd();
+            if (pc==null) pc = errorCmd(mode);
             input.addCommand(pc);
             System.err.println("---");
         }
     }
-    private static PossibleCommand errorCmd() {
+    private static PossibleCommand errorCmd(final InputMode im) {
         final long time = new Date().getTime();
         return new PossibleCommand() {
             @Override
@@ -186,6 +194,8 @@ public class RecogThread extends Thread {
             public long getEndTime() { return time; }
             @Override
             public long getStartTime() { return time; }
+            @Override
+            public InputMode getMode() { return im; }
         };
     }
     /** Create a PossibleCommand from an unparsed user input, along with the
@@ -194,6 +204,7 @@ public class RecogThread extends Thread {
     private static PossibleCommand spokenCmd(final String userInput,
                                              final long startTime,
                                              final long endTime,
+                                             final InputMode mode,
                                              final PossibleCommand next) {
         return new PossibleCommand() {
             @Override
@@ -204,6 +215,8 @@ public class RecogThread extends Thread {
             public long getEndTime() { return endTime; }
             @Override
             public PossibleCommand next() { return next; }
+            @Override
+            public InputMode getMode() { return mode; }
         };
     }
 }

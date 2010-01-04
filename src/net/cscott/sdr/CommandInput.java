@@ -70,7 +70,7 @@ public class CommandInput {
     }
 
     /** Get a new input mode, waiting if necessary. */
-    public InputMode getMode() {
+    public InputMode waitForMode() {
         while (true)
             try {
                 // XXX inform the ScoreAccumulator/ChoreoEngine?
@@ -95,6 +95,8 @@ public class CommandInput {
         /** Return the raw user input, or {@link #UNCLEAR_UTTERANCE} if
          * the input mechanism wasn't able to decipher the input. */
         public abstract String getUserInput();
+        /** The mode used for this input. */
+        public abstract InputMode getMode();
         /** Return the time the user input began, in milliseconds since the
          * epoch. */
         public abstract long getStartTime();
