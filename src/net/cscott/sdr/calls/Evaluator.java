@@ -48,7 +48,7 @@ import org.junit.runner.RunWith;
  * and actions in a {@link DanceState}.</p>
  *
  * @author C. Scott Ananian
- * @doc.test Simplest invocation: "_heads start" from squared set.
+ * @doc.test Simplest invocation: "heads start" from squared set.
  *  js> importPackage(net.cscott.sdr.calls.ast);
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
  *  js> ds.currentFormation().toStringDiagram("|");
@@ -59,8 +59,8 @@ import org.junit.runner.RunWith;
  *  |4G>            2B<
  *  |
  *  |     1B^  1G^
- *  js> comp = AstNode.valueOf("(Seq (Apply '_heads start))");
- *  (Seq (Apply '_heads start))
+ *  js> comp = AstNode.valueOf("(Seq (Apply (Expr _square start 'HEAD)))");
+ *  (Seq (Apply (Expr _square start 'HEAD)))
  *  js> e = new Evaluator.Standard(comp); undefined
  *  js> e.evaluateAll(ds);
  *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");

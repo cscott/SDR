@@ -112,35 +112,24 @@ def: anyone while others(sel, c1, c2=nothing)
 def: _anyone while others static square(sel, c1, c2)
   // special case 'heads promenade half way while the sides...'
   from: STATIC SQUARE
-    condition: AND(EQUAL CALL([sel], HEAD), EQUAL CALL([c1], promenade half way))
+    condition: and(match(_selection pattern([sel]), "xx____xx|__xxxx__"),\
+    	           EQUAL CALL([c1], promenade half way))
     in: 8
-    call: _sides start
+    call: _square start(not([sel]))
     call: anyone while others([sel], _outsides promenade half way, [c2])
   from: STATIC SQUARE
-    condition: AND(EQUAL CALL([sel], HEAD), EQUAL CALL([c1], reverse(promenade half way)))
+    condition: and(match(_selection pattern([sel]), "xx____xx|__xxxx__"),\
+    	       	   EQUAL CALL([c1], reverse(promenade half way)))
     in: 8
-    call: _sides start
-    call: anyone while others([sel], reverse(_outsides promenade half way), [c2])
-  from: STATIC SQUARE
-    condition: AND(EQUAL CALL([sel], SIDE), EQUAL CALL([c1], promenade half way))
-    in: 8
-    call: _heads start
-    call: anyone while others([sel], _outsides promenade half way, [c2])
-  from: STATIC SQUARE
-    condition: AND(EQUAL CALL([sel], SIDE), EQUAL CALL([c1], reverse(promenade half way)))
-    in: 8
-    call: _heads start
+    call: _square start(not([sel]))
     call: anyone while others([sel], reverse(_outsides promenade half way), [c2])
   // special case 'heads square thru...' from static square
   // XXX: "Dancers should return to Squared Set spots for Head Ladies Chain,
   //       Heads Right and Left Thru, Heads Pass Thru, or Heads Square Thru 3."
   //       ...or Heads Dosado
   from: STATIC SQUARE
-    condition: EQUAL CALL([sel], HEAD)
-    call: _heads start, anyone while others([sel],[c1],[c2])
-  from: STATIC SQUARE
-    condition: EQUAL CALL([sel], SIDE)
-    call: _sides start, anyone while others([sel],[c1],[c2])
+    condition: match(_selection pattern([sel]), "xx____xx|__xxxx__")
+    call: _square start([sel]), anyone while others([sel],[c1],[c2])
 
 // local helpers
 def: _anyone(sel, c1)
@@ -152,18 +141,11 @@ def: _ends(c)
   from: CENTER HALF
     call: _anyone(END, [c])
 
-def: _heads start
+def: _square start(who)
  from: STATIC SQUARE
+  condition: match(_selection pattern([who]), "xx____xx|__xxxx__")
   in: 2
-  select: HEAD
-   prim: 0, 2, none // "press ahead"
-  select: OTHERS
-   prim: 0, 0, none // stay where they are
-
-def: _sides start
- from: STATIC SQUARE
-  in: 2
-  select: SIDE
+  select: [who]
    prim: 0, 2, none // "press ahead"
   select: OTHERS
    prim: 0, 0, none // stay where they are

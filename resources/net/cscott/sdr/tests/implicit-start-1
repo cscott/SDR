@@ -1,0 +1,29 @@
+"Heads start" should also work for "girls start".
+
+sdr> /program=Program.A2;
+A2
+sdr> heads half sashay
+| 4B>  3Bv  3Gv  2G<
+| 
+| 4G>  1G^  1B^  2B<
+sdr> circle left 3/8
+|      1Gv  4Gv
+| 
+| 1B>            4B<
+| 
+| 2B>            3B<
+| 
+|      2G^  3G^
+sdr> as couples ladies in men sashay
+|      1Gv  4Gv
+| 
+| 3B>            2B<
+| 
+| 4B>            1B<
+| 
+|      2G^  3G^
+sdr> girls lead right
+| 3B>  1G<  2G>  2B<
+| 
+| 4B>  4G<  3G>  1B<
+sdr> /exit
