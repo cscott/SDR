@@ -201,6 +201,28 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+"))),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+"))));
 
+    /** SINGLE STATIC SQUARE formation.
+      * @doc.test
+      *  js> FormationList = FormationList.js(this); undefined;
+      *  js> tf = FormationList.SINGLE_STATIC_SQUARE; tf.toStringDiagram('|');
+      *  |     v
+      *  |
+      *  |>         <
+      *  |
+      *  |     ^
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  []
+      *  []
+      *  []
+      *  []
+      */
+    public static final NamedTaggedFormation SINGLE_STATIC_SQUARE =
+        new NamedTaggedFormation("SINGLE STATIC SQUARE",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(2), ExactRotation.SOUTH)),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(0), ExactRotation.EAST)),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(2), Fraction.valueOf(0), ExactRotation.WEST)),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-2), ExactRotation.NORTH)));
+
     /** FACING COUPLES formation.
       * @doc.test
       *  js> FormationList = FormationList.js(this); undefined;
@@ -2658,6 +2680,7 @@ abstract class FormationListFast {
             FormationListFast.GENERAL_LINE,
             FormationListFast._1x4,
             FormationListFast._2x2,
+            FormationListFast.SINGLE_STATIC_SQUARE,
             FormationListFast.FACING_COUPLES,
             FormationListFast.BACK_TO_BACK_COUPLES,
             FormationListFast.TANDEM_COUPLES,

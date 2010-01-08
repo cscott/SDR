@@ -178,6 +178,8 @@ public class MatcherList {
     public static final Matcher _2_X2 =
         Tagger.autotag2
             (GeneralFormationMatcher.makeMatcher(FormationList._2x2));
+    public static final Matcher SINGLE_STATIC_SQUARE =
+        GeneralFormationMatcher.makeMatcher(FormationList.SINGLE_STATIC_SQUARE);
     public static final Matcher FACING_COUPLES =
         GeneralFormationMatcher.makeMatcher(FormationList.FACING_COUPLES);
     public static final Matcher BACK_TO_BACK_COUPLES =

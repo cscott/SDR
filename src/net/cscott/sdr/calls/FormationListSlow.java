@@ -101,6 +101,12 @@ abstract class FormationListSlow {
                 t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
     public static final NamedTaggedFormation _2x2 =
         create("2x2", f("++","++"), WhetherTagger.NO_AUTO_TAGS);
+    public static final NamedTaggedFormation SINGLE_STATIC_SQUARE =
+        create("SINGLE STATIC SQUARE",
+                d( 0, 2, "s"),
+                d(-2, 0, "e"),
+                d( 0,-2, "n"),
+                d( 2, 0, "w"));
     public static final NamedTaggedFormation FACING_COUPLES = // callerlab #6
         xofy("FACING COUPLES", FACING_DANCERS, COUPLE);
     public static final NamedTaggedFormation BACK_TO_BACK_COUPLES = // callerlab #7

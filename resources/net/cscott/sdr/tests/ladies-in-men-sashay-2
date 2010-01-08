@@ -1,0 +1,33 @@
+Basic "ladies in men sashay".
+
+sdr> /// get the flow direction going
+sdr> circle left 3/8
+|      1Bv  4Gv
+| 
+| 1G>            4B<
+| 
+| 2B>            3G<
+| 
+|      2G^  3B^
+sdr> ladies in men sashay
+|      4Gv  1Bv
+| 
+| 2B>            3G<
+| 
+| 1G>            4B<
+| 
+|      3B^  2G^
+sdr> ladies in men sashay
+XXX FIXME 1/8 off version
+sdr> ladies in men sashay once and a half
+XXX FIXME
+|           4Gv
+| 
+|           1Bv
+| 
+| 1G>  2B>       4B<  3G<
+| 
+|           3B^
+| 
+|           2G^
+sdr> /exit

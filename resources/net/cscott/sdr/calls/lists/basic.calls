@@ -185,7 +185,7 @@ def: circle right forever
 
 def: circle four(n)
   spoken: circle four <n=fraction> way?
-  from: FACING COUPLES
+  from: FACING COUPLES, SINGLE STATIC SQUARE
     call: _fractional(_multiply num([n],4), _circle left 1/4)
 
 def: circle two(n)
@@ -208,6 +208,9 @@ def: _circle left 1/4
    in: 4
    ipart:
      call: _blend(_centers back out, _circle left 1/4)
+ from: SINGLE STATIC SQUARE
+   in: 2
+   prim: -2, 2, right, sashay-start sashay-finish
  from: FACING COUPLES
    in: 2
    ipart:
@@ -884,7 +887,71 @@ def: roll away
         prim:  1/2,  1, left, sashay-start sashay-finish
         prim:  1, -1/2, left, sashay-start
 
-// XXX DEFINE ME ladies in, men sashay
+def: ladies in men sashay(sel)
+  spoken: <sel=anyone> in (<anyone>|others) sashay
+  condition: MATCH(_SWEEP PATTERN(), "(L+)|(R+)"), \
+                   "Sweep direction must be consistent"
+  from: ANY // handle all the right-sweep cases at once
+    condition: MATCH(_SWEEP PATTERN(), "R+")
+    call: mirror(ladies in men sashay([sel]))
+  from: ANY
+    condition: MATCH(_SWEEP PATTERN(), "L+")
+    from: SINGLE STATIC SQUARE
+      call: _single ladies in men sashay left([sel])
+    from: FACING COUPLES
+      ipart:
+        call: _adjust to single static square
+        call: _single ladies in men sashay left([sel])
+    from: STATIC SQUARE
+      call: _ladies in men sashay left([sel])
+
+def: _adjust to single static square
+  //ends in: formation(SINGLE STATIC SQUARE) // XXX breathing screws this up
+  from: ANY
+    condition: MATCH(_SWEEP PATTERN(), "LLLL|RRRR"), \
+                    "Sweep direction must be consistent"
+    from: FACING COUPLES
+      condition: MATCH(_SWEEP PATTERN(), "LLLL")
+      select: BEAU
+        prim: -1, 1, right, sashay-start sashay-finish
+      select: BELLE
+        prim: -1, 0, none, force-roll-right sashay-start sashay-finish
+    from: FACING COUPLES
+      condition: MATCH(_SWEEP PATTERN(), "RRRR")
+      call: mirror(_adjust to single static square)
+
+def: _single ladies in men sashay left(sel)
+  from: SINGLE STATIC SQUARE
+    condition: MATCH(_SELECTION PATTERN([sel]), "_xx_|x__x"), \
+               "Selected dancers are adjacent"
+    ipart:
+      select: [sel]
+        prim: 0, 0, none, preserve-sweep
+        prim: 0, 0, none, preserve-sweep
+      select: OTHERS
+        prim: -2, 0, none, force-roll-right sashay-start sashay-finish
+        prim: -2, 2, right, sashay-start sashay-finish
+    ipart:
+      select: [sel]
+        prim: 0, 0, none, preserve-sweep
+        prim: 0, 0, none, preserve-sweep
+      select: OTHERS
+        prim: -2, 2, right, sashay-start sashay-finish
+        prim: -2, 0, none, force-roll-right sashay-start sashay-finish
+
+def: _ladies in men sashay left(sel)
+  from: STATIC SQUARE
+    condition: MATCH(_SELECTION PATTERN([sel]), "x__xx__x") // belles in
+    ipart:
+      call: _circle adjust, _ladies in men sashay left([sel])
+  from: STATIC SQUARE
+    condition: MATCH(_SELECTION PATTERN([sel]), "_xx__xx_") // beaus in
+    select: [sel]
+      prim: 1, 1, none, force-roll-right preserve-sweep
+      prim: 1, -1, none, force-roll-right preserve-sweep
+    select: OTHERS
+      prim: -1, -1, none, force-roll-right preserve-sweep
+      prim: -1, 1, none, force-roll-right preserve-sweep
 
 // callerlab #12: TURN BACK FAMILY
 
