@@ -33,7 +33,8 @@ function welcome() {
 
 function help() {
     println("Type square dance calls at the sdr> prompt, for example 'heads square thru'.");
-    println("You can access a javascript interpreter by prefixing your statement with /");
+    println("You can access a javascript interpreter by prefixing your statement with /,");
+    println("for example '/1+2'.");
     println("Defined commands:");
     function describeFunc(name, f, extra) {
         if (f.hide) return;
@@ -85,6 +86,12 @@ authors.doc = "Show the list of authors of this software";
 
 function license() { _printResource("COPYING"); }
 license.doc = "Show license and warranty information";
+
+// Import the program values
+let _programs = net.cscott.sdr.calls.Program.values();
+for (let i=0; i < _programs.length; i++) {
+    this[_programs[i].name()] = _programs[i];
+}
 
 // Customize the state object
 // note that we abuse getters to eliminate parentheses from no-argument commands
