@@ -1,0 +1,29 @@
+Simple tests for "bounce the anyone".
+
+sdr> /program=C2
+C2
+sdr> heads lead right ; veer left
+| 4B>  1B>
+| 
+| 4G>  1G>
+| 
+| 3G<  2G<
+| 
+| 3B<  2B<
+sdr> /formationDetails=true
+true
+sdr> bounce the centers
+| 3G>  4B>  2G>  1B>         R >    >  R >    >
+| 
+| 3B<  4G<  2B<  1G<           <  R <    <  R <
+sdr> /formationDetails=false
+false
+sdr> hinge ; girls run
+| 3G^  3B^  4Bv  4Gv  2G^  2B^  1Bv  1Gv
+sdr> /formationDetails=true
+true
+sdr> bounce everyone
+| 3Gv  3Bv  2Gv  2Bv         R v  R v  R v  R v
+| 
+| 4B^  4G^  1B^  1G^         R ^  R ^  R ^  R ^
+sdr> /exit

@@ -25,3 +25,36 @@ def: cross concentric(c)
   spoken: cross concentric <c=anything>
   from: CENTER HALF
     call: _cross concentric([c], [c])
+
+def: bounce(who)
+  spoken: bounce the <who=anyone>
+  from: CENTER HALF
+    call: _with designated([who], _bounce designees)
+
+def: _bounce nobody
+  spoken: bounce ((no one)| nobody)
+  call: bounce(NONE)
+
+def: _bounce everyone
+  spoken: bounce (everyone | (every body))
+  call: bounce(ALL)
+
+def: _bounce designees
+  call: as couples(step thru)
+  call: _designees u turn back in flow direction
+
+def: _designees u turn back in flow direction
+  in: 2
+  from: ANY
+    select: and(DESIGNATED, match(_SWEEP PATTERN(), "L"))
+      prim: 0, 0, right
+      prim: 0, 0, right
+    select: and(DESIGNATED, match(_SWEEP PATTERN(), "R"))
+      prim: 0, 0, left
+      prim: 0, 0, left
+    select: DESIGNATED // XXX just to cover the bases
+      prim: 0, 0, right, force-roll-none
+      prim: 0, 0, right, force-roll-none
+    select: OTHERS
+      prim: 0, 0, none
+      prim: 0, 0, none
