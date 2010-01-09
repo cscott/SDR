@@ -637,13 +637,15 @@ def: reverse single file promenade home
   call: mirror(_single file promenade home("_______x"))
 
 def: promenade inside(sel)
-  // what formation does this end in?
+  // we'll say that this ends in couples promenade
   spoken: four <sel=genders> promenade inside
   ipart: // 8 beats total
-    call: _in(1, _start promenade inside([sel])), \
-          _in(5, _centers(_single promenade(3/4))), \
-          _in(2, _centers(_finish promenade inside))
+    call: _in(1, _start promenade inside([sel]))
+    call: _in(5, _centers(_single promenade(3/4)))
+    call: _in(2, _finish promenade inside)
 def: _start promenade inside(sel)
+  condition: match(_selection pattern([sel]), "x__xx__x|_xx__xx_"),\
+                   "Only one in each couple can promenade inside"
   in: 2
   from: STATIC SQUARE
     select: [sel]
@@ -651,9 +653,12 @@ def: _start promenade inside(sel)
     select: OTHERS
       prim: in 1, -1, none, sashay-start sashay-finish
 def: _finish promenade inside
-  in: 4
-  from: LH SINGLE PROMENADE
-    prim: -2, 2, none, force-roll-left
+  in: 2
+  from: CENTER HALF
+    select: CENTER
+      prim: -2, 2, left
+    select: OTHERS
+      prim:  0, 0, right
 
 def: reverse promenade inside(sel)
   spoken: four <sel=genders> reverse promenade inside
