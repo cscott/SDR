@@ -529,6 +529,26 @@ public class ExprList {
      *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
      *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
      *  iiiiiiii
+     *  js> f = FormationList.SINGLE_STATIC_SQUARE ; f.toStringDiagram("|")
+     *  |     v
+     *  |
+     *  |>         <
+     *  |
+     *  |     ^
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
+     *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
+     *  iiii
+     *  js> f = FormationList.THAR ; f.toStringDiagram("|")
+     *  |       <
+     *  |
+     *  |       >
+     *  |v    ^    v    ^
+     *  |       <
+     *  |
+     *  |       >
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
+     *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
+     *  xxxxxxxx
      */
     public static final ExprFunc<String> _INOUT_PATTERN =
         new SubsetPatternFunc("_inout pattern") {
@@ -557,18 +577,18 @@ public class ExprList {
                     return 'x'; // origin doesn't have in/out
                 Fraction n = facing.minSweep(ExactRotation.NORTH).abs();
                 Fraction s = facing.minSweep(ExactRotation.SOUTH).abs();
-                if (n.compareTo(Fraction.ONE_QUARTER) <= 0)
+                if (n.compareTo(Fraction.ONE_QUARTER) < 0)
                     return 'o';
-                if (s.compareTo(Fraction.ONE_QUARTER) <= 0)
+                if (s.compareTo(Fraction.ONE_QUARTER) < 0)
                     return 'i';
                 return 'x';
             }
             if (location.y.compareTo(Fraction.ZERO) == 0) {
                 Fraction e = facing.minSweep(ExactRotation.EAST).abs();
                 Fraction w = facing.minSweep(ExactRotation.WEST).abs();
-                if (w.compareTo(Fraction.ONE_QUARTER) <= 0)
+                if (w.compareTo(Fraction.ONE_QUARTER) < 0)
                     return 'i';
-                if (e.compareTo(Fraction.ONE_QUARTER) <= 0)
+                if (e.compareTo(Fraction.ONE_QUARTER) < 0)
                     return 'o';
                 return 'x';
             }

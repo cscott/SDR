@@ -349,7 +349,7 @@ def: _swing until boys in
     call: _outfacers swing, _swing until boys in
 
 def: _outfacers swing
-  call: _with designated(MATCH(_INOUT PATTERN(), "iiiiiiii"), \
+  call: _with designated(MATCH(_INOUT PATTERN(), "i"), \
                          _nondesignee boys swing 1/4)
 
 // swing 1/4 unless the boy is designated (which means he's facing in)
