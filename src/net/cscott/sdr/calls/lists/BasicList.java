@@ -15,11 +15,12 @@ import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.DancerPath;
-import net.cscott.sdr.calls.EvalPrim;
 import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationList;
+import net.cscott.sdr.calls.FormationMatch;
+import net.cscott.sdr.calls.MatcherList;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.Selector;
@@ -31,7 +32,6 @@ import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.In;
 import net.cscott.sdr.calls.ast.Part;
-import net.cscott.sdr.calls.ast.Prim;
 import static net.cscott.sdr.calls.ast.Part.Divisibility.*;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
@@ -357,6 +357,120 @@ public abstract class BasicList {
             return new Rule("anything", g, Fraction.valueOf(-10));
         }
     };
+
+    /**
+     * Adjust circle to its other orientation.  Used for 'circle choreography'
+     * like allemande left, swing thru from an alamo ring, etc.
+     *
+     * @doc.test Basic application from a squared set/circle.
+     *  js> importPackage(net.cscott.sdr.calls);
+     *  js> importPackage(net.cscott.sdr.calls.ast);
+     *  js> ds = new DanceState(new DanceProgram(Program.BASIC), Formation.SQUARED_SET); undefined;
+     *  js> ds.currentFormation().toStringDiagram("|");
+     *  |     3Gv  3Bv
+     *  |
+     *  |4B>            2G<
+     *  |
+     *  |4G>            2B<
+     *  |
+     *  |     1B^  1G^
+     *  js> comp = AstNode.valueOf("(Seq (Apply '_circle adjust))");
+     *  (Seq (Apply '_circle adjust))
+     *  js> new Evaluator.Standard(comp).evaluateAll(ds);
+     *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
+     *  |     3GQ       3BL
+     *  |
+     *  |4BQ                 2GL
+     *  |
+     *  |
+     *  |
+     *  |4G7                 2B`
+     *  |
+     *  |     1B7       1G`
+     *  js> new Evaluator.Standard(comp).evaluateAll(ds);
+     *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
+     *  |     3Gv  3Bv
+     *  |
+     *  |4B>            2G<
+     *  |
+     *  |4G>            2B<
+     *  |
+     *  |     1B^  1G^
+     * @doc.test Works from non-squared O spots as well
+     *  js> importPackage(net.cscott.sdr.calls);
+     *  js> importPackage(net.cscott.sdr.calls.ast);
+     *  js> ds = new DanceState(new DanceProgram(Program.BASIC), Formation.SQUARED_SET); undefined;
+     *  js> comp = AstNode.valueOf("(Seq (Apply 'face out) (Apply '_circle adjust))");
+     *  (Seq (Apply 'face out) (Apply '_circle adjust))
+     *  js> new Evaluator.Standard(comp).evaluateAll(ds);
+     *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
+     *  |     3GL       3BQ
+     *  |
+     *  |4B7                 2G`
+     *  |
+     *  |
+     *  |
+     *  |4GQ                 2BL
+     *  |
+     *  |     1B`       1G7
+     */
+    public static final Call _CIRCLE_ADJUST = new BasicCall("_circle adjust") {
+        @Override
+        public int getMinNumberOfArguments() { return 0; }
+        @Override
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            return new Evaluator() {
+                @Override
+                public Evaluator evaluate(DanceState ds) {
+                    Formation f = ds.currentFormation();
+                    /*
+                     *    0 1
+                     *  2     3
+                     *  4     5
+                     *    6 7
+                     */
+                    // moving one spot CW
+                    int[] rOrder = new int[] { 1, 3, 0, 5, 2, 7, 4, 6 };
+                    // some positions have to turn a corner
+                    boolean[] rCorner= new boolean[]{ false, true, true, false,
+                                                      false, true, true, false};
+                    // match the O spots to get normalized formation
+                    FormationMatch fm = MatcherList.O_SPOTS.match(f);
+                    assert fm.meta.dancers().size() == 1;
+                    Dancer metaD = fm.meta.dancers().iterator().next();
+                    TaggedFormation from = fm.matches.get(metaD);
+                    List<Dancer> sortedDancers = from.sortedDancers();
+                    assert sortedDancers.size() == rOrder.length;
+                    // the meta dancer is going to get an extra 1/8 rotation
+                    Position mP = fm.meta.location(metaD)
+                                         .turn(Fraction.valueOf(-1,8), false);
+                    ExactRotation mR = (ExactRotation) mP.facing;
+                    // now map every dancer to their new rotated formation
+                    for (int i=0 ; i < sortedDancers.size() ; i++) {
+                        Dancer d = sortedDancers.get(i);
+                        Position fP = from.location(d);
+                        // base position rotates one spot CW
+                        Position tP = from.location
+                                            (sortedDancers.get(rOrder[i]));
+                        tP = fP.relocate(tP.x, tP.y, fP.facing);
+                        // some dancers need to have facing dir turn the corner
+                        if (rCorner[i])
+                            tP = tP.relocate
+                              (tP.x, tP.y, tP.facing.add(Fraction.ONE_QUARTER));
+                        // rotate whole formation 1/8
+                        tP = tP.rotateAroundOrigin(mR);
+                        // make a dancer path
+                        DancerPath dp = new DancerPath
+                            (f.location(d), tP, Fraction.ONE, null);
+                        ds.add(d, dp);
+                    }
+                    return null;
+                }
+            };
+        }
+    };
+
     /** Used for 'scramble home' call. */
     public static final Call _SCRAMBLE_HOME = new BasicCall("_scramble home") {
         @Override
