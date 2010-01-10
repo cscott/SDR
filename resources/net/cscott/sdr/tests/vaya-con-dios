@@ -44,7 +44,25 @@ sdr> left allemande
 | 
 |      3G<  4B>
 sdr> weave the ring
+|      4BL       3GQ
+| 
+| 4G7                 3B`
+| 
+| 
+| 
+| 1BQ                 2GL
+| 
+|      1G`       2B7
 sdr> dosado
+|      4BL       3GQ
+| 
+| 4G7                 3B`
+| 
+| 
+| 
+| 1BQ                 2GL
+| 
+|      1G`       2B7
 sdr> promenade home
 |      3Gv  3Bv
 | 
@@ -53,7 +71,6 @@ sdr> promenade home
 | 4G>            2B<
 | 
 |      1B^  1G^
-sdr> /reset // now, the figure
 sdr> heads promenade half way
 | 1Gv  1Bv
 | 
@@ -104,23 +121,21 @@ sdr> trade by
 | 
 | 4G>  1B<  1G>  2B<
 sdr> swing the corner
-| 3Gv  4Bv  2Gv  3Bv
+| 4B>  2G<
 | 
-| 1B^  4G^  2B^  1G^
-sdr> /// XXX: the 'centers face in' shouldn't be necessary
-sdr> centers face in
-| 3Gv  4B>  2G<  3Bv
+| 3G>  3B<
 | 
-| 1B^  4G>  2B<  1G^
+| 1B>  1G<
+| 
+| 4G>  2B<
 sdr> left allemande
-| 3G^  4B<  2G>  3B^
+| 4B<  2G>
 | 
-| 1Bv  4G<  2B>  1Gv
-sdr> /// XXX: the 'ends face in' shouldn't be necessary
-sdr> ends face in
-| 3G>  4B<  2G>  3B<
+| 3G^  3B^
 | 
-| 1B>  4G<  2B>  1G<
+| 1Bv  1Gv
+| 
+| 4G<  2B>
 sdr> promenade home
 |      2Gv  3Bv
 | 

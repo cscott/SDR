@@ -522,10 +522,20 @@ def: _promenade(n)
   from: STATIC SQUARE
     call: 1/2(reverse(wheel around)), _promenade([n])
   from: ANY
-    call: _start promenade from facing, as couples(_single promenade([n]))
-  // XXX same thing from 1/8 rotated version of this (darn circle choreo)
+    call: _start promenade, as couples(_single promenade([n]))
   from: ANY // PROMENADE, STAR PROMENADE, as couples diamonds, etc.
     call: as couples(_single promenade([n]))
+
+def: _start promenade
+  from: ANY
+    call: _start promenade from facing
+  from: O SPOTS // 1/8 rotated version (darn circle choreo)
+    call: _circle adjust, _start promenade from facing
+  from: 2x4
+    condition: and(tboned(ALL), not(tboned(CENTER)), not(tboned(END)))
+    condition: match(_inout pattern(), "oooooooo")
+    call: _quasi concentric(nothing, face in), _start promenade from facing
+
 // this is used for 'dosado, promenade': the dosado leaves you facing
 def: _start promenade from facing
   in: 2
@@ -674,7 +684,7 @@ def: allemande left
     from: LH MINIWAVE
       call: _miniwave trade, step thru
     from: ANY
-      call: mirror(_turn and touch), _miniwave trade, step thru
+      call: mirror(_turn and touch), allemande left
 
 // callerlab #7: ARM TURNS
 
@@ -755,6 +765,29 @@ def: _turn and touch
   ends in: formation(RH MINIWAVE), "Didn't end right"
   from: TRADE BY // special case 'cuz mixed(FACING DANCERS, COUPLE) is ambiguous
     call: _quasi concentric(touch, _hinge)
+  from: RH THREE QUARTER TAG
+    from: mixed(COUPLE, RH MINIWAVE)
+      from: RH MINIWAVE
+        call: nothing
+      from: COUPLE // gender doesn't matter here, only one obvious partner
+        call: _hinge
+  from: FACING LINES
+    condition: match(_selection pattern(BOY), "_x_xx_x_")
+      call: _hinge
+  from: FACING LINES
+    condition: match(_selection pattern(BOY), "x_x__x_x")
+      call: _quasi concentric(_hinge, touch)
+  from: 2x4
+    condition: and(tboned(ALL), not(tboned(CENTER)), not(tboned(END)))
+    condition: match(_inout pattern(), "oooooooo")
+    call: _quasi concentric(nothing, face in), touch
+  from: ANY
+    condition: not(formation(FACING LINES))
+    call: _2 dancer turn and touch
+  from: O SPOTS
+    call: _circle adjust, _2 dancer turn and touch
+
+def: _2 dancer turn and touch
   from: mixed(FACING DANCERS, RH MINIWAVE)
     from: FACING DANCERS
       call: touch
@@ -766,6 +799,7 @@ def: _turn and touch
     from: RH MINIWAVE
       call: nothing
     from: COUPLE
+      condition: and(are(BOY, BEAU), are(GIRL, BELLE))
       call: 1/2(partner trade)
 
 def: _right and left grand(centers)
