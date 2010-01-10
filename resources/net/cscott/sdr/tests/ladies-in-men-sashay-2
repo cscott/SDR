@@ -10,24 +10,33 @@ sdr> circle left 3/8
 | 
 |      2G^  3B^
 sdr> ladies in men sashay
-|      4Gv  1Bv
+|      2BQ       4GL
 | 
-| 2B>            3G<
+| 1GQ                 1BL
 | 
-| 1G>            4B<
 | 
-|      3B^  2G^
+| 
+| 3B7                 3G`
+| 
+|      2G7       4B`
 sdr> ladies in men sashay
-XXX FIXME 1/8 off version
+|      3BQ       4GL
+| 
+| 1GQ                 2BL
+| 
+| 
+| 
+| 4B7                 3G`
+| 
+|      2G7       1B`
 sdr> ladies in men sashay once and a half
-XXX FIXME
-|           4Gv
+| 1BQ                 4BL
 | 
-|           1Bv
+|      1GQ       4GL
 | 
-| 1G>  2B>       4B<  3G<
 | 
-|           3B^
 | 
-|           2G^
+|      2G7       3G`
+| 
+| 2B7                 3B`
 sdr> /exit

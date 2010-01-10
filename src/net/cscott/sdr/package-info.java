@@ -14,7 +14,6 @@
  *   dopaso-1 at line 39
  *   extend-level at line 16
  *   hinge-1 at line 36
- *   ladies-in-men-sashay-2 at line 21
  *   mainstream-2 at line 96
  *   pass-to-the-center-2 at line 8
  *   pass-to-the-center-3 at line 26

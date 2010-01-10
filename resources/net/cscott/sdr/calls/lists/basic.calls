@@ -946,17 +946,17 @@ def: _single ladies in men sashay left(sel)
 
 def: _ladies in men sashay left(sel)
   from: STATIC SQUARE
-    condition: MATCH(_SELECTION PATTERN([sel]), "x__xx__x") // belles in
+    condition: MATCH(_SELECTION PATTERN([sel]), "_xx__xx_") // beaus in
     ipart:
       call: _circle adjust, _ladies in men sashay left([sel])
   from: STATIC SQUARE
-    condition: MATCH(_SELECTION PATTERN([sel]), "_xx__xx_") // beaus in
+    condition: MATCH(_SELECTION PATTERN([sel]), "x__xx__x") // belles in
     select: [sel]
-      prim: 1, 1, none, force-roll-right preserve-sweep
-      prim: 1, -1, none, force-roll-right preserve-sweep
+      prim: -1, 1, none, force-roll-right preserve-sweep sashay-finish
+      prim: 1, -1, none, force-roll-right preserve-sweep sashay-start
     select: OTHERS
-      prim: -1, -1, none, force-roll-right preserve-sweep
-      prim: -1, 1, none, force-roll-right preserve-sweep
+      prim: -3, 3, right, preserve-sweep sashay-start sashay-finish
+      prim: -1, 1, none, force-roll-right preserve-sweep sashay-start sashay-finish
 
 // callerlab #12: TURN BACK FAMILY
 
