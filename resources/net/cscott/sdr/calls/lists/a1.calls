@@ -61,6 +61,7 @@ def: _grand quarter thru(n)
 // this definition is trickier, because we need to stay in our 4-person
 // formation
 // XXX from RH wave-based triangles, etc.
+// XXX refactor into "turn by the right if you can(n)"
 def: _quarter thru(n)
   from: ANY
     condition: equal num(_mod num([n], 1/2), 1/4)
