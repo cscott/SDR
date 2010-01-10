@@ -882,6 +882,10 @@ def: _roll away(sel1,sel2)
     condition: ARE([sel1],BEAU), [1] "Those doing the rolling must be beaus"
     condition: ARE([sel2],BELLE), [1] "Those rolling away must be belles"
     call: roll away // ignore the selectors
+  from: STATIC SQUARE // circle choreo
+    condition: ARE([sel1],BELLE)
+    condition: ARE([sel2],BEAU)
+    call: _in(4, and(_circle adjust, roll away))
 
 def: _reverse roll away(sel1,sel2)
   spoken: <sel1=anyone> reverse roll (the|that) <sel2=anyone> away
@@ -889,8 +893,11 @@ def: _reverse roll away(sel1,sel2)
     condition: ARE([sel1],BELLE), [1] "Those doing the rolling must be belles"
     condition: ARE([sel2],BEAU), [1] "Those rolling away must be beaus"
     call: reverse(roll away) // ignore the selectors
+  from: STATIC SQUARE // circle choreo
+    condition: ARE([sel1],BEAU)
+    condition: ARE([sel2],BELLE)
+    call: _in(4, and(_circle adjust, reverse(roll away)))
 
-// XXX _circle choreo
 def: roll away
   optional: REVERSE
   in: 4

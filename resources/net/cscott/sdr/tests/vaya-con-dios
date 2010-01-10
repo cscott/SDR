@@ -11,58 +11,60 @@ sdr> four ladies chain 3/4
 | 3G>            2B<
 | 
 |      1B^  4G^
-sdr> circle left 1/2
-|      4Gv  1Bv
+sdr> circle left 3/8
+|      1Bv  3Gv
 | 
-| 2B>            3G<
+| 4G>            4B<
 | 
-| 1G>            4B<
+| 2B>            2G<
 | 
-|      3B^  2G^
+|      1G^  3B^
 sdr> boys roll the girls away
-|      1Bv  4Gv
+|      4GQ       4BL
 | 
-| 1G>            4B<
+| 1BQ                 3GL
 | 
-| 2B>            3G<
 | 
-|      2G^  3B^
+| 
+| 1G7                 3B`
+| 
+|      2B7       2G`
 sdr> circle left 1/4
-|      2Bv  1Gv
+|      1GQ       1BL
 | 
-| 2G>            1B<
+| 2BQ                 4GL
 | 
-| 3B>            4G<
 | 
-|      3G^  4B^
+| 
+| 2G7                 4B`
+| 
+|      3B7       3G`
 sdr> left allemande
-|      2B<  1G>
+|      1G7       1B`
 | 
-| 2G^            1B^
+| 2BL                 4GQ
 | 
-| 3Bv            4Gv
 | 
-|      3G<  4B>
+| 
+| 2G`                 4B7
+| 
+|      3BQ       3GL
 sdr> weave the ring
-|      4BL       3GQ
+|      3G>  3B<
 | 
-| 4G7                 3B`
+| 4Bv            2Gv
 | 
+| 4G^            2B^
 | 
-| 
-| 1BQ                 2GL
-| 
-|      1G`       2B7
+|      1B>  1G<
 sdr> dosado
-|      4BL       3GQ
+|      3G>  3B<
 | 
-| 4G7                 3B`
+| 4Bv            2Gv
 | 
+| 4G^            2B^
 | 
-| 
-| 1BQ                 2GL
-| 
-|      1G`       2B7
+|      1B>  1G<
 sdr> promenade home
 |      3Gv  3Bv
 | 
