@@ -165,9 +165,13 @@ public abstract class BasicList {
         }
         @Override
         public Evaluator evaluate(DanceState ds) {
-            boolean mirrorShoulderPass = (which != LRMType.MIRROR);
+            boolean mirrorShoulderPass = (which == LRMType.MIRROR);
+	    // XXX NEED A LEFT MEANS MIRROR FLAG, which is does, generally;
+	    //     otherwise 'left pass thru' passes right shoulders (!)
+	    mirrorShoulderPass = true;
             // Mirror the current formation.
-            Formation nf = ds.currentFormation().mirror(mirrorShoulderPass);
+	    // (any existing collisions should resolve 'mirror')
+            Formation nf = ds.currentFormation().mirror(true);
             DanceState nds = ds.cloneAndClear(nf);
             // do the call in the mirrored formation
             new Apply(this.comp).evaluator(nds).evaluateAll(nds);

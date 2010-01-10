@@ -1265,6 +1265,13 @@ to do:
       calls (ie duplicate rules to preserve precedence relationships)
  iii) (trade and roll) twice -vs- trade and (roll twice)
       do the following twice: trade, roll
+ jjj) fix some confusion between "left" and "mirror" -- currently I
+      force them to be the same.  What are the cases where they are
+      not?  This will be easier when each call resolves its own
+      collisions and doesn't leave them in the formation: for example,
+      "left pass thru" currently leaves a collision which escapes the
+      "left concept".  Compare halfway point of "left pass thru" and
+      "mirror pass thru".
 
 -------
 heads x:

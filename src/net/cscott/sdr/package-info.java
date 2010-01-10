@@ -6,7 +6,7 @@
  *  (fail-first development: note which cases are currently failing)
  *  js> PMSD.runAllTests()
  *  FAILED TESTS:
- *   allemande-1 at line 52
+ *   allemande-1 at line 56
  *   breathing-2 at line 26
  *   cast-1 at line 69
  *   concentric-1 at line 83
@@ -15,7 +15,7 @@
  *   extend-level at line 16
  *   hinge-1 at line 36
  *   ladies-in-men-sashay-2 at line 21
- *   mainstream-2 at line 88
+ *   mainstream-2 at line 96
  *   pass-to-the-center-2 at line 8
  *   pass-to-the-center-3 at line 26
  *   peel-the-top-1 at line 32
