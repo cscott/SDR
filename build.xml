@@ -661,6 +661,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
           <!-- save space to fit into the GAE limits -->
 	  <exclude name="net/cscott/sdr/sound/**/*" />
 	  <exclude name="net/cscott/sdr/recog/**/*" />
+	  <!-- compress all the definition/grammar files -->
+	  <exclude name="net/cscott/sdr/calls/lists/*.class" />
 	</fileset>
 	<fileset dir="${src_dir}" includes="META-INF/**/*" />
 	<fileset dir="${src_dir}" includes="log4j.properties" />
@@ -668,6 +670,9 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	<fileset dir="${src_dir}" includes="net/cscott/sdr/webapp/**/*.png" />
 	<fileset dir="${src_dir}" includes="net/cscott/sdr/webapp/**/*.ico" />
       </copy>
+      <jar destfile="war/WEB-INF/lib/sdrweb.jar" update="true"
+           basedir="${classes_dir}"
+	   includes="net/cscott/sdr/calls/lists/*.class" />
       <!-- move library files into war/WEB-INF/lib -->
       <copy todir="war/WEB-INF/lib">
 	<fileset dir="${lib_dir}"
