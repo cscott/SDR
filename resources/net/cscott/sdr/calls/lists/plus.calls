@@ -1,5 +1,14 @@
 program: plus
 
+def: acey deucey
+  // XXX: test this from three-quarter tag.
+  from: CENTER HALF
+    call: _quasi concentric(trade, _box circulate)
+
+// XXX: ALL 8 SPIN THE TOP
+// XXX: reformulate as application of "all 8" concept
+
+// (anything) & roll
 def: roll
   spoken: [-10] roll
   from: ANY // make sure we've breathed before we roll
@@ -8,10 +17,41 @@ def: and roll(c)
   spoken: [-10] <c=anything> and roll
   call: _roll([c])
 
-def: acey deucey
-  // XXX: test this from three-quarter tag.
-  from: CENTER HALF
-    call: _quasi concentric(trade, _box circulate)
+// (anything) & spread
+// XXX: missing case 1: "heads star thru & spread", heads spread,
+//                      *even if they are trailers*
+def: spread
+  spoken: [-10] spread
+  call: _spread
+
+def: and spread(c)
+  spoken: [-10] <c=anything> and spread
+  from: ANY
+    // this applies only if the call ends in parallel lines
+    call: _blend(_start case 2 spread([c]), _spread)
+  from: ANY
+    // unblended version
+    call: [c]
+    call: _spread
+
+def: _start case 2 spread(c)
+  ends in: formation(PARALLEL GENERAL LINES)
+  call: [c]
+
+def: _spread
+  in: 2
+  // "case 3" of the definition
+  from: DOUBLE PASS THRU, COMPLETED DOUBLE PASS THRU
+    select: LEADER
+      prim: out 2, 0, none
+    select: TRAILER
+      prim: 0, 2, none
+  // "case 2" of the definition
+  from: PARALLEL GENERAL LINES
+    select: CENTER
+      prim: out 2, 0, none
+    select: END
+      prim: in 2, 0, none
 
 def: three quarter tag
   optional: LEFT

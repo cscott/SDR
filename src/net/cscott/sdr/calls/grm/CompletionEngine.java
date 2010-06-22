@@ -38,19 +38,24 @@ import net.cscott.sdr.util.Tools;
  *  js> c("sq");
  *  square thru
  *  square thru and roll
+ *  square thru and spread
  *  square thru and sweep <fraction>
  *  square thru <number>
  *  square thru <number> and roll
+ *  square thru <number> and spread
  *  square thru <number> and sweep <fraction>
  *  square thru <number> hands
  *  square thru <number> hands and roll
+ *  square thru <number> hands and spread
  *  square thru <number> hands and sweep <fraction>
  *  square thru <number> hands around
  *  square thru <number> hands around and roll
+ *  square thru <number> hands around and spread
  *  square thru <number> hands around and sweep <fraction>
  *  square thru <number> hands around <times>
  *  square thru <number> hands round
  *  square thru <number> hands round and roll
+ *  square thru <number> hands round and spread
  *  square thru <number> hands round and sweep <fraction>
  *  square thru <number> hands round <times>
  *  square thru <number> hands <times>
@@ -58,109 +63,144 @@ import net.cscott.sdr.util.Tools;
  *  square thru <times>
  *  square your set
  *  square your set and roll
+ *  square your set and spread
  *  square your set and sweep <fraction>
  *  square your set <times>
  *  js> c("square thru 1 1/2 h");
  *  square thru 1 1/2 hands
  *  square thru 1 1/2 hands and roll
+ *  square thru 1 1/2 hands and spread
  *  square thru 1 1/2 hands and sweep <fraction>
  *  square thru 1 1/2 hands around
  *  square thru 1 1/2 hands around and roll
+ *  square thru 1 1/2 hands around and spread
  *  square thru 1 1/2 hands around and sweep <fraction>
  *  square thru 1 1/2 hands around <times>
  *  square thru 1 1/2 hands round
  *  square thru 1 1/2 hands round and roll
+ *  square thru 1 1/2 hands round and spread
  *  square thru 1 1/2 hands round and sweep <fraction>
  *  square thru 1 1/2 hands round <times>
  *  square thru 1 1/2 hands <times>
  *  js> c("tr");
  *  track <number>
  *  track <number> and roll
+ *  track <number> and spread
  *  track <number> and sweep <fraction>
  *  track <number> <times>
  *  trade
  *  trade and roll
+ *  trade and spread
  *  trade and sweep <fraction>
  *  trade by
  *  trade by and roll
+ *  trade by and spread
  *  trade by and sweep <fraction>
  *  trade by <times>
  *  trade the wave
  *  trade the wave and roll
+ *  trade the wave and spread
  *  trade the wave and sweep <fraction>
  *  trade the wave <times>
  *  trade <times>
  *  js> c("trade")
  *  trade
  *  trade and roll
+ *  trade and spread
  *  trade and sweep <fraction>
  *  trade by
  *  trade by and roll
+ *  trade by and spread
  *  trade by and sweep <fraction>
  *  trade by <times>
  *  trade the wave
  *  trade the wave and roll
+ *  trade the wave and spread
  *  trade the wave and sweep <fraction>
  *  trade the wave <times>
  *  trade <times>
  *  js> c("trade a");
  *  trade and roll
  *  trade and roll and roll
+ *  trade and roll and spread
  *  trade and roll and sweep <fraction>
  *  trade and roll <times>
+ *  trade and spread
+ *  trade and spread and roll
+ *  trade and spread and spread
+ *  trade and spread and sweep <fraction>
+ *  trade and spread <times>
  *  trade and sweep <fraction>
  *  trade and sweep <fraction> and roll
+ *  trade and sweep <fraction> and spread
  *  trade and sweep <fraction> and sweep <fraction>
  *  trade and sweep <fraction> <times>
  *  js> c("trade and roll");
  *  trade and roll
  *  trade and roll and roll
+ *  trade and roll and spread
  *  trade and roll and sweep <fraction>
  *  trade and roll <times>
  *  js> c("trade and roll a");
  *  trade and roll and roll
  *  trade and roll and roll and roll
+ *  trade and roll and roll and spread
  *  trade and roll and roll and sweep <fraction>
  *  trade and roll and roll <times>
+ *  trade and roll and spread
+ *  trade and roll and spread and roll
+ *  trade and roll and spread and spread
+ *  trade and roll and spread and sweep <fraction>
+ *  trade and roll and spread <times>
  *  trade and roll and sweep <fraction>
  *  trade and roll and sweep <fraction> and roll
+ *  trade and roll and sweep <fraction> and spread
  *  trade and roll and sweep <fraction> and sweep <fraction>
  *  trade and roll and sweep <fraction> <times>
  *  js> c("scoot back once a");
  *  scoot back once and a half
  *  scoot back once and a half and roll
+ *  scoot back once and a half and spread
  *  scoot back once and a half and sweep <fraction>
  *  scoot back once and a half <times>
  *  scoot back once and a quarter
  *  scoot back once and a quarter and roll
+ *  scoot back once and a quarter and spread
  *  scoot back once and a quarter and sweep <fraction>
  *  scoot back once and a quarter <times>
  *  scoot back once and a third
  *  scoot back once and a third and roll
+ *  scoot back once and a third and spread
  *  scoot back once and a third and sweep <fraction>
  *  scoot back once and a third <times>
  *  scoot back once and one half
  *  scoot back once and one half and roll
+ *  scoot back once and one half and spread
  *  scoot back once and one half and sweep <fraction>
  *  scoot back once and one half <times>
  *  scoot back once and one quarter
  *  scoot back once and one quarter and roll
+ *  scoot back once and one quarter and spread
  *  scoot back once and one quarter and sweep <fraction>
  *  scoot back once and one quarter <times>
  *  scoot back once and one third
  *  scoot back once and one third and roll
+ *  scoot back once and one third and spread
  *  scoot back once and one third and sweep <fraction>
  *  scoot back once and one third <times>
  *  scoot back once and three quarters
  *  scoot back once and three quarters and roll
+ *  scoot back once and three quarters and spread
  *  scoot back once and three quarters and sweep <fraction>
  *  scoot back once and three quarters <times>
  *  scoot back once and two quarters
  *  scoot back once and two quarters and roll
+ *  scoot back once and two quarters and spread
  *  scoot back once and two quarters and sweep <fraction>
  *  scoot back once and two quarters <times>
  *  scoot back once and two thirds
  *  scoot back once and two thirds and roll
+ *  scoot back once and two thirds and spread
  *  scoot back once and two thirds and sweep <fraction>
  *  scoot back once and two thirds <times>
  */
