@@ -1,0 +1,14 @@
+Test cases for proper call parsing.
+
+sdr> /program = Program.C4;
+C4
+sdr> /// from Ceder Chest ("Catch <anything>")
+sdr> /parse("catch motivate 3") // from eight chain thru
+catch(motivate, 3)
+sdr> /parse("catch 3 motivate") // from facing lines
+ers(catch(slip, 3), motivate)
+sdr> /parse("once removed catch mix 3") // from facing lines
+once removed(catch(mix, 3))
+sdr> /parse("catch once removed mix 3") // from facing lines
+catch(once removed(mix), 3)
+sdr> /exit
