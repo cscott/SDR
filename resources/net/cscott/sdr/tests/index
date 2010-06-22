@@ -5,6 +5,9 @@ sdr> /// "test case" is used as input by runAllTests() to enumerate
 sdr> /// all the tests to run.
 sdr> ///
 sdr> /listTests("resources/net/cscott/sdr/tests")
+acey-deucey-1
+acey-deucey-2
+acey-deucey-3
 allemande-1
 as-couples-1
 basic-calls-1
@@ -46,6 +49,7 @@ pass-to-the-center-2
 pass-to-the-center-3
 peel-the-top-1
 peel-the-top-2
+plus-calls-1
 pmsd
 promenade-1
 promenade-2
