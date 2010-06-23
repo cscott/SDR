@@ -2,6 +2,7 @@ package net.cscott.sdr.calls.grm;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,132 +37,132 @@ import net.cscott.sdr.util.Tools;
  *    > }
  *  js> c("sq");
  *  square thru
- *  square thru <times>
  *  square thru and roll
  *  square thru and sweep <fraction>
  *  square thru <number>
- *  square thru <number> <times>
  *  square thru <number> and roll
  *  square thru <number> and sweep <fraction>
  *  square thru <number> hands
- *  square thru <number> hands <times>
  *  square thru <number> hands and roll
  *  square thru <number> hands and sweep <fraction>
  *  square thru <number> hands around
- *  square thru <number> hands around <times>
  *  square thru <number> hands around and roll
  *  square thru <number> hands around and sweep <fraction>
+ *  square thru <number> hands around <times>
  *  square thru <number> hands round
- *  square thru <number> hands round <times>
  *  square thru <number> hands round and roll
  *  square thru <number> hands round and sweep <fraction>
+ *  square thru <number> hands round <times>
+ *  square thru <number> hands <times>
+ *  square thru <number> <times>
+ *  square thru <times>
  *  square your set
- *  square your set <times>
  *  square your set and roll
  *  square your set and sweep <fraction>
+ *  square your set <times>
  *  js> c("square thru 1 1/2 h");
  *  square thru 1 1/2 hands
- *  square thru 1 1/2 hands <times>
  *  square thru 1 1/2 hands and roll
  *  square thru 1 1/2 hands and sweep <fraction>
  *  square thru 1 1/2 hands around
- *  square thru 1 1/2 hands around <times>
  *  square thru 1 1/2 hands around and roll
  *  square thru 1 1/2 hands around and sweep <fraction>
+ *  square thru 1 1/2 hands around <times>
  *  square thru 1 1/2 hands round
- *  square thru 1 1/2 hands round <times>
  *  square thru 1 1/2 hands round and roll
  *  square thru 1 1/2 hands round and sweep <fraction>
+ *  square thru 1 1/2 hands round <times>
+ *  square thru 1 1/2 hands <times>
  *  js> c("tr");
- *  trade
- *  trade <times>
- *  trade and roll
- *  trade and sweep <fraction>
- *  trade by
- *  trade by <times>
- *  trade by and roll
- *  trade by and sweep <fraction>
- *  trade the wave
- *  trade the wave <times>
- *  trade the wave and roll
- *  trade the wave and sweep <fraction>
  *  track <number>
- *  track <number> <times>
  *  track <number> and roll
  *  track <number> and sweep <fraction>
- *  js> c("trade")
+ *  track <number> <times>
  *  trade
- *  trade <times>
  *  trade and roll
  *  trade and sweep <fraction>
  *  trade by
- *  trade by <times>
  *  trade by and roll
  *  trade by and sweep <fraction>
+ *  trade by <times>
  *  trade the wave
- *  trade the wave <times>
  *  trade the wave and roll
  *  trade the wave and sweep <fraction>
+ *  trade the wave <times>
+ *  trade <times>
+ *  js> c("trade")
+ *  trade
+ *  trade and roll
+ *  trade and sweep <fraction>
+ *  trade by
+ *  trade by and roll
+ *  trade by and sweep <fraction>
+ *  trade by <times>
+ *  trade the wave
+ *  trade the wave and roll
+ *  trade the wave and sweep <fraction>
+ *  trade the wave <times>
+ *  trade <times>
  *  js> c("trade a");
  *  trade and roll
- *  trade and roll <times>
  *  trade and roll and roll
  *  trade and roll and sweep <fraction>
+ *  trade and roll <times>
  *  trade and sweep <fraction>
- *  trade and sweep <fraction> <times>
  *  trade and sweep <fraction> and roll
  *  trade and sweep <fraction> and sweep <fraction>
+ *  trade and sweep <fraction> <times>
  *  js> c("trade and roll");
  *  trade and roll
- *  trade and roll <times>
  *  trade and roll and roll
  *  trade and roll and sweep <fraction>
+ *  trade and roll <times>
  *  js> c("trade and roll a");
  *  trade and roll and roll
- *  trade and roll and roll <times>
  *  trade and roll and roll and roll
  *  trade and roll and roll and sweep <fraction>
+ *  trade and roll and roll <times>
  *  trade and roll and sweep <fraction>
- *  trade and roll and sweep <fraction> <times>
  *  trade and roll and sweep <fraction> and roll
  *  trade and roll and sweep <fraction> and sweep <fraction>
+ *  trade and roll and sweep <fraction> <times>
  *  js> c("scoot back once a");
  *  scoot back once and a half
- *  scoot back once and a half <times>
  *  scoot back once and a half and roll
  *  scoot back once and a half and sweep <fraction>
- *  scoot back once and a third
- *  scoot back once and a third <times>
- *  scoot back once and a third and roll
- *  scoot back once and a third and sweep <fraction>
+ *  scoot back once and a half <times>
  *  scoot back once and a quarter
- *  scoot back once and a quarter <times>
  *  scoot back once and a quarter and roll
  *  scoot back once and a quarter and sweep <fraction>
+ *  scoot back once and a quarter <times>
+ *  scoot back once and a third
+ *  scoot back once and a third and roll
+ *  scoot back once and a third and sweep <fraction>
+ *  scoot back once and a third <times>
  *  scoot back once and one half
- *  scoot back once and one half <times>
  *  scoot back once and one half and roll
  *  scoot back once and one half and sweep <fraction>
- *  scoot back once and one third
- *  scoot back once and one third <times>
- *  scoot back once and one third and roll
- *  scoot back once and one third and sweep <fraction>
+ *  scoot back once and one half <times>
  *  scoot back once and one quarter
- *  scoot back once and one quarter <times>
  *  scoot back once and one quarter and roll
  *  scoot back once and one quarter and sweep <fraction>
- *  scoot back once and two thirds
- *  scoot back once and two thirds <times>
- *  scoot back once and two thirds and roll
- *  scoot back once and two thirds and sweep <fraction>
- *  scoot back once and two quarters
- *  scoot back once and two quarters <times>
- *  scoot back once and two quarters and roll
- *  scoot back once and two quarters and sweep <fraction>
+ *  scoot back once and one quarter <times>
+ *  scoot back once and one third
+ *  scoot back once and one third and roll
+ *  scoot back once and one third and sweep <fraction>
+ *  scoot back once and one third <times>
  *  scoot back once and three quarters
- *  scoot back once and three quarters <times>
  *  scoot back once and three quarters and roll
  *  scoot back once and three quarters and sweep <fraction>
+ *  scoot back once and three quarters <times>
+ *  scoot back once and two quarters
+ *  scoot back once and two quarters and roll
+ *  scoot back once and two quarters and sweep <fraction>
+ *  scoot back once and two quarters <times>
+ *  scoot back once and two thirds
+ *  scoot back once and two thirds and roll
+ *  scoot back once and two thirds and sweep <fraction>
+ *  scoot back once and two thirds <times>
  */
 @RunWith(value=JDoctestRunner.class)
 public class CompletionEngine {
@@ -180,6 +181,14 @@ public class CompletionEngine {
         List<String> result = new ArrayList<String>(limit);
         for (int i=0; i<limit && it.hasNext(); i++)
             result.add(it.next());
+        if (!it.hasNext())
+            // sort, putting non-terminals last
+            Collections.sort(result, new Comparator<String>() {
+                public int compare(String o1, String o2) {
+                    String s1 = o1.replace('<', '~');
+                    String s2 = o2.replace('<', '~');
+                    return s1.compareTo(s2);
+                }});
         return result;
     }
     static class CompletionIterator extends UnmodifiableIterator<String>{
