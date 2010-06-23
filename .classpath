@@ -54,5 +54,6 @@
 	<classpathentry kind="lib" path="/home/cananian/jdk1.6.0_17/lib/tools.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/sphinx"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
