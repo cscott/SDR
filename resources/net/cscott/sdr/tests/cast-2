@@ -1,6 +1,6 @@
 Test "cast off n/8".
 
-sdr> heads lead right ; extend
+sdr> heads lead right ; step to a wave
 | 4B>  1B>
 | 
 | 3G<  2G<

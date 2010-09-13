@@ -6,7 +6,7 @@ sdr> /program = Program.PLUS; setFormation(Formation.SQUARED_SET);
 | 4G>            2B<
 | 
 |      1B^  1G^
-sdr> heads lead right ; extend
+sdr> heads lead right ; step to a wave
 | 4B>  1B>
 | 
 | 3G<  2G<

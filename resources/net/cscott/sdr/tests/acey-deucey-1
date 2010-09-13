@@ -19,7 +19,7 @@ sdr> acey deucey
 | 3G>  4G<  2B>  1B<
 | 
 | 3B>  4B<  2G>  1G<
-sdr> extend
+sdr> step to a wave
 | 3G>  2B>
 | 
 | 4G<  1B<

@@ -26,7 +26,7 @@ sdr> do half of a trade twice and roll
 | 4B>  3G<  1B>  2G<
 | 
 | 4G>  3B<  1G>  2B<
-sdr> extend
+sdr> step to a wave
 | 4B>  1B>
 | 
 | 3G<  2G<

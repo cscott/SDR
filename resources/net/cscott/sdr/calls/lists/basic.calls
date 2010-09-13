@@ -1473,6 +1473,9 @@ def: step to a wave
   from: FACING DANCERS
     call: _extend // the general case
 
+def: step to a left hand wave
+  call: mirror(step to a wave)
+
 def: step thru
   in: 2 // not official
   from: MINIWAVE
@@ -1579,13 +1582,25 @@ def: pass the ocean
 
 // callerlab #42: EXTEND
 def: extend
-  optional: LEFT
     // at basic/mainstream, extend is from 1/4 tag only
     from: QUARTER TAG
       call: _extend
     from: ANY
       condition: PROGRAM AT LEAST(PLUS), "Not allowed below Plus"
+      // don't allow the "step to a wave" or "step thru" cases
+      // (Bill gave me a hard time about this)
+      condition: not(formation(FACING DANCERS)), \
+                 "Use 'step to a wave' from here"
+      condition: not(and(formation(MINIWAVE), not(formation(BOX)))), \
+                 "Use 'step thru' from here"
       call: _extend
+
+def: left extend
+  // don't allow "left extend" from right-handed formations
+  from: SINGLE DOUBLE PASS THRU, LH BOX, \
+        LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG, \
+        LH QUARTER TAG, LH THREE QUARTER TAG
+    call: mirror(extend)
 
 def: _extend // the general case
   in: 2
@@ -1594,7 +1609,9 @@ def: _extend // the general case
       prim: -1,1, none
     select: TRAILER
       prim: 0,1, none
-  from: LH BOX, LH MINIWAVE, LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG
+  from: LH BOX, LH MINIWAVE, \
+        LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG, \
+        LH QUARTER TAG, LH THREE QUARTER TAG // "adjust" formations
     call: mirror(_extend)
   from: RH BOX
     select: LEADER
@@ -1602,8 +1619,10 @@ def: _extend // the general case
     select: TRAILER
       prim: 0,1, none
   from: RH MINIWAVE
+    // this should be called as "step thru" (not really called "extend")
     prim: 1,1, none
   from: FACING DANCERS
+    // this should be called as "step to a wave" (not really called "extend")
     prim: -1,1,none
   from: RH SINGLE QUARTER TAG
     select: CENTER
@@ -1615,6 +1634,23 @@ def: _extend // the general case
       prim: 1, 1, none
     select: END
       prim: 0, 1, none
+  // the RH QUARTER TAG and RH THREE QUARTER TAG cases should be taken care of
+  // by matches to RH SINGLE QUARTER TAG and RH SINGLE THREE QUARTER TAG cases
+  // but our "to diamond spots" adjustment isn't implemented yet.
+  from: RH QUARTER TAG
+    select: CENTER
+      prim: 0, 1, none
+    select: and(END, BEAU)
+      prim: -1, 1, none
+    select: and(END, BELLE)
+      prim: 0, 1, none
+  from: RH THREE QUARTER TAG
+    select: END
+      prim: 0, 1, none
+    select: VERY CENTER
+      prim: 0, 1, none
+    select: OTHERS
+      prim: 1, 1, none
 
 // callerlab #43: WHEEL AND DEAL FAMILY
 def: wheel and deal

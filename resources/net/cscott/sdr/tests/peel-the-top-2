@@ -1,6 +1,6 @@
 Tests for peel the top from Z formations.
 
-sdr> heads lead right ; extend
+sdr> heads lead right ; step to a wave
 | 4B>  1B>
 | 
 | 3G<  2G<
