@@ -423,6 +423,8 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.LH_TIDAL_LINE);
     public static final Matcher TIDAL_LINE =
         OR("TIDAL LINE", RH_TIDAL_LINE, LH_TIDAL_LINE);
+    public static final Matcher GENERAL_TIDAL_LINE =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_TIDAL_LINE);
     public static final Matcher O_DOUBLE_PASS_THRU =
         GeneralFormationMatcher.makeMatcher(FormationList.O_DOUBLE_PASS_THRU);
     public static final Matcher BUTTERFLY_DOUBLE_PASS_THRU =

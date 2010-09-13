@@ -2689,6 +2689,32 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(5), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(7), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BELLE, Tag.END));
 
+    /** GENERAL TIDAL LINE formation.
+      * @doc.test
+      *  js> FormationList = FormationList.js(this); undefined;
+      *  js> tf = FormationList.GENERAL_TIDAL_LINE; tf.toStringDiagram('|');
+      *  ||    |    |    |    |    |    |    |
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_4]
+      *  [OUTSIDE_4]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_4]
+      *  [OUTSIDE_4]
+      */
+    public static final NamedTaggedFormation GENERAL_TIDAL_LINE =
+        new NamedTaggedFormation("GENERAL TIDAL LINE",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-7), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-5), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(5), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(7), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4));
+
     /** O DOUBLE PASS THRU formation.
       * @doc.test
       *  js> FormationList = FormationList.js(this); undefined;
@@ -2860,6 +2886,7 @@ abstract class FormationListFast {
             FormationListFast.LH_TIDAL_TWO_FACED_LINE,
             FormationListFast.RH_TIDAL_LINE,
             FormationListFast.LH_TIDAL_LINE,
+            FormationListFast.GENERAL_TIDAL_LINE,
             FormationListFast.O_DOUBLE_PASS_THRU,
             FormationListFast.BUTTERFLY_DOUBLE_PASS_THRU));
 }

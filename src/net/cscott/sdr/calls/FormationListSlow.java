@@ -515,6 +515,10 @@ abstract class FormationListSlow {
         xofy("RH TIDAL LINE", RH_TWO_FACED_LINE, COUPLE);
     public static final NamedTaggedFormation LH_TIDAL_LINE = // callerlab #52(b)
         xofy("LH TIDAL LINE", LH_TWO_FACED_LINE, COUPLE);
+    public static final NamedTaggedFormation GENERAL_TIDAL_LINE =
+        create("GENERAL TIDAL LINE", f("||||||||"), WhetherTagger.NO_AUTO_TAGS,
+                t(0, OUTSIDE_4), t(1, OUTSIDE_4), t(2, CENTER), t(3, CENTER),
+                t(4, CENTER), t(5, CENTER), t(6, OUTSIDE_4), t(7, OUTSIDE_4));
     // XXX galaxy, callerlab #53
     public static final NamedTaggedFormation O_DOUBLE_PASS_THRU = // used for grand square
         create("O DOUBLE PASS THRU", f(" ss ","s  s","n  n"," nn "),
