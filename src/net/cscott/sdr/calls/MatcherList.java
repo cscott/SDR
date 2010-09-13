@@ -224,6 +224,8 @@ public class MatcherList {
         OR("TWO-FACED LINE", RH_TWO_FACED_LINE, LH_TWO_FACED_LINE);
     public static final Matcher SINGLE_INVERTED_LINE =
         GeneralFormationMatcher.makeMatcher(FormationList.SINGLE_INVERTED_LINE);
+    public static final Matcher GENERAL_DIAMOND =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_DIAMOND);
     public static final Matcher RH_DIAMOND =
         GeneralFormationMatcher.makeMatcher(FormationList.RH_DIAMOND);
     public static final Matcher RH_FACING_DIAMOND =
@@ -399,6 +401,10 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.LH_TWIN_FACING_DIAMONDS);
     public static final Matcher TWIN_FACING_DIAMONDS =
         OR("TWIN FACING DIAMONDS", RH_TWIN_FACING_DIAMONDS, LH_TWIN_FACING_DIAMONDS);
+    public static final Matcher TWIN_GENERAL_DIAMONDS =
+        GeneralFormationMatcher.makeMatcher(FormationList.TWIN_GENERAL_DIAMONDS);
+    public static final Matcher POINT_TO_POINT_GENERAL_DIAMONDS =
+        GeneralFormationMatcher.makeMatcher(FormationList.POINT_TO_POINT_GENERAL_DIAMONDS);
     public static final Matcher RH_TIDAL_WAVE =
         GeneralFormationMatcher.makeMatcher(FormationList.RH_TIDAL_WAVE);
     public static final Matcher LH_TIDAL_WAVE =

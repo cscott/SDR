@@ -183,6 +183,12 @@ abstract class FormationListSlow {
     // NOTE that we use Vic Ceder's position of diamond points: at the 2
     // spot, not the 3 spot.  Diamonds belong to a 2x3 formation, not a 2x4
     // This matches the output of our breathing algorithm.
+    public static final NamedTaggedFormation GENERAL_DIAMOND =
+        create("GENERAL DIAMOND",
+               d( 0, 2,"-",POINT),
+               d(-1, 0,"|",CENTER),
+               d(+1, 0,"|",CENTER),
+               d( 0,-2,"-",POINT));
     public static final NamedTaggedFormation RH_DIAMOND =
         create("RH DIAMOND",
                d( 0, 2,"e",POINT),
@@ -488,6 +494,10 @@ abstract class FormationListSlow {
         xofy("RH TWIN FACING DIAMONDS", COUPLE, RH_FACING_DIAMOND);
     public static final NamedTaggedFormation LH_TWIN_FACING_DIAMONDS = // callerlab #44
         xofy("LH TWIN FACING DIAMONDS", COUPLE, LH_FACING_DIAMOND);
+    public static final NamedTaggedFormation TWIN_GENERAL_DIAMONDS =
+        xofy("TWIN GENERAL DIAMONDS", COUPLE, GENERAL_DIAMOND);
+    public static final NamedTaggedFormation POINT_TO_POINT_GENERAL_DIAMONDS =
+        xofy("POINT-TO-POINT GENERAL DIAMONDS", TANDEM, GENERAL_DIAMOND);
     // XXX hourglass, callerlab #45
     // XXX left hand Z, callerlab #46
     // XXX right hand Z, callerlab #47
@@ -545,8 +555,9 @@ abstract class FormationListSlow {
     }
     private static PositionAndTag d(int x, int y, String facing,
                                     Tag... tags) {
-        return new PositionAndTag(Position.getGrid(x,y,facing),
-                TaggedFormation.mkTags(tags));
+        return new PositionAndTag(Position.getGrid
+                                  (x, y, Rotation.fromAbsoluteString(facing)),
+                                  TaggedFormation.mkTags(tags));
     }
     private static NamedTaggedFormation create(final String name, PositionAndTag... ptl) {
 	List<TaggedDancerInfo> dil = new ArrayList<TaggedDancerInfo>(ptl.length);

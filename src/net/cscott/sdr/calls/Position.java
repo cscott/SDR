@@ -527,7 +527,7 @@ public class Position implements Comparable<Position> {
      *  js> Position.getGrid(-3,3,ExactRotation.WEST)
      *  -3,3,w
      */
-    public static Position getGrid(int x, int y, ExactRotation r,
+    public static Position getGrid(int x, int y, Rotation r,
 				   Flag... flags) {
         assert r != null;
 	return new Position

@@ -581,6 +581,28 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), ExactRotation.SOUTH), Tag.BEAU, Tag.END));
 
+    /** GENERAL DIAMOND formation.
+      * @doc.test
+      *  js> FormationList = FormationList.js(this); undefined;
+      *  js> tf = FormationList.GENERAL_DIAMOND; tf.toStringDiagram('|');
+      *  |  -
+      *  |
+      *  ||    |
+      *  |
+      *  |  -
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [POINT]
+      *  [CENTER]
+      *  [CENTER]
+      *  [POINT]
+      */
+    public static final NamedTaggedFormation GENERAL_DIAMOND =
+        new NamedTaggedFormation("GENERAL DIAMOND",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(2), Rotation.fromAbsoluteString("-")), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.POINT));
+
     /** RH DIAMOND formation.
       * @doc.test
       *  js> FormationList = FormationList.js(this); undefined;
@@ -2445,6 +2467,72 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(-2), ExactRotation.WEST), Tag.POINT),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(2), Fraction.valueOf(-2), ExactRotation.WEST), Tag.POINT));
 
+    /** TWIN GENERAL DIAMONDS formation.
+      * @doc.test
+      *  js> FormationList = FormationList.js(this); undefined;
+      *  js> tf = FormationList.TWIN_GENERAL_DIAMONDS; tf.toStringDiagram('|');
+      *  |  -         -
+      *  |
+      *  ||    |    |    |
+      *  |
+      *  |  -         -
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [POINT]
+      *  [POINT]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [POINT]
+      *  [POINT]
+      */
+    public static final NamedTaggedFormation TWIN_GENERAL_DIAMONDS =
+        new NamedTaggedFormation("TWIN GENERAL DIAMONDS",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(2), Rotation.fromAbsoluteString("-")), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(2), Fraction.valueOf(2), Rotation.fromAbsoluteString("-")), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(2), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.POINT));
+
+    /** POINT-TO-POINT GENERAL DIAMONDS formation.
+      * @doc.test
+      *  js> FormationList = FormationList.js(this); undefined;
+      *  js> tf = FormationList.POINT_TO_POINT_GENERAL_DIAMONDS; tf.toStringDiagram('|');
+      *  |  -
+      *  |
+      *  ||    |
+      *  |
+      *  |  -
+      *  |
+      *  |  -
+      *  |
+      *  ||    |
+      *  |
+      *  |  -
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [POINT]
+      *  [CENTER]
+      *  [CENTER]
+      *  [POINT]
+      *  [POINT]
+      *  [CENTER]
+      *  [CENTER]
+      *  [POINT]
+      */
+    public static final NamedTaggedFormation POINT_TO_POINT_GENERAL_DIAMONDS =
+        new NamedTaggedFormation("POINT-TO-POINT GENERAL DIAMONDS",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(5), Rotation.fromAbsoluteString("-")), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(3), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(1), Rotation.fromAbsoluteString("-")), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-1), Rotation.fromAbsoluteString("-")), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-5), Rotation.fromAbsoluteString("-")), Tag.POINT));
+
     /** RH TIDAL WAVE formation.
       * @doc.test
       *  js> FormationList = FormationList.js(this); undefined;
@@ -2699,6 +2787,7 @@ abstract class FormationListFast {
             FormationListFast.RH_TWO_FACED_LINE,
             FormationListFast.LH_TWO_FACED_LINE,
             FormationListFast.SINGLE_INVERTED_LINE,
+            FormationListFast.GENERAL_DIAMOND,
             FormationListFast.RH_DIAMOND,
             FormationListFast.RH_FACING_DIAMOND,
             FormationListFast.LH_DIAMOND,
@@ -2763,6 +2852,8 @@ abstract class FormationListFast {
             FormationListFast.LH_POINT_TO_POINT_FACING_DIAMONDS,
             FormationListFast.RH_TWIN_FACING_DIAMONDS,
             FormationListFast.LH_TWIN_FACING_DIAMONDS,
+            FormationListFast.TWIN_GENERAL_DIAMONDS,
+            FormationListFast.POINT_TO_POINT_GENERAL_DIAMONDS,
             FormationListFast.RH_TIDAL_WAVE,
             FormationListFast.LH_TIDAL_WAVE,
             FormationListFast.RH_TIDAL_TWO_FACED_LINE,
