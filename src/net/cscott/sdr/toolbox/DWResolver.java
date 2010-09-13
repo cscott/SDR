@@ -12,6 +12,7 @@ import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationMatch;
 import net.cscott.sdr.calls.NoMatchException;
+import net.cscott.sdr.calls.Matcher;
 import net.cscott.sdr.calls.MatcherList;
 import net.cscott.sdr.calls.StandardDancer;
 import net.cscott.sdr.calls.TaggedFormation;
@@ -110,7 +111,52 @@ public class DWResolver {
 
     /** Return the next call needed to resolve the given formation. */
     public static String resolveStep(Formation f) {
-        // step 1: are we in RH waves?  if no, half tag
+	// step 1: broaden the generality of this method by allowing it
+	//         to make RH waves from various other formations
+	//         (simplified version: half tag if necessary)
+	if (!matches(f, MatcherList.PARALLEL_RH_WAVES)) {
+	    // should handle: any general tidal line (not t-boned),
+	    //                any general parallel lines, (not t-boned)
+	    //                any general column,
+	    //                some general tags
+	    // XXX: do 'centers trade and roll' for some t-boned 2x4s?
+	    // XXX: handle diamonds?
+	    if (matches(f, MatcherList.PARALLEL_LH_WAVES))
+		return "Trade the Wave";
+	    if (matches(f, MatcherList.RH_TWO_FACED_LINE))
+		return "Ends Run";
+	    if (matches(f, MatcherList.LH_TWO_FACED_LINE))
+		return "Centers Run";
+	    if (matches(f, MatcherList.FACING_LINES))
+		return "Pass the Ocean";
+	    if (matches(f, MatcherList.LINES_FACING_OUT) ||
+		matches(f, MatcherList.TIDAL_LINE) ||
+		matches(f, MatcherList.TIDAL_TWO_FACED_LINE))
+		return "Bend the Line";
+	    if (matches(f, MatcherList.TIDAL_WAVE))
+		return "Fan the Top";
+	    if (matches(f, MatcherList.COMPLETED_DOUBLE_PASS_THRU))
+		return "Track 2";
+	    if (matches(f, MatcherList.DOUBLE_PASS_THRU) ||
+		matches(f, MatcherList.QUARTER_TAG) ||
+		matches(f, MatcherList.THREE_QUARTER_TAG))
+		return "Extend";
+	    if (matches(f, MatcherList.EIGHT_CHAIN_THRU))
+		return "Step to a Wave";
+	    if (matches(f, MatcherList.RH_QUARTER_LINE) ||
+		matches(f, MatcherList.RH_THREE_QUARTER_LINE))
+		return "Centers Veer Right";
+	    if (matches(f, MatcherList.LH_QUARTER_LINE) ||
+		matches(f, MatcherList.LH_THREE_QUARTER_LINE))
+		return "Centers Veer Left";
+	    if (matches(f, MatcherList.GENERAL_COLUMNS))
+		return "Trade and Roll";
+	    if (matches(f, MatcherList.PARALLEL_GENERAL_LINES) ||
+		matches(f, MatcherList.GENERAL_TIDAL_LINE))
+		return "Half Tag";
+	    return null; // can't resolve this formation
+	}
+        // match the RH waves
         FormationMatch fm;
         TaggedFormation parallelWaves;
         try {
@@ -121,8 +167,8 @@ public class DWResolver {
             // ok, we've got them, match each wave separately
             fm = MatcherList.RH_OCEAN_WAVE.match(f);
         } catch (NoMatchException e) {
-            // XXX: half tag only if we're in GENERAL LINEs
-            return "Half Tag";
+	    assert false : "should have been caught above";
+	    return null;
         }
         List<TaggedFormation> waves = new ArrayList<TaggedFormation>
             (fm.matches.values());
@@ -207,4 +253,17 @@ public class DWResolver {
         new F<StandardDancer,Integer>() {
         public Integer map(StandardDancer d) { return d.coupleNumber(); }
     };
+
+    /** Convenience method to identify formations. */
+    private static boolean matches(Formation f, Matcher m) {
+	FormationMatch fm;
+	try {
+	    fm = m.match(f);
+	    if (fm.matches.values().size() == 1)
+		return true;
+	} catch (NoMatchException e) {
+	    /* ignore */
+	}
+	return false;
+    }
 }
