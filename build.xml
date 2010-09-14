@@ -173,7 +173,8 @@ Square Dance Revolution build file.
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
 		   excludes="**/package-info.java **/thunk/**/*.java **/webapp/**/*.java"
-		   deprecation="on" source="1.5" target="1.5" debug="true">
+		   deprecation="on" source="1.5" target="1.5"
+		   debug="true" includeantruntime="false">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
 	    </javac>
@@ -497,7 +498,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		   destdir="${classes_dir}"
 		   includes="net/cscott/sdr/calls/lists/*.java"
 		   excludes="**/package-info.java"
-		   deprecation="on" source="1.5" target="1.5" debug="true">
+		   deprecation="on" source="1.5" target="1.5"
+		   debug="true" includeantruntime="false">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
 	    </javac>
@@ -535,7 +537,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
 		   includes="net/cscott/sdr/calls/FormationListFast.java"
-		   deprecation="on" source="1.5" target="1.5" debug="true">
+		   deprecation="on" source="1.5" target="1.5"
+		   debug="true" includeantruntime="false">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
 	    </javac>
@@ -669,7 +672,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
       <!-- compile GAE stuff -->
       <javac srcdir="${src_dir}" destdir="war/WEB-INF/classes"
 	     includes="net/cscott/sdr/webapp/server/**/*.java"
-	     deprecation="on" source="1.5" target="1.5" debug="true">
+	     deprecation="on" source="1.5" target="1.5" debug="true"
+	     includeantruntime="false">
 	<classpath>
 	  <pathelement location="war/WEB-INF/classes" />
 	  <fileset dir="war/WEB-INF/lib" includes="*.jar"/>
