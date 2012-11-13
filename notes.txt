@@ -1460,3 +1460,32 @@ at home.
 ----
 DW resolve: if sight couples are all in a trapezoid, then "locker's
 choice" brings them together into the same wave (but genders aren't together)
+-------------------
+Crazy breathing:
+split phantom point to point diamonds
+   >       >
+^  <  v ^  <  v   
+   >       >      ALL DIAMOND CENTERS ARE PHANTOMS
+^  <  v ^  <  v   
+
+next call: "triple box circulate"
+
+the phantoms take up *1 spot* in the triple box, and the ending
+formation is:
+
+^VV^
+  v^^V
+
+ie, parallelograms.
+Ie, triple boxes should "breathe into triple boxes", possible
+compressing a diamond (the old "diamond quarter tag adjustment"?)
+---------
+another evil breathing
+
+g b g b   "magic wave girls as couples, girls ripple two"
+b g b g
+
+result
+    vthis guy gets shoved out by the couple of girls
+b g b g
+g b g b
