@@ -1,0 +1,149 @@
+Mainstream call: scoot back
+From normal formations as well as from t-boned setups (c1 and higher).
+
+sdr> /program = Program.MAINSTREAM ; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> heads square thru 4 ; touch 1/4
+| 3G^  4Bv  2G^  3Bv
+|
+| 1B^  4Gv  2B^  1Gv
+sdr> scoot back
+| 4B^  3Gv  3B^  2Gv
+|
+| 4G^  1Bv  1G^  2Bv
+sdr> do half of a scoot back
+| 4B>  3B>
+|
+| 4G>  1G>
+|
+| 3G<  2G<
+|
+| 1B<  2B<
+sdr> bend the line ; touch 1/4
+| 1B>  3G>  2B>  2G>
+|
+| 4G<  4B<  1G<  3B<
+sdr> scoot back
+| 4G>  4B>  1G>  3B>
+|
+| 1B<  3G<  2B<  2G<
+sdr> /// check that this isn't a triple scoot!
+sdr> do half of a scoot back
+| 1B^  3G^  4Gv  4Bv  2B^  2G^  1Gv  3Bv
+sdr> /program = Program.PLUS;
+PLUS
+sdr> couples hinge ; roll ; extend
+|      1Bv  2Bv
+|
+| 4G^  3Gv  1G^  2Gv
+|
+|      4B^  3B^
+sdr> scoot back
+|      1B^  2B^
+|
+| 3G^  4Gv  2G^  1Gv
+|
+|      4Bv  3Bv
+sdr> boys trade
+|      2Bv  1Bv
+|
+| 3G^  4Gv  2G^  1Gv
+|
+|      3B^  4B^
+sdr> do half of a scoot back
+| 3G>  2G>
+|
+| 2B<  1B<
+|
+| 3B>  4B>
+|
+| 4G<  1G<
+sdr> scoot back and roll
+| 2Bv  1B>
+|
+| 3G<  2G^
+|
+| 4Gv  1G>
+|
+| 3B<  4B^
+sdr> /program = Program.C1;
+C1
+sdr> scoot back
+| 3G>  2B^
+|
+| 2Gv  1B<
+|
+| 3B>  4G^
+|
+| 4Bv  1G<
+sdr> roll
+| 3Gv  2B^
+|
+| 2Gv  1B^
+|
+| 3Bv  4G^
+|
+| 4Bv  1G^
+sdr> extend ; u turn back
+|   2Bv
+|
+| 3G^  1Bv
+|
+|   2G^
+|
+|   4Gv
+|
+| 3B^  1Gv
+|
+|   4B^
+sdr> /// no one can roll after a 1/4 tag scoot back
+sdr> scoot back and roll
+|   2B^
+|
+| 1B^  3Gv
+|
+|   2Gv
+|
+|   4G^
+|
+| 1G^  3Bv
+|
+|   4Bv
+sdr> u turn back
+|   2Bv
+|
+| 1Bv  3G^
+|
+|   2G^
+|
+|   4Gv
+|
+| 1Gv  3B^
+|
+|   4B^
+sdr> /// everyone can roll after 1/2 of a scoot back
+sdr> /parse('do half of a scoot back and roll')
+and roll(_half(scoot back))
+sdr> do half of a scoot back and roll
+| 3Gv
+|
+| 2B^
+|
+| 2Gv
+|
+| 1B^
+|
+| 3Bv
+|
+| 4G^
+|
+| 4Bv
+|
+| 1G^
+sdr> /exit

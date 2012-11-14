@@ -374,7 +374,11 @@ def: half tag
 def: scoot back
   optional: LEFT
   in: 6
-  from: BOX
+  from: BOX, 2x2
+    condition: or(PROGRAM AT LEAST(c1), NOT(TBONED(ALL))), \
+               "T-boned formations not allowed below C1"
+    condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+               "Must have diagonal trailers"
     select: TRAILER
       ipart:
         prim: 0,1,none
