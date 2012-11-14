@@ -58,3 +58,18 @@ def: _designees u turn back in flow direction
     select: OTHERS
       prim: 0, 0, none
       prim: 0, 0, none
+
+// keep this def in sync with 'and cross' (a1)
+def: cross back
+  in: 2
+    from: BOX, 2x2 /* XXX: 2x2 doesn't define LEADERS/TRAILERS =( */
+      condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+                 "Must have diagonal trailers"
+      select: LEADER
+        prim: 0, 0, in
+        prim: 0, 0, in
+      select: TRAILER
+        prim: in 2, 1, none
+        prim: in 1, 1, none
+
+// XXX: grand cross back, from columns (keep in sync with triple cross (c1))
