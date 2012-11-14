@@ -1,0 +1,82 @@
+A1 call: <anything> and cross.
+
+sdr> /program = Program.A1 ; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> heads square thru 4
+| 4B>  3G<  3B>  2G<
+|
+| 4G>  1B<  1G>  2B<
+sdr> touch 1/4 and cross
+| 3G^  1B^  2G^  2B^
+|
+| 4Bv  4Gv  3Bv  1Gv
+sdr> trade
+| 1Bv  3Gv  2Bv  2Gv
+|
+| 4G^  4B^  1G^  3B^
+sdr> /// check that we're using outside hands for the pull by
+sdr> do 3/4 of a touch 1/4 and cross
+|      3G<  4B>       2G<  3B>
+|
+| 1B<  4G>       2B<  1G>
+sdr> /// other ceder chest examples
+sdr> /setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> sides square thru ; left touch
+| 3Gv  4B^  3Bv  2G^
+|
+| 4Gv  1B^  2Bv  1G^
+sdr> cast off 3/4 and cross
+| 3G<  4B>
+|
+| 3B<  2G>
+|
+| 4G<  1B>
+|
+| 2B<  1G>
+sdr> bend the line ; touch 1/4
+| 2B>  4G>  1B>  1G>
+|
+| 3G<  3B<  2G<  4B<
+sdr> circulate and cross
+| 2G<  2B>  1G<  1B>
+|
+| 3B<  3G>  4B<  4G>
+sdr> /// T-bones (c1 and higher)
+sdr> /program = Program.C1 ; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> heads square thru ; touch 1/4
+| 3G^  4Bv  2G^  3Bv
+|
+| 1B^  4Gv  2B^  1Gv
+sdr> scoot back and roll
+| 4B^  3G<  3B^  2G<
+|
+| 4G>  1Bv  1G>  2Bv
+sdr> u turn back
+| 4Bv  3G>  3Bv  2G>
+|
+| 4G<  1B^  1G<  2B^
+sdr> scoot back and cross
+| 3G<  4B^  2G<  3B^
+|
+| 1Bv  4G>  2Bv  1G>
+sdr> /exit

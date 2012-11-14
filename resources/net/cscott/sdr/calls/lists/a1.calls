@@ -83,3 +83,28 @@ def: _quarter thru(n)
     from: LH OCEAN WAVE
       call: _centers(right arm turn([n]))
       call: left arm turn(1/2)
+
+def: and cross(c)
+  spoken: <c=anything> and cross
+  call: [c], _cross
+
+/* XXX: Causes grammar conflicts; rare in any case */
+//def: _and fractional cross(c, n)
+//  spoken: <c=anything> and <n=number> cross
+//  call: [c], _fractional([n], _cross)
+
+// keep this definition in sync with "cross back" (a2)
+def: _cross
+  in: 2
+    from: BOX, 2x2 /* XXX: 2x2 doesn't define LEADERS/TRAILERS =( */
+      condition: or(PROGRAM AT LEAST(c1), NOT(TBONED(ALL))), \
+                 "T-boned formations not allowed below C1"
+      condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+                 "Must have diagonal trailers"
+      select: LEADER
+        call: nothing, nothing /* two parts */
+      select: TRAILER
+        prim: in 2, 1, none
+        prim: in 1, 1, none
+
+// XXX: vic cedar says <anyone> cross is also on a1 list.
