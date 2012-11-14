@@ -272,6 +272,13 @@ def: explode the diamond
   // XXX: "from other applicable formations" (what might they be?)
     
 /* .... */
+def: reset
+  call: 1/2(zoom), hinge, 1/2(zoom), hinge
+def: _reset(n)
+  spoken: reset <n=number>
+  call: _fractional([n], reset)
+
+/* .... */
 def: reverse the pass
   from: TANDEM COUPLES
     //ends in: formation(TANDEM COUPLES) // XXX breaks fractionalization

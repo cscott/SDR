@@ -1,0 +1,35 @@
+C3B call: reset
+
+sdr> /program = Program.C3B ; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> heads square thru 4 ; touch 1/4
+| 3G^  4Bv  2G^  3Bv
+| 
+| 1B^  4Gv  2B^  1Gv
+sdr> reset 1/4
+| 3Gv  1B^  4Bv  4G^  2Gv  2B^  3Bv  1G^
+sdr> hinge
+| 1B<  4G<  2B<  1G<
+| 
+| 3G>  4B>  2G>  3B>
+sdr> reset 1/2
+| 4G^  1Bv  1G^  2Bv
+| 
+| 4B^  3Gv  3B^  2Gv
+sdr> reset
+| 3G^  4Bv  2G^  3Bv
+| 
+| 1B^  4Gv  2B^  1Gv
+sdr> /program = Program.C4  
+C4
+sdr> do half of a settle back
+| 1B<  4G<  2B<  1G<
+| 
+| 3G>  4B>  2G>  3B>
+sdr> /exit
