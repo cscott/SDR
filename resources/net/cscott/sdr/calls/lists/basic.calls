@@ -779,8 +779,29 @@ def: _turn and touch
       call: _quasi concentric(_hinge, touch)
   from: 2x4
     condition: and(tboned(ALL), not(tboned(CENTER)), not(tboned(END)))
-    condition: match(_inout pattern(), "oooooooo")
-    call: _quasi concentric(nothing, face in), touch
+    from: ANY
+      // example:
+      //| 1G^  1B<  4G>  4B^
+      //|
+      //| 2Bv  2G<  3B>  3Gv
+      condition: match(_inout pattern(), "oooooooo")
+      from: 2x4 // need "centers" defined for quasi concentric
+         call: _quasi concentric(nothing, face in), touch
+    from: ANY
+      // example: (and mirror version of this, for allemande left)
+      //| 4B>  3Gv  3Bv  2G<
+      //|
+      //| 4G>  1B^  1G^  2B<
+      condition: match(_inout pattern(), "iiiiiiii")
+      // gender specific: boys prefer parter to their right
+      //  (or left, for allemande left)
+      from: ANY
+        condition: match(_selection pattern(BOY),  "x_x__x_x")
+        call: face in, touch
+      from: ANY
+        condition: match(_selection pattern(GIRL), "x_x__x_x")
+        from: 2x4 // need "centers" defined for quasi concentric
+          call: _quasi concentric(face out, nothing), touch
   from: ANY
     condition: not(formation(FACING LINES))
     call: _2 dancer turn and touch

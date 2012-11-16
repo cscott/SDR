@@ -1,0 +1,70 @@
+Allemande left from different formations.
+
+sdr> /program = Program.MAINSTREAM ; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> heads right and left thru twice
+| 4B>  3Gv  3Bv  2G<
+| 
+| 4G>  1B^  1G^  2B<
+sdr> heads face out
+| 4B>  3G<  3B>  2G<
+| 
+| 4G>  1B<  1G>  2B<
+sdr> /// easy case: allemande dancers are already facing
+sdr> allemande left
+| 4B<  3G>  3B<  2G>
+| 
+| 4G<  1B>  1G<  2B>
+sdr> right and left grand ; promenade home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> heads right and left thru twice
+| 4B>  3Gv  3Bv  2G<
+| 
+| 4G>  1B^  1G^  2B<
+sdr> /// check that RLG chooses boy's right hand partner
+sdr> right and left grand
+|      1G>  1B<
+| 
+| 2Bv            4Gv
+| 
+| 2G^            4B^
+| 
+|      3B>  3G<
+sdr> promenade home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> heads right and left thru twice
+| 4B>  3Gv  3Bv  2G<
+| 
+| 4G>  1B^  1G^  2B<
+sdr> /// check that allemande left chooses boy's left hand partner
+sdr> allemande left
+| 4B<  3G>  3B<  2G>
+| 
+| 4G<  1B>  1G<  2B>
+sdr> right and left grand ; promenade home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> /exit
