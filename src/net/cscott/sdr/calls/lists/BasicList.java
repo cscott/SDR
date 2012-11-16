@@ -507,14 +507,16 @@ public abstract class BasicList {
                         // turn 1/4 more if necessary to prevent that.
                         dp = new DancerPath(current, target, time, null);
                         Point initialTangent = dp.tangentStart();
-                        ExactRotation initialDir = ExactRotation.fromXY
-                            (initialTangent.x, initialTangent.y);
-                        sweep = curR.minSweep(initialDir);
-                        if (sweep.abs().compareTo(Fraction.ONE_QUARTER) > 0) {
-                            dp = rollToTarget(current, target);
-                            ds.add(sd, dp);
-                            current = dp.to;
-                            time = time.add(dp.time);
+                        if (!Point.ZERO.equals(initialTangent)) {
+                            ExactRotation initialDir = ExactRotation.fromXY
+                                (initialTangent.x, initialTangent.y);
+                            sweep = curR.minSweep(initialDir);
+                            if (sweep.abs().compareTo(Fraction.ONE_QUARTER)>0) {
+                                dp = rollToTarget(current, target);
+                                ds.add(sd, dp);
+                                current = dp.to;
+                                time = time.add(dp.time);
+                            }
                         }
 
                         // now make a DancerPath for the rest of the distance

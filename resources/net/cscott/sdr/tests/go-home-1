@@ -1,0 +1,24 @@
+Test fixes for bugs in the "go home" call when dancers are already standing
+on their home spot.
+
+sdr> /program = Program.MAINSTREAM ; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> heads pass thru while the sides trade
+| 4G<  1B^  1G^  2B>
+|
+| 4B<  3Gv  3Bv  2G>
+sdr> go home
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> /exit
