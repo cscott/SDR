@@ -10,7 +10,11 @@ import net.cscott.sdr.util.Fraction;
  * {@link In}. {@link Part} has exactly one child, which is a
  * {@link Comp}.  The {@link Part#howMany} argument is usually 1 but
  * allows non-standard divisions: for example, "swing and mix" is a three-part
- * call of which the final "mix" counts for two parts.
+ * call of which the final "mix" counts for two parts.  The
+ * {@link Part#howMany} argument may also be zero, which is used for "adjust"
+ * calls, for example the initial step to a wave when doing a swing thru
+ * from facing couples is specified as "0 parts" to ensure that "do 1/4 of
+ * a swing thru" works correctly from facing couples.
  * <p>
  * The {@link Part#divisibility} argument has three values.  If it is
  * {@link Divisibility#DIVISIBLE}, calls inside this {@link Part} can be
@@ -53,7 +57,7 @@ public class Part extends SeqCall {
     }
     public Part(Divisibility divisibility, Fraction howMany, Comp child) {
         this(divisibility, Expr.literal(howMany), child);
-        assert howMany.compareTo(Fraction.ZERO) > 0;
+        assert howMany.compareTo(Fraction.ZERO) >= 0;
     }
     @Override
     public Expr parts() { return howMany; }

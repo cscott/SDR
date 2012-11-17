@@ -123,11 +123,16 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     public Fraction visit(Part p, Void v) {
         // note that we ignore actual length of parts, we just divide evenly
         // among the parts
+        // but note that Part.howMany can be zero, for initial "formation
+        // adjust" portions of a call.  Make these still count as one part
+        // for the purposes of dividing beats.
+        Fraction howMany;
         try {
-            return p.howMany.evaluate(Fraction.class, ds);
+            howMany = p.howMany.evaluate(Fraction.class, ds);
         } catch (EvaluationException e) {
             throw new CantCountBeatsException("can't evaluate parts");
         }
+        return howMany.equals(Fraction.ZERO) ? Fraction.ONE : howMany;
     }
     @Override
     public Fraction visit(Prim p, Void v) {

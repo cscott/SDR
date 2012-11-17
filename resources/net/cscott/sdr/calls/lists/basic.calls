@@ -280,7 +280,7 @@ def: dosado to a wave
 def: swing
   from: GENERAL LINE, FACING COUPLES
     condition: PROGRAM AT LEAST(A2), "Only partner swing allowed below A2"
-    call: _wave swing
+    call: _maybe touch(_wave swing)
   from: ANY
     call: partner swing
 
@@ -291,9 +291,6 @@ def: _wave swing // specifically not a partner swing
                    MATCH(_SELECTION PATTERN(BEAU), "____|__xx|xx__|xxxx")), \
                "End and adjacent center must be in mini-wave"
     call: trade
-  from: ANY
-    condition: not(formation(RH MINIWAVE)) // control recursion
-    call: _mixed touch, _wave swing
 
 // XXX: we end in couples facing in, is that right?
 def: partner swing
@@ -1516,13 +1513,29 @@ def: swing thru
   optional: LEFT
   in: 6
   // XXX DEFINE ME: also from alamo ring
+  call: _maybe touch(_start swing thru), _finish swing thru
+
+def: _maybe touch(c, n=1)
+  from: ANY
+    call: [c]
+  from: ANY
+    part: 0
+      call: _mixed touch
+    part: [n]
+      call: [c]
+
+def: _start swing thru
+  in: 3
   from: RH OCEAN WAVE
     call: right arm turn(1/2)
+  from: LH OCEAN WAVE
+    call: _centers(right arm turn(1/2))
+def: _finish swing thru
+  in: 3
+  from: RH OCEAN WAVE
     call: anyone while others(CENTER,left arm turn(1/2),_nothing preserve roll)
   from: LH OCEAN WAVE
-    call: _centers(right arm turn(1/2)), left arm turn(1/2)
-  from: ANY
-    call: _mixed touch, swing thru
+    call: left arm turn(1/2)
 
 // callerlab #40: RUN FAMILY
 

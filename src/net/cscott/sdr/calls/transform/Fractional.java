@@ -1,5 +1,6 @@
 package net.cscott.sdr.calls.transform;
 
+import static net.cscott.sdr.calls.parser.CallFileLexer.APPLY;
 import static net.cscott.sdr.calls.parser.CallFileLexer.PART;
 
 import java.util.ArrayList;
@@ -148,6 +149,7 @@ public class Fractional extends TransformVisitor<Fraction> {
         if (f.compareTo(Fraction.ONE)==0)
             return s;
         assert f.compareTo(Fraction.ONE) < 0;
+        s = desugarAnd(s);
         // go through the children and count up parts, accounting for the
         // 'howMany' field of any Parts.
         Fraction totalParts = Fraction.ZERO;
@@ -197,5 +199,23 @@ public class Fractional extends TransformVisitor<Fraction> {
             }
         }
         return s.build(l);
+    }
+    // useful utility: desugar "and" concept to expose parts
+    protected Seq desugarAnd(Seq s) {
+        // desugar 'and' pseudo-concept into parts
+        ArrayList<SeqCall> nChildren = new ArrayList<SeqCall>(s.children.size());
+        for (SeqCall sc: s.children) {
+            if (sc.type==APPLY) {
+                Expr call = ((Apply)sc).call;
+                if (call.atom.equals("and")) {
+                    for (Expr arg: call.args) {
+                        nChildren.add(new Apply(arg));
+                    }
+                    continue;
+                }
+            }
+            nChildren.add(sc);
+        }
+        return s.build(nChildren);
     }
 }

@@ -210,7 +210,7 @@ def: _designated end cast 4/4
 def: spin the top
   optional: LEFT
   in: 8 // from wave
-  call: _wave swing, fan the top
+  call: _maybe touch(_wave swing), fan the top
 
 // callerlab #60: WALK AND DODGE
 def: walk and dodge
@@ -314,7 +314,7 @@ def: spin chain thru
   in: 16
   // "native" timing: 3+6+3+6=18.  Reduce to 16 by shortening swing/slip.
   part:
-    call: _in(2, _wave swing)
+    call: _in(2, _maybe touch(_wave swing))
   part: 3
     call: _in(14, _centers(and(cast(3/4), _in(2, slip), cast(3/4))))
 

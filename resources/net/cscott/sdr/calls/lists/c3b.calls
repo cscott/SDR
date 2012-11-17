@@ -251,7 +251,7 @@ def: change the wave
 
 def: change the(c) // XXX NOL Vic Ceder 1992
   spoken: change the <c=anything>
-  call: _wave swing, slip, cross run(CENTER), [c]
+  call: _maybe touch(_wave swing), slip, cross run(CENTER), [c]
 
 /* .... */
 
