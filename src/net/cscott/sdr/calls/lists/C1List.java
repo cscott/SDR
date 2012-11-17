@@ -101,7 +101,7 @@ public abstract class C1List {
         public Rule getRule() {
             String rule = "finish (a|an)? <0=anything>";
             Grm g = Grm.parse(rule);
-            return new Rule("anything", g, Fraction.valueOf(-10));
+            return new Rule("anything", g, Fraction.valueOf(-9));
         }
         @Override
         public Evaluator getEvaluator(DanceState ds, List<Expr> args)
