@@ -277,6 +277,14 @@ def: reset
 def: _reset(n)
   spoken: reset <n=number>
   call: _fractional([n], reset)
+// cross replace the column (c4) is defined in terms of cross reset
+def: _cross reset 1/4
+  call: trail and(nothing) // XXX
+def: cross reset
+  call: _cross reset 1/4, hinge, _cross reset 1/4, hinge
+def: _cross reset(n)
+  spoken: cross reset <n=number>
+  call: _fractional([n], cross reset)
 
 /* .... */
 def: reverse the pass

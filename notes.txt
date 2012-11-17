@@ -1489,3 +1489,24 @@ result
     vthis guy gets shoved out by the couple of girls
 b g b g
 g b g b
+---------
+C4:
+From completed double pass thru, "split phantom boxes bridge the gap"
+(versus just "bridge the gap").  Breathing exercise.  The "Split
+Phantom Boxes" concept means we shrink wrap the resulting formation
+halves.
+--------
+To do:
+swing thru -> maybe touch(quarter thru(1/2))
+grand swing thru
+ check parts of swing thru, ensure finish finish swing thru is an error
+mix, swing and mix
+
+<0=anything[-10]> in grammar to allow limited loops
+parse:
+finish finish swing and mix
+finish tandem trade
+
+like a
+
+split precedence of 'do 2/3 of a...' and '... twice'

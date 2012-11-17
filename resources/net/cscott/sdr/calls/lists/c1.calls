@@ -27,6 +27,20 @@ def: counter rotate(n=1/4)
     // 8 dancer version, no official timing.  we'll say 6 beats
     call: _fractional(_multiply num([n], 4), _in(6, _counter rotate 1/4))
 
+/*
+def: cross roll to a wave
+  ends in: WAVE
+  call: cross roll
+def: cross roll to a line
+  ends in: LINE // XXX really, "does not end in wave")
+  call: cross roll
+def: cross roll
+  // XXX: centers cross run while ends run; centers pass outside of ends
+def: switch the line
+  from: LINE OF 4
+  // XXX: centers run while ends cross run
+*/
+
 def: swing the fractions
   optional: LEFT
   call: _those who can turn right(1/4)
