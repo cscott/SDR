@@ -12,6 +12,8 @@ def: box counter rotate(n=1/4)
   spoken: box counter rotate (<n=fraction>)?
   condition: equal num(NUM DANCERS(), 4), \
              "Perhaps you mean to say CENTERS box counter rotate?"
+  call: _box counter rotate([n])
+def: _box counter rotate(n=1/4)
   from: 2x2 // just "counter rotate" if not in a box
     call: counter rotate([n])
 
@@ -78,3 +80,14 @@ def: single wheel
   in: 4
   ipart:
     call: and roll(_hinge)
+
+def: _facing recycle
+  in: 4
+  ipart:
+    from: FACING COUPLES
+      select: BEAU
+        prim: 0, 1, right
+        prim: 0, 0, right
+      select: BELLE
+        prim: -2, -1, none
+        prim: -2,  2, none

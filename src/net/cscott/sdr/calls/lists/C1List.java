@@ -83,6 +83,16 @@ public abstract class C1List {
      *  (Expr finish 'swing thru)
      *  js> C1List.FINISH.getEvaluator(ds, a.args).simpleExpansion()
      *  (Seq (Apply '_finish swing thru))
+     * @doc.test
+     *  Evaluate FINISH RECYCLE.
+     *  js> importPackage(net.cscott.sdr.calls)
+     *  js> importPackage(net.cscott.sdr.calls.ast)
+     *  js> ds = new DanceState(new DanceProgram(Program.C1), Formation.FOUR_SQUARE); undefined;
+     *  js> Evaluator.parseAndEval(ds, "touch 1/2")
+     *  js> a = new Expr("finish", Expr.literal("recycle"))
+     *  (Expr finish 'recycle)
+     *  js> C1List.FINISH.getEvaluator(ds, a.args).simpleExpansion()
+     *  (Opt (From 'ANY (Seq (Part 'DIVISIBLE '1 (Opt (From 'ANY (If 'BEFORE (Expr PROGRAM AT LEAST 'C1) (Seq (Apply (Expr _box counter rotate '1/4)) (Apply 'roll)) "Fractional recycle not allowed below C1")))))))
      */
     public static final Call FINISH = new C1Call("finish") {
         @Override

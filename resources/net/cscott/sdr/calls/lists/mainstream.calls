@@ -396,20 +396,27 @@ def: scoot back
 
 // callerlab #68: RECYCLE
 
-def: _wave recycle REAL DEFINITION // xxx
+def: _wave recycle
   in: 4
-  ipart:
-    call: fold(CENTER), breathe
-  ipart:
-    call: counter rotate 1/4
-  ipart:
-    call: roll
+  from: ANY
+    ipart: // CHEAT DEFINITION
+      call: hinge, _box circulate, _recycle face in // CHEAT DEFINITION
+  from: ANY // REAL DEFINITION
+    condition: PROGRAM AT LEAST(C1), "Fractional recycle not allowed below C1"
+    call: _start wave recycle, _box counter rotate(1/4), roll
 
-def: _wave recycle // xxx cheat definition, for the present
-  in: 4
-  ipart: // this definition isn't valid for fractionalization
-    call: hinge, _box circulate, _recycle face in
-def: _recycle face in
+def: _start wave recycle
+  in: 2
+  ipart:
+    from: OCEAN_WAVE
+      select: CENTER
+        prim: 0, 1, out
+        prim: 0, 0, in // "in roll direction"
+      select: OTHERS
+        prim: in 2, 1, none
+        prim: 0, 0, none
+
+def: _recycle face in // used in recycle cheat
   in: 2
   from: 2x2
    prim: 0, 0, in, preserve-sweep
@@ -418,7 +425,7 @@ def: recycle
   from: ANY
     call: _wave recycle
   from: ANY
-    condition: PROGRAM AT LEAST(A2), "Box recycle not allowed below A2"
-    call: box recycle
+    condition: PROGRAM AT LEAST(A2), "Facing recycle not allowed below A2"
+    call: _facing recycle
 
 ////////// end of mainstream list //////////////
