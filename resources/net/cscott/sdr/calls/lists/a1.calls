@@ -32,7 +32,7 @@ def: mix
   call: cross run(CENTER), _finish mix
 def: _finish mix
   in: 3
-  from: 1x4
+  from: CENTER HALF
     call: _quasi concentric(trade, _nothing preserve roll)
 
 def: quarter thru

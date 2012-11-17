@@ -77,5 +77,6 @@ sdr> ///
 sdr> /// precedence of "as couples" vs roll
 sdr> /parse('as couples trade and roll')
 as couples(and roll(trade))
-sdr> /// XXX: as couples swing and mix?
+sdr> /parse('as couples swing and mix')
+as couples(swing and mix)
 sdr> /exit
