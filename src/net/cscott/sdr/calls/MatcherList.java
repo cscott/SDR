@@ -521,6 +521,52 @@ public class MatcherList {
      *     
      *          3G^  3B^
      *   [1B: CENTER; 1G: CENTER; 2G: CENTER; 4G: CENTER; 3G: CENTER; 3B: CENTER]
+     * @doc.test Finding the center six of a sausage.
+     *  js> FormationList = FormationList.js(this); undefined;
+     *  js> SD = StandardDancer; undefined
+     *  js> // rotate the formation 1/2 just to get rid of the original tags
+     *  js> f = FormationList.RH_COLUMN.rotate(ExactRotation.ONE_HALF); f.toStringDiagram()
+     *  ^    v
+     *  
+     *  ^    v
+     *  
+     *  ^    v
+     *  
+     *  ^    v
+     *  js> // label those dancers
+     *  js> f= f.mapStd(SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL, SD.COUPLE_2_BOY, SD.COUPLE_2_GIRL); f.toStringDiagram()
+     *  1B^  1Gv
+     *  
+     *  2B^  2Gv
+     *  
+     *  4G^  4Bv
+     *  
+     *  3G^  3Bv
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), f); undefined
+     *  js> Evaluator.parseAndEval(ds, 'circulate once and a half')
+     *  js> ds.currentFormation().toStringDiagram()
+     *    2B>
+     *  
+     *  4G^  1Bv
+     *  
+     *  3G^  1Gv
+     *  
+     *  3B^  2Gv
+     *  
+     *    4B<
+     *  js> MatcherList.CENTER_6.match(ds.currentFormation())
+     *  AA^
+     *  AA:
+     *       2B>
+     *     
+     *     4G^  1Bv
+     *     
+     *     3G^  1Gv
+     *     
+     *     3B^  2Gv
+     *     
+     *       4B<
+     *   [4G: CENTER; 1B: CENTER; 3G: CENTER; 1G: CENTER; 3B: CENTER; 2G: CENTER]
      */
     private static class CenterMatcher extends Matcher {
         private final boolean half;

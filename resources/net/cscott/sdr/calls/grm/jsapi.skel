@@ -15,12 +15,13 @@ grammar @CLASSNAME@;
 <heads_or_sides> = heads | sides ;
 <two_select> = (head|side) <genders> | (center|end) <genders>
              | very centers | center two ;
+<six_select> = center six ;
 <genders> = <boys> | <girls> ;
 <boys> = boys | men {boys};
 <girls> = girls | ladies {girls};
 <all> = all | every (one|body) {all};
 <wave_select> = centers | ends;
-<anyone> = <people> | <wave_select> | <two_select>;
+<anyone> = <people> | <wave_select> | <two_select> | <six_select> ;
 <number> = <digit> and <fraction>
 	| <digit>
 	| <fraction>

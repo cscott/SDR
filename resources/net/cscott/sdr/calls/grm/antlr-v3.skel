@@ -64,6 +64,9 @@ two_select returns [Expr r]
         | 'very' 'centers' { r = Expr.literal("VERY_CENTER"); }
         | 'center' 'two' { r = Expr.literal("VERY_CENTER"); }
         ;
+six_select returns [Expr r]
+        : 'center' 'six' { r = Expr.literal("CENTER_6"); }
+        ;
 center_or_end returns [Expr r]
 	: 'center' { r = Expr.literal("CENTER"); }
 	| 'end' { r = Expr.literal("END"); }
@@ -89,7 +92,8 @@ wave_select returns [Expr a]
 	| 'ends' { a = Expr.literal("END"); }
 	;
 anyone returns [Expr r]
-	: a=people {r=a;} | a=wave_select {r=a;} | a=two_select {r=a;};
+	: a=people {r=a;} | a=wave_select {r=a;}
+	| a=two_select {r=a;} | a=six_select {r=a;} ;
 number returns [Expr a]
 	: f=a_number { a = Expr.literal(f); }
 	// hacks for typing (not spoken)

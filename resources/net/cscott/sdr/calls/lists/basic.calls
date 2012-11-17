@@ -100,6 +100,14 @@ def: anyone while others(sel, c1, c2=nothing)
     condition: EQUAL CALL([c2], nothing), "Not just a trade"
     call: trade down the line([sel])
   from: ANY
+    condition: EQUAL CALL([sel], CENTER_6)
+    from: CENTER_6
+      condition: GREATER(NUM DANCERS(CENTER), 0)
+      select: CENTER
+        call: [c1]
+      select: OTHERS
+        call: [c2]
+  from: ANY
     condition: GREATER(NUM DANCERS([sel]), 0)
     select: [sel]
       call: [c1]
