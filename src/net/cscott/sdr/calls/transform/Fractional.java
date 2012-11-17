@@ -1,6 +1,6 @@
 package net.cscott.sdr.calls.transform;
 
-import static net.cscott.sdr.calls.parser.CallFileLexer.APPLY;
+import static net.cscott.sdr.calls.ast.Part.Divisibility.DIVISIBLE;
 import static net.cscott.sdr.calls.parser.CallFileLexer.PART;
 
 import java.util.ArrayList;
@@ -13,7 +13,6 @@ import java.util.Set;
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.DanceState;
-import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Apply;
@@ -21,7 +20,6 @@ import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.In;
 import net.cscott.sdr.calls.ast.Part;
-import static net.cscott.sdr.calls.ast.Part.Divisibility.*;
 import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
@@ -58,9 +56,14 @@ import org.junit.runner.RunWith;
  *  net.cscott.sdr.calls.BadCallException: No formation options left: No formation options left: Primitives cannot be subdivided
  */
 @RunWith(value=JDoctestRunner.class)
-public class Fractional extends TransformVisitor<Fraction> {
-    private final DanceState ds;
-    public Fractional(DanceState ds) { this.ds = ds; }
+public class Fractional extends PartsVisitor<Fraction> {
+    public Fractional(DanceState ds) {
+        super("_fractional", safeConcepts, ds);
+    }
+    Expr applyConcept(Fraction f, Expr... args) {
+        assert args.length==1;
+        return new Expr(conceptName, Expr.literal(f), args[0]);
+    };
     @Override
     public In visit(In in, Fraction f) {
         return in.build(new Expr("_multiply num", Expr.literal(f), in.count),
@@ -105,39 +108,12 @@ public class Fractional extends TransformVisitor<Fraction> {
                                    apply.call.args.get(0), Expr.literal(f)),
                           apply.call.args.get(1)));
         }
-        // optimization: some concepts are safe to hoist fractionalization thru
-        if (safeConcepts.contains(apply.call.atom)) {
-            if (apply.call.atom.equals("_with designated") ||
-		apply.call.atom.equals("_anyone"))
-                // two args, subcall is last one
-                return new Apply
-                    (new Expr(apply.call.atom, apply.call.args.get(0),
-                              new Expr("_fractional", Expr.literal(f),
-                                       apply.call.args.get(1))));
-            if (apply.call.atom.equals("_quasi concentric") ||
-                apply.call.atom.equals("_concentric") ||
-                apply.call.atom.equals("_cross concentric"))
-                // two args, fractionalize each
-                return new Apply
-                    (new Expr(apply.call.atom,
-                     new Expr("_fractional", Expr.literal(f), apply.call.args.get(0)),
-                     new Expr("_fractional", Expr.literal(f), apply.call.args.get(1))));
-            assert apply.call.args.size()==1;
-            return new Apply(new Expr(apply.call.atom,
-                     new Expr("_fractional", Expr.literal(f), apply.call.args.get(0))));
-        }
-        // okay, we have to expand the call in order to fractionalize the
-        // contents.
-        Evaluator e = apply.evaluator(ds);
-        if (!e.hasSimpleExpansion())
-            throw new BadCallException("Can't fractionalize complex concept");
-        // okay, this concept can be simply expanded...
-        Part result = new Part(DIVISIBLE,Fraction.ONE,e.simpleExpansion().accept(this, f));
-        return result;
+        // use superclass implementation (handle safe concepts, expansion)
+        return super.visit(apply, f);
     }
     /** A list of concepts which it is safe to hoist fractionalization through.
      That is, "1/2(as couples(swing thru))" == "as couples(1/2(swing thru))". */
-    private static Set<String> safeConcepts = new HashSet<String>(Arrays.asList(
+    static Set<String> safeConcepts = new HashSet<String>(Arrays.asList(
             "as couples","tandem","_with designated","_anyone",
             "reverse", "left", "mirror",
             "_quasi concentric", "_concentric", "_cross concentric",
@@ -199,23 +175,5 @@ public class Fractional extends TransformVisitor<Fraction> {
             }
         }
         return s.build(l);
-    }
-    // useful utility: desugar "and" concept to expose parts
-    protected Seq desugarAnd(Seq s) {
-        // desugar 'and' pseudo-concept into parts
-        ArrayList<SeqCall> nChildren = new ArrayList<SeqCall>(s.children.size());
-        for (SeqCall sc: s.children) {
-            if (sc.type==APPLY) {
-                Expr call = ((Apply)sc).call;
-                if (call.atom.equals("and")) {
-                    for (Expr arg: call.args) {
-                        nChildren.add(new Apply(arg));
-                    }
-                    continue;
-                }
-            }
-            nChildren.add(sc);
-        }
-        return s.build(nChildren);
     }
 }

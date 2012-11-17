@@ -1,5 +1,7 @@
 package net.cscott.sdr.calls.lists;
 
+import static net.cscott.sdr.calls.ast.Part.Divisibility.DIVISIBLE;
+import static net.cscott.sdr.calls.parser.CallFileLexer.PART;
 import static net.cscott.sdr.util.Tools.l;
 
 import java.util.Collections;
@@ -28,12 +30,17 @@ import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
+import net.cscott.sdr.calls.ast.Part;
+import net.cscott.sdr.calls.ast.Seq;
+import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.lists.A1List.SolidEvaluator;
 import net.cscott.sdr.calls.lists.A1List.SolidMatch;
 import net.cscott.sdr.calls.lists.A1List.SolidType;
+import net.cscott.sdr.calls.transform.Finish;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 
@@ -63,6 +70,46 @@ public abstract class C1List {
             return Collections.emptyList();
         }
     }
+
+    /** The "finish" concept.
+     * @doc.test
+     *  Evaluate FINISH SWING THRU.
+     *  js> importPackage(net.cscott.sdr.calls)
+     *  js> importPackage(net.cscott.sdr.calls.ast)
+     *  js> ds = new DanceState(new DanceProgram(Program.C1), Formation.FOUR_SQUARE); undefined;
+     *  js> a1 = Expr.literal("swing thru")
+     *  'swing thru
+     *  js> a = new Expr("finish", a1)
+     *  (Expr finish 'swing thru)
+     *  js> C1List.FINISH.getEvaluator(ds, a.args).simpleExpansion()
+     *  (Seq (Apply '_finish swing thru))
+     */
+    public static final Call FINISH = new C1Call("finish") {
+        @Override
+        public int getMinNumberOfArguments() { return 1; }
+        @Override
+        public Rule getRule() {
+            String rule = "finish (a|an)? <0=anything>";
+            Grm g = Grm.parse(rule);
+            return new Rule("anything", g, Fraction.valueOf(-10));
+        }
+        @Override
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args)
+                throws EvaluationException {
+            Finish fv = new Finish(ds);
+            assert args.size()==1;
+            Apply a = new Apply(args.get(0));
+            SeqCall sc = a.accept(fv, null);
+            Comp result = new Seq(sc);
+            // OPTIMIZATION: SEQ(PART(c)) = c
+            if (sc.type==PART) {
+                Part p = (Part) sc;
+                if (p.divisibility==DIVISIBLE)
+                    result = p.child;
+            }
+            return new Evaluator.Standard(result);
+        }
+    };
 
     public static final Call TANDEM = new C1Call("tandem") {
         @Override
