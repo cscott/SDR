@@ -6,8 +6,8 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
 /** 
  * A successful attempt to match one or more instances of a given formation
  * against the current setup yields a <code>FormationMatch</code>
- * objects.  The <code>FormationMatch</code> contains a list of
- * <code>TaggedFormation</code>; for example, matching a diamond against a
+ * object.  The <code>FormationMatch</code> contains a list of
+ * {@link TaggedFormation}; for example, matching a diamond against a
  * twin diamond setup will result in two <code>TaggedFormation</code>s,
  * one for each diamond.
  */
