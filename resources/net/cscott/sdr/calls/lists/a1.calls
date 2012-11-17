@@ -50,13 +50,15 @@ def: grand three quarter thru
 def: grand left three quarter thru
   call: mirror(grand three quarter thru)
 
+def: _those who can turn right(n)
+  from: allow unmatched(RH MINIWAVE)
+    call: right arm turn([n])
+def: _those who can turn left(n)
+  call: mirror(_those who can turn right([n]))
+
 def: _grand quarter thru(n)
-  part:
-    from: allow unmatched(RH MINIWAVE)
-      call: right arm turn([n])
-  part:
-    from: allow unmatched(LH MINIWAVE)
-      call: left arm turn(1/2)
+  call: _those who can turn right(1/4)
+  call: _those who can turn left(1/2)
 
 // this definition is trickier, because we need to stay in our 4-person
 // formation
@@ -74,6 +76,10 @@ def: _quarter thru(n)
       call: left arm turn(1/2)
     from: PARALLEL LH WAVES
       call: _centers(_quarter thru([n]))
+    from: LH TIDAL WAVE
+      from: LH OCEAN WAVE // split tidal wave into two halves (not grand)
+        call: _centers(right arm turn([n]))
+        call: left arm turn(1/2)
   from: ANY
     condition: equal num(_mod num([n], 1/2), 0)
     from: RH OCEAN WAVE

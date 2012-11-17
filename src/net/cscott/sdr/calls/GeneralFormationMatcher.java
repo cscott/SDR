@@ -157,7 +157,7 @@ public class GeneralFormationMatcher {
         return doMatch(input, Collections.singletonList(goal),
                        allowUnmatchedDancers, usePhantoms);
     }
-    private static String targetName(List<TaggedFormation> goals) {
+    static String targetName(List<TaggedFormation> goals) {
         StringBuilder sb = new StringBuilder();
         assert goals.size() > 0;
         for (TaggedFormation goal : goals) {

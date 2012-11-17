@@ -61,17 +61,14 @@ def: remake
   part: 2
     call: quarter thru
   part:
-    // XXX: not grand means don't allow matches whose bounds include the origin
-    //      unless total # of dancers is 4 or less
-    from: matcher(allow unmatched, not grand, RH MINIWAVE)
+    from: not grand(allow unmatched(RH MINIWAVE))
       call: right arm turn(3/4)
 
 def: grand remake
   part: 2
     call: grand quarter thru
   part:
-    from: allow unmatched(RH MINIWAVE)
-      call: right arm turn(3/4)
+    call: _those who can turn right(3/4)
 
 def: grand left remake
   call: mirror(grand remake)

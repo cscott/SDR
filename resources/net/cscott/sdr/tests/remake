@@ -1,0 +1,86 @@
+A2 call: remake (and quarter thru)
+
+Watch carefully the distinction between 'remake' and 'grand remake' from
+columns.
+
+sdr> /program = Program.A2 ; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> heads square thru
+| 4B>  3G<  3B>  2G<
+|
+| 4G>  1B<  1G>  2B<
+sdr> boys walk girls dodge
+| 4G>  4B>  1G>  3B>
+|
+| 1B<  3G<  2B<  2G<
+sdr> /// verify that "cast 1/2" is NOT done grand
+sdr> quarter thru
+| 1B^  3Gv  4G^  4Bv  2B^  2Gv  1G^  3Bv
+sdr> hinge
+| 1B>  4G>  2B>  1G>
+|
+| 3G<  4B<  2G<  3B<
+sdr> /// verify that "cast 1/2" part is done grand
+sdr> grand quarter thru
+| 3G^  4Bv  1B^  2Gv  4G^  3Bv  2B^  1Gv
+sdr> hinge
+| 3G>  1B>  4G>  2B>
+|
+| 4B<  2G<  3B<  1G<
+sdr> /// verify that "cast 1/2" part is done grand
+sdr> grand remake
+| 2G>  3B>  1G>  2B>
+|
+| 4B<  3G<  1B<  4G<
+sdr> /// verify that "cast 1/2" part is NOT done grand
+sdr> remake
+| 3G>  3B>  4G>  2B>
+|
+| 4B<  2G<  1B<  1G<
+sdr> hinge
+| 4B^  3Gv  2G^  3Bv  1B^  4Gv  1G^  2Bv
+sdr> /program = C4
+C4
+sdr> /// verify that the final "cast 3/4" part is NOT done grand
+sdr> finish left remake
+|      4B<            1B<
+| 3G^       2Gv  4G^       1Gv
+|      3B>            2B>
+sdr> left quarter thru
+| 4B^  3Gv  2G^  3Bv  1B^  4Gv  1G^  2Bv
+sdr> /// verify that the final "cast 3/4" part is done grand
+sdr> finish grand left remake
+|      4B<  2G<  1B<
+| 3G^                 1Gv
+|      3B>  4G>  2B>
+sdr> go home
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> heads square thru ; pass the ocean
+| 1B^  3Gv  4G^  4Bv  2B^  2Gv  1G^  3Bv
+sdr> /// verify that "cast 1/4" part is NOT done grand
+sdr> do 1/3 of a left remake
+|      4G<            1G<
+| 1B^       4Bv  2B^       3Bv
+|      3G>            2G>
+sdr> left quarter thru
+| 4G^  1Bv  4B^  3Gv  1G^  2Bv  3B^  2Gv
+sdr> trade the wave
+| 4Bv  3G^  4Gv  1B^  3Bv  2G^  1Gv  2B^
+sdr> /// verify that "cast 1/4" part is done grand
+sdr> do 1/3 of a grand remake
+|      3G>  1B>  2G>
+| 4Bv                 2B^
+|      4G<  3B<  1G<
+sdr> /exit

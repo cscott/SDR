@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.cscott.jdoctest.JDoctestRunner;
@@ -752,17 +754,157 @@ public class MatcherList {
             return args.get(0).isConstant(type);
         }
     };
+    public static ExprFunc<Matcher> _ALLOW_UNMATCHED = new ExprFunc<Matcher>(){
+        @Override
+        public String getName() { return "allow unmatched"; }
+        @Override
+        public Matcher evaluate(Class<? super Matcher> type, DanceState ds,
+                List<Expr> args) throws EvaluationException {
+            // parse the argument list as formations
+            assert args.size() > 0;
+            final List<TaggedFormation> goals = new ArrayList<TaggedFormation>();
+            for (Expr e : args)
+                goals.add(e.evaluate(TaggedFormation.class, ds));
+            final String name = getName() +
+                    "(" + GeneralFormationMatcher.targetName(goals) + ")";
+            return new Matcher() {
+                @Override
+                public String getName() { return name; }
+                @Override
+                public FormationMatch match(Formation f)
+                        throws NoMatchException {
+                    return GeneralFormationMatcher.doMatch(f, goals,
+                            true/*allow unmatched*/, false);
+                }
+             };
+        }
+        @Override
+        public boolean isConstant(Class<? super Matcher> type, List<Expr> args){
+            for (Expr e : args)
+                if (!e.isConstant(Matcher.class))
+                    return false;
+            return true;
+        }
+    };
+    /**
+     * "Not grand" matcher means means don't allow matches whose bounds
+     *  include the origin unless total # of dancers is 4 or less.  This is
+     *  used in definition of 'remake', etc.
+     *
+     * @doc.test LH miniwaves in RH tidal wave:
+     *  js> FormationList = FormationList.js(this); undefined;
+     *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr not grand (Expr allow unmatched 'LH MINIWAVE))")
+     *  (Expr not grand (Expr allow unmatched 'LH MINIWAVE))
+     *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), null)
+     *  not grand(allow unmatched(LH MINIWAVE))
+     *  js> SD = StandardDancer.values(); undefined
+     *  js> f = FormationList.RH_TIDAL_WAVE.mapStd([SD[0],SD[1],SD[2],SD[3]]) ; f.toStringDiagram()
+     *  1B^  1Gv  2B^  2Gv  4G^  4Bv  3G^  3Bv
+     *  js> sel.match(f)
+     *  AA^  BB^  CCv  DD^  EEv  FFv
+     *  AA: (unmatched)
+     *     1B^
+     *  BB:
+     *     1Gv  2B^
+     *   [1G: BELLE; 2B: BELLE]
+     *  CC: (unmatched)
+     *     2G^
+     *  DD: (unmatched)
+     *     4G^
+     *  EE:
+     *     3Gv  4B^
+     *   [3G: BELLE; 4B: BELLE]
+     *  FF: (unmatched)
+     *     3B^
+     */
+    public static ExprFunc<Matcher> _NOT_GRAND = new ExprFunc<Matcher>() {
+        @Override
+        public String getName() { return "not grand"; }
+        @Override
+        public Matcher evaluate(Class<? super Matcher> type, DanceState ds,
+                List<Expr> args)
+                throws net.cscott.sdr.calls.ExprFunc.EvaluationException {
+            assert args.size()==1;
+            final Matcher m = args.get(0).evaluate(Matcher.class, ds);
+            return new Matcher() {
+                @Override
+                public String getName() {
+                    return "not grand("+m.getName()+")";
+                }
+                @Override
+                public FormationMatch match(Formation f)
+                        throws NoMatchException {
+                    FormationMatch fm = m.match(f);
+                    // find match at the origin (if any) and replace it
+                    // with unmatched dancers
+                    Dancer centerDancer = null;
+                    for (Dancer d: fm.meta.dancers()) {
+                        Position p = fm.meta.location(d);
+                        if (p.x.equals(Fraction.ZERO) &&
+                            p.y.equals(Fraction.ZERO)) {
+                            centerDancer = d;
+                            break;
+                        }
+                    }
+                    if (centerDancer == null) { return fm; }
+                    Formation centerFormation = fm.matches.get(centerDancer);
+                    // okay, we have a match at the origin which we need
+                    // to unmatch to enforce "not grand"
+                    // 1. make new unmatched dancer set
+                    Set<Dancer> nUnmatched =
+                            new LinkedHashSet<Dancer>(fm.unmatched);
+                    // 2. make new single dancer phantoms
+                    Map<Dancer,Dancer> nPhantoms =
+                            new LinkedHashMap<Dancer,Dancer>
+                                (centerFormation.dancers().size());
+                    for (Dancer d : centerFormation.dancers())
+                        nPhantoms.put(d, new PhantomDancer());
+                    Formation nCenter = centerFormation.map(nPhantoms);
+                    nUnmatched.addAll(nPhantoms.values());
+                    // 3. make new "matches" map, with new phantoms mapped to
+                    //    new single dancer formations
+                    Map<Dancer, TaggedFormation> nMatches =
+                            new LinkedHashMap<Dancer, TaggedFormation>(fm.matches);
+                    nMatches.remove(centerDancer);
+                    for (Dancer d : centerFormation.dancers()) {
+                        nMatches.put(nPhantoms.get(d),
+                                     FormationList.SINGLE_DANCER.map(d));
+                    }
+                    // 4. create a new meta formation.
+                    Map<Dancer,Formation> insertMap =
+                            new LinkedHashMap<Dancer,Formation>();
+                    for (Dancer d : fm.meta.dancers()) {
+                        insertMap.put(d, (d==centerDancer) ? nCenter :
+                                         FormationList.SINGLE_DANCER.map(d));
+                    }
+                    Formation nMeta = Breather.insert(fm.meta, insertMap);
+                    FormationMatch result =
+                            new FormationMatch(nMeta, nMatches, nUnmatched);
+                    return result;
+                }
+            };
+        }
+        @Override
+        public boolean isConstant(Class<? super Matcher> type, List<Expr> args){
+            assert args.size()==1;
+            return args.get(0).isConstant(type);
+        }
+    };
 
     /** Parse names of {@link Matcher} combination functions. */
     public static ExprFunc<Matcher> valueOf(String s) {
-        s = s.toLowerCase().intern();
-        if (s == "mixed")
+        s = s.toLowerCase().replace('_',' ').intern();
+        if (s == _MIXED.getName())
             return _MIXED;
-        if (s == "or")
+        if (s == _OR.getName())
             return _OR;
-        if (s == "center")
+        if (s == _CENTER.getName())
             return _CENTER;
-        throw new IllegalArgumentException("No such Matcher function");
+        if (s == _ALLOW_UNMATCHED.getName())
+            return _ALLOW_UNMATCHED;
+        if (s == _NOT_GRAND.getName())
+            return _NOT_GRAND;
+        throw new IllegalArgumentException("No such Matcher function: "+s);
     }
     // unimplemented matchers
     /** Stub for not-yet-implemented {@link Matcher}s. */
