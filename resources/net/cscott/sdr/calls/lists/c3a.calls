@@ -15,3 +15,16 @@ def: keep busy
     ! ^ v ^ v
     ! c B b A
     !   v   v
+
+def: couple up
+  from: 2x2
+    call: circulate
+    call: _finish couple up
+def: _finish couple up
+  in: 2
+  from: 2x2
+    select: TRAILER
+      call: nothing, nothing
+    select: LEADER
+      prim: 0, 0, in
+      prim: 0, 0, in
