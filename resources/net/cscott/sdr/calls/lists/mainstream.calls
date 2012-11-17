@@ -67,7 +67,6 @@ def: _finish pass to the center
 // callerlab #56: SINGLE HINGE / COUPLES HINGE
 
 def: _hinge
-  optional: LEFT
   in: 2
   call: 1/2(trade)
 def: hinge
@@ -76,6 +75,9 @@ def: hinge
   from: mixed(RH MINIWAVE, LH MINIWAVE, COUPLE)
     condition: PROGRAM AT LEAST(A1), "Partner hinge not allowed below A1"
     call: _hinge
+def: left hinge
+  from: mixed(LH MINIWAVE, COUPLE)
+    call: mirror(_hinge)
 
 def: couples hinge
   in: 3
