@@ -20,6 +20,12 @@ def: retain your lane
 def: nicely
   call: and cross(hinge)
 
+def: hot foot spin
+  call: fan the top, anyone while others(VERY CENTER, trade), spin the top
+
+def: transaction
+  call: transfer and(cast off(3/4)), chain reaction
+
 // C4 class teaching order
 
 // week 1
