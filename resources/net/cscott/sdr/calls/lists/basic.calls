@@ -1517,11 +1517,12 @@ def: balance
 
 // callerlab #39: SWING THRU FAMILY
 
+// grand swing thru is on the plus list
 def: swing thru
   optional: LEFT
   in: 6
   // XXX DEFINE ME: also from alamo ring
-  call: _maybe touch(_start swing thru), _finish swing thru
+  call: _maybe touch(_quarter thru(1/2))
 
 def: _maybe touch(c, n=1)
   from: ANY
@@ -1531,19 +1532,6 @@ def: _maybe touch(c, n=1)
       call: _mixed touch
     part: [n]
       call: [c]
-
-def: _start swing thru
-  in: 3
-  from: RH OCEAN WAVE
-    call: right arm turn(1/2)
-  from: LH OCEAN WAVE
-    call: _centers(right arm turn(1/2))
-def: _finish swing thru
-  in: 3
-  from: RH OCEAN WAVE
-    call: anyone while others(CENTER,left arm turn(1/2),_nothing preserve roll)
-  from: LH OCEAN WAVE
-    call: left arm turn(1/2)
 
 // callerlab #40: RUN FAMILY
 

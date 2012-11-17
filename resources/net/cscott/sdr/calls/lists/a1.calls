@@ -39,6 +39,7 @@ def: quarter thru
   optional: LEFT
   call: _quarter thru(1/4)
 def: grand quarter thru
+  optional: LEFT
   call: _grand quarter thru(1/4)
 def: grand left quarter thru
   call: mirror(grand quarter thru)
@@ -46,6 +47,7 @@ def: three quarter thru
   optional: LEFT
   call: _quarter thru(3/4)
 def: grand three quarter thru
+  optional: LEFT
   call: _grand quarter thru(3/4)
 def: grand left three quarter thru
   call: mirror(grand three quarter thru)
@@ -63,6 +65,9 @@ def: _those who can turn left not grand(n)
   call: mirror(_those who can turn right not grand([n]))
 
 def: _grand quarter thru(n=1/4)
+  // XXX: check that one of these calls involves a pair of dancers
+  //      spanning the centerline so that we don't allow (e.g.)
+  //      a 'grand swing thru' from parallel ocean waves
   call: _those who can turn right([n])
   call: _those who can turn left(1/2)
 

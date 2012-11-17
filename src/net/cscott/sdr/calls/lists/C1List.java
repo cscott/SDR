@@ -82,7 +82,7 @@ public abstract class C1List {
      *  js> a = new Expr("finish", a1)
      *  (Expr finish 'swing thru)
      *  js> C1List.FINISH.getEvaluator(ds, a.args).simpleExpansion()
-     *  (Seq (Apply '_finish swing thru))
+     *  (Seq (Part 'DIVISIBLE '1 (Opt (From 'ANY (Seq (Part 'DIVISIBLE '1 (Seq (Apply (Expr _those who can turn left not grand '1/2)))))))))
      * @doc.test
      *  Evaluate FINISH RECYCLE.
      *  js> importPackage(net.cscott.sdr.calls)

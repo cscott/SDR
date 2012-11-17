@@ -96,6 +96,13 @@ def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
   from: ANY
     call: _mixed touch, fan the top
 
+def: grand swing thru
+  optional: LEFT
+  in: 6 // assume same timing as swing thru
+  call: _maybe touch(_grand quarter thru(1/2))
+def: grand left swing thru
+  call: mirror(grand swing thru)
+
 def: peel the top
   in: 6
   call: _peel and step, fan the top

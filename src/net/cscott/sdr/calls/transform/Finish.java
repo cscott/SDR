@@ -41,9 +41,9 @@ import org.junit.runner.RunWith;
  *  js> call = net.cscott.sdr.calls.CallDB.INSTANCE.lookup(callname)
  *  swing thru[basic]
  *  js> comp = call.getEvaluator(null, java.util.Arrays.asList()).simpleExpansion()
- *  (In '6 (Seq (Apply (Expr and (Expr _maybe touch '_start swing thru) '_finish swing thru))))
+ *  (In '6 (Seq (Apply (Expr _maybe touch (Expr _quarter thru '1/2)))))
  *  js> fst = comp.accept(new Finish(ds), null)
- *  (Seq (Apply '_finish swing thru))
+ *  (Seq (Part 'DIVISIBLE '1 (Opt (From 'ANY (Seq (Part 'DIVISIBLE '1 (Seq (Apply (Expr _those who can turn left not grand '1/2)))))))))
  *  js> try {
  *    >   fst.accept(new Finish(ds), null)
  *    > } catch (e) {
