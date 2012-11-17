@@ -26,3 +26,11 @@ def: counter rotate(n=1/4)
   from: ANY
     // 8 dancer version, no official timing.  we'll say 6 beats
     call: _fractional(_multiply num([n], 4), _in(6, _counter rotate 1/4))
+
+def: swing the fractions
+  optional: LEFT
+  call: _those who can turn right(1/4)
+  call: _those who can turn left(1/2)
+  call: _those who can turn right(3/4)
+  call: _those who can turn left(1/2)
+  call: _those who can turn right(1/4)
