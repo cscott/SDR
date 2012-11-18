@@ -132,7 +132,7 @@ public class ExprList {
 
     // this is a generic cond function, for implementing conditional loops
     // without Opt/OptCall (which are not tail-recursive)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static final ExprFunc _IF = new ExprFunc() {
         @Override
         public String getName() { return "_if"; }
@@ -153,6 +153,28 @@ public class ExprList {
         }
     };
     static { exprGenericFuncs.put(_IF.getName(), _IF); }
+
+    // function application
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static final ExprFunc _APPLY = new ExprFunc() {
+        @Override
+        public String getName() { return "_apply"; }
+        @Override
+        public Object evaluate(Class type, DanceState ds, List args)
+            throws EvaluationException {
+            if (args.size() != 2)
+                throw new EvaluationException("needs 2 arguments");
+            Expr funcExpr = (Expr) args.get(0);
+            Expr argsExpr = (Expr) args.get(1);
+            // evaluate first arg as a string
+            // (XXX we should really look at the _curry, not eval as String)
+            String func = funcExpr.evaluate(String.class, ds);
+            // XXX should really construct result by filling in wildcard slots
+            Expr result = new Expr(func, argsExpr);
+            return result.evaluate(type, ds);
+        }
+    };
+    static { exprGenericFuncs.put(_APPLY.getName(), _APPLY); }
 
     // mathematics
     private static abstract class MathFunc extends ExprFunc<Fraction> {

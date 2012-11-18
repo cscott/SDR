@@ -35,3 +35,6 @@ grammar @CLASSNAME@;
 	once and <fraction> |
 	twice [and <fraction>] |
 	<digit_greater_than_two> [and <fraction>] times ;
+
+// temporary hack; see antlr-v3.skel for details.
+<concept> = tandem | as couples | siamese | twice ;

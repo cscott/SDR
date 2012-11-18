@@ -1,7 +1,5 @@
 package net.cscott.sdr.calls.lists;
 
-import static net.cscott.sdr.calls.ast.Part.Divisibility.DIVISIBLE;
-import static net.cscott.sdr.calls.parser.CallFileLexer.PART;
 import static net.cscott.sdr.util.Tools.l;
 
 import java.util.Collections;
@@ -23,24 +21,21 @@ import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationList;
+import net.cscott.sdr.calls.MatcherList;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Program;
-import net.cscott.sdr.calls.MatcherList;
 import net.cscott.sdr.calls.TaggedFormation;
-import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
+import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.ast.Apply;
-import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
-import net.cscott.sdr.calls.ast.Part;
-import net.cscott.sdr.calls.ast.Seq;
-import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.lists.A1List.SolidEvaluator;
 import net.cscott.sdr.calls.lists.A1List.SolidMatch;
 import net.cscott.sdr.calls.lists.A1List.SolidType;
 import net.cscott.sdr.calls.transform.Finish;
+import net.cscott.sdr.calls.transform.Finish.PartSelectorCall;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 
@@ -94,30 +89,11 @@ public abstract class C1List {
      *  js> C1List.FINISH.getEvaluator(ds, a.args).simpleExpansion()
      *  (Opt (From 'ANY (Seq (Part 'DIVISIBLE '1 (Opt (From 'ANY (If 'BEFORE (Expr PROGRAM AT LEAST 'C1) (Seq (Apply (Expr _box counter rotate '1/4)) (Apply 'roll)) "Fractional recycle not allowed below C1")))))))
      */
-    public static final Call FINISH = new C1Call("finish") {
+    public static final Call FINISH = new PartSelectorCall
+            ("finish", Program.C1, "finish (a|an)? <0=anything>") {
         @Override
-        public int getMinNumberOfArguments() { return 1; }
-        @Override
-        public Rule getRule() {
-            String rule = "finish (a|an)? <0=anything>";
-            Grm g = Grm.parse(rule);
-            return new Rule("anything", g, Fraction.valueOf(-9));
-        }
-        @Override
-        public Evaluator getEvaluator(DanceState ds, List<Expr> args)
-                throws EvaluationException {
-            Finish fv = new Finish(ds);
-            assert args.size()==1;
-            Apply a = new Apply(args.get(0));
-            SeqCall sc = a.accept(fv, null);
-            Comp result = new Seq(sc);
-            // OPTIMIZATION: SEQ(PART(c)) = c
-            if (sc.type==PART) {
-                Part p = (Part) sc;
-                if (p.divisibility==DIVISIBLE)
-                    result = p.child;
-            }
-            return new Evaluator.Standard(result);
+        protected Finish getPartsVisitor(DanceState ds) {
+            return new Finish(ds);
         }
     };
 

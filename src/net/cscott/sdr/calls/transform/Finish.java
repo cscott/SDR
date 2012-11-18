@@ -1,17 +1,23 @@
 package net.cscott.sdr.calls.transform;
 
+import static net.cscott.sdr.calls.ast.Part.Divisibility.DIVISIBLE;
 import static net.cscott.sdr.calls.parser.CallFileLexer.APPLY;
 import static net.cscott.sdr.calls.parser.CallFileLexer.PART;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.BadCallException;
+import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
+import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.In;
@@ -20,6 +26,8 @@ import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
+import net.cscott.sdr.calls.grm.Grm;
+import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.util.Fraction;
 
 import org.junit.runner.RunWith;
@@ -30,6 +38,7 @@ import org.junit.runner.RunWith;
  * Removes the first part of the call.
  * @author C. Scott Ananian
  * @see net.cscott.sdr.calls.lists.C4List#LIKE_A
+ * @see net.cscott.sdr.calls.lists.C4List#_FIRST_PART
  * @doc.test
  *  Use Finish class to evaluate FINISH SWING THRU and FINISH FINISH SWING THRU:
  *  js> importPackage(net.cscott.sdr.calls)
@@ -173,4 +182,52 @@ public class Finish extends PartsVisitor<Void> {
     /** A list of concepts which it is safe to hoist "finish" through.
     That is, "finish(as couples(swing thru))" == "as couples(finish(swing thru))". */
     static Set<String> safeConcepts = Fractional.safeConcepts;
+
+    /**
+     * Helper class to define concepts based on this class (and subclasses
+     * of it).
+     */
+    public static abstract class PartSelectorCall extends Call {
+        private final String name;
+        private final Program program;
+        private final String rule;
+        public PartSelectorCall(String name, Program program, String rule) {
+            this.name = name;
+            this.program = program;
+            this.rule = rule;
+        }
+        @Override
+        public final String getName() { return name; }
+        @Override
+        public final Program getProgram() { return program; }
+        @Override
+        public Rule getRule() {
+            if (rule==null) { return null; }
+            Grm g = Grm.parse(rule);
+            return new Rule("anything", g, Fraction.valueOf(-9));
+        }
+        @Override
+        public List<Expr> getDefaultArguments() {
+            return Collections.emptyList();
+        }
+        @Override
+        public int getMinNumberOfArguments() { return 1; }
+        @Override
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args)
+                throws EvaluationException {
+            Finish visitor = getPartsVisitor(ds);
+            assert args.size()==1;
+            Apply a = new Apply(args.get(0));
+            SeqCall sc = a.accept(visitor, null);
+            Comp result = new Seq(sc);
+            // OPTIMIZATION: SEQ(PART(c)) = c
+            if (sc.type==PART) {
+                Part p = (Part) sc;
+                if (p.divisibility==DIVISIBLE)
+                    result = p.child;
+            }
+            return new Evaluator.Standard(result);
+        }
+        protected abstract Finish getPartsVisitor(DanceState ds);
+    }
 }

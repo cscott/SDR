@@ -168,3 +168,15 @@ WS  :   (   ' '
         )+
         { $channel=HIDDEN; }
     ;
+
+// this is a temporary hack
+// we need to tweak the grammar to extract concepts auto-magically.
+concept returns [Expr a]
+        : 'tandem' { a = Expr.literal("tandem"); }
+        | 'as' 'couples' { a = Expr.literal("as couples"); }
+        | 'siamese' { a = Expr.literal("siamese"); }
+        // _curry makes a function-of-one-argument
+        // (actually, a function of N arguments, where N is the number of
+        //  * wildcards in the argument)
+        | 'twice' { a = new Expr("_curry", new Expr("_fractional", Expr.literal(Fraction.TWO), Expr.literal("*"))); }
+        ;

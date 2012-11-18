@@ -1,0 +1,35 @@
+"Initially" concept.
+
+sdr> /program = Program.C4 ; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> heads square thru ; touch
+| 4B>  3B>
+|
+| 3G<  2G<
+|
+| 4G>  1G>
+|
+| 1B<  2B<
+sdr> initially tandem swing and mix
+| 2B<  1B<
+|
+| 1G>  4G>
+|
+| 2G<  3G<
+|
+| 3B>  4B>
+sdr> initially twice swing thru
+| 1G<  4G<
+|
+| 2B>  1B>
+|
+| 3B<  4B<
+|
+| 2G>  3G>
+sdr> /exit

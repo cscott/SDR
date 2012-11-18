@@ -19,13 +19,14 @@ import net.cscott.sdr.util.Fraction;
 
 /**
  * Transformation implementing
- * {@link net.cscott.sdr.calls.lists.C4List#LIKE_A}.
- * Extracts just the last part of the call.
+ * {@link net.cscott.sdr.calls.lists.C4List#_FIRST_PART} (not on any list).
+ * Extracts just the first part of the call.
+ * Equivalent to "like a reverse order".
  * @author C. Scott Ananian
  */
-public class LikeA extends Finish {
-    public LikeA(DanceState ds) {
-        super("like a", safeConcepts, ds);
+public class FirstPart extends Finish {
+    public FirstPart(DanceState ds) {
+        super("_first part", safeConcepts, ds);
     }
 
     /* (non-Javadoc)
@@ -45,15 +46,13 @@ public class LikeA extends Finish {
         }
         assert howMany.getProperNumerator()==0 : "non-integral parts?!";
         if (howMany.equals(Fraction.ZERO)) {
-            throw new BadCallException("Can't adjust to starting "+
-                    "formation when doing a like a");
+            // take this part unmodified (starting adjustment)
+            return p;
         }
         if (howMany.compareTo(Fraction.TWO) < 0) {
             throw new BadCallException("Only one part");
         }
-        // okay, recurse to get just the last part.
-        // (check that FINISH LIKE A HOT FOOT SPIN (which is 'fan the top')
-        //  still works; ie this part should be optimized away)
+        // okay, recurse to get just the first part.
         return p.build(p.divisibility,
                 Expr.literal(Fraction.ONE) /* now only one part */,
                 p.child.accept(this, t));
@@ -75,31 +74,30 @@ public class LikeA extends Finish {
         } else if (s.children.size() < 2) {
             throw new BadCallException("Only one part");
         }
-        // just look at last part, verify that 'howMany' is one
-        SeqCall lastCall = s.children.get(s.children.size()-1);
-        if (lastCall.isIndeterminate()) {
+        // just look at first part, verify that 'howMany' is one
+        SeqCall firstCall = s.children.get(0);
+        if (firstCall.isIndeterminate()) {
             throw new BadCallException("Number of parts is not well-defined");
         }
-        Fraction lastParts;
+        Fraction firstParts;
         try {
-            lastParts = lastCall.parts().evaluate(Fraction.class, ds);
+            firstParts = firstCall.parts().evaluate(Fraction.class, ds);
         } catch (EvaluationException e) {
             assert false : "bad call definition";
             throw new BadCallException("Can't evaluate number of parts");
         }
-        if (lastParts.equals(Fraction.ONE) && !singleCall) {
-            // easy case, just use the last part
-            return s.build(s.children.subList(s.children.size()-1,
-                                              s.children.size()));
+        if (firstParts.equals(Fraction.ONE) && !singleCall) {
+            // easy case, just use the first part
+            return s.build(s.children.subList(0, 1));
         } else {
-            // harder case: "like a" the last part
-            assert lastCall.type == PART || lastCall.type == APPLY;
-            SeqCall nLast = lastCall.accept(this, t);
-            return s.build(Collections.singletonList(nLast));
+            // harder case: "_first part" the first part
+            assert firstCall.type == PART || firstCall.type == APPLY;
+            SeqCall nFirst = firstCall.accept(this, t);
+            return s.build(Collections.singletonList(nFirst));
         }
     }
 
-    /** A list of concepts which it is safe to hoist "like a" through.
-    That is, "like a(as couples(swing thru))" == "as couples(like a(swing thru))". */
+    /** A list of concepts which it is safe to hoist "_first part" through.
+    That is, "_first part(as couples(swing thru))" == "as couples(_first part(swing thru))". */
     static Set<String> safeConcepts = Fractional.safeConcepts;
 }
