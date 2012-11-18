@@ -188,4 +188,6 @@ concept returns [Expr a]
 metaconcept returns [Expr a]
         : 'initially'      { a = Expr.literal("initially"); }
         | 'finally'        { a = Expr.literal("finally"); }
+        | 'oddly'          { a = Expr.literal("oddly"); }
+        | 'evenly'         { a = Expr.literal("evenly"); }
         ;

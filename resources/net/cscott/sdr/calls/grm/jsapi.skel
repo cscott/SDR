@@ -39,4 +39,4 @@ grammar @CLASSNAME@;
 // temporary hack; see antlr-v3.skel for details.
 <concept> = tandem | as couples | siamese | <times> | [do] <fraction> |
             <metaconcept> <concept> ;
-<metaconcept> = initially | finally ;
+<metaconcept> = initially | finally | oddly | evenly ;
