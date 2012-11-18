@@ -391,7 +391,7 @@ public class GeneralFormationMatcher {
         for (Dancer d : unmappedInputDancers) {
 	    // these clauses are parallel to the ones above for matched dancers
             Position inP = input.location(d);
-            Position goP = Position.getGrid(0,0,"n");
+            Position goP = Position.getGrid(0,0,"n").setFlags(inP.flags);
             ExactRotation rr = (ExactRotation) // i know this is a no-op.
 		inP.facing.subtract(goP.facing.amount).normalize();
 

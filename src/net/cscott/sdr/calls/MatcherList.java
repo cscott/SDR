@@ -835,6 +835,7 @@ public class MatcherList {
                 public FormationMatch match(Formation f)
                         throws NoMatchException {
                     FormationMatch fm = m.match(f);
+                    if (f.dancers().size() <= 4) { return fm; }
                     // find match at the origin (if any) and replace it
                     // with unmatched dancers
                     Dancer centerDancer = null;
