@@ -65,14 +65,17 @@ public class EmitJava extends AbstractEmit {
     final String INDENT = "        ";
     final StringBuilder sb = new StringBuilder();
     Map<Grm,Integer> numbering = new HashMap<Grm,Integer>();
+    final List<String> buildLines = new ArrayList<String>();
     public int num(Grm g) {
         if (!numbering.containsKey(g)) {
             String repr = g.accept(numberVisitor);
+            StringBuilder sb = new StringBuilder();
             sb.append(INDENT);
             sb.append("l.add(");
             sb.append(repr);
             sb.append("); // "+numbering.size());
             sb.append(NL);
+            buildLines.add(sb.toString());
             numbering.put(g, numbering.size());
         }
         return numbering.get(g);
@@ -137,7 +140,7 @@ public class EmitJava extends AbstractEmit {
         }
         sb.append("    static {"+NL);
         sb.append(INDENT);
-        sb.append("List<Grm> l = new ArrayList<Grm>();");
+        sb.append("List<Grm> l = _build();");
         sb.append(NL);
         for (Program p: grmTable.keySet()) {
             Map<String,Grm> m = grmTable.get(p);
@@ -173,6 +176,38 @@ public class EmitJava extends AbstractEmit {
 	    }
 	}
         sb.append("    }"+NL);
+
+        // create the _build function, broken up into subfunctions to avoid
+        // exceeding the maximum method size limit.
+        sb.append("    private static List<Grm> _build() {"+NL);
+        sb.append(INDENT);
+        sb.append("List<Grm> l = new ArrayList<Grm>("+numbering.size()+");");
+        sb.append(NL);
+        sb.append(INDENT);
+        sb.append("/* Break construction into multiple functions to avoid");
+        sb.append(NL);
+        sb.append(INDENT);
+        sb.append(" * exceeding maximum method bytecode size limit. */");
+        sb.append(NL);
+        for (int i=0; i*500 < buildLines.size(); i++) {
+            sb.append(INDENT);
+            sb.append("_build"+i+"(l);");
+            sb.append(NL);
+        }
+        sb.append(INDENT);
+        sb.append("return l;");
+        sb.append(NL);
+        sb.append("    }"+NL);
+        // _buildN subfunctions
+        for (int i=0; i*500 < buildLines.size(); i++) {
+            sb.append("    private static void _build"+i+"(List<Grm> l) {"+NL);
+            int start = i*500;
+            int end = Math.min(start+500, buildLines.size());
+            for (String line: buildLines.subList(start, end)) {
+                sb.append(line);
+            }
+            sb.append("    }"+NL);
+        }
 
         // substitute the rules & the classname into the skeleton
         String result = subst("java.skel", sb.toString(), "All");
