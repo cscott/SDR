@@ -178,5 +178,5 @@ concept returns [Expr a]
         // _curry makes a function-of-one-argument
         // (actually, a function of N arguments, where N is the number of
         //  * wildcards in the argument)
-        | 'twice' { a = new Expr("_curry", new Expr("_fractional", Expr.literal(Fraction.TWO), Expr.literal("*"))); }
+        | 'twice' { a = new Expr("_curry", Expr.literal("_fractional"), Expr.literal(Fraction.TWO), new Expr("_arg", Expr.literal("0"))); }
         ;

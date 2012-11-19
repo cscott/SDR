@@ -1,5 +1,6 @@
 package net.cscott.sdr.calls;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class ExprList {
     private ExprList() { assert false; }
 
     /** Map of all the {@link ExprFunc}s defined here. */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     private final static Map<String, ExprFunc> exprGenericFuncs =
         new LinkedHashMap<String,ExprFunc>();
     private final static Map<String, ExprFunc<Fraction>> exprMathFuncs =
@@ -78,7 +79,7 @@ public class ExprList {
             return (ExprFunc<? extends T>) MatcherList.valueOf(atom);
         throw new EvaluationException("Couldn't find function "+atom);
     }
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static final ExprFunc LITERAL = new ExprFunc() {
         @Override
         public String getName() { return "literal"; }
@@ -162,16 +163,50 @@ public class ExprList {
         @Override
         public Object evaluate(Class type, DanceState ds, List args)
             throws EvaluationException {
-            if (args.size() != 2)
-                throw new EvaluationException("needs 2 arguments");
-            Expr funcExpr = (Expr) args.get(0);
-            Expr argsExpr = (Expr) args.get(1);
-            // evaluate first arg as a string
-            // (XXX we should really look at the _curry, not eval as String)
-            String func = funcExpr.evaluate(String.class, ds);
-            // XXX should really construct result by filling in wildcard slots
-            Expr result = new Expr(func, argsExpr);
+            if (args.size() < 1)
+                throw new EvaluationException("needs at least 1 argument");
+            Expr funcExpr = ensureCurry((Expr) args.get(0));
+            assert funcExpr.atom == "_curry";
+            List<Expr> curryArgs = funcExpr.args;
+            assert !curryArgs.isEmpty();
+            // evaluate first _curry arg as a string; this is function name
+            String func = curryArgs.get(0).evaluate(String.class, ds);
+            // substitute for (Expr _arg) in _curry argument list
+            List<Expr> nArgs = new ArrayList<Expr>(curryArgs.size()-1);
+            for (Expr cArg : curryArgs.subList(1, curryArgs.size())) {
+                nArgs.add(subst(cArg, ds, args));
+            }
+            // create new expr with new substituted args
+            Expr result = new Expr(func, nArgs);
             return result.evaluate(type, ds);
+        }
+        /** Substitute (Expr _arg 'N) with appropriate member of 'args'. */
+        private Expr subst(Expr e, DanceState ds, List args)
+            throws EvaluationException {
+            if (e.atom=="_arg") {
+                // replace with appropriate _curry argument
+                Fraction n = e.args.get(0).evaluate(Fraction.class, ds);
+                assert n.getProperNumerator()==0;
+                int index = n.floor() + 1;
+                if (index < args.size())
+                    return (Expr) args.get(index);
+                else
+                    throw new EvaluationException("missing argument "+n);
+            }
+            // recurse down the tree
+            List<Expr> nArgs = new ArrayList<Expr>(e.args.size());
+            for (Expr ee : e.args) {
+                nArgs.add(subst(ee, ds, args));
+            }
+            return e.build(e.atom, nArgs);
+        }
+        /** Helper: convert literals (for simple 1-arg functions) to
+         *  appropriate _curry function invocation. */
+        private Expr ensureCurry(Expr e) {
+            if (e.atom == "_curry") { return e; }
+            // turn a string function name into:
+            //    (Expr _curry 'name (Expr _arg '0))
+            return new Expr("_curry", e, new Expr("_arg", Expr.literal("0")));
         }
     };
     static { exprGenericFuncs.put(_APPLY.getName(), _APPLY); }
