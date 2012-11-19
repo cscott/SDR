@@ -1,0 +1,13 @@
+Test cases for proper call parsing -- meta concepts!
+
+sdr> /program = Program.C4;
+C4
+sdr> /parse('initially echo tandem swing thru')
+initially(_curry(echo, tandem, _arg(0)), swing thru)
+sdr> /parse('initially initially twice hot foot spin')
+initially(_curry(initially, _curry(_fractional, 2, _arg(0)), _arg(0)), hot foot spin)
+sdr> /parse('initially initially as couples dixie diamond') // from facing lines
+initially(_curry(initially, as couples, _arg(0)), dixie diamond)
+sdr> /parse('initially do one half swing thru')
+initially(_curry(_fractional, 1/2, _arg(0)), swing thru)
+sdr> /exit
