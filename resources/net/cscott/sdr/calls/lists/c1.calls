@@ -41,6 +41,13 @@ def: switch the line
   // XXX: centers run while ends cross run
 */
 
+def: dixie diamond
+  call: dixie style, _finish dixie diamond
+def: _finish dixie diamond
+  in: 2
+  from: 1x4
+    call: _quasi concentric(hinge, u turn back)
+
 def: swing the fractions
   optional: LEFT
   call: _those who can turn right(1/4)

@@ -294,22 +294,30 @@ def: dixie style
   optional: REVERSE
   spoken: dixie style (to a wave)?
   in: 6
-  ipart:
-    from: SINGLE DOUBLE PASS THRU
-      call: _centers(right pull by)
-      call: left(_touch(1/4))
-    from: ANY
-      call: _in(2, _start dixie style), _in(4, dixie style)
+  from: SINGLE DOUBLE PASS THRU
+    part: 2
+      call: _dixie style
+  from: ANY
+    part: 0
+      call: _in(2, _start dixie style)
+    part: 2
+      call: _in(4, _dixie style)
 
 // "The right hand dancer steps forward and to the left to become the lead
 //  dancer in a tandem"
 def: _start dixie style
+  in: 2
   from: FACING COUPLES
     ends in: formation(SINGLE DOUBLE PASS THRU)
     select: BELLE
       prim: in 1, 0, none, sashay-start sashay-finish
     select: BEAU
       prim: in 1, -2, none, sashay-finish
+def: _dixie style
+  in: 6
+  from: SINGLE DOUBLE PASS THRU
+    call: _centers(right pull by)
+    call: left(_touch(1/4))
 
 // callerlab #64: SPIN CHAIN THRU
 def: spin chain thru

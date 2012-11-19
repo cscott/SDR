@@ -72,6 +72,10 @@ def: three quarter tag
 def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
   optional: LEFT
   in: 4
+  call: _maybe touch(_fan the top)
+
+def: _fan the top
+  in: 4
   from: OCEAN WAVE, TWO-FACED LINE
     // this definition lets us do "1/2 a fan the top", and also animates
     // nicely, since it provides an intermediate animation point for the
@@ -93,13 +97,11 @@ def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
   from: DIAMOND // XXX actually from 'SPLIT 4' which is 4 dancers on each side
     ipart:
       call: _quasi concentric(_in(4, cast(3/4)), _in(4, cast(1/4)))
-  from: ANY
-    call: _mixed touch, fan the top
 
 def: grand swing thru
   optional: LEFT
   in: 6 // assume same timing as swing thru
-  call: _maybe touch(_grand quarter thru(1/2))
+  call: _maybe touch(_grand quarter thru(1/2), 2)
 def: grand left swing thru
   call: mirror(grand swing thru)
 

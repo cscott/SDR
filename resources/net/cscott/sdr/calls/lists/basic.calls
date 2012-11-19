@@ -1522,7 +1522,7 @@ def: swing thru
   optional: LEFT
   in: 6
   // XXX DEFINE ME: also from alamo ring
-  call: _maybe touch(_quarter thru(1/2))
+  call: _maybe touch(_quarter thru(1/2), 2)
 
 def: _maybe touch(c, n=1)
   from: ANY
