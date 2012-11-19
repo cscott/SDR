@@ -89,34 +89,34 @@ import org.junit.runner.RunWith;
  *  |4G>  1B<  1G>  2B<
  * @doc.test More complex calls from facing couples.
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.FOUR_SQUARE); undefined;
- *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
+ *  js> ds.currentFormation().toStringDiagram("|");
  *  |3Gv  3Bv
  *  |
  *  |1B^  1G^
  *  js> Evaluator.parseAndEval(ds, "boys walk girls dodge");
- *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
+ *  js> ds.currentFormation().toStringDiagram("|");
  *  |1B^  3Gv
  *  |
  *  |1G^  3Bv
  *  js> Evaluator.parseAndEval(ds, "girls walk others dodge");
- *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
+ *  js> ds.currentFormation().toStringDiagram("|");
  *  |1G^  1B^
  *  |
  *  |3Bv  3Gv
  *  js> Evaluator.parseAndEval(ds, "trade", "roll");
- *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
+ *  js> ds.currentFormation().toStringDiagram("|");
  *  |1B>  1G<
  *  |
  *  |3G>  3B<
  * @doc.test Recursive evaluation with fractionalization, left concept,
  *  breathing, etc:
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.FOUR_SQUARE); undefined;
- *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
+ *  js> ds.currentFormation().toStringDiagram("|");
  *  |3Gv  3Bv
  *  |
  *  |1B^  1G^
  *  js> Evaluator.parseAndEval(ds, "square thru three and a half");
- *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
+ *  js> ds.currentFormation().toStringDiagram("|");
  *  |3G<
  *  |
  *  |3B>
@@ -127,7 +127,7 @@ import org.junit.runner.RunWith;
  * @doc.test Matching waves; fan the top; even timing:
  *  js> ds = new DanceState(new DanceProgram(Program.A1), Formation.SQUARED_SET); undefined;
  *  js> Evaluator.parseAndEval(ds, "heads pair off; do half of a pass thru");
- *  js> ds = ds.cloneAndClear(Breather.breathe(ds.currentFormation())); undefined
+ *  js> ds = ds.cloneAndClear(); undefined
  *  js> ds.currentFormation().toStringDiagram("|");
  *  |4B>  3B>
  *  |
@@ -137,21 +137,21 @@ import org.junit.runner.RunWith;
  *  |
  *  |1B<  2B<
  *  js> Evaluator.parseAndEval(ds, "fan the top")
- *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
+ *  js> ds.currentFormation().toStringDiagram("|");
  *  |1B^  4Gv  3G^  4Bv  2B^  1Gv  2G^  3Bv
  *  js> ds.movements(StandardDancer.COUPLE_1_BOY)
- *  [DancerPath[from=-1,-3,w,to=-7,-3,nw,[ROLL_RIGHT, SWEEP_LEFT],time=2,pointOfRotation=FOUR_DANCERS], DancerPath[from=-7,-3,nw,[ROLL_RIGHT, SWEEP_LEFT],to=-7,0,n,[ROLL_RIGHT, SWEEP_LEFT],time=2,pointOfRotation=FOUR_DANCERS]]
+ *  [DancerPath[from=-1,-3,w,to=-6,-4,nw,[ROLL_RIGHT, SWEEP_LEFT],time=2,pointOfRotation=FOUR_DANCERS], DancerPath[from=-6,-4,nw,[ROLL_RIGHT, SWEEP_LEFT],to=-7,0,n,[ROLL_RIGHT, SWEEP_LEFT],time=2,pointOfRotation=FOUR_DANCERS]]
  *  js> ds.movements(StandardDancer.COUPLE_4_GIRL)
- *  [DancerPath[from=-1,-1,e,to=-1,0,n,[ROLL_LEFT, SWEEP_RIGHT],time=1 1/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-1,0,n,[ROLL_LEFT, SWEEP_RIGHT],to=-3,1,nw,[ROLL_LEFT, SWEEP_RIGHT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-3,1,nw,[ROLL_LEFT, SWEEP_RIGHT],to=-4,1,w,[ROLL_LEFT, SWEEP_RIGHT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-4,1,w,[ROLL_LEFT, SWEEP_RIGHT],to=-5,0,s,[ROLL_LEFT, SWEEP_RIGHT],time=1 1/3,pointOfRotation=FOUR_DANCERS]]
+ *  [DancerPath[from=-1,-1,e,to=-1,0,n,[ROLL_LEFT, SWEEP_RIGHT],time=1 1/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-1,0,n,[ROLL_LEFT, SWEEP_RIGHT],to=-2,0,nw,[ROLL_LEFT, SWEEP_RIGHT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-2,0,nw,[ROLL_LEFT, SWEEP_RIGHT],to=-3,1,w,[ROLL_LEFT, SWEEP_RIGHT],time=2/3,pointOfRotation=FOUR_DANCERS], DancerPath[from=-3,1,w,[ROLL_LEFT, SWEEP_RIGHT],to=-5,0,s,[ROLL_LEFT, SWEEP_RIGHT],time=1 1/3,pointOfRotation=FOUR_DANCERS]]
  * @doc.test Four-person "pass thru":
  *  js> ds = new DanceState(new DanceProgram(Program.BASIC), Formation.FOUR_SQUARE); undefined;
  *  js> Evaluator.parseAndEval(ds, "pass thru")
- *  js> Breather.breathe(ds.currentFormation()).toStringDiagram("|");
+ *  js> ds.currentFormation().toStringDiagram("|");
  *  |1B^  1G^
  *  |
  *  |3Gv  3Bv
  *  js> ds.movements(StandardDancer.COUPLE_1_BOY)
- *  [DancerPath[from=-1,-1,n,to=-1,0,n,time=1,pointOfRotation=<null>], DancerPath[from=-1,0,n,to=-1,1,n,time=1,pointOfRotation=<null>]]
+ *  [DancerPath[from=-1,-1,n,to=-3,0,n,time=1,pointOfRotation=<null>], DancerPath[from=-3,0,n,to=-1,1,n,time=1,pointOfRotation=<null>]]
  *  js> ds.movements(StandardDancer.COUPLE_3_GIRL)
  *  [DancerPath[from=-1,1,s,to=-1,0,s,time=1,pointOfRotation=<null>], DancerPath[from=-1,0,s,to=-1,-1,s,time=1,pointOfRotation=<null>]]
  */
@@ -198,7 +198,7 @@ public abstract class Evaluator {
         for (String s : calls)
             l.add(CallDB.INSTANCE.parse(ds.dance.getProgram(), s));
         Comp c = new Seq(l.toArray(new SeqCall[l.size()]));
-        new Standard(c).evaluateAll(ds);
+        breathedEval(ds.currentFormation(), c).evaluateAll(ds);
     }
     /** Create an evaluator which breathes each formation to resolve
      *  collisions.  Good to use as a top-level evaluator, but note
