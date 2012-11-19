@@ -505,7 +505,7 @@ public abstract class BasicList {
                         // odd special case: sometimes the 1/4-off rotations
                         // leaves the dancer initially walking *backwards*
                         // turn 1/4 more if necessary to prevent that.
-                        dp = new DancerPath(current, target, time, null);
+                        dp = new DancerPath(current, target, Fraction.ONE,null);
                         Point initialTangent = dp.tangentStart();
                         if (!Point.ZERO.equals(initialTangent)) {
                             ExactRotation initialDir = ExactRotation.fromXY

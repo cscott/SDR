@@ -230,7 +230,7 @@ public class DancerPath {
                        PointOfRotation pointOfRotation, Collection<Flag> flags){
         assert from != null && to != null && time != null;
         assert from.facing.isExact() && to.facing.isExact();
-        assert time.compareTo(Fraction.ZERO) >= 0;
+        assert time.compareTo(Fraction.ZERO) > 0;
         this.from = from;
         this.to = to;
         this.time = time;

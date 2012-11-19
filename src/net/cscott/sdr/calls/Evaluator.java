@@ -588,6 +588,7 @@ public abstract class Evaluator {
                     Fraction t = Fraction.ZERO;
                     for (DancerPath dp : nds.movements(d)) {
                         Position nfrom = breathed.get(t).location(d);
+                        assert dp.time.compareTo(Fraction.ZERO) > 0;
                         t = t.add(dp.time);
                         Position nto = breathed.get(t).location(d);
                         DancerPath ndp = dp.translate(nfrom, nto);
