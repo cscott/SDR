@@ -26,6 +26,20 @@ def: hot foot spin
 def: transaction
   call: transfer and(cast off(3/4)), chain reaction
 
+def: echo(concept, call)
+  spoken: echo <0=concept> <1=anything>
+  part:
+    call: _apply([concept], [call])
+  part:
+    call: [call]
+
+def: reverse echo(concept, call)
+  spoken: reverse echo <0=concept> <1=anything>
+  part:
+    call: [call]
+  part:
+    call: _apply([concept], [call])
+
 // C4 class teaching order
 
 // week 1

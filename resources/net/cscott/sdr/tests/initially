@@ -32,6 +32,14 @@ sdr> initially twice swing thru
 | 3B<  4B<
 |
 | 2G>  3G>
+sdr> initially echo twice swing thru
+| 3B<  4B<
+| 
+| 1G>  4G>
+| 
+| 2G<  3G<
+| 
+| 2B>  1B>
 sdr> go home
 |      3Gv  3Bv
 | 
@@ -58,4 +66,16 @@ sdr> initially initially as couples dixie diamond
 | 1B^  3Gv  1G^  3Bv
 | 
 |      2G<  2B<
+sdr> go home ; heads square thru
+| 4B>  3G<  3B>  2G<
+| 
+| 4G>  1B<  1G>  2B<
+sdr> initially echo twice swing thru
+| 3G>  2G>
+| 
+| 1B<  2B<
+| 
+| 4B>  3B>
+| 
+| 4G<  1G<
 sdr> /exit

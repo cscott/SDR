@@ -190,4 +190,6 @@ metaconcept returns [Expr a]
         | 'finally'        { a = Expr.literal("finally"); }
         | 'oddly'          { a = Expr.literal("oddly"); }
         | 'evenly'         { a = Expr.literal("evenly"); }
+        | 'echo'           { a = Expr.literal("echo"); }
+        | 'reverse' 'echo' { a = Expr.literal("reverse echo"); }
         ;
