@@ -1272,6 +1272,14 @@ to do:
       "left pass thru" currently leaves a collision which escapes the
       "left concept".  Compare halfway point of "left pass thru" and
       "mirror pass thru".
+ kkk) <0=anything[-10]> in grammar to allow limited loops
+      split the precedence of 'do 2/3 of a...' and '... twice'
+        so that the precedence of the suffix doesn't screw with what
+        we want to do with the prefix form
+      ensure that the following parse:
+        finish finish swing and mix
+        finish tandem trade
+ lll) automatically extract <concept> production from 'spoken'
 
 -------
 heads x:
@@ -1495,18 +1503,3 @@ From completed double pass thru, "split phantom boxes bridge the gap"
 (versus just "bridge the gap").  Breathing exercise.  The "Split
 Phantom Boxes" concept means we shrink wrap the resulting formation
 halves.
---------
-To do:
-swing thru -> maybe touch(quarter thru(1/2))
-grand swing thru
- check parts of swing thru, ensure finish finish swing thru is an error
-mix, swing and mix
-
-<0=anything[-10]> in grammar to allow limited loops
-parse:
-finish finish swing and mix
-finish tandem trade
-
-like a
-
-split precedence of 'do 2/3 of a...' and '... twice'
