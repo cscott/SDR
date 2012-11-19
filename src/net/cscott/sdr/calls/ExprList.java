@@ -183,6 +183,11 @@ public class ExprList {
         /** Substitute (Expr _arg 'N) with appropriate member of 'args'. */
         private Expr subst(Expr e, DanceState ds, List args)
             throws EvaluationException {
+            if (e.atom=="_curry") {
+                // don't recurse into _curry.  This limited scoping ensures
+                // we don't need a gensym to keep function arguments separate.
+                return e;
+            }
             if (e.atom=="_arg") {
                 // replace with appropriate _curry argument
                 Fraction n = e.args.get(0).evaluate(Fraction.class, ds);
