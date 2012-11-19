@@ -4,7 +4,9 @@ import static net.cscott.sdr.calls.ast.Part.Divisibility.DIVISIBLE;
 import static net.cscott.sdr.calls.parser.CallFileLexer.APPLY;
 import static net.cscott.sdr.calls.parser.CallFileLexer.PART;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import net.cscott.sdr.calls.BadCallException;
@@ -71,29 +73,47 @@ public class FirstPart extends Finish {
             //  the other call, instead of a single part.  use an explicit
             //  ipart if you actually wanted to define it as a single part)
             singleCall = true;
+        } else if (s.children.size() == 1 && s.children.get(0).type==PART) {
+            // another special case: (Seq (Part 'DIVISIBLE '2 ...)) is
+            // actually two parts.  Recurse into the Part.
+            singleCall = true;
         } else if (s.children.size() < 2) {
             throw new BadCallException("Only one part");
         }
         // just look at first part, verify that 'howMany' is one
-        SeqCall firstCall = s.children.get(0);
-        if (firstCall.isIndeterminate()) {
-            throw new BadCallException("Number of parts is not well-defined");
-        }
-        Fraction firstParts;
-        try {
-            firstParts = firstCall.parts().evaluate(Fraction.class, ds);
-        } catch (EvaluationException e) {
-            assert false : "bad call definition";
+        List<SeqCall> zeroParts = new ArrayList<SeqCall>(2);
+        SeqCall firstCall=null;
+        Fraction firstParts=null;
+        int i;
+        for (i=0; i<s.children.size(); i++) {
+            firstCall = s.children.get(i);
+            if (firstCall.isIndeterminate()) {
+                throw new BadCallException("Number of parts is not well-defined");
+            }
+            try {
+                firstParts = firstCall.parts().evaluate(Fraction.class, ds);
+            } catch (EvaluationException e) {
+                assert false : "bad call definition";
             throw new BadCallException("Can't evaluate number of parts");
+            }
+            if (firstParts.equals(Fraction.ZERO)) {
+                zeroParts.add(firstCall);
+            } else break;
         }
-        if (firstParts.equals(Fraction.ONE) && !singleCall) {
-            // easy case, just use the first part
-            return s.build(s.children.subList(0, 1));
+        if (i==s.children.size()) {
+            // hmm, whole thing is an adjustment?
+            // would need to recurse up and take the first part of the second part...
+            throw new BadCallException("No parts found.");
+        } else if (firstParts.equals(Fraction.ONE) && !singleCall) {
+            // easy case, just use the first part (and any zero parts)
+            return s.build(s.children.subList(0, i+1));
         } else {
-            // harder case: "_first part" the first part
+            // harder case: "_first part" the next part
             assert firstCall.type == PART || firstCall.type == APPLY;
             SeqCall nFirst = firstCall.accept(this, t);
-            return s.build(Collections.singletonList(nFirst));
+            // add this to the zero parts and return the new Seq
+            zeroParts.add(nFirst);
+            return s.build(zeroParts);
         }
     }
 

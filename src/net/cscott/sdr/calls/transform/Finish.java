@@ -143,6 +143,10 @@ public class Finish extends PartsVisitor<Void> {
             //  the other call, instead of a single part.  use an explicit
             //  ipart if you actually wanted to define it as a single part)
             singleCall = true;
+        } else if (s.children.size() == 1 && s.children.get(0).type==PART) {
+            // another special case: (Seq (Part 'DIVISIBLE '2 ...)) is
+            // actually two parts.  Recurse into the Part.
+            singleCall = true;
         } else if (s.children.size() < 2) {
             throw new BadCallException("Only one part");
         }
