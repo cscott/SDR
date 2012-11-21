@@ -14,8 +14,8 @@ grammar @CLASSNAME@;
 <people> = <genders> | <heads_or_sides> | <all>;
 <heads_or_sides> = heads | sides ;
 <two_select> = (head|side) <genders> | (center|end) <genders>
-             | very centers | center two ;
-<six_select> = center six ;
+             | very centers | center two | outside two ;
+<six_select> = center six | outside six ;
 <genders> = <boys> | <girls> ;
 <boys> = boys | men {boys};
 <girls> = girls | ladies {girls};

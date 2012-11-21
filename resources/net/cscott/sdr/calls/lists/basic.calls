@@ -95,18 +95,30 @@ def: anyone while others(sel, c1, c2=nothing)
     // applied by the CENTER HALF matcher.
     condition: OR(EQUAL CALL([sel], END), EQUAL CALL([sel], OUTSIDE))
     call: _quasi concentric([c2],[c1])
+  from: CENTER 6
+    condition: or(EQUAL CALL([sel], CENTER_6),\
+                  and(ARE([sel], CENTER), ARE(CENTER, [sel])))
+    condition: GREATER(NUM DANCERS(), 6)
+    call: _quasi concentric([c1],[c2])
+  from: CENTER 6 // other way 'round
+    condition: or(EQUAL CALL([sel], OUTSIDE_2),\
+                  and(ARE([sel], not(CENTER)), ARE(not(CENTER), [sel])))
+    condition: GREATER(NUM DANCERS(), 6)
+    call: _quasi concentric([c2],[c1])
+  from: CENTER 2
+    condition: or(EQUAL CALL([sel], VERY_CENTER),\
+                  and(ARE([sel], CENTER), ARE(CENTER, [sel])))
+    condition: GREATER(NUM DANCERS(), 2)
+    call: _quasi concentric([c1],[c2])
+  from: CENTER 2 // other way 'round
+    condition: or(EQUAL CALL([sel], OUTSIDE_6),\
+                  and(ARE([sel], not(CENTER)), ARE(not(CENTER), [sel])))
+    condition: GREATER(NUM DANCERS(), 6)
+    call: _quasi concentric([c2],[c1])
   from: ANY // ugly hack to support "boys trade" == "boys trade down the line"
     condition: EQUAL CALL([c1], trade), "Not a trade"
     condition: EQUAL CALL([c2], nothing), "Not just a trade"
     call: trade down the line([sel])
-  from: ANY
-    condition: EQUAL CALL([sel], CENTER_6)
-    from: CENTER_6
-      condition: GREATER(NUM DANCERS(CENTER), 0)
-      select: CENTER
-        call: [c1]
-      select: OTHERS
-        call: [c2]
   from: ANY
     condition: GREATER(NUM DANCERS([sel]), 0)
     select: [sel]

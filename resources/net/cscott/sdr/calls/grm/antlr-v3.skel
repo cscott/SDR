@@ -63,9 +63,11 @@ two_select returns [Expr r]
         | a=center_or_end b=genders { r = new Expr("and", a, b); }
         | 'very' 'centers' { r = Expr.literal("VERY_CENTER"); }
         | 'center' 'two' { r = Expr.literal("VERY_CENTER"); }
+        | 'outside' 'two' { r = Expr.literal("OUTSIDE_2"); }
         ;
 six_select returns [Expr r]
         : 'center' 'six' { r = Expr.literal("CENTER_6"); }
+        | 'outside' 'six' { r = Expr.literal("OUTSIDE_6"); }
         ;
 center_or_end returns [Expr r]
 	: 'center' { r = Expr.literal("CENTER"); }
