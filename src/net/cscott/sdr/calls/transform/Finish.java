@@ -20,6 +20,7 @@ import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
+import net.cscott.sdr.calls.ast.If;
 import net.cscott.sdr.calls.ast.In;
 import net.cscott.sdr.calls.ast.OptCall;
 import net.cscott.sdr.calls.ast.Part;
@@ -71,9 +72,6 @@ public class Finish extends PartsVisitor<Void> {
         super(conceptName, safeConcepts, ds);
     }
 
-    /* (non-Javadoc)
-     * @see net.cscott.sdr.calls.transform.TransformVisitor#visit(net.cscott.sdr.calls.ast.In, java.lang.Object)
-     */
     @Override
     public Comp visit(In in, Void t) {
         // XXX should we scale duration of call?
@@ -182,6 +180,12 @@ public class Finish extends PartsVisitor<Void> {
     public OptCall visit(OptCall oc, Void t) {
         return oc.build(Expr.literal("ANY"), oc.child.accept(this, t));
     }
+    /* Skip condition, since we're skipping first part. (Note that we're
+     * also skipping any 'ends in' condition, since all bets are off.) */
+    @Override
+    public Comp visit(If iff, Void t) {
+        return iff.child.accept(this, t);
+    }
 
     /** A list of concepts which it is safe to hoist "finish" through.
     That is, "finish(as couples(swing thru))" == "as couples(finish(swing thru))". */
@@ -222,6 +226,7 @@ public class Finish extends PartsVisitor<Void> {
             Finish visitor = getPartsVisitor(ds);
             assert args.size()==1;
             Apply a = new Apply(args.get(0));
+            if (DEBUG) System.err.println("BEFORE: "+a);
             SeqCall sc = a.accept(visitor, null);
             Comp result = new Seq(sc);
             // OPTIMIZATION: SEQ(PART(c)) = c
@@ -230,8 +235,10 @@ public class Finish extends PartsVisitor<Void> {
                 if (p.divisibility==DIVISIBLE)
                     result = p.child;
             }
+            if (DEBUG) System.err.println("AFTER: "+result);
             return new Evaluator.Standard(result);
         }
         protected abstract Finish getPartsVisitor(DanceState ds);
     }
+    private static final boolean DEBUG = false;
 }

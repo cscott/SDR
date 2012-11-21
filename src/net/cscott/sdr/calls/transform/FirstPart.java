@@ -1,11 +1,11 @@
 package net.cscott.sdr.calls.transform;
 
+import static net.cscott.sdr.calls.ast.If.When.AFTER;
 import static net.cscott.sdr.calls.ast.Part.Divisibility.DIVISIBLE;
 import static net.cscott.sdr.calls.parser.CallFileLexer.APPLY;
 import static net.cscott.sdr.calls.parser.CallFileLexer.PART;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +14,7 @@ import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
+import net.cscott.sdr.calls.ast.If;
 import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
@@ -115,6 +116,15 @@ public class FirstPart extends Finish {
             zeroParts.add(nFirst);
             return s.build(zeroParts);
         }
+    }
+
+    /* Keep initial conditions, but skip 'ends in' conditions. */
+    @Override
+    public Comp visit(If iff, Void t) {
+        if (iff.when==AFTER)
+            return iff.child.accept(this, t);
+        return iff.build(iff.condition.accept(this,t),
+                         iff.child.accept(this,t));
     }
 
     /** A list of concepts which it is safe to hoist "_first part" through.

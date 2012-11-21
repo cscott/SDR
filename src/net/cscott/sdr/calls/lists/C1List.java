@@ -87,7 +87,7 @@ public abstract class C1List {
      *  js> a = new Expr("finish", Expr.literal("recycle"))
      *  (Expr finish 'recycle)
      *  js> C1List.FINISH.getEvaluator(ds, a.args).simpleExpansion()
-     *  (Opt (From 'ANY (Seq (Part 'DIVISIBLE '1 (Opt (From 'ANY (If 'BEFORE (Expr PROGRAM AT LEAST 'C1) (Seq (Apply (Expr _box counter rotate '1/4)) (Apply 'roll)) "Fractional recycle not allowed below C1")))))))
+     *  (Opt (From 'ANY (Seq (Part 'DIVISIBLE '1 (Opt (From 'ANY (Seq (Apply (Expr _box counter rotate '1/4)) (Apply 'roll))))))))
      */
     public static final Call FINISH = new PartSelectorCall
             ("finish", Program.C1, "finish (a|an)? <0=anything>") {
