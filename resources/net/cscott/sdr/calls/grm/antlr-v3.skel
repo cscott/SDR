@@ -52,7 +52,8 @@ parenthesized_anything returns [Expr r]
 	;
 
 people returns [Expr r]
-	: a=genders {r=a;} | a=heads_or_sides {r=a;} | a=all {r=a;}
+	: a=genders {r=a;} | a=heads_or_sides {r=a;}
+	| a=all {r=a;} | a=none {r=a;}
 	;
 heads_or_sides returns [Expr r]
         : 'heads' { r = Expr.literal("HEAD"); }
@@ -89,6 +90,9 @@ girls returns [Expr a]
 all returns [Expr a]
 @init { a = Expr.literal("ALL"); }
 	: 'all' | 'everyone' | 'every' 'one' | 'everybody' | 'every' 'body';
+none returns [Expr a]
+@init { a = Expr.literal("NONE"); }
+	: 'none' | 'no' 'one' | 'nobody' | 'no' 'body';
 wave_select returns [Expr a]
 	: 'centers' { a = Expr.literal("CENTER"); }
 	| 'ends' { a = Expr.literal("END"); }

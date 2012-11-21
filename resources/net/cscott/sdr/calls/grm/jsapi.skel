@@ -11,7 +11,7 @@ grammar @CLASSNAME@;
 // no parentheses in speech
 <parenthesized_anything> = <VOID>;
 
-<people> = <genders> | <heads_or_sides> | <all>;
+<people> = <genders> | <heads_or_sides> | <all> | <none> ;
 <heads_or_sides> = heads | sides ;
 <two_select> = (head|side) <genders> | (center|end) <genders>
              | very centers | center two | outside two ;
@@ -20,6 +20,7 @@ grammar @CLASSNAME@;
 <boys> = boys | men {boys};
 <girls> = girls | ladies {girls};
 <all> = all | every (one|body) {all};
+<none> = none | no (one|body) {none};
 <wave_select> = centers | ends;
 <anyone> = <people> | <wave_select> | <two_select> | <six_select> ;
 <number> = <digit> and <fraction>
