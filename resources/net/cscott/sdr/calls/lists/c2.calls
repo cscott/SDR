@@ -23,6 +23,9 @@ def: press left
 
 def: cross concentric(c)
   spoken: cross concentric <c=anything>
+  // try "center wave" as centers
+  from: GENERAL QUARTER TAG, TWIN GENERAL DIAMONDS
+    call: _cross concentric([c], [c])
   from: CENTER HALF
     call: _cross concentric([c], [c])
 
@@ -73,3 +76,75 @@ def: cross back
         prim: in 1, 1, none
 
 // XXX: grand cross back, from columns (keep in sync with triple cross (c1))
+
+def: _drop(c)
+  // XXX adjust 1/4 tag to single quarter tags
+  in: 2
+  from: GENERAL DIAMOND, GENERAL SINGLE QUARTER TAG
+    ipart:
+      call: _quasi concentric(nothing, [c]), _finish drop in
+
+def: drop in
+  call: _drop(face in)
+def: drop out
+  call: _drop(face out)
+def: drop back
+  call: _drop(u turn back)
+def: drop right
+  call: _drop(face right)
+def: drop left
+  call: _drop(face left)
+
+def: _finish drop in
+  in: 2
+  // centers must be in a miniwave
+  from: LH DIAMOND, LH FACING DIAMOND,\
+        LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG
+    call: mirror(_finish drop in)
+  from: RH DIAMOND
+    select: CENTER
+      prim: 0, 1, none
+    select: POINT
+      prim: in 1, 1, none, sashay-finish
+  from: RH FACING DIAMOND
+    select: CENTER
+      prim: 0, 1, none
+    select: POINT
+      prim: in 1, -1, none, sashay-finish
+  from: RH SINGLE QUARTER TAG
+    select: CENTER
+      prim: 0, 1, none
+    select: END
+      prim: -1, in 1, none, sashay-start
+  from: RH SINGLE THREE QUARTER TAG
+    select: CENTER
+      prim: 0, 1, none
+    select: END
+      prim: 1, in 1, none, sashay-start
+
+// XXX: can be done from promenade
+def: wheel the ocean
+  call: _start wheel the, _finish wheel the ocean
+def: wheel the sea
+  call: _start wheel the, _finish wheel the sea
+
+def: _start wheel the
+  from: BACK TO BACK COUPLES
+    call: wheel around
+  from: TANDEM COUPLES
+    select: LEADER
+      call: wheel around
+    select: TRAILER
+      call: nothing
+
+def: _finish wheel the ocean
+  from: FACING COUPLES
+    select: BELLE
+      prim: in 2, 1, none
+      prim: 0, 1, none
+    select: BEAU
+      prim: 0, 0, none
+      prim: 0, 0, none
+
+def: _finish wheel the sea
+  call: walk others dodge(BELLE)

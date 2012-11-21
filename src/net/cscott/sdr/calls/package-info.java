@@ -14,7 +14,7 @@
  *  square thru[basic]
  *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
  *  js> def = sqthr.getEvaluator(ds, java.util.Arrays.asList(Expr.literal("1 1/2"))).simpleExpansion()
- *  (Opt (From 'ANY (If 'BEFORE (Expr and (Expr greater '1 1/2 '0) (Expr not (Expr greater '1 1/2 '1))) (Seq (Apply (Expr _fractional '1 1/2 (Expr _in '2 'pull by)))))) (From 'ANY (If 'BEFORE (Expr greater '1 1/2 '1) (Seq (Part 'INDIVISIBLE '1 (Seq (Apply (Expr and (Expr _in '2 '_sq_thru_part) (Expr left (Expr square thru (Expr _subtract num '1 1/2 '1)))))))))))
+ *  (Opt (From 'ANY (If 'BEFORE (Expr and (Expr greater '1 1/2 '0) (Expr not (Expr greater '1 1/2 '1))) (Seq (Apply (Expr _fractional '1 1/2 (Expr _in '2 'pull by)))))) (From 'ANY (If 'BEFORE (Expr greater '1 1/2 '1) (Seq (Part 'INDIVISIBLE '1 (Seq (Apply (Expr and (Expr _in '2 '_square thru part) (Expr left (Expr square thru (Expr _subtract num '1 1/2 '1)))))))))))
  *
  * @doc.test Call fractionalization:
  *  js> importPackage(net.cscott.sdr.util) // for Fraction

@@ -1,0 +1,45 @@
+Tests for cross concentric (C2).
+
+sdr> /program=C2; undefined
+sdr> heads square thru ; veer left ; lockit
+| 1B^  3G^  4Gv  4Bv  2B^  2G^  1Gv  3Bv
+sdr> sides trade
+| 1B^  3G^  4B^  4G^  2Gv  2Bv  1Gv  3Bv
+sdr> cross concentric turn and deal
+| 4Bv  4Gv
+| 
+| 1Bv  3Gv
+| 
+| 1G^  3B^
+| 
+| 2G^  2B^
+sdr> centers pass the ocean
+| 4Bv  4Gv
+| 
+|   1G>
+| 
+|   3B<
+| 
+|   1B>
+| 
+|   3G<
+| 
+| 2G^  2B^
+sdr> cross concentric recycle
+| 3G>                      3B<
+|      2B^  2Gv  4G^  4Bv
+| 1B>                      1G<
+sdr> heads hinge
+| 1B^  3Gv  2B^  2Gv  4G^  4Bv  1G^  3Bv
+sdr> centers fan the top
+|           2B>
+| 
+|           2G<
+| 1B^  3Gv       1G^  3Bv
+|           4G>
+| 
+|           4B<
+sdr> cross concentric recycle
+sdr> hinge
+sdr> cross concentric drop in
+sdr> /exit

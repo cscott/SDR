@@ -1503,3 +1503,17 @@ From completed double pass thru, "split phantom boxes bridge the gap"
 (versus just "bridge the gap").  Breathing exercise.  The "Split
 Phantom Boxes" concept means we shrink wrap the resulting formation
 halves.
+---
+implement 'flip the diamond' to get acey-deucey-2 test to go further
+implement 'ping pong circulate' to get acey-deucey-3 test to go further
+implement 'spin chain and exchage the gears' to get
+    right-roll-to-a-wave test to go further
+fix "remove centers" part of concentric implementation to get
+concentric diamonds to work correctly (cross-concentric-1 test)
+
+any hand(x):
+  try doing call _any hand x
+  if that fails, then try to transform definition
+
+similarly for "the wave" suffix -- this lets specific definitions
+override the more general concept (and grammar)

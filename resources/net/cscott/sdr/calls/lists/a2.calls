@@ -1,20 +1,5 @@
 program: a2
 
-/* 'swing' is defined in basic.calls */
-
-def: slip
-  // "from general lines with centers forming a miniwave only"
-  in: 3
-  from: 1x4
-    call: _quasi concentric(_miniwave trade, nothing)
-
-// putting 'swing and mix' on A2 list, as per Vic Ceder
-def: swing and mix // 3 part call
-  part:
-    call: _maybe touch(_wave swing)
-  part: 2
-    call: mix
-
 def: box counter rotate(n=1/4)
   spoken: box counter rotate (<n=fraction>)?
   condition: equal num(NUM DANCERS(), 4), \
@@ -84,6 +69,53 @@ def: single wheel
   in: 4
   ipart:
     call: and roll(_hinge)
+
+def: slide
+  in: 3
+  from: GENERAL LINE
+    from: GENERAL PARTNERS
+      condition: formation(MINIWAVE),\
+        "End and adjacent center must form miniwave"
+      call: _miniwave spread
+
+def: slither
+  in: 3
+  from: GENERAL LINE
+    call: _quasi concentric(_slither check, nothing)
+  // vic sez: legal from miniwave columns (but gimmicky)
+  from: 2x4
+    call: _quasi concentric(_miniwave spread, nothing)
+def: _slither check
+  condition: formation(MINIWAVE),\
+    "Centers must form miniwave"
+  call: _miniwave spread
+
+// fractionalizable into halves
+def: _miniwave spread
+  from: RH MINIWAVE
+    prim: 1, -1, none, sashay-start sashay-finish
+    prim: 1,  1, none, sashay-start sashay-finish
+  from: LH MINIWAVE
+    prim: -1, -1, none, sashay-start sashay-finish
+    prim: -1,  1, none, sashay-start sashay-finish
+
+def: slip
+  // "from general lines with centers forming a miniwave only"
+  in: 3
+  from: 1x4
+    call: _quasi concentric(_miniwave trade, nothing)
+  // vic sez: legal from miniwave columns (but gimmicky)
+  from: 2x4
+    call: _quasi concentric(_miniwave trade, nothing)
+
+/* 'swing' is defined in basic.calls */
+
+// putting 'swing and mix' on A2 list, as per Vic Ceder
+def: swing and mix // 3 part call
+  part:
+    call: _maybe touch(_wave swing)
+  part: 2
+    call: mix
 
 def: _facing recycle
   in: 4

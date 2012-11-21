@@ -27,8 +27,9 @@ def: face out
 // should really remove the intermediate position between a and b
 // allowing the action of a to flow smoothly into b
 def: _blend(a, b)
-  call: [a]
-  call: [b]
+  xpart:
+    call: [a]
+    call: [b]
 
 // meta-commands
 def: bow to your partner
@@ -533,21 +534,44 @@ def: _single star promenade(n)
                       _single star promenade 1/8)
 
 def: _single file promenade(n)
+  spoken: single file promenade <n=fraction>
   call: _fractional(_multiply num([n], 8), _single file promenade 1/8)
 
 def: _promenade(n)
   from: STATIC SQUARE
-    call: 1/2(reverse(wheel around)), _promenade([n])
+    part: 0
+      call: 1/2(reverse(wheel around))
+    part:
+      call: _promenade([n])
   from: ANY
-    call: _start promenade, as couples(_single promenade([n]))
+    part: 0
+      call: _start promenade
+    part:
+      call: _as couples single promenade([n])
   from: ANY // PROMENADE, STAR PROMENADE, as couples diamonds, etc.
+    call: _as couples single promenade([n])
+// XXX odd bug here: we need to breathe after the _start promenade
+//     and before the 'as couples', otherwise we'll fail with 'No COUPLE
+//     dancers' (eg see first sequence in 'dixie-grand' test case)
+//     so we do a 'from: ANY' just to get the breathing done.
+def: _as couples single promenade(n)
+  from: ANY /* breath (HACK) */
     call: as couples(_single promenade([n]))
+
+
+def: _maybe circle adjust(c, n=1)
+  from: ANY
+    call: [c]
+  from: O SPOTS
+    part: 0
+      call: _circle adjust
+    part: [n]
+      call: [c]
 
 def: _start promenade
   from: ANY
-    call: _start promenade from facing
-  from: O SPOTS // 1/8 rotated version (darn circle choreo)
-    call: _circle adjust, _start promenade from facing
+    // circle adjust for 1/8 rotated version (circle choreo)
+    call: _maybe circle adjust(_start promenade from facing)
   from: 2x4
     condition: and(tboned(ALL), not(tboned(CENTER)), not(tboned(END)))
     condition: match(_inout pattern(), "oooooooo")
@@ -821,9 +845,7 @@ def: _turn and touch
           call: _quasi concentric(face out, nothing), touch
   from: ANY
     condition: not(formation(FACING LINES))
-    call: _2 dancer turn and touch
-  from: O SPOTS
-    call: _circle adjust, _2 dancer turn and touch
+    call: _maybe circle adjust(_2 dancer turn and touch)
 
 def: _2 dancer turn and touch
   from: mixed(FACING DANCERS, RH MINIWAVE)
@@ -975,6 +997,7 @@ def: ladies in men sashay(sel)
   spoken: <sel=anyone> in (<anyone>|others) sashay
   condition: MATCH(_SWEEP PATTERN(), "(L+)|(R+)"), \
                    "Sweep direction must be consistent"
+  in: 4
   from: ANY // handle all the right-sweep cases at once
     condition: MATCH(_SWEEP PATTERN(), "R+")
     call: mirror(ladies in men sashay([sel]))
@@ -983,8 +1006,9 @@ def: ladies in men sashay(sel)
     from: SINGLE STATIC SQUARE
       call: _single ladies in men sashay left([sel])
     from: FACING COUPLES
-      ipart:
+      part: 0
         call: _adjust to single static square
+      part: 1
         call: _single ladies in men sashay left([sel])
     from: STATIC SQUARE
       call: _ladies in men sashay left([sel])
@@ -1005,6 +1029,7 @@ def: _adjust to single static square
       call: mirror(_adjust to single static square)
 
 def: _single ladies in men sashay left(sel)
+  in: 4
   from: SINGLE STATIC SQUARE
     condition: MATCH(_SELECTION PATTERN([sel]), "_xx_|x__x"), \
                "Selected dancers are adjacent"
@@ -1024,10 +1049,22 @@ def: _single ladies in men sashay left(sel)
         prim: -2, 0, none, force-roll-right sashay-start sashay-finish
 
 def: _ladies in men sashay left(sel)
+  from: ANY
+    call: _ladies in men sashay left beaus in([sel])
+  from: ANY
+    call: _ladies in men sashay left belles in([sel])
+
+def: _ladies in men sashay left beaus in(sel)
+  in: 4
   from: STATIC SQUARE
     condition: MATCH(_SELECTION PATTERN([sel]), "_xx__xx_") // beaus in
-    ipart:
-      call: _circle adjust, _ladies in men sashay left([sel])
+    part: 0
+      call: _circle adjust
+    part: 1
+      // note we split 'beaus in' and 'belles in' to control recursion
+      call: _ladies in men sashay left belles in([sel])
+def: _ladies in men sashay left belles in(sel)
+  in: 4
   from: STATIC SQUARE
     condition: MATCH(_SELECTION PATTERN([sel]), "x__xx__x") // belles in
     select: [sel]
@@ -1365,12 +1402,13 @@ def: square thru(n)
   from: ANY
     condition: greater([n], 1)
     ipart: // does square thru N have N distinct parts?
-      call: _in(2, _sq_thru_part), left(square thru(_subtract num([n],1)))
+      call: _in(2, _square thru part), left(square thru(_subtract num([n],1)))
 
-def: _sq_thru_part
+def: _square thru part
   // definition is:
   //  call: pull by, quarter in
   // but looks better if we blend the quarter in
+  in: 2
   ipart:
     from: FACING COUPLES
       prim: 0, 1, none
@@ -1432,6 +1470,9 @@ def: _quarter wheel
 // callerlab #35: BOX THE GNAT
 def: box the gnat
   in: 4
+  call: _maybe touch(_box the gnat from miniwave)
+def: _box the gnat from miniwave
+  in: 4
   ipart:
     from: RH MINIWAVE
       condition: not(or(ALL(BOY), ALL(GIRL))), "Same sex boxing!"
@@ -1441,8 +1482,6 @@ def: box the gnat
       select: GIRL
         prim: in 1,1,left,sashay-finish
         prim: 0,0,left
-    from: ANY
-      call: _mixed touch, box the gnat
 
 // callerlab #36: TRADE FAMILY
 

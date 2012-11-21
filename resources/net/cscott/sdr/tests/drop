@@ -1,0 +1,73 @@
+Tests for drop in/out/back/right/left.
+
+sdr> /program=C2
+C2
+sdr> /setFormation(Formation.FOUR_SQUARE)
+| 3Gv  3Bv
+|
+| 1B^  1G^
+sdr> step to a wave ; girls hinge
+|      1G<
+| 1B^       3Bv
+|      3G>
+sdr> drop in
+| 1G<  3B<
+|
+| 1B>  3G>
+sdr> hinge ; boys hinge
+|      1B>
+| 1Gv       3G^
+|      3B<
+sdr> drop out
+| 1G<  1B>
+|
+| 3B<  3G>
+sdr> single wheel
+| 3B>  1G>  3G<  1B<
+sdr> extend
+|      1G>
+| 3B>       1B<
+|      3G<
+sdr> drop right
+| 3Bv  1G>
+|
+| 3G<  1B^
+sdr> scoot back and roll
+| 3Gv  3B^
+|
+| 1Bv  1G^
+sdr> extend
+|   3B^
+|
+| 3Gv  1G^
+|
+|   1Bv
+sdr> drop back
+| 3Bv  1G^
+|
+| 3Gv  1B^
+sdr> extend
+|   1G^
+|
+| 3Bv  1B^
+|
+|   3Gv
+sdr> drop left
+| 1G<  1B^
+|
+| 3Bv  3G>
+sdr> /// XXX i'd like to do "boys run and roll" but it doesn't work.
+sdr> /// simulate it, instead
+sdr> girls face out ; boys run and roll ; girls face in
+| 1B>  1G<
+|
+| 3G>  3B<
+sdr> star thru
+| 1Gv  1Bv
+|
+| 3B^  3G^
+sdr> right and left thru
+| 3Gv  3Bv
+|
+| 1B^  1G^
+sdr> /exit

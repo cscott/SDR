@@ -19,6 +19,7 @@ def: _acey circulate
 
 // XXX: ALL 8 SPIN THE TOP
 // XXX: reformulate as application of "all 8" concept
+// XXX: alternatively, it's a "4/4 top" (A1)
 
 // (anything) & roll
 def: roll
@@ -33,18 +34,21 @@ def: and roll(c)
 // XXX: missing case 1: "heads star thru & spread", heads spread,
 //                      *even if they are trailers*
 def: spread
-  spoken: [-10] spread
   call: _spread
 
 def: and spread(c)
   spoken: [-10] <c=anything> and spread
   from: ANY
-    // this applies only if the call ends in parallel lines
-    call: _blend(_start case 2 spread([c]), _spread)
+    // this applies only if the call ends in parallel lines (and isn't
+    // being evaluated for parts)
+    ipart:
+      call: _blend(_start case 2 spread([c]), _spread)
   from: ANY
     // unblended version
-    call: [c]
-    call: _spread
+    part: _num parts([c])
+      call: [c]
+    part: // "spread adds 1 part to the call"
+      call: _spread
 
 def: _start case 2 spread(c)
   ends in: formation(PARALLEL GENERAL LINES)
@@ -52,18 +56,76 @@ def: _start case 2 spread(c)
 
 def: _spread
   in: 2
-  // "case 3" of the definition
-  from: DOUBLE PASS THRU, COMPLETED DOUBLE PASS THRU
-    select: LEADER
-      prim: out 2, 0, none
-    select: TRAILER
-      prim: 0, 2, none
   // "case 2" of the definition
-  from: PARALLEL GENERAL LINES
-    select: CENTER
-      prim: out 2, 0, none
-    select: END
-      prim: in 2, 0, none
+  from: GENERAL LINE
+    from: GENERAL PARTNERS
+      from: MINIWAVE
+        call: _miniwave spread
+      from: COUPLE
+        call: half sashay
+  // note that 'spread' from COMPLETED DOUBLE PASS THRU has been redefined
+  // (and taken off the plus list)
+  from: GENERAL COLUMNS
+    call: slim down
+
+def: chase left
+  spoken: chase left | left chase
+  call: mirror(chase right)
+def: chase right
+  in: 6
+  ipart:
+    from: BACK TO BACK COUPLES
+      call: _start chase right, _box circulate, _box circulate
+def: _start chase right
+  in: 4 // so it's the same length as the box circulates
+  from: COUPLE
+    select: BELLE
+      prim: 0, 0, right
+      prim: 0, 0, right
+    select: BEAU
+      prim: 0, 0, none
+      prim: 0, 0, none
+
+def: coordinate
+  // 4 parts
+  call: circulate
+  call: 1/2(circulate)
+  call: triple trade
+  call: _like a coordinate
+
+def: dixie grand
+  // 3 parts
+  call: _maybe circle adjust(_start dixie grand)
+  call: _maybe circle adjust(mirror(_dixie pull by))
+  call: _maybe circle adjust(_dixie pull by)
+def: _start dixie grand
+  // "those who can right pull by"
+  from: RH QUARTER TAG, RH THREE QUARTER TAG
+    call: _quasi concentric(right pull by, nothing)
+  from: COMPLETED DOUBLE PASS THRU
+    call: _quasi concentric(nothing, and(face in, right pull by, face in))
+  from: allow unmatched(FACING DANCERS)
+    call: right pull by
+  from: allow unmatched(FACING DANCERS, RH MINIWAVE)
+    call: right pull by
+// this is a "pull by and adjust to o spots"
+def: _dixie pull by
+  in: 2
+  from: TRADE BY
+    select: and(CENTER, BEAU)
+      prim: -2, 1, none, sashay-start
+      prim:  0, 1, none
+    select: and(CENTER, BELLE)
+      prim:  0, 1, none
+      prim:  2, 1, none, sashay-finish
+    select: and(END, BEAU)
+      prim:  1, 0, right
+      prim:  0, 1, none
+    select: and(END, BELLE)
+      prim: -1, -2, left
+      prim:  2, 1, none, sashay-finish
+  from: FACING DANCERS
+    call: right pull by
 
 def: three quarter tag
   optional: LEFT
@@ -98,12 +160,63 @@ def: _fan the top
     ipart:
       call: _quasi concentric(_in(4, cast(3/4)), _in(4, cast(1/4)))
 
+// see the definition for 'scoot back'
+def: follow your neighbor
+  optional: LEFT
+  in: 6
+  from: BOX, 2x2
+    condition: or(PROGRAM AT LEAST(c1), NOT(TBONED(ALL))), \
+               "T-boned formations not allowed below C1"
+    condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+               "Must have diagonal trailers"
+    select: TRAILER
+      ipart:
+        prim: 0,1,none  // extend
+        prim: in 1,1,in // arm turn 1/4
+        prim: in 1,1,in // arm turn 1/4
+        prim: in 1,1,in // arm turn 1/4
+    select: and(LEADER,BEAU)
+      ipart:
+        prim: in 1,2,right
+        prim: 0, 0, none // make the timing work out
+        prim: 0, 0, right
+        prim: 0, 0, right
+    select: and(LEADER,BELLE)
+      ipart:
+        prim: in 1,2,left
+        prim: 0, 0, none // make the timing work out
+        prim: 0, 0, left
+        prim: 0, 0, left
+  // vic ceder doesn't like this usage.
+  from: SINGLE QUARTER TAG, QUARTER TAG
+    call: _extend, cast off(3/4)
+
 def: grand swing thru
   optional: LEFT
   in: 6 // assume same timing as swing thru
   call: _maybe touch(_grand quarter thru(1/2), 2)
 def: grand left swing thru
   call: mirror(grand swing thru)
+
+// callerlab says "10-12" beats and 4 parts
+def: linear cycle
+  from: GENERAL LINE
+    part:
+      call: hinge
+    // this is a cheat! we can't really do the phantom 2x4 called for in
+    // the proper 3-part definition yet.
+    ipart: 3
+      call: _box circulate, _finish linear cycle
+def: _finish linear cycle
+  in: 4
+  from: BOX
+    select: LEADER
+      prim: in 2, 0, in
+      prim: 0, 0, in
+    select: TRAILER
+      prim: 0, 2, in, sashay-finish
+      prim: 0, 0, in
+
 
 def: peel the top
   in: 6
@@ -128,6 +241,21 @@ def: _peel and step
       select: TRAILER
         prim: 0, 1, none
         prim: 0, 1, none
+
+def: spin chain and exchange the gears(n=3/4)
+  spoken: spin chain and exchange the gears (but turn the stars <n=fraction>)?
+  in: 26
+  part:
+    call: _maybe touch(_wave swing)
+  xpart:
+    call: _spin chain and exchange the gears part 2
+    call: _fractional(_multiply num(4,[n]), diamond circulate)
+    call: _fractional(3/4, exchange the diamond)
+    call: interlocked flip the diamond
+def: _spin chain and exchange the gears part 2
+  in: 8 // official timing for "three quarter thru"
+  from: PARALLEL WAVES
+    call: _quasi concentric(any hand three quarter thru, u turn back)
 
 def: trade the wave
   in: 6

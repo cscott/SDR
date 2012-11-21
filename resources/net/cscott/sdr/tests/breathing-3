@@ -1,0 +1,17 @@
+Test broken breathing from spindle.
+
+sdr> /program = A1
+A1
+sdr> heads square thru 2 ; boys walk girls dodge
+| 4G>  4B>  3G>  1B>
+|
+| 3B<  1G<  2B<  2G<
+sdr> circulate once and a half
+|      3B>  4G>  4B>
+| 1G^                 3Gv
+|      2B<  2G<  1B<
+sdr> triple trade
+|      2B>  2G>  1B>
+| 1G^                 3Gv
+|      3B<  4G<  4B<
+sdr> /exit

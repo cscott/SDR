@@ -1,0 +1,85 @@
+Test wheel the ocean/sea (C2).
+
+sdr> /program=C2
+C2
+sdr> heads square thru ; pass thru
+| 3G<  4B>  2G<  3B>
+|
+| 1B<  4G>  2B<  1G>
+sdr> wheel the ocean
+| 1B>  3G>  2B>  2G>
+|
+| 4G<  4B<  1G<  3B<
+sdr> tandem walk and dodge
+| 4G<  4B<  1B>  3G>
+|
+| 1G<  3B<  2B>  2G>
+sdr> wheel the sea
+| 4B<  3B<  2G<  3G<
+|
+| 1G>  4G>  1B>  2B>
+sdr> tandem boys run
+| 1G>  4G>  2B<  1B<
+|
+| 3B>  4B>  2G<  3G<
+sdr> double pass thru
+| 2B<  1B<  1G>  4G>
+|
+| 2G<  3G<  3B>  4B>
+sdr> do 1/2 of a wheel the ocean
+| 2G>  1B<  1G>  4B<
+|
+| 2B>  3G<  3B>  4G<
+sdr> roll
+| 2G^  1B<  1G>  4Bv
+|
+| 2B^  3G<  3B>  4Gv
+sdr> centers do half of a wheel the sea
+| 2G^  3G>  3B<  4Bv
+|
+| 2B^  1B>  1G<  4Gv
+sdr> roll
+| 2G^  3G^  3Bv  4Bv
+|
+| 2B^  1B^  1Gv  4Gv
+sdr> girls trade
+| 3Gv  2Gv  3Bv  4Bv
+|
+| 2B^  1B^  4G^  1G^
+sdr> finish wheel the sea
+| 2Gv  1B^  4Bv  1G^
+|
+| 3Gv  2B^  3Bv  4G^
+sdr> recycle
+| 1Gv  4Bv
+|
+| 1B^  2G^
+|
+| 4Gv  3Bv
+|
+| 2B^  3G^
+sdr> finish wheel the ocean
+| 2G^  4Bv
+|
+| 1B^  1Gv
+|
+| 3G^  3Bv
+|
+| 2B^  4Gv
+sdr> quarter thru ; lockit
+| 1G^  1Bv  4B^  2Gv
+|
+| 4G^  2Bv  3B^  3Gv
+sdr> acey deucey ; swing thru twice
+| 1G^  1Bv  4B^  4Gv
+|
+| 2G^  2Bv  3B^  3Gv
+sdr> right and left grand ; promenade home ; you're home
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> /exit

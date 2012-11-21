@@ -18,9 +18,16 @@ def: quarter in
   in: 2
   from: 2x2 // into your 2x2
     prim: 0,0,in
+  from: ANY
+    condition: equal num(NUM DANCERS(), 2)
+    prim: 0,0,in
+
 def: quarter out
   in: 2
   from: 2x2 // out of your 2x2
+    prim: 0,0,out
+  from: ANY
+    condition: equal num(NUM DANCERS(), 2)
     prim: 0,0,out
 
 def: pair off
@@ -29,9 +36,19 @@ def: pair off
     prim: 0,0,out
 
 def: mix
+  in: 6
   call: cross run(CENTER), _finish mix
+// odd definition because it's not strictly a split call: we can
+// do it from odd t-boned setups where the axis changes between the
+// cross run and the mix.
+// eg:
+//  > ^ ^ >
+//  < v v <
 def: _finish mix
   in: 3
+  from: GENERAL TIDAL LINE
+    from: GENERAL LINE
+      call: _quasi concentric(trade, _nothing preserve roll)
   from: CENTER HALF
     call: _quasi concentric(trade, _nothing preserve roll)
 
@@ -51,6 +68,21 @@ def: grand three quarter thru
   call: _grand quarter thru(3/4)
 def: grand left three quarter thru
   call: mirror(grand three quarter thru)
+
+def: any hand quarter thru
+  call: _any hand quarter thru(1/4)
+def: any hand three quarter thru
+  call: _any hand quarter thru(3/4)
+// XXX this is an incomplete definition of any hand quarter thru
+//      should allow unmatched dancers, magic boxes, etc.
+def: _any hand quarter thru(n=1/4)
+  from: mixed(RH BOX, LH BOX, INVERTED BOX)
+    from: RH BOX
+      call: _quarter thru([n])
+    from: LH BOX
+      call: left(_quarter thru([n]))
+    from: INVERTED BOX
+      call: cast([n]), anyone while others(CENTER, trade)
 
 def: _those who can turn right(n)
   from: allow unmatched(RH MINIWAVE)
@@ -102,3 +134,133 @@ def: _cross
         prim: in 1, 1, none
 
 // XXX: vic cedar says <anyone> cross is also on a1 list.
+
+def: brace thru
+  call: right pull by
+  call: _finish brace thru
+def: _finish brace thru
+  from: BACK TO BACK COUPLES
+    ends in: formation(FACING COUPLES)
+    call: brace yourself
+
+def: clover and(call)
+  spoken: clover and <call=anything>
+  in: 4
+  ipart:
+    call: _maybe start clover(_finish clover([call], _single cloverleaf))
+
+def: cross clover and(call)
+  spoken: cross clover and <call=anything>
+  in: 4
+  ipart:
+    call: _maybe start clover(_finish clover([call], _single cross cloverleaf))
+
+def: _maybe start clover(c)
+  from: 2x4
+    condition: match(_facing pattern(not(CENTER)), "<><>"),\
+               "Ends must be facing out"
+    call: [c]
+  from: ANY
+    call: slim down, [c]
+
+def: _finish clover(call, clover)
+  from: CENTER HALF
+    call: _concentric([call], [clover])
+
+def: double star thru
+  // 2 parts
+  call: star thru
+  call: mirror(star thru)
+
+def: horseshoe turn
+  // Vic sez: "Consider a Squared Set after Heads Pass Thru. From this
+  // formation, the call Clover And Partner Tag is legal, but Horseshoe
+  // Turn is not."
+  from: CENTER HALF
+    condition: match(_inout pattern(not(CENTER)), "oooo"),\
+               "Ends must be facing out"
+    call: clover and(partner tag)
+
+def: lockit
+  from: GENERAL LINE, GENERAL DIAMOND
+    call: _counter rotate 1/4
+
+def: partner hinge
+  from: MINIWAVE, COUPLE
+    ends in: formation(MINIWAVE)
+    call: 1/2(trade)
+
+def: partner tag
+  from: mixed(COUPLE, RH MINIWAVE, LH MINIWAVE)
+    ends in: formation(BACK TO BACK DANCERS)
+    call: quarter in, pass thru
+
+def: pass in
+  ends in: formation(COUPLE)
+  call: pass thru, face in
+
+def: pass out
+  ends in: formation(COUPLE)
+  call: pass thru, face out
+
+def: pass the sea
+  call: pass thru, quarter in, left(step to a wave)
+
+// callerlab says timing is "4 & 2".  Let's call that "4" shall we?
+def: right roll to a wave
+  in: 4
+  from: GENERAL TANDEM // group dancers
+    ends in: formation(RH MINIWAVE)
+    from: FACING DANCERS, TANDEM, BACK TO BACK DANCERS // apply tags
+      select: LEADER
+        prim: 0, 0, right
+        prim: 1, 1, right // can roll
+      select: TRAILER
+        prim: -1, 1, none
+        prim: 0, 0, none // can't roll
+def: left roll to a wave
+  call: mirror(right roll to a wave)
+
+// see 'square thru' (basic) and 'square chain the top' (c1) definitions
+def: square chain thru
+  optional: LEFT
+  from: mixed(RH OCEAN WAVE, FACING COUPLES)
+    ends in: formation(BACK TO BACK COUPLES)
+    call: _square thru part, left(swing thru), left(turn thru)
+
+def: triple star thru
+  // 3 parts
+  call: _those facing star thru
+  call: mirror(_those facing star thru)
+  call: _those facing star thru
+
+def: _those facing star thru
+  from: allow unmatched(FACING DANCERS)
+    call: star thru
+
+def: triple trade
+  from: CENTER 6
+    call: _quasi concentric(trade, nothing)
+
+// three parts, everyone can roll at the end
+// (fractionalization is only legit at upper levels)
+def: turn and deal
+  optional: LEFT
+  in: 4
+  from: GENERAL LINE
+    ends in: formation(2x2)
+    call: face in
+    call: _middle part turn and deal // preserves roll
+    call: roll
+
+def: _middle part turn and deal
+  // extend to 1/2 tag, but preserve roll
+  in: 2
+  ipart:
+    from: SINGLE DOUBLE PASS THRU
+      select: LEADER
+        prim: -1, 1, none, preserve-roll
+        prim:  0, 1, none, preserve-roll
+      select: TRAILER
+        prim:  0, 1, none, preserve-roll
+        prim: -1, 1, none, preserve-roll

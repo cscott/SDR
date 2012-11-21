@@ -7,23 +7,48 @@ def: cloverleaf
   call: tandem(_single cloverleaf)
 
 def: _single cloverleaf
+  in: 4
   from: BACK TO BACK COUPLES // XXX suppress breathing
     ipart:
-      prim: 0, 1, none    // 1,1,n -> 2,1,n "first step forward"
-      prim: out 1, 1, out // 2,1,n -> 3,2,e
-      prim: in 1, 1, in   // 3,2,e -> 2,3,s
-      prim: in 1, 1, in   // 2,3,s -> 1,2,w
-      prim: 0, 1, none    // 1,2,w -> 1,1,w
+      prim: 0, 1, none    // 1,1,n -> 1,2,n "first step forward"
+      prim: out 1, 1, out // 1,2,n -> 2,3,e
+      prim: in 1, 1, in   // 2,3,e -> 3,2,s
+      prim: in 1, 1, in   // 3,2,s -> 2,1,w
+      prim: 0, 1, none    // 2,1,w -> 1,1,w
+def: _single cross cloverleaf
+  in: 4
+  from: BACK TO BACK COUPLES // XXX suppress breathing
+    ipart:
+      select: BEAU
+                            // -1,1,n-> 0,1,n "half of a half sashay"
+        prim: 1, 0, none, sashay-start sashay-finish
+        prim: 1, 1, none    // 0,1,n -> 1,2,n "first step forward"
+        prim: out 1, 1, out // 1,2,n -> 2,3,e
+        prim: in 1, 1, in   // 2,3,e -> 3,2,s
+        prim: in 1, 1, in   // 3,2,s -> 2,1,w
+        prim: 0, 1, none    // 2,1,w -> 1,1,w
+      select: BELLE
+                            // 1,1,n  -> 0,3,n "half of a half sashay"
+        prim: -1, 2, none, sashay-finish
+                            // 0,3,n  -> -1,3,n "first step forward"
+        prim: -1, 0, none, sashay-start sashay-finish
+                            // -1,3,n -> -2,3,w
+        prim: -1, 0, out, sashay-start
+        prim: in 1, 1, in   // -2,3,w -> -3,2,s
+        prim: in 1, 1, in   // -3,2,s -> -2,1,e
+        prim: 0, 1, none    // -2,1,e -> -1,1,e
 
 // callerlab #53: TURN THRU
 
 def: turn thru
   optional: LEFT
   in: 4
-  from: RH MINIWAVE
-    call: right arm turn(1/2), step thru
-  from: ANY
-    call: _mixed touch, turn thru
+  call: _maybe touch(_turn thru from miniwave)
+def: _turn thru from miniwave
+  in: 4
+  ipart:
+    from: RH MINIWAVE
+      call: right arm turn(1/2), step thru
 
 // callerlab #54: EIGHT CHAIN THRU / EIGHT CHAIN 1, 2, 3
 def: eight chain thru
@@ -289,7 +314,7 @@ def: _designees cross fold
     select: OTHERS
       prim: 0,0,none
 
-// callerlab #63: DIXIE STYLE TO AN OCEAN WAVE
+// callerlab #63: DIXIE STYLE TO AN OCEAN WAVE (2 parts)
 def: dixie style
   optional: REVERSE
   spoken: dixie style (to a wave)?

@@ -1,5 +1,29 @@
 program: c4
 
+def: brace yourself
+  from: COUPLE
+    condition: not(or(ALL(BOY), ALL(GIRL))),\
+               "Must have one boy and one girl in each couple"
+    from: ANY
+      condition: match(_selection pattern(BOY), "x_")
+      call: courtesy turn(1/2)
+    from: ANY
+      condition: match(_selection pattern(BOY), "_x")
+      call: u turn back
+
+def: cross breed thru
+  call: right pull by, _finish cross breed thru
+def: _finish cross breed thru
+  from: COUPLE
+    condition: not(or(ALL(BOY), ALL(GIRL))),\
+               "Must have one boy and one girl in each couple"
+    from: ANY
+      condition: match(_selection pattern(BOY), "x_")
+      call: left(partner tag)
+    from: ANY
+      condition: match(_selection pattern(BOY), "_x")
+      call: quarter out
+
 def: curlique
   in: 4
   from: RH MINIWAVE
@@ -68,15 +92,37 @@ def: step lively
   call: slim down
   call: circulate
 
+def: tag the star(m=1/2,n=1)
+  //XXX should this be "half tag the star"?
+  spoken: tag the star <n=fraction>? (but turn the star <m=fraction>)?
+  call: _tag(_tag the star([m]), [n])
+def: _tag the star(n=1/2)
+  from: FACING COUPLES
+    call: 1/2(reverse(swap around))
+    call: counter rotate([n]) // "or whatever 'star turn' amount is indicated
+    call: _start drop in      // "points face in"
+def: _start drop in
+  from: GENERAL DIAMOND
+    call: _quasi concentric(nothing, face in)
+
+/* slim down defined in C4List.java */
+
 /*
-def: tag the star
-def: slim down
 def: the action
 def: turntable
 def: bridge the gap
 def: walk out to a column
 def: spin tag the deucey
-def: advance to a column
+*/
+
+def: advance to a column(sel)
+  spoken: <sel=anyone> advance to a column
+  call: walk others dodge([sel])
+  call: column circulate
+  call: anyone while others(CENTER, trade, nothing)
+  call: column circulate
+
+/*
 def: fractional twosome // concept
 */
 

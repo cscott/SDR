@@ -5,6 +5,7 @@ sdr> /// "test case" is used as input by runAllTests() to enumerate
 sdr> /// all the tests to run.
 sdr> ///
 sdr> /listTests("resources/net/cscott/sdr/tests")
+a1-calls-1
 acey-deucey-1
 acey-deucey-2
 acey-deucey-3
@@ -20,10 +21,14 @@ basic-calls-3
 basic-calls-4
 beat-math-1
 bounce-1
+brace-thru
 breathing-1
 breathing-2
+breathing-3
 by-golly
+c3a-calls-1
 c4-calls-1
+c4-calls-2
 cast-1
 cast-2
 centers
@@ -32,10 +37,13 @@ circle
 concentric-1
 couple-up
 cross-back
+cross-concentric-1
 cross-fold-1
 cross-run-1
+dixie-grand
 dixie-style
 dopaso-1
+drop
 dw-resolve
 eight-chain
 extend-basic
@@ -73,6 +81,7 @@ remake
 reset
 reverse-the-pass
 reverse-the-top
+right-roll-to-a-wave
 roll
 roll-away
 run-1
@@ -80,10 +89,12 @@ scoot-back
 selectors
 siamese-1
 spread-1
+square-chain-the-top
 sweep-1
 sweep-2
 sweep-3
 swing-and-mix
+swing-slip-slide-slither
 swing-thru
 tag
 tandem-1
@@ -95,3 +106,4 @@ uturn-basic
 uturn-mixed
 vaya-con-dios
 walk-1
+wheel-the-ocean

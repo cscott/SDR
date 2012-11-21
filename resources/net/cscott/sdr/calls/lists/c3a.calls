@@ -16,6 +16,61 @@ def: keep busy
     ! c B b A
     !   v   v
 
+def: _quarter mix(n)
+  part:
+    call: _those who can turn right not grand([n])
+  part: 2
+    call: mix
+def: _grand quarter mix(n)
+  part:
+    call: _those who can turn right([n])
+  part: 2
+    call: grand mix
+
+def: quarter mix
+  optional: LEFT
+  call: _quarter mix(1/4)
+def: three quarter mix
+  optional: LEFT
+  call: _quarter mix(3/4)
+def: grand quarter mix
+  optional: LEFT
+  call: _grand quarter mix(1/4)
+def: grand three quarter mix
+  optional: LEFT
+  call: _grand quarter mix(3/4)
+
+def: grand mix
+  in: 6 // ought to have same timing as mix
+  // this definition is a cheat
+  // in theory grand mix could be done from 6-dancer tidal lines as well.
+  from: GENERAL TIDAL LINE
+    ipart:
+      // "grand (working as centers) cross run"
+      call: and spread(triple trade)
+    part:
+      // "grand slip"
+      call: triple trade
+
+def: grand swing and mix
+  optional: LEFT
+  call: _maybe touch(_grand quarter mix(1/2))
+def: grand left swing and mix
+  call: mirror(grand swing and mix)
+
+def: quarter wheel the ocean
+  from: LH TWO FACED LINE
+    call: 1/2(wheel around), _finish wheel the ocean
+def: quarter wheel the sea
+  from: LH TWO FACED LINE
+    call: 1/2(wheel around), _finish wheel the sea
+def: three quarter wheel the ocean
+  from: RH TWO FACED LINE
+    call: 1 1/2(wheel around), _finish wheel the ocean
+def: three quarter wheel the sea
+  from: RH TWO FACED LINE
+    call: 1 1/2(wheel around), _finish wheel the sea
+
 def: couple up
   from: 2x2
     call: circulate
@@ -28,6 +83,17 @@ def: _finish couple up
     select: LEADER
       prim: 0, 0, in
       prim: 0, 0, in
+
+def: hop(sel)
+  spoken: <sel=anyone> hop
+  call: walk others dodge([sel])
+  call: hinge
+
+def: latch on(n=1/4)
+  spoken: latch on <n=fraction>?
+  from: GENERAL TANDEM
+    ends in: formation(RH MINIWAVE)
+    call: right roll to a wave, right arm turn([n])
 
 def: finally(concept,call)
   spoken: finally <0=concept> <1=anything>
