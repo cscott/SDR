@@ -21,9 +21,12 @@ import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationList;
+import net.cscott.sdr.calls.Matcher;
 import net.cscott.sdr.calls.MatcherList;
+import net.cscott.sdr.calls.NoMatchException;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.Rotation;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.TimedFormation;
@@ -149,6 +152,9 @@ public abstract class C1List {
     public static class ConcentricEvaluator extends Evaluator {
         private final Expr centersPart, endsPart;
         private final ConcentricType which;
+        private static final Rotation NORTHSOUTH =
+                Rotation.fromAbsoluteString("|");
+        private static final boolean DEBUG = false;
         public ConcentricEvaluator(Expr centersPart, Expr endsPart,
                                    ConcentricType which) {
             this.centersPart = centersPart;
@@ -174,8 +180,13 @@ public abstract class C1List {
                                 .compareTo(endF.bounds().height()) > 0;
             // do the call in each separate formation.
             // (breathe to eliminate space left by centers in end formation)
+            endF = Breather.breathe(endF);
             DanceState centerS = ds.cloneAndClear(centerF);
-            DanceState endS = ds.cloneAndClear(Breather.breathe(endF));
+            DanceState endS = ds.cloneAndClear(endF);
+            if (DEBUG) {
+                System.err.println("CENTER\n"+centerF.toStringDiagram());
+                System.err.println("END\n"+endF.toStringDiagram());
+            }
             TreeSet<Fraction> moments = new TreeSet<Fraction>();
             new Apply(this.centersPart).evaluator(centerS).evaluateAll(centerS);
             for (TimedFormation tf: centerS.formations())
@@ -192,8 +203,44 @@ public abstract class C1List {
             for (DanceState nds: l(centerS, endS))
                 nds.syncDancers(moments.last());
 
-            // XXX adjust isWide depending on ending formation, lines to lines,
-            //     etc.
+            // A1. if the new outside formation is a 1x4, the long axis can
+            //     only go one way
+            // A2. if the new outside formation is a diamond, single 1/4 tag,
+            //     or single 3/4 (generalized single 1/4 tag spots), the pieces
+            //     are distributed like the points of a galaxy
+            // ... this seems to work fine as is, we don't need to futz with
+            //     isWide for this.
+
+            // B1. if the outside call starts and ends in a 2x2 then
+            //     lines to lines / columns to columns
+            // B2. if it doesn't start in a 2x2 but ends in a 2x2, then
+            //     opposite elongation rule applies.
+            Formation axisStartF = endF, axisEndF = endS.currentFormation();
+            if (which == ConcentricType.CROSS) {
+                axisStartF = centerF; axisEndF = centerS.currentFormation();
+            }
+            if (which != ConcentricType.QUASI &&
+                matches(MatcherList._2_X2, axisEndF) /* ends in 2x2 */) {
+                if (matches(MatcherList._2_X2, axisStartF)/* starts in 2x2 */) {
+                    // XXX really need to evaluate individually for every
+                    //     dancer in T-boned formations.
+                    Position startP = axisStartF.location
+                        (axisStartF.sortedDancers().get(0));
+                    Position endP = axisEndF.location
+                        (axisEndF.sortedDancers().get(0));
+                    // isWide && facing n/s = lines
+                    // (!isWide) && facing e/w = lines
+                    boolean startLines = NORTHSOUTH.includes(startP.facing) ^
+                        !isWide;
+                    boolean endLines = NORTHSOUTH.includes(endP.facing) ^
+                        !isWide;
+                    if (startLines != endLines)
+                        isWide = !isWide;
+                } else {
+                    // opposite elongation rule
+                    isWide = !isWide;
+                }
+            }
 
             // hard part! Merge the resulting dancer paths.
             // XXX this is largely cut-and-paste from MetaEvaluator; we should
@@ -229,6 +276,14 @@ public abstract class C1List {
             // no more to evaluate
             return null;
         }
+        private static boolean matches(Matcher m, Formation f) {
+                try {
+                    m.match(f);
+                    return true; // yes it matches
+                } catch (NoMatchException nme) {
+                    return false;
+                }
+            }
         private static Formation merge(Formation center, Formation end, boolean isWide, boolean isCross) {
             // recurse to deal with wide/cross flags.
             if (isCross)
