@@ -200,6 +200,8 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.LH_BOX);
     public static final Matcher BOX =
         OR("BOX", RH_BOX, LH_BOX);
+    public static final Matcher INVERTED_BOX =
+        GeneralFormationMatcher.makeMatcher(FormationList.INVERTED_BOX);
     public static final Matcher RH_IN_PINWHEEL =
         GeneralFormationMatcher.makeMatcher(FormationList.RH_IN_PINWHEEL);
     public static final Matcher LH_IN_PINWHEEL =

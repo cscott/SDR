@@ -125,6 +125,8 @@ abstract class FormationListSlow {
         xofy("RH BOX", RH_MINIWAVE, TANDEM);
     public static final NamedTaggedFormation LH_BOX = // callerlab #11
         xofy("LH BOX", LH_MINIWAVE, TANDEM);
+    public static final NamedTaggedFormation INVERTED_BOX =
+        create("INVERTED BOX", f("sn","ns"), WhetherTagger.AUTO_TAGS);
     public static final NamedTaggedFormation RH_IN_PINWHEEL =
 	create("RH IN PINWHEEL",
 	       d(-1, +1, "e", BEAU, TRAILER),

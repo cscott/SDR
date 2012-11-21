@@ -375,6 +375,26 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), ExactRotation.SOUTH), Tag.BELLE, Tag.LEADER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), ExactRotation.NORTH), Tag.BELLE, Tag.TRAILER));
 
+    /** INVERTED BOX formation.
+      * @doc.test
+      *  js> FormationList = FormationList.js(this); undefined;
+      *  js> tf = FormationList.INVERTED_BOX; tf.toStringDiagram('|');
+      *  |v    ^
+      *  |
+      *  |^    v
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [BELLE, TRAILER]
+      *  [BELLE, LEADER]
+      *  [BEAU, TRAILER]
+      *  [BEAU, LEADER]
+      */
+    public static final NamedTaggedFormation INVERTED_BOX =
+        new NamedTaggedFormation("INVERTED BOX",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(1), ExactRotation.SOUTH), Tag.BELLE, Tag.TRAILER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(1), ExactRotation.NORTH), Tag.BELLE, Tag.LEADER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), ExactRotation.NORTH), Tag.BEAU, Tag.TRAILER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), ExactRotation.SOUTH), Tag.BEAU, Tag.LEADER));
+
     /** RH IN PINWHEEL formation.
       * @doc.test
       *  js> FormationList = FormationList.js(this); undefined;
@@ -2871,6 +2891,7 @@ abstract class FormationListFast {
             FormationListFast.LH_OCEAN_WAVE,
             FormationListFast.RH_BOX,
             FormationListFast.LH_BOX,
+            FormationListFast.INVERTED_BOX,
             FormationListFast.RH_IN_PINWHEEL,
             FormationListFast.LH_IN_PINWHEEL,
             FormationListFast.RH_OUT_PINWHEEL,
