@@ -66,6 +66,8 @@ abstract class FormationListSlow {
     // 2-person formations
     public static final NamedTaggedFormation GENERAL_PARTNERS =
         create("GENERAL PARTNERS", f("||"), WhetherTagger.NO_AUTO_TAGS);
+    public static final NamedTaggedFormation GENERAL_TANDEM =
+        create("GENERAL TANDEM", f("|","|"), WhetherTagger.NO_AUTO_TAGS);
     public static final NamedTaggedFormation _1x2 =
         create("1x2", f("++"), WhetherTagger.NO_AUTO_TAGS);
     public static final NamedTaggedFormation COUPLE = // callerlab #1
@@ -237,6 +239,12 @@ abstract class FormationListSlow {
                 d(-2, 0, "s"),
                 d( 0,-2, "e"),
                 d( 2, 0, "n"));
+    public static final NamedTaggedFormation GENERAL_SINGLE_QUARTER_TAG =
+        create("GENERAL SINGLE QUARTER TAG",
+               d( 0, 2,"|",END),
+               d(-1, 0,"|",CENTER),
+               d(+1, 0,"|",CENTER),
+               d( 0,-2,"|",END));
     public static final NamedTaggedFormation RH_SINGLE_QUARTER_TAG =
         create("RH SINGLE 1/4 TAG",
                d( 0, 2,"s",END),
@@ -414,6 +422,12 @@ abstract class FormationListSlow {
     // XXX out t-bone lines, callerlab #36
     // xxx both diamond-spot quarter tag & compressed quarter tag?
     // xxx do we want all variants here, or just the "canonical" ones?
+    public static final NamedTaggedFormation GENERAL_QUARTER_TAG =
+        create("GENERAL 1/4 TAG", f(" || ","||||"," || "),
+               WhetherTagger.NO_AUTO_TAGS,
+               t(0, OUTSIDE_4), t(1, OUTSIDE_4),
+               t(2, CENTER), t(3, CENTER), t(4, CENTER), t(5, CENTER),
+               t(6, OUTSIDE_4), t(7, OUTSIDE_4));
     public static final NamedTaggedFormation RH_QUARTER_TAG = // callerlab #37(a)
 	_ends_in(xofy("RH 1/4 TAG", RH_MINIWAVE, RH_SINGLE_QUARTER_TAG,
                       WhetherTagger.NO_AUTO_TAGS,

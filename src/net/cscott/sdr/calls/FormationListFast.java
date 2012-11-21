@@ -41,6 +41,22 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|"))),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|"))));
 
+    /** GENERAL TANDEM formation.
+      * @doc.test
+      *  js> FormationList = FormationList.js(this); undefined;
+      *  js> tf = FormationList.GENERAL_TANDEM; tf.toStringDiagram('|');
+      *  ||
+      *  |
+      *  ||
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  []
+      *  []
+      */
+    public static final NamedTaggedFormation GENERAL_TANDEM =
+        new NamedTaggedFormation("GENERAL TANDEM",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(1), Rotation.fromAbsoluteString("|"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|"))));
+
     /** 1x2 formation.
       * @doc.test
       *  js> FormationList = FormationList.js(this); undefined;
@@ -774,6 +790,28 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(0), ExactRotation.SOUTH)),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(2), Fraction.valueOf(0), ExactRotation.NORTH)),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-2), ExactRotation.EAST)));
+
+    /** GENERAL SINGLE QUARTER TAG formation.
+      * @doc.test
+      *  js> FormationList = FormationList.js(this); undefined;
+      *  js> tf = FormationList.GENERAL_SINGLE_QUARTER_TAG; tf.toStringDiagram('|');
+      *  |  |
+      *  |
+      *  ||    |
+      *  |
+      *  |  |
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [END]
+      *  [CENTER]
+      *  [CENTER]
+      *  [END]
+      */
+    public static final NamedTaggedFormation GENERAL_SINGLE_QUARTER_TAG =
+        new NamedTaggedFormation("GENERAL SINGLE QUARTER TAG",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(2), Rotation.fromAbsoluteString("|")), Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.END));
 
     /** RH SINGLE 1/4 TAG formation.
       * @doc.test
@@ -1963,6 +2001,36 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), ExactRotation.NORTH), Tag.BEAU, Tag.TRAILER, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-1), ExactRotation.SOUTH), Tag.BEAU, Tag.LEADER, Tag.END));
 
+    /** GENERAL 1/4 TAG formation.
+      * @doc.test
+      *  js> FormationList = FormationList.js(this); undefined;
+      *  js> tf = FormationList.GENERAL_QUARTER_TAG; tf.toStringDiagram('|');
+      *  |     |    |
+      *  |
+      *  ||    |    |    |
+      *  |
+      *  |     |    |
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_4]
+      *  [OUTSIDE_4]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_4]
+      *  [OUTSIDE_4]
+      */
+    public static final NamedTaggedFormation GENERAL_QUARTER_TAG =
+        new NamedTaggedFormation("GENERAL 1/4 TAG",
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_4));
+
     /** RH 1/4 TAG formation.
       * @doc.test
       *  js> FormationList = FormationList.js(this); undefined;
@@ -2784,6 +2852,7 @@ abstract class FormationListFast {
         Collections.unmodifiableList(Arrays.asList(
             FormationListFast.SINGLE_DANCER,
             FormationListFast.GENERAL_PARTNERS,
+            FormationListFast.GENERAL_TANDEM,
             FormationListFast._1x2,
             FormationListFast.COUPLE,
             FormationListFast.FACING_DANCERS,
@@ -2822,6 +2891,7 @@ abstract class FormationListFast {
             FormationListFast.LH_STAR,
             FormationListFast.RH_SINGLE_PROMENADE,
             FormationListFast.LH_SINGLE_PROMENADE,
+            FormationListFast.GENERAL_SINGLE_QUARTER_TAG,
             FormationListFast.RH_SINGLE_QUARTER_TAG,
             FormationListFast.LH_SINGLE_QUARTER_TAG,
             FormationListFast.RH_SINGLE_THREE_QUARTER_TAG,
@@ -2862,6 +2932,7 @@ abstract class FormationListFast {
             FormationListFast.LH_COLUMN,
             FormationListFast.ENDS_IN_INVERTED_LINES,
             FormationListFast.ENDS_OUT_INVERTED_LINES,
+            FormationListFast.GENERAL_QUARTER_TAG,
             FormationListFast.RH_QUARTER_TAG,
             FormationListFast.LH_QUARTER_TAG,
             FormationListFast.RH_THREE_QUARTER_TAG,

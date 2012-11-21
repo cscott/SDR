@@ -145,6 +145,8 @@ public class MatcherList {
     // 2-person matchers
     public static final Matcher GENERAL_PARTNERS =
         GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_PARTNERS);
+    public static final Matcher GENERAL_TANDEM =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_TANDEM);
     // this matcher has an extra underscore because the parser treats it
     // as two items: the number one, and the identifier x2.
     public static final Matcher _1_X2 =
@@ -252,6 +254,8 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.RH_SINGLE_PROMENADE);
     public static final Matcher LH_SINGLE_PROMENADE =
         GeneralFormationMatcher.makeMatcher(FormationList.LH_SINGLE_PROMENADE);
+    public static final Matcher GENERAL_SINGLE_QUARTER_TAG =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_SINGLE_QUARTER_TAG);
     public static final Matcher RH_SINGLE_QUARTER_TAG =
         GeneralFormationMatcher.makeMatcher(FormationList.RH_SINGLE_QUARTER_TAG);
     public static final Matcher LH_SINGLE_QUARTER_TAG =
@@ -355,6 +359,8 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.ENDS_OUT_INVERTED_LINES);
     public static final Matcher INVERTED_LINES =
 	OR("INVERTED LINES", ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES);
+    public static final Matcher GENERAL_QUARTER_TAG =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_QUARTER_TAG);
     public static final Matcher RH_QUARTER_TAG =
         GeneralFormationMatcher.makeMatcher(FormationList.RH_QUARTER_TAG);
     public static final Matcher LH_QUARTER_TAG =
