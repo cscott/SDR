@@ -646,8 +646,12 @@ public abstract class Evaluator {
                 // create an evaluator for the next part
                 pce.add(p.matched, ne, p.ds);
             }
-            // is there a continuation?
-            return pce.parts.isEmpty() ? null : pce;
+            if (!pce.parts.isEmpty())
+                // return continuation, if there is one
+                return pce;
+            // sync at end of call
+            ds.syncDancers();
+            return null;
         }
     }
 }
