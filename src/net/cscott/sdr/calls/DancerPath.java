@@ -384,7 +384,7 @@ public class DancerPath {
     public boolean isStandStill() {
         // xxx: are we going to have to remove position flags from this
         //      comparison at some point?
-        return this.from.equals(this.to);
+        return this.from.equalsIgnoringFlags(this.to);
     }
     /** Return an equivalent {@link DancerPath} that completes in an adjusted
      * amount of time.

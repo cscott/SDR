@@ -561,6 +561,13 @@ public class Position implements Comparable<Position> {
 	    .append(_flags, p._flags)
 	    .isEquals();
     }
+    public boolean equalsIgnoringFlags(Position p) {
+        return new EqualsBuilder()
+	    .append(x, p.x)
+	    .append(y, p.y)
+	    .append(facing, p.facing)
+	    .isEquals();
+    }
     @Override
     public int hashCode() {
         if (hashCode==0)

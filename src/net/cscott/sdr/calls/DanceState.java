@@ -221,11 +221,14 @@ public class DanceState {
      * I don't know if it's useful for any other calls.
      */
     public void unsyncDancers() {
+        eachDancer:
         for (NavigableMap<Fraction,DancerPath> dmove : this.movements.values()){
             Iterator<Fraction> it= dmove.navigableKeySet().descendingIterator();
             while (it.hasNext()) {
                 if (dmove.get(it.next()).isStandStill())
                     it.remove();
+                else
+                    continue eachDancer;
             }
         }
     }
