@@ -1,5 +1,6 @@
 package net.cscott.sdr.calls.transform;
 
+import static net.cscott.sdr.calls.ast.If.When.AFTER;
 import static net.cscott.sdr.calls.ast.Part.Divisibility.DIVISIBLE;
 import static net.cscott.sdr.calls.parser.CallFileLexer.PART;
 
@@ -18,6 +19,7 @@ import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
+import net.cscott.sdr.calls.ast.If;
 import net.cscott.sdr.calls.ast.In;
 import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Prim;
@@ -64,6 +66,14 @@ public class Fractional extends PartsVisitor<Fraction> {
         assert args.length==1;
         return new Expr(conceptName, Expr.literal(f), args[0]);
     };
+    /* Keep initial conditions, but skip 'ends in' conditions. */
+    @Override
+    public Comp visit(If iff, Fraction f) {
+        if (iff.when==AFTER)
+            return iff.child.accept(this, f);
+        return iff.build(iff.condition.accept(this,f),
+                         iff.child.accept(this,f));
+    }
     @Override
     public In visit(In in, Fraction f) {
         return in.build(new Expr("_multiply num", Expr.literal(f), in.count),
