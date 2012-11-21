@@ -69,7 +69,8 @@ public class EmitDictionary extends AbstractEmit {
         }
     };
     public void readPronunciationDictionary(String resourceName,
-                                            List<String> entries) {
+                                            List<String> entries,
+                                            Set<String> missing) {
         try {
             InputStream is = getClass().getResourceAsStream(resourceName);
             assert is!=null : "can't find "+resourceName+" resource";
@@ -79,8 +80,10 @@ public class EmitDictionary extends AbstractEmit {
                 Matcher m = dictEntryPat.matcher(line);
                 if (m.find()) {
                     String entry = m.group(1).toLowerCase();
-                    if (words.contains(entry))
+                    if (words.contains(entry)) {
                         entries.add(line);
+                        missing.remove(entry);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -94,9 +97,13 @@ public class EmitDictionary extends AbstractEmit {
         // read both CMU pronunciation dictionary and some extra entries we've
         // compiled for square-dance-specific terms.
         // (make sure cmudict and extradict are on the classpath)
+        Set<String> missing = new HashSet<String>(words);
         List<String> entries = new ArrayList<String>(words.size());
         for (String resourceName : Arrays.asList("/cmudict.0.6d", "/extradict"))
-            readPronunciationDictionary(resourceName, entries);
+            readPronunciationDictionary(resourceName, entries, missing);
+        // warn about missing words
+        if (!missing.isEmpty())
+            System.err.println("Missing pronunciations for: "+missing);
         // ok, now emit all the entries
         StringBuilder sb = new StringBuilder();
         String NL = System.getProperty("line.separator");
