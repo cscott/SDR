@@ -14,7 +14,6 @@
   <!-- Other module inherits                                      -->
   <inherits name='net.cscott.SDR'/> <!-- for CompletionEngine, etc -->
   <inherits name='com.google.gwt.widgetideas.GWTCanvas'/> <!-- canvas -->
-  <inherits name="com.google.gwt.widgetideas.BasicWidget"/><!-- slider -->
 
   <!-- Determine if canvas is supported. -->
   <define-property name="canvas.support" values="yes,no"/>

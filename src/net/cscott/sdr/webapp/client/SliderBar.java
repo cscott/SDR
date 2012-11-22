@@ -35,8 +35,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.widgetideas.client.ResizableWidget;
-import com.google.gwt.widgetideas.client.ResizableWidgetCollection;
 
 /**
  * A widget that allows the user to select a value within a range of possible
