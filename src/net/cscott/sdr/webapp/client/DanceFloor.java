@@ -3,7 +3,7 @@ package net.cscott.sdr.webapp.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Grid;
 
@@ -57,7 +57,7 @@ public class DanceFloor extends AbsolutePanel {
 
     static class CompositeDancer extends AbsolutePanel {
         /** The background image. */
-        final Dancer dancer = GWT.create(Dancer.class);
+        final Dancer dancer;
         /** The dancer number, as text.  Must be a table element because
          * only td has a functional vertical-align property.
          */
@@ -69,6 +69,8 @@ public class DanceFloor extends AbsolutePanel {
         /** Position in dance floor coordinates (not pixels) */
         double x, y;
         CompositeDancer(int coupleNum, boolean isBoy) {
+            Canvas c = Canvas.createIfSupported();
+            dancer = (c!=null) ? new DancerCanvas(c) : new DancerSimple();
             this.coupleNum = coupleNum;
             this.isBoy = isBoy;
             // first the image
