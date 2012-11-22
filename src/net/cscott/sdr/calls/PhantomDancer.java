@@ -15,6 +15,7 @@ public class PhantomDancer implements Dancer {
     /** Sometimes you want to create phantoms which match specific primitive
      *  dancer tags. */
     public PhantomDancer(Set<Tag> tags) {
+        assert !tags.contains(Tag.NONE);
         this.id = counter++;
         this.primitiveTags = tags.isEmpty() ? NO_TAGS : EnumSet.copyOf(tags);
     }

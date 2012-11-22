@@ -16,11 +16,15 @@ public class TaggedFormation {
         DANCER_1, DANCER_2, DANCER_3, DANCER_4,
         DANCER_5, DANCER_6, DANCER_7, DANCER_8,
         COUPLE_1, COUPLE_2, COUPLE_3, COUPLE_4,
-        BOY, GIRL, HEAD, SIDE, ALL,
+        BOY, GIRL, HEAD, SIDE, NONE, ALL,
+        // this is a tag kept by the DanceState; the
+        // MetaEvaluator ensures that it is applied
+        // appropriately after matching
+        DESIGNATED,
         // more interesting tags.
         BEAU, BELLE, LEADER, TRAILER,
 	POINT, CENTER, VERY_CENTER, END,
-	OUTSIDE_4, CENTER_6, OUTSIDE_6,
+        OUTSIDE_2, OUTSIDE_4, CENTER_6, OUTSIDE_6,
         NUMBER_1, NUMBER_2, NUMBER_3, NUMBER_4;
         public boolean isPrimitive() {
             return ordinal() <= ALL.ordinal();

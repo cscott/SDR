@@ -42,6 +42,8 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
  *    >  [Tag.DANCER_1, Tag.DANCER_2, Tag.DANCER_3, Tag.DANCER_4,
  *    >   Tag.DANCER_5, Tag.DANCER_6, Tag.DANCER_7, Tag.DANCER_8])]
  *  true,false,false,false,false,false,false,false
+ *  js> d.matchesTag(Tag.NONE)
+ *  false
  *  js> d.matchesTag(Tag.ALL)
  *  true
  * @doc.test Properties of DANCER_8 (a side girl):
@@ -79,6 +81,8 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
  *    >  [Tag.DANCER_1, Tag.DANCER_2, Tag.DANCER_3, Tag.DANCER_4,
  *    >   Tag.DANCER_5, Tag.DANCER_6, Tag.DANCER_7, Tag.DANCER_8])]
  *  false,false,false,false,false,false,false,true
+ *  js> d.matchesTag(Tag.NONE)
+ *  false
  *  js> d.matchesTag(Tag.ALL)
  *  true
  */
@@ -111,6 +115,7 @@ public enum StandardDancer implements Dancer {
         case DANCER_6: return ordinal()==5;
         case DANCER_7: return ordinal()==6;
         case DANCER_8: return ordinal()==7;
+        case NONE: return false; // none matches no one
         case ALL: return true; // all matches everyone.
         default:
             assert !tag.isPrimitive();
