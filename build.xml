@@ -65,6 +65,7 @@ Square Dance Revolution build file.
       <path id="gwt.path">
 	<pathelement location="${gwt.sdk}/gwt-user.jar"/>
 	<fileset dir="${gwt.sdk}" includes="gwt-dev*.jar"/>
+	<fileset dir="${gwt.sdk}" includes="validation-api-*.jar"/>
 	<fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
       </path>
       <path id="gae.path">
