@@ -62,6 +62,6 @@ Content-Type: x-java-archive
 Content-Encoding: pack200-gzip
 EOF
 # transfer to the distribution machine.
-rsync -avyz --delete-after --copy-dest=sdr-0.6 ${PACKAGE}-${VERSION} cscott.net:public_html/Projects/SDR/ && \
+rsync -avyz --delete-after --copy-dest=sdr-0.7 ${PACKAGE}-${VERSION} cscott.net:public_html/Projects/SDR/ && \
 /bin/rm -rf ${PACKAGE}-${VERSION} && \
 echo "Upload of ${PACKAGE} ${VERSION} successful."
