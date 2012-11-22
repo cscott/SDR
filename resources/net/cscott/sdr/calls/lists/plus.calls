@@ -64,7 +64,10 @@ def: _spread
       from: COUPLE
         call: half sashay
   // note that 'spread' from COMPLETED DOUBLE PASS THRU has been redefined
-  // (and taken off the plus list)
+  // (and taken off the plus list) *according to Vic Ceder*
+  // callerlab doesn't seem to have gotten the memo yet, though (2012-11)
+  from: COMPLETED DOUBLE PASS THRU
+    call: _designated spread(LEADER)
   from: GENERAL COLUMNS
     call: slim down
 
