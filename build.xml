@@ -707,6 +707,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
 	<jvmarg value="-Xmx256M"/>
 	<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+	<arg value="-strict"/>
 	<arg value="net.cscott.sdr.webapp.SDRweb"/>
       </java>
     </target>
