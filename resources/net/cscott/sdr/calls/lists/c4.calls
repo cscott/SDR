@@ -78,7 +78,8 @@ def: stack the wheel
 
 def: hammerlane
   from: FACING COUPLES
-    call: cross cycle
+    ipart:
+      call: cross cycle
 
 def: clear out
   call: circulate

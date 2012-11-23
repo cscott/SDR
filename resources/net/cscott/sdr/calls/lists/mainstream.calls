@@ -57,10 +57,18 @@ def: eight chain thru
 def: eight chain(n)
   spoken: eight chain <n=number>
   in: _multiply num([n], 20/8)
-  call: _fractional(_divide num([n], 2), _eight chain 2)
+  part: [n]
+    call: _fractional(_divide num([n], 8), _eight chain 8)
 
-def: _eight chain 2
-  call: _eight chain odd, _eight chain even
+def: _eight chain 8
+  call: _eight chain odd
+  call: _eight chain even
+  call: _eight chain odd
+  call: _eight chain even
+  call: _eight chain odd
+  call: _eight chain even
+  call: _eight chain odd
+  call: _eight chain even
 
 def: _eight chain odd
   // XXX removed ends in, because it interferes with fractionalization
@@ -434,7 +442,7 @@ def: scoot back
 def: _wave recycle
   in: 4
   from: ANY
-    ipart: // CHEAT DEFINITION
+    ipart: 3 // CHEAT DEFINITION
       call: hinge, _box circulate, _recycle face in // CHEAT DEFINITION
   from: ANY // REAL DEFINITION
     condition: PROGRAM AT LEAST(C1), "Fractional recycle not allowed below C1"

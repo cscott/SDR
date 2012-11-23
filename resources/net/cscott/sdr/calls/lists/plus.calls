@@ -41,11 +41,11 @@ def: and spread(c)
   from: ANY
     // this applies only if the call ends in parallel lines (and isn't
     // being evaluated for parts)
-    ipart:
+    ipart: _add num(1, num parts([c]))
       call: _blend(_start case 2 spread([c]), _spread)
   from: ANY
     // unblended version
-    part: _num parts([c])
+    part: num parts([c])
       call: [c]
     part: // "spread adds 1 part to the call"
       call: _spread

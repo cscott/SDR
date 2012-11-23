@@ -240,7 +240,8 @@ def: _those facing star thru
 
 def: triple trade
   from: CENTER 6
-    call: _quasi concentric(trade, nothing)
+    part:
+      call: _quasi concentric(trade, nothing)
 
 // three parts, everyone can roll at the end
 // (fractionalization is only legit at upper levels)

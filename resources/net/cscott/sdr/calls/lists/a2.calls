@@ -119,7 +119,9 @@ def: swing and mix // 3 part call
 
 def: _facing recycle
   in: 4
-  ipart:
+  // cheat so we can say "recycle has 3 parts", although facing recycle
+  // is really indivisible
+  ipart: 3
     from: FACING COUPLES
       select: BEAU
         prim: 0, 1, right

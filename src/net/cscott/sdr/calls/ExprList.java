@@ -353,6 +353,41 @@ public class ExprList {
     static { exprMathFuncs.put(_MOD_NUM.getName(), _MOD_NUM); }
 
     /**
+     * Simple math: return smallest integer greater than a fraction.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _ceil '3 1/4)")
+     *  (Expr _ceil '3 1/4)
+     *  js> c.evaluate(fc, ds).toProperString()
+     *  4
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _ceil (Expr _subtract num '0 '3 3/4))")
+     *  (Expr _ceil (Expr _subtract num '0 '3 3/4))
+     *  js> c.evaluate(fc, ds).toProperString()
+     *  -3
+     */
+    public static final ExprFunc<Fraction> _CEIL = new ExprFunc<Fraction>() {
+        @Override
+        public String getName() { return "_ceil"; }
+        @Override
+        public Fraction evaluate(Class<? super Fraction> type,
+                                 DanceState ds, List<Expr> args)
+                throws EvaluationException {
+            if (!type.isAssignableFrom(Fraction.class))
+                throw new EvaluationException("Type mismatch");
+            if (args.size() != 1)
+                throw new EvaluationException("Wrong # of arguments");
+            Fraction f = args.get(0).evaluate(Fraction.class, ds);
+            return Fraction.valueOf(-f.negate().floor());
+        }
+        @Override
+        public boolean isConstant(Class<? super Fraction> type, List<Expr> args){
+            return args.get(0).isConstant(Fraction.class);
+        }
+    };
+    static { exprMathFuncs.put(_CEIL.getName(), _CEIL); }
+
+    /**
      * Simple math: return integer part of a fraction.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;

@@ -34,7 +34,7 @@ tandem(roll)
 sdr> ///
 sdr> /// "anyone anything" concept
 sdr> /parse("centers square thru and roll")
-anyone while others(CENTER, and roll(_full_square_thru), nothing)
+anyone while others(CENTER, and roll(square thru(4)), nothing)
 sdr> /parse("centers centers run")
 anyone while others(CENTER, run(CENTER), nothing)
 sdr> ///

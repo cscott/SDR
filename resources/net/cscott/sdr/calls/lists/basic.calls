@@ -1393,16 +1393,18 @@ def: see saw
 // callerlab #28: SQUARE THRU FAMILY
 
 // timing of square thru is "2 beats per hand"
-def: square thru(n)
+def: square thru(n=4)
   optional: LEFT
-  spoken: square thru <n=number> (hands (around|round)?)?
+  spoken: square thru (<n=number> (hands (around|round)?)?)?
   from: ANY
     condition: and(greater([n],0),not(greater([n],1)))
     call: _fractional([n], _in(2, pull by))
   from: ANY
     condition: greater([n], 1)
-    ipart: // does square thru N have N distinct parts?
-      call: _in(2, _square thru part), left(square thru(_subtract num([n],1)))
+    part: // does square thru N have N distinct parts?
+      call: _in(2, _square thru part)
+    part: _ceil(_subtract num([n],1))
+      call: left(square thru(_subtract num([n],1)))
 
 def: _square thru part
   // definition is:
@@ -1420,11 +1422,6 @@ def: _square thru part
         prim: in 2, 1, in
     from: ANY // fall back to real definition, so "rear back and..." works
       call: pull by, quarter in
-
-def: _full_square_thru
-  optional: LEFT
-  spoken: square thru
-  call: square thru(4)
 
 // callerlab #29: CALIFORNIA TWIRL
 def: california twirl

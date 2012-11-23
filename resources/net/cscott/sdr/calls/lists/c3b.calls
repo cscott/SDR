@@ -4,31 +4,31 @@ program: c3b
 def: oddly(concept,call)
   spoken: oddly <0=concept> <1=anything>
   from: ANY
-    condition: equal num(_num parts([call]), 2)
+    condition: equal num(num parts([call]), 2)
     part:
       call: _apply([concept], _first part([call]))
-    part: _subtract num(_num parts([call]), 1)
+    part: _subtract num(num parts([call]), 1)
       call: finish([call])
   from: ANY
-    condition: greater(_num parts([call]), 2)
+    condition: greater(num parts([call]), 2)
     part:
       call: _apply([concept], _first part([call]))
-    part: _subtract num(_num parts([call]), 1)
+    part: _subtract num(num parts([call]), 1)
       call: evenly(concept, finish([call]))
 
 def: evenly(concept,call)
   spoken: evenly <0=concept> <1=anything>
   from: ANY
-    condition: equal num(_num parts([call]), 2)
+    condition: equal num(num parts([call]), 2)
     part:
       call: _first part([call])
-    part: _subtract num(_num parts([call]), 1)
+    part: _subtract num(num parts([call]), 1)
       call: _apply([concept], finish([call]))
   from: ANY
-    condition: greater(_num parts([call]), 2)
+    condition: greater(num parts([call]), 2)
     part:
       call: _first part([call])
-    part: _subtract num(_num parts([call]), 1)
+    part: _subtract num(num parts([call]), 1)
       call: oddly(concept, finish([call]))
 
 
@@ -284,6 +284,22 @@ def: change the wave
 def: change the(c) // XXX NOL Vic Ceder 1992
   spoken: change the <c=anything>
   call: _maybe touch(_wave swing), slip, cross run(CENTER), [c]
+
+/* .... */
+
+def: cross cycle
+  in: 4
+  from: TWO FACED LINE
+    ends in: formation(FACING COUPLES)
+    call: bounce(CENTER)
+    call: _box counter rotate(1/4)
+    call: roll
+  from: 2x2
+    ends in: formation(TWO FACED LINE)
+    // cheat so we can say "recycle has 3 parts", although facing recycle
+    // is really indivisible
+    ipart: 3
+      call: box recycle, slither
 
 /* .... */
 
