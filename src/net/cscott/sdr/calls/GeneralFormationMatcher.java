@@ -552,6 +552,8 @@ public class GeneralFormationMatcher {
             inFormation = inFormation.add(iDan);
             gNum++;
         }
+        // XXX call user-supplied validation function for disambiguating
+        //     tricky matches (like t-boned runs)
         // return updates to inFormation
         mi.inFormation = inFormation;
         return true; // this is a valid match.
