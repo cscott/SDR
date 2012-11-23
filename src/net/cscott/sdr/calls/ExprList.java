@@ -10,7 +10,9 @@ import org.junit.runner.RunWith;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
+import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Expr;
+import net.cscott.sdr.calls.transform.PartsCounter;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
 
@@ -459,6 +461,21 @@ public class ExprList {
     static { exprMathFuncs.put(_FRACTION.getName(), _FRACTION); }
 
     // square-dance related functions
+    /**
+     * Return the number of dancers in the current formation.
+     * @doc.test
+     *  Count number of dancers, and then number of boys, in a squared set.
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr num dancers)")
+     *  (Expr num dancers)
+     *  js> c.evaluate(fc, ds).toProperString()
+     *  8
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr num dancers 'BOY)")
+     *  (Expr num dancers 'BOY)
+     *  js> c.evaluate(fc, ds).toProperString()
+     *  4
+     */
     public static final ExprFunc<Fraction> NUM_DANCERS = new ExprFunc<Fraction>() {
         @Override
         public String getName() { return "num dancers"; }
@@ -475,6 +492,34 @@ public class ExprList {
         }
     };
     static { exprMathFuncs.put(NUM_DANCERS.getName(), NUM_DANCERS); }
+
+    /**
+     * Return the number of parts in the given call.
+     * @doc.test
+     *  Count number of parts in 'swing thru'.
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr num parts 'swing thru)")
+     *  (Expr num parts 'swing thru)
+     *  js> c.evaluate(fc, ds).toProperString()
+     *  2
+     */
+    public static final ExprFunc<Fraction> NUM_PARTS = new ExprFunc<Fraction>() {
+        @Override
+        public String getName() { return "num parts"; }
+        @Override
+        public Fraction evaluate(Class<? super Fraction> type, DanceState ds,
+                List<Expr> args) throws EvaluationException {
+            if (args.isEmpty())
+                throw new EvaluationException("not enough arguments");
+            if (args.size()>1)
+                throw new EvaluationException("too many arguments");
+            Apply a = new Apply(args.get(0));
+            PartsCounter pc = new PartsCounter(ds);
+            return a.accept(pc, null);
+        }
+    };
+    static { exprMathFuncs.put(NUM_PARTS.getName(), NUM_PARTS); }
 
     private static abstract class PatternFunc<T> extends ExprFunc<String> {
         private final String name;

@@ -10,7 +10,6 @@ import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.ast.Apply;
-import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Seq;
@@ -72,7 +71,7 @@ public class PartsVisitor<T> extends TransformVisitor<T> {
         return result;
     }
     // useful utility: desugar "and" concept to expose parts
-    protected Seq desugarAnd(Seq s) {
+    protected static Seq desugarAnd(Seq s) {
         // desugar 'and' pseudo-concept into parts
         ArrayList<SeqCall> nChildren = new ArrayList<SeqCall>(s.children.size());
         for (SeqCall sc: s.children) {

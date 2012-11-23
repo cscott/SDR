@@ -122,6 +122,15 @@ def: _finish drop in
     select: END
       prim: 1, in 1, none, sashay-start
 
+// "little more" has a controversial division into parts.  Are the
+// two parts "little" and "centers circulate" (as the callerlab definition
+// would seem to imply) or is the first part "centers step and fold while
+// ends quarter right" and the second part "centers circulate while ends
+// counter rotate 1/4"? (this definition times out better)
+def: little more
+  xpart: 2
+    call: little, anyone while others(CENTER, circulate, nothing)
+
 // XXX: can be done from promenade
 def: wheel the ocean
   call: _start wheel the, _finish wheel the ocean

@@ -1,0 +1,243 @@
+Count/verify the number of parts in various calls.
+
+Based on Vic Ceder's list at: http://www.ceder.net/def/callparts.php4
+
+sdr> /program=C4
+C4
+sdr> heads square thru ; touch
+| 4B>  3B>
+|
+| 3G<  2G<
+|
+| 4G>  1G>
+|
+| 1B<  2B<
+sdr> /// helper function to invoke the internal 'num parts' function.
+sdr> /function parts(s) {
+   >   fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction');
+   >   apply = CallDB.INSTANCE.parse(ds.dance.getProgram(), s)
+   >   expr = new net.cscott.sdr.calls.ast.Expr("num parts", apply.call)
+   >   return expr.evaluate(fc, ds);
+   > }
+sdr> /parts("swing thru").toProperString()
+2
+sdr> /// check the timing of a call, without failing if the call isn't
+sdr> /// defined yet.
+sdr> /function assertParts(call, n) {
+   >   try {
+   >     m = parts(call)
+   >     if (!net.cscott.sdr.util.Fraction.valueOf(n).equals(m))
+   >       return "Number of parts incorrect!  Actual: "+m.toProperString()
+   >   } catch (e if e.javaException instanceof BadCallException) {
+   >       msg = e.javaException.getMessage()
+   >       if (!(/Not on list:/.test(msg)))
+   >         return "* "+msg
+   >   }
+   > }
+sdr> /// this is a successful check, with the correct # of parts
+sdr> /assertParts("swing thru", 2)
+sdr> /// this is what should happen if the # of parts was incorrect
+sdr> /assertParts("swing thru", 3)
+Number of parts incorrect!  Actual: 2
+sdr> /// this shows that we suppress errors if the call definition is missing
+sdr> /assertParts("not a call", 999)
+sdr> ///
+sdr> ///
+sdr> ///  OKAY!  LET'S LIST OUR CALLS AND PARTS!
+sdr> ///
+sdr> ///
+sdr> /assertParts("vertical tag back", 2)
+sdr> /assertParts("flip back", 2)
+sdr> /assertParts("tag back to a wave", 2)
+sdr> /assertParts("flip your neighbor", 2)
+sdr> /assertParts("tag your neighbor", 2)
+sdr> /assertParts("boys hop", 2)
+sdr> /// "anyone ripple the wave" has a varying number of parts
+sdr> /assertParts("swing thru and spread", 3)
+sdr> /assertParts("2 steps at a time", 3)
+sdr> /assertParts("quarter top", 2)
+sdr> /assertParts("half top", 2)
+sdr> /assertParts("three quarter top", 2)
+sdr> /assertParts("quarter mix", 3)
+sdr> /assertParts("three quarter mix", 3)
+sdr> /assertParts("quarter thru", 2)
+sdr> /assertParts("three quarter thru", 2)
+sdr> /assertParts("quarter wheel the ocean", 2)
+sdr> /assertParts("quarter wheel the sea", 2)
+sdr> /assertParts("three quarter wheel the ocean", 2)
+sdr> /assertParts("three quarter wheel the sea", 2)
+sdr> /assertParts("all eight spin the top", 2)
+sdr> /assertParts("all eight swing and mix", 3)
+sdr> /assertParts("all eight swing thru", 2)
+sdr> /assertParts("alter and circulate", 5)
+sdr> /assertParts("alter the wave", 4)
+sdr> /assertParts("bounce the boys", 2)
+sdr> /assertParts("catch 2", 3)
+sdr> /assertParts("catch 3", 3)
+sdr> /assertParts("catch swing thru 4", 3)
+sdr> /assertParts("quarter cast and relay", 4)
+sdr> /assertParts("three quarter cast and relay", 4)
+sdr> /assertParts("chain thru", 2)
+sdr> /assertParts("brace thru", 2)
+sdr> /assertParts("change the centers", 4)
+sdr> /assertParts("change the wave", 4)
+sdr> /assertParts("chase your neighbor", 2)
+sdr> /assertParts("chisel thru", 3)
+sdr> /assertParts("choice", 2)
+sdr> /assertParts("chuck a luck", 2)
+sdr> /assertParts("circle 1/4 to a wave", 2)
+sdr> /assertParts("circle by 1/4 by 1/4", 2)
+sdr> /assertParts("coordinate", 4)
+sdr> /assertParts("couple up", 2)
+sdr> /assertParts("crazy trade", 4)
+sdr> /assertParts("half crazy trade", 2)
+sdr> /assertParts("cross and wheel", 2)
+sdr> /assertParts("cross chain thru", 2)
+sdr> /assertParts("cross chuck a luck", 2)
+sdr> /assertParts("cross counter", 3)
+sdr> /assertParts("cross cycle", 3)
+sdr> /assertParts("cross flip back", 2)
+sdr> /assertParts("cross ramble", 2)
+sdr> /assertParts("cross the k", 2)
+sdr> /assertParts("cross trade and wheel", 3)
+sdr> /assertParts("diamond chain thru", 3)
+sdr> /assertParts("disband", 2)
+sdr> /assertParts("dixie diamond", 2)
+sdr> /assertParts("dixie grand", 3)
+sdr> /assertParts("dixie style", 2)
+sdr> /assertParts("double star thru", 2)
+sdr> /// centers have two parts, ends have 1 part
+sdr> /assertParts("central ease off", 2)
+sdr> /assertParts("eight chain thru", 8)
+sdr> /assertParts("eight chain 5", 5)
+sdr> /assertParts("exchange the three by one triangles", 4)
+sdr> /assertParts("exchange the boxes", 4)
+sdr> /assertParts("exchange the diamonds", 4)
+sdr> /assertParts("exchange the triangles", 3)
+sdr> /// "funny <anything> <n>" ?
+sdr> /assertParts("funny square thru", 4)
+sdr> /assertParts("funny square thru 3", 3)
+sdr> /assertParts("grand quarter mix", 3)
+sdr> /assertParts("grand three quarter mix", 3)
+sdr> /assertParts("grand quarter thru", 2)
+sdr> /assertParts("grand three quarter thru", 2)
+sdr> /assertParts("grand cross trade and wheel", 3)
+sdr> /assertParts("grand mix", 2)
+sdr> /assertParts("grand single cross and wheel", 2)
+sdr> /assertParts("grand single cross trade and wheel", 3)
+sdr> /assertParts("grand swing and mix", 3)
+sdr> /assertParts("grand swing thru", 2)
+sdr> /assertParts("hinge the lock", 2)
+sdr> /assertParts("hubs trade back", 2)
+sdr> /assertParts("interlocked ramble", 2)
+sdr> /// "keep busy" -- trailers have 4 parts, leaders have 2 parts
+sdr> /assertParts("latch on", 2)
+sdr> /assertParts("latch on 1/4", 2)
+sdr> /assertParts("left swing thru", 2)
+sdr> /assertParts("line to line", 3)
+sdr> /assertParts("load the boat", 4)
+sdr> /assertParts("lock the hinge", 2)
+sdr> /assertParts("locker's choice", 3)
+sdr> /// "mini busy": trailers have three parts, leaders have an xpart
+sdr> /assertParts("mix", 2)
+sdr> /assertParts("motivate", 4)
+sdr> /assertParts("nuclear reaction", 3)
+sdr> /assertParts("pass z axle", 4)
+sdr> /assertParts("pass and roll", 4)
+sdr> /assertParts("pass in", 2)
+sdr> /assertParts("pass out", 2)
+sdr> /assertParts("pass the axle", 4)
+sdr> /assertParts("pass the ocean", 3)
+sdr> /assertParts("pass the sea", 3)
+sdr> /assertParts("pass to the center", 2)
+sdr> /assertParts("peel the top", 2)
+sdr> /assertParts("percolate", 3)
+sdr> /assertParts("patch the boys", 2)
+sdr> /// "rally": centers have two parts, ends have (controversially)
+sdr> /// either 2 ("little; right roll to a wave) or 3 (1/4 right, counter
+sdr> /// rotate 1/4, right roll to a wave)
+sdr> /assertParts("central rally", 2)
+sdr> /assertParts("ramble", 2)
+sdr> /assertParts("recoil", 2)
+sdr> /assertParts("recycle", 3)
+sdr> /// "regroup": centers  have two parts, outside parts are controversial
+sdr> /assertParts("central regroup", 2)
+sdr> /assertParts("relay the top", 4)
+sdr> /assertParts("remake", 3)
+sdr> /assertParts("reset", 4)
+sdr> /assertParts("reverse crazy swing thru", 4)
+sdr> /assertParts("half reverse crazy swing thru", 2)
+sdr> /assertParts("reverse rotate 1/4", 2)
+sdr> /assertParts("reverse rotate 1/2", 2)
+sdr> /assertParts("reverse rotate 3/4", 2)
+sdr> /assertParts("reverse single rotate 1/4", 2)
+sdr> /assertParts("reverse single rotate 1/2", 2)
+sdr> /assertParts("reverse single rotate 3/4", 2)
+sdr> /assertParts("reverse the pass", 3)
+sdr> /assertParts("reverse the top", 2)
+sdr> /assertParts("right and left thru", 2)
+sdr> /assertParts("rims trade back", 2)
+sdr> /assertParts("rotate 1/4", 2)
+sdr> /assertParts("rotate 1/2", 2)
+sdr> /assertParts("rotate 3/4", 2)
+sdr> /assertParts("scoot and cross counter", 4)
+sdr> /assertParts("scoot and cross ramble", 3)
+sdr> /assertParts("scoot and fancy", 2)
+sdr> /assertParts("scoot and plenty", 4)
+sdr> /assertParts("scoot and ramble", 3)
+sdr> /assertParts("scoot and weave", 2) // XXX from a 2x2
+sdr> /assertParts("scramble", 2)
+sdr> /assertParts("shazam", 2)
+sdr> /assertParts("sidetrack", 3)
+sdr> /assertParts("single bounce the boys", 2)
+sdr> /assertParts("single cross and wheel", 2)
+sdr> /assertParts("single cross trade and wheel", 3)
+sdr> /assertParts("single rotate 1/4", 2)
+sdr> /assertParts("single rotate 1/2", 2)
+sdr> /assertParts("single rotate 3/4", 2)
+sdr> /assertParts("slide thru", 2)
+sdr> /assertParts("spin chain thru", 4)
+sdr> /assertParts("spin the pulley", 3)
+sdr> /assertParts("spin the pulley but", 2)
+sdr> /assertParts("spin the top", 2)
+sdr> /assertParts("central spin the windmill", 3)
+sdr> /assertParts("split dixie style to a wave", 2)
+sdr> /assertParts("split dixie diamond", 2)
+sdr> /assertParts("split sidetrack", 3)
+sdr> /assertParts("split square thru", 4)
+sdr> /assertParts("split square thru 3", 3)
+sdr> /assertParts("split turn the key", 3)
+sdr> /assertParts("square thru", 4)
+sdr> /assertParts("square thru 3", 3)
+sdr> /assertParts("square thru 2", 2)
+sdr> /assertParts("squeeze", 2)
+sdr> /assertParts("stack the line", 2)
+sdr> /// "stampede": centers have three parts, outsides have two parts
+sdr> /assertParts("central stampede", 3)
+sdr> /assertParts("swing and circle", 4)
+sdr> /assertParts("swing and circle 1/2", 2)
+sdr> /assertParts("swing and mix", 3)
+sdr> /assertParts("swing chain thru", 4)
+sdr> /assertParts("swing the fractions", 5)
+sdr> /assertParts("swing thru", 2)
+sdr> /assertParts("the axle", 3)
+sdr> /assertParts("the pulley", 2)
+sdr> /assertParts("touch by 1/4 by 1/4", 2)
+sdr> /assertParts("touch by 1/2 by 3/4", 2)
+sdr> /assertParts("trade the diamond", 4)
+sdr> /assertParts("travel thru", 2)
+sdr> /assertParts("trip the set", 2)
+sdr> /assertParts("triple star thru", 3)
+sdr> /assertParts("turn the key", 3)
+sdr> /assertParts("wave the boys", 2)
+sdr> /assertParts("wheel and spread", 2)
+sdr> /assertParts("wheel the ocean", 2)
+sdr> /assertParts("wheel the sea", 2)
+sdr> /assertParts("z axle", 3)
+sdr> ///
+sdr> /// various C4 calls not on Vic's list
+sdr> ///
+sdr> /assertParts("hot foot spin", 3)
+sdr> /assertParts("step lively", 3)
+sdr> /assertParts("boys advance to a column", 4)
+sdr> /exit
