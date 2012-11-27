@@ -1,0 +1,66 @@
+"Square Thru N" has N parts (according to Vic, at least).  Test this.
+
+sdr> /program=C3B
+C3B
+sdr> heads square thru
+| 4B>  3G<  3B>  2G<
+|
+| 4G>  1B<  1G>  2B<
+sdr> evenly as couples square thru 2
+| 1B^  4G^  2B^  1G^
+|
+| 3Gv  4Bv  2Gv  3Bv
+sdr> wheel and deal ; centers pass thru
+| 4Gv  1Bv
+|
+| 4B^  3G^
+|
+| 1Gv  2Bv
+|
+| 3B^  2G^
+sdr> evenly as couples square thru 3
+| 2B^  2G^  3B^  1G^
+|
+| 3Gv  1Bv  4Gv  4Bv
+sdr> quarter in
+| 2B>  2G<  3B>  1G<
+|
+| 3G>  1B<  4G>  4B<
+sdr> oddly twice square thru 2
+| 3G<  1B>  4G<  4B>
+|
+| 2B<  2G>  3B<  1G>
+sdr> trade
+| 2B>  2G<  3B>  1G<
+|
+| 3G>  1B<  4G>  4B<
+sdr> oddly twice square thru
+| 1B^  3G^  4B^  4G^
+|
+| 2Gv  2Bv  1Gv  3Bv
+sdr> bend the line ; pass the ocean
+| 4B^  4Gv  3G^  1Bv
+|
+| 3B^  1Gv  2G^  2Bv
+sdr> acey deucey ; trade
+| 3G^  3Bv  4B^  4Gv
+|
+| 2G^  2Bv  1B^  1Gv
+sdr> swing thru twice ; right and left grand ; promenade home
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> /// "finally twisted square thru" would be an interesting test.
+sdr> heads square thru
+| 4B>  3G<  3B>  2G<
+|
+| 4G>  1B<  1G>  2B<
+sdr> finally cross concentric square thru
+| 3G^  4B^  2G^  3B^
+|
+| 1Bv  4Gv  2Bv  1Gv
+sdr> /exit

@@ -28,6 +28,7 @@
  *   right-roll-to-a-wave at line 46
  *   siamese-1 at line 30
  *   square-chain-the-top at line 18
+ *   square-thru at line 22
  *   sweep-3 at line 23
  *   swing-slip-slide-slither at line 54
  *   trade-2 at line 13
