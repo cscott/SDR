@@ -16,6 +16,7 @@ import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
+import net.cscott.sdr.calls.transform.AllButLastPart;
 import net.cscott.sdr.calls.transform.Finish.PartSelectorCall;
 import net.cscott.sdr.calls.transform.FirstPart;
 import net.cscott.sdr.calls.transform.LikeA;
@@ -208,6 +209,13 @@ public abstract class C4List {
         @Override
         protected FirstPart getPartsVisitor(DanceState ds) {
             return new FirstPart(ds);
+        }
+    };
+    public static final Call _ALL_BUT_LAST_PART = new PartSelectorCall
+            ("_all but last part", Program.C4, null /* not on any list */) {
+        @Override
+        protected AllButLastPart getPartsVisitor(DanceState ds) {
+            return new AllButLastPart(ds);
         }
     };
 }
