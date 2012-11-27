@@ -39,5 +39,6 @@ grammar @CLASSNAME@;
 
 // temporary hack; see antlr-v3.skel for details.
 <concept> = tandem | as couples | siamese | <times> | [do] <fraction> |
+            concentric | cross concentric |
             <metaconcept> <concept> ;
 <metaconcept> = initially | finally | oddly | evenly | echo | reverse echo ;

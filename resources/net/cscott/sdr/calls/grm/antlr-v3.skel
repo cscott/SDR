@@ -184,6 +184,8 @@ concept returns [Expr a]
         : 'tandem' { a = Expr.literal("tandem"); }
         | 'as' 'couples' { a = Expr.literal("as couples"); }
         | 'siamese' { a = Expr.literal("siamese"); }
+        | 'concentric' { a = Expr.literal("concentric"); }
+        | 'cross' 'concentric' { a = Expr.literal("cross concentric"); }
         // _curry makes a function-of-one-argument
         // (actually, a function of N arguments, where N is the number of
         //  * wildcards in the argument)
