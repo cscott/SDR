@@ -38,6 +38,9 @@ def: curlique
   from: ANY
     call: _mixed touch, curlique
 
+def: dixie spin
+  call: dixie style, fan the top
+
 def: retain your lane
   from: CENTER HALF
     call: _quasi concentric(remake, 2(circulate))
@@ -47,9 +50,6 @@ def: nicely
 
 def: hot foot spin
   call: fan the top, anyone while others(VERY CENTER, trade), spin the top
-
-def: transaction
-  call: transfer and(cast off(3/4)), chain reaction
 
 def: echo(concept, call)
   spoken: echo <0=concept> <1=anything>
@@ -229,15 +229,168 @@ def: like a
 def: finish
 def: interlocked phantom setups
 def: quadruple setups
+*/
 
 // week 3
-def: <atc> to a diamond
-def: <atc> to an interlocked diamond
-def: <atc> to an hourglass
-def: quick wrap
-def: gravitate
-def: ride the tide
-def: star to a wave
-def: the difference
 
+def: _atc to a diamond(atc)
+  ipart:
+    call: _tag([atc], 3/4)
+    call: _finish atc to a diamond
+    // do we need a quarter-tag-to-diamond adjustment here?
+
+def: _atc to an interlocked diamond(atc)
+  ipart:
+    call: _atc to a diamond([atc])
+    call: _centers(slither)
+def: _atc to an hourglass(atc)
+  ipart:
+    call: _atc to a diamond([atc])
+    call: anyone while others(VERY CENTER, snake)
+def: _finish atc to a diamond
+  from: RH THREE QUARTER TAG
+    select: END
+      call: quarter right
+    select: OTHERS
+      call: nothing
+  from: LH THREE QUARTER TAG
+    select: END
+      call: quarter left
+    select: OTHERS
+      call: nothing
+
+def: snake
+  from: RH_MINIWAVE
+    call: quarter in, left(touch)
+  from: LH_MINIWAVE
+    call: quarter in, touch
+
+def: quick wrap
+  ipart:
+    call: _start quick wrap, _finish quick wrap
+def: magic quick wrap
+  ipart:
+    call: _start magic quick wrap, _finish quick wrap
+def: _finish quick wrap
+  call: _centers(1/2(reset))
+def: _start quick wrap
+  from: GENERAL COLUMNS
+    select: NUMBER 1, NUMBER 2
+      call: split counter rotate
+    select: NUMBER 3, NUMBER 4
+      call: circulate
+def: _start magic quick wrap
+  from: GENERAL COLUMNS
+    select: NUMBER 1
+      call: split counter rotate
+    select: NUMBER 2
+      call: magic circulate, face in
+    select: NUMBER 3, NUMBER 4
+      call: magic circulate
+
+/*
+def: gravitate
+*/
+
+def: ride the tide
+  call: cross trail thru, clover and(square thru(2)), slide thru
+
+def: star to a wave(n=1/2)
+  spoken: star to a wave (but turn the star <n=fraction>)?
+  from: FACING COUPLES
+    call: 1/2(reverse(swap around))
+    call: counter rotate([n])
+    call: flip the diamond
+
+def: the difference
+  call: cast(3/4), slip, cast(3/4)
+def: _anything the difference(c)
+  spoken: <c=anything> the difference
+  part:
+    call: [c]
+  part: 3
+    call: the difference
+def: split the difference
+  call: _anything the difference(split circulate)
+def: split trade the difference
+  call: _anything the difference(split trade circulate)
+
+def: transaction
+  call: trans(chain reaction)
+def: transactivate
+  call: trans(reactivate)
+def: trans(c)
+  spoken: trans <c=anything>
+  call: transfer and(cast(3/4))
+  call: [c]
+
+/*
+def: <atc> ers flow but criss cross it
+*/
+def: the alter(n)
+  spoken: <n=fraction> the alter
+  call: quarter the alter([n], [n], [n])
+
+def: quarter the alter(i, j, k)
+  spoken: <i=fraction> <j=fraction> <k=fraction> the alter
+  call: 1/2(_any hand quarter thru([i]))
+  call: anyone while others(CENTER, cast([j]), u turn back)
+  call: _the alter part three([k])
+  call: flip the diamond
+def: _the alter part three(n)
+  from: GENERAL DIAMONDS
+    call: counter rotate([n]) // "turn the star"
+
+def: the alter and circulate(n)
+  spoken: <n=fraction> the alter and circulate
+  call: quarter the alter and circulate([n], [n], [n])
+
+def: quarter the alter and circulate(i, j, k)
+  spoken: <i=fraction> <j=fraction> <k=fraction> the alter and circulate
+  call: 1/2(_any hand quarter thru([i]))
+  call: anyone while others(CENTER, cast([j]), u turn back)
+  call: anyone while others(CENTER, _center(trade), circulate)
+  call: _the alter part three([k])
+  call: flip the diamond
+
+/*
+def: double down
+*/
+
+def: contour the line
+  call: hinge, split circulate, split circulate, hinge
+
+/*
+def: chase back // XXX this is C3B now.
+*/
+
+def: push off
+  call: zip code(1)
+  call: _finish push off
+def: _finish push off
+  from: 2x4
+    call: _quasi concentric(and(fan the top, hinge), touch(3/4))
+
+def: counteract
+  call: _counteract part 1, _counteract part 2
+def: _counteract part 1
+  from: 2x4
+    call: _quasi concentric(counter rotate, trade)
+def: _counteract part 2
+  from: 2x4
+    select: END
+      call: split counter rotate
+    select: and(CENTER, LEADER)
+      prim: in 2, 2, in
+      prim: in 2, 2, in
+    select: and(CENTER, TRAILER)
+      // divide this so that 1/2 of the centers part works out correctly
+      prim: 0, 0, in
+      prim: 0, 0, out
+
+/*
+def: multiple setups working together
+def: phantom tandem / phantom as couples concepts (including twosome)
+def: phantom boxes / phantom diamonds (like phantom lines/columns)
+def: yoyo concept
 */

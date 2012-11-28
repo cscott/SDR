@@ -12,6 +12,9 @@ def: press back
   prim: 0, -1, none
   prim: 0, -1, none
 
+def: alter the wave
+  call: quarter the alter(1/2, 3/4, 1/2)
+
 def: concentric(c)
   spoken: concentric <c=anything>
   from: GENERAL QUARTER TAG, TWIN GENERAL DIAMONDS

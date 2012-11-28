@@ -29,6 +29,9 @@ def: cross concentric(c)
   from: CENTER HALF
     call: _cross concentric([c], [c])
 
+def: alter and circulate
+  call: quarter the alter and circulate(1/2, 3/4, 1/2)
+
 def: bounce(who)
   spoken: bounce the <who=anyone>
   from: CENTER HALF

@@ -7,7 +7,9 @@ options {
   // some phrases need a lot of lookahead:
   //   'square' 'thru' 'two' 'and' 'a' 'half' 'times'
   //   'dixie' 'style' 'to' 'a' 'wave'
-  k=10;
+  //   <fraction> <fraction> <fraction> the alter and circulate
+  //   INT '/' INT INT '/' INT INT '/' INT 'the' 'alter' 'and' 'circulate'
+  k=13;
 /*
   charVocabulary = '\0'..'\177'; // ascii only
   testLiterals=true;
