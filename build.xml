@@ -716,6 +716,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
       <delete dir="war/sdrweb" />
       <delete dir="war/sdr" />
       <delete dir="war/WEB-INF/classes" />
+      <delete dir="war/WEB-INF/deploy" />
     </target>
 
     <target name="run.devmode" depends="compile.jdo"
