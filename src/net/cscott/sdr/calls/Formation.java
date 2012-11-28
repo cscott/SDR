@@ -582,14 +582,24 @@ public class Formation {
     }
     /** Special case of {@link Formation#map(Dancer...)} which allows you to specify
      *  half the dancers, and fills in the rest with their opposites to
-     *  result in a symmetric formation.
+     *  result in a symmetric formation.  If given no arguments,
+     *  arbitrarily chooses standard dancers to fill the formation.
      */
     public Formation mapStd(StandardDancer... dancers) {
-        if (dancers.length==4 && this.dancers().size()==8) {
-            StandardDancer[] ndancers = new StandardDancer[8];
+        if (dancers.length==0) {
+            StandardDancer[] ndancers =
+                new StandardDancer[this.dancers().size()/2];
+            for (int i=0; i<ndancers.length; i++) {
+                ndancers[i] = StandardDancer.values()[i];
+            }
+            dancers = ndancers;
+        }
+        if ((dancers.length * 2) == this.dancers().size()) {
+            int N = this.dancers().size();
+            StandardDancer[] ndancers = new StandardDancer[N];
             for (int i=0; i<dancers.length; i++) {
                 ndancers[i] = dancers[i];
-                ndancers[8 - i - 1] =
+                ndancers[N - i - 1] =
                     StandardDancer.values()[(dancers[i].ordinal()+4)%8];
             }
             dancers = ndancers;
