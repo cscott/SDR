@@ -97,6 +97,7 @@ def: _those who can turn left not grand(n)
   call: mirror(_those who can turn right not grand([n]))
 
 def: _grand quarter thru(n=1/4)
+  in: _add num(5, _multiply num(4, [n]))
   // XXX: check that one of these calls involves a pair of dancers
   //      spanning the centerline so that we don't allow (e.g.)
   //      a 'grand swing thru' from parallel ocean waves
@@ -107,6 +108,7 @@ def: _grand quarter thru(n=1/4)
 // formation
 // XXX from RH wave-based triangles, etc.
 def: _quarter thru(n=1/4)
+  in: _add num(5, _multiply num(4, [n]))
   call: _those who can turn right not grand([n])
   call: _those who can turn left not grand(1/2)
 
@@ -145,13 +147,11 @@ def: _finish brace thru
 
 def: clover and(call)
   spoken: clover and <call=anything>
-  in: 4
   ipart:
     call: _maybe start clover(_finish clover([call], _single cloverleaf))
 
 def: cross clover and(call)
   spoken: cross clover and <call=anything>
-  in: 4
   ipart:
     call: _maybe start clover(_finish clover([call], _single cross cloverleaf))
 
@@ -168,20 +168,26 @@ def: _finish clover(call, clover)
     call: _concentric([call], [clover])
 
 def: double star thru
+  in: 6
   // 2 parts
   call: star thru
   call: mirror(star thru)
+
+// XXX everyone can roll after 'ends bend'
+// XXX everyone can roll after 'explode and'
 
 def: horseshoe turn
   // Vic sez: "Consider a Squared Set after Heads Pass Thru. From this
   // formation, the call Clover And Partner Tag is legal, but Horseshoe
   // Turn is not."
+  in: 6
   from: CENTER HALF
     condition: match(_inout pattern(not(CENTER)), "oooo"),\
                "Ends must be facing out"
     call: clover and(partner tag)
 
 def: lockit
+  in: 4
   from: GENERAL LINE, GENERAL DIAMOND
     call: _counter rotate 1/4
 
@@ -191,6 +197,7 @@ def: partner hinge
     call: 1/2(trade)
 
 def: partner tag
+  in: 3
   from: mixed(COUPLE, RH MINIWAVE, LH MINIWAVE)
     ends in: formation(BACK TO BACK DANCERS)
     call: quarter in, pass thru
@@ -224,11 +231,13 @@ def: left roll to a wave
 // see 'square thru' (basic) and 'square chain the top' (c1) definitions
 def: square chain thru
   optional: LEFT
+  in: 14
   from: mixed(RH OCEAN WAVE, FACING COUPLES)
     ends in: formation(BACK TO BACK COUPLES)
     call: _square thru part, left(swing thru), left(turn thru)
 
 def: triple star thru
+  in: 10
   // 3 parts
   call: _those facing star thru
   call: mirror(_those facing star thru)

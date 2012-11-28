@@ -1,6 +1,7 @@
 program: c4
 
 def: brace yourself
+  in: 4
   from: COUPLE
     condition: not(or(ALL(BOY), ALL(GIRL))),\
                "Must have one boy and one girl in each couple"

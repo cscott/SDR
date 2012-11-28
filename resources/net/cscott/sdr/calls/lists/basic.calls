@@ -193,6 +193,10 @@ def: circle left half way
 def: circle right half way
   spoken: circle (to the)? right half way
   call: circle right(1/2)
+def: circle left full around
+  call: circle left(4/4)
+def: circle right full around
+  call: circle right(4/4)
 
 // for interactive use: these will keep circling until another call is given
 def: circle left forever
@@ -205,9 +209,13 @@ def: circle right forever
             circle right(1/4), and(circle right(1/4), circle right forever))
 
 def: circle four(n)
-  spoken: circle four <n=fraction> way?
+  spoken: circle four <n=fraction>
   from: FACING COUPLES, SINGLE STATIC SQUARE
     call: _fractional(_multiply num([n],4), _circle left 1/4)
+def: circle four half way
+  call: circle four(1/2)
+def: circle four full around
+  call: circle four(4/4)
 
 def: circle two(n)
   // "single circle" wording is "improper"
@@ -284,7 +292,7 @@ def: dosado
       call: _finish dosado
   from: ANY
     ipart:
-      call: _mixed touch
+      call: _maybe circle adjust(_mixed touch)
     part: 3
       call: _finish dosado
 
@@ -471,12 +479,12 @@ def: _pinwheel adjust to promenade
 
 // another 4-person promenade
 def: _single star promenade 1/8
-  in: 2
+  in: 1 1/2
   from: LH STAR
     prim: 0, 1, left 1/8
 
 def: _single star promenade 1/4
-  in: 4
+  in: 3
   from: LH STAR
     prim: -1, 1, left
   // all other formations ought to end in LH STAR
@@ -645,6 +653,10 @@ def: promenade half way
 def: star promenade(n)
   spoken: star promenade <n=fraction>
   call: as couples(_single star promenade([n]))
+def: star promenade half way
+  call: star promenade(1/2)
+def: star promenade full around
+  call: star promenade(4/4)
 
 // we always go at least 1/4, like for promenade home
 def: _star promenade home(sel)
@@ -660,9 +672,16 @@ def: _star promenade home(sel)
 def: star promenade home
   call: _star promenade home(BEAU)
 
-def: wrong way star promenade
-  spoken: (reverse|wrong way) star promenade (home?)
+def: wrong way star promenade home
+  spoken: (reverse|wrong way) star promenade home
   call: mirror(_star promenade home(BELLE))
+def: wrong way star promenade(n)
+  spoken: wrong way star promenade <n=fraction>
+  call: mirror(star promenade([n]))
+def: wrong way star promenade half way
+  call: wrong way star promenade(1/2)
+def: wrong way star promenade full around
+  call: wrong way star promenade(4/4)
 
 // we always go at least 1/4, like for promenade home
 def: _finish single file promenade home(pattern)
@@ -1188,11 +1207,15 @@ def: chain down the line
 //      in the game UI, we'd have a special 'call waiting' predicate.
 // XXX: WRITE ME
 def: _do paso(last=courtesy turn)
+  spoken: do paso
   // SS from start to finish of courtesy turn 16 to next call 12
-  call: _do paso face and left touch
-  call: left(turn thru)
-  call: mirror(left allemande)
-  call: [last]
+  ipart:
+    in: 12
+     call: _do paso face and left touch
+     call: left(turn thru)
+     call: mirror(left allemande)
+  part:
+    call: [last]
 
 // callerlab #18: LEAD RIGHT
 def: lead right
@@ -1389,6 +1412,7 @@ def: see saw
   spoken: see saw (your own)?
   in: 8
   call: mirror(all around the corner)
+// XXX: "see saw (full | all the way) around"
 
 // callerlab #28: SQUARE THRU FAMILY
 
@@ -1853,7 +1877,10 @@ def: _single sweep 1/4
       call: nothing
 def: and sweep(c, n)
   spoken: [-10] <c=anything> and sweep <n=fraction>
-    call: [c], sweep([n])
+    part: num parts([c])
+      call: [c]
+    part:
+      call: sweep([n])
 
 // callerlab #49: TRADE BY
 // XXX: callerlab says "any formation in which two couples are facing each

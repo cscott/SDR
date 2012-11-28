@@ -1,0 +1,120 @@
+Timing of calls on the A2 program.
+
+sdr> /program=A2
+A2
+sdr> /// import formations into default name space
+sdr> /for (f in FormationList) { this[f] = FormationList[f]; } ; undefined
+sdr> /// define helper to time a call from a given formation
+sdr> /function beats(call, formation) {
+   >   // put real dancers symmetrically in the given formation template.
+   >   var SD = StandardDancer.values();
+   >   var f = formation.mapStd([SD[0],SD[1],SD[2],SD[3]]);
+   >   // make normal couples
+   >   switch (''+formation.getName()) {
+   >   case 'STATIC SQUARE': f = Formation.SQUARED_SET; break;
+   >   case 'TRADE BY':
+   >     f = formation.mapStd([SD[0],SD[1],SD[3],SD[2]]); break;
+   >   case 'EIGHT CHAIN THRU':
+   >     f = formation.mapStd([SD[1],SD[0],SD[2],SD[3]]); break;
+   >   }
+   >   //java.lang.System.err.println(f.toStringDiagram(call+"|")); //debugging
+   >   setFormation(f);
+   >   var now = ds.currentTime();
+   >   Evaluator.parseAndEval(ds, call);
+   >   var then = ds.currentTime();
+   >   return then.subtract(now);
+   > }
+sdr> /function isArray(a) { return typeof(a)==='object' && 'length' in a; }
+sdr> /function checkBeats(count, calls, formations) {
+   >   if (!isArray(formations)) { formations = [formations]; }
+   >   if (!isArray(calls)) { calls = [calls]; }
+   >   count = net.cscott.sdr.util.Fraction.valueOf(count);
+   >   for each (var call in calls) {
+   >     for each (var formation in formations) {
+   >       try {
+   >         var b = beats(call, formation);
+   >         if (!count.equals(b))
+   >           return "Timing incorrect for "+call+
+   >                  " from "+formation.getName()+"!"+
+   >                  " "+b.toProperString()+
+   >                  " instead of "+count.toProperString()+" beats";
+   >       } catch (e if e.javaException instanceof BadCallException) {
+   >           var msg = e.javaException.getMessage()
+   >           if (!(/(Not on list|Unknown call):/.test(msg)))
+   >             return "* "+call+"/"+formation.getName()+": "+msg;
+   >       }
+   >     }
+   >   }
+   > }
+sdr> /////////// start call list ////////////////
+sdr> /checkBeats(10, "all four couples chase right", STATIC_SQUARE_FACING_OUT)
+sdr> /checkBeats(10, "all four couples right and left thru", STATIC_SQUARE)
+sdr> /checkBeats( 6, "all four couples star thru",           STATIC_SQUARE)
+sdr> /checkBeats( 6, "all four couples touch 1/4",           STATIC_SQUARE)
+sdr> /checkBeats( 8, "all eight dixie style to a wave",      STATIC_SQUARE)
+sdr> /checkBeats(10, "all eight mix", [THAR, WRONG_WAY_THAR])
+sdr> /checkBeats( 8, "all eight swing thru", WRONG_WAY_THAR)
+sdr> /checkBeats(2+6, "girls u turn back ; all eight walk and dodge",
+   >                                                         STATIC_SQUARE)
+sdr> /checkBeats(10, "checkmate the column", [RH_COLUMN, LH_COLUMN])
+sdr> /checkBeats(10, "diamond chain thru", [RH_TWIN_DIAMONDS,LH_TWIN_DIAMONDS])
+sdr> /checkBeats( 4, "hourglass circulate", [RH_HOURGLASS, LH_HOURGLASS])
+sdr> /checkBeats( 6, "cut the hourglass",   [RH_HOURGLASS, LH_HOURGLASS])
+sdr> /checkBeats( 4, "flip the hourglass",  [RH_HOURGLASS, LH_HOURGLASS])
+sdr> /checkBeats( 4, "in roll circulate",
+   >                 [PARALLEL_RH_WAVES, PARALLEL_RH_TWO_FACED_LINES])
+sdr> /checkBeats( 6, "out roll circulate",
+   >                 [PARALLEL_RH_WAVES, PARALLEL_RH_TWO_FACED_LINES])
+sdr> /checkBeats( 6, "mini busy", [PARALLEL_RH_TWO_FACED_LINES,
+   >                               PARALLEL_LH_TWO_FACED_LINES])
+sdr> /checkBeats(16, "motivate", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats(10, "pass and roll", EIGHT_CHAIN_THRU)
+sdr> /checkBeats(12, "pass and roll your neighbor", EIGHT_CHAIN_THRU)
+sdr> /checkBeats( 4, "peel and trail", [DOUBLE_PASS_THRU,
+   >                                    COMPLETED_DOUBLE_PASS_THRU])
+sdr> /checkBeats( 6, "peel and trail", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /// XXX peel and trail from Z is also 6 beats
+sdr> /checkBeats( 6, "recycle", [FACING_LINES, EIGHT_CHAIN_THRU])
+sdr> /checkBeats(10, "remake", PARALLEL_RH_WAVES)
+sdr> ///checkBeats(10, "remake", LH_TWIN_FACING_DIAMONDS)         // XXX
+sdr> ///checkBeats(12, "remake", [RH_ALAMO_RING, LH_ALAMO_RING])  // XXX
+sdr> /checkBeats(10, "grand remake", RH_COLUMN)
+sdr> /checkBeats(10, "remake the thar", [THAR, WRONG_WAY_THAR])
+sdr> /checkBeats(10, "scoot and weave", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                                     RH_COLUMN, LH_COLUMN])
+sdr> /checkBeats(10, "scoot and weave", [RH_QUARTER_TAG, LH_QUARTER_TAG])
+sdr> /checkBeats(12, "scoot chain thru",[PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats(12, "scoot chain thru",[RH_QUARTER_TAG, LH_QUARTER_TAG])
+sdr> /checkBeats( 4, "single wheel", [FACING_LINES, EIGHT_CHAIN_THRU,
+   >              PARALLEL_RH_WAVES, PARALLEL_LH_WAVES, RH_COLUMN, LH_COLUMN,
+   >              ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES])
+sdr> /checkBeats( 3, ["slip", "slide", "swing", "slither"],
+   >                 [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES, RH_TIDAL_WAVE])
+sdr> /checkBeats(12, "spin the windmill",
+   >                 [RH_THREE_QUARTER_TAG, LH_THREE_QUARTER_TAG, TRADE_BY])
+sdr> /checkBeats( 4, ["centers box counter rotate", "split counter rotate"],
+   >                 [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                  RH_COLUMN, LH_COLUMN])
+sdr> /checkBeats( 8, ["box transfer", "split transfer"],
+   >                 [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                  RH_COLUMN, LH_COLUMN])
+sdr> /checkBeats( 8, "swing and mix", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                 ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES,
+   >                 EIGHT_CHAIN_THRU, FACING_LINES])
+sdr> /checkBeats( 6, "switch the wave", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats( 4, ["switch to a diamond", "switch to an hourglass"],
+   >                 [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats( 6, "trade circulate", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                 PARALLEL_RH_TWO_FACED_LINES, PARALLEL_LH_TWO_FACED_LINES])
+sdr> /checkBeats( 6, "trail off",
+   >                 [DOUBLE_PASS_THRU, COMPLETED_DOUBLE_PASS_THRU,
+   >                  PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                  RH_COLUMN, LH_COLUMN,
+   >                  ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES])
+sdr> /// xxx: trail off from Z, also 6 beats
+sdr> /// "transfer and <anything>", 8 beats, <anything> starts on 5
+sdr> /checkBeats( 8, "transfer and hinge", [RH_COLUMN, LH_COLUMN])
+sdr> /checkBeats(5+8, "transfer and box transfer", [RH_COLUMN, LH_COLUMN])
+sdr> /checkBeats(5+6, "transfer and quarter thru", RH_COLUMN)
+sdr> /checkBeats( 2, ["zig zig", "zig zag", "zag zig", "zag zag"], RH_COLUMN)
+sdr> /exit

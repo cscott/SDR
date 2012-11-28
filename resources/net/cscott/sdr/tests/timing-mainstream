@@ -1,0 +1,87 @@
+Timing of calls on the mainstream program.
+
+sdr> /program=MAINSTREAM
+MAINSTREAM
+sdr> /// import formations into default name space
+sdr> /for (f in FormationList) { this[f] = FormationList[f]; } ; undefined
+sdr> /// define helper to time a call from a given formation
+sdr> /function beats(call, formation) {
+   >   // put real dancers symmetrically in the given formation template.
+   >   var SD = StandardDancer.values();
+   >   var f = formation.mapStd([SD[0],SD[1],SD[2],SD[3]]);
+   >   // make normal couples
+   >   switch (''+formation.getName()) {
+   >   case 'STATIC SQUARE': f = Formation.SQUARED_SET; break;
+   >   case 'TRADE BY':
+   >     f = formation.mapStd([SD[0],SD[1],SD[3],SD[2]]); break;
+   >   case 'EIGHT CHAIN THRU':
+   >     f = formation.mapStd([SD[1],SD[0],SD[2],SD[3]]); break;
+   >   }
+   >   //java.lang.System.err.println(f.toStringDiagram(call+"|")); //debugging
+   >   setFormation(f);
+   >   var now = ds.currentTime();
+   >   Evaluator.parseAndEval(ds, call);
+   >   var then = ds.currentTime();
+   >   return then.subtract(now);
+   > }
+sdr> /function isArray(a) { return typeof(a)==='object' && 'length' in a; }
+sdr> /function checkBeats(count, calls, formations) {
+   >   if (!isArray(formations)) { formations = [formations]; }
+   >   if (!isArray(calls)) { calls = [calls]; }
+   >   count = net.cscott.sdr.util.Fraction.valueOf(count);
+   >   for each (var call in calls) {
+   >     for each (var formation in formations) {
+   >       try {
+   >         var b = beats(call, formation);
+   >         if (!count.equals(b))
+   >           return "Timing incorrect for "+call+
+   >                  " from "+formation.getName()+"!"+
+   >                  " "+b.toProperString()+
+   >                  " instead of "+count.toProperString()+" beats";
+   >       } catch (e if e.javaException instanceof BadCallException) {
+   >           var msg = e.javaException.getMessage()
+   >           if (!(/(Not on list|Unknown call):/.test(msg)))
+   >             return "* "+call+"/"+formation.getName()+": "+msg;
+   >       }
+   >     }
+   >   }
+   > }
+sdr> /////////// start call list ////////////////
+sdr> /checkBeats( 6, "cast off 3/4", LINES_FACING_OUT)
+sdr> /checkBeats( 2, "put centers in", [EIGHT_CHAIN_THRU,
+   >                                    COMPLETED_DOUBLE_PASS_THRU])
+sdr> /// "6-8 beats from completed double pass thru"
+sdr> /checkBeats( 6, "cloverleaf", COMPLETED_DOUBLE_PASS_THRU)
+sdr> /// XXX: "cloverleaf is 6 beats if called for only four people"
+sdr> /checkBeats( 6, "heads dixie style to an ocean wave", STATIC_SQUARE)
+sdr> /// XXX: "all four couples to the wave = 8"
+sdr> /checkBeats(20, "eight chain thru", EIGHT_CHAIN_THRU)
+sdr> /checkBeats(10, "eight chain 4", EIGHT_CHAIN_THRU)
+sdr> /checkBeats( 2, "ends fold", LINES_FACING_OUT)
+sdr> /checkBeats( 4, "ends cross fold", LINES_FACING_OUT)
+sdr> /// note that BMS timing doc says 6 beats from FL, but defs say 4 beats
+sdr> /checkBeats( 4, "half tag the line", [FACING_LINES, LINES_FACING_OUT])
+sdr> /checkBeats( 4, "half tag the line", [PARALLEL_RH_TWO_FACED_LINES,
+   >                                       RH_TIDAL_TWO_FACED_LINE])
+sdr> /checkBeats( 3, "couples hinge",     [PARALLEL_RH_TWO_FACED_LINES,
+   >                                       RH_TIDAL_TWO_FACED_LINE])
+sdr> /checkBeats( 2, "hinge", [PARALLEL_RH_WAVES, RH_TIDAL_WAVE])
+sdr> /// callerlab document is confusing, but I assume they mean 2 beats
+sdr> /// for dancers who just pass thru, and 6 beats for dancers who also have
+sdr> /// to trade.
+sdr> /checkBeats( 6, "pass to the center", EIGHT_CHAIN_THRU)
+sdr> /checkBeats( 4, "recycle", PARALLEL_RH_WAVES)
+sdr> /checkBeats( 6, "scoot back", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats( 6, ["heads slide thru", "sides slide thru"], STATIC_SQUARE)
+sdr> /checkBeats( 4, "slide thru", FACING_LINES)
+sdr> /checkBeats(16, "spin chain thru", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /// "spin the top" = 8 "from point of contact"
+sdr> /checkBeats( 8, "spin the top", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /// note that BMS timing doc says 8 beats from FL, but defs say 6 beats
+sdr> /checkBeats( 6, "tag the line", [FACING_LINES, LINES_FACING_OUT])
+sdr> /checkBeats( 6, "tag the line",  [PARALLEL_RH_TWO_FACED_LINES,
+   >                                   RH_TIDAL_TWO_FACED_LINE])
+sdr> /// "turn thru" = 4 "from point of contact"
+sdr> /checkBeats( 4, "turn thru", [PARALLEL_RH_WAVES, RH_TIDAL_WAVE])
+sdr> /checkBeats( 4, "walk and dodge", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /exit

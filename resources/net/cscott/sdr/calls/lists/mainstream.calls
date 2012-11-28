@@ -3,7 +3,7 @@ program: mainstream
 // callerlab #52: CLOVERLEAF
 // XXX: missing 4-person variant
 def: cloverleaf
-  in: 8
+  in: 6
   call: tandem(_single cloverleaf)
 
 def: _single cloverleaf
@@ -16,7 +16,7 @@ def: _single cloverleaf
       prim: in 1, 1, in   // 3,2,s -> 2,1,w
       prim: 0, 1, none    // 2,1,w -> 1,1,w
 def: _single cross cloverleaf
-  in: 4
+  in: 10
   from: BACK TO BACK COUPLES // XXX suppress breathing
     ipart:
       select: BEAU
@@ -325,8 +325,8 @@ def: _designees cross fold
 // callerlab #63: DIXIE STYLE TO AN OCEAN WAVE (2 parts)
 def: dixie style
   optional: REVERSE
-  spoken: dixie style (to a wave)?
-  in: 6
+  spoken: dixie style (to (a|an ocean) wave)?
+  in: 4 // trust callerlab that "dixie style" from squared set = 6
   from: SINGLE DOUBLE PASS THRU
     part: 2
       call: _dixie style
@@ -372,7 +372,7 @@ def: _finish_tag(n)
     call: nothing
   from: SINGLE DOUBLE PASS THRU
     condition: GREATER([n], 0)
-    call: _fractional(_multiply num(4,[n]), _extend)
+    call: _fractional(_multiply num(4,[n]), _in(1, _extend))
 // or else: n=0->atc; else fractional(n, part(atc,extend), part(extend), part(extend), part(extend))
 
 def: _atc tag
@@ -385,7 +385,6 @@ def: _atc tag
 def: tag the line
   optional: LEFT
   spoken: tag the line (all the way (through)?)?
-  in: 6 // xxx ?
   call: _tag(_atc tag, 1)
 def: _tag the line(n)
   optional: LEFT
@@ -409,6 +408,7 @@ def: tag the line left
 // callerlab #66: HALF TAG
 
 def: half tag
+  spoken: half tag (the line)?
   optional: LEFT
   call: _tag the line(1/2)
 
@@ -441,7 +441,7 @@ def: scoot back
 
 def: _wave recycle
   in: 4
-  from: ANY
+  from: OCEAN_WAVE
     ipart: 3 // CHEAT DEFINITION
       call: hinge, _box circulate, _recycle face in // CHEAT DEFINITION
   from: ANY // REAL DEFINITION

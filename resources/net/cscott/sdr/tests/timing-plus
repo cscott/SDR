@@ -1,0 +1,103 @@
+Timing of calls on the plus program.
+
+sdr> /program=PLUS
+PLUS
+sdr> /// import formations into default name space
+sdr> /for (f in FormationList) { this[f] = FormationList[f]; } ; undefined
+sdr> /// define helper to time a call from a given formation
+sdr> /function beats(call, formation) {
+   >   // put real dancers symmetrically in the given formation template.
+   >   var SD = StandardDancer.values();
+   >   var f = formation.mapStd([SD[0],SD[1],SD[2],SD[3]]);
+   >   // make normal couples
+   >   switch (''+formation.getName()) {
+   >   case 'STATIC SQUARE': f = Formation.SQUARED_SET; break;
+   >   case 'TRADE BY':
+   >     f = formation.mapStd([SD[0],SD[1],SD[3],SD[2]]); break;
+   >   case 'EIGHT CHAIN THRU':
+   >     f = formation.mapStd([SD[1],SD[0],SD[2],SD[3]]); break;
+   >   }
+   >   //java.lang.System.err.println(f.toStringDiagram(call+"|")); //debugging
+   >   setFormation(f);
+   >   var now = ds.currentTime();
+   >   Evaluator.parseAndEval(ds, call);
+   >   var then = ds.currentTime();
+   >   return then.subtract(now);
+   > }
+sdr> /function isArray(a) { return typeof(a)==='object' && 'length' in a; }
+sdr> /function checkBeats(count, calls, formations) {
+   >   if (!isArray(formations)) { formations = [formations]; }
+   >   if (!isArray(calls)) { calls = [calls]; }
+   >   count = net.cscott.sdr.util.Fraction.valueOf(count);
+   >   for each (var call in calls) {
+   >     for each (var formation in formations) {
+   >       try {
+   >         var b = beats(call, formation);
+   >         if (!count.equals(b))
+   >           return "Timing incorrect for "+call+
+   >                  " from "+formation.getName()+"!"+
+   >                  " "+b.toProperString()+
+   >                  " instead of "+count.toProperString()+" beats";
+   >       } catch (e if e.javaException instanceof BadCallException) {
+   >           var msg = e.javaException.getMessage()
+   >           if (!(/(Not on list|Unknown call):/.test(msg)))
+   >             return "* "+call+"/"+formation.getName()+": "+msg;
+   >       }
+   >     }
+   >   }
+   > }
+sdr> /////////// start call list ////////////////
+sdr> /checkBeats( 4, "acey deucey", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats(10, "all eight spin the top", WRONG_WAY_THAR)
+sdr> /// "<anything> and roll" adds 2 beats to the timing of <anything>
+sdr> /// (according to callerlab) -- but we add just 1, 2 is visually excessive
+sdr> /checkBeats(6+1, "swing thru and roll", PARALLEL_RH_WAVES)
+sdr> /checkBeats(4+1, "trade and roll", LINES_FACING_OUT)
+sdr> /// "<anything> and spread" adds 2 beats to the timing of <anything>
+sdr> /checkBeats(6+2, "follow your neighbor and spread", PARALLEL_RH_WAVES)
+sdr> /checkBeats(6+2, "ferris wheel and spread", PARALLEL_RH_TWO_FACED_LINES)
+sdr> /checkBeats( 6, "chase right", [LINES_FACING_OUT, TRADE_BY])
+sdr> /checkBeats( 8, "coordinate", [RH_COLUMN, LH_COLUMN])
+sdr> /checkBeats( 6, "crossfire", [PARALLEL_RH_TWO_FACED_LINES,
+   >                       PARALLEL_LH_TWO_FACED_LINES, ENDS_IN_INVERTED_LINES,
+   >                       ENDS_OUT_INVERTED_LINES, LINES_FACING_OUT])
+sdr> /checkBeats( 6, "cut the diamond", [RH_TWIN_DIAMONDS, LH_TWIN_DIAMONDS])
+sdr> /checkBeats( 3, "diamond circulate", [RH_TWIN_DIAMONDS, LH_TWIN_DIAMONDS])
+sdr> /checkBeats( 6, "dixie grand", [DOUBLE_PASS_THRU, RH_QUARTER_TAG])
+sdr> /// "explode and <anything>" adds 2 beats to the timing of <anything>
+sdr> /checkBeats(2+2, "explode and pass thru", PARALLEL_RH_WAVES)
+sdr> /checkBeats( 6, "explode the wave", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats( 2, "extend", [DOUBLE_PASS_THRU,
+   >                            RH_QUARTER_TAG, LH_QUARTER_TAG,
+   >                            PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                            RH_THREE_QUARTER_TAG, LH_THREE_QUARTER_TAG])
+sdr> /checkBeats( 4, "fan the top", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                  PARALLEL_RH_TWO_FACED_LINES, LH_TIDAL_TWO_FACED_LINE])
+sdr> /checkBeats( 3, "flip the diamond", [RH_TWIN_DIAMONDS, LH_TWIN_DIAMONDS])
+sdr> /checkBeats( 6, "follow your neighbor", [PARALLEL_RH_WAVES,
+   >                                          PARALLEL_LH_WAVES])
+sdr> /checkBeats( 6, "grand swing thru", [RH_TIDAL_WAVE, LH_TIDAL_WAVE])
+sdr> /// timing is "10-12" for linear cycle according to callerlab
+sdr> /checkBeats(10, "linear cycle", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats(12, "load the boat", [FACING_LINES, ENDS_OUT_INVERTED_LINES])
+sdr> /checkBeats( 4, "peel off", [DOUBLE_PASS_THRU, COMPLETED_DOUBLE_PASS_THRU,
+   >                              RH_COLUMN, LH_COLUMN,
+   >                              PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats( 6, "peel the top", [RH_COLUMN, LH_COLUMN,
+   >                                  PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats( 6, "ping pong circulate", [RH_QUARTER_TAG, LH_QUARTER_TAG])
+sdr> /checkBeats(20, "relay the deucey", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats( 4, "single circle to a wave", [EIGHT_CHAIN_THRU,FACING_LINES])
+sdr> /checkBeats(26, "spin chain and exchange the gears",
+   >                 [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats(32, ["head ladies center for a teacup chain",
+   >                  "side ladies center for a teacup chain"], STATIC_SQUARE)
+sdr> /checkBeats( 5, "tag the line 3/4",
+   >                 [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                  ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES,
+   >                  PARALLEL_RH_TWO_FACED_LINES, PARALLEL_LH_TWO_FACED_LINES])
+sdr> /checkBeats( 8, "track two", COMPLETED_DOUBLE_PASS_THRU)
+sdr> /checkBeats( 6, "trade the wave",
+   >                 [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                  RH_TIDAL_WAVE, LH_TIDAL_WAVE])
+sdr> /exit

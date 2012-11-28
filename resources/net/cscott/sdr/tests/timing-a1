@@ -1,0 +1,142 @@
+Timing of calls on the A1 program.
+
+sdr> /program=A1
+A1
+sdr> /// import formations into default name space
+sdr> /for (f in FormationList) { this[f] = FormationList[f]; } ; undefined
+sdr> /// define helper to time a call from a given formation
+sdr> /function beats(call, formation) {
+   >   // put real dancers symmetrically in the given formation template.
+   >   var SD = StandardDancer.values();
+   >   var f = formation.mapStd([SD[0],SD[1],SD[2],SD[3]]);
+   >   // make normal couples
+   >   switch (''+formation.getName()) {
+   >   case 'STATIC SQUARE': f = Formation.SQUARED_SET; break;
+   >   case 'TRADE BY':
+   >     f = formation.mapStd([SD[0],SD[1],SD[3],SD[2]]); break;
+   >   case 'EIGHT CHAIN THRU':
+   >     f = formation.mapStd([SD[1],SD[0],SD[2],SD[3]]); break;
+   >   }
+   >   //java.lang.System.err.println(f.toStringDiagram(call+"|")); //debugging
+   >   setFormation(f);
+   >   var now = ds.currentTime();
+   >   Evaluator.parseAndEval(ds, call);
+   >   var then = ds.currentTime();
+   >   return then.subtract(now);
+   > }
+sdr> /function isArray(a) { return typeof(a)==='object' && 'length' in a; }
+sdr> /function checkBeats(count, calls, formations) {
+   >   if (!isArray(formations)) { formations = [formations]; }
+   >   if (!isArray(calls)) { calls = [calls]; }
+   >   count = net.cscott.sdr.util.Fraction.valueOf(count);
+   >   for each (var call in calls) {
+   >     for each (var formation in formations) {
+   >       try {
+   >         var b = beats(call, formation);
+   >         if (!count.equals(b))
+   >           return "Timing incorrect for "+call+
+   >                  " from "+formation.getName()+"!"+
+   >                  " "+b.toProperString()+
+   >                  " instead of "+count.toProperString()+" beats";
+   >       } catch (e if e.javaException instanceof BadCallException) {
+   >           var msg = e.javaException.getMessage()
+   >           if (!(/(Not on list|Unknown call):/.test(msg)))
+   >             return "* "+call+"/"+formation.getName()+": "+msg;
+   >       }
+   >     }
+   >   }
+   > }
+sdr> /////////// start call list ////////////////
+sdr> /// "<anything> and cross" adds 2 beats to the timing for <anything>
+sdr> /checkBeats(2+2, "touch 1/4 and cross", [FACING_LINES, EIGHT_CHAIN_THRU])
+sdr> /checkBeats(4+2, "circulate and cross", [PARALLEL_RH_WAVES,
+   >                                          PARALLEL_LH_WAVES])
+sdr> /checkBeats( 6, "brace thru", [EIGHT_CHAIN_THRU, FACING_LINES])
+sdr> /checkBeats(4+6, "centers roll away ; brace thru", EIGHT_CHAIN_THRU)
+sdr> /checkBeats( 8, "heads brace thru", STATIC_SQUARE)
+sdr> /checkBeats(4+8, "heads roll away ; heads brace thru", STATIC_SQUARE)
+sdr> /checkBeats(10, "cast a shadow", [PARALLEL_LH_TWO_FACED_LINES,
+   >                                   PARALLEL_RH_TWO_FACED_LINES])
+sdr> /checkBeats(12, "chain reaction", [RH_QUARTER_TAG, LH_QUARTER_TAG])
+sdr> /// "clover and <anything>" timing is "greater of 4 or the call"
+sdr> /checkBeats( 4, "clover and pass thru", TRADE_BY)
+sdr> /checkBeats( 8, "clover and square thru", TRADE_BY)
+sdr> /// "cross clover and <anything>" timing is "greater of 10 or the call"
+sdr> /checkBeats(10, "cross clover and pass thru", TRADE_BY)
+sdr> /checkBeats(10, "cross clover and square thru", TRADE_BY)
+sdr> /checkBeats( 6, "cross over circulate", [PARALLEL_RH_WAVES,
+   >                 PARALLEL_RH_TWO_FACED_LINES, PARALLEL_LH_TWO_FACED_LINES])
+sdr> /// cross trail thru is the same timing from facing couples and static
+sdr> /// square (according to callerlab), which seems wrong.  Let's say that
+sdr> /// it's only 4 beats from facing couples, and 6 beats from squared set
+sdr> /checkBeats( 4, "cross trail thru", [FACING_LINES, EIGHT_CHAIN_THRU])
+sdr> /checkBeats( 6, "cross trail thru", STATIC_SQUARE)
+sdr> /checkBeats(2+4, "side boys u turn back ; cycle and wheel",
+   >                  PARALLEL_RH_WAVES)
+sdr> /checkBeats( 6, "double star thru", EIGHT_CHAIN_THRU)
+sdr> /checkBeats(4+10, "centers roll away ; triple star thru", DOUBLE_PASS_THRU)
+sdr> /checkBeats( 4, "ends bend", LINES_FACING_OUT)
+sdr> /// "explode and <anything>" adds 2 beats to the timing of <anything>
+sdr> /checkBeats(2+2, "explode and pass thru", [LINES_FACING_OUT, FACING_LINES,
+   >                          ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES])
+sdr> /checkBeats( 6, "explode the line", [LINES_FACING_OUT, FACING_LINES,
+   >                          ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES])
+sdr> /checkBeats( 4, "quarter top", [THAR, WRONG_WAY_THAR])
+sdr> /checkBeats( 6, "half top", [THAR, WRONG_WAY_THAR])
+sdr> /checkBeats( 8, "three quarter top", [THAR, WRONG_WAY_THAR])
+sdr> /checkBeats( 6, "grand follow your neighbor", [RH_COLUMN, LH_COLUMN])
+sdr> /checkBeats( 6, "horseshoe turn", COMPLETED_DOUBLE_PASS_THRU)
+sdr> /checkBeats( 4, "lockit", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                            RH_TIDAL_WAVE, LH_TIDAL_WAVE])
+sdr> /// XXX also lockit from RH_TWIN_DIAMONDS, LH_TWIN_DIAMONDS (also 4 beats)
+sdr> /checkBeats( 6, "mix", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats( 2, "pair off", [FACING_LINES, EIGHT_CHAIN_THRU])
+sdr> /checkBeats( 4, "heads pair off", STATIC_SQUARE)
+sdr> /checkBeats( 2, "partner hinge", [FACING_LINES, LINES_FACING_OUT])
+sdr> /checkBeats( 3, "partner tag", [FACING_LINES, LINES_FACING_OUT,
+   >                PARALLEL_RH_WAVES, PARALLEL_LH_WAVES, RH_COLUMN, LH_COLUMN])
+sdr> /checkBeats( 4, ["pass in", "pass out"], [FACING_LINES, EIGHT_CHAIN_THRU])
+sdr> /checkBeats( 6, "pass the sea", [FACING_LINES, EIGHT_CHAIN_THRU])
+sdr> /checkBeats( 2, ["quarter in", "quarter out"], LINES_FACING_OUT)
+sdr> /checkBeats( 6, "quarter thru",        PARALLEL_RH_WAVES)
+sdr> ///checkBeats( 6, "quarter thru",        LH_TWIN_FACING_DIAMONDS) // XXX
+sdr> /checkBeats( 8, "three quarter thru",  PARALLEL_RH_WAVES)
+sdr> ///checkBeats( 8, "three quarter thru",  LH_TWIN_FACING_DIAMONDS) // XXX
+sdr> /checkBeats( 6, "grand quarter thru", RH_COLUMN)
+sdr> /checkBeats( 8, "grand three quarter thru", RH_COLUMN)
+sdr> /// timing is "4 & 2"
+sdr> /checkBeats( 4, ["right roll to a wave", "left roll to a wave"],
+   >                 [LINES_FACING_OUT, TRADE_BY, PARALLEL_RH_TWO_FACED_LINES])
+sdr> /checkBeats( 8, "scoot and dodge", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
+sdr> /checkBeats( 4, "six two acey deucey",[RH_TWIN_DIAMONDS, LH_TWIN_DIAMONDS,
+   >                 RH_POINT_TO_POINT_DIAMONDS, LH_POINT_TO_POINT_DIAMONDS])
+sdr> /// XXX also 6-2 acey deucey from hourglass, H, quarter tag spots, etc.
+sdr> /checkBeats(8+12, "heads right and left thru ; split square chain thru",
+   >                   STATIC_SQUARE)
+sdr> /// callerlab says "timing 12" but we're assuming the standard
+sdr> /// extra 2 beats from squared set spots.
+sdr> /checkBeats(14, "split square chain thru", STATIC_SQUARE)
+sdr> /checkBeats(8+6, "heads right and left thru ; split square thru 2",
+   >                  STATIC_SQUARE)
+sdr> /checkBeats(8+8, "heads right and left thru ; split square thru 3",
+   >                  STATIC_SQUARE)
+sdr> /checkBeats(8+10, "heads right and left thru ; split square thru",
+   >                  STATIC_SQUARE)
+sdr> /checkBeats( 8, "heads split square thru 2", STATIC_SQUARE)
+sdr> /checkBeats(10, "heads split square thru 3", STATIC_SQUARE)
+sdr> /checkBeats(12, "heads split square thru",   STATIC_SQUARE)
+sdr> /checkBeats(14, "square chain thru", [FACING_LINES, EIGHT_CHAIN_THRU])
+sdr> /checkBeats( 4, "step and slide", [LINES_FACING_OUT,
+   >                                    ENDS_IN_INVERTED_LINES])
+sdr> /checkBeats( 4, ["swap around", "reverse swap around"],
+   >                 [FACING_LINES, EIGHT_CHAIN_THRU])
+sdr> /checkBeats(10, "transfer the column", [RH_COLUMN, LH_COLUMN])
+sdr> /checkBeats( 6, "triple scoot", [RH_COLUMN, LH_COLUMN])
+sdr> /checkBeats( 4, "triple trade", [RH_TIDAL_WAVE, LH_TIDAL_WAVE,
+   >                 RH_POINT_TO_POINT_DIAMONDS, LH_POINT_TO_POINT_DIAMONDS,
+   >                 RH_TIDAL_TWO_FACED_LINE, LH_TIDAL_TWO_FACED_LINE])
+sdr> /checkBeats( 4, "turn and deal", [PARALLEL_RH_TWO_FACED_LINES,
+   >                                   PARALLEL_LH_WAVES, LINES_FACING_OUT])
+sdr> /checkBeats( 4, ["wheel thru", "left wheel thru"], EIGHT_CHAIN_THRU)
+sdr> /checkBeats( 6, ["wheel thru", "left wheel thru"], STATIC_SQUARE)
+sdr> /exit

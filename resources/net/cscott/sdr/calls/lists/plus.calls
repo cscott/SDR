@@ -273,7 +273,7 @@ def: track(n)
   condition: or(PROGRAM AT LEAST(c3b),equal num([n],2)), \
              "Only track 2 is allowed below C3B"
   from: COMPLETED DOUBLE PASS THRU
-    call: _tag(tandem(partner trade), _multiply num([n], 1/4))
+    call: _tag(_in(6, tandem(partner trade)), _multiply num([n], 1/4))
   example: track(0)
     before:
     ! <a<b D>C>

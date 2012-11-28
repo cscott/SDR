@@ -47,9 +47,9 @@ import org.junit.runner.RunWith;
  *  js> call = net.cscott.sdr.calls.CallDB.INSTANCE.lookup(callname)
  *  dosado[basic]
  *  js> comp = call.getEvaluator(null, java.util.Arrays.asList()).simpleExpansion()
- *  (In '6 (Opt (From 'RH MINIWAVE (Seq (Part 'INDIVISIBLE '1 (Seq (Apply '_finish dosado))))) (From 'ANY (Seq (Part 'INDIVISIBLE '1 (Seq (Apply '_mixed touch))) (Part 'DIVISIBLE '3 (Seq (Apply '_finish dosado)))))))
+ *  (In '6 (Opt (From 'RH MINIWAVE (Seq (Part 'INDIVISIBLE '1 (Seq (Apply '_finish dosado))))) (From 'ANY (Seq (Part 'INDIVISIBLE '1 (Seq (Apply (Expr _maybe circle adjust '_mixed touch)))) (Part 'DIVISIBLE '3 (Seq (Apply '_finish dosado)))))))
  *  js> comp.accept(new Fractional(ds), Fraction.ONE_QUARTER)
- *  (In (Expr _multiply num '1/4 '6) (Opt (From 'ANY (Seq (Part 'INDIVISIBLE '1 (Seq (Apply '_mixed touch)))))))
+ *  (In (Expr _multiply num '1/4 '6) (Opt (From 'ANY (Seq (Part 'INDIVISIBLE '1 (Seq (Apply (Expr _maybe circle adjust '_mixed touch))))))))
  *  js> try {
  *    >   comp.accept(new Fractional(ds), Fraction.ONE_THIRD)
  *    > } catch (e) {

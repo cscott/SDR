@@ -54,13 +54,13 @@ def: remake
     call: quarter thru
   part:
     from: not grand(allow unmatched(RH MINIWAVE))
-      call: right arm turn(3/4)
+      call: _in(4, right arm turn(3/4))
 
 def: grand remake
   part: 2
     call: grand quarter thru
   part:
-    call: _those who can turn right(3/4)
+    call: _in(4, _those who can turn right(3/4))
 
 def: grand left remake
   call: mirror(grand remake)
@@ -113,12 +113,12 @@ def: slip
 // putting 'swing and mix' on A2 list, as per Vic Ceder
 def: swing and mix // 3 part call
   part:
-    call: _maybe touch(_wave swing)
+    call: _in(2, _maybe touch(_wave swing))
   part: 2
     call: mix
 
 def: _facing recycle
-  in: 4
+  in: 6
   // cheat so we can say "recycle has 3 parts", although facing recycle
   // is really indivisible
   ipart: 3
