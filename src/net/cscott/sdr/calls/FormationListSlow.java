@@ -514,7 +514,26 @@ abstract class FormationListSlow {
         xofy("TWIN GENERAL DIAMONDS", COUPLE, GENERAL_DIAMOND);
     public static final NamedTaggedFormation POINT_TO_POINT_GENERAL_DIAMONDS =
         xofy("POINT-TO-POINT GENERAL DIAMONDS", TANDEM, GENERAL_DIAMOND);
-    // XXX hourglass, callerlab #45
+    public static final NamedTaggedFormation RH_HOURGLASS =
+        create("RH HOURGLASS",
+               d( 0, 4, "e", CENTER, POINT),
+               d(-3, 2, "n", OUTSIDE_4, END),
+               d(+3, 2, "s", OUTSIDE_4, END),
+               d(-1, 0, "n", BEAU, CENTER, VERY_CENTER),
+               d(+1, 0, "s", BEAU, CENTER, VERY_CENTER),
+               d(-3,-2, "n", OUTSIDE_4, END),
+               d(+3,-2, "s", OUTSIDE_4, END),
+               d( 0,-4, "w", CENTER, POINT)); // callerlab #45(a)
+    public static final NamedTaggedFormation LH_HOURGLASS =
+        create("LH HOURGLASS",
+               d( 0, 4, "w", CENTER, POINT),
+               d(-3, 2, "s", OUTSIDE_4, END),
+               d(+3, 2, "n", OUTSIDE_4, END),
+               d(-1, 0, "s", BELLE, CENTER, VERY_CENTER),
+               d(+1, 0, "n", BELLE, CENTER, VERY_CENTER),
+               d(-3,-2, "s", OUTSIDE_4, END),
+               d(+3,-2, "n", OUTSIDE_4, END),
+               d( 0,-4, "e", CENTER, POINT)); // callerlab #45(b)
     // XXX left hand Z, callerlab #46
     // XXX right hand Z, callerlab #47
     // XXX right hand stars, callerlab #48
@@ -535,7 +554,26 @@ abstract class FormationListSlow {
         create("GENERAL TIDAL LINE", f("||||||||"), WhetherTagger.NO_AUTO_TAGS,
                 t(0, OUTSIDE_4), t(1, OUTSIDE_4), t(2, CENTER), t(3, CENTER),
                 t(4, CENTER), t(5, CENTER), t(6, OUTSIDE_4), t(7, OUTSIDE_4));
-    // XXX galaxy, callerlab #53
+    public static final NamedTaggedFormation RH_GALAXY =
+        create("RH GALAXY",
+               d( 0, 4, "e", OUTSIDE_4, POINT),
+               d(-1, 2, "n", CENTER, BEAU),
+               d(+1, 2, "s", CENTER, BEAU),
+               d(-3, 0, "n", OUTSIDE_4, POINT),
+               d(+3, 0, "s", OUTSIDE_4, POINT),
+               d(-1,-2, "n", CENTER, BEAU),
+               d(+1,-2, "s", CENTER, BEAU),
+               d( 0,-4, "w", OUTSIDE_4, POINT)); // callerlab #53(a)
+    public static final NamedTaggedFormation LH_GALAXY =
+        create("LH GALAXY",
+               d( 0, 4, "w", OUTSIDE_4, POINT),
+               d(-1, 2, "s", CENTER, BELLE),
+               d(+1, 2, "n", CENTER, BELLE),
+               d(-3, 0, "s", OUTSIDE_4, POINT),
+               d(+3, 0, "n", OUTSIDE_4, POINT),
+               d(-1,-2, "s", CENTER, BELLE),
+               d(+1,-2, "n", CENTER, BELLE),
+               d( 0,-4, "e", OUTSIDE_4, POINT)); // callerlab #53(b)
     public static final NamedTaggedFormation O_DOUBLE_PASS_THRU = // used for grand square
         create("O DOUBLE PASS THRU", f(" ss ","s  s","n  n"," nn "),
                 WhetherTagger.AUTO_TAGS,

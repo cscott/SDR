@@ -415,6 +415,12 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.TWIN_GENERAL_DIAMONDS);
     public static final Matcher POINT_TO_POINT_GENERAL_DIAMONDS =
         GeneralFormationMatcher.makeMatcher(FormationList.POINT_TO_POINT_GENERAL_DIAMONDS);
+    public static final Matcher RH_HOURGLASS =
+        GeneralFormationMatcher.makeMatcher(FormationList.RH_HOURGLASS);
+    public static final Matcher LH_HOURGLASS =
+        GeneralFormationMatcher.makeMatcher(FormationList.LH_HOURGLASS);
+    public static final Matcher HOURGLASS =
+        OR("HOURGLASS", RH_HOURGLASS, LH_HOURGLASS);
     public static final Matcher RH_TIDAL_WAVE =
         GeneralFormationMatcher.makeMatcher(FormationList.RH_TIDAL_WAVE);
     public static final Matcher LH_TIDAL_WAVE =
@@ -435,6 +441,12 @@ public class MatcherList {
         OR("TIDAL LINE", RH_TIDAL_LINE, LH_TIDAL_LINE);
     public static final Matcher GENERAL_TIDAL_LINE =
         GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_TIDAL_LINE);
+    public static final Matcher RH_GALAXY =
+        GeneralFormationMatcher.makeMatcher(FormationList.RH_GALAXY);
+    public static final Matcher LH_GALAXY =
+        GeneralFormationMatcher.makeMatcher(FormationList.LH_GALAXY);
+    public static final Matcher GALAXY =
+        OR("GALAXY", RH_GALAXY, LH_GALAXY);
     public static final Matcher O_DOUBLE_PASS_THRU =
         GeneralFormationMatcher.makeMatcher(FormationList.O_DOUBLE_PASS_THRU);
     public static final Matcher BUTTERFLY_DOUBLE_PASS_THRU =
