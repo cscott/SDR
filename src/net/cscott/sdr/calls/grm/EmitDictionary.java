@@ -32,7 +32,11 @@ public class EmitDictionary extends AbstractEmit {
                 "boys","men","girls","ladies","all","every","one","body","ends",
                 "one","two","three","four","five","six","seven","eight","nine",
                 "a","half","third","quarter","thirds","quarters","once","and",
-                "twice","times",
+                "twice","times","outside","none","no",
+                // concept hack (will go away eventually?)
+                "tandem", "as", "couples", "siamese", "twice", "initially",
+                "finally", "oddly", "evenly", "echo", "reverse",
+                "concentric", "cross",
 		// from the "menu" command grammar
 		"square","up","quit","exit"
                 ));
