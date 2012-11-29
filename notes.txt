@@ -654,6 +654,7 @@ subbits though through.  So, swing and mix is: swing, _expand(mix)
 which becomes: swing, centers cross run, new centers trade; ie three
 parts.  swing, mix would become two parts: part(swing), part(centers cross run,
 new centers trade).
+[2012-11-29: added a "numParts" argument to Part]
 -----
 Evaluate has a stack of evaluators
   each has a child elaborator (with its own call stack to work on)
@@ -1088,7 +1089,7 @@ to do:
     and "error detail" class (which shows the whole tree, like we're
     doing now)
  g2) _anyone_others concept: "do your part"?
- h1) fix axis adjustment in concentric
+ xx) fix axis adjustment in concentric
  xx) roll should preserve sweep (recycle, wheel & deal)
  xx) hinge should set sweep (or hinge&roll should)
  xx) t-boned cross runs (needs select X&Y, see (w))
@@ -1185,6 +1186,12 @@ to do:
  xx) Rename 'cardinal' rule to "numeric_adverb" or "times"
  gg) Refs in Exprs using special (Expr ref (Expr 1)); put binding
      environment in DanceState (and cache binding vals once evaluated?)
+     [2012-11-29: Added _apply/_curry/_arg for meta concepts, no
+      need to hoist environment into dance state.
+        _apply(_curry('foo, _arg(1), _arg(0), 11), 22, 33)
+      becomes
+        foo(33, 22, 11)
+      ]
  xx) /reload() command in PMSD to reload definitions from resource files
  jj) "print" in SDRweb which emits a PMSD transcript
  kk) Matcher takes DanceState, so that some matchers can add slight
@@ -1195,7 +1202,7 @@ to do:
      - quarter tag matcher
  ll) Emit movie in some format, superimpose on actual dancers to
      determine if timings match
- mm) PMSD test case that prints our timings, for comparison to
+ xx) PMSD test case that prints our timings, for comparison to
      Callerlab's.  EG:
      sdr> timing('pass thru', 'SQUARED SET')
      8
@@ -1210,6 +1217,7 @@ to do:
      (ie, "just the first part", "all but the first part", "just the last part")
      maybe return a list of the "top level" parts of the call.
      see http://www.ceder.net/def/callparts.php4
+     [2012-11-29: implemented 'finish' and 'like a' but not 'boys start...']
  pp) fix 'chain down the line' (heads lead right, left touch, boys
      chain down the line)
  xx) sq thru/sw thru from mixed: ie
@@ -1226,7 +1234,7 @@ to do:
        go home (scatter to nearest squared set spot then insertion
                 sort w/ two-person trades)
        bow to your partner and your corner too (exit)
- tt) O SPOTS general matcher
+ xx) O SPOTS general matcher
  uu) crossfire from 3-and-1 lines with center in a miniwave and ends
      facing out.
  vv) 2-by-1 magic transfer the column from 3x2 magic column
@@ -1253,8 +1261,9 @@ to do:
             call: partner swing 1/8 (or 1/4)
           select: OTHERS
             call: nothing
- fff) Interaction of "ends in:" and "_fractional" -- suppress? don't
+ xxx) Interaction of "ends in:" and "_fractional" -- suppress? don't
       allow fractionalization? remove ends in?
+      [2012-11-29: we remove 'ends in' when evaluating _fractional]
  ggg) annotate/document precedence levels:
        - "only with level call", ie
            "tandem <anything> and individually roll"
@@ -1280,7 +1289,14 @@ to do:
         finish finish swing and mix
         finish tandem trade
  lll) automatically extract <concept> production from 'spoken'
-
+      use 'optional: CONCEPT' or 'optional: METACONCEPT'
+ mmm) automatically extract <atc> productions
+      use 'optional: ATC'
+ nnn) buy tapes of patter sessions from (eg) AACE (lower level is
+      better) and use these to train speech models.  use
+      audacity/gstreamer framework to suppress music.
+ ooo) fix animation of cloverleaf / cross clover and.  This is
+      probably actually a problem with 'concentric'
 -------
 heads x:
   from squared_set:
@@ -1445,6 +1461,8 @@ Who's calling Breather.breathe() ?  There are 10,000 calls unaccounted
 for.
 
 Who's constructing jline.ConsoleReader in JDoctest?
+
+Why is 'cross run' so slow?
 ---------
     -- 'ends in' could eventually be used to choreograph backwards:
        take the current formation, match against all the known ends
