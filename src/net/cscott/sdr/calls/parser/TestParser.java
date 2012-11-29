@@ -87,7 +87,7 @@ public abstract class TestParser {
                 do {
 		    t = lexer.nextToken();
 		    System.out.println(t);
-                } while(t!=Token.EOF_TOKEN);
+                } while(t.getType()!=Token.EOF);
         }
       }
       catch (Exception e) {

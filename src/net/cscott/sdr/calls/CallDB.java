@@ -186,7 +186,6 @@ public class CallDB {
                 .getConstructor(CharStream.class).newInstance
                 (new ANTLRStringStream(s.replace('-',' ').toLowerCase()));
             CommonTokenStream tokens = new CommonTokenStream(lexer);
-            tokens.discardOffChannelTokens(true);
             Parser parser = (Parser) Class.forName(pkgName+parserName)
                 .getConstructor(TokenStream.class).newInstance(tokens);
             Method m = parser.getClass().getMethod("start");

@@ -466,6 +466,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	          fork="true">
 		  <!-- enable assertions when building grammars -->
 		  <jvmarg value="-ea:net.cscott..." />
+                  <!-- needs a decent amount of heap space -->
+		  <jvmarg value="-Xmx256M"/>
                   <classpath>
 		    <!-- dictionary source files are found in lib/sphinx -->
 		    <pathelement location="lib/sphinx" />

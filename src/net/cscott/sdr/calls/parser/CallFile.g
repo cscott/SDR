@@ -183,21 +183,21 @@ tokens {
       *  1.0: "program"
       *  1.7: ":"
       *  1.9: "basic"
-      *  0.-1: <EOF>
+      *  1.14: <EOF>
       * @doc.test INITIAL_WS should trigger at the beginning of every line:
       *  js> new CallFileLexer("+", false).tokensToString() // length-1 match
       *  1.0: <INITIAL_WS>""
       *  1.0: "+"
-      *  0.-1: <EOF>
+      *  1.1: <EOF>
       *  js> new CallFileLexer("// foo", false).tokensToString() // comments
       *  1.0: <INITIAL_WS>""
-      *  0.-1: <EOF>
+      *  1.6: <EOF>
       *  js> new CallFileLexer("program: basic", false).tokensToString() //IDENT
       *  1.0: <INITIAL_WS>""
       *  1.0: "program"
       *  1.7: ":"
       *  1.9: "basic"
-      *  0.-1: <EOF>
+      *  1.14: <EOF>
       * @doc.test Indent processing with spaces:
       *  js> new CallFileLexer("program: basic\n def: foo").tokensToString()
       *  1.0: "program"
@@ -207,16 +207,16 @@ tokens {
       *  2.1: "def"
       *  2.4: ":"
       *  2.6: "foo"
-      *  0.-1: "<dedent>"
-      *  0.-1: <EOF>
+      *  2.9: "<dedent>"
+      *  2.9: <EOF>
       * @doc.test Tab stops at 8-character boundaries:
       *  js> new CallFileLexer("foo\n \tbar\n        bat").tokensToString()
       *  1.0: "foo"
       *  2.2: "<indent>"
       *  2.2: "bar"
       *  3.8: "bat"
-      *  0.-1: "<dedent>"
-      *  0.-1: <EOF>
+      *  3.11: "<dedent>"
+      *  3.11: <EOF>
       * @doc.test Multiple indentation levels:
       *  js> new CallFileLexer("foo\n bar\n\tbat\nbaz").tokensToString()
       *  1.0: "foo"
@@ -227,7 +227,7 @@ tokens {
       *  4.0: "<dedent>"
       *  4.0: "<dedent>"
       *  4.0: "baz"
-      *  0.-1: <EOF>
+      *  4.3: <EOF>
       *  js> new CallFileLexer("foo\n bar\n\tbat\n baz").tokensToString()
       *  1.0: "foo"
       *  2.1: "<indent>"
@@ -236,8 +236,8 @@ tokens {
       *  3.1: "bat"
       *  4.1: "<dedent>"
       *  4.1: "baz"
-      *  0.-1: "<dedent>"
-      *  0.-1: <EOF>
+      *  4.4: "<dedent>"
+      *  4.4: <EOF>
       * @doc.test Keywords only apply before colons:
       *  js> cl = new CallFileLexer("def: def")
       *  net.cscott.sdr.calls.parser.CallFileLexer@ce5b1c
@@ -252,7 +252,7 @@ tokens {
       * @doc.test Comment match is non-greedy:
       *  js> new CallFileLexer("/* foo *"+"/ bar /* bat *"+"/").tokensToString()
       *  1.10: "bar"
-      *  0.-1: <EOF>
+      *  1.23: <EOF>
       * @doc.test Special keywords available only after 'prim':
       *  js> cl = new CallFileLexer("out", false)
       *  net.cscott.sdr.calls.parser.CallFileLexer@1f3aa07
@@ -293,7 +293,7 @@ tokens {
             sb.append('.');
             sb.append(t.getCharPositionInLine());
             sb.append(": ");
-            if (t==Token.EOF_TOKEN) sb.append("<EOF>");
+            if (t.getType()==Token.EOF) sb.append("<EOF>");
             else {
                 if (t.getType() == INITIAL_WS) sb.append("<INITIAL_WS>");
                 sb.append('"');
@@ -306,7 +306,7 @@ tokens {
                     }
                 sb.append('"');
             }
-        } while (t != Token.EOF_TOKEN);
+        } while (t.getType() != Token.EOF);
         return sb.toString();
     }
 
@@ -383,7 +383,7 @@ tokens {
                     return buildToken(t, INDENT);
                 }
             }
-            if (t==Token.EOF_TOKEN && peekTab()>0) {
+            if (t.getType()==Token.EOF && peekTab()>0) {
                 // make sure we emit all necessary dedents
                 pushToken(t);
                 popTab();
