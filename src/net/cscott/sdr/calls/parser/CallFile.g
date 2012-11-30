@@ -414,7 +414,7 @@ calllist
     ;
 // another start production for parsing grammar rules
 grammar_start
-    : grm_rule
+    : grm_rule EOF!
     ;
 
 program
