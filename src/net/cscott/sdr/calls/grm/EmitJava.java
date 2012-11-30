@@ -44,15 +44,19 @@ public class EmitJava extends AbstractEmit {
                 (Tools.<Grm>l(new Grm.Terminal("("),
                               new Grm.Nonterminal("anything", -1),
                               new Grm.Terminal(")"))));
-        m.put("people", Grm.parse("<genders> | <heads_or_sides> | <all>"));
+        m.put("people",
+              Grm.parse("<genders> | <heads_or_sides> | <all> | <none>"));
         m.put("heads_or_sides", Grm.parse("heads | sides"));
-        m.put("two_select", Grm.parse("(head|side) <genders> | (center|end) <genders> | very centers | center two"));
+        m.put("two_select",
+              Grm.parse("(head|side) <genders> | (center|end) <genders> | very centers | (center|outside) two"));
+        m.put("six_select", Grm.parse("(center|outside) six"));
         m.put("genders", Grm.parse("<boys> | <girls>"));
         m.put("boys", Grm.parse("boys | men"));
         m.put("girls", Grm.parse("girls | ladies"));
         m.put("all", Grm.parse("all | every (one|body) | everybody | everyone"));
+        m.put("none", Grm.parse("none | no (one|body) | nobody"));
         m.put("wave_select", Grm.parse("centers | ends"));
-        m.put("anyone", Grm.parse("<people> | <wave_select> | <two_select>"));
+        m.put("anyone", Grm.parse("<people> | <wave_select> | <two_select> | <six_select>"));
         m.put("number", Grm.parse("<digit> and <fraction>|<digit>|<fraction>|<NUMBER>"));
         m.put("digit", Grm.parse("one | two | <digit_greater_than_two>"));
         m.put("digit_greater_than_two", Grm.parse("three | four | five | six | seven | eight | nine"));
