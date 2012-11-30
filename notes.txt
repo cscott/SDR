@@ -1295,8 +1295,22 @@ to do:
  nnn) buy tapes of patter sessions from (eg) AACE (lower level is
       better) and use these to train speech models.  use
       audacity/gstreamer framework to suppress music.
+      Use <filler> and <music> in model to catch random stuff vic
+      says/sings and the fact that pauses between utterances are long.
  ooo) fix animation of cloverleaf / cross clover and.  This is
       probably actually a problem with 'concentric'
+ ppp) when we get a parse error (in PMSD), try to reparse using
+      successively higher dance programs, to provide a "this call is
+      A1" error message instead of just "not on list".
+ qqq) refactor breathing out of matchers?  add a MatcherState object
+      to all the matchers to make it easier to get "no breathing" down
+      the matcher chain?
+ rrr) only breathe to resolve crashes when necessary.  replace the
+      blind breathe at top level. (and do this at a finer-grained
+      level so that "as couples do half of a pass thru" makes the
+      phantoms come to right hands before the "as couples"
+      transformation happens).
+
 -------
 heads x:
   from squared_set:
