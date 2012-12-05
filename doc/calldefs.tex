@@ -1,0 +1,266 @@
+% calldefs.tex
+% documentation for SDR's call definition format.
+
+\documentclass[12pt]{article}
+\usepackage{tex-squares}%\setlength{\parindent}{1cm}
+\usepackage{parskip}
+\usepackage{url}
+\title{The SDR call definition language}
+\author{C. Scott Ananian}
+\date{}
+\newcommand{\clause}[1]{\texttt{#1}}
+\renewcommand{\call}[1]{\texttt{#1}} % defined in the tex-squares package
+\newcommand{\package}[1]{\url{#1}}
+\begin{document}
+\maketitle
+
+\section{Introductory examples}
+
+Although a few primitives and concepts are defined procedurally in the
+SDR code base (see the \package{net.cscott.sdr.calls.lists}
+package), the majority of the call and concept definitions in SDR are
+defined using a simple human-readable language in resources stored
+in \texttt{*.call} resource files in \package{net.cscott.sdr.calls.lists}.
+Here is a simple example:
+\begin{verbatim}
+def: dosado to a wave
+  in: 6
+    call: dosado
+    call: step to a wave
+\end{verbatim}
+
+This defines a call named ``dosado to a wave'' which completes in 6
+beats of music (according to the standard Callerlab timing documents)
+and consists of two parts (which are themselves calls): \call{dosado}
+followed by \call{step to a wave}.\footnote{If you've read Bill
+  Ackerman's ``Miscellaneous C4 Notions'' book
+  (\url{http://lynette.org/sd/book3.pdf}), you might be objecting that
+  \call{dosado} is fractionalizable, but not actually divisible into
+  parts.  Dancers would likely object to \call{initially tandem dosado
+    to a wave}, for example.  Rest assured that the grammar can
+  express this distinction; this example is slightly simplified.}
+Indentation is significant, as are new lines.\footnote{Long lines can
+  be split by using a backslash to escape the newline.}
+Keywords (such as \clause{def}, \clause{in} and \clause{call}) are
+typically followed by a colon, but they are reserved only in certain
+contexts.\footnote{There is no problem defining or using the call
+  \call{pass in} for example, even though ``in'' is a keyword, used both
+  to describe timing and as part of the syntax of the \clause{prim}  clause.}
+
+Here are two more simple definitions:
+\begin{verbatim}
+def: couples circulate
+  call: as couples(circulate)
+
+def: couples trade
+  in: 6
+  call: as couples(trade)
+\end{verbatim}
+
+You'll notice that the \clause{call} clauses contain what looks like
+function applications: the concept \call{as couples} is applied to
+the call \call{circulate} or \call{trade}, respectively.  The
+\call{couples trade} call explicitly specifies the number of beats of
+the resulting call, but this is optional: \call{couples circulate}
+uses the default timing.  In the case of the \call{as couples}
+concept, the timing defaults to the timing of the base call, so
+\call{couples circulate} takes 4 beats, just like \call{circulate}.
+
+Before we deal with the language more rigorously, let's walk through
+a much more complicated example:
+\begin{verbatim}
+def: square thru(n=4)
+  optional: LEFT
+  spoken: square thru (<n=number> (hands (around|round)?)?)?
+  from: ANY
+    condition: and(greater([n],0),not(greater([n],1)))
+    call: _fractional([n], _in(2, pull by))
+  from: ANY
+    condition: greater([n], 1)
+    call: _in(2, _square thru part)
+    call: left(square thru(_subtract num([n],1)))
+\end{verbatim}
+
+This is a recursive definition of square thru.\footnote{Again, it is
+  slightly simplified, since the actual definition adds a bit of
+  complexity to ensure that \call{square thru $N$} has exactly
+  $N$ parts.}
+Let's take this line by line.
+
+The \clause{def} clause says that this is a definition of a call named
+``square thru'' which takes a single parameter, which we will refer to
+as $n$ in the body of the definition.  The parameter has a
+default value, 4.  If no argument is supplied, $n$ will be set
+to 4 when the definition is evaluated.
+
+The \clause{optional} clause in the second line contains a set of
+comma-separated tags which are used as hooks to provide extra rules
+for fitting this definition into the call grammar.  In this case, the
+\texttt{LEFT} tag signifies that we will automatically create an
+additional call \call{left square thru} with the definition
+\texttt{left(square thru)}, where \call{left} is a concept very
+similar (but not identical) to the C3B concept \call{mirror}.
+
+The \clause{spoken} clause provides a regular-expression style grammar
+for a set of spoken words which are considered to refer to this
+definition.  The \clause{spoken} clause is optional for calls with no
+arguments, defaulting to the call name.\footnote{Calls whose names
+  begin with an underscore are considered ``internal''; they do not
+  have a default spoken representation.  You could flout
+  convention by providing a \clause{spoken} clause for a call whose
+  name begins with an underscore, although this is obviously not
+  encouraged without good reason.}
+The \clause{spoken} clause also names the grammar production used for
+any arguments.  Calling ``square thru three'' (or writing ``square
+thru 3'') will result in the function application \texttt{square
+  thru(3)}.\footnote{``Function names'' can contain spaces, as shown
+  here.  In general, identifiers consist of a \textit{sequence} of ``words''.}
+Note that in this case ``square thru'' is an
+acceptable spoken version of the call; the numeric argument takes its
+default value of 4 since it is not matched in the grammar.  Other
+valid spoken word sequences are ``square thru 2 1/2'' and ``square
+thru three hands round''.
+
+The \clause{from} clause introduces an alternative.  Each
+\clause{from} clause will be tried, in sequence, until one words.  The
+argument to \clause{from} is usually a formation name.  Technically,
+the argument specifies a \texttt{Matcher} expression, which takes a
+\texttt{Formation} and returns a \texttt{FormationMatch} object.
+The \texttt{MINIWAVE} matcher is equivalent to the matcher expression
+\texttt{OR(RH\_MINIWAVE, LH\_MINIWAVE)}; that is, it matches either a
+left-handed or a right-handed miniwave, setting dancer tags such as
+\texttt{BEAU} and \texttt{BELLE} appropriately.  Available
+\texttt{Matcher}s are defined in the
+\package{net.cscott.sdr.calls.MatcherList} class in SDR.
+
+In this case, the \texttt{ANY} matcher matches any formation.  It is
+used here to introduce one of two alternative definitions for the
+call.  Often alternative definitions are distinguished by the
+formations from which they are applied, but in the case of ``square
+thru'' we are going to use a \clause{condition} clause to distinguish
+the definitions.
+
+The \clause{condition} clause evaluates a boolean expression, halting
+evaluation of this alternative\footnote{Evaluation is halted by
+  throwing a \texttt{BadCallException}.} if the condition evalutes to
+false.  Available boolean functions are defined in
+\package{net.cscott.sdr.calls.PredicateList}.  Note that arguments to
+boolean predicates can establish other, non-boolean, contexts.  In
+this case the \call{greater} predicate establishes a numeric context for
+the evaluation of \texttt{[n]} (which is a reference to the argument
+named $n$), \texttt{0} and \texttt{1}.  A predicate such as
+\texttt{formation(MINIWAVE)} could also establish \texttt{Matcher} or other
+contexts for the evaluation of arguments.  This particular line is
+restricting this alternative to the base case of the definition:
+``square thru $n$'' for $0 < n \leq 1$.
+
+The next line provides a \clause{call} clause providing the definition
+applicable for this alternative: do the fraction $n$ of a
+``pull by'' taking 2 beats.  That is, if $n=1/2$, then do half of a
+pull by, taking 1 beat.  (``Pull by'' is the same as a ``right pull by.'')
+
+The following four lines introduce a new alternative, applicable when $n>1$.
+It begins with the internal call \call{\_square thru part}, done in 2
+beats.  This will be given its definition (``pass thru and face in'')
+elsewhere in the definition files.  After this is done, we recursively
+invoke the call ``left square thru $n-1$'', written as an application
+of the \call{left} concept to a recursive invocation of \call{square thru}.
+
+\section{Clauses}
+\section{Idioms}
+There are a number of nonstandard internal calls which are used
+frequently inside SDR definitions.
+
+\subsection{\_quasi concentric}
+The \call{\_quasi concentric} concept is like \call{concentric},
+except that no ``lines to lines, columns to columns'' or ``opposite
+elongation rule'' adjustment is done.  The elongation of the resulting
+formation is exactly the same as the original formation.  This is
+often used in calls which are informally defined with ``centers'' and
+``ends''.   For example, from facing lines ``centers face left while the
+ends face left'' ends in a right-hand column, while ``concentric face
+left'' ends in a two-faced line due to the lines-to-lines rule.  These
+two calls are expressed in SDR as \call{\_quasi concentric(face left,
+  face left)} and \call{concentric(face left, face left)},
+respectively.
+
+\displayone
+{ \dancer 1s & \dancer 2s & \dancer 3s & \dancer 4s \cr
+  \dancer 8n & \dancer 7n & \dancer 6n & \dancer 5n }%
+{Starting formation}
+\displaytwo
+{ \dancer 1e & \dancer 2e & \dancer 3e & \dancer 4e \cr
+  \dancer 8w & \dancer 7w & \dancer 6w & \dancer 5w }%
+{After ``centers face left while ends face left''}
+{ \dancer 1e & \dancer 4e \cr
+  \dancer 2e & \dancer 3e \cr
+  \dancer 7w & \dancer 6w \cr
+  \dancer 8w & \dancer 5w }%
+{After ``concentric face left''}
+
+\subsection{\_o concentric}
+The \call{\_o concentric} is similar to \call{\_quasi concentric}, in
+that it does no elongation adjustment.  It goes further, however, in
+that the ends are not expected to mentally ``breathe together'' before
+finding the formation for their call (as the ends would to find their
+box when executing ``concentric scoot back'' from two-faced lines, for
+example).  When an informal definition says ``centers cross back while
+the ends O circulate twice''\footnote{This is ``like a settle back'',
+  a C4 call.} we can't use the \call{concentric} or \call{\_quasi
+  concentric} concepts, because the ends won't have the required O
+formation after they've mentally breathed in.  The centers part is
+still concentric: ``own the centers cross back by twice O circulate'' is not
+what is intended.  ``Own the centers concentric cross back by twice O
+circulate'' is the intended precisely-stated definition, but that
+would require use to internally create phantom ends with the proper
+facing directions to allow them to do their part of the concentric
+cross back.  We use the simpler definition \call{\_o concentric(cross
+  back, 2(o circulate))}.
+
+\displayone
+{ \dancer 1n & \dancer 2s & \dancer 3n & \dancer 4s \cr
+  \dancer 8n & \dancer 7s & \dancer 6n & \dancer 5s }%
+{Starting formation}
+\displaytwo
+{ \dancer 1n & \dancer 4s \cr
+  \dancer 8n & \dancer 5s }%
+{\ctablebox{Ends evaluate in this formation \\ for \call{concentric} or
+  \call{\_quasi concentric}.}}
+{ \dancer 1n & \pdancer ~x & \pdancer ~x & \dancer 4s \cr
+  \dancer 8n & \pdancer ~x & \pdancer ~x & \dancer 5s }%
+{\ctablebox{Ends evaluate in this formation \\ for 
+  \call{\_o concentric}.}}
+
+\subsection{\_maybe touch}
+The \call{\_maybe touch} pseudo-concept is used to wrap the first part
+of a call where the Callerlab ``Facing Couples Rule'' applies.  This
+ensures that ``swing thru'' is valid from facing couples and from
+mixed formations:
+\displayone
+{            &            & \dancer 3s & \dancer 5s \cr
+  \dancer 1n & \dancer 2s &            &            & \dancer 7n & \dancer 8s\cr
+             &            & \dancer 4n & \dancer 6n}%
+{
+Legal starting formation for \call{grand swing thru}.
+}
+
+
+Recall that one distinction between the call \call{swing and mix} and the
+two calls \call{swing} and \call{mix} is that the facing couples rule
+applies to \call{swing and mix} but it does not apply to the A2 call
+\call{swing}, which must be called from a wave.  SDR uses the following
+definition for \call{swing and mix} to express this distinction:
+\begin{verbatim}
+def: swing and mix // 3 part call
+  part:
+    call: _in(2, _maybe touch(_wave swing))
+  part: 2
+    call: mix
+\end{verbatim}
+The \call{\_maybe touch} helper is also used to implement Callerlab's
+similar ``Ocean Wave Rule'' when defining \call{box the gnat}.
+
+\subsection{The designator concept}
+It is worth reading 
+
+\end{document}

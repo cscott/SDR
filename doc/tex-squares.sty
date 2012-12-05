@@ -1,0 +1,301 @@
+% tex-squares.sty  05 Feb 2004
+
+% Macros for inserting pictures of square dance formations into TeX documents.
+%
+% This style option is designed to work with the article document
+% style of LaTeX 2e.  Use
+% \documentclass{article}
+% \usepackage{tex-squares}
+
+% Authors: Larry Denenberg and Stephen Gildea
+%  Comments and suggestions welcome.
+
+%  29 Jul 88: allow dancers to be on half-spots.
+%  30 Aug 88: made font-independent, added \displayfive
+%  31 Aug 88: added offset phantom dancers
+%  14 Sep 88: added other useful non-picture commands and renamed .tex => .sty
+%  27 Apr 89: added \setdancersize to allow changing the size of the dancers
+%  04 May 89: fix to \setdancersize to scale offset dancer offset, too
+%  30 May 89: added table of contents support
+%  17 Oct 89: added \caption
+%  07 Mar 90: changed \displaythree spacing from .25in to .5in (Sue's idea)
+%  16 Apr 90: stretchable glue between setups in the \display-n commands
+%  19 Nov 90: displays now use \halign instead of array env so stretchable
+%		glue really works
+%  10 Dec 91: Always use shortskips with new \halign.  Changed my address.
+%  08 Jul 98: Update for LaTeX2e.
+%  04 Feb 04: Remove authors' email addresses to avoid harvesting.
+
+\NeedsTeXFormat{LaTeX2e}[1994/12/01]	%for \textbullet
+\ProvidesPackage{tex-squares}[2004/02/05 Square Dance Formations]
+
+\AtBeginDocument{\font\dancerfont=\fontname\font}
+
+\def\bulletchar{\textbullet}
+
+\newdimen\side			%size of dancers
+\newdimen\thickness\thickness=0.6pt %width of rules
+\newskip\formationhspread\formationhspread=0.5em %1/2 the total dist
+\newskip\formationvspread\formationvspread=0.5em %1/2 the total dist
+\newcount\phantomdashes\phantomdashes=2	%Eric's value.  Larry used 4.
+\newdimen\bullethmargin\bullethmargin=1.4pt
+\newdimen\bulletvmargin\bulletvmargin=0.9pt
+\newdimen\captionskip\captionskip=0.2cm
+
+% separation between formations in a display
+\newskip\dtwosep     \dtwosep 1.0in minus 0.50in
+\newskip\dthreesep \dthreesep 0.5in minus 0.25in
+\newskip\dfoursep   \dfoursep 0.3in minus 0.10in
+\newskip\dfivesep   \dfivesep 0.3in minus 0.10in
+% my old valuse
+%\newskip\dfoursep   \dfoursep 0.125in
+%\newskip\dfivesep   \dfivesep 0.125in
+
+\newdimen\outside
+\newbox\bulletbox\setbox\bulletbox=\hbox{\bulletchar}
+\newdimen\totalheight
+
+\newbox\left\setbox\left=\hbox to \wd\bulletbox{} \let\right=\left
+\newbox\top\setbox\top=\vbox to \ht\bulletbox{} \let\bottom=\top
+\newbox\hbullet
+\newbox\vbullet
+
+\newbox\vbar
+\newbox\vpbar
+\newbox\hbar
+\newbox\hpbar
+
+\newskip\halfhoffset 
+\newskip\halfvoffset 
+
+% Set the size of the box that is a dancer.  This does not change
+% the font used inside the dancer or the font used for the nose.
+
+\def\setdancersize#1{
+  \side=#1
+  \outside=\side
+    \advance\outside by 2\thickness
+  \totalheight=\outside
+    \advance\totalheight by 2\ht\bulletbox
+    \advance\totalheight by -2\bulletvmargin
+
+  \setbox\hbullet=\vbox to \totalheight{\vfil\copy\bulletbox\vfil}
+  \setbox\vbullet=\hbox to \side{\hfil\copy\bulletbox\hfil}
+
+  \setbox\vbar=\vbox to \totalheight
+    {\vfil\hrule height\outside width\thickness\vfil}
+  \dimen0=\outside \divide\dimen0 by \phantomdashes
+  \setbox0=\vbox to \dimen0
+    {\xleaders\vrule width\thickness\vfil\vfil\vfil
+     \xleaders\vrule width\thickness\vfil}
+  \setbox\vpbar=\vbox to \totalheight
+    {\vfil\vbox to \outside{\xleaders\box0\vfil}\vfil}
+
+  \setbox\hbar=\hbox{\vrule height\thickness width\side}
+  \dimen0=\side \divide\dimen0 by \phantomdashes
+  \setbox0=\hbox to \dimen0
+    {\xleaders\hrule height\thickness\hfil\hfil\hfil
+     \xleaders\hrule height\thickness\hfil}
+  \setbox\hpbar=\hbox to \side{\xleaders\box0\hfil}
+
+  \halfhoffset=\totalheight \advance\halfhoffset\formationhspread
+  \halfvoffset=\totalheight \advance\halfvoffset\formationvspread
+} % end of \setdancersize
+
+% Set up default size
+
+%\setdancersize{3.7ex}		%Larry's original
+\setdancersize{2ex}
+
+% Draw a dancer.
+% First arg: character to draw inside.
+% Second arg: n, s, e, or w (the direction the dancer is facing).
+%    Can also be v (n and s combined) or h (e and w combined).
+%    Using x causes no nose at all to be drawn.
+\def\dancer#1#2{{\offinterlineskip
+\if#2n\let\top\vbullet\fi\if#2e\let\right\hbullet\fi
+\if#2s\let\bottom\vbullet\fi\if#2w\let\left\hbullet\fi
+\if#2v\let\top\vbullet\let\bottom\vbullet\fi
+\if#2h\let\left\hbullet\let\right\hbullet\fi
+\hbox{\copy\left\kern-\bullethmargin\copy\vbar
+      \vbox{\copy\top\kern-\bulletvmargin\copy\hbar
+            \vbox to \side{\vss\hbox to \side{\hss\dancerfont #1\hss}\vss}
+            \copy\hbar\kern-\bulletvmargin\copy\bottom}\relax
+      \copy\vbar\kern-\bullethmargin\copy\right}}}
+
+% Phantom dancer: drawn with dashes
+\def\pdancer#1#2{{\let\vbar\vpbar\let\hbar\hpbar\dancer{#1}{#2}}}
+
+% Invisible dancer: just takes up space.
+\def\idancer{\nsdancerbox{}}
+
+% Four dancers that are offset half a position
+%  to the n, s, e, and w respectively
+\def\ndancer#1#2{\nsdancerbox{\vss\kern -\halfvoffset\dancer{#1}{#2}\vss}}
+\def\sdancer#1#2{\nsdancerbox{\vss\kern +\halfvoffset\dancer{#1}{#2}\vss}}
+\def\edancer#1#2{\ewdancerbox{\hss\kern +\halfhoffset\dancer{#1}{#2}\hss}}
+\def\wdancer#1#2{\ewdancerbox{\hss\kern -\halfhoffset\dancer{#1}{#2}\hss}}
+
+% offset phantom dancers.
+\def\npdancer#1#2{\nsdancerbox{\vss\kern -\halfvoffset\pdancer{#1}{#2}\vss}}
+\def\spdancer#1#2{\nsdancerbox{\vss\kern +\halfvoffset\pdancer{#1}{#2}\vss}}
+\def\epdancer#1#2{\ewdancerbox{\hss\kern +\halfhoffset\pdancer{#1}{#2}\hss}}
+\def\wpdancer#1#2{\ewdancerbox{\hss\kern -\halfhoffset\pdancer{#1}{#2}\hss}}
+
+% Not user-level macros, but useful in the above definitions.
+% Larry:
+%   The first \totalheight in this definition is technically wrong.  Tough.
+\def\nsdancerbox#1{\hbox to \totalheight{\hss\vbox to \totalheight{#1}}}
+\def\ewdancerbox#1{\vbox to \totalheight{\vss\hbox to \totalheight{#1}}}
+
+\def\formation#1{
+  {\def\quad{\hskip\formationhspread}
+   \def\cr{\crcr\noalign{\vskip\formationvspread}}
+   \let\\=\cr
+   \matrix{#1}}}
+
+% \wideformation and \tallformation make quarter tags look better
+
+\def\wideformation#1{
+  {\def\quad{\hskip 2\formationhspread}
+   \def\cr{\crcr\noalign{\vskip\formationvspread}}
+   \matrix{#1}}}
+
+\def\tallformation#1{
+  {\def\quad{\hskip\formationhspread}
+   \def\cr{\crcr\noalign{\vskip 2\formationvspread}}
+   \matrix{#1}}}
+
+% Some LaTeX definitions:
+
+% define displays in terms of \halign because array environment
+% insists \tabskip=0pt at edges of table.  We need more control.
+
+% Since the \haligns always go all the way across the page, we always
+% get \abovedisplayskip and \belowdisplayskip, and never
+% \abovedisplayshortskip and \belowdisplayshortskip like we sometimes
+% used to with array env.
+% This is bad, and so to conserve space and keep old documents fitting
+% on the page, it might as well always use the short skips.
+
+\def\@beforedisplay{%
+  \abovedisplayskip\abovedisplayshortskip
+  \belowdisplayskip\belowdisplayshortskip}
+
+\def\displayone#1#2{\@beforedisplay\nopagebreak[2]$$
+  \vcenter{{\tabskip=0pt plus 1 fil
+   \halign to \hsize
+    {\hfil##\hfil\cr
+      $\formation{#1}$\cr\noalign{\vskip\captionskip}
+      \mbox{#2}\cr}}}$$\afterdisplay}
+
+\def\displaytwo#1#2#3#4{\@beforedisplay\nopagebreak[2]$$
+  \vcenter{{\tabskip=0pt plus 1 fil
+   \halign to \hsize
+    {\hfil##\hfil\tabskip=\dtwosep &\hfil##\hfil\tabskip=0pt plus 1 fil\cr
+      $\formation{#1}$
+      &$\formation{#3}$\cr\noalign{\vskip\captionskip}
+      \mbox{#2}&\mbox{#4}\cr}}}$$\afterdisplay}
+
+\def\displaythree#1#2#3#4#5#6{\@beforedisplay\nopagebreak[2]$$
+  \vcenter{{\tabskip=0pt plus 1 fil
+   \halign to \hsize
+    {\hfil##\hfil\tabskip=\dthreesep &\hfil##\hfil &\hfil##\hfil
+	 \tabskip=0pt plus 1 fil\cr
+      $\formation{#1}$
+      &$\formation{#3}$
+      &$\formation{#5}$\cr\noalign{\vskip\captionskip}
+      \mbox{#2}&\mbox{#4}&\mbox{#6}\cr}}}$$\afterdisplay}
+
+\def\displayfour#1#2#3#4#5#6#7#8{\@beforedisplay\nopagebreak[2]$$
+  \vcenter{{\tabskip=0pt plus 1 fil
+   \halign to \hsize
+    {\hfil##\hfil\tabskip=\dfoursep &\hfil##\hfil &\hfil##\hfil &\hfil##\hfil
+	 \tabskip=0pt plus 1 fil\cr
+      $\formation{#1}$
+      &$\formation{#3}$
+      &$\formation{#5}$
+      &$\formation{#7}$\cr\noalign{\vskip\captionskip}
+      \mbox{#2}&\mbox{#4}&\mbox{#6}&\mbox{#8}\cr}}}$$\afterdisplay}
+
+% \displayfive is tricky because a macro can only have up to nine
+% parameters.  Nevertheless, this behaves exactly as if it had ten.
+
+\def\displayfive#1#2{\toks0={#1}\toks1={#2}\displayfive@}
+\def\displayfive@#1#2#3#4#5#6#7#8{\@beforedisplay\nopagebreak[2]$$
+  \vcenter{{\tabskip=0pt plus 1 fil
+   \halign to \hsize
+    {\hfil##\hfil\tabskip=\dfivesep
+         &\hfil##\hfil &\hfil##\hfil &\hfil##\hfil &\hfil##\hfil
+	 \tabskip=0pt plus 1 fil\cr
+      $\formation{\the\toks0}$
+      &$\formation{#1}$
+      &$\formation{#3}$
+      &$\formation{#5}$
+      &$\formation{#7}$\cr\noalign{\vskip\captionskip}
+      \mbox{\the\toks1}&\mbox{#2}&\mbox{#4}&\mbox{#6}&\mbox{#8}\cr}}}$$%
+  \afterdisplay}
+
+% useful for multi-line captions.  You can use \\ inside of this.
+\newcommand\ctablebox[1]{\begin{tabular}[c]{@{}c@{}}#1\end{tabular}}
+
+% Puts a page-wide caption under the FOLLOWING display.
+% Yes, you specify this before the display, and it appears after.
+% That's because we have to set up to ensure no page break after the display.
+\def\caption#1{\postdisplaypenalty=\@M
+  \def\afterdisplay{\par \vskip-\lastskip
+    {\centering\ctablebox{#1}\par}\postdisplaypenalty=\z@
+    \def\afterdisplay{}}}
+
+\def\afterdisplay{}
+
+%%%
+%%%  These macros have nothing to do with the pictures, but are 
+%%%  commonly used in documents that define calls.
+%%%
+
+% Some general page layout parameters that are popular:
+
+\parindent 0pt
+
+\oddsidemargin 0pt
+\textwidth 6.5in
+
+\topmargin=0pt
+\headheight=0pt
+\headsep=0pt
+\textheight=9in
+
+
+\newcount\callnumber
+\callnumber=0
+
+% The "call" environment can be broken across pages (though it
+% tries not to).  It takes one argument, the name of the call.
+\def\call#1{\par\pagebreak[2]\bigskip\bigskip
+  \global\advance\callnumber by 1
+  {\Large\bf\the\callnumber. #1}\par
+  \addcontentsline{toc}{call}{\protect\numberline{\the\callnumber.}#1}
+  \nopagebreak\bigskip}
+\def\endcall{\par}
+
+% A variant, the "call*" environment, never breaks across pages.
+\@namedef{call*}#1{\par\bigskip\bigskip\vbox\bgroup
+  \global\advance\callnumber by 1
+  {\Large\bf\the\callnumber. #1}\par\bigskip}
+\@namedef{endcall*}{\par\egroup}
+
+\def\tableofcontents{\twocolumn[\Large\bf\centering
+  Table of Contents\\ \vskip\baselineskip]
+  \@starttoc{toc}\onecolumn}
+
+\columnsep=30pt		%for the toc.  default is 10pt
+
+% print one line of the toc: secdep, indent, callnumwidth
+\def\l@call{\@dottedtocline{2}{0em}{2.2em}}
+
+% Right-justify the call number in the toc.
+% Taking this line out restores the default, which is to left-justify.
+\def\numberline#1{\hbox to\@tempdima{\hfil#1\ }}
+
+% tex-squares.sty ends here
