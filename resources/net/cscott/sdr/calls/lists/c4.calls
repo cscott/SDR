@@ -65,6 +65,19 @@ def: reverse echo(concept, call)
   part:
     call: _apply([concept], [call])
 
+def: piecewise(concept, call)
+  spoken: piecewise <0=concept> <1=anything>
+  from: ANY
+    condition: equal num(num parts([call]), 1)
+    part:
+      call: _apply([concept], [call])
+  from: ANY
+    condition: greater(num parts([call]), 1)
+    part:
+      call: _apply([concept], _first part([call]))
+    part: _subtract num(num parts([call]), 1)
+      call: piecewise([concept], finish([call]))
+
 // C4 class teaching order
 
 // week 1
