@@ -25,6 +25,7 @@
 %  10 Dec 91: Always use shortskips with new \halign.  Changed my address.
 %  08 Jul 98: Update for LaTeX2e.
 %  04 Feb 04: Remove authors' email addresses to avoid harvesting.
+%  05 Dec 12: Removed \caption and bogus page style stuff. [CSA]
 
 \NeedsTeXFormat{LaTeX2e}[1994/12/01]	%for \textbullet
 \ProvidesPackage{tex-squares}[2004/02/05 Square Dance Formations]
@@ -239,13 +240,14 @@
 % useful for multi-line captions.  You can use \\ inside of this.
 \newcommand\ctablebox[1]{\begin{tabular}[c]{@{}c@{}}#1\end{tabular}}
 
-% Puts a page-wide caption under the FOLLOWING display.
-% Yes, you specify this before the display, and it appears after.
-% That's because we have to set up to ensure no page break after the display.
-\def\caption#1{\postdisplaypenalty=\@M
-  \def\afterdisplay{\par \vskip-\lastskip
-    {\centering\ctablebox{#1}\par}\postdisplaypenalty=\z@
-    \def\afterdisplay{}}}
+%% CSA COMMENTED OUT 2012-12-05
+%% % Puts a page-wide caption under the FOLLOWING display.
+%% % Yes, you specify this before the display, and it appears after.
+%% % That's because we have to set up to ensure no page break after the display.
+%% \def\caption#1{\postdisplaypenalty=\@M
+%%   \def\afterdisplay{\par \vskip-\lastskip
+%%     {\centering\ctablebox{#1}\par}\postdisplaypenalty=\z@
+%%     \def\afterdisplay{}}}
 
 \def\afterdisplay{}
 
@@ -254,17 +256,18 @@
 %%%  commonly used in documents that define calls.
 %%%
 
-% Some general page layout parameters that are popular:
+%% CSA COMMENTED OUT 2012-12-05
+%% Some general page layout parameters that are popular:
 
-\parindent 0pt
+%% \parindent 0pt
 
-\oddsidemargin 0pt
-\textwidth 6.5in
+%% \oddsidemargin 0pt
+%% \textwidth 6.5in
 
-\topmargin=0pt
-\headheight=0pt
-\headsep=0pt
-\textheight=9in
+%% \topmargin=0pt
+%% \headheight=0pt
+%% \headsep=0pt
+%% \textheight=9in
 
 
 \newcount\callnumber

@@ -5,9 +5,30 @@
 \usepackage{tex-squares}%\setlength{\parindent}{1cm}
 \usepackage{parskip}
 \usepackage{url}
+\usepackage{listings}
 \title{The SDR call definition language}
 \author{C. Scott Ananian}
 \date{}
+
+% define our own language for the listings package
+\lstdefinelanguage{CallFile}
+  {morekeywords=[1]{def:,in:,from:,call:,optional:,prim:,xpart:,part:,ipart:,spoken:,condition:},%
+   morekeywords=[2]{LEFT,ANY,FACING,DANCERS,RH,MINIWAVE},%
+   sensitive=true,%
+   morecomment=[l]//,%
+   morecomment=[s]{/*}{*/},%
+   alsoletter={:},%
+   alsodigit={/},%
+  }[keywords,comments]%
+\lstset{language=CallFile,columns=flexible,%
+   identifierstyle=\ttfamily,keywordstyle=[2]\sffamily,%
+   xleftmargin=20pt,xrightmargin=10pt,%
+   breaklines=true,%
+   breakatwhitespace=true,prebreak=\textbackslash,%
+   escapechar=\#,%
+   captionpos=b,abovecaptionskip=12pt
+}
+
 \newcommand{\clause}[1]{\texttt{#1}}
 \renewcommand{\call}[1]{\texttt{#1}} % defined in the tex-squares package
 \newcommand{\package}[1]{\url{#1}}
@@ -21,13 +42,15 @@ SDR code base (see the \package{net.cscott.sdr.calls.lists}
 package), the majority of the call and concept definitions in SDR are
 defined using a simple human-readable language in resources stored
 in \texttt{*.call} resource files in \package{net.cscott.sdr.calls.lists}.
-Here is a simple example:
-\begin{verbatim}
+
+\subsection{Calls defined in terms of others}
+Here is a simple example call definition:
+\begin{lstlisting}
 def: dosado to a wave
   in: 6
     call: dosado
     call: step to a wave
-\end{verbatim}
+\end{lstlisting}
 
 This defines a call named ``dosado to a wave'' which completes in 6
 beats of music (according to the standard Callerlab timing documents)
@@ -48,14 +71,14 @@ contexts.\footnote{There is no problem defining or using the call
   to describe timing and as part of the syntax of the \clause{prim}  clause.}
 
 Here are two more simple definitions:
-\begin{verbatim}
+\begin{lstlisting}
 def: couples circulate
   call: as couples(circulate)
 
 def: couples trade
   in: 6
   call: as couples(trade)
-\end{verbatim}
+\end{lstlisting}
 
 You'll notice that the \clause{call} clauses contain what looks like
 function applications: the concept \call{as couples} is applied to
@@ -66,9 +89,112 @@ uses the default timing.  In the case of the \call{as couples}
 concept, the timing defaults to the timing of the base call, so
 \call{couples circulate} takes 4 beats, just like \call{circulate}.
 
+\subsection{Calls defined using primitives}
+Let's look at a more complicated example to see the primitives that
+ultimately make up a call definition.  Listing~\ref{lst:passthru}
+shows the definition of the call \call{pass thru}.
+
+\begin{lstlisting}[numbers=left,float,caption=A definition with primitives.,label=lst:passthru]
+def: pass thru
+  optional: LEFT
+  in: 2
+  // define the common case first: we've got two parts there
+  from: FACING DANCERS
+    prim: 0, 1, none
+    prim: 0, 1, none
+  // from mixed formation, this is indivisible
+  from: mixed(FACING DANCERS, RH MINIWAVE)
+    ipart:
+      from: FACING DANCERS
+        prim: 0, 1, none
+        prim: 0, 1, none
+      from: RH MINIWAVE
+        call: step thru // "rear back and..."
+\end{lstlisting}
+
+In the first line we see that this is a definition of a call named
+``pass thru''.  The \clause{optional} clause in the second line
+contains a set of comma-separated tags which are used as hooks to
+provide extra rules for fitting this definition into the call grammar.
+In this case, the \texttt{LEFT} tag signifies that we will
+automatically create an additional call \call{left pass thru} with
+the definition \texttt{left(pass thru)}, where \call{left} is a
+concept very similar (but not identical) to the C3B concept
+\call{mirror}.  The third line says that this call will take 2 beats.
+
+The \clause{from} clauses in lines 5 and 9 introduce alternative
+definitions.  Each \clause{from} clause will be tried, in sequence,
+until one works.  The argument to \clause{from} is usually a formation
+name.  To be specific, the argument specifies a \texttt{Matcher}
+expression, which takes a \texttt{Formation} and returns a
+\texttt{FormationMatch} object.  For example, the \texttt{MINIWAVE}
+matcher is equivalent to the matcher expression \texttt{OR(RH\_MINIWAVE,
+  LH\_MINIWAVE)}; that is, it matches either a left-handed or a
+right-handed miniwave, setting dancer tags such as \texttt{BEAU} and
+\texttt{BELLE} appropriately.  Available \texttt{Matcher}s are defined
+in the \package{net.cscott.sdr.calls.MatcherList} class in SDR.
+
+\begin{figure}
+\displaytwo
+{ \dancer ~s \cr \dancer ~n }%
+{\texttt{MatcherList.FACING\_DANCERS}}%
+{ \dancer ~n & \dancer ~s }%
+{\texttt{MatcherList.RH\_MINIWAVE}}
+\caption{The patterns matched by the \textsf{FACING DANCERS} and
+  \textsf{RH MINIWAVE} expressions.}
+\label{fig:facingdancer}
+\end{figure}
+
+The first alternative, lines 5 through 7, applies when the formation
+matches \texttt{FACING DANCERS}; that is, when every dancer in the
+formation can be assigned to an instance of the \texttt{FACING
+  DANCERS} pattern (see figure~\ref{fig:facingdancer}).  We specify
+two primitive movements, to allow the call to be fractionalized into
+halves.  The arguments to prim are, in order, ``sashay movement'' (positive is
+sashay to the right, negative is sashay to the left), ``forward
+movement'' (positive is forward, negative is backward), and
+``turning'' (right, left, in, out, none).\footnote{In order for
+  turning direction to be unambiguous, the turn amount is never
+  allowed to exceed a quarter turn in any one prim.}
+Dancers are nominally 2 steps apart after breathing in both x
+and y axes.  Line 6 thus moves the dancer halfway across by moving one
+step forward, and line 7 completes the motion.\footnote{Note that ``do
+  one half of a pass thru'' from facing dancers would result in a
+  collision, which is resolved to right hands by the SDR engine as part of the
+  breathing process.}
+
+\begin{figure}
+\displayone
+{            &            & \dancer 3s \cr
+  \dancer 1n & \dancer 2s & \cr
+             &            & \dancer 4n }{}
+\caption{A mixed collection of facing dancers and miniwaves.  The call
+  ``pass thru'' is valid from this formation.}
+\label{fig:passthru}
+\end{figure}
+Line 9 introduces another alternative definition, which handles the
+Callerlab ``Ocean Wave Rule''.  The \clause{from} expression is more
+complex here: it uses the \texttt{mixed()} matcher combinator to match
+a mixed collection of facing dancers and miniwaves.  Line 10 states that this
+definition is not fractionalizable or divisible into parts, since it's
+not clear what \call{do half of a pass thru} would mean for the
+formation in figure~\ref{fig:passthru}.
+
+Lines 11 through 13 deal with the \textsf{FACING DANCERS}
+subformations in the mixed collection, and they give the same
+definition as lines 5 through 7.   Line 14 says that from dancers in a
+right-hand miniwave, pass thru is the same as step thru.
+
+\subsection{Calls with arguments}
+
 Before we deal with the language more rigorously, let's walk through
-a much more complicated example:
-\begin{verbatim}
+a much more complicated example.  Listing~\ref{lst:squarethru} shows
+the definition of the call \call{square thru}.\footnote{Again, the listing is
+  slightly simplified, since the actual definition adds a bit of
+  complexity to ensure that \call{square thru $N$} has exactly
+  $N$ parts.}
+
+\begin{lstlisting}[numbers=left,float,caption=A definition with arguments.,label=lst:squarethru]
 def: square thru(n=4)
   optional: LEFT
   spoken: square thru (<n=number> (hands (around|round)?)?)?
@@ -79,13 +205,9 @@ def: square thru(n=4)
     condition: greater([n], 1)
     call: _in(2, _square thru part)
     call: left(square thru(_subtract num([n],1)))
-\end{verbatim}
+\end{lstlisting}
 
-This is a recursive definition of square thru.\footnote{Again, it is
-  slightly simplified, since the actual definition adds a bit of
-  complexity to ensure that \call{square thru $N$} has exactly
-  $N$ parts.}
-Let's take this line by line.
+This is a recursive definition.  Let's take it line by line.
 
 The \clause{def} clause says that this is a definition of a call named
 ``square thru'' which takes a single parameter, which we will refer to
@@ -93,15 +215,12 @@ as $n$ in the body of the definition.  The parameter has a
 default value, 4.  If no argument is supplied, $n$ will be set
 to 4 when the definition is evaluated.
 
-The \clause{optional} clause in the second line contains a set of
-comma-separated tags which are used as hooks to provide extra rules
-for fitting this definition into the call grammar.  In this case, the
-\texttt{LEFT} tag signifies that we will automatically create an
-additional call \call{left square thru} with the definition
-\texttt{left(square thru)}, where \call{left} is a concept very
-similar (but not identical) to the C3B concept \call{mirror}.
+The \clause{optional} clause in the second line specifies that we will
+automatically create an
+additional call \call{left square thru(n)} with the definition
+\call{left(square thru([n]))}, as described in the previous example.
 
-The \clause{spoken} clause provides a regular-expression style grammar
+The \clause{spoken} clause in line 3 provides a regular-expression style grammar
 for a set of spoken words which are considered to refer to this
 definition.  The \clause{spoken} clause is optional for calls with no
 arguments, defaulting to the call name.\footnote{Calls whose names
@@ -121,21 +240,11 @@ default value of 4 since it is not matched in the grammar.  Other
 valid spoken word sequences are ``square thru 2 1/2'' and ``square
 thru three hands round''.
 
-The \clause{from} clause introduces an alternative.  Each
-\clause{from} clause will be tried, in sequence, until one words.  The
-argument to \clause{from} is usually a formation name.  Technically,
-the argument specifies a \texttt{Matcher} expression, which takes a
-\texttt{Formation} and returns a \texttt{FormationMatch} object.
-The \texttt{MINIWAVE} matcher is equivalent to the matcher expression
-\texttt{OR(RH\_MINIWAVE, LH\_MINIWAVE)}; that is, it matches either a
-left-handed or a right-handed miniwave, setting dancer tags such as
-\texttt{BEAU} and \texttt{BELLE} appropriately.  Available
-\texttt{Matcher}s are defined in the
-\package{net.cscott.sdr.calls.MatcherList} class in SDR.
-
-In this case, the \texttt{ANY} matcher matches any formation.  It is
-used here to introduce one of two alternative definitions for the
-call.  Often alternative definitions are distinguished by the
+The \clause{from} clauses in lines 4 and 7 introduce alternatives, as
+described in the previous section.  In this case, the \texttt{ANY}
+matcher in line 4 matches any formation.  It is used here to introduce
+one of two alternative definitions for the call without constraining
+the formation.  Often alternative definitions are distinguished by the
 formations from which they are applied, but in the case of ``square
 thru'' we are going to use a \clause{condition} clause to distinguish
 the definitions.
@@ -150,23 +259,47 @@ this case the \call{greater} predicate establishes a numeric context for
 the evaluation of \texttt{[n]} (which is a reference to the argument
 named $n$), \texttt{0} and \texttt{1}.  A predicate such as
 \texttt{formation(MINIWAVE)} could also establish \texttt{Matcher} or other
-contexts for the evaluation of arguments.  This particular line is
-restricting this alternative to the base case of the definition:
-``square thru $n$'' for $0 < n \leq 1$.
+contexts for the evaluation of arguments.  In line 5, this particular
+expression restricts this alternative to apply only in the base case
+of the definition: ``square thru $n$'' for $0 < n \leq 1$.
 
-The next line provides a \clause{call} clause providing the definition
+Line 6 provides a \clause{call} clause providing the definition
 applicable for this alternative: do the fraction $n$ of a
 ``pull by'' taking 2 beats.  That is, if $n=1/2$, then do half of a
 pull by, taking 1 beat.  (``Pull by'' is the same as a ``right pull by.'')
 
-The following four lines introduce a new alternative, applicable when $n>1$.
+Lines 7 through 10 introduce a new alternative, applicable when $n>1$
+(as specified in line 8).
 It begins with the internal call \call{\_square thru part}, done in 2
-beats.  This will be given its definition (``pass thru and face in'')
-elsewhere in the definition files.  After this is done, we recursively
+beats (line 9).  This will be given its definition (``pass thru and face in'')
+elsewhere in the file.  After this part of the call is complete, on
+line 10 we recursively
 invoke the call ``left square thru $n-1$'', written as an application
 of the \call{left} concept to a recursive invocation of \call{square thru}.
 
-\section{Clauses}
+\section{Clause Reference}
+
+\subsection{Definition and grammar clauses}
+\subsubsection{def}
+\subsubsection{optional}
+\subsubsection{spoken}
+\subsubsection{example}
+% main part of definition is ``piece'' which is restriction, opt, par, seq
+
+\subsection{Selector and alternative clauses}
+\subsubsection{from}
+\subsubsection{select}
+
+\subsection{Timing and restriction clauses}
+\subsubsection{in}
+\subsubsection{condition, ends in}
+
+\subsection{Sequence clauses}
+\subsubsection{part, ipart, xpart, fpart}
+\subsubsection{call}
+\subsubsection{prim}
+
+
 \section{Idioms}
 There are a number of nonstandard internal calls which are used
 frequently inside SDR definitions.
@@ -228,10 +361,10 @@ cross back.  We use the simpler definition \call{\_o concentric(cross
   \call{\_quasi concentric}.}}
 { \dancer 1n & \pdancer ~x & \pdancer ~x & \dancer 4s \cr
   \dancer 8n & \pdancer ~x & \pdancer ~x & \dancer 5s }%
-{\ctablebox{Ends evaluate in this formation \\ for 
+{\ctablebox{Ends evaluate in this formation \\ for
   \call{\_o concentric}.}}
 
-\subsection{\_maybe touch}
+\subsection{\_maybe touch}\label{sec:maybetouch}
 The \call{\_maybe touch} pseudo-concept is used to wrap the first part
 of a call where the Callerlab ``Facing Couples Rule'' applies.  This
 ensures that ``swing thru'' is valid from facing couples and from
@@ -250,17 +383,23 @@ two calls \call{swing} and \call{mix} is that the facing couples rule
 applies to \call{swing and mix} but it does not apply to the A2 call
 \call{swing}, which must be called from a wave.  SDR uses the following
 definition for \call{swing and mix} to express this distinction:
-\begin{verbatim}
+\begin{lstlisting}
 def: swing and mix // 3 part call
   part:
     call: _in(2, _maybe touch(_wave swing))
   part: 2
     call: mix
-\end{verbatim}
+\end{lstlisting}
 The \call{\_maybe touch} helper is also used to implement Callerlab's
 similar ``Ocean Wave Rule'' when defining \call{box the gnat}.
 
 \subsection{The designator concept}
-It is worth reading 
+It is worth reading Dan Neumann's article \textit{Designators and Concepts}
+(\url{http://lynette.org/dconcepts.html}) for context on this concept.
+Designators are terms such as ``heads'', ``boys'', ``centers'', and
+``leaders''.\footnote{SDR distinguishes between ``primitive'' or
+  ``intrinsic'' tags which are immutable properties of the dancer
+  (``head'', ``girl'') and tags which are properties of the formation
+  (``center'', ``belle'').}
 
 \end{document}
