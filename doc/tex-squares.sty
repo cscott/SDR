@@ -63,8 +63,10 @@
 
 \newbox\vbar
 \newbox\vpbar
+\newbox\vgbar
 \newbox\hbar
 \newbox\hpbar
+\newbox\hgbar
 
 \newskip\halfhoffset 
 \newskip\halfvoffset 
@@ -92,12 +94,18 @@
   \setbox\vpbar=\vbox to \totalheight
     {\vfil\vbox to \outside{\xleaders\box0\vfil}\vfil}
 
+  \setbox\vgbar=\hbox{}
+  \ht\vgbar=\totalheight \dp\vgbar=0pt \wd\vgbar=0pt
+
   \setbox\hbar=\hbox{\vrule height\thickness width\side}
   \dimen0=\side \divide\dimen0 by \phantomdashes
   \setbox0=\hbox to \dimen0
     {\xleaders\hrule height\thickness\hfil\hfil\hfil
      \xleaders\hrule height\thickness\hfil}
   \setbox\hpbar=\hbox to \side{\xleaders\box0\hfil}
+
+  \setbox\hgbar=\hbox{}
+  \ht\hgbar=\thickness \dp\hgbar=0pt \wd\hgbar=\side
 
   \halfhoffset=\totalheight \advance\halfhoffset\formationhspread
   \halfvoffset=\totalheight \advance\halfvoffset\formationvspread
@@ -106,7 +114,7 @@
 % Set up default size
 
 %\setdancersize{3.7ex}		%Larry's original
-\setdancersize{2ex}
+\setdancersize{2.2ex}
 
 % Draw a dancer.
 % First arg: character to draw inside.
@@ -127,6 +135,9 @@
 % Phantom dancer: drawn with dashes
 \def\pdancer#1#2{{\let\vbar\vpbar\let\hbar\hpbar\dancer{#1}{#2}}}
 
+% Girl dancer: drawn w/ circle [CSA]
+\def\gdancer#1#2{{\let\vbar\vgbar\let\hbar\hgbar\dancer{\raisebox{-10pt}{\large\textcircled{\normalsize #1}}}{#2}}}
+
 % Invisible dancer: just takes up space.
 \def\idancer{\nsdancerbox{}}
 
@@ -142,6 +153,12 @@
 \def\spdancer#1#2{\nsdancerbox{\vss\kern +\halfvoffset\pdancer{#1}{#2}\vss}}
 \def\epdancer#1#2{\ewdancerbox{\hss\kern +\halfhoffset\pdancer{#1}{#2}\hss}}
 \def\wpdancer#1#2{\ewdancerbox{\hss\kern -\halfhoffset\pdancer{#1}{#2}\hss}}
+
+% offset girl dancers.
+\def\ngdancer#1#2{\nsdancerbox{\vss\kern -\halfvoffset\gdancer{#1}{#2}\vss}}
+\def\sgdancer#1#2{\nsdancerbox{\vss\kern +\halfvoffset\gdancer{#1}{#2}\vss}}
+\def\egdancer#1#2{\ewdancerbox{\hss\kern +\halfhoffset\gdancer{#1}{#2}\hss}}
+\def\wgdancer#1#2{\ewdancerbox{\hss\kern -\halfhoffset\gdancer{#1}{#2}\hss}}
 
 % Not user-level macros, but useful in the above definitions.
 % Larry:
