@@ -169,9 +169,8 @@ motion.\footnote{Note that ``do one half of a pass thru'' from facing
 
 \begin{figure}
 \displayone
-{            &            & \dancer 3s \cr
-  \dancer 1n & \dancer 2s & \cr
-             &            & \dancer 4n }{}
+{            &               & \dancer 2s \cr
+  \ndancer 1n & \ngdancer 2s & \gdancer 1n }{}
 \caption{A mixed collection of facing dancers and miniwaves.  The call
   \call{pass thru} is valid from this formation, but \call{do half a
     pass thru} is not.}
@@ -300,18 +299,22 @@ two motions are expressed in SDR as \call{\_quasi concentric(face left,
 respectively.
 
 \displayone
-{ \dancer 1s & \dancer 2s & \dancer 3s & \dancer 4s \cr
-  \dancer 8n & \dancer 7n & \dancer 6n & \dancer 5n }%
+{ \gdancer 1s & \dancer 1s & \gdancer 2s & \dancer 2s \cr
+  \dancer 4n & \gdancer 4n & \dancer 3n & \gdancer 3n }%
 {Starting formation}
 \displaytwo
-{ \dancer 1e & \dancer 2e & \dancer 3e & \dancer 4e \cr
-  \dancer 8w & \dancer 7w & \dancer 6w & \dancer 5w }%
+{ \gdancer 1e & \dancer 1e & \gdancer 2e & \dancer 2e \cr
+  \dancer 4w & \gdancer 4w & \dancer 3w & \gdancer 3w }%
 {After ``centers face left while ends face left''}
-{ \dancer 1e & \dancer 4e \cr
-  \dancer 2e & \dancer 3e \cr
-  \dancer 7w & \dancer 6w \cr
-  \dancer 8w & \dancer 5w }%
+{ \gdancer 1e & \dancer 2e \cr
+  \dancer 1e & \gdancer 2e \cr
+  \gdancer 4w & \dancer 3w \cr
+  \dancer 4w & \gdancer 3w }%
 {After ``concentric face left''}
+
+The \call{\_quasi concentric} concept is also used to define
+concentric variants such as \call{concentric triple boxes} which
+work to spots.
 
 \subsection{\_o concentric}
 The \call{\_o concentric} is similar to \call{\_quasi concentric}, in
@@ -335,16 +338,16 @@ circulate/concentric cross back.  We use the simpler definition
 \call{\_o concentric(cross back, 2(o circulate))} instead.
 
 \displayone
-{ \dancer 1n & \dancer 2s & \dancer 3n & \dancer 4s \cr
-  \dancer 8n & \dancer 7s & \dancer 6n & \dancer 5s }%
+{ \dancer 1n & \gdancer 2s & \gdancer 1n & \dancer 2s \cr
+  \dancer 4n & \gdancer 3s & \gdancer 4n & \dancer 3s }%
 {Starting formation}
 \displaytwo
-{ \dancer 1n & \dancer 4s \cr
-  \dancer 8n & \dancer 5s }%
+{ \dancer 1n & \dancer 2s \cr
+  \dancer 4n & \dancer 3s }%
 {\ctablebox{Ends evaluate in this formation \\ for \call{concentric} or
   \call{\_quasi concentric}.}}
-{ \dancer 1n & \pdancer ~x & \pdancer ~x & \dancer 4s \cr
-  \dancer 8n & \pdancer ~x & \pdancer ~x & \dancer 5s }%
+{ \dancer 1n & \pdancer ~x & \pdancer ~x & \dancer 2s \cr
+  \dancer 4n & \pdancer ~x & \pdancer ~x & \dancer 3s }%
 {\ctablebox{Ends evaluate in this formation \\ for
   \call{\_o concentric}.}}
 
@@ -359,9 +362,9 @@ of a call where the Callerlab ``Facing Couples Rule'' applies.  This
 ensures that ``swing thru'' is valid from facing couples and from
 mixed formations:
 \displayone
-{            &            & \dancer 3s & \dancer 5s \cr
-  \dancer 1n & \dancer 2s &            &            & \dancer 7n & \dancer 8s\cr
-             &            & \dancer 4n & \dancer 6n}%
+{            &            & \dancer 2s &\gdancer 3s \cr
+  \dancer 1n &\gdancer 2s &            &            &\gdancer 4n & \dancer 3s\cr
+             &            &\gdancer 1n & \dancer 4n}%
 {
 Legal starting formation for \call{grand swing thru}.
 }
@@ -405,18 +408,18 @@ a ``designator concept'', with somewhat idiosyncratic semantics.
 
 \begin{figure}
 \displaythree
-{ \dancer 1e \cr \dancer 2w \cr \dancer 3e \cr \dancer 4w \cr
-  \dancer 5e \cr \dancer 6w \cr \dancer 7e \cr \dancer 8w }
+{ \dancer 1e \cr \gdancer 2w \cr \gdancer 1e \cr \dancer 2w \cr
+  \dancer 4e \cr \gdancer 3w \cr \gdancer 4e \cr \dancer 3w }
 {\ctablebox{Starting \\ formation}}
-{ & \dancer 1e \cr & \dancer 2w \cr
- \dancer 6e & & \dancer 4e \cr
- \dancer 5w & & \dancer 3w \cr
-  & \dancer 7e \cr & \dancer 8w }
+{ & \dancer 1e \cr & \gdancer 2w \cr
+ \gdancer 3e & & \dancer 2e \cr
+ \dancer 4w & & \gdancer 1w \cr
+  & \gdancer 4e \cr & \dancer 3w }
 {\call{Centers ah so}}
-{ \dancer 2n & \dancer 1s \cr
-  \dancer 4s & \dancer 6n \cr
-  \dancer 3s & \dancer 5n \cr
-  \dancer 8n & \dancer 7s }
+{ \gdancer 2n & \dancer 1s \cr
+  \dancer 2s & \gdancer 3n \cr
+  \gdancer 1s & \dancer 4n \cr
+  \dancer 3n & \gdancer 4s }
 {\call{Initially centers, reset 1/2}}
 \caption{Two-call sequence using the designator \call{centers} as a concept.}
 \label{fig:designator}
@@ -424,17 +427,17 @@ a ``designator concept'', with somewhat idiosyncratic semantics.
 
 \begin{figure}
 \displaythree
-{          & \dancer 1n & \gdancer 2n & \cr
-\gdancer 3n & \dancer 4s & \dancer 5n & \gdancer 6s \cr
-           & \gdancer 7s & \dancer 8s }%
+{          & \dancer 1n & \gdancer 1n & \cr
+\gdancer 2n & \dancer 4s & \dancer 2n & \gdancer 4s \cr
+           & \gdancer 3s & \dancer 3s }%
 {Before}
-{          & \gdancer 2s & \dancer 1s & \cr
-\dancer 4n & \gdancer 3s & \gdancer 6n & \dancer 5s \cr
-           & \dancer 8n & \gdancer 7n }%
+{          & \gdancer 1s & \dancer 1s & \cr
+\dancer 4n & \gdancer 2s & \gdancer 4n & \dancer 2s \cr
+           & \dancer 3n & \gdancer 3n }%
 {Halfway}
-{          & \gdancer 2s & \dancer 1s & \cr
-\dancer 5n & \gdancer 3s & \gdancer 6n & \dancer 4s \cr
-           & \dancer 8n & \gdancer 7n }%
+{          & \gdancer 1s & \dancer 1s & \cr
+\dancer 2n & \gdancer 2s & \gdancer 4n & \dancer 4s \cr
+           & \dancer 3n & \gdancer 3n }%
 {After}
 \caption{\call{finally boys half crazy trade}}
 \label{fig:finallyboys}
@@ -485,14 +488,14 @@ allow \call{initially nobody swing thru}, for example.
 
 \begin{figure}
 \displaythree
-{ \dancer 1n & \dancer 3s & \gdancer 2n & \gdancer 4s \cr
-  \gdancer 5n & \gdancer 7s & \dancer 6n & \dancer 8s }%
+{ \dancer 1n & \dancer 2s & \gdancer 2n & \gdancer 1s \cr
+  \gdancer 3n & \gdancer 4s & \dancer 4n & \dancer 3s }%
 {Before}
-{ \dancer 3n & \dancer 1s & \gdancer 2n & \gdancer 4s \cr
-  \gdancer 5n & \gdancer 7s & \dancer 8n & \dancer 6s }%
+{ \dancer 2n & \dancer 1s & \gdancer 2n & \gdancer 1s \cr
+  \gdancer 3n & \gdancer 4s & \dancer 3n & \dancer 4s }%
 {Halfway}
-{ \dancer 3n & \gdancer 2s & \dancer 1n & \gdancer 4s \cr
-  \gdancer 5n & \dancer 8s & \gdancer 7n & \dancer 6s }%
+{ \dancer 2n & \gdancer 2s & \dancer 1n & \gdancer 1s \cr
+  \gdancer 3n & \dancer 3s & \gdancer 4n & \dancer 4s }%
 {After}
 \caption{\call{initially boys swing thru}}
 \label{fig:initiallyboys}
@@ -519,8 +522,8 @@ right-hand two-faced lines, is
 
 \begin{figure}
 \displayone
-{ \dancer 1n & \gdancer 2n & \gdancer 4s & \dancer 3s \cr
-  \dancer 6n & \gdancer 5n & \gdancer 7s & \dancer 8s }%
+{ \dancer 1n & \gdancer 1n & \gdancer 2s & \dancer 2s \cr
+  \dancer 4n & \gdancer 4n & \gdancer 3s & \dancer 3s }%
 {}
 \caption{Is \call{belles scoot back} reasonable from this formation?}
 \label{fig:bellesscoot}
