@@ -1,12 +1,14 @@
 % calldefs.tex
-% documentation for SDR's call definition format.
+% documentation for SDR's call definition language.
 
 \documentclass[12pt]{article}
 \usepackage{tex-squares}%\setlength{\parindent}{1cm}
 \usepackage{parskip}
 \usepackage{url}
 \usepackage{listings}
-\title{The SDR call definition language}
+\usepackage{syntax} % BNF grammar, nicer underscore
+\setlength{\grammarindent}{8em} % separation between grammar LHS and RHS
+\title{The SDR Call Definition Language Manual}
 \author{C. Scott Ananian}
 \date{}
 
@@ -269,7 +271,9 @@ $0 < n \leq 1$.
 
 The \clause{call} clause in line 6 provides the definition
 applicable for this alternative: do the fraction $n$ of a
-``pull by'' taking 2 beats.  That is, if $n=1/2$, then do half of a
+``pull by'' taking 2 beats.\footnote{Section~\ref{sec:inconcept}
+  describes the \call{_in} concept used here.}
+That is, if $n=1/2$, then do half of a
 pull by and take 1 beat.  (``Pull by'' is the same as a ``right pull by.'')
 
 Lines 7 through 10 introduce a new alternative, applicable when $n>1$
@@ -313,8 +317,8 @@ respectively.
 {After ``concentric face left''}
 
 The \call{\_quasi concentric} concept is also used to define
-concentric variants such as \call{concentric triple boxes} which
-work to spots.
+concentric variants which work to spots, such as
+\call{concentric triple boxes}.
 
 \subsection{\_o concentric}
 The \call{\_o concentric} is similar to \call{\_quasi concentric}, in
@@ -361,10 +365,10 @@ The \call{\_maybe touch} pseudo-concept is used to wrap the first part
 of a call where the Callerlab ``Facing Couples Rule'' applies.  This
 ensures that ``swing thru'' is valid from facing couples and from
 mixed formations:
+
 \displayone
 {            &            & \dancer 2s &\gdancer 3s \cr
-  \dancer 1n &\gdancer 2s &            &            &\gdancer 4n & \dancer 3s\cr
-             &            &\gdancer 1n & \dancer 4n}%
+\ndancer 1n &\ngdancer 2s &\gdancer 1n &\dancer 4n &\ngdancer 4n &\ndancer 3s}%
 {
 Legal starting formation for \call{grand swing thru}.
 }
@@ -411,10 +415,10 @@ a ``designator concept'', with somewhat idiosyncratic semantics.
 { \dancer 1e \cr \gdancer 2w \cr \gdancer 1e \cr \dancer 2w \cr
   \dancer 4e \cr \gdancer 3w \cr \gdancer 4e \cr \dancer 3w }
 {\ctablebox{Starting \\ formation}}
-{ & \dancer 1e \cr & \gdancer 2w \cr
- \gdancer 3e & & \dancer 2e \cr
- \dancer 4w & & \gdancer 1w \cr
-  & \gdancer 4e \cr & \dancer 3w }
+{ \edancer 1e \cr \egdancer 2w \cr
+ \gdancer 3e & \dancer 2e \cr
+ \dancer 4w & \gdancer 1w \cr
+  \egdancer 4e \cr \edancer 3w }
 {\call{Centers ah so}}
 { \gdancer 2n & \dancer 1s \cr
   \dancer 2s & \gdancer 3n \cr
@@ -450,12 +454,15 @@ dancers are to do their part of the call concentrically, remaining in
 the center of the formation.  That is, \call{centers ah so} is
 different from \call{own the centers, ah so by nothing}.  The use of
 \call{initially centers} in the second call shows that \call{centers}
-is a first-class concept; it can be curried to be applied as part of
-metaconcepts like other concepts.
+is a first-class concept; it can be curried to be applied by
+metaconcepts just like other concepts.
 
-SDR defines a three-argument concept \call{\_designator concept(anyone,
-  anything1, anything2=nothing)}.  It is usually spoken as
-``\textit{anyone} \textit{anything1} (while the others \textit{anything2})''.
+SDR defines a three-argument concept:
+\begin{lstlisting}
+_designator concept(anyone, anything1, anything2=nothing)
+\end{lstlisting}
+It is usually spoken as
+``\syntax{<anyone> <anything1> (while the others <anything2>)}''.
 We define it formally as follows.
 
 First, we check if \textit{anything1} is one of a small number of ``special''
@@ -532,30 +539,198 @@ right-hand two-faced lines, is
 We also currently special-case the designators ``heads'' and ``sides''
 from a squared set. From a squared set \call{heads square thru} means
 ``heads go into the middle and square thru'', or more precisely,
-\call{heads (press ahead ; square thru)}.  Adding this case to the
-\call{\_designator concept} allows \call{echo heads square thru}
-from a squared set.
+\call{heads press ahead ; heads square thru)}.\footnote{Note that the
+  second use of the designator concept, for \call{heads square thru},
+  will now fall into the ``designated dancers are centers'' case.}
+Adding this case to the \call{\_designator concept} allows \call{echo
+  heads square thru} from a squared set.
 
-\section{Clause Reference}
+\textbf{FIXME: ``centers'' designator usually means ``split''}
+
+\subsection{_with designated}
+
+\textbf{WRITE ME}
+
+\subsection{_in}\label{sec:inconcept}
+The \call{_in(beats, call)} internal concept simply adjusts the timing
+of \textit{call} so that it takes \textit{beats} beats of music.
+There is an \syntax{<in>} clause in the grammar which does the same
+thing (see section~\ref{sec:in}) but sometimes it is more convenient
+to have a concept which does this.
+
+\section{Grammar and clause reference}
+This section will present a grammar for the call file definition
+language, and go over the semantics of each clause used in call
+definitions.  We will begin with primitive identifiers and numbers:
+\begin{grammar}
+<simple_words> ::= ( <ID> | <number> )+
+
+<number> ::= (`+'|`-')? ( <INT> | <INT>? <INT> `/' <INT> )
+
+<INT> ::= (`0'..`9')+
+
+<ID> ::= (`_'|`a'..`z'|`A'..`Z') (`_'|`a'..`z'|`A'..`Z'|`0'..`9'|`-')*
+     \alt `"' ( `\textbackslash' . | any character except `\textbackslash' or `"' )* `"'
+\end{grammar}
+
+Identifiers are sequences of alphanumerics, with the addition of
+underscore and hyphen.  In addition, any quoted string is also a valid
+identifier.  Numbers are parsed as signed rationals.  Most
+``names'' in the grammar are parsed with the \syntax{<simple_words>}
+production, so they are a sequence of identifiers and numbers.  The
+string \lit{chain reaction part 1} is a valid
+\syntax{<simple_words>}, as is \lit{_first 1/2 of swing thru}.
+
+The lexical tokens {\tt INDENT} and {\tt DEDENT} also appear in the grammar;
+they correspond to the beginning/end of a new indentation level.
+
+The start production for a file of call definitions is \syntax{<calllist>}:
+\begin{grammar}
+<calllist> ::= <program>*
+
+<program> ::= `program' `:' <ID> <def>*
+\end{grammar}
+
+The \clause{program} clause sets the dance program for the call
+definitions which follow.  Its argument is a Callerlab dance program, such as
+\call{BASIC}, \call{MAINSTREAM}, \call{PLUS}, \call{C3A}, etc.
 
 \subsection{Definition and grammar clauses}
 \subsubsection{def}
+Definitions are introduced with \clause{def} clauses, which have the
+following grammar:
+
+\begin{grammar}
+<def> ::= `def' `:' <name_and_args> \\ "INDENT" <os>? <pieces> <example>* "DEDENT"
+
+<name_and_args> ::= <simple_words> ( `(' <decl_args> `)' )?
+
+<decl_args> ::= <decl_arg> ( `,' <decl_arg> )*
+
+<decl_arg> ::= <simple_words> ( `=' <simple_words> )?
+
+<os> ::= <optional> <spoken>? | <spoken> <optional>?
+
+<pieces> ::= <restriction> | <alternatives> | <selectors> | <pieces_term>
+
+<pieces_term> ::= <sequence> | <pieces_factor>
+
+<pieces_factor> ::= "INDENT" <pieces> "DEDENT"
+\end{grammar}
+
+The name of a call and its optional argument list is given by the
+\syntax{<name_and_args>} production.  The \syntax{<decl_arg>}
+production allows for optional default values for arguments, which are
+\syntax{<simple_words>} (not expressions).  The \syntax{<os>}
+production simply allows the \clause{spoken} and \clause{optional}
+clause to occur in any order.  The main part of the definition are the
+\syntax{<pieces>}, which are defined in a small precedence grammar.
+Indentation is used as a grouping operator to resolve ambiguities,
+much the way that parentheses would be used in a traditional
+expression grammar.
+
 \subsubsection{optional}
+\begin{grammar}
+<optional> ::= `optional' `:' <ID> ( `,' <ID> )*
+\end{grammar}
+
 \subsubsection{spoken}
+\begin{grammar}
+<spoken> ::= `spoken' `:' <priority>? <grm_rule>
+
+<priority> ::= `[' <number> `]'
+\end{grammar}
+
 \subsubsection{example}
-% main part of definition is ``piece'' which is restriction, opt, par, seq
+The intent of the \clause{example} clause it to embed small test cases
+for calls directly in their definitions.  As this has not yet been
+fully implemented, I am not going to document the mechanism
+quite yet.
+
+\subsection{Timing and restriction clauses}
+\begin{grammar}
+<restriction> ::= <in> | <condition> | <ends_in>
+\end{grammar}
+
+\subsubsection{in}\label{sec:in}
+\begin{grammar}
+<in> ::= `in' `:' <expr_body> <pieces>
+\end{grammar}
+
+\subsubsection{condition, ends in}
+\begin{grammar}
+<condition> ::= `condition' `:' <expr_body> <cond_msg> <pieces>
+
+<ends_in> ::= `ends' `in' `:' <expr_body> <cond_msg> <pieces>
+
+<cond_msg> ::= `,' <priority>? <simple_words>
+\end{grammar}
 
 \subsection{Selector and alternative clauses}
 \subsubsection{from}
-\subsubsection{select}
+\begin{grammar}
+<alternatives> ::= <from>+
 
-\subsection{Timing and restriction clauses}
-\subsubsection{in}
-\subsubsection{condition, ends in}
+<from> ::= `from' `:' <or_body_seq> <pieces_term>
+\end{grammar}
+
+\subsubsection{select}
+\begin{grammar}
+<selectors> ::= <select>+
+
+<select> ::= `select' `:' <or_body_seq> <pieces_term>
+\end{grammar}
 
 \subsection{Sequence clauses}
+\begin{grammar}
+<sequence> ::= ( <prim> | <call> | <part> )+
+\end{grammar}
+
 \subsubsection{part, ipart, xpart, fpart}
+\begin{grammar}
+<part> ::= (`part' | `ipart' | `xpart' | `fpart') `:' \\ <how_many>? <pieces_factor>
+
+<how_many> ::= <expr_body>
+\end{grammar}
+
 \subsubsection{call}
+\begin{grammar}
+<call> ::= `call' `:' <and_body_seq>
+\end{grammar}
+
 \subsubsection{prim}
+\begin{grammar}
+<prim> ::= `prim' `:' <prim_body>
+
+<prim_body> ::= <in_out_num> `,' <in_out_num> `,' <turn> \\ ( `,' <prim_flag>+ )?
+
+<in_out_num> ::= (`in' | `out')? <number>
+
+<turn> ::= (`in' |`out' |`right' | `left') <number>?
+       \alt  `none'
+
+<prim_flag> ::= <ID>
+\end{grammar}
+
+\subsection{Expression grammar}
+\begin{grammar}
+<expr_body> ::= <words_or_ref> ( `(' <expr_args>? `)' )?
+
+<words_or_ref> ::= <simple_words> | `[' <ID> `]'
+
+<expr_args> ::= <expr_body> ( `,' <expr_body> )*
+
+<and_body_seq> ::= <expr_body> ( `,' <expr_body> )*
+
+<or_body_seq> ::= <expr_body> ( `,' <expr_body> )*
+\end{grammar}
+
+The \syntax{<and_body_seq>} and \syntax{<or_body_seq>} productions are
+helpers for sequences of expressions which are intended to be joined
+as arguments to an \call{and} or \call{or} application, respectively.
+That is, parsing \lit{foo, bar(bat), baz} as an \syntax{<and_body_seq>}
+results in a parse tree identical to \lit{and(foo, bar(bat), baz)},
+and parsing it as an \syntax{<or_body_seq>} would result in the same
+parse tree as \lit{or(foo, bar(bat), baz)}.
 
 \end{document}
