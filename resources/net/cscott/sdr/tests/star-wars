@@ -1,0 +1,39 @@
+Tests from Bill Heimann's article "Star Wars, or When Meta-Concepts
+and Supercalls Collide" (http://lynette.org/starwars.html).
+
+sdr> /program=C4
+C4
+sdr> /setFormation(FormationList.PARALLEL_RH_WAVES.mapStd([]))
+| 1B^  1Gv  2B^  2Gv
+|
+| 4G^  4Bv  3G^  3Bv
+sdr> finally buckle and couple up
+sdr> /setFormation(FormationList.RH_COLUMN.mapStd([]))
+| 1B^  1Gv
+|
+| 2B^  2Gv
+|
+| 4G^  4Bv
+|
+| 3G^  3Bv
+sdr> initially breaker contour the line
+sdr> /setFormation(FormationList.PARALLEL_RH_WAVES.mapStd([]))
+| 1B^  1Gv  2B^  2Gv
+|
+| 4G^  4Bv  3G^  3Bv
+sdr> oddly rims trade turn the key
+sdr> /setFormation(FormationList.PARALLEL_RH_TWO_FACED_LINES.mapStd([]))
+| 1B^  1G^  2Bv  2Gv
+|
+| 4G^  4B^  3Gv  3Bv
+sdr> piecewise busy do 2/3 of a cross cycle
+sdr> /setFormation(FormationList.RH_COLUMN.mapStd([]))
+| 1B^  1Gv
+|
+| 2B^  2Gv
+|
+| 4G^  4Bv
+|
+| 3G^  3Bv
+sdr> initially replace the column but recycle
+sdr> /exit
