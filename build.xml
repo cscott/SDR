@@ -88,6 +88,9 @@ Square Dance Revolution build file.
 	<!-- classes and api docs -->
 	<delete dir="${classes_dir}" />
 	<delete dir="${api_dir}" />
+	<delete dir="${src_dir}/net/cscott/sdr/calls/parser/doc-files" />
+	<delete dir="${src_dir}/net/cscott/sdr/calls/lists/doc-files" />
+	<delete dir="${src_dir}/net/cscott/sdr/doc-files" />
 	<delete file="${basedir}/${ant.project.name}-src.jar" />
 	<delete file="${basedir}/${ant.project.name}.jar" />
 	<delete file="${basedir}/${ant.project.name}.jar.MD5" />
@@ -110,7 +113,7 @@ Square Dance Revolution build file.
     <target name="clean.cobertura" depends="init">
       <delete file="${instrumented_dir}/cobertura.ser" />
     </target>
-    <target name="maint-clean" depends="init,clean,clean.grm"
+    <target name="maint-clean" depends="init,clean,clean.grm,clean.tex"
 	    description="Removes ANTLR generated files">
         <delete>
 	  <fileset dir="src/net/cscott/sdr/calls/parser/"
@@ -206,8 +209,15 @@ Square Dance Revolution build file.
       <delete file=".test-access" />
     </target>
     <target name="javadoc"
-	    depends="compile,instrument,chk-javadoc" unless="javadoc.notRequired"
+	    depends="compile,compile.tex,instrument,chk-javadoc"
+            unless="javadoc.notRequired"
             description="Generates javadoc in ${api_dir}">
+        <!-- copy call file manual to doc-files -->
+        <mkdir dir="${src_dir}/net/cscott/sdr/calls/parser/doc-files" />
+        <copy todir="${src_dir}/net/cscott/sdr/calls/parser/doc-files">
+                <fileset dir="${basedir}/doc"
+                         includes="calldefs.pdf" />
+        </copy>
         <!-- copy call lists to doc-files -->
         <mkdir dir="${src_dir}/net/cscott/sdr/calls/lists/doc-files" />
         <copy todir="${src_dir}/net/cscott/sdr/calls/lists/doc-files">
@@ -640,10 +650,32 @@ window['JAVADOC_BASE'] = '{@docRoot}';
                               net/cscott/sdr/recog/C?.gram
                               net/cscott/sdr/recog/C3?.gram
                               net/cscott/sdr/recog/sdrdict" />
+        <tarfileset dir="doc" prefix="${package}-${version}/doc"
+                    includes="calldefs.pdf" />
       </tar>
       <delete file="${package}-${version}-git.tar" />
     </target>
         
+    <!-- **************** LaTex stuff ************* -->
+    <target name="compile.tex"
+            description="Build LaTeX documentation">
+        <exec dir="${basedir}/doc" executable="pdflatex"
+              output="${basedir}/doc/calldefs.run1.log">
+          <arg value="calldefs"/>
+        </exec>
+        <exec dir="${basedir}/doc" executable="pdflatex"
+              output="${basedir}/doc/calldefs.run2.log">
+          <arg value="calldefs"/>
+        </exec>
+    </target>
+    <target name="clean.tex"
+            description="Remove LaTeX generated files">
+        <delete>
+	  <fileset dir="${basedir}/doc"
+		   includes="*.pdf *.dvi *.aux *.log" />
+	</delete>
+    </target>
+
     <!-- **************** GWT/GAE web UI stuff ************* -->
     <target name="compile.jdo" depends="compile"
 	    description="JDO-enhance the SDRweb web server">
