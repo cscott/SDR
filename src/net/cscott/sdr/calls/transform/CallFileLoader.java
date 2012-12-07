@@ -34,7 +34,7 @@ public abstract class CallFileLoader {
     public static void load(URL file, Map<String,Call> db) {
         try {
 	    Reader r = new InputStreamReader(file.openStream(), "utf-8");
-            for (Call c : CallFileBuilder.parseCalllist(r)) {
+            for (Call c : CallFileBuilder.parseCalllist(r, file.getFile())) {
                 assert !db.containsKey(c.getName()) :
                     "duplicate call: "+c.getName();
                 db.put(c.getName(), c);

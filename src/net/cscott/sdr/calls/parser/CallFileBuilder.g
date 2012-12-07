@@ -58,6 +58,7 @@ import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.grm.SimplifyGrm;
 import net.cscott.sdr.util.*;
 import java.io.Reader;
+import java.io.File;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -73,18 +74,44 @@ import java.util.Set;
     public BDirection d(BDirection d) { return ifNull(d, BDirection.ASIS); }
     private Map<String,Integer> scope = new HashMap<String,Integer>();
     private void semex(Tree a, String s) throws SemanticException {
-        throw new SemanticException(s, a.getLine(), a.getCharPositionInLine());
+        throw new SemanticException(s, sourceName(a),
+                                    a.getLine(), a.getCharPositionInLine());
+    }
+    private static String sourceName(Tree a) {
+        // try to cast to CommonTree, and then use CommonTree.getToken()
+        // to get a token.  If this is successful, use
+        // Token.getInputStream() and try to cast the result to an
+        // ANTLRStringStream.  If this is successful (whew!) use
+        // ANTLRStringStream.getSourceName() to get the source filename.
+        if (!(a instanceof CommonTree)) return null;
+        Token t = ((CommonTree)a).getToken();
+        if (t==null) return null;
+        CharStream cs = t.getInputStream();
+        if (!(cs instanceof ANTLRStringStream)) return null;
+        return ((ANTLRStringStream)cs).getSourceName();
     }
     class SemanticException extends RuntimeException {
-        SemanticException(String msg, int line, int column) {
-            super("line "+line+":"+column+" "+msg);
+        SemanticException(String msg, String sourceName, int line, int column) {
+            super(((sourceName!=null) ? (sourceName+" ") : "") +
+                  "line "+line+":"+column+" "+msg);
             emitErrorMessage(getMessage());
         }
     }
     public CallFileBuilder(Tree t) { this(new CommonTreeNodeStream(t)); }
-    public static List<Call> parseCalllist(Reader r)
+    public static List<Call> parseCalllist(File f)
         throws java.io.IOException, RecognitionException {
-        CallFileLexer lexer = new CallFileLexer(new ANTLRReaderStream(r));
+        // ANTLRFileStream sets the sourceName of the stream correctly
+        return parseCalllist(new ANTLRFileStream(f.getPath(), "utf-8"));
+    }
+    public static List<Call> parseCalllist(Reader r, String sourceName)
+        throws java.io.IOException, RecognitionException {
+        ANTLRReaderStream s = new ANTLRReaderStream(r);
+        s.name = sourceName; // ensure that sourceName is set properly
+        return parseCalllist(s);
+    }
+    private static List<Call> parseCalllist(ANTLRStringStream s)
+        throws java.io.IOException, RecognitionException {
+        CallFileLexer lexer = new CallFileLexer(s);
         CallFileParser cfp = new CallFileParser(new CommonTokenStream(lexer));
         return parseCalllist(cfp);
     }
@@ -198,6 +225,8 @@ pieces returns [B<? extends Comp> r]
     | par { $r=$par.p; }
     | res { $r=$res.c; };
 
+// XXX we should pass the Tree corresponding to OPT into mkOpt
+//     so we can eventually record the source file name and line #
 opt returns [B<Opt> o]
 @init { List<B<OptCall>> l = new ArrayList<B<OptCall>>(); }
     : ^(OPT (oc=one_opt {l.add(oc);})+)
