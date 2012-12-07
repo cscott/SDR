@@ -16,6 +16,11 @@ options {
   caseSensitiveLiterals=false;
 */
 }
+
+tokens {
+  VOID; // will never be emitted by the lexer
+}
+
 @parser::header {
 package net.cscott.sdr.calls.lists;
 import net.cscott.sdr.calls.ast.*;
@@ -177,29 +182,25 @@ WS  :   (   ' '
         { $channel=HIDDEN; }
     ;
 
-// this is a temporary hack
-// we need to tweak the grammar to extract concepts auto-magically.
 // XXX in order to disambiguate "initially 1/4 stable mix" we'll
 //     probably have to make "do" before "n=fraction" mandatory, same as we do
 //     for the _fractional production for calls.
-concept returns [Expr a]
-        : 'tandem' { a = Expr.literal("tandem"); }
-        | 'as' 'couples' { a = Expr.literal("as couples"); }
-        | 'siamese' { a = Expr.literal("siamese"); }
-        | 'concentric' { a = Expr.literal("concentric"); }
-        | 'cross' 'concentric' { a = Expr.literal("cross concentric"); }
-        // _curry makes a function-of-one-argument
-        // (actually, a function of N arguments, where N is the number of
-        //  * wildcards in the argument)
-        | n=times { a = new Expr("_curry", Expr.literal("_fractional"), n, new Expr("_arg", Expr.literal("0"))); }
-        | 'do'? n=fraction { a = new Expr("_curry", Expr.literal("_fractional"), n, new Expr("_arg", Expr.literal("0"))); }
-        | mc=metaconcept b=concept { a = new Expr("_curry", mc, b, new Expr("_arg", Expr.literal("0"))); }
-        ;
-metaconcept returns [Expr a]
-        : 'initially'      { a = Expr.literal("initially"); }
-        | 'finally'        { a = Expr.literal("finally"); }
-        | 'oddly'          { a = Expr.literal("oddly"); }
-        | 'evenly'         { a = Expr.literal("evenly"); }
-        | 'echo'           { a = Expr.literal("echo"); }
-        | 'reverse' 'echo' { a = Expr.literal("reverse echo"); }
+metaconcept_concept returns [Expr r]
+        : a=metaconcept b=concept
+        { r=new Expr("_curry", a, b, new Expr("_arg", Expr.literal("0"))); }
+        // if we add <anyone> <anything> to the <concept> production we get
+        // grammar conflicts when trying to parse the "...while the others..."
+        // variant.  So parse the concept and metaconcept version of the
+        // _designator concept separately.
+        | a=metaconcept b=anyone
+        { r=new Expr("_curry", a,
+                     new Expr("_curry", Expr.literal("_designator concept"), b,
+                              new Expr("_arg", Expr.literal("0"))),
+                     new Expr("_arg", Expr.literal("0"))); }
+        // might have to make the 'do' mandatory in this next one:
+        | a=metaconcept ( b=times | 'do'? b=fraction )
+        { r=new Expr("_curry", a,
+                     new Expr("_curry", Expr.literal("_fractional"), b,
+                              new Expr("_arg", Expr.literal("0"))),
+                     new Expr("_arg", Expr.literal("0"))); }
         ;

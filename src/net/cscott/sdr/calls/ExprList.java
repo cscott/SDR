@@ -1,5 +1,7 @@
 package net.cscott.sdr.calls;
 
+import static net.cscott.sdr.util.Tools.foreach;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.transform.PartsCounter;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
+import net.cscott.sdr.util.Tools.F;
 
 /**
  * The {@link ExprList} contains {@link ExprFunc} definitions and the
@@ -161,32 +164,32 @@ public class ExprList {
     // note that _curry can be used to make a function-of-one-argument
     // (actually, a function of N arguments, where N is the number of
     //  * wildcards in the argument)
+    // keep these in sync with Expr.simplify() and Expr.subst()
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static final ExprFunc _APPLY = new ExprFunc() {
         @Override
         public String getName() { return "_apply"; }
         @Override
-        public Object evaluate(Class type, DanceState ds, List args)
+        public Object evaluate(Class type, final DanceState ds, List args)
             throws EvaluationException {
             if (args.size() < 1)
                 throw new EvaluationException("needs at least 1 argument");
-            Expr funcExpr = ensureCurry((Expr) args.get(0));
-            assert funcExpr.atom == "_curry";
-            List<Expr> curryArgs = funcExpr.args;
-            assert !curryArgs.isEmpty();
+            Expr curry = ((Expr) args.get(0)).ensureCurry(args.size()-1);
+            final List<Expr> rest = (List<Expr>) args.subList(1, args.size());
+            assert curry.atom == "_curry" && !curry.args.isEmpty();
             // evaluate first _curry arg as a string; this is function name
-            String func = curryArgs.get(0).evaluate(String.class, ds);
+            String func = curry.args.get(0).evaluate(String.class, ds);
             // substitute for (Expr _arg) in _curry argument list
-            List<Expr> nArgs = new ArrayList<Expr>(curryArgs.size()-1);
-            for (Expr cArg : curryArgs.subList(1, curryArgs.size())) {
-                nArgs.add(subst(cArg, ds, args));
+            List<Expr> nArgs = new ArrayList<Expr>(curry.args.size()-1);
+            for (Expr cArg : curry.args.subList(1, curry.args.size())) {
+                nArgs.add(subst(cArg, ds, rest));
             }
             // create new expr with new substituted args
             Expr result = new Expr(func, nArgs);
             return result.evaluate(type, ds);
         }
         /** Substitute (Expr _arg 'N) with appropriate member of 'args'. */
-        private Expr subst(Expr e, DanceState ds, List args)
+        private Expr subst(Expr e, DanceState ds, List<Expr> args)
             throws EvaluationException {
             if (e.atom=="_curry") {
                 // don't recurse into _curry.  This limited scoping ensures
@@ -197,9 +200,9 @@ public class ExprList {
                 // replace with appropriate _curry argument
                 Fraction n = e.args.get(0).evaluate(Fraction.class, ds);
                 assert n.getProperNumerator()==0;
-                int index = n.floor() + 1;
-                if (index < args.size())
-                    return (Expr) args.get(index);
+                int index = n.floor();
+                if (index >= 0 && index < args.size())
+                    return args.get(index);
                 else
                     throw new EvaluationException("missing argument "+n);
             }
@@ -209,14 +212,6 @@ public class ExprList {
                 nArgs.add(subst(ee, ds, args));
             }
             return e.build(e.atom, nArgs);
-        }
-        /** Helper: convert literals (for simple 1-arg functions) to
-         *  appropriate _curry function invocation. */
-        private Expr ensureCurry(Expr e) {
-            if (e.atom == "_curry") { return e; }
-            // turn a string function name into:
-            //    (Expr _curry 'name (Expr _arg '0))
-            return new Expr("_curry", e, new Expr("_arg", Expr.literal("0")));
         }
     };
     static { exprGenericFuncs.put(_APPLY.getName(), _APPLY); }

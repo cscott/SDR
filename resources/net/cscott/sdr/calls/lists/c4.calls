@@ -49,6 +49,7 @@ def: hot foot spin
   call: fan the top, anyone while others(VERY CENTER, trade), spin the top
 
 def: echo(concept, call)
+  optional: METACONCEPT
   spoken: echo <0=concept> <1=anything>
   part:
     call: _apply([concept], [call])
@@ -56,6 +57,7 @@ def: echo(concept, call)
     call: [call]
 
 def: reverse echo(concept, call)
+  optional: METACONCEPT
   spoken: reverse echo <0=concept> <1=anything>
   part:
     call: [call]
@@ -63,6 +65,7 @@ def: reverse echo(concept, call)
     call: _apply([concept], [call])
 
 def: piecewise(concept, call)
+  optional: METACONCEPT
   spoken: piecewise <0=concept> <1=anything>
   from: ANY
     condition: equal num(num parts([call]), 1)
@@ -143,6 +146,7 @@ def: follow the yellow brick road
   call: follow the yellow bricking(wheel and deal)
 
 def: follow the yellow bricking(c)
+  optional: SUPERCALL
   spoken: follow the yellow bricking <c=anything>
   call: and slither(and spread(follow your neighbor))
   call: _quasi concentric(and spread(follow your neighbor), \
@@ -183,6 +187,7 @@ def: _finish criss cross flow
 def: replace the column
   call: replace the column but(2/3(recycle))
 def: replace the column but(c)
+  optional: SUPERCALL
   spoken: replace the column but <c=anything>
   call: invert the column(1/2)
   call: _quasi concentric(_finish replace the column([c]), counter rotate(1/4))
@@ -192,6 +197,7 @@ def: _finish replace the column(c)
 def: cross replace the column
   call: cross replace the column but(2/3(cross cycle))
 def: cross replace the column but(c)
+  optional: SUPERCALL
   spoken: cross replace the column but <c=anything>
   call: cross invert the column(1/2)
   call: _quasi concentric(_finish cross replace the column([c]), counter rotate(1/4))
@@ -330,6 +336,7 @@ def: transaction
 def: transactivate
   call: trans(reactivate)
 def: trans(c)
+  optional: SUPERCALL
   spoken: trans <c=anything>
   call: transfer and(cast(3/4))
   call: [c]

@@ -96,6 +96,7 @@ def: latch on(n=1/4)
     call: right roll to a wave, right arm turn([n])
 
 def: finally(concept,call)
+  optional: METACONCEPT
   spoken: finally <0=concept> <1=anything>
   part: _subtract num(num parts([call]), 1)
     call: _all but last part([call])
@@ -103,6 +104,7 @@ def: finally(concept,call)
     call: _apply([concept], like a([call]))
 
 def: initially(concept,call)
+  optional: METACONCEPT
   spoken: initially <0=concept> <1=anything>
   part:
     call: _apply([concept], _first part([call]))

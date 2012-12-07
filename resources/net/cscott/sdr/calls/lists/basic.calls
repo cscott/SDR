@@ -31,6 +31,16 @@ def: _blend(a, b)
     call: [a]
     call: [b]
 
+// grammar glue
+def: _apply concept(concept,call)
+  spoken: [-20] <concept=concept> <call=anything>
+  call: _apply([concept], [call])
+def: anyone while others(sel, c1, c2=nothing)
+  /* default to 'nothing' if the 'while...' isn't present */
+  spoken: [-21] <sel=anyone> <c1=anything> \
+                 (while the (others|<anyone>) <c2=anything>)?
+  call: _designator concept([sel], [c1], [c2])
+
 // meta-commands
 def: bow to your partner
   spoken: bow to (your|the) partner (and (your|the) corner too)?
@@ -70,14 +80,18 @@ def: _attract
             _attract) // tail recursion!
 
 // work out grammar implications
-def: anyone while others(sel, c1, c2=nothing)
-  /* default to 'nothing' if the 'while...' isn't present */
-  spoken: [-20] <sel=anyone> <c1=anything> \
-                 (while the (others|<anyone>) <c2=anything>)?
+
+// See Dan Neumann's article on "Designators and Concepts"
+//   http://lynette.org/dconcepts.html
+def: _designator concept(sel, c1, c2=nothing)
   // special case "everybody" as a filler word.
   from: ANY
     condition: AND(EQUAL CALL([sel], ALL), EQUAL CALL([c2], nothing))
     call: [c1]
+  // ditto for "nobody"
+  from: ANY
+    condition: EQUAL CALL([sel], NONE)
+    call: [c2]
   // special case HEADS and SIDES from static square
   from: STATIC SQUARE
     call: _anyone while others static square([sel],[c1],[c2])

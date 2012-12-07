@@ -93,7 +93,8 @@ public class BuildGrammars {
             if (!(ra.rule.lhs.equals(nt.ruleName))) continue;
             // ok, this sure is left recursive!
             leftRecursiveLHS.add(ra.rule.lhs);
-            ra.rule = new Rule(ra.rule.lhs+"_suffix", tail, ra.rule.prec);
+            ra.rule = new Rule(ra.rule.lhs+"_suffix", tail,
+                               ra.rule.prec, ra.rule.options);
         }
         // add level-bridging rules
         for (int i=0; i<highestPrec; i++)
@@ -109,12 +110,28 @@ public class BuildGrammars {
                                (new Grm.Nonterminal(ra.rule.lhs+"_suffix", null, -1),
                                 Grm.Mult.Type.STAR);
             Grm nrule = new Grm.Concat(l(ra.rule.rhs, suffix));
-            ra.rule = new Rule(ra.rule.lhs, nrule, ra.rule.prec);
+            ra.rule = new Rule(ra.rule.lhs, nrule,
+                               ra.rule.prec, ra.rule.options);
         }
         // add leftable/reversable rules
         for (String s : new String[] { "leftable", "reversable" })
             rules.add(new RuleAndAction(new Rule("anything_"+highestPrec,
                     new Nonterminal(s+"_anything",null,0),null),"r=a;"));
+        // add metaconcept rules
+        Set<String> allLHS = new HashSet<String>();
+        for (RuleAndAction ra: rules)
+            allLHS.add(ra.rule.lhs);
+        if (allLHS.contains("metaconcept")) {
+            rules.add(new RuleAndAction(new Rule("concept",
+                   new Nonterminal("metaconcept_concept",null,0),null),"r=a;"));
+        }
+        // handle case where there are no concepts or metaconcepts.
+        for (String s : new String[] { "concept", "metaconcept" }) {
+            if (!allLHS.contains(s)) {
+                rules.add(new RuleAndAction(new Rule(s,
+                   new Nonterminal("VOID",null,0),null),"r=null;"));
+            }
+        }
         // add parenthesization rule
         rules.add(new RuleAndAction(new Rule("anything_"+highestPrec,
             new Nonterminal("parenthesized_anything", null, 0), null), "r=a;"));
@@ -138,9 +155,77 @@ public class BuildGrammars {
     private static List<RuleAndAction> mkAction(Call c)
         throws EvaluationException {
         List<RuleAndAction> l = new ArrayList<RuleAndAction>(2);
-        for (Rule r : splitTopLevelAlt(c.getRule()))
-            l.add(mkAction(c.getName(), c.getDefaultArguments(), r));
+        for (Rule r : splitTopLevelAlt(c.getRule())) {
+            // handle leftable/reversable
+            if (r.options.contains(Rule.Option.LEFT) ||
+                r.options.contains(Rule.Option.REVERSE)) {
+                assert r.options.size()==1;
+                String new_lhs = r.options.contains(Rule.Option.LEFT) ?
+                    "leftable_anything" : "reversable_anything";
+                r = new Rule(new_lhs, r.rhs, r.prec, r.options);
+            }
+            // handle concepts & supercalls
+            if (r.options.contains(Rule.Option.CONCEPT) ||
+                r.options.contains(Rule.Option.SUPERCALL)) {
+                assert r.options.size()==1;
+                r = transformConcept(r);
+            }
+            if (r.options.contains(Rule.Option.METACONCEPT)) {
+                assert r.options.size()==1;
+                r = transformMetaConcept(r);
+            }
+            RuleAndAction ra= mkAction(c.getName(), c.getDefaultArguments(), r);
+            l.add(ra);
+        }
         return l;
+    }
+    private static Rule transformConcept(Rule r) {
+        Grm g = r.rhs;
+        // spoken form should be ".... <anything>"; remove "<anything>"
+        // and add to 'concept' production.
+        if (g instanceof Grm.Concat) {
+            Grm.Concat c = (Grm.Concat) g;
+            if (c.sequence.size() > 1) {
+                Grm last = c.sequence.get(c.sequence.size()-1);
+                if (last instanceof Grm.Nonterminal) {
+                    Grm.Nonterminal nt = (Grm.Nonterminal) last;
+                    if (nt.ruleName.equals("anything") && nt.param==0) {
+                        // okay! munge this production!
+                        g = new Grm.Concat(c.sequence.subList
+                                           (0, c.sequence.size()-1));
+                        return new Rule("concept", g, r.prec);
+                    }
+                }
+            }
+        }
+        System.err.println("WARNING: concept option ignored for "+g);
+        return r;
+    }
+    private static Rule transformMetaConcept(Rule r) {
+        Grm g = r.rhs;
+        // spoken form should be ".... <concept> <anything>"; remove
+        // "<concept> <anything>" and add to 'metaconcept' production.
+        if (g instanceof Grm.Concat) {
+            Grm.Concat c = (Grm.Concat) g;
+            if (c.sequence.size()>2) {
+                Grm penult = c.sequence.get(c.sequence.size()-2);
+                Grm last = c.sequence.get(c.sequence.size()-1);
+                if (penult instanceof Grm.Nonterminal &&
+                    last instanceof Grm.Nonterminal) {
+                    Grm.Nonterminal nt1 = (Grm.Nonterminal) penult;
+                    Grm.Nonterminal nt2 = (Grm.Nonterminal) last;
+                    if (nt1.ruleName.equals("concept") && nt1.param==0 &&
+                        nt2.ruleName.equals("anything") && nt2.param==1) {
+                        // okay! munge this production!
+                        g = new Grm.Concat(c.sequence.subList
+                                           (0, c.sequence.size()-2));
+                        return new Rule("metaconcept", g, r.prec);
+                    }
+                }
+            }
+        }
+        System.err.println("WARNING: metaconcept option ignored for "+g);
+        return r;
     }
     private static RuleAndAction mkAction(String callName,
                                           List<Expr> defaultArgs, Rule r)
@@ -176,7 +261,7 @@ public class BuildGrammars {
     private static List<Rule> splitTopLevelAlt(Rule r) {
         List<Rule> l = new ArrayList<Rule>(2);
         for (Grm g : splitTopLevelAlt(SimplifyGrm.simplify(r.rhs), new ArrayList<Grm>(2)))
-            l.add(new Rule(r.lhs, g, r.prec));
+            l.add(new Rule(r.lhs, g, r.prec, r.options));
         return l;
     }
     private static List<Grm> splitTopLevelAlt(Grm g, List<Grm> l) {
@@ -221,7 +306,7 @@ public class BuildGrammars {
     }
     private static Rule rewriteForPrec(Rule r, int prec) {
         // rewrite LHS:
-        String ruleName =r.lhs;
+        String ruleName = r.lhs;
         if (ruleName.equals("anything")) ruleName+="_"+prec;
         return new Rule(ruleName, rewriteForPrec(r.rhs, prec), null);
     }

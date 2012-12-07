@@ -106,7 +106,7 @@ public abstract class C1List {
         @Override
         public Rule getRule() {
             Grm g = Grm.parse("tandem <0=anything>");
-            return new Rule("anything", g, Fraction.valueOf(-15));
+            return new Rule("anything", g, Fraction.ZERO, Rule.Option.CONCEPT);
         }
         @Override
         public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
@@ -122,7 +122,7 @@ public abstract class C1List {
         @Override
         public Rule getRule() {
             Grm g = Grm.parse("siamese <0=anything>");
-            return new Rule("anything", g, Fraction.valueOf(-15));
+            return new Rule("anything", g, Fraction.ZERO, Rule.Option.CONCEPT);
         }
         @Override
         public Evaluator getEvaluator(DanceState ds, List<Expr> args) {

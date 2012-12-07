@@ -212,7 +212,7 @@ public class Finish extends PartsVisitor<Void> {
         public Rule getRule() {
             if (rule==null) { return null; }
             Grm g = Grm.parse(rule);
-            return new Rule("anything", g, Fraction.valueOf(-9));
+            return new Rule("anything", g, Fraction.ZERO, Rule.Option.CONCEPT);
         }
         @Override
         public List<Expr> getDefaultArguments() {

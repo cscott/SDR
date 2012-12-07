@@ -37,8 +37,8 @@ grammar @CLASSNAME@;
 	twice [and <fraction>] |
 	<digit_greater_than_two> [and <fraction>] times ;
 
-// temporary hack; see antlr-v3.skel for details.
-<concept> = tandem | as couples | siamese | <times> | [do] <fraction> |
-            concentric | cross concentric |
-            <metaconcept> <concept> ;
-<metaconcept> = initially | finally | oddly | evenly | echo | reverse echo ;
+<metaconcept_concept> =
+        <metaconcept> <concept> |
+        <metaconcept> <anyone> |
+        <metaconcept> <times> |
+        <metaconcept> [do] <fraction> ;

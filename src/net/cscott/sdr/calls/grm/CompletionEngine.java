@@ -428,6 +428,8 @@ public class CompletionEngine {
             if (nonterm.ruleName.equals("EOF"))
                 // <EOF> matches iff we've grabbed all the partial input.
                 return cs.partialInput.isEmpty();
+            if (nonterm.ruleName.equals("VOID"))
+                return false; // trivial match
             if (nonterm.ruleName.equals("<NULL>"))
                 return true; // trivial match
             if (nonterm.ruleName.equals("NUMBER"))

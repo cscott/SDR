@@ -135,7 +135,8 @@ state.__defineGetter__("resolveStep",
  */
 state.parse = function(calltext) {
     let a = CallDB.INSTANCE.parse(this.ds.dance.getProgram(), calltext);
-    return a.toShortString();
+    // simplify expression for easy reading
+    return a.call.simplify().toShortString();
 };
 state.parse.argdoc = "'<call>'";
 state.parse.doc = "Show how a square dance call is parsed";

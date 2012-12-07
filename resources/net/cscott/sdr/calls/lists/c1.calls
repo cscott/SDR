@@ -17,6 +17,8 @@ def: alter the wave
 
 def: concentric(c)
   spoken: concentric <c=anything>
+  optional: CONCEPT
+  // try "center wave" as centers
   from: GENERAL QUARTER TAG, TWIN GENERAL DIAMONDS
     call: _concentric([c], [c])
   from: CENTER HALF

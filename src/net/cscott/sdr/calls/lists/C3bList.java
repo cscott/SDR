@@ -56,7 +56,7 @@ public abstract class C3bList {
         @Override
         public Rule getRule() {
             Grm g = Grm.parse("mirror <0=anything>");
-            return new Rule("anything", g, Fraction.valueOf(-20)); // bind loose
+            return new Rule("anything", g, Fraction.ZERO, Rule.Option.CONCEPT);
         }
         @Override
         public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
@@ -71,7 +71,7 @@ public abstract class C3bList {
         @Override
         public Rule getRule() {
             Grm g = Grm.parse("tandem twosome <0=anything>");
-            return new Rule("anything", g, Fraction.valueOf(-15));
+            return new Rule("anything", g, Fraction.ZERO, Rule.Option.CONCEPT);
         }
         @Override
         public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
@@ -87,7 +87,7 @@ public abstract class C3bList {
         @Override
         public Rule getRule() {
             Grm g = Grm.parse("couples twosome <0=anything>");
-            return new Rule("anything", g, Fraction.valueOf(-15));
+            return new Rule("anything", g, Fraction.ZERO, Rule.Option.CONCEPT);
         }
         @Override
         public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
@@ -103,7 +103,7 @@ public abstract class C3bList {
         @Override
         public Rule getRule() {
             Grm g = Grm.parse("siamese twosome <0=anything>");
-            return new Rule("anything", g, Fraction.valueOf(-15));
+            return new Rule("anything", g, Fraction.ZERO, Rule.Option.CONCEPT);
         }
         @Override
         public Evaluator getEvaluator(DanceState ds, List<Expr> args) {

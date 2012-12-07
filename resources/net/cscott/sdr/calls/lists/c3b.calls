@@ -2,6 +2,7 @@ program: c3b
 
 /* concepts */
 def: oddly(concept,call)
+  optional: METACONCEPT
   spoken: oddly <0=concept> <1=anything>
   from: ANY
     condition: equal num(num parts([call]), 2)
@@ -17,6 +18,7 @@ def: oddly(concept,call)
       call: evenly([concept], finish([call]))
 
 def: evenly(concept,call)
+  optional: METACONCEPT
   spoken: evenly <0=concept> <1=anything>
   from: ANY
     condition: equal num(num parts([call]), 2)
@@ -173,6 +175,7 @@ def: boomerang
 // XXX vic provides a more general definition which involves "make a compact
 //     formation".  We're using the standard def.
 def: busy(c)
+  optional: SUPERCALL
   spoken: busy <c=anything>
   ipart:
     call: _start busy, _finish busy([c])
@@ -282,6 +285,7 @@ def: change the wave
   call: change the(swing)
 
 def: change the(c) // XXX NOL Vic Ceder 1992
+  optional: SUPERCALL
   spoken: change the <c=anything>
   call: _maybe touch(_wave swing), slip, cross run(CENTER), [c]
 

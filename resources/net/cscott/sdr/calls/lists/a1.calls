@@ -1,11 +1,12 @@
 program: a1
 
-// this is higher precedence version of roll which binds looser than whatever's
+// this is alternate precedence for roll which binds looser than whatever's
 // inside the anything; eg: "as couples trade and individually roll" is
 // and individually roll(as couples(trade))
 // put on the a1 list with "as couples" because it's not needed below this.
+// must be same (or more negative) precedence as "_apply concept"
 def: and individually roll(c)
-  spoken: [-15] <c=anything> and individually roll
+  spoken: [-20] <c=anything> and individually roll
   call: _roll([c])
 
 def: quarter right
@@ -146,11 +147,13 @@ def: _finish brace thru
     call: brace yourself
 
 def: clover and(call)
+  optional: SUPERCALL
   spoken: clover and <call=anything>
   ipart:
     call: _maybe start clover(_finish clover([call], _single cloverleaf))
 
 def: cross clover and(call)
+  optional: SUPERCALL
   spoken: cross clover and <call=anything>
   ipart:
     call: _maybe start clover(_finish clover([call], _single cross cloverleaf))

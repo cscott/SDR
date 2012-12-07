@@ -169,7 +169,7 @@ program
 
 def
 @init {
-  Set<String> optional = new HashSet<String>();
+  EnumSet<Rule.Option> optional = EnumSet.noneOf(Rule.Option.class);
 }
     : ^(d=DEF n=simple_words args=decl_args
     { // if there are arguments, add them to our scope.
@@ -178,7 +178,7 @@ def
         scope.put(arg.name, i++);
       }
     }
-       ( ^(OPTIONAL (id=IDENT {optional.add(id.getText().toUpperCase());})+ ) )?
+       ( ^(OPTIONAL ( rule_option[optional] )+ ) )?
        ( ^(SPOKEN (prec=number)? g=grm_rule ) )?
        example*
        p=pieces)
@@ -186,21 +186,23 @@ def
       n = n.intern();
       names.add(n);
 
-      String ruleName = optional.contains("LEFT") ? "leftable_anything" :
-                        optional.contains("REVERSE") ? "reversable_anything" :
-                        "anything";
       Rule rule = null;
       if (g==null && !n.startsWith("_"))
         g = Grm.mkGrm(n.split("\\s+"));
       if (g!=null)
-        rule = new Rule(ruleName, SimplifyGrm.simplify(g),
-                        prec==null ? Fraction.ZERO : prec);
+        rule = new Rule("anything", SimplifyGrm.simplify(g),
+                        prec==null ? Fraction.ZERO : prec, optional);
 
       Call call = makeCall(n, currentProgram, p, args, rule);
       db.add(call);
 
       scope.clear();
     }
+    ;
+
+fragment
+rule_option[Set<Rule.Option> s]
+    : IDENT { $s.add(Rule.Option.valueOf(Rule.Option.canon($IDENT.text))); }
     ;
 
 decl_args returns [List<ArgAndDefault> l]
@@ -348,6 +350,7 @@ expr_body returns [B<Expr> eb]
             // note that this strips off the arguments.
             String atom = e.atom;
             if (e.args.size() > 0) {
+                // XXX should desugar to use of the _apply() concept.
                assert expr_args==null : "don't know how to merge params";
                return e;
             }

@@ -1289,7 +1289,7 @@ to do:
       ensure that the following parse:
         finish finish swing and mix
         finish tandem trade
- lll) automatically extract <concept> production from 'spoken'
+ xxx) automatically extract <concept> production from 'spoken'
       use 'optional: CONCEPT' or 'optional: METACONCEPT'
  mmm) automatically extract <atc> productions
       use 'optional: ATC'

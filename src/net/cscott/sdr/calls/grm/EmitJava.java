@@ -62,6 +62,8 @@ public class EmitJava extends AbstractEmit {
         m.put("digit_greater_than_two", Grm.parse("three | four | five | six | seven | eight | nine"));
         m.put("fraction", Grm.parse("(a|one) (half|third|quarter) | two (thirds|quarters) | three quarters"));
         m.put("times", Grm.parse("once and <fraction> | twice (and <fraction>)? | <digit_greater_than_two> (and <fraction>)? times | <NUMBER> times"));
+        m.put("metaconcept_concept",
+              Grm.parse("<metaconcept> (<concept> | <anyone> | <times> | do? <fraction>)"));
         m.put("start", Grm.parse("<anything> <EOF>"));
         EmitJava.INSTANCE.grmTable.put(program, m);
     }
