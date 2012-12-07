@@ -66,6 +66,11 @@ def: _spread
   // note that 'spread' from COMPLETED DOUBLE PASS THRU has been redefined
   // (and taken off the plus list) *according to Vic Ceder*
   // callerlab doesn't seem to have gotten the memo yet, though (2012-11)
+  // talking to Clark confirms that we should still support "traditional
+  // spread" from completed double pass thru for the time being.  There's
+  // also the "wheel and deal and spread" from grand one-faced lines
+  // (resulting in another tidal line) which is part of the historical
+  // definition.
   from: COMPLETED DOUBLE PASS THRU
     call: _designated spread(LEADER)
   from: GENERAL COLUMNS

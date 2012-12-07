@@ -3,9 +3,9 @@
  * types and interfaces required to communicate with it.
  *
  * @doc.test Test basic call database functionality:
- *  js> CallDB.INSTANCE.parse(Program.BASIC, "double pass thru").
+ *  js> CallDB.INSTANCE.parse(Program.BASIC, "couples trade").
  *    >     evaluator(null).simpleExpansion()
- *  (In '4 (Seq (Apply (Expr tandem 'pass thru))))
+ *  (In '6 (Seq (Apply (Expr as couples 'trade))))
  *
  * @doc.test Calls with arguments:
  *  js> importPackage(net.cscott.sdr.util) // for Fraction

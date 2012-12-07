@@ -117,6 +117,10 @@ def: swing and mix // 3 part call
   part: 2
     call: mix
 
+def: transfer and(c)
+  spoken: transfer and <c=anything>
+  call: unimplemented
+
 def: _facing recycle
   in: 6
   // cheat so we can say "recycle has 3 parts", although facing recycle

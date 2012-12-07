@@ -44,6 +44,8 @@ def: cross roll
 def: switch the line
   from: LINE OF 4
   // XXX: centers run while ends cross run
+  // XXX: look at bill's book under "run wild" for 1/2 way point
+  //      centers take the outside track
 */
 
 def: dixie diamond

@@ -1760,9 +1760,14 @@ def: wheel and deal
   call: as couples(single wheel)
 
 // callerlab #44: DOUBLE PASS THRU
+// xxx write test case: "double pass to a diamond" from quarter tag
 def: double pass thru
   in: 4
-  call: tandem(pass thru)
+  from: ANY
+    call: tandem(pass thru)
+  from: RH QUARTER TAG // "ocean wave rule"
+    ipart:
+      call: _centers(pass thru), pass thru
 
 // callerlab #45: FIRST COUPLE GO LEFT/RIGHT (see BMS addendum)
 def: first couple go left next couple go left

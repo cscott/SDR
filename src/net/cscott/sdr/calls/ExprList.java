@@ -158,6 +158,9 @@ public class ExprList {
     static { exprGenericFuncs.put(_IF.getName(), _IF); }
 
     // function application
+    // note that _curry can be used to make a function-of-one-argument
+    // (actually, a function of N arguments, where N is the number of
+    //  * wildcards in the argument)
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static final ExprFunc _APPLY = new ExprFunc() {
         @Override
