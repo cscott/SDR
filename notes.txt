@@ -427,7 +427,7 @@ anything: LEFT leftable_anything // tight
 	| anything AND anything
 	| anything AND ROLL
 	;
-	
+
 leftable_anything
 	: SQUARE THRU number
 	;
@@ -491,7 +491,7 @@ Matching quantum superimpositions:
 ---------------------------------
 Whenever we try to match a formation and fail, try also to
 match "isomorphic" formations & insert a 'breathe' operation if
-necessary.  Make 'small diamonds' (points at (0,+/-2) isomorphic to 
+necessary.  Make 'small diamonds' (points at (0,+/-2) isomorphic to
 'big diamonds' (points at (0,+/-3), just
 like 'quarter tag with ends facing right' is isomorphic to 'twin
 diamonds'. (and in some cases, facing couples are isomorphic to waves
@@ -1158,6 +1158,7 @@ to do:
        proceeding to the next OptCall(s) if that OptCall matched.
        (regardless of whether a BadCallException was eventually thrown)
        This can be used to control recursion.
+       [2012-12-06: needed on condition: clauses as well?]
  v2) Matcher functions: NO SUB, BREATHE (before)
  v3) Switch to "breathe after" model, in place of "breathe before"?
  w) _circle choreo concept that automagically adjusts 1/8 off circles
@@ -1310,7 +1311,87 @@ to do:
       level so that "as couples do half of a pass thru" makes the
       phantoms come to right hands before the "as couples"
       transformation happens).
+ sss) keep "anyone while others" just add "designator concept" to the
+      special skeleton productions.  Because 1st arg is SELECTOR so
+      needs to be specially processed anyway. (ie "and(LEAD, BOY)")
+      - check for synonyms for 'centers'
+ ttt) add "call: unimplemented" but def: the rest of the
+      mainstream/plus list so that our grammar is complete
+ uuu) rewrite anyone while others to try "designator concept" then try
+      "own the <designator> <call1> by <call2>".  The third case is
+      "<designator> trade".  That should be exhaustive.
+ vvv) new designators: "intrinsics" (HEAD BOYS, HEAD CORNERS, etc),
+      and "formation-sensitive" designators: INNER ACTIVES, OUTER
+      ACTIVES, LEADS, TRAILERS, SHORT 6, TALL 6, etc.  New "is intrinsic"
+      expr functions.
+ www) factor out "Concept1" and "Concept2".  Concept 1: "make a new
+      formation <f>", "execute call <c> in formation <f>", "make
+      result formation", "breathe" (?). Concept 2: "make two new
+      formations <f1> and <f2> from current formation", "execute calls
+      <c1> in <f1> and <c2> in <f2>", "make result formation from
+      results of executing calls", "breathe" (?).
 
+ xxx1) fix breather: isolate test case for mul/pos overflow, do a different
+       exception in that case (ie, not overflow assertion).  add "triangle
+       constraint" like existing "star constraint".
+ xxx2) add API to allow specification of handholds and/or "void
+       spaces" so that concentric breathing works; aka handholds
+       should be preserved across void.
+
+ yyy) resolution engine:
+ 1) method that calls /resolveStep repeatedly from existing formation,
+    returns first call in sequence and # number of steps to resolve.
+ 2) meta-method which caches the above for a given
+    formation/permutation.
+ 3) meta^2-method which goes through all calls in a given program
+    attempting to apply to current formation.  Then it calls method #2
+    on the result, returning the call(s) which result in the shortest
+    resolve from their result and the length of the resolve.
+    (if none found, recurses to the
+    next-lower dance program so that resolve is 'at level' as much as possible)
+    (look at results of this at level=MAINSTREAM, possibly there are
+    shortcuts which could be directly integrated into DWresolver)
+ 4) meta^3 method which does #3 except using #3 as the recursion
+    method instead of #2.
+
+ zzz) 1-to-1 conversion between "Expr" form and "Comp" form?
+      in(4, select(CENTER, prim(0,0,0), END, prim(1,in(1),1))) etc?
+
+from: BREATHED vs from: ANY (space-invader)
+bail on collision breath unless collision found
+test: 'press ahead' to collisions
+integrate ATC, etc into call file grammar somehow?
+add _with_designator concept into Idioms
+define select: as "remove not designated"; audit usage of 'call'
+ preserve tags, since we have a few nested selects.
+within select -- how does breathing/superimposition happen?
+  def of 'column circulate' and '_box circulate' uses _lead
+   circ/_trail circ as  macros for prims (ok), as does _grand square
+   1/4 (but careful of 'face') -- 'slide thru' def also invokes 'face'
+   and '_finish atc to a diamond' uses 'quarter right', 'quarter left'
+  '_cross' uses "call: nothing, nothing"; this should work.
+  def of 'trade down the line' contains a bogus 'call within select'
+  intended as a hack to make <gender> trade from BBGG lines work.
+  can be replaced by an 'own the'?
+  def of '_designees cross run' contains an invocation of '_designees run'
+  which is somewhat bogus; should be refactored into an invocation of a
+  prim macro
+  def of 'zoom' contains a call-within-select which is bogus; rewrite
+  to use in/out?
+  def of '_finish pass to the center' should probably be rewritten to
+   use _quasi concentric
+  def of '_start wheel the' contains 'call: wheel around' inside
+   select; should probably be rewritten to use call-which-is-macro-for-prims
+  c3b list: 'bingo', 'boomerang' contain bogus 'call inside select' to
+   handle leader/trailer parts of calls
+  c3b list: 'explode the diamond' is bogus, should probably use _quasi
+   concentric
+  c3b list: 'rip off' use prims?
+  c3b list: scramble, turnstyle, wave the, with confidence: probably use concentric
+  c4 list: 'quick wrap' probably wants to use 'own the'
+  c4 list: 'counteract' wants a prim definition of 'split counter rotate'
+  c4 list: 'roll out to a column' wants to do first two parts quasi concentric.
+ban 'from inside select'
 -------
 heads x:
   from squared_set:
@@ -1345,7 +1426,7 @@ e.g.
    call: trade
   select: ends
    call: circulate
----> results in same place as "center run"
+---> centers end in same place as "center run"
 
  from: RH_OCEAN_WAVE
   select: centers
@@ -1363,10 +1444,12 @@ e.g.
 
  from: RH_OCEAN_WAVE
   select: centers
-   call: ignore(ends, trade)
+   call: ignore(END, trade)
   select: ends
    call: circulate
 --> acey deucey
+[2012-12-06: CSA -- this proposal is "own the <anyone>", which is
+  rather complicated to make work properly as a general mechanism.]
 --------
 http://www.lynette.org/dconcepts.html
 ---
@@ -1504,9 +1587,9 @@ choice" brings them together into the same wave (but genders aren't together)
 Crazy breathing:
 split phantom point to point diamonds
    >       >
-^  <  v ^  <  v   
+^  <  v ^  <  v
    >       >      ALL DIAMOND CENTERS ARE PHANTOMS
-^  <  v ^  <  v   
+^  <  v ^  <  v
 
 next call: "triple box circulate"
 
