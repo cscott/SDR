@@ -284,6 +284,37 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 			  srcdir="${src_dir}"
 			  datafile="${instrumented_dir}/cobertura.ser" />
     </target>
+    <target name="quickdoc" depends="compile"
+            description="Quickly runs doctests via javadoc; no code coverage">
+      <tempfile property="temp_dir" destDir="${java.io.tmpdir}" prefix="doc"/>
+	<mkdir dir="${temp_dir}" />
+	<javadoc sourcepath="${src_dir}"
+		 destdir="${temp_dir}"
+                 windowtitle="INCOMPLETE QUICK DOCS DO NOT USE"
+		 doctitle="INCOMPLETE QUICK DOCS DO NOT USE"
+                 header="INCOMPLETE QUICK DOCS DO NOT USE"
+		 overview="${src_dir}/overview.html"
+		 source="1.5"
+                 access="private" nodeprecated="false"
+		 failonerror="true"
+                 author="true" use="true" version="true" breakiterator="true">
+	  <package name="net.cscott.sdr.*" />
+	  <excludepackage name="net.cscott.sdr.webapp.*" />
+		<classpath refid="classpath.path" />
+		<taglet name="net.cscott.jdoctest.JDoctest">
+		  <path>
+		    <fileset dir="lib/dev/jdoctest">
+		      <include name="*.jar"/>
+		    </fileset>
+		    <path refid="classpath.path" />
+		  </path>
+		</taglet>
+		<arg value="-J-Xmx1024M" />
+		<!-- enable assertions when evaluating doctests -->
+		<arg value="-J-ea:net.cscott..." />
+	</javadoc>
+        <delete dir="${temp_dir}" />
+    </target>
 
     <!-- export the project as a jar -->
     <target name="jar" depends="compile"
