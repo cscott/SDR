@@ -14,7 +14,7 @@
 
 % define our own language for the listings package
 \lstdefinelanguage{CallFile}
-  {morekeywords=[1]{def:,in:,from:,call:,optional:,prim:,xpart:,part:,ipart:,spoken:,condition:},%
+  {morekeywords=[1]{def:,in:,from:,call:,option:,prim:,xpart:,part:,ipart:,spoken:,condition:},%
    morekeywords=[2]{LEFT,ANY,FACING,DANCERS,RH,MINIWAVE},%
    sensitive=true,%
    morecomment=[l]//,%
@@ -98,7 +98,7 @@ shows the definition of the call \call{pass thru}.
 
 \begin{lstlisting}[numbers=left,float,caption=A definition with primitives.,label=lst:passthru]
 def: pass thru
-  optional: LEFT
+  option: LEFT
   in: 2
   // define the common case first: we've got two parts there
   from: FACING DANCERS
@@ -115,7 +115,7 @@ def: pass thru
 \end{lstlisting}
 
 The first line introduces the definition and names the call.
-The \clause{optional} clause in the second line
+The \clause{option} clause in the second line
 contains a set of comma-separated tags which are used as hooks to trigger
 the creation of additional call definitions or grammar rules.
 In this case, the \texttt{LEFT} tag signifies that we will
@@ -202,7 +202,7 @@ the definition of the call \call{square thru}.\footnote{Again, the listing is
 
 \begin{lstlisting}[numbers=left,float,caption=A definition with arguments.,label=lst:squarethru]
 def: square thru(n=4)
-  optional: LEFT
+  option: LEFT
   spoken: square thru (<n=number> (hands (around|round)?)?)?
   from: ANY
     condition: and(greater([n],0),not(greater([n],1)))
@@ -221,7 +221,7 @@ as $n$ in the body of the definition.  The parameter has a
 default value, 4.  If no argument is supplied, $n$ will be set
 to 4 when the definition is evaluated.
 
-The \clause{optional} clause in the second line specifies that we will
+The \clause{option} clause in the second line specifies that we will
 automatically create an
 additional call \call{left square thru(n)} with the definition
 \call{left(square thru([n]))}, as described in the previous example.
@@ -609,7 +609,7 @@ following grammar:
 
 <decl_arg> ::= <simple_words> ( `=' <simple_words> )?
 
-<os> ::= <optional> <spoken>? | <spoken> <optional>?
+<os> ::= <option> <spoken>? | <spoken> <option>?
 
 <pieces> ::= <restriction> | <alternatives> | <selectors> | <pieces_term>
 
@@ -622,16 +622,16 @@ The name of a call and its optional argument list is given by the
 \syntax{<name_and_args>} production.  The \syntax{<decl_arg>}
 production allows for optional default values for arguments, which are
 \syntax{<simple_words>} (not expressions).  The \syntax{<os>}
-production simply allows the \clause{spoken} and \clause{optional}
+production simply allows the \clause{spoken} and \clause{option}
 clause to occur in any order.  The main part of the definition are the
 \syntax{<pieces>}, which are defined in a small precedence grammar.
 Indentation is used as a grouping operator to resolve ambiguities,
 much the way that parentheses would be used in a traditional
 expression grammar.
 
-\subsubsection{optional}
+\subsubsection{option}
 \begin{grammar}
-<optional> ::= `optional' `:' <ID> ( `,' <ID> )*
+<option> ::= `option' `:' <ID> ( `,' <ID> )*
 \end{grammar}
 
 \subsubsection{spoken}

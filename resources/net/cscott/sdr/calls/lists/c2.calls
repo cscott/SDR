@@ -23,7 +23,7 @@ def: press left
 
 def: cross concentric(c)
   spoken: cross concentric <c=anything>
-  optional: CONCEPT
+  option: CONCEPT
   // try "center wave" as centers
   from: GENERAL QUARTER TAG, TWIN GENERAL DIAMONDS
     call: _cross concentric([c], [c])

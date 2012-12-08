@@ -17,7 +17,7 @@ def: alter the wave
 
 def: concentric(c)
   spoken: concentric <c=anything>
-  optional: CONCEPT
+  option: CONCEPT
   // try "center wave" as centers
   from: GENERAL QUARTER TAG, TWIN GENERAL DIAMONDS
     call: _concentric([c], [c])
@@ -60,13 +60,13 @@ def: _finish dixie diamond
 // XXX: square chain thru to a wave ... general 'to a wave' suffix?
 // see 'square thru' (basic) and 'square chain thru' (a1) definitions
 def: square chain the top
-  optional: LEFT
+  option: LEFT
   from: mixed(RH OCEAN WAVE, FACING COUPLES)
     ends in: formation(BACK TO BACK COUPLES)
     call: _square thru part, left(spin the top), left(turn thru)
 
 def: swing the fractions
-  optional: LEFT
+  option: LEFT
   call: _those who can turn right(1/4)
   call: _those who can turn left(1/2)
   call: _those who can turn right(3/4)

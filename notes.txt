@@ -1290,9 +1290,9 @@ to do:
         finish finish swing and mix
         finish tandem trade
  xxx) automatically extract <concept> production from 'spoken'
-      use 'optional: CONCEPT' or 'optional: METACONCEPT'
+      use 'option: CONCEPT' or 'option: METACONCEPT'
  mmm) automatically extract <atc> productions
-      use 'optional: ATC'
+      use 'option: ATC'
  nnn) buy tapes of patter sessions from (eg) AACE (lower level is
       better) and use these to train speech models.  use
       audacity/gstreamer framework to suppress music.

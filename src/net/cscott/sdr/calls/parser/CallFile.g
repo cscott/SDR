@@ -9,12 +9,12 @@
  * @doc.test The 'and' concept is applied to successive calls joined by commas:
  *  js> new CallFileParser("program: basic\ndef: foo\n call: bar,bat").calllist().getTree().toStringTree()
  *  (CALLLIST (program basic (def (ITEM foo) (SEQ (call (EXPR (ITEM and) LPAREN (EXPR (ITEM bar)) (EXPR (ITEM bat))))))))
- * @doc.test Order of optional/spoken is normalized:
+ * @doc.test Order of option/spoken is normalized:
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
- *  js> cp("def: foo\n optional: REVERSE\n spoken: [10] foo\n call: bar")
- *  (def (ITEM foo) (optional REVERSE) (spoken 10 foo) (SEQ (call (EXPR (ITEM bar)))))
- *  js> cp("def: foo\n spoken: [10] foo\n optional: REVERSE\n call: bar()")
- *  (def (ITEM foo) (optional REVERSE) (spoken 10 foo) (SEQ (call (EXPR (ITEM bar) ())))
+ *  js> cp("def: foo\n option: REVERSE\n spoken: [10] foo\n call: bar")
+ *  (def (ITEM foo) (option REVERSE) (spoken 10 foo) (SEQ (call (EXPR (ITEM bar)))))
+ *  js> cp("def: foo\n spoken: [10] foo\n option: REVERSE\n call: bar()")
+ *  (def (ITEM foo) (option REVERSE) (spoken 10 foo) (SEQ (call (EXPR (ITEM bar) ())))
  * @doc.test Example and figure clauses:
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cp("def: foo\n call: bar\n example: foo\n  before:\n  ! diagram here\n  after:\n  ! more diagram")
@@ -435,12 +435,12 @@ decl_arg!
     : simple_words (EQUALS simple_words)? /* optional default value */
         -> ^(ARG simple_words simple_words?)
     ;
-os  : optional (spoken)?
-    | spoken (optional)?
-        -> optional? spoken
+os  : option (spoken)?
+    | spoken (option)?
+        -> option? spoken
     ;
-optional
-    : OPTIONAL^ COLON! IDENT ( COMMA! IDENT )*
+option
+    : OPTION^ COLON! IDENT ( COMMA! IDENT )*
     ;
 spoken
     : SPOKEN^ COLON! (priority)? grm_rule
@@ -741,7 +741,7 @@ IPART:     {afterIndent && beforeColon}?=> 'ipart' ;
 XPART:     {afterIndent && beforeColon}?=> 'xpart' ;
 PRIM:      {afterIndent && beforeColon}?=> 'prim' { afterPrim=true;};
 PROGRAM:   {afterIndent && beforeColon}?=> 'program' ;
-OPTIONAL:  {afterIndent && beforeColon}?=> 'optional' ;
+OPTION:    {afterIndent && beforeColon}?=> 'option' ;
 SPOKEN:    {afterIndent && beforeColon}?=> 'spoken' ;
 EXAMPLE:   {afterIndent && beforeColon}?=> 'example' ;
 BEFORE:    {afterIndent && beforeColon}?=> 'before' ;

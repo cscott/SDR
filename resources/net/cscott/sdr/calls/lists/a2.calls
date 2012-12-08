@@ -49,7 +49,7 @@ def: _start mini busy
     call: nothing
 
 def: remake
-  optional: LEFT
+  option: LEFT
   part: 2
     call: quarter thru
   part:

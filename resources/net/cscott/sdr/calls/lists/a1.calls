@@ -54,18 +54,18 @@ def: _finish mix
     call: _quasi concentric(trade, _nothing preserve roll)
 
 def: quarter thru
-  optional: LEFT
+  option: LEFT
   call: _quarter thru(1/4)
 def: grand quarter thru
-  optional: LEFT
+  option: LEFT
   call: _grand quarter thru(1/4)
 def: grand left quarter thru
   call: mirror(grand quarter thru)
 def: three quarter thru
-  optional: LEFT
+  option: LEFT
   call: _quarter thru(3/4)
 def: grand three quarter thru
-  optional: LEFT
+  option: LEFT
   call: _grand quarter thru(3/4)
 def: grand left three quarter thru
   call: mirror(grand three quarter thru)
@@ -147,13 +147,13 @@ def: _finish brace thru
     call: brace yourself
 
 def: clover and(call)
-  optional: SUPERCALL
+  option: SUPERCALL
   spoken: clover and <call=anything>
   ipart:
     call: _maybe start clover(_finish clover([call], _single cloverleaf))
 
 def: cross clover and(call)
-  optional: SUPERCALL
+  option: SUPERCALL
   spoken: cross clover and <call=anything>
   ipart:
     call: _maybe start clover(_finish clover([call], _single cross cloverleaf))
@@ -233,7 +233,7 @@ def: left roll to a wave
 
 // see 'square thru' (basic) and 'square chain the top' (c1) definitions
 def: square chain thru
-  optional: LEFT
+  option: LEFT
   in: 14
   from: mixed(RH OCEAN WAVE, FACING COUPLES)
     ends in: formation(BACK TO BACK COUPLES)
@@ -261,7 +261,7 @@ def: triple trade
 // three parts, everyone can roll at the end
 // (fractionalization is only legit at upper levels)
 def: turn and deal
-  optional: LEFT
+  option: LEFT
   in: 4
   from: GENERAL LINE
     ends in: formation(2x2)

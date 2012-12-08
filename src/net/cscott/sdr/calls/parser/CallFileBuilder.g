@@ -169,7 +169,7 @@ program
 
 def
 @init {
-  EnumSet<Rule.Option> optional = EnumSet.noneOf(Rule.Option.class);
+  EnumSet<Rule.Option> options = EnumSet.noneOf(Rule.Option.class);
 }
     : ^(d=DEF n=simple_words args=decl_args
     { // if there are arguments, add them to our scope.
@@ -178,7 +178,7 @@ def
         scope.put(arg.name, i++);
       }
     }
-       ( ^(OPTIONAL ( rule_option[optional] )+ ) )?
+       ( ^(OPTION ( rule_option[options] )+ ) )?
        ( ^(SPOKEN (prec=number)? g=grm_rule ) )?
        example*
        p=pieces)
@@ -191,7 +191,7 @@ def
         g = Grm.mkGrm(n.split("\\s+"));
       if (g!=null)
         rule = new Rule("anything", SimplifyGrm.simplify(g),
-                        prec==null ? Fraction.ZERO : prec, optional);
+                        prec==null ? Fraction.ZERO : prec, options);
 
       Call call = makeCall(n, currentProgram, p, args, rule);
       db.add(call);

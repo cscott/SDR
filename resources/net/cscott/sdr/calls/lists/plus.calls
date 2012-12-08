@@ -136,11 +136,11 @@ def: _dixie pull by
     call: right pull by
 
 def: three quarter tag
-  optional: LEFT
+  option: LEFT
   call: _tag the line(3/4)
 
 def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
-  optional: LEFT
+  option: LEFT
   in: 4
   call: _maybe touch(_fan the top)
 
@@ -170,7 +170,7 @@ def: _fan the top
 
 // see the definition for 'scoot back'
 def: follow your neighbor
-  optional: LEFT
+  option: LEFT
   in: 6
   from: BOX, 2x2
     condition: or(PROGRAM AT LEAST(c1), NOT(TBONED(ALL))), \
@@ -200,7 +200,7 @@ def: follow your neighbor
     call: _extend, cast off(3/4)
 
 def: grand swing thru
-  optional: LEFT
+  option: LEFT
   in: 6 // assume same timing as swing thru
   call: _maybe touch(_grand quarter thru(1/2), 2)
 def: grand left swing thru

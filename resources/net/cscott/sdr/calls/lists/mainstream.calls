@@ -41,7 +41,7 @@ def: _single cross cloverleaf
 // callerlab #53: TURN THRU
 
 def: turn thru
-  optional: LEFT
+  option: LEFT
   in: 4
   call: _maybe touch(_turn thru from miniwave)
 def: _turn thru from miniwave
@@ -83,7 +83,7 @@ def: _eight chain even
 
 // callerlab #55: PASS TO THE CENTER
 def: pass to the center
-  optional: LEFT
+  option: LEFT
   call: pass thru
   call: _finish pass to the center
 
@@ -243,7 +243,7 @@ def: _designated end cast 4/4
 
 // callerlab #59: SPIN THE TOP
 def: spin the top
-  optional: LEFT
+  option: LEFT
   in: 8 // from wave
   call: _maybe touch(_wave swing), fan the top
 
@@ -324,7 +324,7 @@ def: _designees cross fold
 
 // callerlab #63: DIXIE STYLE TO AN OCEAN WAVE (2 parts)
 def: dixie style
-  optional: REVERSE
+  option: REVERSE
   spoken: dixie style (to (a|an ocean) wave)?
   in: 4 // trust callerlab that "dixie style" from squared set = 6
   from: SINGLE DOUBLE PASS THRU
@@ -383,11 +383,11 @@ def: _atc tag
 // half tag = mainstream
 // 3/4 tag = plus
 def: tag the line
-  optional: LEFT
+  option: LEFT
   spoken: tag the line (all the way (through)?)?
   call: _tag(_atc tag, 1)
 def: _tag the line(n)
-  optional: LEFT
+  option: LEFT
   spoken: tag the line <n=fraction>
   condition: GREATER(1, [n])
   call: _tag(_atc tag, [n])
@@ -409,13 +409,13 @@ def: tag the line left
 
 def: half tag
   spoken: half tag (the line)?
-  optional: LEFT
+  option: LEFT
   call: _tag the line(1/2)
 
 // callerlab #67: SCOOT BACK
 
 def: scoot back
-  optional: LEFT
+  option: LEFT
   in: 6
   from: BOX, 2x2
     condition: or(PROGRAM AT LEAST(c1), NOT(TBONED(ALL))), \

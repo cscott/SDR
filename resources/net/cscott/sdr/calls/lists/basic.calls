@@ -299,7 +299,7 @@ def: _finish dosado
     prim:  1,-1,none,sashay-start
     prim: -1,-1,none,sashay-finish
 def: dosado
-  optional: LEFT
+  option: LEFT
   in: 6
   from: RH MINIWAVE
     ipart: // how many parts does dosado have, if from miniwave?
@@ -659,7 +659,7 @@ def: _outsides promenade half way
       call: 1/2(reverse(wheel around)), counter rotate(1/2), 1/2(wheel around)
 
 def: promenade half way
-  optional: REVERSE
+  option: REVERSE
   in: 8
   ipart:
     call: _promenade(1/2), 1/2(wheel around)
@@ -923,7 +923,7 @@ def: left and right grand
 
 // callerlab #10: PASS THRU
 def: pass thru
-  optional: LEFT
+  option: LEFT
   in: 2
   // define the common case first: we've got two parts there
   from: FACING DANCERS
@@ -948,7 +948,7 @@ def: left pull by
 
 // callerlab #11: HALF SASHAY FAMILY
 def: half sashay
-  optional: REVERSE
+  option: REVERSE
   in: 4
   from: COUPLE
     select: BEAU
@@ -992,7 +992,7 @@ def: _reverse roll away(sel1,sel2)
     call: _in(4, and(_circle adjust, reverse(roll away)))
 
 def: roll away
-  optional: REVERSE
+  option: REVERSE
   in: 4
   from: COUPLE
     select: BEAU
@@ -1432,7 +1432,7 @@ def: see saw
 
 // timing of square thru is "2 beats per hand"
 def: square thru(n=4)
-  optional: LEFT
+  option: LEFT
   spoken: square thru (<n=number> (hands (around|round)?)?)?
   from: ANY
     condition: and(greater([n],0),not(greater([n],1)))
@@ -1482,7 +1482,7 @@ def: dive thru
 
 // callerlab #31: WHEEL AROUND
 def: wheel around
-  optional: REVERSE
+  option: REVERSE
   in: 4
   call: 2(_quarter wheel)
 def: _quarter wheel
@@ -1605,7 +1605,7 @@ def: balance
 
 // grand swing thru is on the plus list
 def: swing thru
-  optional: LEFT
+  option: LEFT
   in: 6
   // XXX DEFINE ME: also from alamo ring
   call: _maybe touch(_quarter thru(1/2), 2)
@@ -1851,7 +1851,7 @@ def: _right single zoom
 
 // callerlab #47: FLUTTERWHEEL / REVERSE FLUTTERWHEEL
 def: flutterwheel
-  optional: REVERSE
+  option: REVERSE
   in: 8
   from: FACING COUPLES
     ipart:
@@ -1906,7 +1906,7 @@ def: and sweep(c, n)
 //                      other and the other two are facing out"
 // obvious candidates: TRADE BY, RH 3/4 TAG
 def: trade by
-  optional: LEFT
+  option: LEFT
   in: 4
   from: CENTER HALF
     call: _quasi concentric(pass thru, _finish trade by)
@@ -1918,13 +1918,13 @@ def: _finish trade by
 
 // callerlab #50: TOUCH 1/4
 def: touch
-  optional: LEFT
+  option: LEFT
   in: 2
   call: step to a wave
 
 def: _touch(n) // touch 3/4 is mainstream, not basic
   // timing: 2 per quarter
-  optional: LEFT
+  option: LEFT
   spoken: touch <n=fraction>
   condition: or(equal num([n],1/4), program at least(MAINSTREAM)), \
              "Only touch 1/4 is allowed at Basic"

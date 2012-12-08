@@ -28,16 +28,16 @@ def: _grand quarter mix(n)
     call: grand mix
 
 def: quarter mix
-  optional: LEFT
+  option: LEFT
   call: _quarter mix(1/4)
 def: three quarter mix
-  optional: LEFT
+  option: LEFT
   call: _quarter mix(3/4)
 def: grand quarter mix
-  optional: LEFT
+  option: LEFT
   call: _grand quarter mix(1/4)
 def: grand three quarter mix
-  optional: LEFT
+  option: LEFT
   call: _grand quarter mix(3/4)
 
 def: grand mix
@@ -53,7 +53,7 @@ def: grand mix
       call: triple trade
 
 def: grand swing and mix
-  optional: LEFT
+  option: LEFT
   call: _maybe touch(_grand quarter mix(1/2), 3)
 def: grand left swing and mix
   call: mirror(grand swing and mix)
@@ -96,7 +96,7 @@ def: latch on(n=1/4)
     call: right roll to a wave, right arm turn([n])
 
 def: finally(concept,call)
-  optional: METACONCEPT
+  option: METACONCEPT
   spoken: finally <0=concept> <1=anything>
   part: _subtract num(num parts([call]), 1)
     call: _all but last part([call])
@@ -104,7 +104,7 @@ def: finally(concept,call)
     call: _apply([concept], like a([call]))
 
 def: initially(concept,call)
-  optional: METACONCEPT
+  option: METACONCEPT
   spoken: initially <0=concept> <1=anything>
   part:
     call: _apply([concept], _first part([call]))
