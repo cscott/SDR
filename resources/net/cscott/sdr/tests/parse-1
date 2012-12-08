@@ -53,10 +53,12 @@ sdr> ///
 sdr> /// precedence of 'down the middle and ...'
 sdr> /parse("sides down the middle")
 down the middle(SIDE, nothing)
-sdr> /// XXX "heads down the middle and as couples touch 1/4" moved below
+sdr> /parse("heads down the middle and as couples touch 1/4")
+down the middle(HEAD, as couples(_touch(1/4)))
 sdr> ///
 sdr> /// precedence of mirror
-sdr> /// XXX "mirror tandem trade" example moved below
+sdr> /parse("mirror tandem trade")
+mirror(tandem(trade))
 sdr> ///
 sdr> /// precedence of mirror -vs- left
 sdr> /parse("left swing thru and roll")
@@ -77,11 +79,4 @@ sdr> /parse('as couples trade and roll')
 as couples(and roll(trade))
 sdr> /parse('as couples swing and mix')
 as couples(swing and mix)
-sdr> ///
-sdr> /// XXX: we've temporarily broken these productions.  I'll make it right!
-sdr> ///
-sdr> /parse("heads down the middle and as couples touch 1/4")
-down the middle(HEAD, as couples(_touch(1/4)))
-sdr> /parse("mirror tandem trade")
-mirror(tandem(trade))
 sdr> /exit

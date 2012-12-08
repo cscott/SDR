@@ -285,7 +285,10 @@ def: change the wave
   call: change the(swing)
 
 def: change the(c) // XXX NOL Vic Ceder 1992
-  optional: SUPERCALL
+  // XXX supercall disabled because it leads to a grammar conflict on
+  //     "change the centers the difference".  It's not really on-list
+  //     anyway.
+  //optional: SUPERCALL
   spoken: change the <c=anything>
   call: _maybe touch(_wave swing), slip, cross run(CENTER), [c]
 

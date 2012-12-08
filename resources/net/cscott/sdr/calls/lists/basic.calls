@@ -37,7 +37,7 @@ def: _apply concept(concept,call)
   call: _apply([concept], [call])
 def: anyone while others(sel, c1, c2=nothing)
   /* default to 'nothing' if the 'while...' isn't present */
-  spoken: [-21] <sel=anyone> <c1=anything> \
+  spoken: [-20] <sel=anyone> <c1=anything> \
                  (while the (others|<anyone>) <c2=anything>)?
   call: _designator concept([sel], [c1], [c2])
 

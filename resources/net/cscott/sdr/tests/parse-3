@@ -10,4 +10,6 @@ sdr> /parse('initially initially as couples dixie diamond') // from facing lines
 initially(_curry(initially, as couples, _arg(0)), dixie diamond)
 sdr> /parse('initially do one half swing thru')
 initially(_curry(_fractional, 1/2, _arg(0)), swing thru)
+sdr> /parse('change the centers the difference')
+_anything the difference(change the centers)
 sdr> /exit

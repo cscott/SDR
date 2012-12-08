@@ -1,6 +1,7 @@
 package net.cscott.sdr.calls.grm;
 
 import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
+import static net.cscott.sdr.util.Tools.foreach;
 import static net.cscott.sdr.util.Tools.l;
 
 import java.io.File;
@@ -32,6 +33,7 @@ import net.cscott.sdr.calls.grm.Grm.Mult;
 import net.cscott.sdr.calls.grm.Grm.Nonterminal;
 import net.cscott.sdr.calls.grm.Grm.Terminal;
 import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.Tools.F;
 
 /** Build speech/plain-text grammars for the various programs. */
 public class BuildGrammars {
@@ -80,7 +82,7 @@ public class BuildGrammars {
         }
         // remove left recursion, step 1:
         // pull out left recursive rules; rewrite them as 'suffix' rules
-        Set<String> leftRecursiveLHS = new HashSet<String>();
+        Set<String> leftRecursiveLHS = new LinkedHashSet<String>();
         for (RuleAndAction ra : rules) {
             if (!ra.rule.lhs.startsWith("anything_")) continue;
             if (!(ra.rule.rhs instanceof Grm.Concat)) continue;
@@ -104,14 +106,23 @@ public class BuildGrammars {
         // regular productions for these nonterminals
         for (RuleAndAction ra : rules) {
             if (!leftRecursiveLHS.contains(ra.rule.lhs)) continue;
+            ra.rule = new Rule(ra.rule.lhs+"_nosuffix",
+                               substNonterm(ra.rule.rhs,
+                                            ra.rule.lhs,
+                                            ra.rule.lhs+"_nosuffix"),
+                               ra.rule.prec, ra.rule.options);
+        }
+        // make suffix-bridging rules.
+        //    <anything_0> = <anything_0_nosuffix> <anything_0_suffix>*;
+        for (String s : leftRecursiveLHS) {
             // the null for 'prettyName' here indicates that this nonterminal
             // should never be shown to the user during call completion!
             Grm suffix = new Grm.Mult
-                               (new Grm.Nonterminal(ra.rule.lhs+"_suffix", null, -1),
+                               (new Grm.Nonterminal(s+"_suffix", null, -1),
                                 Grm.Mult.Type.STAR);
-            Grm nrule = new Grm.Concat(l(ra.rule.rhs, suffix));
-            ra.rule = new Rule(ra.rule.lhs, nrule,
-                               ra.rule.prec, ra.rule.options);
+            Grm nosuffix = new Grm.Nonterminal(s+"_nosuffix", null, 0);
+            Grm g = new Grm.Concat(l(nosuffix, suffix));
+            rules.add(new RuleAndAction(new Rule(s, g, null), "r=a;"));
         }
         // add leftable/reversable rules
         for (String s : new String[] { "leftable", "reversable" })
@@ -312,26 +323,40 @@ public class BuildGrammars {
     }
     private static Grm rewriteForPrec(Grm g, final int prec) {
         return g.accept(new GrmVisitor<Grm>() {
+             /* These booleans are true if the visited nonterminal *must*
+              * be in leftmost/rightmost position (if present).  For example,
+              *     (<foo>)? <bar> (<baz>)?
+              * <foo> (if present) must be leftmost, and <baz> (if present)
+              * must be rightmost, but although <bar> *may* occur in
+              * leftmost or rightmost position, isLeftmost and isRightmost
+              * should both be false, because it *may not* as well. */
             private boolean isLeftmost=true;
+            private boolean isRightmost=true;
             
             @Override
             public Grm visit(Alt alt) {
                 List<Grm> l = new ArrayList<Grm>(alt.alternates.size());
-                // save isLeftmost; restore it before
+                // save isLeftmost/isRightmost; restore it before
                 // traversing each alt.
-                boolean myLeft = isLeftmost;
+                boolean myLeft = isLeftmost, myRight = isRightmost;
                 for (Grm g : alt.alternates) {
-                    isLeftmost = myLeft;
+                    isLeftmost = myLeft; isRightmost = myRight;
                     l.add(g.accept(this));
-                    // note: broken if empty alternatives
                 }
                 return new Alt(l);
             }
 
             @Override
             public Grm visit(Concat concat) {
-                List<Grm> l = new ArrayList<Grm>(concat.sequence.size());
-                for (Grm g : concat.sequence) {
+                int len = concat.sequence.size();
+                List<Grm> l = new ArrayList<Grm>(len);
+
+                boolean wasRightmost = isRightmost;
+                if (len > 1) isRightmost = false;
+                for (int i=0 ; i<len; i++) {
+                    Grm g = concat.sequence.get(i);
+                    if (wasRightmost && i==(len-1))
+                        isRightmost = true;
                     l.add(g.accept(this));
                     isLeftmost = false; // after the first
                 }
@@ -340,8 +365,10 @@ public class BuildGrammars {
 
             @Override
             public Grm visit(Mult mult) {
+                if (mult.type != Mult.Type.QUESTION) {
+                    isLeftmost = isRightmost = false;
+                }
                 Grm operand = mult.operand.accept(this);
-                isLeftmost = false;// note: if operand is nullable, not accurate
                 return new Mult(operand, mult.type);
             }
 
@@ -352,7 +379,7 @@ public class BuildGrammars {
                  if (!nonterm.ruleName.equals("anything"))
                      return nonterm;
                  // if leftmost, then use prec, else use prec+1
-                 int nprec = (isLeftmost) ? prec : (prec+1);
+                 int nprec = (isLeftmost||isRightmost) ? prec : (prec+1);
                  String ruleName = nonterm.ruleName + "_" + nprec;
                  return new Nonterminal(ruleName, nonterm.ruleName, nonterm.param);
             }
@@ -362,6 +389,38 @@ public class BuildGrammars {
                 return term;
             }
             
+        });
+    }
+    private static Grm substNonterm(Grm g,
+                                    final String from, final String to) {
+        return g.accept(new GrmVisitor<Grm>() {
+            private final GrmVisitor<Grm> self = this;
+            private F<Grm,Grm> map = new F<Grm,Grm>() {
+                @Override
+                public Grm map(Grm g) { return g.accept(self); }
+            };
+            @Override
+            public Alt visit(Alt alt) {
+                return new Alt(foreach(alt.alternates, map));
+            }
+            @Override
+            public Concat visit(Concat concat) {
+                return new Concat(foreach(concat.sequence, map));
+            }
+            @Override
+            public Mult visit(Mult mult) {
+                return new Mult(mult.operand.accept(this), mult.type);
+            }
+            @Override
+            public Nonterminal visit(Nonterminal nonterm) {
+                if (!nonterm.ruleName.equals(from))
+                    return nonterm;
+                return new Nonterminal(to, nonterm.prettyName, nonterm.param);
+            }
+            @Override
+            public Terminal visit(Terminal term) {
+                return term;
+            }
         });
     }
     private static String readFully(Reader r) throws IOException {
