@@ -61,6 +61,8 @@ Square Dance Revolution build file.
           <include name="jdoctest/rhino*.jar" />
         </fileset>
 	<pathelement path="${jdk.home}/lib/tools.jar"/>
+        <!-- this version is more portable -->
+	<pathelement path="${java.home}/../lib/tools.jar"/>
       </path>
       <path id="gwt.path">
 	<pathelement location="${gwt.sdk}/gwt-user.jar"/>
@@ -401,7 +403,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    depends="compile">
       <!-- fork="yes" is required in order to get the classpath right -->
       <junit printsummary="yes" fork="yes" forkmode="once" haltonfailure="yes">
-	<formatter type="plain"/>
+	<formatter type="plain" usefile="false"/>
 	<test name="EDU.Washington.grad.gjb.cassowary.BreatheTest" />
 	<test name="EDU.Washington.grad.gjb.cassowary.ClBranchAndBound" />
 	<test name="EDU.Washington.grad.gjb.cassowary.ClTests" />
