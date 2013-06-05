@@ -1,5 +1,7 @@
 # Square Dance Revolution
 
+[![Build Status](https://travis-ci.org/cscott/SDR.png)](https://travis-ci.org/cscott/SDR)
+
 Square Dance Revolution is a voice-controlled square dance calling
 game, in the spirit of the other "______ Revolution" games.  It can
 also be used as a square dance choreography tool, and contains a

@@ -343,6 +343,9 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 
     <!-- most ant scripts have a build target -->
     <target name="build" depends="jar" description="Alias for jar target"/>
+    <!-- most ant scripts have a test target -->
+    <target name="test" depends="quickdoc"
+            description="Alias for quickdoc target"/>
     <!-- build classes and grammars -->
     <target name="compile" depends="compile.base,compile.index,compile.flf,compile.grm" />
 
