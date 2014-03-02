@@ -55,6 +55,17 @@ public class Sequence implements Serializable {
             this.humanName = humanName;
         }
     }
+    /** Games. */
+    public enum GameType {
+        NORMAL("Normal"),
+        BARSTOOL("Barstool"),
+        STABLE_BARSTOOL("Stable Barstool");
+        /** Human-friendly name for this starting formation/dance type. */
+        public final String humanName;
+        GameType(String humanName) {
+            this.humanName = humanName;
+        }
+    }
 
     public Sequence() {
         // create sequence with default settings

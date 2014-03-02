@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.webapp.client.Sequence.StartingFormationType;
+import net.cscott.sdr.webapp.client.Sequence.GameType;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -28,6 +29,7 @@ public class Model implements HasHandlers {
     private EngineResults _engineResults;
     private int _sequenceChangeIndex = 0;
 
+    private GameType _game = GameType.NORMAL;
     private boolean _isDirty = false;
     private boolean _isPlaying = false;
     private double _sliderPos = 0;
@@ -89,6 +91,7 @@ public class Model implements HasHandlers {
     public SequenceInfo getSequenceInfo() { return this._sequenceInfo; }
     public Sequence getSequence() { return this._sequence; }
     public EngineResults getEngineResults() { return this._engineResults; }
+    public GameType getGame() { return this._game; }
     public boolean isDirty() { return this._isDirty; }
     public boolean isPlaying() { return this._isPlaying; }
     public double getSliderPos() { return this._sliderPos; }
@@ -138,6 +141,12 @@ public class Model implements HasHandlers {
         this.regenerateTags(); // may fire SequenceInfoChangeEvent
         this.fireEvent(new SequenceChangeEvent());
     }
+    public void setGame(GameType gt) {
+        if (gt == _game) return;
+        // set new game type
+        _game = gt;
+        this.fireEvent(new PlayStatusChangeEvent());
+    }
     public void setTitle(String title) {
         if (_sequenceInfo.title.equals(title))
             return; // no change
@@ -156,6 +165,7 @@ public class Model implements HasHandlers {
         this.setSliderPos(0);
         this._sequenceInfo = info;
         this._sequence = sequence;
+        this._game = GameType.NORMAL;
         this._isDirty = false; // nothing to save yet
         this.regenerateTags(); // may fire SequenceInfoChangeEvent
         this.fireEvent(new SequenceInfoChangeEvent());

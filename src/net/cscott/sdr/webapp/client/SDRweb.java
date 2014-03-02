@@ -19,6 +19,7 @@ import net.cscott.sdr.webapp.client.Model.SequenceChangeHandler;
 import net.cscott.sdr.webapp.client.Model.SequenceInfoChangeEvent;
 import net.cscott.sdr.webapp.client.Model.SequenceInfoChangeHandler;
 import net.cscott.sdr.webapp.client.Sequence.StartingFormationType;
+import net.cscott.sdr.webapp.client.Sequence.GameType;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.EntryPoint;
@@ -206,6 +207,27 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 if (last != null)
                     sfItems.get(last).removeStyleName("sdr-menu-selected");
                 sfItems.get(last = sft).addStyleName("sdr-menu-selected");
+            }
+        });
+        formationMenu.addSeparator();
+        final EnumMap<GameType, MenuItem> gameItems =
+            new EnumMap(GameType.class);
+        for (GameType gt : GameType.values()) {
+            final GameType ty = gt;
+            MenuItem mi = formationMenu.addItem(gt.humanName, new Command() {
+                public void execute() {
+                    model.setGame(ty);
+                }});
+            gameItems.put(gt, mi);
+        }
+        model.addPlayStatusChangeHandler(new PlayStatusChangeHandler() {
+            private GameType last = null;
+            public void onPlayStatusChange(PlayStatusChangeEvent sce) {
+                GameType game = sce.getSource().getGame();
+                if (last == game) return;
+                if (last != null)
+                    gameItems.get(last).removeStyleName("sdr-menu-selected");
+                gameItems.get(last = game).addStyleName("sdr-menu-selected");
             }
         });
 
@@ -583,8 +605,12 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
             // update the dance floor
             int n = er.getNumDancers();
             this.danceFloor.setNumDancers(n);
+            Position[] pos = new Position[n];
             for (int i=0; i<n; i++)
-                this.danceFloor.update(i, er.getPosition(i, time));
+                pos[i] = er.getPosition(i, time);
+            er.playGame(model.getGame(), pos); // perform some global remapping
+            for (int i=0; i<n; i++)
+                this.danceFloor.update(i, pos[i]);
         }
     }
     private void newAnimation() {

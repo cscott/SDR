@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.cscott.sdr.webapp.client.Sequence.GameType;
+
 /**
  * This class encapsulates the returned data from the server, when given
  * a {@link Sequence}.
@@ -77,6 +79,33 @@ public class EngineResults implements Serializable {
         List<DancerPath> someMoves = this.pathCache.get(dancerNum);
         int i = lookupFloor(someMoves, new DancerPath(dancerNum, time));
         return someMoves.get(i).evaluate(time);
+    }
+    public void playGame(GameType game, Position[] position) {
+        if (game == GameType.NORMAL || position.length == 0)
+            return; // no position mutation
+        if (game == GameType.BARSTOOL || game == GameType.STABLE_BARSTOOL) {
+            // normalize position around #1 dancer
+            Point adjust = new Point(position[0].x, position[0].y);
+            for (int i=0; i<position.length; i++) {
+                position[i] = new Position(
+                    position[i].x - adjust.x, position[i].y - adjust.y,
+                    position[i].rot
+                );
+            }
+        }
+        if (game == GameType.STABLE_BARSTOOL) {
+            // normalize rotation around #1 dancer
+            double adjust = position[0].rot;
+            for (int i=0; i<position.length; i++) {
+                double x = position[i].x;
+                double y = position[i].y;
+                double rot = position[i].rot;
+                // rotate around origin
+                double nx = Math.cos(adjust) * x - Math.sin(adjust) * y;
+                double ny = Math.sin(adjust) * x + Math.cos(adjust) * y;
+                position[i] = new Position(nx, ny, rot - adjust);
+            }
+        }
     }
     public int getNumDancers() {
         ensurePathCache();
