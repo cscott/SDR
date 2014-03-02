@@ -1,5 +1,6 @@
 package net.cscott.sdr.webapp.client;
 
+import java.util.EnumMap;
 import java.util.List;
 
 import net.cscott.sdr.calls.Program;
@@ -164,21 +165,49 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
             }});
 
         MenuBar programMenu = new MenuBar(true);
+        final EnumMap<Program, MenuItem> programItems =
+            new EnumMap(Program.class);
         for (Program p: Program.values()) {
             final Program pp = p;
-            programMenu.addItem(p.toTitleCase(), new Command() {
+            MenuItem mi = programMenu.addItem(p.toTitleCase(), new Command() {
                 public void execute() {
                     model.setProgram(pp);
                 }});
+            programItems.put(p, mi);
         }
+        model.addSequenceChangeHandler(new SequenceChangeHandler() {
+            private Program last = null;
+            public void onSequenceChange(SequenceChangeEvent sce) {
+                Program p = sce.getSource().getSequence().program;
+                if (last == p) return;
+                if (last != null)
+                    programItems.get(last).removeStyleName("sdr-menu-selected");
+                programItems.get(last = p).addStyleName("sdr-menu-selected");
+            }
+        });
+
         MenuBar formationMenu = new MenuBar(true);
+        final EnumMap<StartingFormationType, MenuItem> sfItems =
+            new EnumMap(StartingFormationType.class);
         for (StartingFormationType sft : StartingFormationType.values()) {
             final StartingFormationType ty = sft;
-            formationMenu.addItem(sft.humanName, new Command() {
+            MenuItem mi = formationMenu.addItem(sft.humanName, new Command() {
                 public void execute() {
                     model.setStartingFormation(ty);
                 }});
+            sfItems.put(sft, mi);
         }
+        model.addSequenceChangeHandler(new SequenceChangeHandler() {
+            private StartingFormationType last = null;
+            public void onSequenceChange(SequenceChangeEvent sce) {
+                StartingFormationType sft =
+                    sce.getSource().getSequence().startingFormation;
+                if (last == sft) return;
+                if (last != null)
+                    sfItems.get(last).removeStyleName("sdr-menu-selected");
+                sfItems.get(last = sft).addStyleName("sdr-menu-selected");
+            }
+        });
 
         model.addSequenceInfoChangeHandler(new SequenceInfoChangeHandler() {
             String lastTitle = null;

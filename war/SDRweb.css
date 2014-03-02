@@ -67,6 +67,10 @@ div.dance-floor {
    overflow: visible !important;
 }
 
+/* menu highlights */
+.sdr-menu-selected {
+  font-weight: bold;
+}
 /* login popup */
 .login-popup {
    background: white;
