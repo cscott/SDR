@@ -179,7 +179,7 @@ Square Dance Revolution build file.
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
 		   excludes="**/package-info.java **/thunk/**/*.java **/webapp/**/*.java"
-		   deprecation="on" source="1.5" target="1.5"
+		   deprecation="on" source="1.7" target="1.7"
 		   debug="true" includeantruntime="false">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
@@ -241,7 +241,7 @@ Square Dance Revolution build file.
 		 doctitle="Square Dance Revolution!"
                  header="${ant.project.name} ${version}"
 		 overview="${src_dir}/overview.html"
-		 source="1.5"
+		 source="1.7"
                  access="${javadoc.access}" nodeprecated="false"
 		 failonerror="true"
                  author="true" use="true" version="true" breakiterator="true">
@@ -296,7 +296,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		 doctitle="INCOMPLETE QUICK DOCS DO NOT USE"
                  header="INCOMPLETE QUICK DOCS DO NOT USE"
 		 overview="${src_dir}/overview.html"
-		 source="1.5"
+		 source="1.7"
                  access="private" nodeprecated="false"
 		 failonerror="true"
                  author="true" use="true" version="true" breakiterator="true">
@@ -547,7 +547,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		   destdir="${classes_dir}"
 		   includes="net/cscott/sdr/calls/lists/*.java"
 		   excludes="**/package-info.java"
-		   deprecation="on" source="1.5" target="1.5"
+		   deprecation="on" source="1.7" target="1.7"
 		   debug="true" includeantruntime="false">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
@@ -586,7 +586,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
 		   includes="net/cscott/sdr/calls/FormationListFast.java"
-		   deprecation="on" source="1.5" target="1.5"
+		   deprecation="on" source="1.7" target="1.7"
 		   debug="true" includeantruntime="false">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
@@ -743,7 +743,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
       <!-- compile GAE stuff -->
       <javac srcdir="${src_dir}" destdir="war/WEB-INF/classes"
 	     includes="net/cscott/sdr/webapp/server/**/*.java"
-	     deprecation="on" source="1.5" target="1.5" debug="true"
+	     deprecation="on" source="1.7" target="1.7" debug="true"
 	     includeantruntime="false">
 	<classpath>
 	  <pathelement location="war/WEB-INF/classes" />
