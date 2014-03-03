@@ -16,10 +16,11 @@ Square Dance Revolution build file.
     <taskdef resource="org/apache/tools/ant/antlr/antlib.xml"
              classpath="lib/dev/antlr3-ant.jar" />
     <!-- cobertura integration -->
-    <property name="cobertura.dir" value="${basedir}/lib/dev/cobertura" />
+    <property name="cobertura.dir" value="${basedir}/lib/dev/cobertura-2.0.3" />
     <path id="cobertura.classpath">
       <fileset dir="${cobertura.dir}">
-        <include name="**/*.jar" />
+        <include name="cobertura-2.0.3.jar" />
+        <include name="lib/**/*.jar" />
       </fileset>
     </path>
     <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
@@ -113,7 +114,7 @@ Square Dance Revolution build file.
 	</delete>
     </target>
     <target name="clean.cobertura" depends="init">
-      <delete file="${instrumented_dir}/cobertura.ser" />
+	<delete dir="${instrumented_dir}" />
     </target>
     <target name="maint-clean" depends="init,clean,clean.grm,clean.tex"
 	    description="Removes ANTLR generated files">
@@ -356,6 +357,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    description="Instrument classes for coverage tool">
       <cobertura-instrument todir="${instrumented_dir}"
 			    datafile="${instrumented_dir}/cobertura.ser">
+	<auxClasspath refid="classpath.path" />
 	<!-- we get an over-size method error in class file
 	     net/cscott/sdr/calls/parser/CallFileLexer$DFA9
          and net/cscott/sdr/calls/lists/C4GrammarParser, so
