@@ -9,7 +9,8 @@ document.write('<script type="text/javascript" src="'+window['JAVADOC_BASE']+'do
 // hook into on-load function.
 orig_onload = window.onload;
 window.onload = function() {
-    orig_onload(); // call original onload function
+    if (typeof orig_onload === 'function')
+        orig_onload(); // call original onload function
     // invoke google's pretty printer
     window['prettyPrint']();
 }
