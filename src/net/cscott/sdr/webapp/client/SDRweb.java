@@ -31,6 +31,8 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.resources.client.ClientBundle;
@@ -433,6 +435,17 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                     !callEntry.isSuggestionListShowing()) {
                     activate();
                 }
+            }});
+        callEntry.setAutoSelectEnabled(false);
+        // Listen for clicks on the suggestions
+        callEntry.addSelectionHandler(new SelectionHandler<CallOracle.Suggestion>() {
+            public void onSelection(SelectionEvent<CallOracle.Suggestion> event) {
+              CallOracle.Suggestion s = event.getSelectedItem();
+              boolean complete =
+                (s.getDisplayString() == s.getReplacementString());
+              if (complete) {
+                activate();
+              }
             }});
         // Listen for mouse events on the Add button.
         callGo.addClickHandler(new ClickHandler() {
