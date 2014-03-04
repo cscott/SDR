@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="sdr" basedir="." default="none">
+<project name="sdr" basedir="." default="none"
+         xmlns:jacoco="antlib:org.jacoco.ant">
 
 <description>
 Square Dance Revolution build file.
@@ -15,15 +16,10 @@ Square Dance Revolution build file.
              classpath="lib/dev/deployment-ant-pack200-1.0beta.jar" />
     <taskdef resource="org/apache/tools/ant/antlr/antlib.xml"
              classpath="lib/dev/antlr3-ant.jar" />
-    <!-- cobertura integration -->
-    <property name="cobertura.dir" value="${basedir}/lib/dev/cobertura-2.0.3" />
-    <path id="cobertura.classpath">
-      <fileset dir="${cobertura.dir}">
-        <include name="cobertura-2.0.3.jar" />
-        <include name="lib/**/*.jar" />
-      </fileset>
-    </path>
-    <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+    <!-- jacoco integration -->
+    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+        <classpath path="${basedir}/lib/dev/jacoco-0.6.4/lib/jacocoant.jar"/>
+    </taskdef>
 
     <!-- load the variable definitions from another file -->
     <property file="build.properties" />
@@ -37,7 +33,7 @@ Square Dance Revolution build file.
       <property name="lib_dir"            value="${basedir}/lib"/>
       <property name="src_dir"            value="${basedir}/src"/>
       <property name="classes_dir"	value="${basedir}/bin"/>
-      <property name="instrumented_dir" value="${basedir}/bin.cover" />
+      <property name="instrument_file"  value="${basedir}/jacoco.exec" />
       <property name="resources_dir"	value="${basedir}/resources"/>
       <if>
 	<not><isset property="javadoc.access" /></not>
@@ -98,7 +94,7 @@ Square Dance Revolution build file.
 	<delete file="${basedir}/${ant.project.name}.jar" />
 	<delete file="${basedir}/${ant.project.name}.jar.MD5" />
 	<!-- coverage information -->
-	<delete dir="${instrumented_dir}" />
+	<delete file="${instrument_file}" />
 	<!-- test output -->
 	<delete>
 	  <fileset dir="${basedir}" includes="TEST-*.txt" />
@@ -112,9 +108,6 @@ Square Dance Revolution build file.
 			     ${ant.project.name}-libs-unpack.jar
 			     ChangeLog" />
 	</delete>
-    </target>
-    <target name="clean.cobertura" depends="init">
-	<delete dir="${instrumented_dir}" />
     </target>
     <target name="maint-clean" depends="init,clean,clean.grm,clean.tex"
 	    description="Removes ANTLR generated files">
@@ -212,7 +205,7 @@ Square Dance Revolution build file.
       <delete file=".test-access" />
     </target>
     <target name="javadoc"
-	    depends="compile,compile.tex,instrument,chk-javadoc"
+	    depends="compile,compile.tex,chk-javadoc"
             unless="javadoc.notRequired"
             description="Generates javadoc in ${api_dir}">
         <!-- copy call file manual to doc-files -->
@@ -236,6 +229,14 @@ Square Dance Revolution build file.
 	<!-- run javadoc -->
 	<mkdir dir="${api_dir}" />
 	<echo message="${javadoc.access}" file="${api_dir}/access" />
+        <!-- we get an over-size method error in class file
+             net/cscott/sdr/calls/lists/C4GrammarParser, so
+          we'll ignore it. -->
+	<jacoco:agent property="jacoco_agent"
+                      destfile="${instrument_file}" append="false"
+                      includes="net.cscott.sdr.*:EDU.*"
+                      excludes="net.cscott.sdr.calls.lists.C4GrammarParser"
+                      />
 	<javadoc sourcepath="${src_dir}"
 		 destdir="${api_dir}"
                  windowtitle="SDR ${version} documentation"
@@ -262,13 +263,11 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		    <fileset dir="lib/dev/jdoctest">
 		      <include name="*.jar"/>
 		    </fileset>
-		    <pathelement path="${instrumented_dir}"/>
 		    <path refid="classpath.path" />
-		    <path refid="cobertura.classpath" />
 		  </path>
 		</taglet>
 		<!-- write coverage info to cobertura.ser -->
-		<arg value="-J-Dnet.sourceforge.cobertura.datafile=${instrumented_dir}/cobertura.ser" />
+		<arg value="-J${jacoco_agent}" />
 		<arg value="-J-Xmx1024M" />
 		<!-- write tests to api/tests -->
 		<arg value="-J-Dnet.cscott.jdoctest.output=${api_dir}/tests" />
@@ -282,10 +281,20 @@ window['JAVADOC_BASE'] = '{@docRoot}';
             <link href="http://java.sun.com/javase/6/docs/api"/>
 	</javadoc>
 	<!-- generate coverage report -->
-	<cobertura-report format="html"
-			  destdir="${api_dir}/coverage"
-			  srcdir="${src_dir}"
-			  datafile="${instrumented_dir}/cobertura.ser" />
+	<jacoco:report>
+          <executiondata>
+            <file file="${instrument_file}"/>
+          </executiondata>
+          <structure name="Square Dance Revolution">
+            <classfiles>
+              <fileset dir="${classes_dir}"/>
+            </classfiles>
+            <sourcefiles encoding="utf-8">
+              <fileset dir="${src_dir}"/>
+            </sourcefiles>
+          </structure>
+          <html destdir="${api_dir}/coverage"/>
+        </jacoco:report>
     </target>
     <target name="quickdoc" depends="compile"
             description="Quickly runs doctests via javadoc; no code coverage">
@@ -351,24 +360,6 @@ window['JAVADOC_BASE'] = '{@docRoot}';
             description="Run tests (alias for quickdoc,run.junit)"/>
     <!-- build classes and grammars -->
     <target name="compile" depends="compile.base,compile.index,compile.flf,compile.grm" />
-
-    <!-- create instrumented binaries for cobertura -->
-    <target name="instrument" depends="compile,clean.cobertura"
-	    description="Instrument classes for coverage tool">
-      <cobertura-instrument todir="${instrumented_dir}"
-			    datafile="${instrumented_dir}/cobertura.ser">
-	<auxClasspath refid="classpath.path" />
-	<!-- we get an over-size method error in class file
-	     net/cscott/sdr/calls/parser/CallFileLexer$DFA9
-         and net/cscott/sdr/calls/lists/C4GrammarParser, so
-	     we'll ignore them. -->
-	<fileset dir="${classes_dir}">
-          <include name="**/*.class" />
-	  <exclude name="**/CallFileLexer*.class" />
-	  <exclude name="**/lists/*GrammarParser*.class" />
-	</fileset>
-      </cobertura-instrument>
-    </target>
 
     <!-- ********************************************************** -->
     <!-- *                                                        * -->

@@ -4,7 +4,7 @@ sdr.jar*
 sdr-libs.jar*
 sdr-src.jar
 bin
-bin.cover
+jacoco.exec
 bin.eclipse
 api
 research
