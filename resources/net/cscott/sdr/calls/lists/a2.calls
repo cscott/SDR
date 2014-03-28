@@ -133,3 +133,24 @@ def: _facing recycle
       select: BELLE
         prim: -2, -1, none
         prim: -2,  2, none
+
+// a2 timing doc says peel and trail from tandem couples is 4 beats
+// while peel and trail from waves or zees is 6 beats
+// ...but I'm guessing from a 3/4 zee (where trailers are already holding
+// hands) it should also be 4 beats
+def: peel and trail
+  ipart:
+    from: 2x2, SINGLE QUARTER ZEE, SINGLE THREE QUARTER ZEE
+      call: _start peel and trail  // 2 or 4 beats
+      call: _finish peel and trail // 2 beats
+def: _start peel and trail
+  from: TANDEM COUPLES, SINGLE THREE QUARTER ZEE
+    call: _in(2, _start peel and step)
+  from: ANY
+    call: _in(4, _start peel and step)
+def: _finish peel and trail
+  // this should already be in the 4-dancer formation
+  // (due to the 'from: 2x2' in the 'peel and trail' definition)
+  condition: equal num(NUM DANCERS(), 4)
+  from: CENTER HALF
+    call: _quasi concentric(_in(2, trade), _in(2, roll))

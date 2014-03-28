@@ -25,6 +25,8 @@
  *   parse-2 at line 7
  *   pass-to-the-center-2 at line 8
  *   pass-to-the-center-3 at line 26
+ *   peel-and-trail-1 at line 44
+ *   peel-off-1 at line 42
  *   peel-the-top-1 at line 32
  *   right-roll-to-a-wave at line 46
  *   siamese-1 at line 30

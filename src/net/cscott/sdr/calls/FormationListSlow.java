@@ -155,7 +155,7 @@ abstract class FormationListSlow {
         create("RH SINGLE 1/4 ZEE",
                 d(+1, 2, "s", BEAU, TRAILER),
                 d(-1, 0, "n", BEAU, CENTER, LEADER),
-                d(+1, 0, "s", BEAU, CENTER, TRAILER),
+                d(+1, 0, "s", BEAU, CENTER, LEADER),
                 d(-1,-2, "n", BEAU, TRAILER));
     public static final NamedTaggedFormation LH_SINGLE_QUARTER_ZEE =
         create("LH SINGLE 1/4 ZEE",

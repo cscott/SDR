@@ -225,30 +225,80 @@ def: _finish linear cycle
       prim: 0, 2, in, sashay-finish
       prim: 0, 0, in
 
+def: peel off
+  in: 4
+  ipart:
+    call: _in(2, _start peel off)
+    call: _in(2, roll)
+// keep this in sync with _start peel and step
+def: _start peel off
+  in: 2
+  from: BOX, TANDEM COUPLES
+    select: LEADER
+      prim: out 2, -1, out, sashay-start sashay-finish
+    select: TRAILER
+      prim: 0, 1, out, sashay-finish
+  from: SINGLE QUARTER ZEE
+    select: LEADER
+      prim: out 2, 0, out, sashay-start
+    select: TRAILER
+      prim: 0, 2, out, sashay-finish
+  from: SINGLE THREE QUARTER ZEE
+    select: LEADER
+      prim: out 2, -2, out, sashay-start sashay-finish
+    select: TRAILER
+      prim: 0, 0, out
+  // possible from a t-bone 2x2 set up, see ceder.net
+  // XXX probably from t-boned zees as well
+  from: 2x2
+    condition: TBONED(ALL), "Can't do peel off from this 2x2"
+    condition: PROGRAM AT LEAST(c1), "T-boned formations not allowed below C1"
+    condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+               "Trailers must step to a hand hold"
+    select: LEADER
+      prim: out 2, -1, out, sashay-start sashay-finish
+    select: TRAILER
+      prim: 0, 1, out, sashay-finish
 
 def: peel the top
   in: 6
-  call: _peel and step, fan the top
+    call: _in(2, _peel and step)
+    call: _in(4, fan the top)
 def: _peel and step
-  in: 2
+  in: 4
   ipart:
-    from: BOX, 2x2 /* XXX: 2x2 doesn't define LEADERS/TRAILERS =( */
-      condition: or(PROGRAM AT LEAST(c1), NOT(TBONED(ALL))), \
-                 "T-boned formations not allowed below C1"
-      condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
-                 "Trailers must step to a hand hold"
-      select: LEADER
-        prim: out 1, 1, out 1/4
-        prim: in 2,  1, in 1/4
-      select: TRAILER
-        prim: 0, 1, none
-    from: SINGLE QUARTER ZEE
-      select: LEADER
-        prim: out 1, 1, out 1/4
-        prim: in 1,  1, in 1/4
-      select: TRAILER
-        prim: 0, 1, none
-        prim: 0, 1, none
+    call: _in(2, _start peel and step)
+    call: _in(2, roll)
+// keep this in sync with _start peel off
+// this is also used for peel and trail
+def: _start peel and step
+  in: 2
+  from: BOX, TANDEM COUPLES
+    select: LEADER
+      prim: out 2, -1, out, sashay-start sashay-finish
+    select: TRAILER
+      prim: 0, 1, none, force-roll-none
+  from: SINGLE QUARTER ZEE
+    select: LEADER
+      prim: out 2, 0, out, sashay-start
+    select: TRAILER
+      prim: 0, 2, none, force-roll-none
+  from: SINGLE THREE QUARTER ZEE
+    select: LEADER
+      prim: out 2, -2, out, sashay-start sashay-finish
+    select: TRAILER
+      prim: 0, 0, none, force-roll-none
+  // XXX also possible from a t-bone 2x2 set up, see ceder.net
+  // and probably from t-boned zees as well
+  from: 2x2
+    condition: TBONED(ALL), "Can't do peel off from this 2x2"
+    condition: PROGRAM AT LEAST(c1), "T-boned formations not allowed below C1"
+    condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+               "Trailers must step to a hand hold"
+    select: LEADER
+      prim: out 2, -1, out, sashay-start sashay-finish
+    select: TRAILER
+      prim: 0, 1, none, force-roll-none
 
 def: spin chain and exchange the gears(n=3/4)
   spoken: spin chain and exchange the gears (but turn the stars <n=fraction>)?

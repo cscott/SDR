@@ -487,14 +487,14 @@ abstract class FormationListFast {
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [BEAU, TRAILER]
       *  [BEAU, LEADER, CENTER]
-      *  [BEAU, TRAILER, CENTER]
+      *  [BEAU, LEADER, CENTER]
       *  [BEAU, TRAILER]
       */
     public static final NamedTaggedFormation RH_SINGLE_QUARTER_ZEE =
         new NamedTaggedFormation("RH SINGLE 1/4 ZEE",
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(2), ExactRotation.SOUTH), Tag.BEAU, Tag.TRAILER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BEAU, Tag.LEADER, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.SOUTH), Tag.BEAU, Tag.TRAILER, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.SOUTH), Tag.BEAU, Tag.LEADER, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-2), ExactRotation.NORTH), Tag.BEAU, Tag.TRAILER));
 
     /** LH SINGLE 1/4 ZEE formation.

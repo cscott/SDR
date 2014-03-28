@@ -72,8 +72,14 @@ sdr> /checkBeats(10, "pass and roll", EIGHT_CHAIN_THRU)
 sdr> /checkBeats(12, "pass and roll your neighbor", EIGHT_CHAIN_THRU)
 sdr> /checkBeats( 4, "peel and trail", [DOUBLE_PASS_THRU,
    >                                    COMPLETED_DOUBLE_PASS_THRU])
-sdr> /checkBeats( 6, "peel and trail", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
-sdr> /// XXX peel and trail from Z is also 6 beats
+sdr> /checkBeats( 6, "peel and trail", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                                    RH_SINGLE_QUARTER_ZEE,
+   >                                    LH_SINGLE_QUARTER_ZEE])
+sdr> /// a2 timing doc says "from Z" is 6 beats, but if DOUBLE PASS THRU
+sdr> /// is only 4 beats, I'm guesing a 3/4 zee (where the trailers are
+sdr> /// already holding hands) is also 4 beats.
+sdr> /checkBeats( 4, "peel and trail", [RH_SINGLE_THREE_QUARTER_ZEE,
+   >                                    LH_SINGLE_THREE_QUARTER_ZEE])
 sdr> /checkBeats( 6, "recycle", [FACING_LINES, EIGHT_CHAIN_THRU])
 sdr> /checkBeats(10, "remake", PARALLEL_RH_WAVES)
 sdr> ///checkBeats(10, "remake", LH_TWIN_FACING_DIAMONDS)         // XXX
