@@ -1,0 +1,100 @@
+C4 calls, Richard Tuck's C4 Teach Order tip 4.1
+
+cooperate, snap, relay your pleasure, change-o, reverse change-o,
+shadow to a diamond, lead the way, hinge and trade, single hinge and
+trade.
+
+sdr> /program = Program.C4; setFormation(Formation.SQUARED_SET)
+|      3Gv  3Bv
+|
+| 4B>            2G<
+|
+| 4G>            2B<
+|
+|      1B^  1G^
+sdr> heads square thru; fan the top
+| 1B^  4Gv  3G^  4Bv  2B^  1Gv  2G^  3Bv
+sdr> /// XXX we should be able to do a full relay your pleasure here
+sdr> do 1/3 of relay your pleasure
+| 4G^  1Bv  4B^  3Gv  1G^  2Bv  3B^  2Gv
+sdr> /setFormation(FormationList.RH_COLUMN.mapStd([]))
+| 1B^  1Gv
+| 
+| 2B^  2Gv
+| 
+| 4G^  4Bv
+| 
+| 3G^  3Bv
+sdr> /// XXX we should be able to do full cooperate, but we don't have
+sdr> /// XXX invert the column defined yet
+sdr> do 1/2 of cooperate
+|   2B>
+| 
+| 4G^  1Bv
+| 
+| 3G^  1Gv
+| 
+| 3B^  2Gv
+| 
+|   4B<
+sdr> /setFormation(FormationList.RH_COLUMN.mapStd([]))
+| 1B^  1Gv
+| 
+| 2B^  2Gv
+| 
+| 4G^  4Bv
+| 
+| 3G^  3Bv
+sdr> /// XXX change-o
+sdr> /// XXX reverse change-o
+sdr> /setFormation(FormationList.PARALLEL_RH_WAVES.mapStd([]))
+| 1B^  1Gv  2B^  2Gv
+| 
+| 4G^  4Bv  3G^  3Bv
+sdr> /// XXX shadow to a diamond
+sdr> /setFormation(FormationList.RH_COLUMN.mapStd([]))
+| 1B^  1Gv
+| 
+| 2B^  2Gv
+| 
+| 4G^  4Bv
+| 
+| 3G^  3Bv
+sdr> lead the way
+| 1G>  1B<
+| 
+| 4G>  4B<
+| 
+| 2B>  2G<
+| 
+| 3B>  3G<
+sdr> touch 1/4
+| 1B^  1Gv
+| 
+| 4B^  4Gv
+| 
+| 2G^  2Bv
+| 
+| 3G^  3Bv
+sdr> do 1/2 of a lead the way
+|      1G^  1Bv
+| 
+| 4Bv  2Gv  4G^  2B^
+| 
+|      3B^  3Gv
+sdr> finish lead the way
+| 1G>  1B<
+| 
+| 2G>  2B<
+| 
+| 4B>  4G<
+| 
+| 3B>  3G<
+sdr> hinge and trade
+| 3B<  3G>  2G<  2B>
+| 
+| 4B<  4G>  1G<  1B>
+sdr> /// XXX single hinge and trade doesn't work yet
+sdr> single hinge and trade
+| 4B>  4G>  3B<  3G<  1G>  1B>  2G<  2B<
+sdr> /exit

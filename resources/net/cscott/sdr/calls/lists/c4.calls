@@ -114,7 +114,7 @@ def: tag the star(m=1/2,n=1)
 def: _tag the star(n=1/2)
   from: FACING COUPLES
     call: 1/2(reverse(swap around))
-    call: counter rotate([n]) // "or whatever 'star turn' amount is indicated
+    call: counter rotate([n]) // or whatever 'star turn' amount is indicated
     call: _start drop in      // "points face in"
 def: _start drop in
   from: GENERAL DIAMOND
@@ -497,3 +497,211 @@ def: run wild
 def: turn on
   call: split counter rotate
   call: extend
+
+// -------------
+
+def: quick change
+  from: CENTER HALF
+    call: _quasi concentric(and(trade, roll), and(circulate, face in))
+
+// Richard Tuck C4 Teach Order
+
+// 4.1
+
+def: cooperate
+  call: circulate
+  call: 1/2(circulate)
+  call: _cooperate part 3
+  call: centers(drop in)
+
+def: _cooperate part 3
+  from: CENTER 6
+    call: _quasi concentric(invert the column(2/3), nothing)
+
+def: snap
+  call: partner tag
+
+def: relay your pleasure
+  call: trade
+  call: _relay your pleasure part 2
+  call: _relay your pleasure part 3
+def: _relay your pleasure part 2
+  from: CENTER 6
+    call: _quasi concentric(cast(3/4), isolate) // XXX isolate is space invader
+def: _relay your pleasure part 3
+  from: CENTER 6
+    call: _quasi concentric(_relay your pleasure centers part 3, press in)
+def: _relay your pleasure centers part 3
+  from: CENTER 2
+    call: _quasi concentric(spread, _finish couple up) // XXX spread is space invader
+
+def: change-o
+  spoken: change o
+  from: GENERAL COLUMNS
+    select: NUMBER 1, NUMBER 2
+      call: column circulate
+    select: NUMBER 3, NUMBER 4
+      call: crossover circulate
+
+def: reverse change-o
+  spoken: reverse change o
+  from: GENERAL COLUMNS
+    select: NUMBER 1, NUMBER 4
+      call: column circulate
+    select: NUMBER 2, NUMBER 3
+      call: crossover circulate
+
+def: shadow to a diamond // XXX breathing?
+  from: CENTER HALF
+    call: _quasi concentric(peel and trail, _ends part cast a shadow) // XXX
+
+// xxx cross shadow to a diamond, criss cross shadow to a diamond
+
+def: lead the way
+  call: _lead the way part 1
+  call: _lead the way part 2
+def: _lead the way part 1
+  from: CENTER HALF
+    call: _quasi concentric(peel off, trade)
+def: _lead the way part 2
+  from: CENTER HALF
+    call: _quasi concentric(bend the line, roll)
+
+// one of the reasons why we can't add "and" to the grammar!
+// also, single hinge and trade will be problematic if we define the
+// "single" concept, so we'll underscore-prepend it
+// (in general we should define a preprocessing step such that
+// an explicit 'single hinge and trade' definition always overrides
+// single(hinge and trade) -- basically preprocess the production
+// 'single <anything>' into 'single <anything except hinge and trade>'
+def: hinge and trade
+  call: as couples(_single hinge and trade)
+
+// XXX from a 4-dancer setup
+def: _single hinge and trade // xxx see above
+  condition: equal num(NUM DANCERS(), 4)
+  call: hinge
+  call: anyone while others(CENTER, trade, _nothing preserve roll)
+  call: roll
+
+// 4.2
+
+/*
+(Cross) Reactivate to a Diamond
+Explosion
+Diamond Recycle (from Diamonds to facing couples)
+Cooperate But …
+Mini Pleasure
+Scamper
+Square the Barge
+4.3
+Short & Sweet
+Lead the Class
+Press for Time
+use Hinge and Trade <====
+Diamond Inlet
+Continue to Invert the Column
+Pair the Line
+Cross Mini Pleasure <====
+4.4
+Diamond Recycle (from Box to Diamonds)
+Coordinate to a Diamond
+Siamese Breakdown
+Diamond Outlet
+Cut Across
+Triple Cast
+4.5
+Swivel (and Cross Swivel) <====
+Pop
+Shove Off <=====
+Spin/Fan Back
+Cross Pair the Line
+Continue to Cross Invert <====
+Stroll & Cycle
+Turn & Weave (box & column)
+4.6
+Spin Chain the Star
+Straight Away
+Chip Off
+Turn & Weave (1/4 tag)
+Splash
+Centers Cut Out
+Beep Beep
+4.7
+Cross Sashay
+Clean Sweep
+Divi Up
+Roll 'Em
+Veer & Turn
+Fan Chain the Star
+Set Back
+Cross Straight Away
+Deuces Wild
+Cloverflow
+Tag Circulate
+Ends Cut In
+Nice & Easy
+
+5.1
+Spin Chain & Circulate the Gears
+Cross to a Diamond
+Reverse the Diamond
+Push Open the Gate
+Clear the Centers
+Dixie Chain
+Cheerio
+Trixie
+5.2
+Right On & Left On <====
+Bail Out
+n/4 Chain & Circulate In
+Spin a Wheel
+Straightfire
+Cross & Divide
+Ship Ahoy
+Cross Linear Cycle
+5.3
+Round Off <=====
+Out Roll to a Wave
+Cross to an Interlocked Diamond | Hourglass
+Turn By
+Curve Right | Left
+Swing Chain the Line
+Right | Left Anchor
+Straight Connect
+5.4
+Flare the Star
+Dixie Daisy
+Round the Horn
+Erase
+Swing Chain the Gears & other Swing Chain calls
+Clover the Wave
+Remember the Alamo
+Break the Alamo
+Tap
+5.5
+Mix the Line
+Triple Turn
+Turn & Left Thru
+Reciprocate
+Touch Tone
+Cloverleaf Turn
+Trim a Web
+Criss Cross the Diamond
+Roll the Wave
+5.6
+Derby / Dixie Derby
+Trixie Spin
+In Roll to a Wave
+Rip the Line
+Convert the Triangle
+Clover the Horn
+Mesh
+5.7
+ATC-eroo also use Switcheroo <==
+Sashay Thru
+Cross Town Roll
+Snap the Diamond
+Shuttle dir | call
+Spin Chain & Circulate In
+*/
