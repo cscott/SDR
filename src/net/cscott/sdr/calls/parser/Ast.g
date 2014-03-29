@@ -24,6 +24,11 @@
  * @doc.test Parsing complicated Prims:
  *  js> new AstParser("(Seq (Prim 1 1/2, 1/2, left, 1, PASS_LEFT, FORCE_ARC, FORCE_ROLL_RIGHT))").ast()
  *  (Seq (Prim 1 1/2, 1/2, left, 1, PASS_LEFT, FORCE_ARC, FORCE_ROLL_RIGHT))
+ * @doc.test Additional Prim direction options:
+ *  js> new AstParser("(Seq (Prim sweep 1, roll 1, roll 1/4, 2, FORCE_ROLL_RIGHT))").ast()
+ *  (Seq (Prim sweep 1, roll 1, roll 1/4, 2, FORCE_ROLL_RIGHT))
+ *  js> new AstParser("(Seq (Prim sweep 1, 0, out 1/4, 1))").ast()
+ *  (Seq (Prim sweep 1, 0, in -1/4, 1))
  * @doc.test Parsing OptCall and ParCall:
  *  js> new AstParser("(Opt (From 'CIRCLE ADJUST (Seq (Apply 'nothing))))").ast()
  *  (Opt (From 'CIRCLE ADJUST (Seq (Apply 'nothing))))
@@ -234,26 +239,20 @@ integer returns [Integer r]
     ;
 fragment
 in_out_num returns [Prim.Direction dir, Fraction amt]
-    : in_out? number
+    : opt_in_out number
        {
            $amt=$number.r;
-           if ($in_out.in || $in_out.out) {
-               $dir = Prim.Direction.IN;
-               if ($in_out.out) $amt = $amt.negate();
-           } else
-               $dir = Prim.Direction.ASIS;
+           $dir = $opt_in_out.dir;
+           if ($opt_in_out.invert) $amt = $amt.negate();
        }
     ;
 fragment
 in_out_dir returns [Prim.Direction dir, ExactRotation rot]
-    : in_out? rotation
+    : opt_in_out rotation
         {
             $rot = ExactRotation.fromRelativeString($rotation.text);
-            if ($in_out.in || $in_out.out) {
-                $dir = Prim.Direction.IN;
-                if ($in_out.out) $rot = $rot.negate();
-            } else
-                $dir = Prim.Direction.ASIS;
+            $dir = $opt_in_out.dir;
+            if ($opt_in_out.invert) $rot = $rot.negate();
         }
     ;
 fragment
@@ -266,12 +265,17 @@ rotation
     ;
 
 fragment
-in_out returns [boolean in, boolean out]
-@init { $in=false; $out=false; }
+opt_in_out returns [Prim.Direction dir, boolean invert]
+@init { $dir=Prim.Direction.ASIS; $invert=false; }
     : {input.LT(1).getText().equalsIgnoreCase("in")}?
-        IDENT { $in=true; }
+        IDENT { $dir=Prim.Direction.IN; }
     | {input.LT(1).getText().equalsIgnoreCase("out")}?
-        IDENT { $out=true; }
+        IDENT { $dir=Prim.Direction.IN; $invert=true; }
+    | {input.LT(1).getText().equalsIgnoreCase("sweep")}?
+        IDENT { $dir=Prim.Direction.SWEEP; }
+    | {input.LT(1).getText().equalsIgnoreCase("roll")}?
+        IDENT { $dir=Prim.Direction.ROLL; }
+    | /* nothing */
     ;
 fragment
 simple_word returns [String r]

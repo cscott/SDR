@@ -72,6 +72,72 @@ import org.junit.runner.RunWith;
  *  DancerPath[from=1,0,n,to=1,0,e,[ROLL_RIGHT],time=3,pointOfRotation=SINGLE_DANCER]
  *  js> f = f.move(StandardDancer.COUPLE_1_BOY, p1b.to).move(StandardDancer.COUPLE_1_GIRL, p1g.to); f.toStringDiagram()
  *  1B>  1G>
+ * @doc.test Check roll/sweep direction modifiers with a circle left:
+ *  js> importPackage(net.cscott.sdr.calls.ast)
+ *  js> f = Formation.FOUR_SQUARE; f.toStringDiagramWithDetails()
+ *  3Gv  3Bv           v    v
+ *  
+ *  1B^  1G^           ^    ^
+ *  js> // circle left 1/4 to set up sweep and roll
+ *  js> // (modifiers should yield zeros here; not yet any sweep or roll)
+ *  js> primBoy= AstNode.valueOf('(Prim sweep 2, 2, right, 2)')
+ *  (Prim sweep 2, 2, right, 2)
+ *  js> primGirl= AstNode.valueOf('(Prim -2, roll 2, right, 2)')
+ *  (Prim -2, roll 2, right, 2)
+ *  js> paths =
+ *    > [[d,EvalPrim.apply(d, f, d.isBoy() ? primBoy : primGirl)] for each
+ *    >   (d in Iterator(f.dancers()))]; undefined
+ *  js> paths.forEach(function(e) { f = f.move(e[0], e[1].to); });
+ *  js> // now we have roll right and sweep left
+ *  js> f.toStringDiagramWithDetails()
+ *  1B>  3G<         RL>  RL<
+ *  
+ *  1G>  3B<         RL>  RL<
+ *  js> primBoy = AstNode.valueOf('(Prim 0, sweep 2, roll 1/4, 2)')
+ *  (Prim 0, sweep 2, roll 1/4, 2)
+ *  js> primGirl = AstNode.valueOf('(Prim sweep 2, 0, roll 1/4, 2)')
+ *  (Prim sweep 2, 0, roll 1/4, 2)
+ *  js> paths =
+ *    > [[d,EvalPrim.apply(d, f, d.isBoy() ? primBoy : primGirl)] for each
+ *    >   (d in Iterator(f.dancers()))]; undefined
+ *  js> paths.forEach(function(e) { f = f.move(e[0], e[1].to); });
+ *  js> f.toStringDiagramWithDetails()
+ *  1Gv  1Bv         RLv  RLv
+ *  
+ *  3B^  3G^         RL^  RL^
+ * @doc.test Check roll/sweep direction modifiers with a counter rotate:
+ *  js> importPackage(net.cscott.sdr.calls.ast)
+ *  js> f = Formation.FOUR_SQUARE; f.toStringDiagramWithDetails()
+ *  3Gv  3Bv           v    v
+ *  
+ *  1B^  1G^           ^    ^
+ *  js> // counter rotate 1/4 to set up sweep and roll
+ *  js> // (modifiers should yield zeros here; not yet any sweep or roll)
+ *  js> prim = AstNode.valueOf('(Prim sweep 2, 2, in 1/4, 2)')
+ *  (Prim sweep 2, 2, in 1/4, 2)
+ *  js> paths = [[d,EvalPrim.apply(d, f, prim)] for each
+ *    >   (d in Iterator(f.dancers()))]; undefined
+ *  js> paths.forEach(function(e) { f = f.move(e[0], e[1].to); });
+ *  js> // now we have a mix of roll and sweep directions
+ *  js> f.toStringDiagramWithDetails()
+ *  1B>  1G<         RL>  LR<
+ *  
+ *  3G>  3B<         LR>  RL<
+ *  js> prim = AstNode.valueOf('(Prim 0, sweep 2, roll -1/4, 2)')
+ *  (Prim 0, sweep 2, roll -1/4, 2)
+ *  js> paths = [[d,EvalPrim.apply(d, f, prim)] for each
+ *    >   (d in Iterator(f.dancers()))]; undefined
+ *  js> paths.forEach(function(e) { f = f.move(e[0], e[1].to); });
+ *  js> f.toStringDiagramWithDetails()
+ *  1G^  1B^         RR^  LL^
+ *  
+ *  3Bv  3Gv         LLv  RRv
+ *  js> // veer in reverse sweep direction, should put everyone on origin
+ *  js> prim = AstNode.valueOf('(Prim sweep -1, in 1, none, 2)')
+ *  (Prim sweep -1, in 1, none, 2)
+ *  js> [EvalPrim.apply(d, f, prim).to for each
+ *    >  (d in Iterator(f.sortedDancers()))]
+ *  0,0,n,0,0,n,0,0,s,0,0,s
  * @doc.test Check that roll/sweep work, even if you turn more than 360 degrees:
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> f=Formation.SQUARED_SET.select(StandardDancer.COUPLE_1_BOY,
@@ -270,6 +336,30 @@ public abstract class EvalPrim {
     public static DancerPath apply(Dancer d, Formation f, Prim p) {
         return apply(p, f.location(d), f.dancers().size());
     }
+    private static Fraction computeRollSweep(Fraction amt, Direction d,
+                                             Position reference,
+                                             Position p1, Position p2) {
+        Fraction rollSweep;
+        if (d == Direction.SWEEP) {
+            rollSweep = reference.sweep();
+        } else if (d == Direction.ROLL) {
+            rollSweep = reference.roll();
+        } else {
+            return amt;
+        }
+        // is p1 -> p2 cw or ccw?
+        if (p1 != null && p2 != null && !rollSweep.equals(Fraction.ZERO)) {
+            ExactRotation r1 = ExactRotation.fromXY(p1.x, p1.y);
+            ExactRotation r2 = ExactRotation.fromXY(p2.x, p2.y);
+            // only the sign (and zero-ness) is important here
+            rollSweep = rollSweep.multiply(r1.minSweep(r2));
+            // flip sign by multiplying by amt again, since if amt is negative
+            // we want to go in the *anti* roll/sweep direction.
+            rollSweep = rollSweep.multiply(amt);
+        }
+        int cmp = rollSweep.compareTo(Fraction.ZERO);
+        return (cmp==0) ? Fraction.ZERO : (cmp < 0) ? amt.negate() : amt;
+    }
     /** "Dance" the given primitive from the given position (in a
      * formation of the given size) to yield a {@link DancerPath}. */
     public static DancerPath apply(Prim prim, final Position from, int formationSize) {
@@ -278,11 +368,22 @@ public abstract class EvalPrim {
         // to reference the flagpole center of the set) by
         // re-evaluating to an 8-person formation before the quarter in.
         final Point center = new Point(Fraction.ZERO, Fraction.ZERO);
+        // evaluate ROLL/SWEEP modifiers
+        Fraction fwdAmt = computeRollSweep
+            (prim.y, prim.dirY, from,
+             from.forwardStep(prim.y, false),
+             from.forwardStep(prim.y.negate(), false));
+        Fraction sideAmt = computeRollSweep
+            (prim.x, prim.dirX, from,
+             from.sideStep(prim.x, false),
+             from.sideStep(prim.x.negate(), false));
+        Fraction turnAmt =
+            computeRollSweep(prim.rot.amount, prim.dirRot, from, null, null);
         // apply 'in/out' modifier to x/y/rotation
 	Position to = from
-	    .forwardStep(prim.y, prim.dirY==Direction.IN)
-	    .sideStep(prim.x, prim.dirX==Direction.IN)
-            .turn(prim.rot.amount, prim.dirRot==Direction.IN, from);
+	    .forwardStep(fwdAmt, prim.dirY==Direction.IN)
+	    .sideStep(sideAmt, prim.dirX==Direction.IN)
+            .turn(turnAmt, prim.dirRot==Direction.IN, from);
         // set the point of rotation based on the size of the formation
         // XXX: we may need to do something smarter here eventually.
         // XXX: por should be the center of our formation, and mapped back

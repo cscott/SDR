@@ -710,14 +710,16 @@ quite yet.
 
 <prim_body> ::= <sashay_movement> `,' <forward_movement> `,' <turn> \\ ( `,' <prim_flag>+ )?
 
-<sashay_movement> ::= <in_out_num>
+<sashay_movement> ::= <dir_num>
 
-<forward_movement> ::= <in_out_num>
+<forward_movement> ::= <dir_num>
 
-<in_out_num> ::= (`in' | `out')? <number>
+<dir_num> ::= <dir_modifier>? <number>
 
-<turn> ::= (`in' |`out' |`right' | `left') <number>?
+<turn> ::= ( <dir_modifier> | `right' | `left' ) <number>?
        \alt  `none'
+
+<dir_modifier> ::= `in' | `out' | `roll' | `sweep'
 
 <prim_flag> ::= <ID>
 \end{grammar}

@@ -14,6 +14,10 @@
  *  [foo[basic]]
  *  js> cl.get(0).getEvaluator(null, java.util.Arrays.asList()).simpleExpansion()
  *  (Seq (Prim 1 1/2, 1/2, left, 1, PASS_LEFT, FORCE_ARC, FORCE_ROLL_RIGHT))
+ *  js> cl=CallFileBuilder.parseCalllist("program:basic\ndef: foo\n prim: sweep 1, sweep -1, roll")
+ *  [foo[basic]]
+ *  js> cl.get(0).getEvaluator(null, java.util.Arrays.asList()).simpleExpansion()
+ *  (Seq (Prim sweep 1, sweep -1, roll 1/4, 1))
  * @doc.test Parsing spoken-language grammar rules:
  *  js> CallFileBuilder.parseGrm("foo bar|bat? baz")
  *  foo bar|bat? baz
@@ -263,6 +267,8 @@ one_seq returns [B<? extends SeqCall> sc]
 direction returns [BDirection d]
     : IN { $d=BDirection.IN; }
     | OUT { $d=BDirection.OUT; }
+    | ROLL { $d=BDirection.ROLL; }
+    | SWEEP { $d=BDirection.SWEEP; }
     ;
 rotation returns [Fraction r]
     : RIGHT { $r = Fraction.ONE; }

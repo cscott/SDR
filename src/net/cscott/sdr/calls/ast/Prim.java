@@ -33,6 +33,19 @@ public class Prim extends SeqCall {
         /** Directions are relative to formation: positive is "toward the
          * center" and negative is "away from the center". */
         IN,
+        /** Directions are relative to the sweep direction: positive is
+         * "continuing in sweep direction" and negative is "away from
+         * sweep direction". */
+        SWEEP,
+        /** Directions are relative to the roll direction: movement
+         *  direction is as if roll were sweep. */
+        ROLL;
+	/**
+	 * Lowercase string for a {@link Direction} name.
+	 */
+	public String lower() {
+	    return toString().toLowerCase();
+	}
     };
     /** The {@link Flag} enumeration represents various properties of the
      *  movement described by this {@link Prim}. */
@@ -165,12 +178,13 @@ public class Prim extends SeqCall {
     @Override
     public String argsToString() {
 	StringBuilder sb = new StringBuilder();
-	if (dirX==Direction.IN) sb.append("in ");
+	if (dirX!=Direction.ASIS) { sb.append(dirX.lower()); sb.append(" "); }
 	sb.append(x.toProperString()); sb.append(", ");
-	if (dirY==Direction.IN) sb.append("in ");
+	if (dirY!=Direction.ASIS) { sb.append(dirY.lower()); sb.append(" "); }
 	sb.append(y.toProperString()); sb.append(", ");
-	if (dirRot==Direction.IN) {
-	    sb.append("in "); sb.append(rot.toString());
+	if (dirRot!=Direction.ASIS) {
+	    sb.append(dirRot.lower()); sb.append(" ");
+	    sb.append(rot.toString());
 	} else {
 	    sb.append(rot.toRelativeString());
 	}

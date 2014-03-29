@@ -38,12 +38,14 @@ import net.cscott.sdr.util.Fraction;
 abstract class BuilderHelper {
     /** An enumeration of directions, as specified in the call file. */
     static enum BDirection {
-        ASIS, IN, OUT;
+        ASIS, IN, OUT, ROLL, SWEEP;
         /** Translate {@link BDirection}s to {@link Direction}s. */
         Prim.Direction primDir() {
             switch (this) {
             case OUT:
             case IN: return Prim.Direction.IN;
+            case ROLL: return Prim.Direction.ROLL;
+            case SWEEP: return Prim.Direction.SWEEP;
             default: assert false;
             case ASIS: return Prim.Direction.ASIS;
             }

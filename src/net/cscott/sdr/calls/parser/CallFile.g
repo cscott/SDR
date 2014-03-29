@@ -603,10 +603,10 @@ prim_body
     : in_out_num COMMA! in_out_num COMMA! turn opt_prim_attrib
     ;
 in_out_num
-    : (IN | OUT)? number
+    : (IN | OUT | ROLL | SWEEP)? number
     ;
 turn
-    : (IN | OUT | RIGHT | LEFT) opt_turn_amt
+    : (IN | OUT | RIGHT | LEFT | ROLL | SWEEP) opt_turn_amt
     | NONE -> NONE ^(NUMBER["0"])
     ;
 opt_turn_amt
@@ -760,6 +760,8 @@ ASSERT:    {afterIndent && beforeColon}?=> 'assert' ;
 OUT:       {afterPrim}?=> 'out';
 LEFT:      {afterPrim}?=> 'left';
 RIGHT:     {afterPrim}?=> 'right';
+ROLL:      {afterPrim}?=> 'roll';
+SWEEP:     {afterPrim}?=> 'sweep';
 NONE:      {afterPrim}?=> 'none';
 
 IDENT
