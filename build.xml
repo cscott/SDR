@@ -79,7 +79,7 @@ Square Dance Revolution build file.
     </target>
 
     <!-- delete generated files -->
-    <target name="clean" depends="init,clean.flf,clean.gwt"
+    <target name="clean" depends="init,clean.flf,clean.gwt,clean.package_info"
             description="Removes the generated class files and javadoc">
         <!-- version numbers -->
         <delete file="src/net/cscott/sdr/Version.java" />
@@ -108,6 +108,12 @@ Square Dance Revolution build file.
 			     ${ant.project.name}-libs-unpack.jar
 			     ChangeLog" />
 	</delete>
+    </target>
+    <target name="clean.package_info" depends="init"
+            description="Remove package_info.java files generated for junit">
+      <delete>
+        <fileset dir="src" includes="**/package_info.java" />
+      </delete>
     </target>
     <target name="maint-clean" depends="init,clean,clean.grm,clean.tex"
 	    description="Removes ANTLR generated files">
@@ -169,10 +175,23 @@ Square Dance Revolution build file.
             libdirectory="src/net/cscott/sdr/calls/parser" >
 		<classpath refid="classpath.path" />
     </antlr3>
-	    <mkdir dir="${classes_dir}" />
+    <mkdir dir="${classes_dir}" />
+    <javac srcdir="${src_dir}"
+		   destdir="${classes_dir}"
+		   includes="net/cscott/sdr/AddDoctestRunner.java"
+		   deprecation="on" source="1.7" target="1.7"
+		   debug="true" includeantruntime="false">
+    </javac>
+    <java classname="net.cscott.sdr.AddDoctestRunner">
+      <classpath><path refid="classpath.path"/></classpath>
+      <arg value="src/net/cscott/sdr/calls/parser/AstParser.java" />
+      <arg value="src/net/cscott/sdr/calls/parser/CallFileBuilder.java" />
+      <arg value="src/net/cscott/sdr/calls/parser/CallFileLexer.java" />
+      <arg value="src/net/cscott/sdr/calls/parser/CallFileParser.java" />
+    </java>
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
-		   excludes="**/package-info.java **/thunk/**/*.java **/webapp/**/*.java"
+		   excludes="**/package?info.java **/thunk/**/*.java **/webapp/**/*.java"
 		   deprecation="on" source="1.7" target="1.7"
 		   debug="true" includeantruntime="false">
                    <compilerarg value="-Xlint:unchecked"/>
@@ -205,7 +224,7 @@ Square Dance Revolution build file.
       <delete file=".test-access" />
     </target>
     <target name="javadoc"
-	    depends="compile,compile.tex,chk-javadoc"
+	    depends="compile,compile.tex,chk-javadoc,clean.package_info"
             unless="javadoc.notRequired"
             description="Generates javadoc in ${api_dir}">
         <!-- copy call file manual to doc-files -->
@@ -296,7 +315,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
           <html destdir="${api_dir}/coverage"/>
         </jacoco:report>
     </target>
-    <target name="quickdoc" depends="compile"
+    <target name="quickdoc" depends="compile,clean.package_info"
             description="Quickly runs doctests via javadoc; no code coverage">
       <tempfile property="temp_dir" destDir="${java.io.tmpdir}" prefix="doc"/>
 	<mkdir dir="${temp_dir}" />
@@ -393,43 +412,72 @@ window['JAVADOC_BASE'] = '{@docRoot}';
     </target>
     <target name="run.junit"
 	    description="Runs all doctests."
-	    depends="compile">
+	    depends="compile,compile.index">
       <!-- fork="yes" is required in order to get the classpath right -->
+    <java classname="net.cscott.sdr.AddDoctestRunner">
+      <classpath><path refid="classpath.path"/></classpath>
+      <arg value="src/net/cscott/sdr/package-info.java" />
+      <arg value="src/net/cscott/sdr/calls/package-info.java" />
+      <arg value="src/net/cscott/sdr/calls/transform/package-info.java" />
+    </java>
+    <javac srcdir="${src_dir}"
+		   destdir="${classes_dir}"
+		   includes="net/cscott/sdr/**/package_info.java"
+		   deprecation="on" source="1.7" target="1.7"
+		   debug="true" includeantruntime="false">
+		   <classpath refid="classpath.path" />
+    </javac>
       <junit printsummary="yes" fork="yes" forkmode="once" haltonfailure="yes">
 	<formatter type="plain" usefile="false"/>
 	<test name="EDU.Washington.grad.gjb.cassowary.BreatheTest" />
 	<test name="EDU.Washington.grad.gjb.cassowary.ClBranchAndBound" />
 	<test name="EDU.Washington.grad.gjb.cassowary.ClTests" />
+	<test name="net.cscott.sdr.package_info" /> <!-- package-info -->
 	<test name="net.cscott.sdr.PMSD" />
 	<test name="net.cscott.sdr.calls.Breather" />
 	<test name="net.cscott.sdr.calls.CallDB" />
+	<test name="net.cscott.sdr.calls.DancerPath" />
 	<test name="net.cscott.sdr.calls.EvalPrim" />
 	<test name="net.cscott.sdr.calls.Evaluator" />
-	<test name="net.cscott.sdr.calls.DancerPath" />
 	<test name="net.cscott.sdr.calls.ExactRotation" />
+	<test name="net.cscott.sdr.calls.ExprList" />
 	<test name="net.cscott.sdr.calls.Formation" />
 	<test name="net.cscott.sdr.calls.FormationList" />
+	<test name="net.cscott.sdr.calls.FormationListFast" />
+	<test name="net.cscott.sdr.calls.FormationListJS" />
 	<test name="net.cscott.sdr.calls.FormationListSlow" />
 	<test name="net.cscott.sdr.calls.GeneralFormationMatcher" />
+	<test name="net.cscott.sdr.calls.MatcherList" />
 	<test name="net.cscott.sdr.calls.NamedTaggedFormation" />
 	<test name="net.cscott.sdr.calls.Permutation" />
 	<test name="net.cscott.sdr.calls.Position" />
 	<test name="net.cscott.sdr.calls.PredicateList" />
 	<test name="net.cscott.sdr.calls.Program" />
 	<test name="net.cscott.sdr.calls.Rotation" />
-	<test name="net.cscott.sdr.calls.MatcherList" />
 	<test name="net.cscott.sdr.calls.StandardDancer" />
 	<test name="net.cscott.sdr.calls.TaggedFormation" />
+	<test name="net.cscott.sdr.calls.package_info" />  <!-- package-info -->
 	<test name="net.cscott.sdr.calls.ast.Apply" />
 	<test name="net.cscott.sdr.calls.ast.AstNode" />
+	<test name="net.cscott.sdr.calls.ast.Expr" />
 	<test name="net.cscott.sdr.calls.ast.If" />
 	<test name="net.cscott.sdr.calls.grm.CompletionEngine" />
 	<test name="net.cscott.sdr.calls.grm.Grm" />
+	<test name="net.cscott.sdr.calls.lists.A2List" />
 	<test name="net.cscott.sdr.calls.lists.BasicList" />
+	<test name="net.cscott.sdr.calls.lists.C1List" />
+	<test name="net.cscott.sdr.calls.lists.C4List" />
+	<test name="net.cscott.sdr.calls.parser.AstParser" />
+	<test name="net.cscott.sdr.calls.parser.CallFileBuilder" />
+	<test name="net.cscott.sdr.calls.parser.CallFileLexer" />
+	<test name="net.cscott.sdr.calls.parser.CallFileParser" />
 	<test name="net.cscott.sdr.calls.transform.BeatCounter" />
 	<test name="net.cscott.sdr.calls.transform.CallFileLoader" />
+	<test name="net.cscott.sdr.calls.transform.Finish" />
 	<test name="net.cscott.sdr.calls.transform.Fractional" />
+	<test name="net.cscott.sdr.calls.transform.PartsCounter" />
 	<test name="net.cscott.sdr.calls.transform.RemoveIn" />
+	<test name="net.cscott.sdr.calls.transform.package_info" />  <!-- package-info -->
 	<test name="net.cscott.sdr.toolbox.DWResolver" />
 	<test name="net.cscott.sdr.util.Bezier" />
 	<test name="net.cscott.sdr.util.Box" />
@@ -539,7 +587,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
 		   includes="net/cscott/sdr/calls/lists/*.java"
-		   excludes="**/package-info.java"
+		   excludes="**/package?info.java"
 		   deprecation="on" source="1.7" target="1.7"
 		   debug="true" includeantruntime="false">
                    <compilerarg value="-Xlint:unchecked"/>

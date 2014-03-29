@@ -26,6 +26,10 @@ import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.util.Fraction;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
+
 /**
  * Count the number of parts in a given call.  Returns the number of parts
  * if it is defined; throws a {@link BadCallException} if it is ambiguous
@@ -58,6 +62,7 @@ import net.cscott.sdr.util.Fraction;
  *    > }
  *  Controversial division into parts.
  */
+@RunWith(value=JDoctestRunner.class)
 public class PartsCounter extends ValueVisitor<Fraction, Void> {
     static class CantCountPartsException extends BadCallException {
         CantCountPartsException(String msg) { super(msg); }

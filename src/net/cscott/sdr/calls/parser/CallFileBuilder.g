@@ -63,6 +63,10 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
 }
 @members {
     private final Set<String> names = new HashSet<String>();

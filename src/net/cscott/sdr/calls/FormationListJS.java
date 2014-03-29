@@ -9,6 +9,10 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
 
+import org.junit.runner.RunWith;
+
+import net.cscott.jdoctest.JDoctestRunner;
+
 /** Javascript thunk to work around problem using Rhino to peer at
  *  {@link FormationListFast}/{@link FormationListSlow} via reflection.
  *  Since these are package-scope classes, Java's access control policy
@@ -31,6 +35,7 @@ import org.mozilla.javascript.Scriptable;
  *  js> FormationList.all.size() > 0
  *  true
  */
+@RunWith(value=JDoctestRunner.class)
 public class FormationListJS implements Scriptable {
     /** The class to reflect, so we can compare {@link FormationListFast}
      *  with {@link FormationListSlow} within doctests. */

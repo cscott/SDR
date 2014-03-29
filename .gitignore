@@ -21,3 +21,4 @@ war/sdrweb
 war/sdr
 war/WEB-INF/classes
 war/WEB-INF/lib/sdrweb.jar
+src/**/package_info.java
