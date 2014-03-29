@@ -724,6 +724,19 @@ quite yet.
 <prim_flag> ::= <ID>
 \end{grammar}
 
+Movements without a \syntax{<dir_modifier>} are absolute:
+\syntax{<sashay_movement>} is positive when sashaying to the right,
+\syntax{<forward_movement>} is positive when moving forward, and
+\syntax{<turn>} is positive when turning to the right.  Movements can
+also be relative to the center of the current sub-formation, using the
+\call{in} and \call{out} modifiers.  The \call{sweep} and \call{roll}
+modifiers make movement directions relative to the current roll or
+sweep direction; for example, using \call{sweep~2} for
+\syntax{<sashay_movement>} will sashay two units in the sweep
+direction, whether that's to the right or to the left.  If
+\syntax{<number>} is omitted in the \syntax{<turn>} production, the
+default turn is 1/4 (one wall).
+
 \subsection{Expression grammar}
 \begin{grammar}
 <expr_body> ::= <words_or_ref> ( `(' <expr_args>? `)' )?
