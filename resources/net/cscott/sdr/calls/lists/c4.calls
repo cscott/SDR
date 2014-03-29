@@ -78,6 +78,15 @@ def: piecewise(concept, call)
     part: _subtract num(num parts([call]), 1)
       call: piecewise([concept], finish([call]))
 
+def: trail and peel
+  call: _in(2, _trail and step)
+  call: _in(2, _centers(and roll(face out)))
+
+def: trail the top
+  in: 6
+    call: _in(2, _trail and step)
+    call: _in(4, fan the top)
+
 // C4 class teaching order
 
 // week 1

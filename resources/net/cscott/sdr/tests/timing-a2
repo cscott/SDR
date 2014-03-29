@@ -116,8 +116,8 @@ sdr> /checkBeats( 6, "trail off",
    >                 [DOUBLE_PASS_THRU, COMPLETED_DOUBLE_PASS_THRU,
    >                  PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
    >                  RH_COLUMN, LH_COLUMN,
-   >                  ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES])
-sdr> /// xxx: trail off from Z, also 6 beats
+   >                  RH_SINGLE_QUARTER_ZEE, LH_SINGLE_QUARTER_ZEE,
+   >                  RH_SINGLE_THREE_QUARTER_ZEE, LH_SINGLE_THREE_QUARTER_ZEE])
 sdr> /// "transfer and <anything>", 8 beats, <anything> starts on 5
 sdr> /checkBeats( 8, "transfer and hinge", [RH_COLUMN, LH_COLUMN])
 sdr> /checkBeats(5+8, "transfer and box transfer", [RH_COLUMN, LH_COLUMN])

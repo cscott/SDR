@@ -228,77 +228,83 @@ def: _finish linear cycle
 def: peel off
   in: 4
   ipart:
-    call: _in(2, _start peel off)
-    call: _in(2, roll)
-// keep this in sync with _start peel and step
-def: _start peel off
-  in: 2
-  from: BOX, TANDEM COUPLES
-    select: LEADER
-      prim: out 2, -1, out, sashay-start sashay-finish
-    select: TRAILER
-      prim: 0, 1, out, sashay-finish
-  from: SINGLE QUARTER ZEE
-    select: LEADER
-      prim: out 2, 0, out, sashay-start
-    select: TRAILER
-      prim: 0, 2, out, sashay-finish
-  from: SINGLE THREE QUARTER ZEE
-    select: LEADER
-      prim: out 2, -2, out, sashay-start sashay-finish
-    select: TRAILER
-      prim: 0, 0, out
-  // possible from a t-bone 2x2 set up, see ceder.net
-  // XXX probably from t-boned zees as well
-  from: 2x2
-    condition: TBONED(ALL), "Can't do peel off from this 2x2"
-    condition: PROGRAM AT LEAST(c1), "T-boned formations not allowed below C1"
-    condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
-               "Trailers must step to a hand hold"
-    select: LEADER
-      prim: out 2, -1, out, sashay-start sashay-finish
-    select: TRAILER
-      prim: 0, 1, out, sashay-finish
+    from: mixed(RH BOX, LH BOX, TANDEM COUPLES)
+      select: LEADER
+        prim: 0, 0, out
+        prim: in 1, 2, roll
+      select: TRAILER
+        prim: 0, 1, out, sashay-finish
+        prim: 0, 0, roll
+    from: mixed(RH SINGLE QUARTER ZEE, LH SINGLE QUARTER ZEE)
+      select: LEADER
+        prim: out 2, 0, out, sashay-finish // XXX
+        prim: 0, 0, roll
+      select: TRAILER
+        prim: 0, 2, out, sashay-finish
+        prim: 0, 0, roll
+    from: mixed(RH SINGLE THREE QUARTER ZEE, LH SINGLE THREE QUARTER ZEE)
+      select: LEADER
+        prim: 0, 0, out
+        prim: in 2, 2, roll
+      select: TRAILER
+        prim: 0, 0, out
+        prim: 0, 0, roll
+    // possible from a t-bone 2x2 set up, see ceder.net
+    // XXX probably from t-boned zees as well
+    from: 2x2
+      condition: TBONED(ALL), "Can't do peel off from this 2x2"
+      condition: PROGRAM AT LEAST(c1), "T-boned formations not allowed below C1"
+      condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+                 "Trailers must step to a hand hold"
+      select: LEADER
+        prim: 0, 0, out
+        prim: in 1, 2, roll
+      select: TRAILER
+        prim: 0, 1, out, sashay-finish
+        prim: 0, 0, roll
 
 def: peel the top
   in: 6
     call: _in(2, _peel and step)
     call: _in(4, fan the top)
+
 def: _peel and step
   in: 4
   ipart:
-    call: _in(2, _start peel and step)
-    call: _in(2, roll)
-// keep this in sync with _start peel off
-// this is also used for peel and trail
-def: _start peel and step
-  in: 2
-  from: BOX, TANDEM COUPLES
-    select: LEADER
-      prim: out 2, -1, out, sashay-start sashay-finish
-    select: TRAILER
-      prim: 0, 1, none, force-roll-none
-  from: SINGLE QUARTER ZEE
-    select: LEADER
-      prim: out 2, 0, out, sashay-start
-    select: TRAILER
-      prim: 0, 2, none, force-roll-none
-  from: SINGLE THREE QUARTER ZEE
-    select: LEADER
-      prim: out 2, -2, out, sashay-start sashay-finish
-    select: TRAILER
-      prim: 0, 0, none, force-roll-none
-  // XXX also possible from a t-bone 2x2 set up, see ceder.net
-  // and probably from t-boned zees as well
-  from: 2x2
-    condition: TBONED(ALL), "Can't do peel off from this 2x2"
-    condition: PROGRAM AT LEAST(c1), "T-boned formations not allowed below C1"
-    condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
-               "Trailers must step to a hand hold"
-    select: LEADER
-      prim: out 2, -1, out, sashay-start sashay-finish
-    select: TRAILER
-      prim: 0, 1, none, force-roll-none
+    from: mixed(RH BOX, LH BOX, TANDEM COUPLES)
+      select: LEADER
+        prim: 0, 0, out
+        prim: in 1, 2, roll
+      select: TRAILER
+        prim: 0, 1, none
+        prim: 0, 0, none
+    from: mixed(RH SINGLE QUARTER ZEE, LH SINGLE QUARTER ZEE)
+      select: LEADER
+        prim: out 2, 0, out, sashay-finish // XXX
+        prim: 0, 0, roll
+      select: TRAILER
+        prim: 0, 2, none
+        prim: 0, 0, none
+    from: mixed(RH SINGLE THREE QUARTER ZEE, LH SINGLE THREE QUARTER ZEE)
+      select: LEADER
+        prim: 0, 0, out
+        prim: in 2, 2, roll
+      select: TRAILER
+        prim: 0, 0, none
+        prim: 0, 0, none
+    // possible from a t-bone 2x2 set up, see ceder.net
+    // XXX probably from t-boned zees as well
+    from: 2x2
+      condition: TBONED(ALL), "Can't do peel off from this 2x2"
+      condition: PROGRAM AT LEAST(c1), "T-boned formations not allowed below C1"
+      condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+                 "Trailers must step to a hand hold"
+      select: LEADER
+        prim: 0, 0, out
+        prim: in 1, 2, roll
+      select: TRAILER
+        prim: 0, 1, none
+        prim: 0, 0, none
 
 def: spin chain and exchange the gears(n=3/4)
   spoken: spin chain and exchange the gears (but turn the stars <n=fraction>)?

@@ -161,3 +161,55 @@ def: _finish wheel the ocean
 
 def: _finish wheel the sea
   call: walk others dodge(BELLE)
+
+// "trailers stingy trail off", more or less
+def: trail to a diamond
+  in: 4
+  ipart:
+    from: TANDEM COUPLES
+      select: LEADER
+        select: BEAU
+          prim: in 1, 2, in, pass-left
+          prim: 3, 3, roll
+        select: BELLE
+          prim: in 1, 4, in, pass-left
+          prim: -5, 3, roll
+      // right hinge and right shoulder passes for trailers
+      select: TRAILER
+        select: BEAU
+          prim: in 1, 2, in
+          prim: 0, 0, none
+        select: BELLE
+          prim: in 1, 0, in
+          prim: 0, 0, none
+    from: BOX
+      call: 1/2(press ahead)
+      call: _zee trail to a diamond
+    from: SINGLE QUARTER ZEE
+      call: press ahead
+      call: _zee trail to a diamond
+    from: SINGLE THREE QUARTER ZEE
+      call: _zee trail to a diamond
+    // possible from a t-bone 2x2 set up, see ceder.net
+    // XXX probably from t-boned zees as well
+    from: 2x2
+      condition: TBONED(ALL), "Can't do trail to a diamond from this 2x2"
+      condition: PROGRAM AT LEAST(c1), "T-boned formations not allowed below C1"
+      condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+                 "Trailers must step to a hand hold"
+      select: LEADER
+        prim: 0, 1, none
+        prim: in 1, 1, in
+        prim: in 3, 3, roll
+      select: TRAILER
+        prim: 0, 1, none
+        prim: in 1, 1, in
+        prim: 0, 0, none
+def: _zee trail to a diamond
+  from: SINGLE THREE QUARTER ZEE
+    select: LEADER
+      prim: in 1, 1, in
+      prim: in 3, 3, roll
+    select: TRAILER
+      prim: in 1, 1, in
+      prim: 0, 0, none

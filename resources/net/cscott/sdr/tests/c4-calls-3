@@ -1,0 +1,49 @@
+Even more C4 calls.
+
+Trail the top, trail and peel.
+
+sdr> /program = Program.C4;
+C4
+sdr> heads square thru ; touch 1/4
+| 3G^  4Bv  2G^  3Bv
+| 
+| 1B^  4Gv  2B^  1Gv
+sdr> trail and peel
+| 4G^  1B^  4B^  3G^  1Gv  2Bv  3Bv  2Gv
+sdr> couples hinge
+| 4G>  2B>
+| 
+| 1B>  1G>
+| 
+| 3G<  3B<
+| 
+| 4B<  2G<
+sdr> trail and peel
+| 1G<
+| 
+| 4G>
+| 
+| 1B<
+| 
+| 2B>
+| 
+| 4B<
+| 
+| 3B>
+| 
+| 2G<
+| 
+| 3G>
+sdr> fan the top
+| 1Gv  4G^  1Bv  2B^
+| 
+| 4Bv  3B^  2Gv  3G^
+sdr> trail the top
+| 4B<  2G<
+| 
+| 1G<  1B<
+| 
+| 3B>  3G>
+| 
+| 4G>  2B>
+sdr> /exit

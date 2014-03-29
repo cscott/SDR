@@ -140,7 +140,8 @@ def: _facing recycle
 // hands) it should also be 4 beats
 def: peel and trail
   ipart:
-    from: 2x2, SINGLE QUARTER ZEE, SINGLE THREE QUARTER ZEE
+    from: 2x2, mixed(RH SINGLE QUARTER ZEE, LH SINGLE QUARTER ZEE, \
+                     RH SINGLE THREE QUARTER ZEE, LH SINGLE THREE QUARTER ZEE)
       call: _start peel and trail  // 2 or 4 beats
       call: _finish peel and trail // 2 beats
 def: _start peel and trail
@@ -148,9 +149,134 @@ def: _start peel and trail
     call: _in(2, _start peel and step)
   from: ANY
     call: _in(4, _start peel and step)
+def: _start peel and step
+  in: 2
+  from: mixed(RH BOX, LH BOX, TANDEM COUPLES)
+    select: LEADER
+      prim: out 2, -1, out, sashay-start sashay-finish
+    select: TRAILER
+      prim: 0, 1, none, force-roll-none
+  from: mixed(RH SINGLE QUARTER ZEE, LH SINGLE QUARTER ZEE)
+    select: LEADER
+      prim: out 2, 0, out, sashay-start
+    select: TRAILER
+      prim: 0, 2, none, force-roll-none
+  from: mixed(RH SINGLE THREE QUARTER ZEE, LH SINGLE THREE QUARTER ZEE)
+    select: LEADER
+      prim: out 2, -2, out, sashay-start sashay-finish
+    select: TRAILER
+      prim: 0, 0, none, force-roll-none
+  // XXX also possible from a t-bone 2x2 set up, see ceder.net
+  // and probably from t-boned zees as well
+  from: 2x2
+    condition: TBONED(ALL), "Can't do peel off from this 2x2"
+    condition: PROGRAM AT LEAST(c1), "T-boned formations not allowed below C1"
+    condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+               "Trailers must step to a hand hold"
+    select: LEADER
+      prim: out 2, -1, out, sashay-start sashay-finish
+    select: TRAILER
+      prim: 0, 1, none, force-roll-none
 def: _finish peel and trail
   // this should already be in the 4-dancer formation
   // (due to the 'from: 2x2' in the 'peel and trail' definition)
   condition: equal num(NUM DANCERS(), 4)
   from: CENTER HALF
     call: _quasi concentric(_in(2, trade), _in(2, roll))
+
+// left shoulder passes
+def: trail off
+  in: 6
+  ipart:
+    from: TANDEM COUPLES
+      select: LEADER
+        select: BEAU
+          prim: in 1, 2, in, pass-left
+          prim: 3, 3, roll
+        select: BELLE
+          prim: in 1, 4, in, pass-left
+          prim: -5, 3, roll
+      select: TRAILER
+        select: BEAU
+          prim: in 1, 0, in, pass-left
+          prim: -1, 1, roll, sashay-finish
+        select: BELLE
+          prim: in 1, 2, in, pass-left
+          prim: -1, 1, roll
+    from: mixed(RH BOX, LH BOX)
+      call: 1/2(press ahead)
+      call: _zee trail off
+    from: mixed(RH SINGLE QUARTER ZEE, LH SINGLE QUARTER ZEE)
+      call: press ahead
+      call: _zee trail off
+    from: mixed(RH SINGLE THREE QUARTER ZEE, LH SINGLE THREE QUARTER ZEE)
+      call: _zee trail off
+    // possible from a t-bone 2x2 set up, see ceder.net
+    // XXX probably from t-boned zees as well
+    from: 2x2
+      condition: TBONED(ALL), "Can't do peel off from this 2x2"
+      condition: PROGRAM AT LEAST(c1), "T-boned formations not allowed below C1"
+      condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+                 "Trailers must step to a hand hold"
+      select: LEADER
+        prim: 0, 1, none
+        prim: in 1, 1, in
+        prim: in 3, 3, roll
+      select: TRAILER
+        prim: 0, 1, none
+        prim: in 1, 1, in
+        prim: in 1, 1, roll
+def: _zee trail off
+  from: mixed(RH SINGLE THREE QUARTER ZEE, LH SINGLE THREE QUARTER ZEE)
+    select: LEADER
+      prim: in 1, 1, in
+      prim: in 3, 3, roll
+    select: TRAILER
+      prim: in 1, 1, in
+      prim: in 1, 1, roll
+
+def: _trail and step
+  in: 4
+  ipart:
+    from: TANDEM COUPLES
+      select: LEADER
+        select: BEAU
+          prim: in 1, 1, in, pass-left
+          prim: 2, 3, roll
+        select: BELLE
+          prim: in 1, 3, in, pass-left
+          prim: -4, 3, roll
+      select: TRAILER
+        prim: 0, 1, none
+        prim: 0, 0, none
+    from: mixed(RH BOX, LH BOX)
+      call: 1/2(press ahead)
+      call: _zee trail and step
+    from: mixed(RH SINGLE QUARTER ZEE, LH SINGLE QUARTER ZEE)
+      call: press ahead
+      call: _zee trail and step
+    from: mixed(RH SINGLE THREE QUARTER ZEE, LH SINGLE THREE QUARTER ZEE)
+      call: _zee trail and step
+    // possible from a t-bone 2x2 set up, see ceder.net
+    // XXX probably from t-boned zees as well
+    from: 2x2
+      condition: TBONED(ALL), "Can't do peel off from this 2x2"
+      condition: PROGRAM AT LEAST(c1), "T-boned formations not allowed below C1"
+      condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+                 "Trailers must step to a hand hold"
+      select: LEADER
+        prim: 0, 1, none
+        prim: in 1, 0, in
+        prim: in 2, 3, roll
+      select: TRAILER
+        prim: 0, 1, none
+        prim: 0, 0, none
+        prim: 0, 0, none
+def: _zee trail and step
+  from: mixed(RH SINGLE THREE QUARTER ZEE, LH SINGLE THREE QUARTER ZEE)
+    select: LEADER
+      prim: in 1, 0, in
+      prim: in 2, 3, roll
+    select: TRAILER
+      prim: 0, 0, none
+      prim: 0, 0, none
