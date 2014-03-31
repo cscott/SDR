@@ -47,7 +47,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/dev/jdoctest/rhino-1.7r2-rc3.jar"/>
 	<classpathentry kind="lib" path="lib/dev/junit-4.6.jar"/>
-	<classpathentry kind="lib" path="lib/dev/jdoctest/jdoctest-1.5.jar" sourcepath="/JDoctest/src"/>
+	<classpathentry kind="lib" path="lib/dev/jdoctest/jdoctest-1.6.jar" sourcepath="/JDoctest/src"/>
 	<classpathentry kind="lib" path="lib/antlr-runtime-3.4.jar" />
 	<classpathentry kind="lib" path="lib/dev/antlr-3.4-complete-no-antlrv2.jar" />
 	<classpathentry kind="lib" path="/home/cananian/jdk1.6.0_17/lib/tools.jar"/>
