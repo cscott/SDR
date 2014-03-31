@@ -182,7 +182,7 @@ Square Dance Revolution build file.
 		   deprecation="on" source="1.7" target="1.7"
 		   debug="true" includeantruntime="false">
     </javac>
-    <java classname="net.cscott.sdr.AddDoctestRunner">
+    <java classname="net.cscott.sdr.AddDoctestRunner" failonerror="true">
       <classpath><path refid="classpath.path"/></classpath>
       <arg value="src/net/cscott/sdr/calls/parser/AstParser.java" />
       <arg value="src/net/cscott/sdr/calls/parser/CallFileBuilder.java" />
@@ -389,7 +389,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    description="Runs the application."
 	    depends="jar">
 	    <java jar="${basedir}/${ant.project.name}.jar"
-	          fork="true"
+	          fork="true" failonerror="true"
 		  maxmemory="512m">
 		  <sysproperty key="java.library.path" value="lib/jme"/>
                   <!--<sysproperty key="frontend" value="epFrontEnd"/>-->
@@ -414,7 +414,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    description="Runs all doctests."
 	    depends="compile,compile.index">
       <!-- fork="yes" is required in order to get the classpath right -->
-    <java classname="net.cscott.sdr.AddDoctestRunner">
+    <java classname="net.cscott.sdr.AddDoctestRunner" failonerror="true">
       <classpath><path refid="classpath.path"/></classpath>
       <arg value="src/net/cscott/sdr/package-info.java" />
       <arg value="src/net/cscott/sdr/calls/package-info.java" />
@@ -497,7 +497,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    description="Runs a javascript shell, for development and debugging."
 	    depends="jar">
       <java classname="org.mozilla.javascript.tools.shell.Main"
-	    fork="true">
+	    fork="true" failonerror="true">
         <arg value="-version" /><arg value="170" />
 	<classpath>
 	  <fileset dir=".">
@@ -522,7 +522,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
     <target name="compile.index"
 	    description="Assemble the index of tests."
 	    depends="compile.base">
-      <java classname="net.cscott.sdr.PMSD"
+      <java classname="net.cscott.sdr.PMSD" failonerror="true"
 	    output="resources/net/cscott/sdr/tests/index~" >
 	<arg value="resources/net/cscott/sdr/tests/index" />
 	<classpath>
@@ -550,7 +550,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    description="Build the natural-langauge grammars."
 	    depends="compile.base">
 	    <java classname="net.cscott.sdr.calls.grm.BuildGrammars"
-	          fork="true">
+	          fork="true" failonerror="true">
 		  <!-- enable assertions when building grammars -->
 		  <jvmarg value="-ea:net.cscott..." />
                   <!-- needs a decent amount of heap space -->
@@ -575,7 +575,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 			conversiontimeout="10000">
 		  <classpath refid="classpath.path" />
 		</antlr3>
-		<java classname="net.cscott.sdr.calls.grm.AntlrPostProcessor">
+		<java classname="net.cscott.sdr.calls.grm.AntlrPostProcessor"
+                      failonerror="true">
 		  <arg value="@{grammar.file}" />
 		  <classpath>
 		    <path refid="classpath.path"/>
@@ -616,7 +617,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    description="Build the optimized FormationList."
 	    depends="compile.base">
 	    <java classname="net.cscott.sdr.calls.FormationListSlow"
-		  fork="true">
+		  fork="true" failonerror="true">
 		  <jvmarg value="-ea:net.cscott..." />
 		  <arg value="src/net/cscott/sdr/calls/FormationListFast.java"/>
                   <classpath>
