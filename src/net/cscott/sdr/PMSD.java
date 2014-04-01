@@ -303,10 +303,6 @@ public class PMSD {
             String testResult = runTest(null, resource, testCase);
             // resplit and compare.
             int i = 0, mismatch = -1;
-            for ( ; i < testCase.size(); i++)
-                // we ignore input in the test case before the first sdr> prompt
-                if (testCase.get(i).trim().startsWith("sdr>"))
-                    break;
             for (String outLine: testResult.split("(\\r\\n?|\\n)")) {
                 String inLine = (i < testCase.size()) ? testCase.get(i) : "";
                 if (!inLine.trim().equals(outLine.trim())) {
@@ -371,10 +367,14 @@ public class PMSD {
         StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);
         // very simple regexp to find input lines
+        List<String> title = new ArrayList<String>();
         List<String> input = new ArrayList<String>();
         for (String line: lines) {
             if (line.startsWith("sdr> ") || line.startsWith("   > "))
                 input.add(line.substring(5));
+            else if (input.isEmpty())
+                // echo title lines preceding first command
+                pw.println(line);
         }
         final Iterator<String> inputIterator = input.iterator();
         ReaderWriter rw = new ReaderWriter() {
@@ -409,10 +409,21 @@ public class PMSD {
             PrintWriter pw = new PrintWriter(System.out, true);
             // ooh, got an argument!
             // run test in its own javascript context
-            String result =
-                runTest(null, args[0], readLines(new FileInputStream(args[0])));
-            pw.print(result);
+            boolean success = true;
+            for (String filename : args) {
+                List<String> input =
+                    readLines(new FileInputStream(filename));
+                String testResult =
+                    runTest(null, filename, input);
+                // mismatch?
+                if (!Arrays.asList(testResult.split("(\\r\\n?|\\n)"))
+                    .equals(input)) {
+                    success = false;
+                }
+                pw.println(testResult);
+            }
             pw.flush();
+            if (!success) System.exit(1); // indicate failing test
             return;
         }
         // console i/o

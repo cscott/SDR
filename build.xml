@@ -522,7 +522,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
     <target name="compile.index"
 	    description="Assemble the index of tests."
 	    depends="compile.base">
-      <java classname="net.cscott.sdr.PMSD" failonerror="true"
+      <java classname="net.cscott.sdr.PMSD"
 	    output="resources/net/cscott/sdr/tests/index~" >
 	<arg value="resources/net/cscott/sdr/tests/index" />
 	<classpath>
