@@ -1632,3 +1632,61 @@ any hand(x):
 
 similarly for "the wave" suffix -- this lets specific definitions
 override the more general concept (and grammar)
+------
+"use phantoms" matcher matches a formation *exactly* (well, modulo
+rotation).  formation must be centered, all dancers must be in
+one of the formation spots.  missing dancers must have phantoms
+added, who can be distinguished with the various pattern matchers.
+Ie, "start a squeeze" / "ends slide together" should be something
+like:
+
+  def: _start a squeeze
+    from: use phantoms(GENERAL 4x4)
+      condition: MATCH(_FACING PATTERN(ALL), "[<>^v][<>][<>][<>^v][v^]  [v^][v^]  [v^][<>^v][<>][<>][<>^v]")
+        prim: in 2, 0, none, sashay-start sashay-finish
+
+note how phantom dancers are rendered as spaces in the pattern.
+
+This particular example might better be matched as _use phantoms(ENDS OF 4x4)
+where FormationList.ENDS_OF_4x4 is f("+--+","|  |","|  |","+--+")
+but I think in general being able to specify phantom positions in
+pattern matchers will be useful.
+---
+COLUMN CIRCULATE should match against something like "TRADE BY, EIGHT
+CHAIN, RH COLUMN, LH COLUMN, GENERAL COLUMN" so that phantom formations will
+match one of the non-general formations and thus be able to do the
+call without collisions.  This will allow:
+  _o concentric(<anything>, from(_use phantoms(GENERAL O), 2(o circulate))
+
+Here we also let "o circulate" be a special case of "o(circulate)"
+which means "o(column circulate)"; we need a bit of grammar hack for
+that. (which might be implemented manually as:
+  def: o(c)
+    from: ANY
+      condition: EQUAL CALL([c], "circulate")
+      // ideally we "commit" to this branch here
+      call: o(column circulate)
+    from: GENERAL O
+      call: _o([c])
+---
+"commit" operation can be handled as a try/catch that catches a
+BadCallException bce and throws a wrapped CommittedBadCallException(bce).
+Inside `from:` (which is the only alternate construct) we catch
+CommittedBadCallException and let it short-circuit evaluation of
+alternates, rethrowing the wrapped bce.
+syntax:
+  from: ANY
+    condition: foo
+      call: _commit(xxxx) ?
+  from: OTHERS
+... or maybe it would be better to wrap this?
+we can make a Matcher which takes a predicate, like:
+  from: CONDITION(foo) // ANY iff foo is true.
+so then we can short-circuit with:
+  from: <foo> [committed]
+  from commit: <foo>
+  from else: <foo>
+or even
+  from: ELSE // ANY iff this is the first matching from.
+  from: and(ELSE, ....)
+---
