@@ -28,7 +28,7 @@ import net.cscott.sdr.util.Fraction;
  * Equivalent to "reverse order finish reverse order".
  * @author C. Scott Ananian
  */
-public class AllButLastPart extends Finish {
+public class AllButLastPart extends FirstPart {
     public AllButLastPart(DanceState ds) {
         super("_all but last part", safeConcepts, ds);
     }
@@ -102,15 +102,6 @@ public class AllButLastPart extends Finish {
             nChildren.set(nChildren.size()-1, nLast);
             return s.build(nChildren);
         }
-    }
-
-    /* Keep initial conditions, but skip 'ends in' conditions. */
-    @Override
-    public Comp visit(If iff, Void t) {
-        if (iff.when==AFTER)
-            return iff.child.accept(this, t);
-        return iff.build(iff.condition.accept(this,t),
-                         iff.child.accept(this,t));
     }
 
     /** A list of concepts which it is safe to hoist "_all but last part" through.

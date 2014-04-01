@@ -15,6 +15,7 @@ import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.If;
+import net.cscott.sdr.calls.ast.OptCall;
 import net.cscott.sdr.calls.ast.Part;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
@@ -29,7 +30,12 @@ import net.cscott.sdr.util.Fraction;
  */
 public class FirstPart extends Finish {
     public FirstPart(DanceState ds) {
-        super("_first part", safeConcepts, ds);
+        this("_first part", safeConcepts, ds);
+    }
+    // for (re)use by AllButLastPart
+    protected FirstPart(String conceptName, Set<String> safeConcepts,
+                        DanceState ds) {
+        super(conceptName, safeConcepts, ds);
     }
 
     /* (non-Javadoc)
@@ -116,6 +122,13 @@ public class FirstPart extends Finish {
             zeroParts.add(nFirst);
             return s.build(zeroParts);
         }
+    }
+
+    /* Keep starting formation in definition.
+     */
+    @Override
+    public OptCall visit(OptCall oc, Void t) {
+        return oc.build(oc.matcher, oc.child.accept(this, t));
     }
 
     /* Keep initial conditions, but skip 'ends in' conditions. */

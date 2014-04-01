@@ -226,7 +226,7 @@ public class Finish extends PartsVisitor<Void> {
             Finish visitor = getPartsVisitor(ds);
             assert args.size()==1;
             Apply a = new Apply(args.get(0));
-            if (DEBUG) System.err.println("BEFORE: "+a);
+            if (DEBUG) System.err.println("BEFORE "+getName()+": "+a);
             SeqCall sc = a.accept(visitor, null);
             Comp result = new Seq(sc);
             // OPTIMIZATION: SEQ(PART(c)) = c
@@ -235,7 +235,7 @@ public class Finish extends PartsVisitor<Void> {
                 if (p.divisibility==DIVISIBLE)
                     result = p.child;
             }
-            if (DEBUG) System.err.println("AFTER: "+result);
+            if (DEBUG) System.err.println("AFTER "+getName()+": "+result);
             return new Evaluator.Standard(result);
         }
         protected abstract Finish getPartsVisitor(DanceState ds);
