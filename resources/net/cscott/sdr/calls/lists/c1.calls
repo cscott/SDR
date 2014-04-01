@@ -26,9 +26,8 @@ def: concentric(c)
 
 def: counter rotate(n=1/4)
   spoken: counter rotate (<n=fraction>)?
-  from: ANY
+  from: condition(equal num(NUM DANCERS(), 4))
     // 4 dancer version, 4 beats per quarter
-    condition: equal num(NUM DANCERS(), 4)
     call: _fractional(_multiply num([n], 4), _in(4, _counter rotate 1/4))
   from: ANY
     // 8 dancer version, no official timing.  we'll say 6 beats

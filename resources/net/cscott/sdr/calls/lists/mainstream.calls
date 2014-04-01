@@ -157,11 +157,9 @@ def: cast(n)
   from: ANY
     condition: formation(mixed(GENERAL LINE, RH MINIWAVE, LH MINIWAVE)), \
                "Need to be in miniwave or line of 4"
-    from: ANY
-      condition: equal num(_fraction(_multiply num([n], 4)), 0)
+    from: condition(equal num(_fraction(_multiply num([n], 4)), 0))
       call: _fractional([n], _cast 4/4)
-    from: ANY
-      condition: greater(1/4, [n])
+    from: condition(greater(1/4, [n]))
       call: _fractional(_multiply num(2, _fraction(_multiply num([n], 4))), \
                         _cast 1/8)
     from: ANY
@@ -368,11 +366,10 @@ def: _tag(atc, n)
     call: [atc], _finish_tag([n])
 def: _finish_tag(n)
   from: SINGLE DOUBLE PASS THRU
-    condition: EQUAL NUM([n], 0)
-    call: nothing
-  from: SINGLE DOUBLE PASS THRU
-    condition: GREATER([n], 0)
-    call: _fractional(_multiply num(4,[n]), _in(1, _extend))
+    from: condition(EQUAL NUM([n], 0))
+      call: nothing
+    from: condition(GREATER([n], 0))
+      call: _fractional(_multiply num(4,[n]), _in(1, _extend))
 // or else: n=0->atc; else fractional(n, part(atc,extend), part(extend), part(extend), part(extend))
 
 def: _atc tag

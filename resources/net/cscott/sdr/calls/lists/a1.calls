@@ -19,16 +19,14 @@ def: quarter in
   in: 2
   from: 2x2 // into your 2x2
     prim: 0,0,in
-  from: ANY
-    condition: equal num(NUM DANCERS(), 2)
+  from: condition(equal num(NUM DANCERS(), 2))
     prim: 0,0,in
 
 def: quarter out
   in: 2
   from: 2x2 // out of your 2x2
     prim: 0,0,out
-  from: ANY
-    condition: equal num(NUM DANCERS(), 2)
+  from: condition(equal num(NUM DANCERS(), 2))
     prim: 0,0,out
 
 def: pair off

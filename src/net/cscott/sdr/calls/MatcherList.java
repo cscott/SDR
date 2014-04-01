@@ -716,7 +716,7 @@ public class MatcherList {
     public static Matcher mixed(String name, TaggedFormation... goals) {
         return GeneralFormationMatcher.makeMatcher(name, Arrays.asList(goals));
     }
-    public static ExprFunc<Matcher> _MIXED = new ExprFunc<Matcher>() {
+    public static final ExprFunc<Matcher> _MIXED = new ExprFunc<Matcher>() {
         @Override
         public String getName() { return "mixed"; }
         @Override
@@ -740,7 +740,7 @@ public class MatcherList {
             return true;
         }
     };
-    public static ExprFunc<Matcher> _OR = new ExprFunc<Matcher>(){
+    public static final ExprFunc<Matcher> _OR = new ExprFunc<Matcher>(){
         @Override
         public String getName() { return "or"; }
         @Override
@@ -761,6 +761,70 @@ public class MatcherList {
             return true;
         }
     };
+    /**
+     * The "condition" matcher allows the introduction of predicates
+     * into the match process.
+     *
+     * @doc.test Simple math in a matcher.
+     *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr _add num '1 '1) '2))")
+     *  (Expr condition (Expr equal num (Expr _add num '1 '1) '2))
+     *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), null)
+     *  ANY
+     *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr _add num '1 '1) '3))")
+     *  (Expr condition (Expr equal num (Expr _add num '1 '1) '3))
+     *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), null)
+     *  NONE
+     * @doc.test Using the optional second argument.
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined
+     *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr num dancers) '8) 'COUPLE)")
+     *  (Expr condition (Expr equal num (Expr num dancers) '8) 'COUPLE)
+     *  js> e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), ds).match(ds.currentFormation())
+     *       AAv
+     *  
+     *  BB>       CC<
+     *  
+     *       DD^
+     *  AA:
+     *     3B^  3G^
+     *   [3B: BEAU; 3G: BELLE]
+     *  BB:
+     *     4B^  4G^
+     *   [4B: BEAU; 4G: BELLE]
+     *  CC:
+     *     2B^  2G^
+     *   [2B: BEAU; 2G: BELLE]
+     *  DD:
+     *     1B^  1G^
+     *   [1B: BEAU; 1G: BELLE]
+     *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr num dancers) '4) 'COUPLE)")
+     *  (Expr condition (Expr equal num (Expr num dancers) '4) 'COUPLE)
+     *  js> try { e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), ds).match(ds.currentFormation()) } catch (e) { print (e.javaException); }
+     *  net.cscott.sdr.calls.NoMatchException: No match for NONE: NONE matcher used
+     */
+    public static ExprFunc<Matcher> _CONDITION = new ExprFunc<Matcher>() {
+        @Override
+        public String getName() { return "condition"; }
+        @Override
+        public Matcher evaluate(Class<? super Matcher> type,
+                                DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            assert args.size() == 1 || args.size() == 2;
+            boolean b = args.get(0).evaluate(Boolean.class, ds);
+            if (!b)
+                return NONE;
+            if (args.size() > 1)
+                return args.get(1).evaluate(Matcher.class, ds);
+            return ANY;
+        }
+        @Override
+        public boolean isConstant(Class<? super Matcher> type, List<Expr> args){
+            assert args.size() == 1 || args.size() == 2;
+            if (!args.get(0).isConstant(Boolean.class))
+                return false;
+            return args.size() == 1 || args.get(1).isConstant(Matcher.class);
+        }
+    };
+
     public static ExprFunc<Matcher> _CENTER =
         new ExprFunc<Matcher>() {
         @Override
@@ -927,6 +991,8 @@ public class MatcherList {
             return _MIXED;
         if (s == _OR.getName())
             return _OR;
+        if (s == _CONDITION.getName())
+            return _CONDITION;
         if (s == _CENTER.getName())
             return _CENTER;
         if (s == _ALLOW_UNMATCHED.getName())

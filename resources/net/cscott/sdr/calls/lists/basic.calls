@@ -85,12 +85,10 @@ def: _attract
 //   http://lynette.org/dconcepts.html
 def: _designator concept(sel, c1, c2=nothing)
   // special case "everybody" as a filler word.
-  from: ANY
-    condition: AND(EQUAL CALL([sel], ALL), EQUAL CALL([c2], nothing))
+  from: condition(AND(EQUAL CALL([sel], ALL), EQUAL CALL([c2], nothing)))
     call: [c1]
   // ditto for "nobody"
-  from: ANY
-    condition: EQUAL CALL([sel], NONE)
+  from: condition(EQUAL CALL([sel], NONE))
     call: [c2]
   // special case HEADS and SIDES from static square
   from: STATIC SQUARE
@@ -130,12 +128,10 @@ def: _designator concept(sel, c1, c2=nothing)
                   and(ARE([sel], not(CENTER)), ARE(not(CENTER), [sel])))
     condition: GREATER(NUM DANCERS(), 6)
     call: _quasi concentric([c2],[c1])
-  from: ANY // ugly hack to support "boys trade" == "boys trade down the line"
-    condition: EQUAL CALL([c1], trade), "Not a trade"
-    condition: EQUAL CALL([c2], nothing), "Not just a trade"
+  // ugly hack to support "boys trade" == "boys trade down the line"
+  from: condition(and(EQUAL CALL([c1], trade), EQUAL CALL([c2], nothing)))
     call: trade down the line([sel])
-  from: ANY
-    condition: GREATER(NUM DANCERS([sel]), 0)
+  from: condition(GREATER(NUM DANCERS([sel]), 0))
     select: [sel]
       call: [c1]
     select: OTHERS
@@ -395,9 +391,8 @@ def: _outfacers swing
 // swing 1/4 unless the boy is designated (which means he's facing in)
 def: _nondesignee boys swing 1/4
   from: RH MINIWAVE
-    from: ANY
-      condition: ARE(BOY, DESIGNATED)
-        call: nothing
+    from: condition(ARE(BOY, DESIGNATED))
+      call: nothing
     from: ANY
       call: cast(1/4)
 
@@ -533,11 +528,9 @@ def: _single file promenade 1/8
 
 // promenade some number of 1/4s, plus an extra 1/8 at the end if needed.
 def: _single promenade(n)
-  from: ANY
-    condition: equal num(_fraction(_multiply num([n], 4)), 0)
+  from: condition(equal num(_fraction(_multiply num([n], 4)), 0))
     call: _fractional(_multiply num([n], 4), _single promenade 1/4)
-  from: ANY
-    condition: greater(1/4, [n])
+  from: condition(greater(1/4, [n]))
     call: _fractional(_multiply num(2, _fraction(_multiply num([n], 4))), \
                       _single promenade 1/8)
   from: ANY
@@ -547,8 +540,7 @@ def: _single promenade(n)
 
 // promenade some number of 1/4s, plus an extra 1/8 at the end if needed.
 def: _single star promenade(n)
-  from: ANY
-    condition: equal num(_fraction(_multiply num([n], 4)), 0)
+  from: condition(equal num(_fraction(_multiply num([n], 4)), 0))
     call: _fractional(_multiply num([n], 4), _single star promenade 1/4)
   from: ANY
     call: _fractional(_floor(_multiply num([n], 4)), _single star promenade 1/4)
@@ -876,8 +868,7 @@ def: _turn and touch
         condition: match(_selection pattern(GIRL), "x_x__x_x")
         from: 2x4 // need "centers" defined for quasi concentric
           call: _quasi concentric(face out, nothing), touch
-  from: ANY
-    condition: not(formation(FACING LINES))
+  from: condition(not(formation(FACING LINES)))
     call: _maybe circle adjust(_2 dancer turn and touch)
 
 def: _2 dancer turn and touch
@@ -1031,11 +1022,10 @@ def: ladies in men sashay(sel)
   condition: MATCH(_SWEEP PATTERN(), "(L+)|(R+)"), \
                    "Sweep direction must be consistent"
   in: 4
-  from: ANY // handle all the right-sweep cases at once
-    condition: MATCH(_SWEEP PATTERN(), "R+")
+  // handle all the right-sweep cases at once
+  from: condition(MATCH(_SWEEP PATTERN(), "R+"))
     call: mirror(ladies in men sashay([sel]))
-  from: ANY
-    condition: MATCH(_SWEEP PATTERN(), "L+")
+  from: condition(MATCH(_SWEEP PATTERN(), "L+"))
     from: SINGLE STATIC SQUARE
       call: _single ladies in men sashay left([sel])
     from: FACING COUPLES
@@ -1279,14 +1269,12 @@ def: bend the big line
 def: circulate // all-8
   spoken: (all eight)? circulate
   in: 4
-  from: ANY
-    condition: equal num(NUM DANCERS(), 8)
+  from: condition(equal num(NUM DANCERS(), 8))
     from: PARALLEL GENERAL LINES
       call: concentric(_box circulate)
     from: GENERAL COLUMNS
       call: column circulate
-  from: ANY
-    condition: equal num(NUM DANCERS(), 4)
+  from: condition(equal num(NUM DANCERS(), 4))
     from: 2x2
       call: _box circulate
 
@@ -1434,11 +1422,9 @@ def: see saw
 def: square thru(n=4)
   option: LEFT
   spoken: square thru (<n=number> (hands (around|round)?)?)?
-  from: ANY
-    condition: and(greater([n],0),not(greater([n],1)))
+  from: condition(and(greater([n],0),not(greater([n],1))))
     call: _fractional([n], _in(2, pull by))
-  from: ANY
-    condition: greater([n], 1)
+  from: condition(greater([n], 1))
     part: // does square thru N have N distinct parts?
       call: _in(2, _square thru part)
     part: _ceil(_subtract num([n],1))
@@ -1881,14 +1867,11 @@ def: sweep(n)
             as couples(_fractional(_multiply num([n], 4), _single sweep 1/4)))
 def: _single sweep 1/4
   from: FACING DANCERS
-    from: ANY
-      condition: MATCH(_SWEEP PATTERN(), RR) // right sweep
-        prim: 1, 1, left
-    from: ANY
-      condition: MATCH(_SWEEP PATTERN(), LL) // left sweep
-        prim: -1, 1, right
-    from: ANY
-      condition: MATCH(_SWEEP PATTERN(), "_.|._") // missing sweep
+    from: condition(MATCH(_SWEEP PATTERN(), RR)) // right sweep
+      prim: 1, 1, left
+    from: condition(MATCH(_SWEEP PATTERN(), LL)) // left sweep
+      prim: -1, 1, right
+    from: condition(MATCH(_SWEEP PATTERN(), "_.|._")) // missing sweep
       condition: FALSE(), [2] "No sweep direction" // override 'mismatched' msg
       call: nothing
     from: ANY
