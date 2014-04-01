@@ -601,6 +601,13 @@ abstract class FormationListSlow {
                 t(2, BELLE, CENTER), t(3, BEAU, CENTER),
                 t(4, BEAU, CENTER),  t(5, BELLE, CENTER),
                 t(6, BEAU, END),     t(7, BELLE, END));
+    public static final NamedTaggedFormation GENERAL_O =
+        create("GENERAL O", f(" || ","|  |","|  |"," || "),
+                WhetherTagger.NO_AUTO_TAGS,
+                t(0, END),    t(1, END),
+                t(2, CENTER), t(3, CENTER),
+                t(4, CENTER), t(5, CENTER),
+                t(6, END),    t(7, END));
     public static final NamedTaggedFormation BUTTERFLY_DOUBLE_PASS_THRU = // used for grand square
         create("BUTTERFLY DOUBLE PASS THRU", f("s  s"," ss "," nn ","n  n"),
                 WhetherTagger.AUTO_TAGS,
@@ -608,6 +615,13 @@ abstract class FormationListSlow {
                 t(2, BELLE, CENTER), t(3, BEAU, CENTER),
                 t(4, BEAU, CENTER),  t(5, BELLE, CENTER),
                 t(6, BEAU, END),     t(7, BELLE, END));
+    public static final NamedTaggedFormation GENERAL_BUTTERFLY =
+        create("GENERAL BUTTERFLY", f("|  |"," || "," || ","|  |"),
+                WhetherTagger.NO_AUTO_TAGS,
+                t(0, END),    t(1, END),
+                t(2, CENTER), t(3, CENTER),
+                t(4, CENTER), t(5, CENTER),
+                t(6, END),    t(7, END));
 
     /** List of all formations defined in this class. */
     public static final List<NamedTaggedFormation> all = _enumerateFormations();

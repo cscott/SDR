@@ -453,8 +453,12 @@ public class MatcherList {
         OR("GALAXY", RH_GALAXY, LH_GALAXY);
     public static final Matcher O_DOUBLE_PASS_THRU =
         GeneralFormationMatcher.makeMatcher(FormationList.O_DOUBLE_PASS_THRU);
+    public static final Matcher GENERAL_O =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_O);
     public static final Matcher BUTTERFLY_DOUBLE_PASS_THRU =
         GeneralFormationMatcher.makeMatcher(FormationList.BUTTERFLY_DOUBLE_PASS_THRU);
+    public static final Matcher GENERAL_BUTTERFLY =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_BUTTERFLY);
 
     // special purpose matcher
     public static final Matcher CENTER_2 = new CenterMatcher(2);

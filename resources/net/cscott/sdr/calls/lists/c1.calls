@@ -69,6 +69,55 @@ def: galaxy circulate
     select: OUTSIDE 4 // point on axis
       prim: in 2, 1, in
 
+def: butterfly(c)
+  spoken: butterfly <c=anything>
+  option: CONCEPT
+  call: _butterfly([c])
+def: o(c)
+  spoken: o <c=anything>
+  option: CONCEPT
+  call: _o([c])
+
+def: _start butterfly
+  from: GENERAL BUTTERFLY
+    select: CENTER
+      prim: 0, 0, none, preserve-roll
+    select: OTHERS
+      prim: in 2, 0, none, sashay-start sashay-finish preserve-roll
+def: _finish butterfly
+  from: GENERAL COLUMNS
+    select: CENTER
+      prim: 0, 0, none, preserve-roll
+    select: OTHERS
+      prim: out 2, 0, none, sashay-start sashay-finish preserve-roll
+  from: PARALLEL GENERAL LINES
+    select: CENTER
+      prim: 0, 0, none, preserve-roll
+    select: OTHERS
+      prim: 0, out 2, none, preserve-roll
+  from: ANY // can't put back the distortion
+    prim: 0, 0, none, preserve-roll
+
+def: _start o
+  from: GENERAL O
+    select: CENTER
+      prim: in 2, 0, none, sashay-start sashay-finish preserve-roll
+    select: OTHERS
+      prim: 0, 0, none, preserve-roll
+def: _finish o
+  from: GENERAL COLUMNS
+    select: CENTER
+      prim: out 2, 0, none, sashay-start sashay-finish preserve-roll
+    select: OTHERS
+      prim: 0, 0, none, preserve-roll
+  from: PARALLEL GENERAL LINES
+    select: CENTER
+      prim: 0, out 2, none, preserve-roll
+    select: OTHERS
+      prim: 0, 0, none, preserve-roll
+  from: ANY // can't put back the distortion
+    prim: 0, 0, none, preserve-roll
+
 // XXX: square chain thru to a wave ... general 'to a wave' suffix?
 // see 'square thru' (basic) and 'square chain thru' (a1) definitions
 def: square chain the top

@@ -137,6 +137,42 @@ public abstract class C1List {
         }
     };
 
+    private static class DistortedColumnCall extends C1Call {
+        private final Apply inApply, outApply;
+        DistortedColumnCall(String name,
+                            String transitionIn, String transitionOut) {
+            super(name);
+            this.inApply = Apply.makeApply(transitionIn);
+            this.outApply = Apply.makeApply(transitionOut);
+        }
+        @Override
+        public int getMinNumberOfArguments() { return 1; }
+        @Override
+        public Rule getRule() { return null; /* internal call */ }
+        @Override
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
+            assert args.size() == 1;
+            final Apply subApply = new Apply(args.get(0));
+            return new Evaluator() {
+                public Evaluator evaluate(DanceState ds) {
+                    // 1. do transition in
+                    inApply.evaluator(ds).evaluateAll(ds);
+                    // 2. do the call
+                    subApply.evaluator(ds).evaluateAll(ds);
+                    // 3. do the transition out
+                    outApply.evaluator(ds).evaluateAll(ds);
+                    // XXX smooth the transition (remove first and last steps)
+                    return null; // no more to do.
+                }
+            };
+        }
+    };
+
+    public static final Call BUTTERFLY =
+        new DistortedColumnCall("_butterfly", "_start butterfly",
+                                "_finish butterfly");
+    public static final Call O =
+        new DistortedColumnCall("_o", "_start o", "_finish o");
 
     public static final Call CONCENTRIC = new C1Call("_concentric") {
         @Override
