@@ -67,6 +67,18 @@ public abstract class PredicateList {
         @Override
         public boolean isConstant(List<Expr> args) { return true; }
     };
+    /** Another synonym for {@link PredicateList#TRUE}, used to dump
+     *  dance state information for debugging. */
+    public final static Predicate PRINT = new _Predicate("print") {
+        @Override
+        public boolean evaluate(DanceState ds, List<Expr> args) {
+            System.err.println("PRINT "+args);
+            System.err.println(ds);
+            return true;
+        }
+        @Override
+        public boolean isConstant(List<Expr> args) { return true; }
+    };
     // one-arg operators
     /**
      * Boolean negation.
