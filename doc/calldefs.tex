@@ -32,6 +32,7 @@
 }
 
 \newcommand{\clause}[1]{\texttt{#1}}
+\newcommand{\expr}[1]{\texttt{#1}}
 \renewcommand{\call}[1]{\texttt{#1}} % defined in the tex-squares package
 \newcommand{\package}[1]{\url{#1}}
 \begin{document}
@@ -120,7 +121,7 @@ contains a set of comma-separated tags which are used as hooks to trigger
 the creation of additional call definitions or grammar rules.
 In this case, the \texttt{LEFT} tag signifies that we will
 automatically create an additional call \call{left pass thru} with
-the definition \texttt{left(pass thru)}, where \call{left} is a
+the definition \expr{left(pass thru)}, where \call{left} is a
 concept very similar (but not identical) to the C3B concept
 \call{mirror}.\footnote{Collisions resolve to left-hand miniwaves when
   a call is done \call{mirror}.  They resolve to right-hand miniwaves
@@ -134,7 +135,7 @@ usually a formation name.  To be specific, the argument specifies a
 \texttt{Matcher} expression, which takes a \texttt{Formation} and
 returns a \texttt{FormationMatch} object.  For example, the
 \texttt{MINIWAVE} matcher is equivalent to the matcher expression
-\texttt{OR(RH\_MINIWAVE, LH\_MINIWAVE)}; that is, it matches either a
+\expr{OR(RH\_MINIWAVE, LH\_MINIWAVE)}; that is, it matches either a
 left-handed or a right-handed miniwave, setting dancer tags such as
 \texttt{BEAU} and \texttt{BELLE} appropriately.  Available
 \texttt{Matcher}s are defined in the
@@ -186,7 +187,7 @@ motion.\footnote{Note that ``do one half of a pass thru'' from facing
 \end{figure}
 Line 9 introduces another alternative definition, which handles the
 Callerlab ``Ocean Wave Rule''.  The \clause{from} expression is more
-complex here: it uses the \texttt{mixed()} matcher combinator to match
+complex here: it uses the \expr{mixed()} matcher combinator to match
 a mixed collection of facing dancers and miniwaves.  Line 10 states that this
 definition is not fractionalizable or divisible into parts, since it's
 not clear what \call{do half of a pass thru} would mean for the
@@ -242,7 +243,7 @@ with no arguments, defaulting to the call name.\footnote{Calls whose
   underscore, but this is not encouraged.}  The \clause{spoken} clause
 also names the grammar productions used for arguments.  According to
 line 3, speaking ``square thru three'' (or writing ``square thru 3'')
-will result in the function application \texttt{square
+will result in the function application \expr{square
   thru(3)}.\footnote{``Function names'' can contain spaces, as this
   one does.  In general, identifiers consist of a \textit{sequence} of
   ``words'' separated by whitespace.}  The clause allows ``square
@@ -267,9 +268,9 @@ evaluates to false.  Available boolean functions are defined in
 \package{net.cscott.sdr.calls.PredicateList}.  Note that arguments to
 boolean predicates can establish other, non-boolean, contexts.  In
 this case the \call{greater} predicate establishes a numeric context
-for the evaluation of \texttt{0}, \texttt{1}, and \texttt{[n]} (which
+for the evaluation of \expr{0}, \expr{1}, and \expr{[n]} (which
 is a reference to the argument named $n$).  A predicate expression,
-like \texttt{formation(MINIWAVE)}, could also establish
+like \expr{formation(MINIWAVE)}, could also establish
 \texttt{Matcher} or other contexts for the evaluation of arguments.
 The particular expression in line 5 restricts this alternative to
 apply only in the base case of the definition: ``square thru $n$'' for
@@ -291,7 +292,7 @@ line 10 we recursively
 invoke the call ``left square thru $(n-1)$'', written as an application
 of the \call{left} concept to a recursive invocation of \call{square thru}.
 
-\section{Idioms}
+\section{SDR Concepts}
 There are a number of nonstandard internal concepts which are used
 frequently inside SDR definitions.
 
@@ -555,7 +556,30 @@ Adding this case to the \call{\_designator concept} allows \call{echo
 
 \subsection{_with designated}
 
-\textbf{WRITE ME}
+The \call{_with designated} concept marks a certain set of dancers
+during the execution of a subcall.  The marks are kept in a stack,
+so that the subcall can itself push and pop different designators.
+This is the mechanism used to deal with ``those who...'' clauses
+in square dance definitions.  For example, the definition for the
+C3B call \call{reverse the pass} is:
+\begin{lstlisting}
+def: reverse the pass
+  from: TANDEM COUPLES
+    call: _with designated(LEADER, _designated leaders reverse the pass)
+def: _designated leaders reverse the pass
+  call: _anyone(DESIGNATED, trade)
+  call: pass thru
+  call: _anyone(not(DESIGNATED), trade)
+\end{lstlisting}
+The original leaders are marked at the beginning of the call, and that
+designation persists through the three parts of the call so that the
+original trailers can do the last part.
+
+The stack push/pop mechanism ensures that \call{_with designated} will
+work properly even for ``3x1 reverse the pass replacing the second part
+with centers reverse the pass'' (from asymmetric columns where
+everyone is facing the caller).
+
 
 \subsection{_in}\label{sec:inconcept}
 The \call{_in(beats, call)} internal concept simply adjusts the timing
@@ -563,6 +587,35 @@ of \textit{call} so that it takes \textit{beats} beats of music.
 There is an \syntax{<in>} clause in the grammar which does the same
 thing (see section~\ref{sec:in}) but sometimes it is more convenient
 to have a concept which does this.
+
+\section{SDR Expressions}
+The \clause{from} and \clause{condition} clauses accept an expression
+language with a number of useful functions operating on dance state.
+See \package{net.cscott.sdr.calls.ExprList} for a full list.
+
+\subsection{Arithmetic}
+Basic arithmetic on rationals can be performed with the \expr{\_add~num},
+\expr{\_subtract~num}, \expr{\_multiply~num}, \expr{\_divide~num},
+\expr{\_mod~num}, \expr{\_ceil}, \expr{\_floor}, and \expr{\_fraction}
+functions.
+
+\subsection{Matcher functions}
+A formation can be matched inside a \clause{condition} clause using
+the \expr{formation(...)} function.  Inside a \clause{from} clause, a
+boolean predicate can be evaluated using the \expr{condition(...)}
+function.
+
+\subsection{Higher-order functions}
+Higher-order functions can be constructed via the \expr{\_curry} and
+\expr{\_apply} functions.  These are used as part of meta-concept
+parsing.  For example, ``initially do one half swing thru'' is
+parsed as:
+\begin{lstlisting}
+initially(_curry(_fractional, 1/2, _arg(0)), swing thru)
+\end{lstlisting}
+where the two-argument concept \expr{\_fractional} is curried to
+become a one-argument concept suitable as the first argument of
+\expr{initially}.
 
 \section{Grammar and clause reference}
 This section will present a grammar for the call file definition
