@@ -31,6 +31,8 @@ import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.ast.In;
+import net.cscott.sdr.calls.ast.Opt;
+import net.cscott.sdr.calls.ast.OptCall;
 import net.cscott.sdr.calls.ast.Part;
 import static net.cscott.sdr.calls.ast.Part.Divisibility.*;
 import net.cscott.sdr.calls.ast.Seq;
@@ -216,10 +218,15 @@ public abstract class BasicList {
             final Selector selector =
                 args.get(0).evaluate(Selector.class, ds);
 
-            // fetch the subcall, and make an evaluator which will eventually
+            // fetch the subcall, and wrap it with a "from: ANY" so that
+            // the MetaEvaluator will apply the DESIGNATED tags to the
+            // dance state's formation
+            final Comp wrapped =
+                new Opt(new OptCall(Expr.literal("ANY"),
+                                    new Seq(new Apply(args.get(1)))));
+            final Evaluator subEval = new Evaluator.Standard(wrapped);
+            // make an evaluator which will eventually
             // pop the designated dancers to clean up.
-            final Evaluator subEval =
-                args.get(1).evaluate(Evaluator.class, ds);
             final Evaluator popEval = new Evaluator() {
                 private Evaluator next = subEval;
                 @Override
