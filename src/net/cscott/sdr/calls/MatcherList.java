@@ -419,6 +419,8 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.RH_HOURGLASS);
     public static final Matcher LH_HOURGLASS =
         GeneralFormationMatcher.makeMatcher(FormationList.LH_HOURGLASS);
+    public static final Matcher GENERAL_HOURGLASS =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_HOURGLASS);
     public static final Matcher HOURGLASS =
         OR("HOURGLASS", RH_HOURGLASS, LH_HOURGLASS);
     public static final Matcher RH_TIDAL_WAVE =
@@ -445,6 +447,8 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.RH_GALAXY);
     public static final Matcher LH_GALAXY =
         GeneralFormationMatcher.makeMatcher(FormationList.LH_GALAXY);
+    public static final Matcher GENERAL_GALAXY =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_GALAXY);
     public static final Matcher GALAXY =
         OR("GALAXY", RH_GALAXY, LH_GALAXY);
     public static final Matcher O_DOUBLE_PASS_THRU =

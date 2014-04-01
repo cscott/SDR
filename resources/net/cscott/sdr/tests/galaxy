@@ -1,0 +1,25 @@
+Testing galaxies.
+
+sdr> /program = Program.C1
+C1
+sdr> /setFormation(FormationList.RH_GALAXY.mapStd([]))
+|        1B>
+| 
+|      1G^  2Bv
+| 
+| 2G^            4Gv
+| 
+|      4B^  3Gv
+| 
+|        3B<
+sdr> galaxy circulate
+|        1G>
+| 
+|      2G^  1Bv
+| 
+| 4B^            2Bv
+| 
+|      3B^  4Gv
+| 
+|        3G<
+sdr> /exit

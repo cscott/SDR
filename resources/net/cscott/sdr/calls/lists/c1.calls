@@ -57,6 +57,18 @@ def: _finish dixie diamond
   from: 1x4
     call: _quasi concentric(hinge, u turn back)
 
+def: galaxy circulate
+  in: 4
+  from: GENERAL GALAXY
+    select: and(CENTER, MATCH(_INOUT PATTERN(), "o")) // leaders in box
+      prim: in 1, 2, in
+    select: and(CENTER, MATCH(_INOUT PATTERN(), "i")) // trailers in box
+      prim: out 2, 2, none, sashay-start sashay-finish
+    select: and(OUTSIDE 4, MATCH(_FACING PATTERN(), "[v^]"))
+      prim: in 2, 2, none, sashay-start sashay-finish
+    select: OUTSIDE 4 // point on axis
+      prim: in 2, 1, in
+
 // XXX: square chain thru to a wave ... general 'to a wave' suffix?
 // see 'square thru' (basic) and 'square chain thru' (a1) definitions
 def: square chain the top

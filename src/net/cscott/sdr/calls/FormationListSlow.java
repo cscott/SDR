@@ -534,6 +534,16 @@ abstract class FormationListSlow {
                d(-3,-2, "s", OUTSIDE_4, END),
                d(+3,-2, "n", OUTSIDE_4, END),
                d( 0,-4, "e", CENTER, POINT)); // callerlab #45(b)
+    public static final NamedTaggedFormation GENERAL_HOURGLASS =
+        create("GENERAL HOURGLASS",
+               d( 0, 4, "-", CENTER, POINT),
+               d(-3, 2, "|", OUTSIDE_4, END),
+               d(+3, 2, "|", OUTSIDE_4, END),
+               d(-1, 0, "|", CENTER, VERY_CENTER),
+               d(+1, 0, "|", CENTER, VERY_CENTER),
+               d(-3,-2, "|", OUTSIDE_4, END),
+               d(+3,-2, "|", OUTSIDE_4, END),
+               d( 0,-4, "-", CENTER, POINT));
     // XXX left hand Z, callerlab #46
     // XXX right hand Z, callerlab #47
     // XXX right hand stars, callerlab #48
@@ -574,6 +584,16 @@ abstract class FormationListSlow {
                d(-1,-2, "s", CENTER, BELLE),
                d(+1,-2, "n", CENTER, BELLE),
                d( 0,-4, "e", OUTSIDE_4, POINT)); // callerlab #53(b)
+    public static final NamedTaggedFormation GENERAL_GALAXY =
+        create("GENERAL GALAXY",
+               d( 0, 4, "-", OUTSIDE_4, POINT),
+               d(-1, 2, "|", CENTER),
+               d(+1, 2, "|", CENTER),
+               d(-3, 0, "|", OUTSIDE_4, POINT),
+               d(+3, 0, "|", OUTSIDE_4, POINT),
+               d(-1,-2, "|", CENTER),
+               d(+1,-2, "|", CENTER),
+               d( 0,-4, "-", OUTSIDE_4, POINT));
     public static final NamedTaggedFormation O_DOUBLE_PASS_THRU = // used for grand square
         create("O DOUBLE PASS THRU", f(" ss ","s  s","n  n"," nn "),
                 WhetherTagger.AUTO_TAGS,
