@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -17,8 +18,10 @@ import java.util.Set;
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.BitSetFactory;
 import net.cscott.jutil.GenericMultiMap;
+import net.cscott.jutil.Factories;
 import net.cscott.jutil.Indexer;
 import net.cscott.jutil.MultiMap;
+import net.cscott.jutil.PairMapEntry;
 import net.cscott.jutil.PersistentSet;
 import net.cscott.jutil.SetFactory;
 import net.cscott.sdr.calls.Breather.FormationPiece;
@@ -228,7 +231,11 @@ public class GeneralFormationMatcher {
                 boolean allowUnmatchedDancers,
                 boolean usePhantoms)
         throws NoMatchException {
-        assert !usePhantoms : "matching with phantoms is not implemented";
+        if (usePhantoms) {
+            assert !allowUnmatchedDancers :
+                "can't combine unmatched dancers and phantoms";
+            return doPhantomMatch(input, goals, true/*align centers*/);
+        }
         // get an appropriate formation name
         String target = targetName(goals);
 
@@ -608,11 +615,175 @@ public class GeneralFormationMatcher {
                allowUnmatchedDancers);
     }
 
-    /** Make a position with an ExactRotation from the given position with a
-     * general rotation and an 'extra rotation' amount. */
+    /**
+     * Match with phantoms.  In some ways this is a reversed match of
+     * the goal(s) against the input.  All input dancers must have
+     * a spot in the goal.  Optionally, the center of the goal and
+     * the center of the input must align.
+     * @doc.test Matching against exact facing directions:
+     *  js> FormationList = FormationList.js(this); undefined;
+     *  js> goals = [ FormationList.PARALLEL_RH_WAVES,
+     *    >           FormationList.FACING_LINES ]; undefined;
+     *  js> GeneralFormationMatcher.doPhantomMatch(
+     *    >    Formation.FOUR_SQUARE, java.util.Arrays.asList(goals), true
+     *    > )
+     *   AA^
+     *  AA:
+     *     v  3Gv  3Bv    v
+     *     
+     *     ^  1B^  1G^    ^
+     *   [ph: NONCORPOREAL,BELLE,TRAILER,END; 3G: BEAU,TRAILER,CENTER; 3B: BELLE,TRAILER,CENTER; ph: NONCORPOREAL,BEAU,TRAILER,END; ph: NONCORPOREAL,BEAU,TRAILER,END; 1B: BELLE,TRAILER,CENTER; 1G: BEAU,TRAILER,CENTER; ph: NONCORPOREAL,BELLE,TRAILER,END]
+     * @doc.test Matching against general facing directions:
+     *  js> FormationList = FormationList.js(this); undefined;
+     *  js> goals = [ FormationList.GENERAL_O,
+     *    >           FormationList.GENERAL_COLUMNS ]; undefined;
+     *  js> f = Formation.FOUR_SQUARE.rotate(ExactRotation.ONE_QUARTER); f.toStringDiagram();
+     *  1B>  3G<
+     *  
+     *  1G>  3B<
+     *  js> GeneralFormationMatcher.doPhantomMatch(
+     *    >    f, java.util.Arrays.asList(goals), true
+     *    > )
+     *  AA<
+     *  AA:
+     *       |    |
+     *     
+     *     1Gv  1Bv
+     *     
+     *     3B^  3G^
+     *     
+     *       |    |
+     *   [ph: NONCORPOREAL,OUTSIDE_4; ph: NONCORPOREAL,OUTSIDE_4; 1G: CENTER; 1B: CENTER; 3B: CENTER; 3G: CENTER; ph: NONCORPOREAL,OUTSIDE_4; ph: NONCORPOREAL,OUTSIDE_4]
+     */
+    public static FormationMatch doPhantomMatch(
+            final Formation input,
+            final List<TaggedFormation> goals,
+            boolean alignCenters)
+        throws NoMatchException {
+        assert goals.size() > 0;
+        assert input.dancers().size() > 0;
+        // canonical ordering for input dancers
+        List<Dancer> inputDancers = new ArrayList<Dancer>(input.dancers());
+        Collections.sort(inputDancers, new Comparator<Dancer>() {
+            public int compare(Dancer d1, Dancer d2) {
+                return PCOMP.compare(input.location(d1), input.location(d2));
+            }
+        });
+        List<Position> inputPositions =
+            new ArrayList<Position>(inputDancers.size());
+        for (Dancer d : inputDancers)
+            inputPositions.add(input.location(d));
+
+        // ok, try to match first input dancer against each goal dancer
+        for (TaggedFormation goal: goals) {
+            // don't worry about symmetry, if there are two possible matches
+            // we'll just return the first.
+            for (Position ip: makeAllExact(inputPositions.get(0))) {
+                for (Dancer d: goal.sortedDancers()) {
+                    for (Position gp: makeAllExact(goal.location(d))) {
+                        // rotate first, then translate.
+                        ExactRotation tr = (ExactRotation)
+                            ip.facing.subtract(gp.facing.amount).normalize();
+                        Position rotated = gp.rotateAroundOrigin(tr);
+                        assert rotated.facing.equals(ip.facing);
+                        Position transform = new Position
+                            (ip.x.subtract(rotated.x),
+                             ip.y.subtract(rotated.y),
+                             tr);
+                        // make sure centers line up, if requested
+                        if (alignCenters &&
+                            !(transform.x.equals(Fraction.ZERO) &&
+                              transform.y.equals(Fraction.ZERO)))
+                            continue;
+                        // validate that all input dancers match a goal dancer
+                        FormationMatch fm = validatePhantomMatch
+                            (input, goal, transform);
+                        if (fm != null)
+                            return fm; // match!
+                    }
+                }
+            }
+        }
+        // get an appropriate formation name
+        String target = targetName(goals);
+        throw new NoMatchException(target, "no matches");
+    }
+    private static FormationMatch validatePhantomMatch(
+            Formation input, TaggedFormation goal, Position transform) {
+        Map<Position,PairMapEntry<Dancer,Position>> m =
+            new HashMap<Position,PairMapEntry<Dancer,Position>>();
+        for (Dancer d : goal.dancers()) {
+            Position pp = goal.location(d);
+            pp = pp.rotateAroundOrigin((ExactRotation)transform.facing);
+            pp = pp.relocate(pp.x.add(transform.x), pp.y.add(transform.y),
+                             pp.facing);
+            m.put(zeroRotation(pp), p(d, pp));
+        }
+        // verify that each input position corresponds to a goal dancer
+        // matched is goal dancer -> input dancer
+        Map<Dancer,Dancer> matched = new HashMap<Dancer,Dancer>();
+        for (Dancer id: input.dancers()) {
+            Position p = input.location(id);
+            PairMapEntry<Dancer,Position> gp = m.remove(zeroRotation(p));
+            if (gp==null || !gp.getValue().facing.includes(p.facing))
+                return null; // no match
+            matched.put(gp.getKey(), id);
+        }
+        // it's a match!
+        // create a new TaggedFormation
+        Dancer metaDancer = new PhantomDancer();
+        Formation meta = new Formation(m(p(metaDancer, transform)));
+        Map<Dancer,Position> locations = new LinkedHashMap<Dancer,Position>();
+        MultiMap<Dancer,Tag> tags = new GenericMultiMap<Dancer,Tag>
+            (Factories.enumSetFactory(Tag.class));
+        for (Dancer gd : goal.dancers()) {
+            Dancer id = matched.get(gd);
+            Position pp;
+            if (id != null) {
+                pp = input.location(id);
+                pp = pp.relocate(pp.x.subtract(transform.x),
+                                 pp.y.subtract(transform.y), pp.facing);
+                pp = pp.rotateAroundOrigin
+                    ((ExactRotation)transform.facing.negate());
+            } else {
+                id = gd;
+                pp = goal.location(gd);
+                tags.add(id, Tag.NONCORPOREAL);
+            }
+            locations.put(id, pp);
+            tags.addAll(id, goal.tags(gd));
+        }
+        TaggedFormation tf =
+            new TaggedFormation(locations,locations.keySet(),tags);
+        return new FormationMatch(meta, m(p(metaDancer, tf)),
+                                  Collections.<Dancer>emptySet());
+    }
+
+    /** Make a position with an {@link ExactRotation} from the given position
+     * with a general rotation and an 'extra rotation' amount. */
     private static Position makeExact(Position p, Fraction extraRot) {
         return new Position(p.x, p.y, 
-                new ExactRotation(p.facing.amount.add(extraRot)));
+                new ExactRotation(p.facing.amount.add(extraRot)).normalize());
+    }
+    /** Make all positions with {@link ExactRotation}s which are possible from
+     * a given position with a general rotation.
+     * @doc.test (EXPECT FAIL)
+     *  js> // (this test fails because the method is non-public)
+     *  js> p = Position.getGrid(1,2,Rotation.fromAbsoluteString('+'));
+     *  1,2,+
+     *  js> GeneralFormationMatcher.makeAllExact(p);
+     *  [1,2,n, 1,2,e, 1,2,s, 1,2,w]
+     */
+    private static List<Position> makeAllExact(Position p) {
+        if (p.facing.isExact()) return Collections.singletonList(p);
+        List<Position> all =
+            new ArrayList<Position>(p.facing.modulus.getDenominator());
+        for (Fraction extraRot = Fraction.ZERO;
+             extraRot.compareTo(Fraction.ONE) < 0;
+             extraRot = extraRot.add(p.facing.modulus)) {
+            all.add(makeExact(p, extraRot));
+        }
+        return all;
     }
     /** Make a position with exact zero rotation from the given position. */
     private static Position zeroRotation(Position p) {

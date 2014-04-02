@@ -47,6 +47,9 @@ public class TaggedFormation extends Formation {
         // MetaEvaluator ensures that it is applied
         // appropriately after matching
         DESIGNATED,
+        // this is a tag added by _use phantoms Matchers
+        // it helps use distinguish phantoms from real dancers
+        NONCORPOREAL,
         // more interesting tags.
         BEAU, BELLE, LEADER, TRAILER,
 	POINT, CENTER, VERY_CENTER, END,
