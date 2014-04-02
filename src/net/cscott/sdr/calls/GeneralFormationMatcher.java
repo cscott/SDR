@@ -365,10 +365,10 @@ public class GeneralFormationMatcher {
             for (Dancer goD : om.gi.goalDancers) {
                 goP = om.gi.goal.location(goD);
                 // warp to find which input dancer corresponds to this one
-                inP = warpF.warp(goP, Fraction.ZERO);
+                inP = warpF.warp(goP);
                 Dancer inD = mi.inputPositionMap.get(zeroRotation(inP));
                 // warp back to get an exact rotation for this version of goal
-                Position goPr = warpB.warp(input.location(inD), Fraction.ZERO);
+                Position goPr = warpB.warp(input.location(inD));
                 // to avoid distortion for 1/8 off formations, take only the
                 // rotation (and flags) from this new goP
                 goP = goPr.relocate(goP.x, goP.y, goPr.facing.normalize());
@@ -514,7 +514,7 @@ public class GeneralFormationMatcher {
         int gNum = 0;
         for (Position gp : goal.goalPositions) {
             // compute warped position.
-            gp = warp.warp(gp, Fraction.ZERO);
+            gp = warp.warp(gp);
             Position key = zeroRotation(gp);
             if (!mi.inputPositionMap.containsKey(key))
                 return false; // no input dancer at this goal position.
@@ -541,7 +541,7 @@ public class GeneralFormationMatcher {
                     // since the goal dancer may have a vague direction which
                     // includes an asymmetric alternative (ie, "n|" as a target)
                     for (Position gp0 : rotated(goal.goalPositions.get(0))) {
-                        gp0 = warp.warp(gp0, Fraction.ZERO);
+                        gp0 = warp.warp(gp0);
                         if (ip.x.equals(gp0.x) &&
                             ip.y.equals(gp0.y) &&
                             gp0.facing.includes(ip.facing))
@@ -628,10 +628,10 @@ public class GeneralFormationMatcher {
     }
     /** @deprecated XXX: rewrite to remove dependency on old Warp class */
     private static abstract class Warp {
-        public abstract Position warp(Position p, Fraction time);
+        public abstract Position warp(Position p);
         /** A <code>Warp</code> which returns points unchanged. */
         public static final Warp NONE = new Warp() {
-            public Position warp(Position p, Fraction time) { return p; }
+            public Position warp(Position p) { return p; }
         };
 	/** Returns a <code>Warp</code> which will rotate and translate
 	 * points such that <code>from</code> is warped to <code>to</code>.
@@ -649,13 +649,13 @@ public class GeneralFormationMatcher {
 		(to.x.subtract(nFrom.x), to.y.subtract(nFrom.y),
 		 rot);
 	    Warp w = new Warp() {
-	        public Position warp(Position p, Fraction time) {
+	        public Position warp(Position p) {
 		    p = rotateCWAroundOrigin(p, (ExactRotation) warp.facing);
 		    return p.relocate
                     (p.x.add(warp.x), p.y.add(warp.y), p.facing);
 		}
 	    };
-	    assert to.setFlags(from.flags.toArray(new Flag[0])).equals(w.warp(from,Fraction.ZERO)) : "bad warp "+to+" vs "+w.warp(from, Fraction.ZERO);
+	    assert to.setFlags(from.flags.toArray(new Flag[0])).equals(w.warp(from)) : "bad warp "+to+" vs "+w.warp(from);
 	    return w;
 	}
 	// helper method for rotateAndMove

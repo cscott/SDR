@@ -11,16 +11,6 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
  * twin diamond setup will result in two <code>TaggedFormation</code>s,
  * one for each diamond.
  */
-// XXX: it appears that the <code>Warp</code> idea was replaced with the
-// meta formation, as described in the field's javadoc.  Leaving the below
-// javadoc chunk here for now, in case Warp needs to be reintroduced.
-/*   A <code>FormationMatch</code> may also contain
- * a <code>Warp</code>, which specifies a transformation on the paths 
- * resulting from executing a call in the given <code>TaggedFormation</code>s.
- * For example, matching stretched boxes will result in
- * <code>TaggedFormations</code> of undistorted boxes, and a <code>Warp</code>
- * which will initially stretch the boxes.
- */
 public class FormationMatch {
     /** The meta formation contains one dancer for each matched
      * sub-formation in the setup.  Unmatched dancers (if allowed by the match)
