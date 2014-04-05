@@ -587,12 +587,10 @@ public class Formation {
      */
     public Formation mapStd(StandardDancer... dancers) {
         if (dancers.length==0) {
-            StandardDancer[] ndancers =
-                new StandardDancer[this.dancers().size()/2];
-            for (int i=0; i<ndancers.length; i++) {
-                ndancers[i] = StandardDancer.values()[i];
-            }
-            dancers = ndancers;
+            // preserve symmetry if the # of dancers is >= 4
+            int symmetry = (this.dancers().size() < 4) ? 1 : 2;
+            dancers = Arrays.copyOfRange(StandardDancer.values(), 0,
+                                         this.dancers().size() / symmetry);
         }
         if ((dancers.length * 2) == this.dancers().size()) {
             int N = this.dancers().size();

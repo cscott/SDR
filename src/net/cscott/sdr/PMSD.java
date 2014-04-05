@@ -31,6 +31,7 @@ import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.DanceProgram;
 import net.cscott.sdr.calls.DanceState;
+import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Program;
@@ -174,6 +175,11 @@ public class PMSD {
         }
         public void jsSet_formation(Object val) {
             Formation f = (Formation) Context.jsToJava(val, Formation.class);
+            boolean hasStandard = false;
+            for (Dancer d : f.dancers())
+                if (d instanceof StandardDancer)
+                    hasStandard = true;
+            if (!hasStandard) f = f.mapStd();
             ds = new DanceState(ds.dance, f, properties);
         }
         // this is just a workaround to prevent javascript from echoing the

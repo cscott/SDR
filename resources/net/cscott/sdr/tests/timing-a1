@@ -7,18 +7,8 @@ sdr> /for (f in FormationList) { this[f] = FormationList[f]; } ; undefined
 sdr> /// define helper to time a call from a given formation
 sdr> /function beats(call, formation) {
    >   // put real dancers symmetrically in the given formation template.
-   >   var SD = StandardDancer.values();
-   >   var f = formation.mapStd([SD[0],SD[1],SD[2],SD[3]]);
-   >   // make normal couples
-   >   switch (''+formation.getName()) {
-   >   case 'STATIC SQUARE': f = Formation.SQUARED_SET; break;
-   >   case 'TRADE BY':
-   >     f = formation.mapStd([SD[0],SD[1],SD[3],SD[2]]); break;
-   >   case 'EIGHT CHAIN THRU':
-   >     f = formation.mapStd([SD[1],SD[0],SD[2],SD[3]]); break;
-   >   }
-   >   //java.lang.System.err.println(f.toStringDiagram(call+"|")); //debugging
-   >   setFormation(f);
+   >   setFormation(formation.mapStd([]));
+   >   //java.lang.System.err.println(printFormation); //debugging
    >   var now = ds.currentTime();
    >   Evaluator.parseAndEval(ds, call);
    >   var then = ds.currentTime();
@@ -74,7 +64,7 @@ sdr> /checkBeats( 6, "cross trail thru", STATIC_SQUARE)
 sdr> /checkBeats(2+4, "side boys u turn back ; cycle and wheel",
    >                  PARALLEL_RH_WAVES)
 sdr> /checkBeats( 6, "double star thru", EIGHT_CHAIN_THRU)
-sdr> /checkBeats(4+10, "centers roll away ; triple star thru", DOUBLE_PASS_THRU)
+sdr> /checkBeats(4+10, "ends roll away ; triple star thru", DOUBLE_PASS_THRU)
 sdr> /checkBeats( 4, "ends bend", LINES_FACING_OUT)
 sdr> /// "explode and <anything>" adds 2 beats to the timing of <anything>
 sdr> /checkBeats(2+2, "explode and pass thru", [LINES_FACING_OUT, FACING_LINES,

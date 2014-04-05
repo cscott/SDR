@@ -1,6 +1,6 @@
 Testing galaxies.
 
-sdr> /program = C1 ; setFormation(FormationList.RH_GALAXY.mapStd([]))
+sdr> /program = C1 ; setFormation(FormationList.RH_GALAXY)
 |        1B>
 | 
 |      1G^  2Bv

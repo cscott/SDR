@@ -7,18 +7,8 @@ sdr> /for (f in FormationList) { this[f] = FormationList[f]; } ; undefined
 sdr> /// define helper to time a call from a given formation
 sdr> /function beats(call, formation) {
    >   // put real dancers symmetrically in the given formation template.
-   >   var SD = StandardDancer.values();
-   >   var f = formation.mapStd([SD[0],SD[1],SD[2],SD[3]]);
-   >   // make normal couples
-   >   switch (''+formation.getName()) {
-   >   case 'STATIC SQUARE': f = Formation.SQUARED_SET; break;
-   >   case 'TRADE BY':
-   >     f = formation.mapStd([SD[0],SD[1],SD[3],SD[2]]); break;
-   >   case 'EIGHT CHAIN THRU':
-   >     f = formation.mapStd([SD[1],SD[0],SD[2],SD[3]]); break;
-   >   }
-   >   //java.lang.System.err.println(f.toStringDiagram(call+"|")); //debugging
-   >   setFormation(f);
+   >   setFormation(formation.mapStd([]));
+   >   //java.lang.System.err.println(printFormation); //debugging
    >   var now = ds.currentTime();
    >   Evaluator.parseAndEval(ds, call);
    >   var then = ds.currentTime();

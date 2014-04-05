@@ -2,7 +2,7 @@ Testing hourglasses.
 
 sdr> /program = C1
 C1
-sdr> /setFormation(FormationList.RH_HOURGLASS.mapStd([]))
+sdr> /setFormation(FormationList.RH_HOURGLASS)
 |        1B>
 | 
 | 1G^            2Bv

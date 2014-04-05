@@ -110,17 +110,31 @@ abstract class FormationListSlow {
                 d( 0,-2, "n"),
                 d( 2, 0, "w"));
     public static final NamedTaggedFormation FACING_COUPLES = // callerlab #6
-        xofy("FACING COUPLES", FACING_DANCERS, COUPLE);
+        xofy("FACING COUPLES", FACING_DANCERS, COUPLE,
+             WhetherTagger.AUTO_TAGS,
+             sd(StandardDancer.COUPLE_3_GIRL,
+                StandardDancer.COUPLE_3_BOY));
     public static final NamedTaggedFormation BACK_TO_BACK_COUPLES = // callerlab #7
         xofy("BACK TO BACK COUPLES", BACK_TO_BACK_DANCERS, COUPLE);
     public static final NamedTaggedFormation TANDEM_COUPLES =
-        xofy("TANDEM COUPLES", TANDEM, COUPLE);
+        xofy("TANDEM COUPLES", TANDEM, COUPLE,
+             WhetherTagger.AUTO_TAGS,
+             sd(StandardDancer.COUPLE_3_BOY,
+                StandardDancer.COUPLE_3_GIRL,
+                StandardDancer.COUPLE_1_BOY,
+                StandardDancer.COUPLE_1_GIRL));
     public static final NamedTaggedFormation RH_OCEAN_WAVE = // callerlab #8
         xofy("RH OCEAN WAVE", COUPLE, RH_MINIWAVE,
-                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END));
+             WhetherTagger.AUTO_TAGS,
+             sd(StandardDancer.COUPLE_1_BOY,
+                StandardDancer.COUPLE_3_GIRL),
+             t(0, END), t(1, CENTER), t(2, CENTER), t(3, END));
     public static final NamedTaggedFormation LH_OCEAN_WAVE = // callerlab #9
         xofy("LH OCEAN WAVE", COUPLE, LH_MINIWAVE,
-                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END));
+             WhetherTagger.AUTO_TAGS,
+             sd(StandardDancer.COUPLE_3_GIRL,
+                StandardDancer.COUPLE_1_BOY),
+             t(0, END), t(1, CENTER), t(2, CENTER), t(3, END));
     public static final NamedTaggedFormation RH_BOX = // callerlab #10
         xofy("RH BOX", RH_MINIWAVE, TANDEM);
     public static final NamedTaggedFormation LH_BOX = // callerlab #11
@@ -296,32 +310,65 @@ abstract class FormationListSlow {
                 t(4, CENTER), t(5, CENTER), t(6, OUTSIDE_4), t(7, OUTSIDE_4));
     public static final NamedTaggedFormation STATIC_SQUARE = // callerlab #14
         create("STATIC SQUARE", f(" ss ","e  w","e  w"," nn "),
-                WhetherTagger.AUTO_TAGS);
+               WhetherTagger.AUTO_TAGS,
+               sd(StandardDancer.COUPLE_3_GIRL,
+                  StandardDancer.COUPLE_3_BOY,
+                  StandardDancer.COUPLE_4_BOY,
+                  StandardDancer.COUPLE_2_GIRL));
     public static final NamedTaggedFormation STATIC_SQUARE_FACING_OUT =
         create("STATIC SQUARE FACING OUT", f(" nn ","w  e","w  e"," ss "),
-                WhetherTagger.AUTO_TAGS);
+               WhetherTagger.AUTO_TAGS,
+               sd(StandardDancer.COUPLE_3_BOY,
+                  StandardDancer.COUPLE_3_GIRL,
+                  StandardDancer.COUPLE_4_GIRL,
+                  StandardDancer.COUPLE_2_BOY));
     // XXX circle, callerlab #15 (we use STATIC SQUARE for this)
     public static final NamedTaggedFormation SINGLE_FILE_PROMENADE = // callerlab #16
         create("SINGLE FILE PROMENADE", f(" ww ","s  n","s  n"," ee "),
-                WhetherTagger.AUTO_TAGS);
+               WhetherTagger.AUTO_TAGS,
+               sd(StandardDancer.COUPLE_3_GIRL,
+                  StandardDancer.COUPLE_3_BOY,
+                  StandardDancer.COUPLE_4_BOY,
+                  StandardDancer.COUPLE_2_GIRL));
     public static final NamedTaggedFormation REVERSE_SINGLE_FILE_PROMENADE =
         create("REVERSE SINGLE FILE PROMENADE", f(" ee ","n  s","n  s"," ww "),
-                WhetherTagger.AUTO_TAGS);
+               WhetherTagger.AUTO_TAGS,
+               sd(StandardDancer.COUPLE_3_GIRL,
+                  StandardDancer.COUPLE_3_BOY,
+                  StandardDancer.COUPLE_4_BOY,
+                  StandardDancer.COUPLE_2_GIRL));
     // callerlab #17, alamo ring -- this is a little sketchy, because we
     // introduce an asymmetry by using squared-set spots.  In reality RH and
     // LH alamo rings are indistinguishable.
     public static final NamedTaggedFormation RH_ALAMO_RING =
         create("RH ALAMO RING", f(" ns ","e  e","w  w"," ns "),
-                WhetherTagger.AUTO_TAGS);
+               WhetherTagger.AUTO_TAGS,
+               sd(StandardDancer.COUPLE_3_GIRL,
+                  StandardDancer.COUPLE_3_BOY,
+                  StandardDancer.COUPLE_4_BOY,
+                  StandardDancer.COUPLE_2_GIRL));
     public static final NamedTaggedFormation LH_ALAMO_RING =
         create("LH ALAMO RING", f(" sn ","w  w","e  e"," sn "),
-                WhetherTagger.AUTO_TAGS);
+               WhetherTagger.AUTO_TAGS,
+               sd(StandardDancer.COUPLE_3_GIRL,
+                  StandardDancer.COUPLE_3_BOY,
+                  StandardDancer.COUPLE_4_BOY,
+                  StandardDancer.COUPLE_2_GIRL));
     public static final NamedTaggedFormation O_SPOTS =
         create("O SPOTS", f(" oo ","o  o","o  o"," oo "),
-                WhetherTagger.NO_AUTO_TAGS);
+               WhetherTagger.NO_AUTO_TAGS,
+               sd(StandardDancer.COUPLE_3_GIRL,
+                  StandardDancer.COUPLE_3_BOY,
+                  StandardDancer.COUPLE_4_BOY,
+                  StandardDancer.COUPLE_2_GIRL));
     public static final NamedTaggedFormation PROMENADE = // callerlab #18
         xofy("PROMENADE", LH_SINGLE_PROMENADE, COUPLE,
-                t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
+             WhetherTagger.AUTO_TAGS,
+             sd(StandardDancer.COUPLE_3_GIRL,
+                StandardDancer.COUPLE_3_BOY,
+                StandardDancer.COUPLE_4_GIRL,
+                StandardDancer.COUPLE_4_BOY),
+             t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
                 t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation WRONG_WAY_PROMENADE =
         xofy("WRONG WAY PROMENADE", RH_SINGLE_PROMENADE, COUPLE,
@@ -329,8 +376,13 @@ abstract class FormationListSlow {
                 t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation STAR_PROMENADE =
         xofy("STAR PROMENADE", LH_STAR, COUPLE,
-                t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
-                t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
+             WhetherTagger.AUTO_TAGS,
+             sd(StandardDancer.COUPLE_3_GIRL,
+                StandardDancer.COUPLE_3_BOY,
+                StandardDancer.COUPLE_4_GIRL,
+                StandardDancer.COUPLE_4_BOY),
+             t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
+             t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation WRONG_WAY_STAR_PROMENADE =
         xofy("WRONG WAY STAR PROMENADE", RH_STAR, COUPLE,
                 t(0, END), t(1, CENTER), t(2, END), t(3, CENTER),
@@ -357,22 +409,43 @@ abstract class FormationListSlow {
                 t(4, CENTER), t(5, END), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation FACING_LINES = // callerlab #22
         xofy("FACING LINES", FACING_COUPLES, COUPLE,
-                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),
-                t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
+             WhetherTagger.AUTO_TAGS,
+             sd(StandardDancer.COUPLE_4_GIRL,
+                StandardDancer.COUPLE_4_BOY,
+                StandardDancer.COUPLE_3_GIRL,
+                StandardDancer.COUPLE_3_BOY),
+             t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),
+             t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation EIGHT_CHAIN_THRU = // callerlab #23
         xofy("EIGHT CHAIN THRU", FACING_COUPLES, FACING_DANCERS,
+                WhetherTagger.AUTO_TAGS,
+                sd(StandardDancer.COUPLE_1_GIRL,
+                   StandardDancer.COUPLE_1_BOY,
+                   StandardDancer.COUPLE_2_BOY,
+                   StandardDancer.COUPLE_2_GIRL),
                 t(0,END   ),t(1,END),
                 t(2,CENTER),t(3,CENTER),
                 t(4,CENTER),t(5,CENTER),
                 t(6,END   ),t(7,END));
+
     public static final NamedTaggedFormation TRADE_BY = // callerlab #24
         xofy("TRADE BY", FACING_COUPLES, BACK_TO_BACK_DANCERS,
+                WhetherTagger.AUTO_TAGS,
+                sd(StandardDancer.COUPLE_1_BOY,
+                   StandardDancer.COUPLE_1_GIRL,
+                   StandardDancer.COUPLE_2_GIRL,
+                   StandardDancer.COUPLE_2_BOY),
                 t(0,END   ),t(1,END),
                 t(2,CENTER),t(3,CENTER),
                 t(4,CENTER),t(5,CENTER),
                 t(6,END   ),t(7,END));
     public static final NamedTaggedFormation DOUBLE_PASS_THRU = // callerlab #25
         xofy("DOUBLE PASS THRU", FACING_COUPLES, TANDEM,
+                WhetherTagger.AUTO_TAGS,
+                sd(StandardDancer.COUPLE_1_GIRL,
+                   StandardDancer.COUPLE_1_BOY,
+                   StandardDancer.COUPLE_2_GIRL,
+                   StandardDancer.COUPLE_2_BOY),
                 t(0,END   ),t(1,END),
                 t(2,CENTER),t(3,CENTER),
                 t(4,CENTER),t(5,CENTER),
@@ -397,10 +470,20 @@ abstract class FormationListSlow {
                 t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation PARALLEL_RH_TWO_FACED_LINES = // callerlab #29(a)
         xofy("PARALLEL RH TWO-FACED LINES", RH_BOX, COUPLE,
+                WhetherTagger.AUTO_TAGS,
+                sd(StandardDancer.COUPLE_1_BOY,
+                   StandardDancer.COUPLE_1_GIRL,
+                   StandardDancer.COUPLE_2_GIRL,
+                   StandardDancer.COUPLE_2_BOY),
                 t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),
                 t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation PARALLEL_LH_TWO_FACED_LINES = // callerlab #29(b)
         xofy("PARALLEL LH TWO-FACED LINES", LH_BOX, COUPLE,
+                WhetherTagger.AUTO_TAGS,
+                sd(StandardDancer.COUPLE_1_GIRL,
+                   StandardDancer.COUPLE_1_BOY,
+                   StandardDancer.COUPLE_2_BOY,
+                   StandardDancer.COUPLE_2_GIRL),
                 t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),
                 t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation RH_COLUMN = // callerlab #30
@@ -553,13 +636,28 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation LH_TIDAL_WAVE = // callerlab #50(b)
         xofy("LH TIDAL WAVE", COUPLE, LH_OCEAN_WAVE);
     public static final NamedTaggedFormation RH_TIDAL_TWO_FACED_LINE = // callerlab #51(a)
-        xofy("RH TIDAL TWO-FACED LINE", COUPLE, RH_TWO_FACED_LINE);
+        xofy("RH TIDAL TWO-FACED LINE", COUPLE, RH_TWO_FACED_LINE,
+             WhetherTagger.AUTO_TAGS,
+             sd(StandardDancer.COUPLE_1_BOY,
+                StandardDancer.COUPLE_1_GIRL,
+                StandardDancer.COUPLE_2_GIRL,
+                StandardDancer.COUPLE_2_BOY));
     public static final NamedTaggedFormation LH_TIDAL_TWO_FACED_LINE = // callerlab #51(b)
-        xofy("LH TIDAL TWO-FACED LINE", COUPLE, LH_TWO_FACED_LINE);
+        xofy("LH TIDAL TWO-FACED LINE", COUPLE, LH_TWO_FACED_LINE,
+             WhetherTagger.AUTO_TAGS,
+             sd(StandardDancer.COUPLE_1_GIRL,
+                StandardDancer.COUPLE_1_BOY,
+                StandardDancer.COUPLE_2_BOY,
+                StandardDancer.COUPLE_2_GIRL));
     public static final NamedTaggedFormation RH_TIDAL_LINE = // callerlab #52(a)
         xofy("RH TIDAL LINE", RH_TWO_FACED_LINE, COUPLE);
     public static final NamedTaggedFormation LH_TIDAL_LINE = // callerlab #52(b)
-        xofy("LH TIDAL LINE", LH_TWO_FACED_LINE, COUPLE);
+        xofy("LH TIDAL LINE", LH_TWO_FACED_LINE, COUPLE,
+             WhetherTagger.AUTO_TAGS,
+             sd(StandardDancer.COUPLE_1_GIRL,
+                StandardDancer.COUPLE_1_BOY,
+                StandardDancer.COUPLE_2_GIRL,
+                StandardDancer.COUPLE_2_BOY));
     public static final NamedTaggedFormation GENERAL_TIDAL_LINE =
         create("GENERAL TIDAL LINE", f("||||||||"), WhetherTagger.NO_AUTO_TAGS,
                 t(0, OUTSIDE_4), t(1, OUTSIDE_4), t(2, CENTER), t(3, CENTER),
@@ -597,6 +695,10 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation O_DOUBLE_PASS_THRU = // used for grand square
         create("O DOUBLE PASS THRU", f(" ss ","s  s","n  n"," nn "),
                 WhetherTagger.AUTO_TAGS,
+                sd(StandardDancer.COUPLE_1_GIRL,
+                   StandardDancer.COUPLE_1_BOY,
+                   StandardDancer.COUPLE_2_GIRL,
+                   StandardDancer.COUPLE_2_BOY),
                 t(0, BELLE, END),    t(1, BEAU, END),
                 t(2, BELLE, CENTER), t(3, BEAU, CENTER),
                 t(4, BEAU, CENTER),  t(5, BELLE, CENTER),
@@ -611,6 +713,10 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation BUTTERFLY_DOUBLE_PASS_THRU = // used for grand square
         create("BUTTERFLY DOUBLE PASS THRU", f("s  s"," ss "," nn ","n  n"),
                 WhetherTagger.AUTO_TAGS,
+                sd(StandardDancer.COUPLE_1_GIRL,
+                   StandardDancer.COUPLE_1_BOY,
+                   StandardDancer.COUPLE_2_GIRL,
+                   StandardDancer.COUPLE_2_BOY),
                 t(0, BELLE, END),    t(1, BEAU, END),
                 t(2, BELLE, CENTER), t(3, BEAU, CENTER),
                 t(4, BEAU, CENTER),  t(5, BELLE, CENTER),
@@ -655,11 +761,11 @@ abstract class FormationListSlow {
 	List<TaggedDancerInfo> dil = new ArrayList<TaggedDancerInfo>(ptl.length);
 	for (PositionAndTag pt: ptl)
 	    dil.add(new TaggedDancerInfo(new PhantomDancer(), pt.position, pt.tags, true));
-	return new NamedTaggedFormation(name, dil.toArray(new TaggedDancerInfo[dil.size()]));
+	return new NamedTaggedFormation(name, null, dil.toArray(new TaggedDancerInfo[dil.size()]));
     }
     // first string is 'top' of diagram (closest to caller)
     // dancers are numbered left to right, top to bottom. (reading order)
-    private static NamedTaggedFormation create(String name, String[] sa, WhetherTagger wt, NumAndTags... tags) {
+    private static NamedTaggedFormation create(String name, String[] sa, WhetherTagger wt, StandardDancer[] normalCouples, NumAndTags... tags) {
         Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
 	// check validity
 	assert sa.length>0;
@@ -677,10 +783,15 @@ abstract class FormationListSlow {
 		                r));
 	    }
 	Formation f = new Formation(m).recenter();
-        return addTags(name, f, wt, tags);
+        return addTags(name, f, wt, normalCouples, tags);
+    }
+    // "normalCouples" argument is optional
+    private static NamedTaggedFormation create(String name, String[] sa, WhetherTagger wt, NumAndTags... tags) {
+        return create(name, sa, wt, null, tags);
     }
     // helper
     private static String[] f(String... sa) { return sa; }
+    private static StandardDancer[] sd(StandardDancer... sa) { return sa; }
 
     /** Formation composition: create a formation with an X of Ys. */
     private static TaggedFormation _xofy(Formation x, TaggedFormation y) {
@@ -705,15 +816,18 @@ abstract class FormationListSlow {
      * are numbered left to right, top to bottom.  A null indicates
      * "no additional tags".
      */
-    private static NamedTaggedFormation xofy(final String name, Formation x, TaggedFormation y, NumAndTags... tags){
-        return xofy(name, x, y, WhetherTagger.AUTO_TAGS, tags);
+    private static NamedTaggedFormation xofy(final String name, Formation x, TaggedFormation y, NumAndTags... tags) {
+        return xofy(name, x, y, WhetherTagger.AUTO_TAGS, null, tags);
     }
-    private static NamedTaggedFormation xofy(final String name, Formation x, TaggedFormation y, WhetherTagger wt, NumAndTags... tags){
-        return addTags(name, _xofy(x,y), wt, tags);
+    private static NamedTaggedFormation xofy(final String name, Formation x, TaggedFormation y, WhetherTagger wt, NumAndTags... tags) {
+        return xofy(name, x, y, wt, null, tags);
+    }
+    private static NamedTaggedFormation xofy(final String name, Formation x, TaggedFormation y, WhetherTagger wt, StandardDancer[] normalCouples, NumAndTags... tags) {
+        return addTags(name, _xofy(x,y), wt, normalCouples, tags);
     }
     private static enum WhetherTagger { AUTO_TAGS, NO_AUTO_TAGS; }
     private static NamedTaggedFormation addTags(final String name, final Formation f,
-            WhetherTagger wt, NumAndTags... tags) {
+        WhetherTagger wt, StandardDancer[] normalCouples, NumAndTags... tags) {
         List<Dancer> dancers = f.sortedDancers();
         MultiMap<Dancer,Tag> tm = new GenericMultiMap<Dancer,Tag>
             (Factories.enumSetFactory(Tag.class));
@@ -727,7 +841,7 @@ abstract class FormationListSlow {
         // add implicit/automatic tags
         if (wt != WhetherTagger.NO_AUTO_TAGS) // general formations don't get tags
             Tagger.addAutomatic(f, tm);
-        return new NamedTaggedFormation(name, f, tm);
+        return new NamedTaggedFormation(name, f, tm, normalCouples);
     }
     private static class NumAndTags {
         public final int dancerNum;
@@ -818,14 +932,28 @@ abstract class FormationListSlow {
         pw.println("    /** "+ntf.getName()+" formation.");
         pw.println("      * @doc.test");
         pw.println("      *  js> FormationList = FormationList.js(this); undefined;");
-        pw.println("      *  js> tf = FormationList."+fieldName+"; tf.toStringDiagram('|');");
-        pw.println(ntf.toStringDiagram("      *  |"));
+        pw.println("      *  js> tf = FormationList."+fieldName+"; tf.mapStd([]).toStringDiagram('|');");
+        pw.println(ntf.mapStd().toStringDiagram("      *  |"));
         pw.println("      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\\n');");
         for (Dancer d : ntf.sortedDancers())
             pw.println("      *  "+new ArrayList<Tag>(ntf.tags(d)));
         pw.println("      */");
         pw.println("    public static final NamedTaggedFormation "+fieldName+" =");
-        pw.print  ("        new NamedTaggedFormation(\""+escapedName+"\"");
+        pw.println("        new NamedTaggedFormation(\""+escapedName+"\",");
+        pw.print  ("            ");
+        StandardDancer[] normalCouples = ntf.normalCouples();
+        if (normalCouples == null) {
+            pw.print  ("null");
+        } else {
+            pw.println("new StandardDancer[] {");
+            for (StandardDancer sd : normalCouples) {
+                pw.print  ("                ");
+                pw.print  ("StandardDancer.");
+                pw.print  (sd.name());
+                pw.println(",");
+            }
+            pw.print  ("            }");
+        }
         for (Dancer d : ntf.sortedDancers()) {
             pw.println(",");
             pw.print  ("            ");

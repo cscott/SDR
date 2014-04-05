@@ -1,59 +1,59 @@
 Testing O formation.
 
-sdr> /program = C1 ; setFormation(FormationList.O_DOUBLE_PASS_THRU.mapStd([]))
-|      1Bv  1Gv
+sdr> /program = C1 ; setFormation(FormationList.O_DOUBLE_PASS_THRU)
+|      1Gv  1Bv
 | 
-| 2Bv            2Gv
+| 2Gv            2Bv
 | 
-| 4G^            4B^
+| 4B^            4G^
 | 
-|      3G^  3B^
+|      3B^  3G^
 sdr> o do half of a zoom
-|      1Bv  1Gv
+|      1Gv  1Bv
 | 
-| 2B^            2G^
+| 2G^            2B^
 | 
-| 4Gv            4Bv
+| 4Bv            4Gv
 | 
-|      3G^  3B^
+|      3B^  3G^
 sdr> o pass thru
-|      2B^  2G^
+|      2G^  2B^
 | 
-| 1Bv            1Gv
+| 1Gv            1Bv
 | 
-| 3G^            3B^
+| 3B^            3G^
 | 
-|      4Gv  4Bv
+|      4Bv  4Gv
 sdr> o chase right
-|      1G^  1Bv
+|      1B^  1Gv
 | 
-| 2G^            2Bv
+| 2B^            2Gv
 | 
-| 4B^            4Gv
+| 4G^            4Bv
 | 
-|      3B^  3Gv
+|      3G^  3Bv
 sdr> o circulate
-|      2G^  1Gv
+|      2B^  1Bv
 | 
-| 4B^            1Bv
+| 4G^            1Gv
 | 
-| 3B^            2Bv
+| 3G^            2Gv
 | 
-|      3G^  4Gv
+|      3B^  4Bv
 sdr> o split circulate
-|      4B^  2Gv
-| 
-| 1B^            1Gv
-| 
-| 3G^            3Bv
-| 
 |      4G^  2Bv
+| 
+| 1G^            1Bv
+| 
+| 3B^            3Gv
+| 
+|      4B^  2Gv
 sdr> o split counter rotate
-|      1B>  4B>
+|      1G>  4G>
 | 
-| 1G<            2G<
+| 1B<            2B<
 | 
-| 4G>            3G>
+| 4B>            3B>
 | 
-|      2B<  3B<
+|      2G<  3G<
 sdr> /exit
