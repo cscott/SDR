@@ -1,6 +1,6 @@
 Timing of calls on the mainstream program.
 
-sdr> /program=MAINSTREAM
+sdr> /program = MAINSTREAM
 MAINSTREAM
 sdr> /// import formations into default name space
 sdr> /for (f in FormationList) { this[f] = FormationList[f]; } ; undefined

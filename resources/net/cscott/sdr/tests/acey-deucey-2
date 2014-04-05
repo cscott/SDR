@@ -1,6 +1,6 @@
 Acey-deucey-longer sequence written 10-Mar-2005; called 2-Aug-2005.
 
-sdr> /program = Program.PLUS
+sdr> /program = PLUS
 PLUS
 sdr> heads boys walk girls dodge
 | 4B>  1B^  3Gv  2G<

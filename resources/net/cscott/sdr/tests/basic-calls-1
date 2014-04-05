@@ -1,7 +1,7 @@
 Test some basic calls, including "first couple go left" and
 "reverse single file promenade", and "dive thru".
 
-sdr> /program = Program.MAINSTREAM // for tag the line
+sdr> /program = MAINSTREAM // for tag the line
 MAINSTREAM
 sdr> heads square thru
 | 4B>  3G<  3B>  2G<
@@ -105,7 +105,7 @@ sdr> reverse single file promenade home
 | 
 |      1B^  1G^
 sdr> /// we're home!
-sdr> /program = Program.PLUS // for 'track 2'
+sdr> /program = PLUS // for 'track 2'
 PLUS
 sdr> heads lead right
 | 4B>  3G<  1B>  2G<

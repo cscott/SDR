@@ -1,6 +1,6 @@
 A1 call: <anything> and cross.
 
-sdr> /program = Program.A1 ; setFormation(Formation.SQUARED_SET)
+sdr> /program = A1 ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 |
 | 4B>            2G<
@@ -55,7 +55,7 @@ sdr> circulate and cross
 |
 | 3B<  3G>  4B<  4G>
 sdr> /// T-bones (c1 and higher)
-sdr> /program = Program.C1 ; setFormation(Formation.SQUARED_SET)
+sdr> /program = C1 ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 |
 | 4B>            2G<

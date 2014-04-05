@@ -10,7 +10,7 @@ XXX: add centers tandem hinge from r-h columns (ends don't move)
 XXX: centers work stable, shazam (four closest to center) from rh tidal wave
 XXX: each wave, centers work stable, shazam (centers on each side) from rh tidal
 
-sdr> /program = Program.PLUS ; setFormation(Formation.SQUARED_SET)
+sdr> /program = PLUS ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 | 
 | 4B>            2G<
@@ -41,7 +41,7 @@ sdr> fan the top
 | 
 | 3B<  2B<
 sdr> /// lynette example:
-sdr> /program=C2
+sdr> /program = C2
 C2
 sdr> bounce the centers
 | 4G>  4B>  1G>  1B>

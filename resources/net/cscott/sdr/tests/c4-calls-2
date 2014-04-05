@@ -2,7 +2,7 @@ More C4 calls.
 
 brace yourself, cross breed thru, tag the star, slim down, advance to a column.
 
-sdr> /program = Program.C4 ; setFormation(Formation.SQUARED_SET)
+sdr> /program = C4 ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 |
 | 4B>            2G<

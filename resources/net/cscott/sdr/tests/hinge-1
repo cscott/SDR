@@ -1,6 +1,6 @@
 Simple test of miniwave hinge.
 
-sdr> /program=Program.PLUS; setFormation(Formation.SQUARED_SET)
+sdr> /program = PLUS ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 | 
 | 4B>            2G<
@@ -30,12 +30,12 @@ sdr> /ds.currentTime().subtract(start)
 sdr> boys run
 | 1B^  1G^  4Gv  4Bv  2B^  2G^  3Gv  3Bv
 sdr> /// Ensure that we get a proper error message for partner hinge at PLUS
-sdr> /program = Program.PLUS
+sdr> /program = PLUS
 PLUS
 sdr> hinge
 * Partner hinge not allowed below A1
 sdr> /// But it should work fine at A1
-sdr> /program = Program.A1
+sdr> /program = A1
 A1
 sdr> /// Some tricky breathing here:
 sdr> hinge

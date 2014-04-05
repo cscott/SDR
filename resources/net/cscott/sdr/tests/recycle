@@ -1,6 +1,6 @@
 Tests for facing recycle.
 
-sdr> /program = Program.A2 ; setFormation(Formation.SQUARED_SET)
+sdr> /program = A2 ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 |
 | 4B>            2G<
@@ -28,7 +28,7 @@ sdr> recycle twice
 | 4G>  1G>
 | 
 | 4B<  3B<
-sdr> /program = Program.C1
+sdr> /program = C1
 C1
 sdr> do 2/3 of a recycle
 | 4B^  3Gv  3B^  2Gv

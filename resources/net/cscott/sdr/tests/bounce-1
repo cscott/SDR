@@ -1,6 +1,6 @@
 Simple tests for "bounce the anyone".
 
-sdr> /program=C2
+sdr> /program = C2
 C2
 sdr> heads lead right ; veer left
 | 4B>  1B>

@@ -1,6 +1,6 @@
 Another interesting pass to the center.
 
-sdr> /program=Program.A2
+sdr> /program = A2
 A2
 sdr> heads lead right
 | 4B>  3G<  1B>  2G<

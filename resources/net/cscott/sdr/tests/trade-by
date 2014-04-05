@@ -1,6 +1,6 @@
 Unusual trade bys.
 
-sdr> /program=Program.A2
+sdr> /program = A2
 A2
 sdr> heads pass thru ; trade
 | 4G<  1Gv  1Bv  2B>

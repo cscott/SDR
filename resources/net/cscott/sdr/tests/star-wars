@@ -1,7 +1,7 @@
 Tests from Bill Heimann's article "Star Wars, or When Meta-Concepts
 and Supercalls Collide" (http://lynette.org/starwars.html).
 
-sdr> /program=C4
+sdr> /program = C4
 C4
 sdr> /setFormation(FormationList.PARALLEL_RH_WAVES.mapStd([]))
 | 1B^  1Gv  2B^  2Gv

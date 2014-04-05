@@ -1,6 +1,6 @@
 Acey-deucey sequence written 10-Mar-2005; called 24-Jul-2005.
 
-sdr> /program = Program.PLUS
+sdr> /program = PLUS
 PLUS
 sdr> heads half sashay
 | 4B>  3Bv  3Gv  2G<

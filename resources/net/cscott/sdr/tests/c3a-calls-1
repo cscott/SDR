@@ -1,6 +1,6 @@
 Tests for C3A calls.
 
-sdr> /program=C3A
+sdr> /program = C3A
 C3A
 sdr> heads square thru ; boys walk girls dodge
 | 4G>  4B>  1G>  3B>

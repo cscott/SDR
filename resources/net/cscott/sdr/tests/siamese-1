@@ -1,6 +1,6 @@
 Tests for siamese.
 
-sdr> /program=Program.C1
+sdr> /program = C1
 C1
 sdr> heads right and left thru twice
 | 4B>  3Gv  3Bv  2G<

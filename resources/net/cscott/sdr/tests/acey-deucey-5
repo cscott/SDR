@@ -1,6 +1,6 @@
 T-boned acey deuceys that cross the center & from diamonds.
 
-sdr> /program = Program.PLUS;
+sdr> /program = PLUS
 PLUS
 sdr> heads pass the ocean ; extend
 | 4B>  1B>
@@ -43,7 +43,7 @@ sdr> acey deucey
 | 
 | 4B>  1B>
 sdr> /reset
-sdr> /program = Program.PLUS;
+sdr> /program = PLUS
 PLUS
 sdr> heads pass the ocean ; extend
 | 4B>  1B>

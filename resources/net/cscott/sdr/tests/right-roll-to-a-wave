@@ -1,6 +1,6 @@
 Choreography for Right Roll To A Wave (A1).
 
-sdr> /program=A1
+sdr> /program = A1
 A1
 sdr> heads square thru 2
 | 4B>  1G<  1B>  2G<
@@ -52,7 +52,7 @@ sdr> promenade home
 | 4G>            2B<
 |
 |      1B^  1G^
-sdr> /program=C1
+sdr> /program = C1
 C1
 sdr> heads square thru 2
 | 4B>  1G<  1B>  2G<

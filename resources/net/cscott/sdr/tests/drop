@@ -1,6 +1,6 @@
 Tests for drop in/out/back/right/left.
 
-sdr> /program=C2
+sdr> /program = C2
 C2
 sdr> /setFormation(Formation.FOUR_SQUARE)
 | 3Gv  3Bv

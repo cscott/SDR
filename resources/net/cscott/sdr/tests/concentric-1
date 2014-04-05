@@ -1,5 +1,5 @@
 Test cases for concentric.
-sdr> /program=Program.C2
+sdr> /program = C2
 C2
 sdr> /// when ending in 1x4, only one reasonable reassembly ////////////
 sdr> heads right and left thru twice

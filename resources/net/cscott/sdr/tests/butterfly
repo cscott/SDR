@@ -1,6 +1,6 @@
 Testing butterflies.
 
-sdr> /program = Program.C1
+sdr> /program = C1
 C1
 sdr> /setFormation(FormationList.BUTTERFLY_DOUBLE_PASS_THRU.mapStd([]))
 | 1Bv            1Gv

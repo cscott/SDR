@@ -1,6 +1,6 @@
 "Heads start" should also work for "girls start".
 
-sdr> /program=Program.A2;
+sdr> /program = A2
 A2
 sdr> heads half sashay
 | 4B>  3Bv  3Gv  2G<

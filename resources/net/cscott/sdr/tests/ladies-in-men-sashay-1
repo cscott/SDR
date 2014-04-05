@@ -1,7 +1,7 @@
 Tricky "ladies in men sashay" from Barry Clasper, Tech Squares C1/C2 dance.
 2010-01-04.
 
-sdr> /program=Program.A2
+sdr> /program = A2
 A2
 sdr> heads half sashay ; circle left 3/8
 |      1Gv  4Gv
@@ -19,7 +19,7 @@ sdr> as couples ladies in men sashay once and a half
 | 2G^  3G^
 | 
 | 1B^  2B^
-sdr> /reset ; program=Program.A2
+sdr> /reset ; program = A2
 A2
 sdr> heads lead right ; veer left
 | 4B>  1B>

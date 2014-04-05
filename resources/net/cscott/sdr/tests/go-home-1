@@ -1,7 +1,7 @@
 Test fixes for bugs in the "go home" call when dancers are already standing
 on their home spot.
 
-sdr> /program = Program.MAINSTREAM ; setFormation(Formation.SQUARED_SET)
+sdr> /program = MAINSTREAM ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 |
 | 4B>            2G<

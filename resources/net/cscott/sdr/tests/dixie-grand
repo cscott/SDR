@@ -201,7 +201,7 @@ sdr> boys walk and dodge while the girls u turn back
 | 
 | 1G>  2G>
 sdr> /// "boys step forward and face left"
-sdr> /program=C4
+sdr> /program = C4
 C4
 sdr> boys press ahead
 |      4G<  3G<
@@ -211,7 +211,7 @@ sdr> boys press ahead
 | 3B<            4B>
 | 
 |      1G>  2G>
-sdr> /program=PLUS
+sdr> /program = PLUS
 PLUS
 sdr> boys face left
 |      4G<  3G<
@@ -405,7 +405,7 @@ sdr> promenade home
 | 
 |      1B^  1G^
 sdr> /// sequence #8, verify parts of dixie grand
-sdr> /program=C4; undefined
+sdr> /program = C4; undefined
 sdr> heads star thru ; double pass thru ; cloverleaf and spread ; star thru
 | 3B>  2B>  4G<  3G<
 | 

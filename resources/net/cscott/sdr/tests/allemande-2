@@ -1,6 +1,6 @@
 Allemande left from different formations.
 
-sdr> /program = Program.MAINSTREAM ; setFormation(Formation.SQUARED_SET)
+sdr> /program = MAINSTREAM ; setFormation(Formation.SQUARED_SET);
 |      3Gv  3Bv
 |
 | 4B>            2G<

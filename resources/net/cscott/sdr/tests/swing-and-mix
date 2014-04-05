@@ -3,7 +3,7 @@ Simple tests for swing and mix (A2).
 Note that (as per Vic Ceder) swing and mix can be done from facing couples.
 It is also a three part call (not the two parts "swing" and "mix").
 
-sdr> /program = Program.C1 ; setFormation(Formation.SQUARED_SET); undefined
+sdr> /program = C1 ; setFormation(Formation.SQUARED_SET); undefined
 sdr> heads square thru
 | 4B>  3G<  3B>  2G<
 | 

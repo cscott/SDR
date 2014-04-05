@@ -1,6 +1,6 @@
 Test wheel the ocean/sea (C2).
 
-sdr> /program=C2
+sdr> /program = C2
 C2
 sdr> heads square thru ; pass thru
 | 3G<  4B>  2G<  3B>

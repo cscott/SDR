@@ -1,6 +1,6 @@
 Timing of calls on the plus program.
 
-sdr> /program=PLUS
+sdr> /program = PLUS
 PLUS
 sdr> /// import formations into default name space
 sdr> /for (f in FormationList) { this[f] = FormationList[f]; } ; undefined

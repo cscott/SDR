@@ -1,6 +1,6 @@
 Acey deucey shouldn't allow dancers to enter the center.
 
-sdr> /program = Program.PLUS;
+sdr> /program = PLUS
 PLUS
 sdr> heads lead right
 | 4B>  3G<  1B>  2G<
@@ -17,7 +17,7 @@ sdr> acey deucey
 sdr> acey deucey
 * Invalid formation (CENTER HALF (Invalid formation (2x2 (Circulate is not allowed to cross the center))), TWIN GENERAL DIAMONDS (no matches), 2x4 (null))
 sdr> /reset
-sdr> /program = Program.PLUS;
+sdr> /program = PLUS
 PLUS
 sdr> heads lead right ; boys run
 | 4G>  3B>  1G>  2B>

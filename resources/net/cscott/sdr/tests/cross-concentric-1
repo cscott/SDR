@@ -1,6 +1,6 @@
 Tests for cross concentric (C2).
 
-sdr> /program=C2; undefined
+sdr> /program = C2 ; undefined
 sdr> heads square thru ; veer left ; lockit
 | 1B^  3G^  4Gv  4Bv  2B^  2G^  1Gv  3Bv
 sdr> sides trade

@@ -1,6 +1,6 @@
 "Initially" concept.
 
-sdr> /program = Program.C4 ; setFormation(Formation.SQUARED_SET)
+sdr> /program = C4 ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 |
 | 4B>            2G<

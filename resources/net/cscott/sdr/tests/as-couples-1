@@ -1,5 +1,5 @@
 Tests for as couples.
-sdr> /program = Program.A1
+sdr> /program = A1
 A1
 sdr> heads lead right
 | 4B>  3G<  1B>  2G<

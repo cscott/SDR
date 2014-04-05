@@ -1,7 +1,7 @@
 Mainstream call: scoot back
 From normal formations as well as from t-boned setups (c1 and higher).
 
-sdr> /program = Program.MAINSTREAM ; setFormation(Formation.SQUARED_SET)
+sdr> /program = MAINSTREAM ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 |
 | 4B>            2G<
@@ -36,7 +36,7 @@ sdr> scoot back
 sdr> /// check that this isn't a triple scoot!
 sdr> do half of a scoot back
 | 1B^  3G^  4Gv  4Bv  2B^  2G^  1Gv  3Bv
-sdr> /program = Program.PLUS;
+sdr> /program = PLUS
 PLUS
 sdr> couples hinge ; roll ; extend
 |      1Bv  2Bv
@@ -72,7 +72,7 @@ sdr> scoot back and roll
 | 4Gv  1G>
 |
 | 3B<  4B^
-sdr> /program = Program.C1;
+sdr> /program = C1
 C1
 sdr> scoot back
 | 3G>  2B^

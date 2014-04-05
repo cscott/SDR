@@ -1,6 +1,6 @@
 C1 concept: "finish"
 
-sdr> /program = Program.C1 ; setFormation(Formation.SQUARED_SET)
+sdr> /program = C1 ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 |
 | 4B>            2G<

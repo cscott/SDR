@@ -1,6 +1,6 @@
 Test roll preservation/roll clearing:
 
-sdr> /program=Program.A2; setFormation(Formation.SQUARED_SET)
+sdr> /program = A2 ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 | 
 | 4B>            2G<

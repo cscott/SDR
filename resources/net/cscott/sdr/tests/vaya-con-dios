@@ -1,6 +1,6 @@
 Choreography from Vaya Con Dios, TB190.  Bud Whitten.
 
-sdr> /program = Program.MAINSTREAM
+sdr> /program = MAINSTREAM
 MAINSTREAM
 sdr> /// opener/break/closer
 sdr> four ladies chain 3/4
@@ -81,14 +81,14 @@ sdr> heads promenade half way
 | 4G>  2B<
 | 
 | 3B^  3G^
-sdr> /program = Program.C4
+sdr> /program = C4
 C4
 sdr> /// XXX: should be 'heads down the middle curlique'
 sdr> heads down the middle touch 1/4
 | 4B>  3B>  3G>  2G<
 | 
 | 4G>  1G<  1B<  2B<
-sdr> /program = Program.PLUS
+sdr> /program = PLUS
 PLUS
 sdr> center boys run
 | 4B>  1G<  1B>  2G<

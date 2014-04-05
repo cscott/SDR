@@ -1,6 +1,6 @@
 Tests for trail to a diamond, including a T-bone.
 
-sdr> /program=C2;
+sdr> /program = C2
 C2
 sdr> sides lead right ; step to a wave
 | 2B^  3Gv  2G^  3Bv

@@ -1,6 +1,6 @@
 Tests of mainstream calls 52-62.
 
-sdr> /program = Program.MAINSTREAM
+sdr> /program = MAINSTREAM
 MAINSTREAM
 sdr> four ladies chain
 |      1Gv  3Bv

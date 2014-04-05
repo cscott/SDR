@@ -3,7 +3,7 @@ Note that 'extend' is disallowed when 'step to a wave' or 'step thru' is
 meant.
 
 sdr> /// first test that extend is *not* allowed from certain formations
-sdr> /program = Program.PLUS; setFormation(Formation.SQUARED_SET)
+sdr> /program = PLUS ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 | 
 | 4B>            2G<
@@ -55,7 +55,7 @@ sdr> step thru
 | 3Bv  4Gv  2Bv  1Gv
 sdr> /reset
 sdr> /// Basic opener, this should work!
-sdr> /program = Program.PLUS
+sdr> /program = PLUS
 PLUS
 sdr> heads pass the ocean
 |      1B>
@@ -75,7 +75,7 @@ sdr> extend
 | 3B<  2B<
 sdr> /reset
 sdr> /// ok, test RH-extend from DPT to CDPT
-sdr> /program = Program.PLUS
+sdr> /program = PLUS
 PLUS
 sdr> heads square thru ; heads trade
 | 4B>  1B>  1G<  2G<
@@ -155,7 +155,7 @@ sdr> centers extend
 | 4G<  4B<  3G<  1B<  3B>  1G>  2B>  2G>
 sdr> /reset
 sdr> /// ok, do it again, but left-handed!
-sdr> /program = Program.PLUS
+sdr> /program = PLUS
 PLUS
 sdr> heads square thru ; heads trade
 | 4B>  1B>  1G<  2G<
@@ -235,7 +235,7 @@ sdr> centers left extend
 | 4G<  4B<  3G<  1B<  3B>  1G>  2B>  2G>
 sdr> /reset
 sdr> /// Don't allow "left extend" from right-handed formations!
-sdr> /program = Program.PLUS
+sdr> /program = PLUS
 PLUS
 sdr> heads square thru ; heads trade ; extend
 |      1B>

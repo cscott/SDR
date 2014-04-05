@@ -1,6 +1,6 @@
 Timing of calls on the A2 program.
 
-sdr> /program=A2
+sdr> /program = A2
 A2
 sdr> /// import formations into default name space
 sdr> /for (f in FormationList) { this[f] = FormationList[f]; } ; undefined

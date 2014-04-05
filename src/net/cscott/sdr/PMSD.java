@@ -167,11 +167,7 @@ public class PMSD {
             return Context.javaToJS(ds.dance.getProgram(), this);
         }
         public void jsSet_program(Object val) {
-            Program p;
-            if (val instanceof String)
-                p = Program.valueOf((String)val);
-            else
-                p = (Program) Context.jsToJava(val, Program.class);
+            Program p = (Program) Context.jsToJava(val, Program.class);
             if (p==ds.dance.getProgram()) return;
             ds = new DanceState(new DanceProgram(p), ds.currentFormation(),
                                 properties);

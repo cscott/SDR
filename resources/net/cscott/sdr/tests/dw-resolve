@@ -1,7 +1,7 @@
 Test the calls needed by Dave Wilson's Wave Resolution method.
 (The actual resolver is tested using doctests in the DWResolver class.)
 
-sdr> /program = Program.PLUS;
+sdr> /program = PLUS
 PLUS
 sdr> /setFormationWithDancers(FormationList.PARALLEL_RH_WAVES, 0, 1, 2, 3)
 | 1B^  1Gv  2B^  2Gv

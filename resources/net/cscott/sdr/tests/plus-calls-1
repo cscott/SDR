@@ -1,6 +1,6 @@
 Test calls on the plus list.
 
-sdr> /program = Program.PLUS
+sdr> /program = PLUS
 PLUS
 sdr> heads square thru ; touch
 | 4B>  3B>

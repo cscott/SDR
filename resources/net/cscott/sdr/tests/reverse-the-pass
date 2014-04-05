@@ -1,6 +1,6 @@
 Test reverse the pass.
 
-sdr> /program=Program.C3B
+sdr> /program = C3B
 C3B
 sdr> heads lead right while the sides trade
 | 4G<  3G<  1B>  2B>
@@ -39,7 +39,7 @@ sdr> do 1/6 of reverse the pass
 | 
 |   1G<
 sdr> /reset
-sdr> /program=Program.C3B
+sdr> /program = C3B
 C3B
 sdr> heads lead right while the sides trade
 | 4G<  3G<  1B>  2B>

@@ -1,6 +1,6 @@
 Tests of mainstream calls 53-68.
 
-sdr> /program = Program.MAINSTREAM
+sdr> /program = MAINSTREAM
 MAINSTREAM
 sdr> heads lead left
 | 4B>  1G<  3B>  2G<

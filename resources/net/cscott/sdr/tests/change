@@ -1,6 +1,6 @@
 "Change The <anything>", NOL Vic Ceder 1992.
 
-sdr> /program=Program.C4
+sdr> /program = C4
 C4
 sdr> heads lead right
 | 4B>  3G<  1B>  2G<

@@ -1,6 +1,6 @@
 Test breathing.
 
-sdr> /program = Program.PLUS ; setFormation(Formation.SQUARED_SET)
+sdr> /program = PLUS ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 | 
 | 4B>            2G<

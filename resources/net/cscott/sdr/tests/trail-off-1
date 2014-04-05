@@ -1,6 +1,6 @@
 Tests for trail off, including a T-bone.
 
-sdr> /program=A2;
+sdr> /program = A2
 A2
 sdr> sides lead right ; step to a wave
 | 2B^  3Gv  2G^  3Bv
@@ -42,7 +42,7 @@ sdr> girls run and roll
 | 2Bv  2G<  3Bv  3G<
 sdr> trail off
 * T-boned formations not allowed below C1
-sdr> /program = Program.C1
+sdr> /program = C1
 C1
 sdr> trail off
 |      2G>            3G>

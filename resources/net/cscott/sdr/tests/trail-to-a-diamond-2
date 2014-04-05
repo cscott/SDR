@@ -1,6 +1,6 @@
 Tests for trail to a diamond from Z formations.
 
-sdr> /program = Program.C2;
+sdr> /program = C2
 C2
 sdr> heads lead right ; step to a wave
 | 4B>  1B>

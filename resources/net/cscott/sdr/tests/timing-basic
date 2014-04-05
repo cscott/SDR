@@ -1,6 +1,6 @@
 Timing of calls on the basic program.
 
-sdr> /program=BASIC
+sdr> /program = BASIC
 BASIC
 sdr> /// import formations into default name space
 sdr> /for (f in FormationList) { this[f] = FormationList[f]; } ; undefined

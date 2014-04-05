@@ -1,6 +1,6 @@
 Tests for peel and trail, including from T-boned 2x2.
 
-sdr> /program=Program.A2;
+sdr> /program = A2
 A2
 sdr> sides lead right ; step to a wave
 | 2B^  3Gv  2G^  3Bv
@@ -42,7 +42,7 @@ sdr> girls run and roll
 | 1Bv  1G<  2Bv  2G<
 sdr> peel and trail
 * T-boned formations not allowed below C1
-sdr> /program = Program.C1
+sdr> /program = C1
 C1
 sdr> peel and trail
 |      1G>            2G>

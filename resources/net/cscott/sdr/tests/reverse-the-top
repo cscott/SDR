@@ -1,6 +1,6 @@
 Simple test of reverse the top.
 
-sdr> /program=Program.C3B
+sdr> /program = C3B
 C3B
 sdr> heads lead right
 | 4B>  3G<  1B>  2G<

@@ -4,7 +4,7 @@ involved in the sweep agrees where it is.  Thus, we allow "single wheel
 and sweep 1/4", when we shouldn't really.  This test demonstrates the
 issue:
 
-sdr> /program = Program.A2
+sdr> /program = A2
 A2
 sdr> heads lead right ; step to a wave
 | 4B>  1B>

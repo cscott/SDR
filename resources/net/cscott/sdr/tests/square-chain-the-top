@@ -1,6 +1,6 @@
 Tests for "Square Chain The Top" (C1).
 
-sdr> /program=C1
+sdr> /program = C1
 C1
 sdr> /// Sequence #1
 sdr> /// XXX should be "heads square chain the top"

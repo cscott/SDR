@@ -3,7 +3,7 @@ A2 call: remake (and quarter thru)
 Watch carefully the distinction between 'remake' and 'grand remake' from
 columns.
 
-sdr> /program = Program.A2 ; setFormation(Formation.SQUARED_SET)
+sdr> /program = A2 ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 |
 | 4B>            2G<

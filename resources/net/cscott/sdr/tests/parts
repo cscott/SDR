@@ -2,7 +2,7 @@ Count/verify the number of parts in various calls.
 
 Based on Vic Ceder's list at: http://www.ceder.net/def/callparts.php4
 
-sdr> /program=C4
+sdr> /program = C4
 C4
 sdr> heads square thru ; touch
 | 4B>  3B>

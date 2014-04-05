@@ -2,7 +2,7 @@ Even more C4 calls.
 
 Trail the top, trail and peel.
 
-sdr> /program = Program.C4;
+sdr> /program = C4
 C4
 sdr> heads square thru ; touch 1/4
 | 3G^  4Bv  2G^  3Bv

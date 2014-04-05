@@ -1,6 +1,6 @@
 "Square Thru N" has N parts (according to Vic, at least).  Test this.
 
-sdr> /program=C3B
+sdr> /program = C3B
 C3B
 sdr> heads square thru
 | 4B>  3G<  3B>  2G<

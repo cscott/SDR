@@ -1,6 +1,6 @@
 Test cases for proper call parsing.
 
-sdr> /program = Program.C4;
+sdr> /program = C4
 C4
 sdr> ///
 sdr> /// simple examples

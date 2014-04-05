@@ -1,7 +1,7 @@
 Acey-deucey-hourglass sequence written 25-Mar-2005; called 24-Jul-2005.
 Simple sequence with a hard acey-deucey and an hourglass.
 
-sdr> /program = Program.PLUS
+sdr> /program = PLUS
 PLUS
 sdr> heads pass the ocean
 |      1B>

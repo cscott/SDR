@@ -40,7 +40,7 @@ sdr> girls run and roll
 | 2Bv  2G<  3Bv  3G<
 sdr> peel off
 * T-boned formations not allowed below C1
-sdr> /program = Program.C1
+sdr> /program = C1
 C1
 sdr> peel off
 |      1G<            4G<

@@ -1,6 +1,6 @@
 Tricky half-of-a-cross-runs.
 
-sdr> /program = Program.PLUS ; setFormation(Formation.SQUARED_SET)
+sdr> /program = PLUS ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 | 
 | 4B>            2G<
@@ -23,7 +23,7 @@ sdr> do half of an ends cross run
 | 4Gv       3G^  1Gv       2G^
 |      4B<            1B<
 sdr> /// other direction, runners should still end up in center
-sdr> /program = Program.PLUS ; setFormation(Formation.SQUARED_SET)
+sdr> /program = PLUS ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 | 
 | 4B>            2G<

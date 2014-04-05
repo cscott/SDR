@@ -1,6 +1,6 @@
 C3A call: couple up
 
-sdr> /program = Program.C3A ; setFormation(Formation.SQUARED_SET)
+sdr> /program = C3A ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 |
 | 4B>            2G<
