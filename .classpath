@@ -45,7 +45,7 @@
 			<attribute name="javadoc_location" value="http://jakarta.apache.org/commons/lang/api-release/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/dev/jdoctest/rhino-1.7r2-rc3.jar"/>
+	<classpathentry kind="lib" path="lib/dev/jdoctest/rhino-1.7r5pre.jar"/>
 	<classpathentry kind="lib" path="lib/dev/junit-4.6.jar"/>
 	<classpathentry kind="lib" path="lib/dev/jdoctest/jdoctest-1.6.jar" sourcepath="/JDoctest/src"/>
 	<classpathentry kind="lib" path="lib/antlr-runtime-3.4.jar" />
