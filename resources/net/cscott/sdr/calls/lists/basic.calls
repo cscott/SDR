@@ -1814,21 +1814,13 @@ def: _single go left right
 def: zoom
   in: 4
   from: BOX, TANDEM COUPLES
-    select: BEAU
-      call: mirror(_right single zoom)
-    select: BELLE
-      call: _right single zoom
-
-// XXX redefine using in/out?
-def: _right single zoom
-  from: TANDEM
     select: LEADER
       ipart:
-        prim: 1,1,right
-        prim: 2,1,right
+        prim: out 1, 1, out
+        prim: in 2, 1, roll
       ipart:
-        prim: 1,2,right
-        prim: 1,1,right
+        prim: in 1, 2, in
+        prim: in 1, 1, roll
     select: TRAILER
       ipart:
         prim: 0,1,none
