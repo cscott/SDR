@@ -418,9 +418,13 @@ public class PMSD {
                     readLines(new FileInputStream(filename));
                 String testResult =
                     runTest(null, filename, input);
+                // trim each line.
+                String[] trimmedResult =
+                    (testResult.split("[ \t]*(\\r\\n?|\\n)[ \t]*"));
+                String[] trimmedInput = ListUtils.join(input, "\n")
+                    .split("[ \t]*(\\r\\n?|\\n)[ \t]*");
                 // mismatch?
-                if (!Arrays.asList(testResult.split("(\\r\\n?|\\n)"))
-                    .equals(input)) {
+                if (!Arrays.equals(trimmedResult, trimmedInput)) {
                     success = false;
                 }
                 pw.println(testResult);
