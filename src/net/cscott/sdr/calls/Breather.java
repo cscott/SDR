@@ -385,17 +385,24 @@ public class Breather {
      *  -1,2,n  -1,0,n  1,0,s  1,-2,s
      * @doc.test From 'do half of an ends cross run':
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
-     *  js> m = new java.util.HashMap(); undefined
-     *  js> SD = StandardDancer; undefined
-     *  js> m.put(SD.COUPLE_4_GIRL, new Position(Fraction.valueOf(-5,2), Fraction.ONE, ExactRotation.WEST)); undefined
-     *  js> m.put(SD.COUPLE_1_GIRL, new Position(Fraction.valueOf(3,2), Fraction.ONE, ExactRotation.WEST)); undefined
-     *  js> m.put(SD.COUPLE_4_BOY, new Position(Fraction.valueOf(-3), Fraction.ZERO, ExactRotation.NORTH, Position.Flag.ROLL_RIGHT)); undefined
-     *  js> m.put(SD.COUPLE_3_BOY, new Position(Fraction.mONE, Fraction.ZERO, ExactRotation.SOUTH, Position.Flag.ROLL_RIGHT)); undefined
-     *  js> m.put(SD.COUPLE_1_BOY, new Position(Fraction.ONE, Fraction.ZERO, ExactRotation.NORTH, Position.Flag.ROLL_RIGHT)); undefined
-     *  js> m.put(SD.COUPLE_2_BOY, new Position(Fraction.valueOf(3), Fraction.ZERO, ExactRotation.SOUTH, Position.Flag.ROLL_RIGHT)); undefined
-     *  js> m.put(SD.COUPLE_3_GIRL, new Position(Fraction.valueOf(-3,2), Fraction.mONE, ExactRotation.EAST)); undefined
-     *  js> m.put(SD.COUPLE_2_GIRL, new Position(Fraction.valueOf(5,2), Fraction.mONE, ExactRotation.EAST)); undefined
-     *  js> f = new Formation(m); f.toStringDiagram();
+     *  js> function mkform(pos) {
+     *    >  var m = new java.util.HashMap();
+     *    >  pos.forEach(function(p, i) {
+     *    >    var flags = p[3] ? p[3].map(function(f) {
+     *    >      return Position.Flag.valueOf(f);
+     *    >    }) : [];
+     *    >    m.put(StandardDancer.values()[i],
+     *    >          new Position(Fraction.valueOf(''+p[0]),
+     *    >                       Fraction.valueOf(''+p[1]),
+     *    >                       Rotation.fromAbsoluteString(p[2]), flags));
+     *    >  });
+     *    >  return new Formation(m);
+     *    > }
+     *  js> f = mkform([ [1,0,'n',['ROLL_RIGHT']],['3/2',1,'w'],
+     *    >              [3,0,'s',['ROLL_RIGHT']],['5/2',-1,'e'],
+     *    >              [-1,0,'s',['ROLL_RIGHT']],['-3/2',-1,'e'],
+     *    >              [-3,0,'n',['ROLL_RIGHT']],['-5/2',1,'w'] ] );
+     *    > f.toStringDiagram();
      *   4G<       1G<
      *  4B^  3Bv  1B^  2Bv
      *     3G>       2G>
@@ -409,6 +416,37 @@ public class Breather {
      *     3G>       2G>
      *  js> [ff.location(d) for (d in Iterator(ff.sortedDancers()))].join('  ')
      *  -2 1/3,2,w  1 2/3,2,w  -3,0,n,[ROLL_RIGHT]  -1,0,s,[ROLL_RIGHT]  1,0,n,[ROLL_RIGHT]  3,0,s,[ROLL_RIGHT]  -1 2/3,-2,e  2 1/3,-2,e
+     * @doc.test Should not crash, even from an unusual position.
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> function mkform(pos) {
+     *    >  var m = new java.util.HashMap();
+     *    >  pos.forEach(function(p, i) {
+     *    >    var flags = p[3] ? p[3].map(function(f) {
+     *    >      return Position.Flag.valueOf(f);
+     *    >    }) : [];
+     *    >    m.put(StandardDancer.values()[i],
+     *    >          new Position(Fraction.valueOf(''+p[0]),
+     *    >                       Fraction.valueOf(''+p[1]),
+     *    >                       Rotation.fromAbsoluteString(p[2]), flags));
+     *    >  });
+     *    >  return new Formation(m);
+     *    > }
+     *  js> f = mkform([ [3,-1,'w'],[3,1,'w'],   [1,0,'n'],[3,0,'s'],
+     *    >              [-3,1,'e'],[-3,-1,'e'], [-1,0,'s'],[-3,0,'n'] ] );
+     *    > f.toStringDiagram("|");
+     *  |3B>            1G<
+     *  |4G^  4Bv  2B^  2Gv
+     *  |3G>            1B<
+     *  js> [f.location(d) for (d in Iterator(f.sortedDancers()))].join('  ')
+     *  -3,1,e  3,1,w  -3,0,n  -1,0,s  1,0,n  3,0,s  -3,-1,e  3,-1,w
+     *  js> ff = Breather.breathe(f); ff.toStringDiagram("|")
+     *  |3B>            1G<
+     *  |
+     *  |4G^  4Bv  2B^  2Gv
+     *  |
+     *  |3G>            1B<
+     *  js> [ff.location(d) for (d in Iterator(ff.sortedDancers()))].join('  ')
+     *  -3,2,e  3,2,w  -3,0,n  -1,0,s  1,0,n  3,0,s  -3,-2,e  3,-2,w
      */
     public static Formation breathe(Formation f) {
         // special case for 1/8-off formations
@@ -965,6 +1003,8 @@ public class Breather {
     private static class VariableBox {
         final ClVariable left, bottom;
         final ClVariable right, top;
+        // don't let box size be zero!  this value is pretty arbitrary.
+        private static final Fraction EPSILON = Fraction.valueOf(1,1000);
         /**
          * Formation "handhold" direction modulo 1/2, or {@code} null if it does
          * not have a consistent handhold direction.  For a dancer facing
@@ -991,8 +1031,9 @@ public class Breather {
                 s.addConstraint
                     (new ClLinearEquation(v, v.value(), ClStrength.weak));
             // required constraints: l<r, b<t
-            s.addConstraint(new ClLinearInequality(left, CL.Op.LEQ, right));
-            s.addConstraint(new ClLinearInequality(bottom, CL.Op.LEQ, top));
+            // (implement as l+EPSILON <= r, b+EPSILON <= t)
+            s.addConstraint(new ClLinearInequality(new ClLinearExpression(left, Fraction.ONE, EPSILON), CL.Op.LEQ, right));
+            s.addConstraint(new ClLinearInequality(new ClLinearExpression(bottom, Fraction.ONE, EPSILON), CL.Op.LEQ, top));
             // ONLY ALLOW SHRINKING REGIONS to resolve overlaps
             // this ensures that overlaps in the solution are a subset of
             // those currently present, which keeps the problem reasonable
