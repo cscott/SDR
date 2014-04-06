@@ -1561,8 +1561,12 @@ def: _miniwave trade
 def: partner trade
   from: COUPLE
     in: 4
-    prim: in 1,1,in
-    prim: in 1,1,in
+    select: BEAU
+      prim: in 1, 2, in
+      prim: 2, 1, roll
+    select: BELLE
+      prim: in 1, 0, in, sashay-start
+      prim: 0, 1, roll, sashay-finish
 
 // callerlab #37: OCEAN WAVE FAMILY (see BMS addendum)
 
@@ -1843,7 +1847,7 @@ def: _start a flutterwheel
   from: FACING COUPLES
     select: BEAU
       prim: 1, -1, none
-      prim:  0,  0, left
+      prim:  0,  -1, left, sashay-finish
     select: BELLE
       prim: -2, 1, none
       prim:  1, 1, right
