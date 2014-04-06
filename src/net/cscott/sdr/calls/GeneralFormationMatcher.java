@@ -121,6 +121,47 @@ public class GeneralFormationMatcher {
      *     ^
      *  FF: (unmatched)
      *     ^
+     * @doc.test Unselected dancers are ignored (treated as unmatched dancers):
+     *  js> SD = StandardDancer.values(); undefined
+     *  js> f = FormationList.EIGHT_CHAIN_THRU.mapStd(
+     *    >                 [SD[2],SD[0],SD[3],SD[1]]); f.toStringDiagram("|");
+     *  |2Bv  1Bv
+     *  |
+     *  |2G^  1G^
+     *  |
+     *  |3Gv  4Gv
+     *  |
+     *  |3B^  4B^
+     *  js> heads = [d for each (d in StandardDancer.values()) if (d.isHead())]
+     *  COUPLE 1 BOY,COUPLE 1 GIRL,COUPLE 3 BOY,COUPLE 3 GIRL
+     *  js> f = f.select(heads) ; undefined
+     *  js> GeneralFormationMatcher.doMatch(f, FormationList.FACING_DANCERS,
+     *    >                                 false, false);
+     *  AAv
+     *       BB^
+     *  CC^
+     *  
+     *       DDv
+     *  EEv
+     *       FF^
+     *  AA: (unmatched)
+     *     2B^
+     *  BB:
+     *     1Bv
+     *     
+     *     1G^
+     *   [1B: TRAILER; 1G: TRAILER]
+     *  CC: (unmatched)
+     *     2G^
+     *  DD: (unmatched)
+     *     4G^
+     *  EE:
+     *     3Bv
+     *     
+     *     3G^
+     *   [3B: TRAILER; 3G: TRAILER]
+     *  FF: (unmatched)
+     *     4B^
      * @doc.test When possible, symmetry is preserved in the result:
      *  js> GeneralFormationMatcher.doMatch(FormationList.PARALLEL_RH_WAVES,
      *    >                                 FormationList.RH_MINIWAVE,
@@ -256,7 +297,7 @@ public class GeneralFormationMatcher {
             goalInfo.add(new GoalInfo(goal));
             minGoalDancers = Math.min(minGoalDancers, goal.dancers().size());
         }
-        if (minGoalDancers > input.dancers().size())
+        if (minGoalDancers > input.selectedDancers().size())
             throw new NoMatchException(target, "goal is too large");
 
         // sort the input dancers the same as the goal dancers: real dancers
@@ -264,7 +305,7 @@ public class GeneralFormationMatcher {
         // there must be at least one non-phantom dancer in the formation.
         // in addition, group symmetric dancers together in the order, so
         // that the resulting matches tend to symmetry.
-        final List<Dancer> inputDancers=new ArrayList<Dancer>(input.dancers());
+        final List<Dancer> inputDancers=new ArrayList<Dancer>(input.selectedDancers());
         Collections.sort(inputDancers, new Comparator<Dancer>() {
             /** minimum of position rotated through 4 quarter rotations */
             private Position qtrMin(Position p) {
@@ -347,7 +388,7 @@ public class GeneralFormationMatcher {
                 }
         assert found;
         // track the input dancers who aren't involved in matches
-        Set<Dancer> unmappedInputDancers = new LinkedHashSet<Dancer>(inputDancers);
+        Set<Dancer> unmappedInputDancers = new LinkedHashSet<Dancer>(input.dancers());
         // Create a FormationMatch object from FormationPieces.
 	List<FormationPiece> pieces = new ArrayList<FormationPiece>(max);
         Map<Dancer,TaggedFormation> canonical=new LinkedHashMap<Dancer,TaggedFormation>();
