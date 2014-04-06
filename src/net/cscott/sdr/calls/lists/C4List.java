@@ -62,7 +62,6 @@ public abstract class C4List {
      * @doc.test Application from a non 2x4.
      *  js> importPackage(net.cscott.sdr.calls);
      *  js> importPackage(net.cscott.sdr.calls.ast);
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> const SD = StandardDancer;
      *  js> f1 = FormationList.EIGHT_CHAIN_THRU.mapStd([SD.COUPLE_4_BOY, SD.COUPLE_1_GIRL, SD.COUPLE_4_GIRL, SD.COUPLE_1_BOY]); f1.toStringDiagram("|")
      *  |4Bv  1Gv

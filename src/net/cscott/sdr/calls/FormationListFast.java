@@ -17,7 +17,6 @@ import net.cscott.sdr.util.Fraction;
 abstract class FormationListFast {
     /** SINGLE DANCER formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.SINGLE_DANCER; tf.mapStd([]).toStringDiagram('|');
       *  |1B^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -30,7 +29,6 @@ abstract class FormationListFast {
 
     /** GENERAL PARTNERS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_PARTNERS; tf.mapStd([]).toStringDiagram('|');
       *  |1B|  1G|
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -45,7 +43,6 @@ abstract class FormationListFast {
 
     /** GENERAL TANDEM formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_TANDEM; tf.mapStd([]).toStringDiagram('|');
       *  |1B|
       *  |
@@ -62,7 +59,6 @@ abstract class FormationListFast {
 
     /** 1x2 formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList._1x2; tf.mapStd([]).toStringDiagram('|');
       *  |1B+  1G+
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -77,7 +73,6 @@ abstract class FormationListFast {
 
     /** COUPLE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.COUPLE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -92,7 +87,6 @@ abstract class FormationListFast {
 
     /** FACING DANCERS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.FACING_DANCERS; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv
       *  |
@@ -109,7 +103,6 @@ abstract class FormationListFast {
 
     /** BACK TO BACK DANCERS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.BACK_TO_BACK_DANCERS; tf.mapStd([]).toStringDiagram('|');
       *  |1B^
       *  |
@@ -126,7 +119,6 @@ abstract class FormationListFast {
 
     /** TANDEM formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.TANDEM; tf.mapStd([]).toStringDiagram('|');
       *  |1B^
       *  |
@@ -143,7 +135,6 @@ abstract class FormationListFast {
 
     /** RH MINIWAVE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_MINIWAVE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1Gv
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -158,7 +149,6 @@ abstract class FormationListFast {
 
     /** LH MINIWAVE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_MINIWAVE; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1G^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -173,7 +163,6 @@ abstract class FormationListFast {
 
     /** GENERAL LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1B|  1G|  3G|  3B|
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -192,7 +181,6 @@ abstract class FormationListFast {
 
     /** 1x4 formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList._1x4; tf.mapStd([]).toStringDiagram('|');
       *  |1B+  1G+  3G+  3B+
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -211,7 +199,6 @@ abstract class FormationListFast {
 
     /** 2x2 formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList._2x2; tf.mapStd([]).toStringDiagram('|');
       *  |1B+  1G+
       *  |
@@ -232,7 +219,6 @@ abstract class FormationListFast {
 
     /** SINGLE STATIC SQUARE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.SINGLE_STATIC_SQUARE; tf.mapStd([]).toStringDiagram('|');
       *  |     1Bv
       *  |
@@ -255,7 +241,6 @@ abstract class FormationListFast {
 
     /** FACING COUPLES formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.FACING_COUPLES; tf.mapStd([]).toStringDiagram('|');
       *  |3Gv  3Bv
       *  |
@@ -279,7 +264,6 @@ abstract class FormationListFast {
 
     /** BACK TO BACK COUPLES formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.BACK_TO_BACK_COUPLES; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^
       *  |
@@ -300,7 +284,6 @@ abstract class FormationListFast {
 
     /** TANDEM COUPLES formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.TANDEM_COUPLES; tf.mapStd([]).toStringDiagram('|');
       *  |3B^  3G^
       *  |
@@ -326,7 +309,6 @@ abstract class FormationListFast {
 
     /** RH OCEAN WAVE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_OCEAN_WAVE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  3Gv  1G^  3Bv
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -348,7 +330,6 @@ abstract class FormationListFast {
 
     /** LH OCEAN WAVE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_OCEAN_WAVE; tf.mapStd([]).toStringDiagram('|');
       *  |3Gv  1B^  3Bv  1G^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -370,7 +351,6 @@ abstract class FormationListFast {
 
     /** RH BOX formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_BOX; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1Gv
       *  |
@@ -391,7 +371,6 @@ abstract class FormationListFast {
 
     /** LH BOX formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_BOX; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1G^
       *  |
@@ -412,7 +391,6 @@ abstract class FormationListFast {
 
     /** INVERTED BOX formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.INVERTED_BOX; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1G^
       *  |
@@ -433,7 +411,6 @@ abstract class FormationListFast {
 
     /** RH IN PINWHEEL formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_IN_PINWHEEL; tf.mapStd([]).toStringDiagram('|');
       *  |1B>  1Gv
       *  |
@@ -454,7 +431,6 @@ abstract class FormationListFast {
 
     /** LH IN PINWHEEL formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_IN_PINWHEEL; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1G<
       *  |
@@ -475,7 +451,6 @@ abstract class FormationListFast {
 
     /** RH OUT PINWHEEL formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_OUT_PINWHEEL; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G>
       *  |
@@ -496,7 +471,6 @@ abstract class FormationListFast {
 
     /** LH OUT PINWHEEL formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_OUT_PINWHEEL; tf.mapStd([]).toStringDiagram('|');
       *  |1B<  1G^
       *  |
@@ -517,7 +491,6 @@ abstract class FormationListFast {
 
     /** RH SINGLE 1/4 ZEE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_SINGLE_QUARTER_ZEE; tf.mapStd([]).toStringDiagram('|');
       *  |     1Bv
       *  |
@@ -540,7 +513,6 @@ abstract class FormationListFast {
 
     /** LH SINGLE 1/4 ZEE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_SINGLE_QUARTER_ZEE; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv
       *  |
@@ -563,7 +535,6 @@ abstract class FormationListFast {
 
     /** RH SINGLE 3/4 ZEE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_SINGLE_THREE_QUARTER_ZEE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^
       *  |
@@ -586,7 +557,6 @@ abstract class FormationListFast {
 
     /** LH SINGLE 3/4 ZEE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_SINGLE_THREE_QUARTER_ZEE; tf.mapStd([]).toStringDiagram('|');
       *  |     1B^
       *  |
@@ -609,7 +579,6 @@ abstract class FormationListFast {
 
     /** RH TWO-FACED LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_TWO_FACED_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^  3Gv  3Bv
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -628,7 +597,6 @@ abstract class FormationListFast {
 
     /** LH TWO-FACED LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_TWO_FACED_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1Gv  3G^  3B^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -647,7 +615,6 @@ abstract class FormationListFast {
 
     /** SINGLE INVERTED LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.SINGLE_INVERTED_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1G^  3G^  3Bv
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -666,7 +633,6 @@ abstract class FormationListFast {
 
     /** GENERAL DIAMOND formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_DIAMOND; tf.mapStd([]).toStringDiagram('|');
       *  |  1B-
       *  |
@@ -689,7 +655,6 @@ abstract class FormationListFast {
 
     /** RH DIAMOND formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_DIAMOND; tf.mapStd([]).toStringDiagram('|');
       *  |  1B>
       *  |
@@ -712,7 +677,6 @@ abstract class FormationListFast {
 
     /** RH FACING DIAMOND formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_FACING_DIAMOND; tf.mapStd([]).toStringDiagram('|');
       *  |  1B<
       *  |
@@ -735,7 +699,6 @@ abstract class FormationListFast {
 
     /** LH DIAMOND formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_DIAMOND; tf.mapStd([]).toStringDiagram('|');
       *  |  1B<
       *  |
@@ -758,7 +721,6 @@ abstract class FormationListFast {
 
     /** LH FACING DIAMOND formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_FACING_DIAMOND; tf.mapStd([]).toStringDiagram('|');
       *  |  1B>
       *  |
@@ -781,7 +743,6 @@ abstract class FormationListFast {
 
     /** RH STAR formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_STAR; tf.mapStd([]).toStringDiagram('|');
       *  |  1B>
       *  |1G^  3Gv
@@ -802,7 +763,6 @@ abstract class FormationListFast {
 
     /** LH STAR formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_STAR; tf.mapStd([]).toStringDiagram('|');
       *  |  1B<
       *  |1Gv  3G^
@@ -823,7 +783,6 @@ abstract class FormationListFast {
 
     /** RH SINGLE PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_SINGLE_PROMENADE; tf.mapStd([]).toStringDiagram('|');
       *  |     1B>
       *  |
@@ -846,7 +805,6 @@ abstract class FormationListFast {
 
     /** LH SINGLE PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_SINGLE_PROMENADE; tf.mapStd([]).toStringDiagram('|');
       *  |     1B<
       *  |
@@ -869,7 +827,6 @@ abstract class FormationListFast {
 
     /** GENERAL SINGLE QUARTER TAG formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_SINGLE_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
       *  |  1B|
       *  |
@@ -892,7 +849,6 @@ abstract class FormationListFast {
 
     /** RH SINGLE 1/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_SINGLE_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
       *  |  1Bv
       *  |
@@ -915,7 +871,6 @@ abstract class FormationListFast {
 
     /** LH SINGLE 1/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_SINGLE_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
       *  |  1Bv
       *  |
@@ -938,7 +893,6 @@ abstract class FormationListFast {
 
     /** RH SINGLE 3/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_SINGLE_THREE_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
       *  |  1B^
       *  |
@@ -961,7 +915,6 @@ abstract class FormationListFast {
 
     /** LH SINGLE 3/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_SINGLE_THREE_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
       *  |  1B^
       *  |
@@ -984,7 +937,6 @@ abstract class FormationListFast {
 
     /** SINGLE DOUBLE PASS THRU formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.SINGLE_DOUBLE_PASS_THRU; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv
       *  |
@@ -1009,7 +961,6 @@ abstract class FormationListFast {
 
     /** COMPLETED SINGLE DOUBLE PASS THRU formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.COMPLETED_SINGLE_DOUBLE_PASS_THRU; tf.mapStd([]).toStringDiagram('|');
       *  |1B^
       *  |
@@ -1034,7 +985,6 @@ abstract class FormationListFast {
 
     /** 1x8 formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList._1x8; tf.mapStd([]).toStringDiagram('|');
       *  |1B+  1G+  2B+  2G+  4G+  4B+  3G+  3B+
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -1061,7 +1011,6 @@ abstract class FormationListFast {
 
     /** 2x4 formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList._2x4; tf.mapStd([]).toStringDiagram('|');
       *  |1B+  1G+  2B+  2G+
       *  |
@@ -1090,7 +1039,6 @@ abstract class FormationListFast {
 
     /** PARALLEL GENERAL LINES formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.PARALLEL_GENERAL_LINES; tf.mapStd([]).toStringDiagram('|');
       *  |1B|  1G|  2B|  2G|
       *  |
@@ -1119,7 +1067,6 @@ abstract class FormationListFast {
 
     /** GENERAL COLUMNS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_COLUMNS; tf.mapStd([]).toStringDiagram('|');
       *  |1B|  1G|
       *  |
@@ -1152,7 +1099,6 @@ abstract class FormationListFast {
 
     /** STATIC SQUARE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.STATIC_SQUARE; tf.mapStd([]).toStringDiagram('|');
       *  |     3Gv  3Bv
       *  |
@@ -1190,7 +1136,6 @@ abstract class FormationListFast {
 
     /** STATIC SQUARE FACING OUT formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.STATIC_SQUARE_FACING_OUT; tf.mapStd([]).toStringDiagram('|');
       *  |     3B^  3G^
       *  |
@@ -1228,7 +1173,6 @@ abstract class FormationListFast {
 
     /** SINGLE FILE PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.SINGLE_FILE_PROMENADE; tf.mapStd([]).toStringDiagram('|');
       *  |     3G<  3B<
       *  |
@@ -1266,7 +1210,6 @@ abstract class FormationListFast {
 
     /** REVERSE SINGLE FILE PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.REVERSE_SINGLE_FILE_PROMENADE; tf.mapStd([]).toStringDiagram('|');
       *  |     3G>  3B>
       *  |
@@ -1304,7 +1247,6 @@ abstract class FormationListFast {
 
     /** RH ALAMO RING formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_ALAMO_RING; tf.mapStd([]).toStringDiagram('|');
       *  |     3G^  3Bv
       *  |
@@ -1342,7 +1284,6 @@ abstract class FormationListFast {
 
     /** LH ALAMO RING formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_ALAMO_RING; tf.mapStd([]).toStringDiagram('|');
       *  |     3Gv  3B^
       *  |
@@ -1380,7 +1321,6 @@ abstract class FormationListFast {
 
     /** O SPOTS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.O_SPOTS; tf.mapStd([]).toStringDiagram('|');
       *  |     3Go  3Bo
       *  |
@@ -1418,7 +1358,6 @@ abstract class FormationListFast {
 
     /** PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.PROMENADE; tf.mapStd([]).toStringDiagram('|');
       *  |          3G<
       *  |
@@ -1458,7 +1397,6 @@ abstract class FormationListFast {
 
     /** WRONG WAY PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.WRONG_WAY_PROMENADE; tf.mapStd([]).toStringDiagram('|');
       *  |          1B>
       *  |
@@ -1493,7 +1431,6 @@ abstract class FormationListFast {
 
     /** STAR PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.STAR_PROMENADE; tf.mapStd([]).toStringDiagram('|');
       *  |       3G<
       *  |
@@ -1531,7 +1468,6 @@ abstract class FormationListFast {
 
     /** WRONG WAY STAR PROMENADE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.WRONG_WAY_STAR_PROMENADE; tf.mapStd([]).toStringDiagram('|');
       *  |       1B>
       *  |
@@ -1564,7 +1500,6 @@ abstract class FormationListFast {
 
     /** THAR formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.THAR; tf.mapStd([]).toStringDiagram('|');
       *  |       1B<
       *  |
@@ -1597,7 +1532,6 @@ abstract class FormationListFast {
 
     /** WRONG WAY THAR formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.WRONG_WAY_THAR; tf.mapStd([]).toStringDiagram('|');
       *  |       1B>
       *  |
@@ -1630,7 +1564,6 @@ abstract class FormationListFast {
 
     /** RIGHT AND LEFT GRAND formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RIGHT_AND_LEFT_GRAND; tf.mapStd([]).toStringDiagram('|');
       *  |          1B>
       *  |
@@ -1665,7 +1598,6 @@ abstract class FormationListFast {
 
     /** RIGHT AND LEFT GRAND DIAMOND formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RIGHT_AND_LEFT_GRAND_DIAMOND; tf.mapStd([]).toStringDiagram('|');
       *  |       1B>
       *  |
@@ -1700,7 +1632,6 @@ abstract class FormationListFast {
 
     /** LEFT AND RIGHT GRAND formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LEFT_AND_RIGHT_GRAND; tf.mapStd([]).toStringDiagram('|');
       *  |          1B<
       *  |
@@ -1735,7 +1666,6 @@ abstract class FormationListFast {
 
     /** FACING LINES formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.FACING_LINES; tf.mapStd([]).toStringDiagram('|');
       *  |4Gv  4Bv  3Gv  3Bv
       *  |
@@ -1769,7 +1699,6 @@ abstract class FormationListFast {
 
     /** EIGHT CHAIN THRU formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.EIGHT_CHAIN_THRU; tf.mapStd([]).toStringDiagram('|');
       *  |1Gv  1Bv
       *  |
@@ -1807,7 +1736,6 @@ abstract class FormationListFast {
 
     /** TRADE BY formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.TRADE_BY; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^
       *  |
@@ -1845,7 +1773,6 @@ abstract class FormationListFast {
 
     /** DOUBLE PASS THRU formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.DOUBLE_PASS_THRU; tf.mapStd([]).toStringDiagram('|');
       *  |1Gv  1Bv
       *  |
@@ -1883,7 +1810,6 @@ abstract class FormationListFast {
 
     /** COMPLETED DOUBLE PASS THRU formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.COMPLETED_DOUBLE_PASS_THRU; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^
       *  |
@@ -1916,7 +1842,6 @@ abstract class FormationListFast {
 
     /** LINES FACING OUT formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LINES_FACING_OUT; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^  2B^  2G^
       *  |
@@ -1945,7 +1870,6 @@ abstract class FormationListFast {
 
     /** PARALLEL RH WAVES formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.PARALLEL_RH_WAVES; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1Gv  2B^  2Gv
       *  |
@@ -1974,7 +1898,6 @@ abstract class FormationListFast {
 
     /** PARALLEL LH WAVES formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.PARALLEL_LH_WAVES; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1G^  2Bv  2G^
       *  |
@@ -2003,7 +1926,6 @@ abstract class FormationListFast {
 
     /** PARALLEL RH TWO-FACED LINES formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.PARALLEL_RH_TWO_FACED_LINES; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^  2Gv  2Bv
       *  |
@@ -2037,7 +1959,6 @@ abstract class FormationListFast {
 
     /** PARALLEL LH TWO-FACED LINES formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.PARALLEL_LH_TWO_FACED_LINES; tf.mapStd([]).toStringDiagram('|');
       *  |1Gv  1Bv  2B^  2G^
       *  |
@@ -2071,7 +1992,6 @@ abstract class FormationListFast {
 
     /** RH COLUMN formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_COLUMN; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1Gv
       *  |
@@ -2104,7 +2024,6 @@ abstract class FormationListFast {
 
     /** LH COLUMN formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_COLUMN; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1G^
       *  |
@@ -2137,7 +2056,6 @@ abstract class FormationListFast {
 
     /** ENDS IN INVERTED LINES formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.ENDS_IN_INVERTED_LINES; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1G^  2B^  2Gv
       *  |
@@ -2166,7 +2084,6 @@ abstract class FormationListFast {
 
     /** ENDS OUT INVERTED LINES formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.ENDS_OUT_INVERTED_LINES; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1Gv  2Bv  2G^
       *  |
@@ -2195,7 +2112,6 @@ abstract class FormationListFast {
 
     /** GENERAL 1/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
       *  |     1B|  1G|
       *  |
@@ -2226,7 +2142,6 @@ abstract class FormationListFast {
 
     /** RH 1/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
       *  |     1Bv  1Gv
       *  |
@@ -2257,7 +2172,6 @@ abstract class FormationListFast {
 
     /** LH 1/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
       *  |     1Bv  1Gv
       *  |
@@ -2288,7 +2202,6 @@ abstract class FormationListFast {
 
     /** RH 3/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_THREE_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
       *  |     1B^  1G^
       *  |
@@ -2319,7 +2232,6 @@ abstract class FormationListFast {
 
     /** LH 3/4 TAG formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_THREE_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
       *  |     1B^  1G^
       *  |
@@ -2350,7 +2262,6 @@ abstract class FormationListFast {
 
     /** RH 1/4 LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_QUARTER_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |     1Bv  1Gv
       *  |
@@ -2381,7 +2292,6 @@ abstract class FormationListFast {
 
     /** LH 1/4 LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_QUARTER_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |     1Bv  1Gv
       *  |
@@ -2412,7 +2322,6 @@ abstract class FormationListFast {
 
     /** RH 3/4 LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_THREE_QUARTER_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |     1B^  1G^
       *  |
@@ -2443,7 +2352,6 @@ abstract class FormationListFast {
 
     /** LH 3/4 LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_THREE_QUARTER_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |     1B^  1G^
       *  |
@@ -2474,7 +2382,6 @@ abstract class FormationListFast {
 
     /** RH TWIN DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_TWIN_DIAMONDS; tf.mapStd([]).toStringDiagram('|');
       *  |  1B>       1G>
       *  |
@@ -2505,7 +2412,6 @@ abstract class FormationListFast {
 
     /** LH TWIN DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_TWIN_DIAMONDS; tf.mapStd([]).toStringDiagram('|');
       *  |  1B<       1G<
       *  |
@@ -2536,7 +2442,6 @@ abstract class FormationListFast {
 
     /** RH POINT-TO-POINT DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_POINT_TO_POINT_DIAMONDS; tf.mapStd([]).toStringDiagram('|');
       *  |  1B>
       *  |
@@ -2573,7 +2478,6 @@ abstract class FormationListFast {
 
     /** RH POINT-TO-POINT FACING DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_POINT_TO_POINT_FACING_DIAMONDS; tf.mapStd([]).toStringDiagram('|');
       *  |  1B<
       *  |
@@ -2610,7 +2514,6 @@ abstract class FormationListFast {
 
     /** LH POINT-TO-POINT DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_POINT_TO_POINT_DIAMONDS; tf.mapStd([]).toStringDiagram('|');
       *  |  1B<
       *  |
@@ -2647,7 +2550,6 @@ abstract class FormationListFast {
 
     /** LH POINT-TO-POINT FACING DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_POINT_TO_POINT_FACING_DIAMONDS; tf.mapStd([]).toStringDiagram('|');
       *  |  1B>
       *  |
@@ -2684,7 +2586,6 @@ abstract class FormationListFast {
 
     /** RH TWIN FACING DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_TWIN_FACING_DIAMONDS; tf.mapStd([]).toStringDiagram('|');
       *  |  1B<       1G<
       *  |
@@ -2715,7 +2616,6 @@ abstract class FormationListFast {
 
     /** LH TWIN FACING DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_TWIN_FACING_DIAMONDS; tf.mapStd([]).toStringDiagram('|');
       *  |  1B>       1G>
       *  |
@@ -2746,7 +2646,6 @@ abstract class FormationListFast {
 
     /** TWIN GENERAL DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.TWIN_GENERAL_DIAMONDS; tf.mapStd([]).toStringDiagram('|');
       *  |  1B-       1G-
       *  |
@@ -2777,7 +2676,6 @@ abstract class FormationListFast {
 
     /** POINT-TO-POINT GENERAL DIAMONDS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.POINT_TO_POINT_GENERAL_DIAMONDS; tf.mapStd([]).toStringDiagram('|');
       *  |  1B-
       *  |
@@ -2814,7 +2712,6 @@ abstract class FormationListFast {
 
     /** RH HOURGLASS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_HOURGLASS; tf.mapStd([]).toStringDiagram('|');
       *  |       1B>
       *  |
@@ -2849,7 +2746,6 @@ abstract class FormationListFast {
 
     /** LH HOURGLASS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_HOURGLASS; tf.mapStd([]).toStringDiagram('|');
       *  |       1B<
       *  |
@@ -2884,7 +2780,6 @@ abstract class FormationListFast {
 
     /** GENERAL HOURGLASS formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_HOURGLASS; tf.mapStd([]).toStringDiagram('|');
       *  |       1B-
       *  |
@@ -2919,7 +2814,6 @@ abstract class FormationListFast {
 
     /** RH TIDAL WAVE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_TIDAL_WAVE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1Gv  2B^  2Gv  4G^  4Bv  3G^  3Bv
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -2946,7 +2840,6 @@ abstract class FormationListFast {
 
     /** LH TIDAL WAVE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_TIDAL_WAVE; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1G^  2Bv  2G^  4Gv  4B^  3Gv  3B^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -2973,7 +2866,6 @@ abstract class FormationListFast {
 
     /** RH TIDAL TWO-FACED LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_TIDAL_TWO_FACED_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^  2Gv  2Bv  4B^  4G^  3Gv  3Bv
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -3005,7 +2897,6 @@ abstract class FormationListFast {
 
     /** LH TIDAL TWO-FACED LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_TIDAL_TWO_FACED_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1Gv  1Bv  2B^  2G^  4Gv  4Bv  3B^  3G^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -3037,7 +2928,6 @@ abstract class FormationListFast {
 
     /** RH TIDAL LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_TIDAL_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^  2B^  2G^  4Gv  4Bv  3Gv  3Bv
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -3064,7 +2954,6 @@ abstract class FormationListFast {
 
     /** LH TIDAL LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_TIDAL_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1Gv  1Bv  2Gv  2Bv  4B^  4G^  3B^  3G^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -3096,7 +2985,6 @@ abstract class FormationListFast {
 
     /** GENERAL TIDAL LINE formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_TIDAL_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1B|  1G|  2B|  2G|  4G|  4B|  3G|  3B|
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
@@ -3123,7 +3011,6 @@ abstract class FormationListFast {
 
     /** RH GALAXY formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.RH_GALAXY; tf.mapStd([]).toStringDiagram('|');
       *  |       1B>
       *  |
@@ -3158,7 +3045,6 @@ abstract class FormationListFast {
 
     /** LH GALAXY formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.LH_GALAXY; tf.mapStd([]).toStringDiagram('|');
       *  |       1B<
       *  |
@@ -3193,7 +3079,6 @@ abstract class FormationListFast {
 
     /** GENERAL GALAXY formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_GALAXY; tf.mapStd([]).toStringDiagram('|');
       *  |       1B-
       *  |
@@ -3228,7 +3113,6 @@ abstract class FormationListFast {
 
     /** O DOUBLE PASS THRU formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.O_DOUBLE_PASS_THRU; tf.mapStd([]).toStringDiagram('|');
       *  |     1Gv  1Bv
       *  |
@@ -3266,7 +3150,6 @@ abstract class FormationListFast {
 
     /** GENERAL O formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_O; tf.mapStd([]).toStringDiagram('|');
       *  |     1B|  1G|
       *  |
@@ -3299,7 +3182,6 @@ abstract class FormationListFast {
 
     /** BUTTERFLY DOUBLE PASS THRU formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.BUTTERFLY_DOUBLE_PASS_THRU; tf.mapStd([]).toStringDiagram('|');
       *  |1Gv            1Bv
       *  |
@@ -3337,7 +3219,6 @@ abstract class FormationListFast {
 
     /** GENERAL BUTTERFLY formation.
       * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> tf = FormationList.GENERAL_BUTTERFLY; tf.mapStd([]).toStringDiagram('|');
       *  |1B|            1G|
       *  |

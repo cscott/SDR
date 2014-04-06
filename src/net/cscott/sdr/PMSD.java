@@ -43,6 +43,7 @@ import net.cscott.sdr.util.ListUtils;
 
 import org.junit.runner.RunWith;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.RhinoException;
@@ -484,11 +485,9 @@ public class PMSD {
     public static void repl(ReaderWriter rw, boolean interactive)
         throws IOException {
         // initialize Rhino
-        Context cx = Context.enter();
+        Context cx = contextFactory.enterContext();
         try {
-            cx.setLanguageVersion(Context.VERSION_1_7); // js 1.7 by default
-            Global global = new Global();
-            global.init(cx);
+            Global global = new Global(cx);
             ScriptableObject.putProperty(global, "writer", rw.writer());
             // create the 'State' object
             ScriptableObject.defineClass(global, State.class);
@@ -768,4 +767,25 @@ public class PMSD {
             return Scriptable.NOT_FOUND;
         }
     }
+
+    /** JavaScript context with privileged access to Java. */
+    private static ContextFactory contextFactory = new ContextFactory() {
+        protected Context makeContext() {
+            return new Context(this) {
+                // JavaScript 1.8 by default
+                { setLanguageVersion(Context.VERSION_1_8); }
+            };
+        }
+        // enable privileged access to Java
+        public boolean hasFeature(Context cx, int featureIndex) {
+            switch (featureIndex) {
+            case Context.FEATURE_ENHANCED_JAVA_ACCESS:
+            case Context.FEATURE_RESERVED_KEYWORD_AS_IDENTIFIER:
+            case Context.FEATURE_LOCATION_INFORMATION_IN_ERROR:
+                return true;
+            default:
+                return super.hasFeature(cx, featureIndex);
+            }
+        }
+    };
 }

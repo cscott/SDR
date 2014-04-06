@@ -317,7 +317,6 @@ import org.junit.runner.RunWith;
  * @doc.test Tricky 45-degree off Prim.  This is the outsides part of a fan the
  *  top, broken in halves.
  *  js> importPackage(net.cscott.sdr.calls.ast)
- *  js> FormationList = FormationList.js(this); undefined;
  *  js> f = FormationList.SINGLE_DANCER; d = f.dancers().iterator().next();
  *  <phantom@7b>
  *  js> p = EvalPrim.apply(d, f, AstNode.valueOf('(Prim 0, 3, -1/8, 1 1/2)'))

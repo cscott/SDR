@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
  * Associates a name with a canonical
  * formation.  This makes string representations more compact!
  * @doc.test Fetch tagged dancers from a TaggedFormation:
- *  js> FormationList = FormationList.js(this); undefined;
  *  js> f = FormationList.STATIC_SQUARE ; f.getClass()
  *  class net.cscott.sdr.calls.NamedTaggedFormation
  *  js> f.getName()
@@ -77,7 +76,6 @@ public class NamedTaggedFormation extends TaggedFormation {
      * {@link NamedTaggedFormation} overrides {@link Formation#mapStd} in
      * order to ensure normal couples for specific named formations.
      * @doc.test
-      *  js> FormationList = FormationList.js(this); undefined;
       *  js> FormationList.STATIC_SQUARE.mapStd([]).toStringDiagram('|');
       *  |     3Gv  3Bv
       *  |

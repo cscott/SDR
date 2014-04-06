@@ -5,7 +5,6 @@
 // object; this will be the local scope once PMSD starts its REPL loop.
 
 importPackage(net.cscott.sdr.calls);
-FormationList = FormationList.js(this);
 state.props = { }
 // set call-pending so that circle left & etc always stop promptly.
 state.props["call-pending"] = true;

@@ -931,7 +931,6 @@ abstract class FormationListSlow {
         String escapedName = escapeJava(ntf.getName());
         pw.println("    /** "+ntf.getName()+" formation.");
         pw.println("      * @doc.test");
-        pw.println("      *  js> FormationList = FormationList.js(this); undefined;");
         pw.println("      *  js> tf = FormationList."+fieldName+"; tf.mapStd([]).toStringDiagram('|');");
         pw.println(ntf.mapStd().toStringDiagram("      *  |"));
         pw.println("      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\\n');");

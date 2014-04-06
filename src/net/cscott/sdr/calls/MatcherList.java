@@ -99,7 +99,6 @@ import org.junit.runner.RunWith;
  *     1B^  1G^
  *   [3G: BELLE,TRAILER; 3B: BEAU,TRAILER; 1B: BEAU,TRAILER; 1G: BELLE,TRAILER]
  * @doc.test Apply RH_MINIWAVE matcher to PARALLEL_RH_WAVES:
- *  js> FormationList = FormationList.js(this); undefined;
  *  js> fm = MatcherList.RH_MINIWAVE.match(FormationList.PARALLEL_RH_WAVES)
  *  AA^  BBv
  *  
@@ -468,7 +467,6 @@ public class MatcherList {
     /**
      * Algorithmically select the center N dancers from a formation.
      * @doc.test Finding the centers of a 4-person formation:
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> SD = StandardDancer; undefined
      *  js> // rotate the formation 1/2 just to get rid of the original tags
      *  js> f = FormationList.RH_OCEAN_WAVE.rotate(ExactRotation.ONE_HALF); f.
@@ -496,7 +494,6 @@ public class MatcherList {
      *  js> try { MatcherList.CENTER_6.match(f); } catch (e) { print (e.javaException); }
      *  net.cscott.sdr.calls.NoMatchException: No match for CENTER(6): Can't find 6 center dancers
      * @doc.test Finding the centers of an 8-person formation:
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> SD = StandardDancer; undefined
      *  js> // rotate the formation 1/2 just to get rid of the original tags
      *  js> f = FormationList.RH_QUARTER_TAG.rotate(ExactRotation.ONE_HALF); f.
@@ -552,7 +549,6 @@ public class MatcherList {
      *          3G^  3B^
      *   [1B: CENTER; 1G: CENTER; 2G: CENTER; 4G: CENTER; 3G: CENTER; 3B: CENTER]
      * @doc.test Finding the center six of a sausage.
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> SD = StandardDancer; undefined
      *  js> // rotate the formation 1/2 just to get rid of the original tags
      *  js> f = FormationList.RH_COLUMN.rotate(ExactRotation.ONE_HALF); f.toStringDiagram()
@@ -669,7 +665,6 @@ public class MatcherList {
      * The {@link #OR} function creates a Matcher which matches any one of
      * the given alternatives.
      * @doc.test Diamonds or quarter tag:
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> sel = MatcherList.OR("OR(RH BOX,RH DIAMOND)", MatcherList.RH_BOX, MatcherList.RH_DIAMOND)
      *  OR(RH BOX,RH DIAMOND)
      *  js> sel.match(FormationList.RH_BOX)                                    
@@ -884,7 +879,6 @@ public class MatcherList {
      *  used in definition of 'remake', etc.
      *
      * @doc.test LH miniwaves in RH tidal wave:
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr not grand (Expr allow unmatched 'LH MINIWAVE))")
      *  (Expr not grand (Expr allow unmatched 'LH MINIWAVE))
      *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), null)

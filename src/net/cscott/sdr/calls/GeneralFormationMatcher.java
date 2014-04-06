@@ -79,7 +79,6 @@ public class GeneralFormationMatcher {
      * @throws NoMatchException if there is no way to match the goal formation
      *   with the given input
      * @doc.test A successful match with no phantoms or unmatched dancers:
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> GeneralFormationMatcher.doMatch(Formation.SQUARED_SET,
      *    >                                 FormationList.COUPLE,
      *    >                                 false, false)
@@ -101,7 +100,6 @@ public class GeneralFormationMatcher {
      *     1B^  1G^
      *   [1B: BEAU; 1G: BELLE]
      * @doc.test A successful match with some unmatched dancers:
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> GeneralFormationMatcher.doMatch(FormationList.RH_TWIN_DIAMONDS,
      *    >                                 FormationList.RH_MINIWAVE,
      *    >                                 true, false)
@@ -125,7 +123,6 @@ public class GeneralFormationMatcher {
      *  FF: (unmatched)
      *     ^
      * @doc.test When possible, symmetry is preserved in the result:
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> GeneralFormationMatcher.doMatch(FormationList.PARALLEL_RH_WAVES,
      *    >                                 FormationList.RH_MINIWAVE,
      *    >                                 false, false)
@@ -185,7 +182,6 @@ public class GeneralFormationMatcher {
     /** Allow multiple simultaneous goal formations.
      * @doc.test A successful match on a Siamese Diamond.
      *  js> importPackage(net.cscott.sdr.util); // for Fraction
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> f = Formation.SQUARED_SET; undefined
      *  js> for each (d in StandardDancer.values()) {
      *    >   if (d.isHead()) continue;
@@ -621,7 +617,6 @@ public class GeneralFormationMatcher {
      * a spot in the goal.  Optionally, the center of the goal and
      * the center of the input must align.
      * @doc.test Matching against exact facing directions:
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> goals = [ FormationList.PARALLEL_RH_WAVES,
      *    >           FormationList.FACING_LINES ]; undefined;
      *  js> GeneralFormationMatcher.doPhantomMatch(
@@ -634,7 +629,6 @@ public class GeneralFormationMatcher {
      *     ^  1B^  1G^    ^
      *   [ph: NONCORPOREAL,BELLE,TRAILER,END; 3G: BEAU,TRAILER,CENTER; 3B: BELLE,TRAILER,CENTER; ph: NONCORPOREAL,BEAU,TRAILER,END; ph: NONCORPOREAL,BEAU,TRAILER,END; 1B: BELLE,TRAILER,CENTER; 1G: BEAU,TRAILER,CENTER; ph: NONCORPOREAL,BELLE,TRAILER,END]
      * @doc.test Matching against general facing directions:
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> goals = [ FormationList.GENERAL_O,
      *    >           FormationList.GENERAL_COLUMNS ]; undefined;
      *  js> f = Formation.FOUR_SQUARE.rotate(ExactRotation.ONE_QUARTER); f.toStringDiagram();
@@ -767,8 +761,7 @@ public class GeneralFormationMatcher {
     }
     /** Make all positions with {@link ExactRotation}s which are possible from
      * a given position with a general rotation.
-     * @doc.test (EXPECT FAIL)
-     *  js> // (this test fails because the method is non-public)
+     * @doc.test
      *  js> p = Position.getGrid(1,2,Rotation.fromAbsoluteString('+'));
      *  1,2,+
      *  js> GeneralFormationMatcher.makeAllExact(p);

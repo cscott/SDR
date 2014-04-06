@@ -354,7 +354,6 @@ public class Permutation implements Comparable<Permutation> {
      *  OK
      * @doc.test Generate permutations of normal in-sequence RH ocean waves:
      *  js> const SD = StandardDancer;
-     *  js> FormationList = FormationList.js(this); undefined;
      *  js> f = FormationList.PARALLEL_RH_WAVES; undefined
      *  js> f = f.mapStd([SD.COUPLE_2_BOY, SD.COUPLE_2_GIRL,
      *    >               SD.COUPLE_1_GIRL, SD.COUPLE_1_BOY]

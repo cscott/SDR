@@ -6,7 +6,6 @@ import java.lang.reflect.Modifier;
 import net.cscott.jdoctest.JDoctestRunner;
 
 import org.junit.runner.RunWith;
-import org.mozilla.javascript.Scriptable;
 
 /**
  * A list of common formations, specified with phantoms.
@@ -19,7 +18,6 @@ import org.mozilla.javascript.Scriptable;
  *  This includes single diamonds, which are defined on a 2x3 grid, but
  *  twin diamonds have unbreathed points.
  *  (EXPECT FAIL: our breather is pushing in the points of twin diamonds)
- *  js> FormationList = FormationList.js(this); undefined;
  *  js> for (f in Iterator(FormationList.all)) {
  *    >   if (!Breather.breathe(f).equals(f)) {
  *    >     print("Unbreathed formation: "+f.getName());
@@ -27,7 +25,6 @@ import org.mozilla.javascript.Scriptable;
  *    > }
  *  js> // note: no output from the above
  * @doc.test Canonical formations should be centered.
- *  js> FormationList = FormationList.js(this); undefined;
  *  js> for (f in Iterator(FormationList.all)) {
  *    >   if (!f.isCentered()) {
  *    >     print("Uncentered formation: "+f.getName());
@@ -37,7 +34,6 @@ import org.mozilla.javascript.Scriptable;
  * @doc.test Canonical formations should be oriented so that "most"
  *  dancers are facing north or south.  This seems to match standard
  *  diagrams best.
- *  js> FormationList = FormationList.js(this); undefined;
  *  js> ns = Rotation.fromAbsoluteString("|");
  *  0 mod 1/2
  *  js> for (f in Iterator(FormationList.all)) {
@@ -58,10 +54,9 @@ import org.mozilla.javascript.Scriptable;
  *    >         (java.lang.reflect.Modifier.isPublic(f.getModifiers()) &&
  *    >          java.lang.reflect.Modifier.isStatic(f.getModifiers()) &&
  *    >          !f.getName().equals("all"))]; undefined
- *  js> FormationListJS = FormationListJS.initJS(this); undefined;
  *  js> flds.every(function(f) {
  *    >    name = f.getName();
- *    >    return (FormationListJS[name].getName()
+ *    >    return (FormationList[name].getName()
  *    >            .replace(' ','_').replace('-','_')
  *    >            .replace("1/4","QUARTER")
  *    >            .replace("3/4","THREE_QUARTER")
@@ -75,7 +70,6 @@ import org.mozilla.javascript.Scriptable;
  *  true
  * @doc.test There should be a matcher for every formation. (Although there
  *  are more matchers than there are formations.)
- *  js> FormationList = FormationList.js(this); undefined;
  *  js> for (f in Iterator(FormationList.all)) {
  *    >   let name = (f.getName()
  *    >                .replace("1/4","QUARTER")
@@ -95,16 +89,8 @@ import org.mozilla.javascript.Scriptable;
  *  js> // note: no output
  * @doc.test The "slow" and "fast" versions of the formations should be
  *  identical (modulo the exact identity of the phantom dancers)
- *  js> FormationListSlow = FormationListJS.initJS(this, FormationListSlow)
- *  [object FormationListJS]
- *  js> FormationListFast = FormationListJS.initJS(this, FormationList)
- *  [object FormationListJS]
  *  js> len = FormationListSlow.all.size(); undefined
- *  js> [f for (f in FormationListSlow)].length == len
- *  true
  *  js> FormationListFast.all.size() == len
- *  true
- *  js> [f for (f in FormationListFast)].length == len
  *  true
  *  js> function compare(a, b) {
  *    >    if (!a.getName().equals(b.getName())) return false;
@@ -123,6 +109,8 @@ import org.mozilla.javascript.Scriptable;
  *  js> matches=0
  *  0
  *  js> for (f in FormationListFast) {
+ *    >    if (/^(all|registerNatives|[$].*)$/.test(f))
+ *    >      continue;
  *    >    if (compare(FormationListSlow[f], FormationListFast[f]))
  *    >      matches++;
  *    > }; matches == len;
@@ -153,13 +141,6 @@ public abstract class FormationList extends FormationListFast {
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("No such formation: "+s);
         }
-    }
-
-    /** Javascript helper.
-     * @see FormationListJS
-     */
-    public static Scriptable js(Scriptable scope) {
-        return FormationListJS.initJS(scope, FormationList.class);
     }
 
     /** Show all the defined formations. */
