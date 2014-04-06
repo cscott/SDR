@@ -6,9 +6,7 @@ import java.util.List;
 
 import net.cscott.sdr.DanceFloor;
 import net.cscott.sdr.calls.Dancer;
-import net.cscott.sdr.calls.ExactRotation;
 import net.cscott.sdr.calls.Formation;
-import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.StandardDancer;
 import net.cscott.sdr.util.Fraction;
 

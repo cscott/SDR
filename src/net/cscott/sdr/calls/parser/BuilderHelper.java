@@ -20,7 +20,6 @@ import net.cscott.sdr.calls.ast.OptCall;
 import net.cscott.sdr.calls.ast.Par;
 import net.cscott.sdr.calls.ast.ParCall;
 import net.cscott.sdr.calls.ast.Part;
-import static net.cscott.sdr.calls.ast.Part.Divisibility.*;
 import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;

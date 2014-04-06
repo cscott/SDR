@@ -1,7 +1,5 @@
 package net.cscott.sdr.calls;
 
-import static net.cscott.sdr.util.Tools.foreach;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,7 +15,6 @@ import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.transform.PartsCounter;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
-import net.cscott.sdr.util.Tools.F;
 
 /**
  * The {@link ExprList} contains {@link ExprFunc} definitions and the
