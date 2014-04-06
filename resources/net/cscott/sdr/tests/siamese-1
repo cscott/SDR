@@ -47,6 +47,15 @@ sdr> centers fan the top
 | 
 |      2B<
 sdr> very centers hinge
+|      4B>
+| 
+| 3Bv       1G^
+| 
+|    4G^  2Gv
+| 
+| 3Gv       1B^
+| 
+|      2B<
 sdr> centers flip the diamond
 |      4G>
 | 
@@ -56,4 +65,23 @@ sdr> centers flip the diamond
 | 
 |      2G<
 sdr> flip the diamond
+| 4B^  3B^  1GV  4GV
+|
+| 2G^  3G^  1BV  2BV
+sdr> quarter tag
+|      3B>
+|
+| 4B>  1G<  4G<
+|
+| 2G>  3G>  2B<
+|
+|      1B<
+sdr> dixie grand ; allemande left ; promenade home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
 sdr> /exit
