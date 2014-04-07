@@ -437,6 +437,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	<test name="net.cscott.sdr.calls.Breather" />
 	<test name="net.cscott.sdr.calls.CallDB" />
 	<test name="net.cscott.sdr.calls.DancerPath" />
+	<test name="net.cscott.sdr.calls.DanceState" />
 	<test name="net.cscott.sdr.calls.EvalPrim" />
 	<test name="net.cscott.sdr.calls.Evaluator" />
 	<test name="net.cscott.sdr.calls.ExactRotation" />

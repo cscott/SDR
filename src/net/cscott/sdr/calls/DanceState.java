@@ -11,8 +11,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-
+import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
@@ -22,6 +21,9 @@ import net.cscott.sdr.util.SdrToString;
 import net.cscott.sdr.util.Tools.ListMultiMap;
 import static net.cscott.sdr.util.Tools.mml;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.junit.runner.RunWith;
+
 /**
  * {@link DanceState} captures all the <i>dynamic</i> information about a
  * dance: the current formation and the queues of dancer actions and calls. It
@@ -30,6 +32,7 @@ import static net.cscott.sdr.util.Tools.mml;
  *
  * @author C. Scott Ananian
  */
+@RunWith(value=JDoctestRunner.class)
 public class DanceState {
     public final DanceProgram dance;
     private final NavigableMap<Fraction, Formation> formations;
@@ -198,6 +201,30 @@ public class DanceState {
     /**
      * Add "do nothing" actions as necessary so that every dancer's next
      * action will occur at the given time.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS),
+     *    >                     Formation.FOUR_SQUARE); undefined;
+     *  js> function addPrim(d, str, f) {
+     *    >   if (!f) f = ds.formationAt(net.cscott.sdr.util.Fraction.ZERO);
+     *    >   var prim = net.cscott.sdr.calls.ast.AstNode.valueOf(str);
+     *    >   ds.add(d, EvalPrim.apply(d, f, prim));
+     *    > }
+     *  js> addPrim(StandardDancer.COUPLE_1_GIRL,'(Prim 0, 0, left, 1)');
+     *  js> addPrim(StandardDancer.COUPLE_3_BOY, '(Prim 0, 0, right,1)');
+     *  js> f = ds.currentFormation(); undefined
+     *  js> addPrim(StandardDancer.COUPLE_1_BOY, '(Prim 0, 1, none, 2)');
+     *  js> addPrim(StandardDancer.COUPLE_1_GIRL,'(Prim 0, 0, none, 2)', f);
+     *  js> addPrim(StandardDancer.COUPLE_3_BOY, '(Prim 0, 0, none, 3, preserve-roll)', f);
+     *  js> ds.syncDancers(net.cscott.sdr.util.Fraction.valueOf(5));
+     *  js> // preserve sweep direction of first dancer
+     *  js> ds.movements(StandardDancer.COUPLE_1_BOY)
+     *  [DancerPath[from=-1,-1,n,to=-1,0,n,[SWEEP_LEFT],time=2,pointOfRotation=<null>], DancerPath[from=-1,0,n,[SWEEP_LEFT],to=-1,0,n,[SWEEP_LEFT],time=3,pointOfRotation=<null>]]
+     *  js> // extend prim for 2nd dancer (without preserving roll)
+     *  js> ds.movements(StandardDancer.COUPLE_1_GIRL)
+     *  [DancerPath[from=1,-1,n,to=1,-1,w,[ROLL_LEFT],time=1,pointOfRotation=SINGLE_DANCER], DancerPath[from=1,-1,w,[ROLL_LEFT],to=1,-1,w,time=4,pointOfRotation=<null>]]
+     *  js> // preserve roll for 3rd dancer
+     *  js> ds.movements(StandardDancer.COUPLE_3_BOY)
+     *  [DancerPath[from=1,1,s,to=1,1,w,[ROLL_RIGHT],time=1,pointOfRotation=SINGLE_DANCER], DancerPath[from=1,1,w,[ROLL_RIGHT],to=1,1,w,[ROLL_RIGHT],time=4,pointOfRotation=<null>]]
      */
     public void syncDancers(Fraction time) {
         for (Map.Entry<Dancer,NavigableMap<Fraction,DancerPath>> me :
@@ -208,17 +235,135 @@ public class DanceState {
             assert lastTime.compareTo(time) <= 0;
             if (lastTime.equals(time))
                 continue;
-            Prim nothingPrim =
-                Prim.STAND_STILL.scaleTime(time.subtract(lastTime));
-            DancerPath nothingPath =
-                EvalPrim.apply(d, formations.get(lastTime), nothingPrim);
+            // try to scale last path, if it was a stand still
+            DancerPath dp = dmove.get(lastTime), nothingPath;
+            if (dp == null || !dp.isStandStill()) {
+                // create new path
+                Prim nothingPrim =
+                    Prim.STAND_STILL.scaleTime(time.subtract(lastTime));
+                nothingPath =
+                    EvalPrim.apply(d, formations.get(lastTime), nothingPrim);
+            } else {
+                // scale old path
+                Fraction startTime = lastTime.subtract(dp.time);
+                nothingPath =
+                    dp.scaleTime(time.subtract(startTime).divide(dp.time));
+                dmove.remove(lastTime);
+            }
             dmove.put(time, nothingPath);
+        }
+    }
+    /**
+     * Return the time corresponding to the last movement.
+     * (Trailing "stand still" actions are ignored.)
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS),
+     *    >                     Formation.SQUARED_SET); undefined;
+     *  js> function addPrim(d, str, f) {
+     *    >   if (!f) f = ds.formationAt(net.cscott.sdr.util.Fraction.ZERO);
+     *    >   var prim = net.cscott.sdr.calls.ast.AstNode.valueOf(str);
+     *    >   ds.add(d, EvalPrim.apply(d, f, prim));
+     *    > }
+     *  js> addPrim(StandardDancer.COUPLE_1_BOY, '(Prim 0, 1, none, 2)');
+     *  js> addPrim(StandardDancer.COUPLE_2_BOY, '(Prim 0, 0, none, 3)');
+     *  js> addPrim(StandardDancer.COUPLE_3_BOY, '(Prim 0, 0, none, 4, preserve-roll)');
+     *  js> ds.currentTime()
+     *  4/1
+     *  js> ds.lastMovement()
+     *  2/1
+     */
+    public Fraction lastMovement() {
+        for (Fraction time : formations.descendingKeySet()) {
+            for (NavigableMap<Fraction,DancerPath> dmove: movements.values()) {
+                Map.Entry<Fraction,DancerPath> e = dmove.ceilingEntry(time);
+                if (e!=null && !e.getValue().isStandStill())
+                    // found a dancer moving at this time!
+                    return time;
+            }
+        }
+        return Fraction.ZERO;
+    }
+
+    /**
+     * Split any "do nothing" actions which cross the given moment in
+     * time.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS),
+     *    >                     Formation.SQUARED_SET); undefined;
+     *  js> function addPrim(d, str, f) {
+     *    >   if (!f) f = ds.formationAt(net.cscott.sdr.util.Fraction.ZERO);
+     *    >   var prim = net.cscott.sdr.calls.ast.AstNode.valueOf(str);
+     *    >   ds.add(d, EvalPrim.apply(d, f, prim));
+     *    > }
+     *  js> addPrim(StandardDancer.COUPLE_1_GIRL,'(Prim 0, 0, left, 1)');
+     *  js> addPrim(StandardDancer.COUPLE_3_BOY, '(Prim 0, 0, right,1)');
+     *  js> f = ds.currentFormation(); undefined
+     *  js> addPrim(StandardDancer.COUPLE_1_BOY, '(Prim 0, 1, none, 2)');
+     *  js> addPrim(StandardDancer.COUPLE_1_GIRL,'(Prim 0, 0, none, 2)', f);
+     *  js> addPrim(StandardDancer.COUPLE_3_BOY, '(Prim 0, 0, none, 3, preserve-roll)', f);
+     *  js> // ok, split time at time 2
+     *  js> ds.splitTime(net.cscott.sdr.util.Fraction.TWO)
+     *  js> // dancer 1 should be unaffected
+     *  js> ds.movements(StandardDancer.COUPLE_1_BOY)
+     *  [DancerPath[from=-1,-3,n,to=-1,-2,n,[SWEEP_LEFT],time=2,pointOfRotation=<null>]]
+     *  js> // dancer 2 should still not have roll afterwards
+     *  js> ds.movements(StandardDancer.COUPLE_1_GIRL)
+     *  [DancerPath[from=1,-3,n,to=1,-3,w,[ROLL_LEFT],time=1,pointOfRotation=SINGLE_DANCER], DancerPath[from=1,-3,w,[ROLL_LEFT],to=1,-3,w,[ROLL_LEFT],time=1,pointOfRotation=<null>], DancerPath[from=1,-3,w,[ROLL_LEFT],to=1,-3,w,time=1,pointOfRotation=<null>]]
+     *  js> // dancer 3 should preserve roll
+     *  js> ds.movements(StandardDancer.COUPLE_3_BOY)
+     *  [DancerPath[from=1,3,s,to=1,3,w,[ROLL_RIGHT],time=1,pointOfRotation=SINGLE_DANCER], DancerPath[from=1,3,w,[ROLL_RIGHT],to=1,3,w,[ROLL_RIGHT],time=1,pointOfRotation=<null>], DancerPath[from=1,3,w,[ROLL_RIGHT],to=1,3,w,[ROLL_RIGHT],time=2,pointOfRotation=<null>]]
+     */
+    public void splitTime(Fraction time) {
+        if (formations.get(time) == null) {
+            formations.put(time, formations.floorEntry(time).getValue());
+        }
+        eachDancer:
+        for (Dancer d : this.movements.keySet()) {
+            NavigableMap<Fraction,DancerPath> dmove = this.movements.get(d);
+            Map.Entry<Fraction,DancerPath> e = dmove.ceilingEntry(time);
+            if (e==null) continue;
+            DancerPath dp = e.getValue();
+            if (!dp.isStandStill()) continue;
+            Fraction endTime = e.getKey();
+            Fraction startTime = endTime.subtract(dp.time);
+            if (time.equals(endTime) || time.equals(startTime)) continue;
+            assert startTime.compareTo(time) < 0;
+            assert time.compareTo(endTime) < 0;
+            // split this in two
+            Prim nothingPrim =
+                Prim.STAND_STILL.scaleTime(time.subtract(startTime));
+            DancerPath first = EvalPrim.apply(d, formations.get(startTime),
+                                              nothingPrim);
+            DancerPath second = dp.scaleTime
+                (endTime.subtract(time).divide(dp.time));
+            assert first.time.add(second.time).equals(dp.time);
+            dmove.put(time, first);
+            dmove.put(endTime, second);
         }
     }
     /**
      * Remove any trailing "do nothing" actions so that the next action
      * flows directly from the previous one.  This is used in "roll" --
      * I don't know if it's useful for any other calls.
+     * @doc.test
+     *  js> importPackage(net.cscott.sdr.util);
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS),
+     *    >                     Formation.SQUARED_SET); undefined;
+     *  js> function addPrim(d, str, f) {
+     *    >   if (!f) f = ds.formationAt(net.cscott.sdr.util.Fraction.ZERO);
+     *    >   var prim = net.cscott.sdr.calls.ast.AstNode.valueOf(str);
+     *    >   ds.add(d, EvalPrim.apply(d, f, prim));
+     *    > }
+     *  js> addPrim(StandardDancer.COUPLE_1_BOY, '(Prim 0, 1, none, 2)');
+     *  js> addPrim(StandardDancer.COUPLE_2_BOY, '(Prim 0, 0, none, 3)');
+     *  js> addPrim(StandardDancer.COUPLE_3_BOY, '(Prim 0, 0, none, 4, preserve-roll)');
+     *  js> [tf.time.toProperString() for (tf in Iterator(ds.formations()))]
+     *  0,2,3,4
+     *  js> // unsyncDancers from here should remove the formations @ 3 and 4
+     *  js> // (note that good practice here is to split @ 2 first)
+     *  js> ds.splitTime(Fraction.TWO) ; ds.unsyncDancers()
+     *  js> [tf.time.toProperString() for (tf in Iterator(ds.formations()))]
+     *  0,2
      */
     public void unsyncDancers() {
         eachDancer:
@@ -231,6 +376,8 @@ public class DanceState {
                     continue eachDancer;
             }
         }
+        // Remove entire TimedFormation if all dancers were standing still
+        formations.tailMap(lastMovement(), false).clear();
     }
 
     /**

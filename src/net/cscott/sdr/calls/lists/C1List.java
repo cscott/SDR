@@ -230,19 +230,33 @@ public abstract class C1List {
             }
             TreeSet<Fraction> moments = new TreeSet<Fraction>();
             new Apply(this.centersPart).evaluator(centerS).evaluateAll(centerS);
+            Fraction endTime = centerS.currentTime();
+            Fraction lastMovement = centerS.lastMovement();
             for (TimedFormation tf: centerS.formations())
-                moments.add(tf.time);
+                if (tf.time.compareTo(lastMovement) <= 0)
+                    moments.add(tf.time);
             // in CROSS, have the ends wait until the centers are done
             Fraction endsOffset = Fraction.ZERO;
             if (which==ConcentricType.CROSS) {
-                endsOffset = moments.last();
+                endsOffset = endTime;
                 endS.syncDancers(endsOffset);
             }
             new Apply(this.endsPart).evaluator(endS).evaluateAll(endS);
+            endTime = Fraction.max(endTime, endS.currentTime());
+            lastMovement = endS.lastMovement();
             for (TimedFormation tf: endS.formations())
-                moments.add(tf.time);
+                if (tf.time.compareTo(lastMovement) <= 0)
+                    moments.add(tf.time);
+            moments.add(endTime);
+            for (DanceState nds: l(centerS, endS)) {
+                // add back any standing around at the end
+                nds.syncDancers(endTime);
+            }
+            // "Do nothing" movements are divisible; for better breathing,
+            // split them up at every 'moment'
             for (DanceState nds: l(centerS, endS))
-                nds.syncDancers(moments.last());
+                for (Fraction time : moments)
+                    nds.splitTime(time);
 
             // A1. if the new outside formation is a 1x4, the long axis can
             //     only go one way

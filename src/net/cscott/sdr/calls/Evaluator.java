@@ -546,16 +546,21 @@ public abstract class Evaluator {
             // have different #s of parts (for the same call) and we
             // don't want to get them out of sync.
             //  xxx: is this really a problem?
+            Fraction endTime = Fraction.ZERO;
             for (Dancer metaDancer : metaDancers) {
                 Formation sub = this.parts.get(metaDancer);
                 Evaluator e = emap.get(metaDancer);
                 DanceState nds = ds.cloneAndClear(sub);
                 if (e != null)
                     e.evaluateAll(nds);
+                endTime = Fraction.max(endTime, nds.currentTime());
                 substates.put(metaDancer, nds);
+                Fraction lastMovement = nds.lastMovement();
                 for (TimedFormation tf: nds.formations())
-                    moments.add(tf.time);
+                    if (tf.time.compareTo(lastMovement) <= 0)
+                        moments.add(tf.time);
             }
+            moments.add(endTime);
             // go through all the moments in time, constructing an appropriately
             // breathed formation.
             TreeMap<Fraction,Formation> breathed =
@@ -583,7 +588,11 @@ public abstract class Evaluator {
             // 'to' and 'from' positions to match breathed.
             for (Dancer metaDancer : metaDancers) {
                 DanceState nds = substates.get(metaDancer);
-                nds.syncDancers(moments.last());
+                // ensure dance state ends at `endTime`
+                nds.syncDancers(endTime);
+                // and divide up any "standstill" moments for better breathing
+                for (Fraction time : moments)
+                    nds.splitTime(time);
                 for (Dancer d : nds.dancers()) {
                     Fraction t = Fraction.ZERO;
                     for (DancerPath dp : nds.movements(d)) {
