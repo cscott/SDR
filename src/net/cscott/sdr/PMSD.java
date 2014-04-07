@@ -230,7 +230,14 @@ public class PMSD {
             // execute it!  (reusing current state)
             // (but reset formation and program, since tests expect that)
             this.reset();
-            return runTest(this, testName, testCase);
+            String testResult = runTest(this, testName, testCase);
+            int mismatch = linesMatch
+                (testCase.toArray(new String[testCase.size()]),
+                 testResult.split("(\\r\\n?|\\n)"));
+            if (mismatch != -1) {
+                testResult += "\n* failed at "+(mismatch+1);
+            }
+            return testResult;
 	}
 
         // special helper to list test cases
@@ -305,25 +312,34 @@ public class PMSD {
             // execute it! (each test in a new JavaScript context)
             String testResult = runTest(null, resource, testCase);
             // resplit and compare.
-            int i = 0, mismatch = -1;
-            for (String outLine: testResult.split("(\\r\\n?|\\n)")) {
-                String inLine = (i < testCase.size()) ? testCase.get(i) : "";
-                if (!inLine.trim().equals(outLine.trim())) {
-                    mismatch = i;
-                    break;
-                }
-                i++;
-            }
-            for ( ; mismatch<0 && i < testCase.size(); i++)
-                if (testCase.get(i).trim().length() != 0)
-                    mismatch = i;
-
-            if (mismatch != -1)
+            int mismatch = linesMatch
+                (testCase.toArray(new String[testCase.size()]),
+                 testResult.split("(\\r\\n?|\\n)"));
+            if (mismatch != -1) {
                 failedTests.add(" "+resource+" at line "+(mismatch+1));
+            }
         }
         if (failedTests.isEmpty()) return "";
         // oops, something failed
         return "FAILED TESTS:\n"+ListUtils.join(failedTests, "\n");
+    }
+    /** Line comparison function used for evaluating test results. */
+    private static boolean linesMatch(String expected, String actual) {
+        expected = expected.trim(); actual = actual.trim();
+        // special handling for BadCallExceptions
+        if (expected.startsWith("* "))
+            return actual.contains(expected.substring(2).trim());
+        return expected.equals(actual);
+    }
+    private static int linesMatch(String[] expected, String[] actual) {
+        int len = Math.max(expected.length, actual.length);
+        for (int i=0; i<len; i++) {
+            String e = (i < expected.length) ? expected[i] : "";
+            String a = (i < actual.length) ? actual[i] : "";
+            if (!linesMatch(e, a))
+                return i;
+        }
+        return -1; // all lines match!
     }
     /** Read a file fully, returning as an list of lines. */
     private static List<String> readLines(InputStream is) throws IOException {
@@ -418,15 +434,11 @@ public class PMSD {
                     readLines(new FileInputStream(filename));
                 String testResult =
                     runTest(null, filename, input);
-                // trim each line.
-                String[] trimmedResult =
-                    (testResult.split("[ \t]*(\\r\\n?|\\n)[ \t]*"));
-                String[] trimmedInput = ListUtils.join(input, "\n")
-                    .split("[ \t]*(\\r\\n?|\\n)[ \t]*");
-                // mismatch?
-                if (!Arrays.equals(trimmedResult, trimmedInput)) {
+                int mismatch = linesMatch
+                    (input.toArray(new String[input.size()]),
+                     testResult.split("(\\r\\n?|\\n)"));
+                if (mismatch != -1)
                     success = false;
-                }
                 pw.println(testResult);
             }
             pw.flush();

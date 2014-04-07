@@ -16,18 +16,13 @@
  *   c4-calls-1 at line 38
  *   c4-calls-2 at line 63
  *   c4-calls-4.1 at line 99
- *   cast-1 at line 69
  *   cross-back at line 51
  *   cross-concentric-1 at line 43
  *   cross-fold-1 at line 20
  *   dopaso-1 at line 39
- *   hinge-1 at line 36
  *   parse-2 at line 7
  *   pass-to-the-center-2 at line 8
  *   pass-to-the-center-3 at line 26
- *   peel-and-trail-1 at line 44
- *   peel-off-1 at line 42
- *   peel-the-top-1 at line 32
  *   right-roll-to-a-wave at line 46
  *   siamese-1 at line 60
  *   square-chain-the-top at line 15
@@ -36,7 +31,6 @@
  *   sweep-3 at line 23
  *   timing-basic at line 76
  *   trade-by at line 43
- *   trail-off-1 at line 44
  *   triple-star-thru at line 16
  */
 package net.cscott.sdr;
