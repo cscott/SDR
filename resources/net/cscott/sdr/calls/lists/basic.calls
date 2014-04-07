@@ -1131,28 +1131,64 @@ def: u turn back
 // XXX DEFINE ME
 
 // callerlab #15: COURTESY TURN
-// XXX definition says that 'courtesy turn' without a fraction means
-//    "turn to the center of the formation in which it is working"
-//    use a pattern predicate for in/out?
-def: courtesy turn(n=3/4)
-  spoken: courtesy turn (<n=fraction>)?
+// Note that definition says that 'courtesy turn' without a fraction means
+// "turn to the center of the formation in which it is working"
+def: courtesy turn
+  ipart:
+    from: ANY
+      condition: formation(COUPLE)
+      call: _continue courtesy turn
+    from: ANY
+      call: _start courtesy turn
+      call: _continue courtesy turn
+// here we evaluate the "formation in which we are working" and choose an
+// appropriate amount to turn -- right now we just try to turn 1/4,
+// 1/2, and 3/4 and see which one ends with everyone facing in,
+// but we might also try to match subformations and then repeat the
+// process.
+def: _continue courtesy turn
+  from: ANY
+    call: _continue courtesy turn to center
+  from: 2x2
+    call: _continue courtesy turn to center
+def: _continue courtesy turn to center
+  from: ANY
+    call: _courtesy turn finishing facing in(1/4)
+  from: ANY
+    call: _courtesy turn finishing facing in(1/2)
+  from: ANY
+    call: _courtesy turn finishing facing in(3/4)
+
+def: _courtesy turn finishing facing in(n)
+  ends in: MATCH(_INOUT PATTERN(), "i+")
+    call: _fractional([n], _courtesy turn 4/4)
+
+def: _courtesy turn(n)
+  spoken: courtesy turn <n=fraction>
   from: FACING DANCERS
-    call: _in(_multiply num([n],8), \
-              and(_start courtesy turn, courtesy turn([n])))
+    ipart:
+      call: _in(_multiply num([n],8), \
+              and(_start courtesy turn, _courtesy turn([n])))
   from: COUPLE
     call: _fractional([n], _courtesy turn 4/4)
 
 def: _start courtesy turn
   in: 1
-  from: FACING DANCERS
-    select: BOY
-      prim: 0, 0, left
-    select: GIRL
-      prim: 0, 0, right
+  from: mixed(FACING DANCERS, COUPLE)
+    from: FACING DANCERS
+      select: BOY
+        prim: 0, 0, left
+      select: GIRL
+        prim: 0, 0, right
+    from: COUPLE
+      prim: 0, 0, none, preserve-roll preserve-sweep
 
 def: _courtesy turn 4/4
   in: 8
-  call: 2(wheel around) // modulo hand hold
+  from: COUPLE
+    condition: or(PROGRAM AT LEAST(PLUS), ARE(BOY, BEAU)), \
+      "Courtesy turn must be from normal couples at mainstream or basic"
+    call: 2(wheel around) // modulo hand hold
 
 // callerlab #16: LADIES CHAIN FAMILY
 def: two ladies chain(sel)
@@ -1177,7 +1213,7 @@ def: four ladies chain(sel,n=1/2)
                         reverse(_single star promenade([n]))),\
                     and(_in(_multiply num(8, [n]), nothing),\
                         _in(2, face left))))
-      call: _blend(_finish belles chain, _in(1 1/2, courtesy turn(1/2)))
+      call: _blend(_finish belles chain, _in(1 1/2, _courtesy turn(1/2)))
     from: 2x4
       call: _blend(_centers back out, four ladies chain([sel], [n]))
 
@@ -1201,10 +1237,10 @@ def: _finish belles chain
 def: chain down the line
   in: 8
   from: RH TWO-FACED LINE
-    call: _centers(right arm turn(1/2)), courtesy turn(3/4)
+    call: _centers(right arm turn(1/2)), _courtesy turn(3/4)
   from: LH OCEAN WAVE
     call: _quasi concentric(right arm turn(1/2), u turn back)
-    call: courtesy turn(3/4)
+    call: _courtesy turn(3/4)
 
 // callerlab #17: DO PASO
 // XXX: how do we do the 'no courtesy turn' version in the text ui?
@@ -1322,7 +1358,7 @@ def: right and left thru
 
 def: _finish right and left thru(n=1/2)
   from: BACK TO BACK COUPLES
-    call: courtesy turn([n])
+    call: _courtesy turn([n])
 
 def: right and left thru and a quarter more
   in: 8

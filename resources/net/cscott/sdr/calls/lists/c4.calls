@@ -6,7 +6,7 @@ def: brace yourself
     condition: not(or(ALL(BOY), ALL(GIRL))),\
                "Must have one boy and one girl in each couple"
     from: condition(match(_selection pattern(BOY), "x_"))
-      call: courtesy turn(1/2)
+      call: _courtesy turn(1/2)
     from: condition(match(_selection pattern(BOY), "_x"))
       call: u turn back
 

@@ -79,7 +79,7 @@ def: _eight chain odd
 def: _eight chain even
   in: 3
   from: TRADE BY
-    call: _quasi concentric(_in(3, left pull by), _in(3, courtesy turn(1/2)))
+    call: _quasi concentric(_in(3, left pull by), _in(3, _courtesy turn(1/2)))
 
 // callerlab #55: PASS TO THE CENTER
 def: pass to the center

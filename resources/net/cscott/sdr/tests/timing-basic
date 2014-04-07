@@ -50,9 +50,10 @@ sdr> /checkBeats( 8, "head ladies chain", STATIC_SQUARE)
 sdr> /checkBeats(10, "head ladies chain 3/4", STATIC_SQUARE)
 sdr> /checkBeats( 8, "all four ladies chain", STATIC_SQUARE)
 sdr> /checkBeats(10, "all four ladies chain 3/4", STATIC_SQUARE)
-sdr> /checkBeats( 8, "chain down the line", [PARALLEL_LH_WAVES,
-   >                                         PARALLEL_RH_TWO_FACED_LINES,
-   >                                         LH_TIDAL_WAVE])
+sdr> /checkBeats( 8, "chain down the line", PARALLEL_RH_TWO_FACED_LINES)
+sdr> /// chain down the line needs to be from BGGB waves at mainstream
+sdr> /checkBeats( 8+4, "sides trade ; chain down the line", [PARALLEL_LH_WAVES,
+   >                                                         LH_TIDAL_WAVE])
 sdr> /checkBeats(16, "circle to the left full around", STATIC_SQUARE)
 sdr> /checkBeats(12, "circle to the left 3/4", STATIC_SQUARE)
 sdr> /checkBeats( 8, "circle to the left half way", STATIC_SQUARE)
@@ -72,7 +73,9 @@ sdr> /checkBeats( 4, "couples circulate", [PARALLEL_RH_TWO_FACED_LINES,
    >                                       PARALLEL_LH_TWO_FACED_LINES])
 sdr> /checkBeats( 4, ["lead right","lead left"],[FACING_LINES,EIGHT_CHAIN_THRU])
 sdr> /// XXX: "couples separate" (2 beats)
-sdr> /checkBeats( 4, "courtesy turn", [TRADE_BY, EIGHT_CHAIN_THRU])
+sdr> /checkBeats( 4, "courtesy turn", [TRADE_BY, LINES_FACING_OUT])
+sdr> /// non-standard, but reasonable:
+sdr> /checkBeats( 6, "courtesy turn", PARALLEL_RH_TWO_FACED_LINES)
 sdr> /// XXX: officially, the couple diving has only two beats for a dive thru
 sdr> /checkBeats( 6, "dive thru", EIGHT_CHAIN_THRU)
 sdr> /checkBeats(16, "do paso", STATIC_SQUARE)
