@@ -30,7 +30,7 @@
  *   peel-the-top-1 at line 32
  *   right-roll-to-a-wave at line 46
  *   siamese-1 at line 60
- *   square-chain-the-top at line 18
+ *   square-chain-the-top at line 15
  *   square-thru at line 22
  *   star-wars at line 11
  *   sweep-3 at line 23

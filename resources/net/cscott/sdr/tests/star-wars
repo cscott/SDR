@@ -8,6 +8,13 @@ sdr> /setFormation(FormationList.PARALLEL_RH_WAVES)
 |
 | 4G^  4Bv  3G^  3Bv
 sdr> finally buckle and couple up
+| 4Bv  4Gv
+|
+| 1Bv  3Gv
+|
+| 1G^  3B^
+|
+| 2G^  2B^
 sdr> /setFormation(FormationList.RH_COLUMN)
 | 1B^  1Gv
 |

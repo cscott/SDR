@@ -3,10 +3,7 @@ Tests for "Square Chain The Top" (C1).
 sdr> /program = C1
 C1
 sdr> /// Sequence #1
-sdr> /// XXX should be "heads square chain the top"
-sdr> /// XXX but break into parts because there's some breathing bug
-sdr> /// XXX with the final turn thru
-sdr> heads do 2/3 of a square chain the top ; heads (cast off 1/2 ; step thru)
+sdr> heads square chain the top
 | 4B>  1B^  3G^  2G<
 |
 | 4G>  1Gv  3Bv  2B<
@@ -15,10 +12,41 @@ sdr> clover and square chain the top
 |
 | 1G>  2B<  2G>  3B<
 sdr> relay the top
+| 2B>  1B>
+|
+| 1G<  4G<
+|
+| 2G>  3G>
+|
+| 3B<  4B<
 sdr> explode and square thru 3
+| 2B^  1G^  1B^  4G^
+|
+| 2Gv  3Bv  3Gv  4Bv
 sdr> turn and deal
+| 2Bv  1Gv
+|
+| 1Bv  4Gv
+|
+| 2G^  3B^
+|
+| 3G^  4B^
 sdr> centers pass thru
+| 2Bv  1Gv
+|
+| 2G^  3B^
+|
+| 1Bv  4Gv
+|
+| 3G^  4B^
 sdr> square chain the top
+| 2G^  2B^
+|
+| 3Bv  1Gv
+|
+| 3G^  1B^
+|
+| 4Bv  4Gv
 sdr> right and left grand
 sdr> promenade home
 |      3Gv  3Bv
@@ -61,4 +89,3 @@ sdr> trade circulate
 sdr> allemande left
 sdr> promenade home
 sdr> /exit
-

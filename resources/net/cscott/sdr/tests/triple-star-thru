@@ -23,7 +23,7 @@ sdr> ends u-turn back
 | 
 | 3Bv  3Gv
 sdr> triple star thru
-* Invalid formation (FACING DANCERS (no matches))
+* Invalid formation
 sdr> /setFormation(FormationList.EIGHT_CHAIN_THRU)
 | 1Gv  1Bv
 | 

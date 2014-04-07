@@ -66,5 +66,5 @@ sdr> heads touch 1/4
 | 
 | 4G>  3G<  3B<  2B<
 sdr> cast off 3/4
-* Need to be in miniwave or line of 4.
+* Need to be in miniwave or line of 4
 sdr> /exit

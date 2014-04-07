@@ -34,10 +34,10 @@ sdr> /program = C1
 C1
 sdr> peel the top
 |      2G>
-| 2B^       1Bv
-|      1G<
 | 
-|      3G>
-| 3B^       4Bv
+| 2B^  1G<  1Bv
+| 
+| 3B^  3G>  4Bv
+| 
 |      4G<
 sdr> /exit
