@@ -429,9 +429,6 @@ window['JAVADOC_BASE'] = '{@docRoot}';
     </javac>
       <junit printsummary="yes" fork="yes" forkmode="once" haltonfailure="yes">
 	<formatter type="plain" usefile="false"/>
-	<test name="EDU.Washington.grad.gjb.cassowary.BreatheTest" />
-	<test name="EDU.Washington.grad.gjb.cassowary.ClBranchAndBound" />
-	<test name="EDU.Washington.grad.gjb.cassowary.ClTests" />
 	<test name="net.cscott.sdr.package_info" /> <!-- package-info -->
 	<test name="net.cscott.sdr.PMSD" />
 	<test name="net.cscott.sdr.calls.Breather" />
@@ -484,6 +481,9 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	<test name="net.cscott.sdr.util.LL" />
 	<test name="net.cscott.sdr.util.ListUtils" />
 	<test name="net.cscott.sdr.util.Tools" />
+	<test name="EDU.Washington.grad.gjb.cassowary.BreatheTest" />
+	<test name="EDU.Washington.grad.gjb.cassowary.ClBranchAndBound" />
+	<test name="EDU.Washington.grad.gjb.cassowary.ClTests" />
 	<classpath refid="classpath.path" />
 	<assertions>
 	  <enable package="net.cscott"/>
