@@ -75,8 +75,7 @@ sdr> brace thru
 | 2Gv  2Bv  3Gv  1Bv
 | 
 | 3B^  1G^  4B^  4G^
-sdr> /// "touch 1/4 and cross" ... but work around a bug
-sdr> touch 1/4 ; ends trade ; boys zoom ; ends trade ; boys u turn back
+sdr> touch 1/4 and cross
 | 2B<  1G>  1B<  4G>
 | 
 | 2G<  3B>  3G<  4B>

@@ -11,12 +11,9 @@
  *   acey-deucey-2 at line 90
  *   acey-deucey-3 at line 15
  *   acey-deucey-5 at line 117
- *   and-cross at line 54
  *   breathing-2 at line 26
- *   c4-calls-1 at line 38
  *   c4-calls-2 at line 63
  *   c4-calls-4.1 at line 99
- *   cross-back at line 51
  *   cross-concentric-1 at line 43
  *   cross-fold-1 at line 20
  *   dopaso-1 at line 39

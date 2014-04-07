@@ -120,19 +120,21 @@ def: and cross(c)
 //  spoken: <c=anything> and <n=number> cross
 //  call: [c], _fractional([n], _cross)
 
-// keep this definition in sync with "cross back" (a2)
+// keep this definition in sync with "cross back" (c2)
 def: _cross
+  spoken: test cross
   in: 2
-    from: BOX, 2x2 /* XXX: 2x2 doesn't define LEADERS/TRAILERS =( */
+    from: 2x2
       condition: or(PROGRAM AT LEAST(c1), NOT(TBONED(ALL))), \
                  "T-boned formations not allowed below C1"
-      condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+      condition: MATCH(_INOUT PATTERN(), "iooi|oiio"), \
                  "Must have diagonal trailers"
       select: LEADER
-        call: nothing, nothing /* two parts */
+        prim: 0, 1, none // make room for center miniwave (form z)
+        prim: 0,-1, none
       select: TRAILER
-        prim: in 2, 1, none
-        prim: in 1, 1, none
+        prim: in 2, 1, none // pull by with outside hand
+        prim: 0, 1, none
 
 // XXX: vic cedar says <anyone> cross is also on a1 list.
 
