@@ -57,10 +57,6 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     private final DanceState ds;
     public BeatCounter(DanceState ds) { this.ds = ds; }
     private final Map<AstNode,Fraction> inherent = new HashMap<AstNode,Fraction>();
-    // Math.max for Fractions.
-    private Fraction max(Fraction a, Fraction b) {
-        return (a.compareTo(b) < 0) ? b : a;
-    }
     public Fraction getBeats(AstNode ast) {
         if (!inherent.containsKey(ast))
             inherent.put(ast, ast.accept(this, null));
@@ -112,7 +108,7 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     public Fraction visit(Par p, Void v) {
         Fraction f = Fraction.ZERO;
         for (ParCall pc : p.children)
-            f = max(f, getBeats(pc));
+            f = Fraction.max(f, getBeats(pc));
         return f;
     }
     @Override
