@@ -21,8 +21,7 @@ def: split counter rotate(n=1/4)
       call: counter rotate([n])
   from: TWIN DIAMONDS, TWIN FACING DIAMONDS, \
         POINT TO POINT DIAMONDS, POINT TO POINT FACING DIAMONDS
-    from: MIXED DIAMOND
-      call: counter rotate([n])
+    call: _from diamond(counter rotate([n]))
 
 // mini busy isn't really strongly related to keep busy: the leaders part
 // is very different.

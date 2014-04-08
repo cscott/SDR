@@ -8,7 +8,6 @@
  *  js> PMSD.runAllTests()
  *  FAILED TESTS:
  *   acey-deucey-1 at line 79
- *   acey-deucey-2 at line 90
  *   acey-deucey-3 at line 15
  *   acey-deucey-5 at line 117
  *   breathing-2 at line 26
@@ -21,7 +20,6 @@
  *   pass-to-the-center-2 at line 8
  *   pass-to-the-center-3 at line 26
  *   right-roll-to-a-wave at line 46
- *   siamese-1 at line 60
  *   square-chain-the-top at line 15
  *   square-thru at line 22
  *   star-wars at line 11

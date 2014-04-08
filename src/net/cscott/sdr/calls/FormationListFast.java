@@ -653,6 +653,52 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.POINT));
 
+    /** GENERAL TALL DIAMOND formation.
+      * @doc.test
+      *  js> tf = FormationList.GENERAL_TALL_DIAMOND; tf.mapStd([]).toStringDiagram('|');
+      *  |  1B-
+      *  |
+      *  |
+      *  |1G|  3G|
+      *  |
+      *  |
+      *  |  3B-
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [POINT]
+      *  [CENTER]
+      *  [CENTER]
+      *  [POINT]
+      */
+    public static final NamedTaggedFormation GENERAL_TALL_DIAMOND =
+        new NamedTaggedFormation("GENERAL TALL DIAMOND",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(3), Rotation.fromAbsoluteString("-")), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-3), Rotation.fromAbsoluteString("-")), Tag.POINT));
+
+    /** GENERAL ASYM DIAMOND formation.
+      * @doc.test
+      *  js> tf = FormationList.GENERAL_ASYM_DIAMOND; tf.mapStd([]).toStringDiagram('|');
+      *  |     1B-
+      *  |
+      *  |1G|  3G|
+      *  |
+      *  |     3B-
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [POINT]
+      *  [CENTER]
+      *  [CENTER]
+      *  [POINT]
+      */
+    public static final NamedTaggedFormation GENERAL_ASYM_DIAMOND =
+        new NamedTaggedFormation("GENERAL ASYM DIAMOND",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(2), Rotation.fromAbsoluteString("-")), Tag.POINT),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.POINT));
+
     /** RH DIAMOND formation.
       * @doc.test
       *  js> tf = FormationList.RH_DIAMOND; tf.mapStd([]).toStringDiagram('|');
@@ -846,6 +892,28 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.END));
+
+    /** GENERAL ASYM SINGLE QUARTER TAG formation.
+      * @doc.test
+      *  js> tf = FormationList.GENERAL_ASYM_SINGLE_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
+      *  |     1B|
+      *  |
+      *  |1G|  3G|
+      *  |
+      *  |     3B|
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [END]
+      *  [CENTER]
+      *  [CENTER]
+      *  [END]
+      */
+    public static final NamedTaggedFormation GENERAL_ASYM_SINGLE_QUARTER_TAG =
+        new NamedTaggedFormation("GENERAL ASYM SINGLE QUARTER TAG",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(2), Rotation.fromAbsoluteString("|")), Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.END));
 
     /** RH SINGLE 1/4 TAG formation.
       * @doc.test
@@ -3286,6 +3354,8 @@ abstract class FormationListFast {
             FormationListFast.LH_TWO_FACED_LINE,
             FormationListFast.SINGLE_INVERTED_LINE,
             FormationListFast.GENERAL_DIAMOND,
+            FormationListFast.GENERAL_TALL_DIAMOND,
+            FormationListFast.GENERAL_ASYM_DIAMOND,
             FormationListFast.RH_DIAMOND,
             FormationListFast.RH_FACING_DIAMOND,
             FormationListFast.LH_DIAMOND,
@@ -3295,6 +3365,7 @@ abstract class FormationListFast {
             FormationListFast.RH_SINGLE_PROMENADE,
             FormationListFast.LH_SINGLE_PROMENADE,
             FormationListFast.GENERAL_SINGLE_QUARTER_TAG,
+            FormationListFast.GENERAL_ASYM_SINGLE_QUARTER_TAG,
             FormationListFast.RH_SINGLE_QUARTER_TAG,
             FormationListFast.LH_SINGLE_QUARTER_TAG,
             FormationListFast.RH_SINGLE_THREE_QUARTER_TAG,

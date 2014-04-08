@@ -86,9 +86,8 @@ def: cross back
 def: _drop(c)
   // XXX adjust 1/4 tag to single quarter tags
   in: 2
-  from: GENERAL DIAMOND, GENERAL SINGLE QUARTER TAG
-    ipart:
-      call: _quasi concentric(nothing, [c]), _finish drop in
+  ipart:
+    call: _from diamond or tag(_quasi concentric(nothing, [c])), _finish drop in
 
 def: drop in
   call: _drop(face in)

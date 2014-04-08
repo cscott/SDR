@@ -65,10 +65,10 @@ sdr> centers flip the diamond
 | 
 |      2G<
 sdr> flip the diamond
-| 4B^  3B^  1GV  4GV
+| 4B^  3B^  1Gv  4Gv
 |
-| 2G^  3G^  1BV  2BV
-sdr> quarter tag
+| 2G^  3G^  1Bv  2Bv
+sdr> tag the line 1/4
 |      3B>
 |
 | 4B>  1G<  4G<

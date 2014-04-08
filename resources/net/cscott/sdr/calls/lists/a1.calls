@@ -191,8 +191,10 @@ def: horseshoe turn
 
 def: lockit
   in: 4
-  from: GENERAL LINE, GENERAL DIAMOND
+  from: GENERAL LINE
     call: _counter rotate 1/4
+  from: ANY
+    call: _from diamond(_counter rotate 1/4)
 
 def: partner hinge
   from: MINIWAVE, COUPLE

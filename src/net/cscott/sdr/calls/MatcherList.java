@@ -231,6 +231,10 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.SINGLE_INVERTED_LINE);
     public static final Matcher GENERAL_DIAMOND =
         GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_DIAMOND);
+    public static final Matcher GENERAL_TALL_DIAMOND =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_TALL_DIAMOND);
+    public static final Matcher GENERAL_ASYM_DIAMOND =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_ASYM_DIAMOND);
     public static final Matcher RH_DIAMOND =
         GeneralFormationMatcher.makeMatcher(FormationList.RH_DIAMOND);
     public static final Matcher RH_FACING_DIAMOND =
@@ -257,6 +261,8 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.LH_SINGLE_PROMENADE);
     public static final Matcher GENERAL_SINGLE_QUARTER_TAG =
         GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_SINGLE_QUARTER_TAG);
+    public static final Matcher GENERAL_ASYM_SINGLE_QUARTER_TAG =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_ASYM_SINGLE_QUARTER_TAG);
     public static final Matcher RH_SINGLE_QUARTER_TAG =
         GeneralFormationMatcher.makeMatcher(FormationList.RH_SINGLE_QUARTER_TAG);
     public static final Matcher LH_SINGLE_QUARTER_TAG =

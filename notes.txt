@@ -1765,3 +1765,10 @@ Hourglass/diamond adjustments:
 - diamond points may be at +/- 4 (instead of +/- 3) (like in hourglass)
 - galaxy box might be at +/-3,+/-1 instead of +/-3,+/-2
    (in addition to point being at +/-3 instead of +/-2)
+----
+Add a new Matcher function:
+  from: call(_diamond adjust, GENERAL DIAMOND)
+means, roughly:
+  from: ANY
+    call: _diamond adjust, from(GENERAL DIAMOND, ...)
+---

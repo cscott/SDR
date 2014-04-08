@@ -120,8 +120,7 @@ def: _tag the star(n=1/2)
     call: counter rotate([n]) // or whatever 'star turn' amount is indicated
     call: _start drop in      // "points face in"
 def: _start drop in
-  from: GENERAL DIAMOND
-    call: _quasi concentric(nothing, face in)
+  call: _from diamond(_quasi concentric(nothing, face in))
 
 /* slim down defined in C4List.java */
 
@@ -233,8 +232,8 @@ def: the plank
 def: connect the diamond
   from: RH DIAMOND, LH DIAMOND // cheat!
     call: drop in, counter rotate(1/4)
-  from: GENERAL DIAMOND
-    call: centers(hinge), _finish connect the diamond
+  from: ANY
+    call: _from diamond(centers(hinge)), _finish connect the diamond
 def: _finish connect the diamond
   from: OCEAN WAVE
     call: step and fold
@@ -358,8 +357,7 @@ def: quarter the alter(i, j, k)
   call: _the alter part three([k])
   call: flip the diamond
 def: _the alter part three(n)
-  from: GENERAL DIAMONDS
-    call: counter rotate([n]) // "turn the star"
+  call: _from diamond(counter rotate([n])) // "turn the star"
 
 def: the alter and circulate(n)
   spoken: <n=fraction> the alter and circulate

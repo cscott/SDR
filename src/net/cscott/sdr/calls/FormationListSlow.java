@@ -207,6 +207,21 @@ abstract class FormationListSlow {
                d(-1, 0,"|",CENTER),
                d(+1, 0,"|",CENTER),
                d( 0,-2,"-",POINT));
+    // A "tall diamond" is a 2x4; we match against this in order to
+    // do point adjustments
+    public static final NamedTaggedFormation GENERAL_TALL_DIAMOND =
+        create("GENERAL TALL DIAMOND",
+               d( 0, 3,"-",POINT),
+               d(-1, 0,"|",CENTER),
+               d(+1, 0,"|",CENTER),
+               d( 0,-3,"-",POINT));
+    // An "asym diamond" is a (asymmetric) diamond on quarter tag spots
+    public static final NamedTaggedFormation GENERAL_ASYM_DIAMOND =
+        create("GENERAL ASYM DIAMOND",
+               d( 1, 2,"-",POINT),
+               d(-1, 0,"|",CENTER),
+               d(+1, 0,"|",CENTER),
+               d( 1,-2,"-",POINT));
     public static final NamedTaggedFormation RH_DIAMOND =
         create("RH DIAMOND",
                d( 0, 2,"e",POINT),
@@ -261,6 +276,13 @@ abstract class FormationListSlow {
                d(-1, 0,"|",CENTER),
                d(+1, 0,"|",CENTER),
                d( 0,-2,"|",END));
+    // the same, but breathed over like GENERAL ASYM DIAMOND
+    public static final NamedTaggedFormation GENERAL_ASYM_SINGLE_QUARTER_TAG =
+        create("GENERAL ASYM SINGLE QUARTER TAG",
+               d( 1, 2,"|",END),
+               d(-1, 0,"|",CENTER),
+               d(+1, 0,"|",CENTER),
+               d( 1,-2,"|",END));
     public static final NamedTaggedFormation RH_SINGLE_QUARTER_TAG =
         create("RH SINGLE 1/4 TAG",
                d( 0, 2,"s",END),

@@ -103,6 +103,14 @@ sdr> trade
 | 
 |           3G<
 sdr> right and left grand
+|      3G>  3B<
+| 
+| 4Bv            2Gv
+| 
+| 4G^            2B^
+| 
+|      1B>  1G<
+sdr> promenade home
 |      3Gv  3Bv
 | 
 | 4B>            2G<
@@ -110,7 +118,7 @@ sdr> right and left grand
 | 4G>            2B<
 | 
 |      1B^  1G^
-sdr> you're home!
+sdr> you're home
 |      3Gv  3Bv
 | 
 | 4B>            2G<

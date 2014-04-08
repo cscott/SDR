@@ -16,7 +16,7 @@ sdr> heads lead right
 | 
 | 4G>  3B<  1G>  2B<
 sdr> extend
-* Invalid formation (1/4 TAG (RH 1/4 TAG(no matches), LH 1/4 TAG(no matches)), ANY (Use 'step to a wave' from here))
+* Use 'step to a wave' from here
 sdr> step to a wave
 | 4B>  1B>
 | 
@@ -48,7 +48,7 @@ sdr> extend
 sdr> hinge
 | 3Bv  3G^  4Gv  4B^  2Bv  2G^  1Gv  1B^
 sdr> extend
-* Invalid formation (1/4 TAG (RH 1/4 TAG(no matches), LH 1/4 TAG(no matches)), ANY (Use 'step thru' from here))
+* Use 'step thru' from here
 sdr> step thru
 | 3G^  4B^  2G^  1B^
 | 
@@ -246,7 +246,7 @@ sdr> heads square thru ; heads trade ; extend
 | 
 |      3B<
 sdr> left extend
-* Invalid formation (SINGLE DOUBLE PASS THRU (no matches), LH BOX (no matches), LH SINGLE 1/4 TAG (no matches), LH SINGLE 3/4 TAG (no matches), LH 1/4 TAG (no matches), LH 3/4 TAG (no matches))
+* Invalid formation
 sdr> extend
 | 4B>  1B>
 | 
@@ -256,7 +256,7 @@ sdr> extend
 | 
 | 3B<  2B<
 sdr> left extend
-* Invalid formation (SINGLE DOUBLE PASS THRU (no matches), LH BOX (no matches), LH SINGLE 1/4 TAG (no matches), LH SINGLE 3/4 TAG (no matches), LH 1/4 TAG (no matches), LH 3/4 TAG (no matches))
+* Invalid formation
 sdr> extend
 |      4B>
 | 
@@ -266,7 +266,7 @@ sdr> extend
 | 
 |      2B<
 sdr> left extend
-* Invalid formation (SINGLE DOUBLE PASS THRU (no matches), LH BOX (no matches), LH SINGLE 1/4 TAG (no matches), LH SINGLE 3/4 TAG (no matches), LH 1/4 TAG (no matches), LH 3/4 TAG (no matches))
+* Invalid formation
 sdr> extend
 | 1G<  2G<  4B>  1B>
 | 
@@ -312,19 +312,19 @@ sdr> extend
 | 4G>       1G<  3G>       2G<
 |      3B<            2B<
 sdr> left extend
-* Invalid formation (SINGLE DOUBLE PASS THRU (no matches), LH BOX (no matches), LH SINGLE 1/4 TAG (no matches), LH SINGLE 3/4 TAG (no matches), LH 1/4 TAG (no matches), LH 3/4 TAG (no matches))
+* Invalid formation
 sdr> extend
 | 4G>  4B>  3G>  1B>
 | 
 | 3B<  1G<  2B<  2G<
 sdr> left extend
-* Invalid formation (SINGLE DOUBLE PASS THRU (no matches), LH BOX (no matches), LH SINGLE 1/4 TAG (no matches), LH SINGLE 3/4 TAG (no matches), LH 1/4 TAG (no matches), LH 3/4 TAG (no matches))
+* Invalid formation
 sdr> extend
 |      4G>            3G>
 | 3B<       4B>  2B<       1B>
 |      1G<            2G<
 sdr> left extend
-* Invalid formation (SINGLE DOUBLE PASS THRU (no matches), LH BOX (no matches), LH SINGLE 1/4 TAG (no matches), LH SINGLE 3/4 TAG (no matches), LH 1/4 TAG (no matches), LH 3/4 TAG (no matches))
+* Invalid formation
 sdr> extend
 | 3B<  1G<  4G>  4B>  2B<  2G<  3G>  1B>
 sdr> u-turn back

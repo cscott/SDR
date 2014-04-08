@@ -30,6 +30,10 @@ def: _blend(a, b)
   xpart:
     call: [a]
     call: [b]
+// XXX placeholder.  this blends the first movement of a, including
+// the time it takes.
+def: _blend first(a)
+  call: [a]
 
 // grammar glue
 def: _apply concept(concept,call)
@@ -1755,9 +1759,12 @@ def: extend
 def: left extend
   // don't allow "left extend" from right-handed formations
   from: SINGLE DOUBLE PASS THRU, LH BOX, \
-        LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG, \
-        LH QUARTER TAG, LH THREE QUARTER TAG
+        LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG
     call: mirror(extend)
+  from: ANY
+    call: _from single tag \
+            (_from(or(LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG), \
+             mirror(extend)))
 
 def: _extend // the general case
   in: 2
@@ -1767,8 +1774,7 @@ def: _extend // the general case
     select: TRAILER
       prim: 0,1, none
   from: LH BOX, LH MINIWAVE, \
-        LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG, \
-        LH QUARTER TAG, LH THREE QUARTER TAG // "adjust" formations
+        LH SINGLE QUARTER TAG, LH SINGLE THREE QUARTER TAG
     call: mirror(_extend)
   from: RH BOX
     select: LEADER
@@ -1791,23 +1797,9 @@ def: _extend // the general case
       prim: 1, 1, none
     select: END
       prim: 0, 1, none
-  // the RH QUARTER TAG and RH THREE QUARTER TAG cases should be taken care of
-  // by matches to RH SINGLE QUARTER TAG and RH SINGLE THREE QUARTER TAG cases
-  // but our "to diamond spots" adjustment isn't implemented yet.
-  from: RH QUARTER TAG
-    select: CENTER
-      prim: 0, 1, none
-    select: and(END, BEAU)
-      prim: -2, 1, none
-    select: and(END, BELLE)
-      prim: 0, 1, none
-  from: RH THREE QUARTER TAG
-    select: END
-      prim: 0, 1, none
-    select: VERY CENTER
-      prim: 0, 1, none
-    select: OTHERS
-      prim: 2, 1, none
+  from: ANY
+    call: _from single tag \
+             (_from(or(SINGLE QUARTER TAG, SINGLE THREE QUARTER TAG), _extend))
 
 // callerlab #43: WHEEL AND DEAL FAMILY
 def: wheel and deal
@@ -1820,9 +1812,11 @@ def: double pass thru
   in: 4
   from: ANY
     call: tandem(pass thru)
-  from: RH QUARTER TAG // "ocean wave rule"
-    ipart:
-      call: _centers(pass thru), pass thru
+  from: ANY // "ocean wave rule"
+    call: _from single tag(_double pass thru from quarter tag)
+def: _double pass thru from quarter tag
+  from: RH SINGLE QUARTER TAG // "ocean wave rule"
+    call: _centers(pass thru), pass thru, _centers(pass thru)
 
 // callerlab #45: FIRST COUPLE GO LEFT/RIGHT (see BMS addendum)
 def: first couple go left next couple go left

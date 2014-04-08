@@ -1,5 +1,50 @@
 program: plus
 
+// adjust a variety of formations to diamond spots
+def: _diamond adjust
+  from: GENERAL TALL DIAMOND, GENERAL ASYM SINGLE QUARTER TAG
+    select: CENTER
+      prim: 0, 0, none
+    select: OTHERS
+      prim: in 1, 0, none, sashay-start sashay-finish
+  from: GENERAL ASYM DIAMOND
+    select: CENTER
+      prim: 0, 0, none
+    select: OTHERS
+      prim: 0, in 1, none
+  from: GENERAL DIAMOND, GENERAL SINGLE QUARTER TAG
+    prim: 0, 0, none
+
+def: _diamond adjust then(c, n=1)
+  part: 0
+    call: _diamond adjust
+  part: [n]
+    call: [c]
+
+def: _from diamond(c, n=1)
+  from: GENERAL DIAMOND
+    call: [c]
+  from: mixed(GENERAL TALL DIAMOND, GENERAL ASYM DIAMOND, GENERAL DIAMOND)
+    call: _blend first(_diamond adjust then([c],[n]))
+
+def: _from(f, c)
+  from: [f]
+    call: [c]
+
+def: _from single tag(c, n=1)
+  from: GENERAL SINGLE QUARTER TAG
+    call: [c]
+  from: mixed(GENERAL ASYM SINGLE QUARTER TAG, GENERAL SINGLE QUARTER TAG)
+    call: _blend first(_diamond adjust then([c],[n]))
+
+def: _from diamond or tag(c, n=1)
+  from: GENERAL SINGLE QUARTER TAG, GENERAL DIAMOND
+    call: [c]
+  from: mixed(GENERAL TALL DIAMOND, GENERAL ASYM DIAMOND, GENERAL DIAMOND,\
+              GENERAL ASYM SINGLE QUARTER TAG, GENERAL SINGLE QUARTER TAG)
+    call: _blend first(_diamond adjust then([c],[n]))
+
+
 def: acey deucey
   from: CENTER HALF
     call: _quasi concentric(trade, _acey circulate)
@@ -101,6 +146,21 @@ def: coordinate
   call: triple trade
   call: _like a coordinate
 
+def: cut the diamond
+  in: 6
+  call: _from diamond(and(_cut the diamond part 1, _cut the diamond part 2))
+def: _cut the diamond part 1
+  in: 2
+  from: GENERAL DIAMOND
+    select: POINT
+      prim: in 1, 0, none, sashay-start sashay-finish
+    select: CENTER
+      prim: in 1, 3, in
+def: _cut the diamond part 2
+  in: 4
+  from: GENERAL LINE
+    call: _quasi concentric(trade, nothing)
+
 def: dixie grand
   // 3 parts
   call: _maybe circle adjust(_start dixie grand)
@@ -164,9 +224,22 @@ def: _fan the top
       //call: counter rotate 1/4   // we'll use a primitive for simplicity
       prim: 0, 3, in 1/8
       prim: in 1 1/2, 1 1/2, in 1/8
-  from: DIAMOND // XXX actually from 'SPLIT 4' which is 4 dancers on each side
+  from: ANY // XXX actually from 'SPLIT 4' which is 4 dancers on each side
     ipart:
-      call: _quasi concentric(_in(4, cast(3/4)), _in(4, cast(1/4)))
+      call: _from diamond(_quasi concentric(_in(4, cast(3/4)), _in(4, cast(1/4))))
+
+def: flip the diamond
+  in: 3
+  call: _from diamond(_flip the diamond after adjust)
+def: _flip the diamond after adjust
+ in: 3
+ ipart:
+  from: GENERAL DIAMOND
+    select: POINT
+      prim: 0, 0, in
+      prim: 0, 1, roll, sashay-finish
+    select: CENTER
+      prim: in 1, 3, in
 
 // see the definition for 'scoot back'
 def: follow your neighbor
@@ -196,8 +269,8 @@ def: follow your neighbor
         prim: 0, 0, left
         prim: 0, 0, left
   // vic ceder doesn't like this usage.
-  from: SINGLE QUARTER TAG, QUARTER TAG
-    call: _extend, cast off(3/4)
+  from: ANY
+    call: _from single tag(_from(SINGLE QUARTER TAG, _extend)), cast off(3/4)
 
 def: grand swing thru
   option: LEFT
