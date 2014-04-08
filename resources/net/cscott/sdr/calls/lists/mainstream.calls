@@ -417,20 +417,14 @@ def: scoot back
   from: BOX, 2x2
     condition: or(PROGRAM AT LEAST(c1), NOT(TBONED(ALL))), \
                "T-boned formations not allowed below C1"
-    condition: MATCH(_SELECTION PATTERN(TRAILER), "x__x|_xx_"), \
+    condition: MATCH(_INOUT PATTERN(), "iooi|oiio"), \
                "Must have diagonal trailers"
     select: TRAILER
-      ipart:
-        prim: 0,1,none
-        prim: in 1,1,in
-      ipart:
-        prim: in 1,1,in
-        prim: 0,1,none
+      prim: in 1, 2, in
+      prim: in 2, 1, roll, force-roll-none // "extend"
     select: LEADER
-      ipart:
-        prim: in 1,2,in
-      ipart:
-        prim: in 2,1,in
+      prim: in 1, 2, in
+      prim: in 2, 1, roll
   from: SINGLE QUARTER TAG, QUARTER TAG
     call: _extend, trade, _extend
 

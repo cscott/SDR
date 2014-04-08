@@ -1794,7 +1794,7 @@ def: _extend // the general case
     select: CENTER
       prim: 0, 1, none
     select: and(END, BEAU)
-      prim: -1, 1, none
+      prim: -2, 1, none
     select: and(END, BELLE)
       prim: 0, 1, none
   from: RH THREE QUARTER TAG
@@ -1803,7 +1803,7 @@ def: _extend // the general case
     select: VERY CENTER
       prim: 0, 1, none
     select: OTHERS
-      prim: 1, 1, none
+      prim: 2, 1, none
 
 // callerlab #43: WHEEL AND DEAL FAMILY
 def: wheel and deal
