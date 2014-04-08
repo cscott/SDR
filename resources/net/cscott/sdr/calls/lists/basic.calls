@@ -1531,7 +1531,7 @@ def: _quarter wheel
 // callerlab #35: BOX THE GNAT
 def: box the gnat
   in: 4
-  call: _maybe touch(_box the gnat from miniwave)
+  call: _maybe circle adjust(_maybe touch(_box the gnat from miniwave))
 def: _box the gnat from miniwave
   in: 4
   ipart:
