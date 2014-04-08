@@ -28,25 +28,38 @@ def: split counter rotate(n=1/4)
 // is very different.
 def: mini busy
   // 3 parts
-  ipart:
-    call: _start mini busy
-  ipart: // XXX need to define CENTER LINE here.
-    call: _quasi concentric(_centers(hinge), press ahead)
-  ipart: // XXX again, define CENTER DIAMOND
-    call: _quasi concentric(flip the diamond, quarter in)
+  call: _start mini busy
+  call: _middle mini busy
+  call: _finish mini busy
 
 // XXX vic & callerlab would also like to be able to do a minibusy from
 //     inverted lines (centers facing in) and vic would like to do it
 //     from parallel waves as well.
 def: _start mini busy
-  from: PARALLEL TWO FACED LINES
-    select: TRAILER
-      prim: 0, 1, none
-    select: LEADER
-      prim: 0, 1, in
-  from: ENDS OUT INVERTED LINES, PARALLEL WAVES
-    condition: FALSE(), "Not implemented"
-    call: nothing
+  ipart:
+    from: PARALLEL TWO FACED LINES, PARALLEL WAVES
+      select: TRAILER
+        prim: 0, 1, none
+      select: LEADER
+        prim: 0, 1, in, sashay-finish
+    from: ENDS OUT INVERTED LINES
+      select: TRAILER
+        select: BELLE
+          prim: -2, 1, none
+        select: BEAU
+          prim: 0, 1, none
+      select: LEADER
+        prim: 0, 1, in, sashay-finish
+/* XXX _use phantoms not yet implemented
+def: _middle mini busy
+  ipart:
+    from: _use phantoms(TRIPLE LINES) // xxx centers are center line
+      call: _quasi concentric(_centers(hinge), press ahead)
+*/
+def: _finish mini busy
+  ipart:
+    from: CENTER HALF // does this include center diamond?
+      call: _quasi concentric(flip the diamond, quarter in)
 
 def: remake
   option: LEFT
