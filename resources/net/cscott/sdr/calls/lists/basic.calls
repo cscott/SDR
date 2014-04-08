@@ -1712,8 +1712,19 @@ def: _designees cross run
     select: and(DESIGNATED, END)
         prim: in 3, 1, in
         prim: in 1, 1, in
-    select: OTHERS
-      call: _designees run
+    // now the non-designated dancers (who slide into the spot)
+    select: and(END, MATCH(_FACING PATTERN(), "[<>]"))
+        prim: 0, in 1, none
+        prim: 0, in 1, none
+    select: and(END, MATCH(_FACING PATTERN(), "[v^]"))
+        prim: in 1, 0, none, sashay-start sashay-finish
+        prim: in 1, 0, none, sashay-start sashay-finish
+    select: and(CENTER, MATCH(_FACING PATTERN(), "[<>]"))
+        prim: 0, out 1, none
+        prim: 0, out 1, none
+    select: and(CENTER, MATCH(_FACING PATTERN(), "[v^]"))
+        prim: out 1, 0, none, sashay-start sashay-finish
+        prim: out 1, 0, none, sashay-start sashay-finish
 
 // callerlab #41: PASS THE OCEAN
 def: pass the ocean
