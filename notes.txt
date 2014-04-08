@@ -1692,3 +1692,71 @@ or even
 ---
 Remove all breathing except in _quasi concentric, etc.
 select should be to spots.
+---
+"Courtesy turn" is still wrong.  Should be possible from eight chain
+if girls are in the center.  "_start courtesy turn" is only valid at
+mainstream.  in general the *centers* should turn right and the *ends*
+should turn left, which requires matching something like a SINGLE
+EIGHT CHAIN THRU, not just FACING DANCERS.  (Official definition uses
+"active dancer", which is somewhat bogus.)  Test arky courtesy turns
+from eight chain at plus.  Add EIGHT CHAIN THRU courtesy turn to timing-basic.
+---
+add push/pop stack of "matcher flags" which matcher expression can
+add.  Ie, "use phantoms" and "allow unmatched" just add/pop the flag
+to the current matcher flags, so that eventually when we find a
+formation we can apply the flags as we build the
+generalformationmatcher.  this is used to add a new "space invader"
+flag....
+xxx: can 'commit' be a matcher flag?
+  -- yes, we can add a "not first" flag once we have a successful
+  match (even if subcall evaluation fails), and then a new 'else()'
+  matcher function could return NONE if the 'not first' flag is present.
+---
+semantics of select:
+ select named dancers.  push a "space invader" flag into the matcher
+ flags.  the first "from" clause underneath the select (including
+ indirectly via a call) is evaluated in space invader mode, which
+ means that instead of breathing the final formation *out*, we breath
+ the matched formations *in* so that they fit inside the bounding box
+ of the original match.  ie, the nonselected dancers are constrained
+ to remain in exactly the same positions. (we can assert this)
+
+ Then at the select we can overlay all the motions, including subcall
+ motions, and then breathe out if necessary.
+ XXX: need a space invader flag on select so that final breathing
+ doesn't always happen, ie so phantoms aren't accidentally crushed?
+ or just insert phantoms proactively to hold their spaces?
+---
+add extra option to 'condition' matcher function, giving a literal
+name for this "formation". ie,
+
+from: condition(equal num(NUM DANCERS(), 8), EIGHT DANCER FORMATION)
+---
+make 'from: XYZ, PDQ' equivalent to:
+ from: XYZ
+   ...
+ from: PDQ
+   ...
+so that I can write: 'from: 2x2, ANY' to evaluate first in 'split'
+---
+general 'blend' meta call that removes the first/last part *and its
+timing*.  Thus, instead of:
+  def: _maybe touch // inherently takes 1 beat
+    from: FACING DANCERS
+      call: touch
+    from: ANY
+      call: nothing
+  def: swing thru // takes 6 beats, even though there's a _maybe touch
+    call: _blend(_maybe touch, _swing thru from waves in 6 beats)
+
+Note that if first motion involves rotation, we can't remove it
+entirely.  But we can remove its time component, by splitting the
+time taken by the first motion after the blended part.
+
+for example:
+
+def: flip the diamond
+  call: _blend(_diamond adjust, _flip the diamond)
+def: O([call])
+  call: _blend(_o to column, _blend last([call], _column to o))
+----------
