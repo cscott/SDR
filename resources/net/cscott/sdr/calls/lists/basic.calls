@@ -1207,12 +1207,7 @@ def: four ladies chain(sel,n=1/2)
       condition: ARE([sel], BELLE), "Named dancers must be belles"
       condition: NOT(GREATER(1/4, [n])), "Must chain at least 1/4"
       call: _start belles chain
-      call: _in(_multiply num(8,[n]),\
-                anyone while others(CENTER,\
-                    _in(_add num(2, _multiply num(8, [n])),\
-                        reverse(_single star promenade([n]))),\
-                    and(_in(_multiply num(8, [n]), nothing),\
-                        _in(2, face left))))
+      call: _middle belles chain([n])
       call: _blend(_finish belles chain, _in(1 1/2, _courtesy turn(1/2)))
     from: 2x4
       call: _blend(_centers back out, four ladies chain([sel], [n]))
@@ -1224,11 +1219,20 @@ def: _start belles chain
       prim: in 1, 2, left
     select: BEAU
       prim: in 1, 0, none, sashay-start sashay-finish
+def: _middle belles chain(n)
+  in: _multiply num(8, [n])
+  from: condition(greater([n], 1/4))
+    call: _in(_multiply num(8, _subtract num([n], 1/4)), \
+            _centers(reverse(_single star promenade(_subtract num([n], 1/4)))))
+    call: _middle belles chain(1/4)
+  from: condition(equal num([n], 1/4), CENTER HALF)
+    call: _quasi concentric(reverse(_single star promenade(1/4)), \
+                            _in(2, face left))
 def: _finish belles chain
   // belle at 0, -1; beau at 0, -3
   // want    -1, -3          1, -3
   in: 1
-  from: CENTER HALF
+  from: WRONG WAY STAR PROMENADE
     select: CENTER
       prim: -2, 1, left//, sashay-start sashay-finish
     select: OTHERS

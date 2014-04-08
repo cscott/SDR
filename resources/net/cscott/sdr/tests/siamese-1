@@ -47,15 +47,15 @@ sdr> centers fan the top
 | 
 |      2B<
 sdr> very centers hinge
-|      4B>
+|        4B>
 | 
-| 3Bv       1G^
+| 3Bv            1G^
+|      4G^  2Gv
+| 3Gv            1B^
 | 
-|    4G^  2Gv
-| 
-| 3Gv       1B^
-| 
-|      2B<
+|        2B<
+sdr> /// note that this is not exactly hourglass or diamond spots
+sdr> /// the diamond points are at +/-4, the hourglass box is at +/-1
 sdr> centers flip the diamond
 |      4G>
 | 

@@ -111,6 +111,34 @@ public class Box {
                 ur.x.compareTo(p.x) >= 0 &&
                 ur.y.compareTo(p.y) >= 0);
     }
+    /**
+     * Returns true iff the given point in inside this box.  The edges
+     * do *not* count as "inside".
+     * @doc.test
+     *  js> function f(i) { return Fraction.valueOf(i); }
+     *  js> b = new Box(new Point(f(-1),f(-1)), new Point(f(1),f(1)));
+     *  (-1,-1;1,1)
+     *  js> b.includesExcl(new Point(f(0),f(0)))
+     *  true
+     *  js> b.includesExcl(b.ll)
+     *  false
+     *  js> b.includesExcl(b.ur)
+     *  false
+     *  js> b.includesExcl(new Point(f(-1),f(1)))
+     *  false
+     *  js> b.includesExcl(new Point(f(1),f(-1)))
+     *  false
+     *  js> b.includesExcl(new Point(f(-2),f(0)))
+     *  false
+     *  js> b.includesExcl(new Point(f(0),f(2)))
+     *  false
+     */
+    public boolean includesExcl(Point p) {
+        return (ll.x.compareTo(p.x) < 0 &&
+                ll.y.compareTo(p.y) < 0 &&
+                ur.x.compareTo(p.x) > 0 &&
+                ur.y.compareTo(p.y) > 0);
+    }
     public boolean equals(Object o) {
         if (!(o instanceof Box)) return false;
         Box b = (Box) o;

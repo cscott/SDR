@@ -1760,3 +1760,8 @@ def: flip the diamond
 def: O([call])
   call: _blend(_o to column, _blend last([call], _column to o))
 ----------
+Hourglass/diamond adjustments:
+- see 'siamese-1' test case.
+- diamond points may be at +/- 4 (instead of +/- 3) (like in hourglass)
+- galaxy box might be at +/-3,+/-1 instead of +/-3,+/-2
+   (in addition to point being at +/-3 instead of +/-2)

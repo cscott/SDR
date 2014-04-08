@@ -41,6 +41,7 @@ import net.cscott.sdr.calls.transform.Finish;
 import net.cscott.sdr.calls.transform.Finish.PartSelectorCall;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.Point;
 
 import org.junit.runner.RunWith;
 
@@ -351,11 +352,29 @@ public abstract class C1List {
             // XXX do we need to breathe the center/end formations here?
             return mergeWide(center, end);
         }
+        // hub of a "star like" end formation
+        private static Box starHub =
+            new Box(new Point(Fraction.mTWO, Fraction.mTWO),
+                    new Point(Fraction.TWO, Fraction.TWO));
         private static Formation mergeWide(Formation center, Formation end) {
             Map<Dancer,Position> location = new HashMap<Dancer,Position>();
             for (Dancer d : center.dancers())
                 location.put(d, center.location(d));
             Box centerBounds = center.bounds();
+            // handle "star like" ends, like: (+/-2,0) (0,+/-2)
+            boolean starLike = true;
+            for (Dancer d : end.dancers()) {
+                Position p = end.location(d);
+                if (starHub.includesExcl(new Point(p.x, p.y)))
+                    starLike = false;
+            }
+            if (starLike) {
+                // shrink the center bounds to account for the empty spot
+                // in the middle of the end formation
+                Point oneone = new Point(Fraction.ONE, Fraction.ONE);
+                centerBounds = new Box(centerBounds.ll.add(oneone),
+                                       centerBounds.ur.subtract(oneone));
+            }
             for (Dancer d : end.dancers()) {
                 Position p = end.location(d);
                 Fraction nx = p.x, ny = p.y;
