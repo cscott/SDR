@@ -11,6 +11,7 @@ import java.util.Set;
 
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.Point;
 import org.apache.commons.lang.builder.*;
 import org.junit.runner.RunWith;
 
@@ -696,10 +697,21 @@ public class Position implements Comparable<Position> {
 	return c;
     }
     /**
+     * Returns the non-rotation component of a position.
+     * This is useful to find colliding dancers (for example) ignoring
+     * their rotations and position flags.
+     * @doc.test
+     *  js> Position.getGrid(1,2,"e").toPoint()
+     *  1,2
+     */
+    public Point toPoint() {
+        return new Point(this.x, this.y);
+    }
+    /**
      * Return the squared distance between two positions.
      * @doc.test
-     *  js> Position.getGrid(1,2,"e").dist2(Position.getGrid(2,1,"n"));
-     *  2/1
+     *  js> Position.getGrid(1,2,"e").dist2(Position.getGrid(2,0,"n"));
+     *  5/1
      */
     public Fraction dist2(Position p) {
         Fraction dx = this.x.subtract(p.x);
@@ -723,4 +735,72 @@ public class Position implements Comparable<Position> {
             }
         };
     }
+    /**
+     * A helper class to apply linear transformations (combinations of
+     * rotations and translations) to {@link Position}s.
+     * @doc.test
+     *  js> p1 = Position.getGrid(-1, 1,"n");
+     *    > p2 = Position.getGrid( 1, 1,"s");
+     *    > p3 = Position.getGrid( 1, 1,"e");
+     *    > p4 = Position.getGrid( 1,-1,"w");
+     *    > t = new Position.Transform(p1, p3);
+     *  0,0,1/4
+     *  js> // should preserve identity!
+     *  js> t.apply(p1).equals(p3)
+     *  true
+     *  js> // inverse!
+     *  js> t.unapply(p3).equals(p1)
+     *  true
+     *  js> // p1/p2 miniwave becomes p3/p4 miniwave
+     *  js> t.apply(p2).equals(p4)
+     *  true
+     *  js> t.unapply(p4).equals(p2)
+     *  true
+     *  js> t.isCentered()
+     *  true
+     * @doc.test (EXPECT FAIL)
+     *  Note that the transformation is not lossless if 1/8 rotations are
+     *  involved, due to the approximations we make to keep Positions
+     *  rational.
+     *  js> p = Position.getGrid(0,1,"e");
+     *    > t = new Position.Transform(p, Position.getGrid(1,1,"se"));
+     *  0,0,1/8
+     *  js> t.unapply(t.apply(p))
+     *  0,1,e
+     */
+    @RunWith(value=JDoctestRunner.class)
+    public static class Transform {
+        public final ExactRotation rotate;
+        public final Point translate;
+        /** Make a transform that maps <code>from</code> to <code>to</code>. */
+        public Transform(Position from, Position to) {
+            assert from.facing.isExact() && to.facing.isExact();
+            this.rotate = (ExactRotation)
+                to.facing.subtract(from.facing.amount).normalize();
+            Position rotatedFrom = from.rotateAroundOrigin(this.rotate);
+            assert rotatedFrom.facing.equals(to.facing);
+            this.translate = new Point(to.x.subtract(rotatedFrom.x),
+                                       to.y.subtract(rotatedFrom.y));
+        }
+        public Position apply(Position p) {
+            p = p.rotateAroundOrigin(this.rotate);
+            return p.relocate(p.x.add(this.translate.x),
+                              p.y.add(this.translate.y), p.facing);
+        }
+        public Position unapply(Position p) {
+            p = p.relocate(p.x.subtract(this.translate.x),
+                           p.y.subtract(this.translate.y), p.facing);
+            return p.rotateAroundOrigin(this.rotate.negate());
+        }
+        public boolean isCentered() {
+            return this.translate.equals(Point.ZERO);
+        }
+        public String toString() {
+            return new ToStringBuilder
+                (this, ToStringStyle.SIMPLE_STYLE)
+                .append("translate", this.translate)
+                .append("rotate", this.rotate)
+                .toString();
+        }
+    };
 }

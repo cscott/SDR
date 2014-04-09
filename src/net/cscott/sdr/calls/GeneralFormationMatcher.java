@@ -24,10 +24,11 @@ import net.cscott.jutil.PairMapEntry;
 import net.cscott.jutil.PersistentSet;
 import net.cscott.jutil.SetFactory;
 import net.cscott.sdr.calls.Breather.FormationPiece;
-import net.cscott.sdr.calls.Position.Flag;
+import net.cscott.sdr.calls.Position.Transform;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.util.Fraction;
+import net.cscott.sdr.util.Point;
 
 import org.junit.runner.RunWith;
 
@@ -400,18 +401,16 @@ public class GeneralFormationMatcher {
                 "at least one real dancer must be in formation";
             // make an ExactRotation for pGoal, given the extraRot
             Position goP = makeExact(om.gi.goalPositions.get(0), om.extraRot);
-            Warp warpF = Warp.rotateAndMove(goP, inP);
-            Warp warpB = Warp.rotateAndMove(inP, goP);
-            ExactRotation rr = (ExactRotation) inP.facing.subtract(goP.facing.amount);
+            Transform goal2input = new Transform(goP, inP);
             Map<Dancer,Position> subPos = new LinkedHashMap<Dancer,Position>();
             MultiMap<Dancer,Tag> subTag = new GenericMultiMap<Dancer,Tag>();
             for (Dancer goD : om.gi.goalDancers) {
                 goP = om.gi.goal.location(goD);
-                // warp to find which input dancer corresponds to this one
-                inP = warpF.warp(goP);
-                Dancer inD = mi.inputPositionMap.get(zeroRotation(inP));
-                // warp back to get an exact rotation for this version of goal
-                Position goPr = warpB.warp(input.location(inD));
+                // transform to find which input dancer corresponds to this one
+                inP = goal2input.apply(goP);
+                Dancer inD = mi.inputPositionMap.get(inP.toPoint());
+                // xform back to get an exact rotation for this version of goal
+                Position goPr = goal2input.unapply(input.location(inD));
                 // to avoid distortion for 1/8 off formations, take only the
                 // rotation (and flags) from this new goP
                 goP = goPr.relocate(goP.x, goP.y, goPr.facing.normalize());
@@ -426,6 +425,7 @@ public class GeneralFormationMatcher {
 	    canonical.put(dd, tf);
 
             Formation pieceI = input.select(tf.dancers()).onlySelected();
+            ExactRotation rr = goal2input.rotate;
             Formation pieceO = new Formation(m(p(dd, new Position(0,0,rr))));
             pieces.add(new FormationPiece(pieceI, pieceO));
         }
@@ -519,7 +519,7 @@ public class GeneralFormationMatcher {
     private static class MatchInfo {
         final List<PersistentSet<OneMatch>> matches = new ArrayList<PersistentSet<OneMatch>>();
         final Indexer<Dancer> inputIndex;
-        final Map<Position,Dancer> inputPositionMap = new HashMap<Position,Dancer>();
+        final Map<Point,Dancer> inputPositionMap = new HashMap<Point,Dancer>();
         final List<Position> inputPositions = new ArrayList<Position>();
         final List<GoalInfo> goals;
         final int minGoalDancers;
@@ -536,7 +536,7 @@ public class GeneralFormationMatcher {
             for (Dancer d : inputDancers) {
                 Position p = f.location(d);
                 this.inputPositions.add(p);
-                this.inputPositionMap.put(zeroRotation(p), d);
+                this.inputPositionMap.put(p.toPoint(), d);
             }
             this.numInput = inputDancers.size();
             this.inputIndex = inputIndex;
@@ -556,12 +556,12 @@ public class GeneralFormationMatcher {
         assert pIn.facing instanceof ExactRotation :
             "at least one dancer in the input formation must be non-phantom";
         Position pGoal = makeExact(goal.goalPositions.get(0), extraRot);
-        Warp warp = Warp.rotateAndMove(pGoal, pIn);
+        Transform goal2input = new Transform(pGoal, pIn);
         int gNum = 0;
         for (Position gp : goal.goalPositions) {
             // compute warped position.
-            gp = warp.warp(gp);
-            Position key = zeroRotation(gp);
+            gp = goal2input.apply(gp);
+            Point key = gp.toPoint();
             if (!mi.inputPositionMap.containsKey(key))
                 return false; // no input dancer at this goal position.
             // okay, there is an input dancer:
@@ -587,7 +587,7 @@ public class GeneralFormationMatcher {
                     // since the goal dancer may have a vague direction which
                     // includes an asymmetric alternative (ie, "n|" as a target)
                     for (Position gp0 : rotated(goal.goalPositions.get(0))) {
-                        gp0 = warp.warp(gp0);
+                        gp0 = goal2input.apply(gp0);
                         if (ip.x.equals(gp0.x) &&
                             ip.y.equals(gp0.y) &&
                             gp0.facing.includes(ip.facing))
@@ -789,23 +789,13 @@ public class GeneralFormationMatcher {
                     });
                 for (Dancer d: goalDancers) {
                     for (Position gp: makeAllExact(goal.location(d))) {
-                        // rotate first, then translate.
-                        ExactRotation tr = (ExactRotation)
-                            ip.facing.subtract(gp.facing.amount).normalize();
-                        Position rotated = gp.rotateAroundOrigin(tr);
-                        assert rotated.facing.equals(ip.facing);
-                        Position transform = new Position
-                            (ip.x.subtract(rotated.x),
-                             ip.y.subtract(rotated.y),
-                             tr);
+                        Transform goal2input = new Transform(gp, ip);
                         // make sure centers line up, if requested
-                        if (alignCenters &&
-                            !(transform.x.equals(Fraction.ZERO) &&
-                              transform.y.equals(Fraction.ZERO)))
+                        if (alignCenters && !goal2input.isCentered())
                             continue;
                         // validate that all input dancers match a goal dancer
                         FormationMatch fm = validatePhantomMatch
-                            (input, goal, transform);
+                            (input, goal, goal2input);
                         if (fm != null)
                             return fm; // match!
                     }
@@ -817,15 +807,12 @@ public class GeneralFormationMatcher {
         throw new NoMatchException(target, "no matches");
     }
     private static FormationMatch validatePhantomMatch(
-            Formation input, TaggedFormation goal, Position transform) {
-        Map<Position,PairMapEntry<Dancer,Position>> m =
-            new HashMap<Position,PairMapEntry<Dancer,Position>>();
+            Formation input, TaggedFormation goal, Transform goal2input) {
+        Map<Point,PairMapEntry<Dancer,Position>> m =
+            new HashMap<Point,PairMapEntry<Dancer,Position>>();
         for (Dancer d : goal.dancers()) {
-            Position pp = goal.location(d);
-            pp = pp.rotateAroundOrigin((ExactRotation)transform.facing);
-            pp = pp.relocate(pp.x.add(transform.x), pp.y.add(transform.y),
-                             pp.facing);
-            m.put(zeroRotation(pp), p(d, pp));
+            Position pp = goal2input.apply(goal.location(d));
+            m.put(pp.toPoint(), p(d, pp));
         }
         // verify that each input position corresponds to a goal dancer
         // matched is goal dancer -> input dancer
@@ -833,7 +820,7 @@ public class GeneralFormationMatcher {
             new HashMap<Dancer,PairMapEntry<Dancer,Position>>();
         for (Dancer id: input.dancers()) {
             Position p = input.location(id);
-            PairMapEntry<Dancer,Position> gp = m.remove(zeroRotation(p));
+            PairMapEntry<Dancer,Position> gp = m.remove(p.toPoint());
             if (gp==null) return null; // no position match
             if (gp.getValue().facing.includes(p.facing)) {
                 // p is more rotation-constrained
@@ -849,7 +836,9 @@ public class GeneralFormationMatcher {
         // it's a match!
         // create a new TaggedFormation
         Dancer metaDancer = new PhantomDancer();
-        Formation meta = new Formation(m(p(metaDancer, transform)));
+        Position metaPos = new Position
+            (goal2input.translate.x, goal2input.translate.y, goal2input.rotate);
+        Formation meta = new Formation(m(p(metaDancer, metaPos)));
         Map<Dancer,Position> locations = new LinkedHashMap<Dancer,Position>();
         MultiMap<Dancer,Tag> tags = new GenericMultiMap<Dancer,Tag>
             (Factories.enumSetFactory(Tag.class));
@@ -857,11 +846,7 @@ public class GeneralFormationMatcher {
             Dancer id; Position pp;
             if (matched.containsKey(gd)) {
                 id = matched.get(gd).getKey();
-                pp = matched.get(gd).getValue();
-                pp = pp.relocate(pp.x.subtract(transform.x),
-                                 pp.y.subtract(transform.y), pp.facing);
-                pp = pp.rotateAroundOrigin
-                    ((ExactRotation)transform.facing.negate());
+                pp = goal2input.unapply(matched.get(gd).getValue());
             } else {
                 id = new PhantomDancer();
                 pp = goal.location(gd);
@@ -912,10 +897,6 @@ public class GeneralFormationMatcher {
         }
         return all;
     }
-    /** Make a position with exact zero rotation from the given position. */
-    private static Position zeroRotation(Position p) {
-        return new Position(p.x, p.y, ExactRotation.ZERO);
-    }
     private static Set<Position> rotated(Position p) {
         Set<Position> s = new LinkedHashSet<Position>(4);
         for (int i=0; i<4; i++) {
@@ -923,44 +904,5 @@ public class GeneralFormationMatcher {
             p = p.rotateAroundOrigin(ExactRotation.ONE_QUARTER);
         }
         return s;
-    }
-    /** @deprecated XXX: rewrite to remove dependency on old Warp class */
-    private static abstract class Warp {
-        public abstract Position warp(Position p);
-        /** A <code>Warp</code> which returns points unchanged. */
-        public static final Warp NONE = new Warp() {
-            public Position warp(Position p) { return p; }
-        };
-	/** Returns a <code>Warp</code> which will rotate and translate
-	 * points such that <code>from</code> is warped to <code>to</code>.
-	 * Requires that both {@code from.facing} and {@code to.facing} are
-	 * {@link ExactRotation}s.
-	 */
-	// XXX is this the right spec?  Should we allow general Rotations?
-	public static Warp rotateAndMove(Position from, Position to) {
-	    assert from.facing instanceof ExactRotation;
-	    assert to.facing instanceof ExactRotation;
-	    if (from.equals(to)) return NONE;
-	    ExactRotation rot = (ExactRotation) to.facing.add(from.facing.amount.negate());
-	    Position nFrom = rotateCWAroundOrigin(from,rot);
-	    final Position warp = new Position
-		(to.x.subtract(nFrom.x), to.y.subtract(nFrom.y),
-		 rot);
-	    Warp w = new Warp() {
-	        public Position warp(Position p) {
-		    p = rotateCWAroundOrigin(p, (ExactRotation) warp.facing);
-		    return p.relocate
-                    (p.x.add(warp.x), p.y.add(warp.y), p.facing);
-		}
-	    };
-	    assert to.setFlags(from.flags.toArray(new Flag[0])).equals(w.warp(from)) : "bad warp "+to+" vs "+w.warp(from);
-	    return w;
-	}
-	// helper method for rotateAndMove
-	private static Position rotateCWAroundOrigin(Position p, ExactRotation amt) {
-	    Fraction x = p.x.multiply(amt.toY()).add(p.y.multiply(amt.toX()));
-	    Fraction y = p.y.multiply(amt.toY()).subtract(p.x.multiply(amt.toX()));
-	    return p.relocate(x, y, p.facing.add(amt.amount));
-	}
     }
 }

@@ -21,6 +21,11 @@ public class Point {
     public Point multiply(Fraction f) {
         return new Point(this.x.multiply(f), this.y.multiply(f));
     }
+    public Fraction dist2(Point p) {
+        Fraction dx = this.x.subtract(p.x);
+        Fraction dy = this.y.subtract(p.y);
+        return dx.multiply(dx).add(dy.multiply(dy));
+    }
     public boolean equals(Object o) {
         if (!(o instanceof Point)) return false;
         Point p = (Point) o;
