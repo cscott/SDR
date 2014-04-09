@@ -124,6 +124,8 @@ sdr> /checkBeats( 4, ["centers run", "ends run"],
 sdr> /checkBeats( 6, ["centers cross run", "ends cross run"],
    >                 [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
 sdr> /checkBeats( 8, "see saw your own", STATIC_SQUARE)
+sdr> /checkBeats( 8, "heads pass thru ; separate around 1 to a line", STATIC_SQUARE)
+sdr> /checkBeats(10, "heads pass thru ; separate around 2 to a line", STATIC_SQUARE)
 sdr> /checkBeats( 4, "shoot the star", [THAR, WRONG_WAY_THAR])
 sdr> /checkBeats( 8, "shoot the star full around", [THAR, WRONG_WAY_THAR])
 sdr> /checkBeats( 2, "slip the clutch", [THAR, WRONG_WAY_THAR])
