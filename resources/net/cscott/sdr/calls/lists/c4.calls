@@ -103,7 +103,7 @@ def: clear out
   call: _finish clear out
 def: _finish clear out
   from: CENTER HALF
-    call: _quasi concentric(couple up, _finish couple up)
+    call: _quasi concentric(couple up, _like a couple up)
 
 def: step lively
   call: detour
@@ -534,7 +534,7 @@ def: _relay your pleasure part 3
     call: _quasi concentric(_relay your pleasure centers part 3, press in)
 def: _relay your pleasure centers part 3
   from: CENTER 2
-    call: _quasi concentric(spread, _finish couple up) // XXX spread is space invader
+    call: _quasi concentric(spread, _like a couple up) // XXX spread is space invader
 
 def: change-o
   spoken: change o

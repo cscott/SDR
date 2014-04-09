@@ -72,17 +72,17 @@ def: three quarter wheel the sea
     call: 1 1/2(wheel around), _finish wheel the sea
 
 def: couple up
-  from: 2x2
-    call: circulate
-    call: _finish couple up
-def: _finish couple up
+  call: _box circulate
+  call: _like a couple up
+def: _like a couple up
   in: 2
   from: 2x2
     select: TRAILER
-      call: nothing, nothing
+      prim: 0, 0, none
+      prim: 0, 0, none
     select: LEADER
       prim: 0, 0, in
-      prim: 0, 0, in
+      prim: 0, 0, roll
 
 def: hop(sel)
   spoken: <sel=anyone> hop
