@@ -503,12 +503,15 @@ public class GeneralFormationMatcher {
             }
             // first goal dancer has a rotation modulus which is 1/N for some
             // N.  This means we need to try N other rotations for matches.
-            Fraction highestModulus =
-                goal.location(goalDancers.get(0)).facing.modulus;
+            Position gp0 = goalPositions.get(0);
+            Fraction highestModulus = gp0.facing.modulus;
             if (highestModulus.compareTo(Fraction.ZERO) != 0) {
                 this.numExtra = highestModulus.getDenominator();
             } else {
                 // all phantoms.  Try all rotations by 1/8.
+                goalPositions.set
+                    (0, gp0.relocate(gp0.x, gp0.y,
+                                     Rotation.fromAbsoluteString("*")));
                 this.numExtra = 8;
             }
         }
@@ -688,6 +691,66 @@ public class GeneralFormationMatcher {
      *     
      *       |    |
      *   [ph: NONCORPOREAL,OUTSIDE_4; ph: NONCORPOREAL,OUTSIDE_4; 1G: CENTER; 1B: CENTER; 3B: CENTER; 3G: CENTER; ph: NONCORPOREAL,OUTSIDE_4; ph: NONCORPOREAL,OUTSIDE_4]
+     * @doc.test Matching against GENERAL O:
+     *  js> goals = [ FormationList.GENERAL_O ];
+     *    > f = FormationList.PARALLEL_RH_TWO_FACED_LINES.mapStd([]);
+     *    > boys = [d for each (d in Iterator(f.sortedDancers())) if (d.isBoy())];
+     *    > f = f.select(java.util.Arrays.asList(boys)).onlySelected();
+     *    > f.toStringDiagram();
+     *  1B^            2Bv
+     *  
+     *  4B^            3Bv
+     *  js> fm = GeneralFormationMatcher.doPhantomMatch(
+     *    >    f, java.util.Arrays.asList(goals), true
+     *    > )
+     *  AA^
+     *  AA:
+     *            |    |
+     *     
+     *     1B^            2Bv
+     *     
+     *     4B^            3Bv
+     *     
+     *            |    |
+     *   [ph: NONCORPOREAL,END; ph: NONCORPOREAL,END; 1B: CENTER; 2B: CENTER; 4B: CENTER; 3B: CENTER; ph: NONCORPOREAL,END; ph: NONCORPOREAL,END]
+     * @doc.test Matching against O spots, then constraining inexact rotations:
+     *  js> goals = [ FormationList.O_SPOTS ];
+     *    > f = FormationList.PARALLEL_RH_TWO_FACED_LINES.mapStd([]);
+     *    > boys = [d for each (d in Iterator(f.sortedDancers())) if (d.isBoy())];
+     *    > f = f.select(java.util.Arrays.asList(boys)).onlySelected();
+     *    > f.toStringDiagram();
+     *  1B^            2Bv
+     *  
+     *  4B^            3Bv
+     *  js> fm = GeneralFormationMatcher.doPhantomMatch(
+     *    >    f, java.util.Arrays.asList(goals), true
+     *    > )
+     *  AA^
+     *  AA:
+     *            o    o
+     *     
+     *     1B^            2Bv
+     *     
+     *     4B^            3Bv
+     *     
+     *            o    o
+     *   [ph: NONCORPOREAL; ph: NONCORPOREAL; ph: NONCORPOREAL; ph: NONCORPOREAL]
+     *  js> // constraint inexact rotations with goal rotations
+     *  js> goals = [ FormationList.QUADRUPLE_GENERAL_LINES ];
+     *    > f = fm.matches.values().iterator().next().mirror(false);
+     *    > fm = GeneralFormationMatcher.doPhantomMatch(
+     *    >   f, java.util.Arrays.asList(goals), true
+     *    > );
+     *  AA^
+     *  AA:
+     *       |    |    |    |
+     *     
+     *     2Bv    |    |  1B^
+     *     
+     *     3Bv    |    |  4B^
+     *     
+     *       |    |    |    |
+     *   [ph: NONCORPOREAL,OUTSIDE_8; ph: OUTSIDE_8; ph: OUTSIDE_8; ph: NONCORPOREAL,OUTSIDE_8; 2B: CENTER; ph: NONCORPOREAL,CENTER; ph: NONCORPOREAL,CENTER; 1B: CENTER; 3B: CENTER; ph: NONCORPOREAL,CENTER; ph: NONCORPOREAL,CENTER; 4B: CENTER; ph: NONCORPOREAL,OUTSIDE_8; ph: OUTSIDE_8; ph: OUTSIDE_8; ph: NONCORPOREAL,OUTSIDE_8]
      */
     public static FormationMatch doPhantomMatch(
             final Formation input,
@@ -709,11 +772,22 @@ public class GeneralFormationMatcher {
             inputPositions.add(input.location(d));
 
         // ok, try to match first input dancer against each goal dancer
-        for (TaggedFormation goal: goals) {
+        for (final TaggedFormation goal: goals) {
             // don't worry about symmetry, if there are two possible matches
             // we'll just return the first.
             for (Position ip: makeAllExact(inputPositions.get(0))) {
-                for (Dancer d: goal.sortedDancers()) {
+                List<Dancer> goalDancers=new ArrayList<Dancer>(goal.dancers());
+                // sort my proximity to input dancer so as to prefer
+                // an in-place match if possible
+                final Comparator<Position> cmp = Position.distComparator(ip);
+                Collections.sort(goalDancers, new Comparator<Dancer>() {
+                        public int compare(Dancer d1, Dancer d2) {
+                            Position p1 = goal.location(d1);
+                            Position p2 = goal.location(d2);
+                            return cmp.compare(p1, p2);
+                        }
+                    });
+                for (Dancer d: goalDancers) {
                     for (Position gp: makeAllExact(goal.location(d))) {
                         // rotate first, then translate.
                         ExactRotation tr = (ExactRotation)
@@ -755,13 +829,22 @@ public class GeneralFormationMatcher {
         }
         // verify that each input position corresponds to a goal dancer
         // matched is goal dancer -> input dancer
-        Map<Dancer,Dancer> matched = new HashMap<Dancer,Dancer>();
+        Map<Dancer,PairMapEntry<Dancer,Position>> matched =
+            new HashMap<Dancer,PairMapEntry<Dancer,Position>>();
         for (Dancer id: input.dancers()) {
             Position p = input.location(id);
             PairMapEntry<Dancer,Position> gp = m.remove(zeroRotation(p));
-            if (gp==null || !gp.getValue().facing.includes(p.facing))
-                return null; // no match
-            matched.put(gp.getKey(), id);
+            if (gp==null) return null; // no position match
+            if (gp.getValue().facing.includes(p.facing)) {
+                // p is more rotation-constrained
+                matched.put(gp.getKey(), p(id, p));
+            } else if (p.facing.includes(gp.getValue().facing)) {
+                // constrain p by gp's rotation
+                matched.put(gp.getKey(),
+                            p(id, p.relocate(p.x, p.y, gp.getValue().facing)));
+            } else {
+                return null; // inconsistent rotations
+            }
         }
         // it's a match!
         // create a new TaggedFormation
@@ -771,16 +854,16 @@ public class GeneralFormationMatcher {
         MultiMap<Dancer,Tag> tags = new GenericMultiMap<Dancer,Tag>
             (Factories.enumSetFactory(Tag.class));
         for (Dancer gd : goal.dancers()) {
-            Dancer id = matched.get(gd);
-            Position pp;
-            if (id != null) {
-                pp = input.location(id);
+            Dancer id; Position pp;
+            if (matched.containsKey(gd)) {
+                id = matched.get(gd).getKey();
+                pp = matched.get(gd).getValue();
                 pp = pp.relocate(pp.x.subtract(transform.x),
                                  pp.y.subtract(transform.y), pp.facing);
                 pp = pp.rotateAroundOrigin
                     ((ExactRotation)transform.facing.negate());
             } else {
-                id = gd;
+                id = new PhantomDancer();
                 pp = goal.location(gd);
                 tags.add(id, Tag.NONCORPOREAL);
             }
@@ -796,6 +879,7 @@ public class GeneralFormationMatcher {
     /** Make a position with an {@link ExactRotation} from the given position
      * with a general rotation and an 'extra rotation' amount. */
     private static Position makeExact(Position p, Fraction extraRot) {
+        assert p.facing.modulus.compareTo(Fraction.ZERO) != 0;
         return new Position(p.x, p.y, 
                 new ExactRotation(p.facing.amount.add(extraRot)).normalize());
     }
@@ -806,14 +890,24 @@ public class GeneralFormationMatcher {
      *  1,2,+
      *  js> GeneralFormationMatcher.makeAllExact(p);
      *  [1,2,n, 1,2,e, 1,2,s, 1,2,w]
+     * @doc.test Treat "o" rotations as "*" (this is a bit of a hack)
+     *  js> p = Position.getGrid(1,2,Rotation.fromAbsoluteString('o'));
+     *  1,2,o
+     *  js> GeneralFormationMatcher.makeAllExact(p);
+     *  [1,2,n, 1,2,ne, 1,2,e, 1,2,se, 1,2,s, 1,2,sw, 1,2,w, 1,2,nw]
      */
     private static List<Position> makeAllExact(Position p) {
-        if (p.facing.isExact()) return Collections.singletonList(p);
+        Rotation r = p.facing.normalize();
+        if (r.isExact()) return Collections.singletonList(p);
+        if (r.modulus.compareTo(Fraction.ZERO) == 0) {
+            r = Rotation.fromAbsoluteString("*"); // don't infinite loop!
+            p = p.relocate(p.x, p.y, r);
+        }
         List<Position> all =
-            new ArrayList<Position>(p.facing.modulus.getDenominator());
+            new ArrayList<Position>(r.modulus.getDenominator());
         for (Fraction extraRot = Fraction.ZERO;
              extraRot.compareTo(Fraction.ONE) < 0;
-             extraRot = extraRot.add(p.facing.modulus)) {
+             extraRot = extraRot.add(r.modulus)) {
             all.add(makeExact(p, extraRot));
         }
         return all;

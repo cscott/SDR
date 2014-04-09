@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -693,5 +694,33 @@ public class Position implements Comparable<Position> {
 	    if (c!=0) return c;
 	}
 	return c;
+    }
+    /**
+     * Return the squared distance between two positions.
+     * @doc.test
+     *  js> Position.getGrid(1,2,"e").dist2(Position.getGrid(2,1,"n"));
+     *  2/1
+     */
+    public Fraction dist2(Position p) {
+        Fraction dx = this.x.subtract(p.x);
+        Fraction dy = this.y.subtract(p.y);
+        return dx.multiply(dx).add(dy.multiply(dy));
+    }
+    /**
+     * Return a {@link Comparator} that will compare points based on
+     * their distances from <code>from</code>.
+     * @doc.test
+     *  js> c = Position.distComparator(Position.getGrid(1,2,"e"));
+     *    > c.compare(Position.getGrid(1,2,"n"), Position.getGrid(2,2,"e")) < 0;
+     *  true
+     *  js> c.compare(Position.getGrid(2,2,"w"), Position.getGrid(1,3,"s"));
+     *  0
+     */
+    public static Comparator<Position> distComparator(final Position from) {
+        return new Comparator<Position>() {
+            public int compare(Position p1, Position p2) {
+                return from.dist2(p1).compareTo(from.dist2(p2));
+            }
+        };
     }
 }

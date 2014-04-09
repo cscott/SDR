@@ -107,7 +107,12 @@ public class Rotation {
     }
     /** Normalize rotation to the range [0, modulus). */
     public Rotation normalize() {
-        if (this.modulus.compareTo(Fraction.ZERO)==0) return this;
+        if (this.modulus.compareTo(Fraction.ZERO)==0) {
+            if (this.amount.compareTo(Fraction.ZERO)==0)
+                return this;
+            assert false : "we shouldn't create other zeros";
+            return create(Fraction.ZERO, Fraction.ZERO);
+        }
         // make rotation positive.
         Fraction abs = this.amount;
         if (abs.compareTo(Fraction.ZERO) < 0)
@@ -122,6 +127,7 @@ public class Rotation {
             f = f.subtract(Fraction.valueOf(f.floor()))
                  .multiply(this.modulus);
         }
+        assert f.compareTo(Fraction.ZERO) >= 0 && f.compareTo(this.modulus) < 0;
         if (f==this.amount) return this; // quick out
         return create(f, this.modulus);
     }
@@ -283,12 +289,17 @@ public class Rotation {
     }
     /** Handle special Rotation values; return null if unrepresentable. */
     private String _toDiagramString() {
+        // this helper only works on normalized rotations.
+        assert (this.modulus.compareTo(Fraction.ZERO) == 0) ||
+            (this.amount.compareTo(Fraction.ZERO) >= 0 &&
+             this.amount.compareTo(this.modulus) < 0) : this;
         if (this.modulus.compareTo(Fraction.ZERO)==0) return "o";
-        else if (this.modulus.compareTo(Fraction.ONE_QUARTER)==0) {
+        else if (this.modulus.compareTo(Fraction.ONE_EIGHTH)==0) {
+            if (this.amount.compareTo(Fraction.ZERO)==0) return "*";
+        } else if (this.modulus.compareTo(Fraction.ONE_QUARTER)==0) {
             if (this.amount.compareTo(Fraction.ZERO)==0) return "+";
             else if (this.amount.compareTo(Fraction.ONE_EIGHTH)==0) return "x";
-        }
-        else if (this.modulus.compareTo(Fraction.ONE_HALF)==0) {
+        } else if (this.modulus.compareTo(Fraction.ONE_HALF)==0) {
             if (this.amount.compareTo(Fraction.ZERO)==0) return "|";
             else if (this.amount.compareTo(Fraction.ONE_QUARTER)==0) return "-";
         } else if (this.modulus.compareTo(Fraction.ONE)==0)
@@ -299,7 +310,7 @@ public class Rotation {
     /** Returns a human-readable description of the rotation, similar to the
      *  input to <code>ExactRotation.fromAbsoluteString(String)</code>. */
     public String toAbsoluteString() {
-	String s = _toDiagramString();
+	String s = normalize()._toDiagramString();
         return s!=null ? s : toString();
     }
     /** Converts a string (one of n/s/e/w, ne/nw/se/sw) to the
@@ -312,6 +323,7 @@ public class Rotation {
         if (s.equals("-")) return create(Fraction.ONE_QUARTER, Fraction.ONE_HALF);
         if (s.equals("+")) return create(Fraction.ZERO, Fraction.ONE_QUARTER);
         if (s.equals("x")) return create(Fraction.ONE_EIGHTH, Fraction.ONE_QUARTER);
+        if (s.equals("*")) return create(Fraction.ZERO, Fraction.ONE_EIGHTH);
         if (s.equalsIgnoreCase("o")) return create(Fraction.ZERO,Fraction.ZERO);
         return ExactRotation.fromAbsoluteString(s);
     }
@@ -333,7 +345,7 @@ public class Rotation {
      *  .
      */
     public char toDiagramChar() {
-	String s = _toDiagramString();
+	String s = normalize()._toDiagramString();
 	if (s!=null) {
 	    assert s.length()==1;
 	    return s.charAt(0);
@@ -343,7 +355,7 @@ public class Rotation {
     /** Return an executable representation of this {@link Rotation}. */
     public String repr() {
         StringBuilder sb = new StringBuilder();
-        String s = _toDiagramString();
+        String s = normalize()._toDiagramString();
         if (s!=null) {
             sb.append("Rotation.fromAbsoluteString(\"");
             sb.append(s);
