@@ -750,6 +750,20 @@ abstract class FormationListSlow {
                 t(2, CENTER), t(3, CENTER),
                 t(4, CENTER), t(5, CENTER),
                 t(6, END),    t(7, END));
+    public static final NamedTaggedFormation TRIPLE_GENERAL_LINES =
+        create("TRIPLE GENERAL LINES", f("||||","||||","||||"), WhetherTagger.NO_AUTO_TAGS,
+               t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
+               t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
+               t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+    public static final NamedTaggedFormation QUADRUPLE_GENERAL_LINES =
+        create("QUADRUPLE GENERAL LINES", f("||||","||||","||||","||||"), WhetherTagger.NO_AUTO_TAGS,
+                t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
+                t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
+                t(8, CENTER), t(9, CENTER), t(10, CENTER),t(11, CENTER),
+                t(12, OUTSIDE_8),t(13, OUTSIDE_8),t(14, OUTSIDE_8),t(15, OUTSIDE_8));
+    public static final NamedTaggedFormation _4x4 =
+        create("4x4", f("++++","++++","++++","++++"),
+               WhetherTagger.NO_AUTO_TAGS);
 
     /** List of all formations defined in this class. */
     public static final List<NamedTaggedFormation> all = _enumerateFormations();
@@ -894,6 +908,13 @@ abstract class FormationListSlow {
 	// transfer name
 	return new NamedTaggedFormation(name, result);
     }
+    /** Do any of the dancers have inexact rotations? */
+    private static boolean isGeneral(Formation f) {
+        for (Dancer d: f.dancers())
+            if (!f.location(d).facing.isExact())
+                return true;
+        return false;
+    }
 
     /** Compile formations in this class into "fast" formations. */
     public static void main(String[] args) throws Exception {
@@ -950,11 +971,16 @@ abstract class FormationListSlow {
     }
     private static void emitOne(PrintWriter pw, String fieldName,
                                 NamedTaggedFormation ntf) {
+        String mapStd = ""; Formation mntf = ntf;
+        if (ntf.dancers().size() <= 8 && !isGeneral(ntf)) {
+            mapStd = ".mapStd([])";
+            mntf = ntf.mapStd();
+        }
         String escapedName = escapeJava(ntf.getName());
         pw.println("    /** "+ntf.getName()+" formation.");
         pw.println("      * @doc.test");
-        pw.println("      *  js> tf = FormationList."+fieldName+"; tf.mapStd([]).toStringDiagram('|');");
-        pw.println(ntf.mapStd().toStringDiagram("      *  |"));
+        pw.println("      *  js> tf = FormationList."+fieldName+"; tf"+mapStd+".toStringDiagram('|');");
+        pw.println(mntf.toStringDiagram("      *  |"));
         pw.println("      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\\n');");
         for (Dancer d : ntf.sortedDancers())
             pw.println("      *  "+new ArrayList<Tag>(ntf.tags(d)));

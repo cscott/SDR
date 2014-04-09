@@ -464,6 +464,14 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.BUTTERFLY_DOUBLE_PASS_THRU);
     public static final Matcher GENERAL_BUTTERFLY =
         GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_BUTTERFLY);
+    public static final Matcher TRIPLE_GENERAL_LINES =
+        GeneralFormationMatcher.makeMatcher(FormationList.TRIPLE_GENERAL_LINES);
+    public static final Matcher QUADRUPLE_GENERAL_LINES =
+        GeneralFormationMatcher.makeMatcher(FormationList.QUADRUPLE_GENERAL_LINES);
+    // this matcher has an extra underscore because the parser treats it
+    // as two items: the number four, and the identifier x4.
+    public static final Matcher _4_X4 =
+        GeneralFormationMatcher.makeMatcher(FormationList._4x4);
 
     // special purpose matcher
     public static final Matcher CENTER_2 = new CenterMatcher(2);

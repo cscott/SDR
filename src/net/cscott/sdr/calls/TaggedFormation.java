@@ -51,8 +51,8 @@ public class TaggedFormation extends Formation {
         NONCORPOREAL,
         // more interesting tags.
         BEAU, BELLE, LEADER, TRAILER,
-	POINT, CENTER, VERY_CENTER, END,
-        OUTSIDE_2, OUTSIDE_4, CENTER_6, OUTSIDE_6,
+        POINT, CENTER, VERY_CENTER, END,
+        OUTSIDE_2, OUTSIDE_4, CENTER_6, OUTSIDE_6, OUTSIDE_8,
         NUMBER_1, NUMBER_2, NUMBER_3, NUMBER_4;
         public boolean isPrimitive() {
             return ordinal() <= ALL.ordinal();

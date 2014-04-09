@@ -29,8 +29,8 @@ abstract class FormationListFast {
 
     /** GENERAL PARTNERS formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_PARTNERS; tf.mapStd([]).toStringDiagram('|');
-      *  |1B|  1G|
+      *  js> tf = FormationList.GENERAL_PARTNERS; tf.toStringDiagram('|');
+      *  ||    |
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  []
       *  []
@@ -43,10 +43,10 @@ abstract class FormationListFast {
 
     /** GENERAL TANDEM formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_TANDEM; tf.mapStd([]).toStringDiagram('|');
-      *  |1B|
+      *  js> tf = FormationList.GENERAL_TANDEM; tf.toStringDiagram('|');
+      *  ||
       *  |
-      *  |1G|
+      *  ||
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  []
       *  []
@@ -59,8 +59,8 @@ abstract class FormationListFast {
 
     /** 1x2 formation.
       * @doc.test
-      *  js> tf = FormationList._1x2; tf.mapStd([]).toStringDiagram('|');
-      *  |1B+  1G+
+      *  js> tf = FormationList._1x2; tf.toStringDiagram('|');
+      *  |+    +
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  []
       *  []
@@ -163,8 +163,8 @@ abstract class FormationListFast {
 
     /** GENERAL LINE formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_LINE; tf.mapStd([]).toStringDiagram('|');
-      *  |1B|  1G|  3G|  3B|
+      *  js> tf = FormationList.GENERAL_LINE; tf.toStringDiagram('|');
+      *  ||    |    |    |
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [END]
       *  [CENTER]
@@ -181,8 +181,8 @@ abstract class FormationListFast {
 
     /** 1x4 formation.
       * @doc.test
-      *  js> tf = FormationList._1x4; tf.mapStd([]).toStringDiagram('|');
-      *  |1B+  1G+  3G+  3B+
+      *  js> tf = FormationList._1x4; tf.toStringDiagram('|');
+      *  |+    +    +    +
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [END]
       *  [CENTER]
@@ -199,10 +199,10 @@ abstract class FormationListFast {
 
     /** 2x2 formation.
       * @doc.test
-      *  js> tf = FormationList._2x2; tf.mapStd([]).toStringDiagram('|');
-      *  |1B+  1G+
+      *  js> tf = FormationList._2x2; tf.toStringDiagram('|');
+      *  |+    +
       *  |
-      *  |3G+  3B+
+      *  |+    +
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  []
       *  []
@@ -633,12 +633,12 @@ abstract class FormationListFast {
 
     /** GENERAL DIAMOND formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_DIAMOND; tf.mapStd([]).toStringDiagram('|');
-      *  |  1B-
+      *  js> tf = FormationList.GENERAL_DIAMOND; tf.toStringDiagram('|');
+      *  |  -
       *  |
-      *  |1G|  3G|
+      *  ||    |
       *  |
-      *  |  3B-
+      *  |  -
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [POINT]
       *  [CENTER]
@@ -655,14 +655,14 @@ abstract class FormationListFast {
 
     /** GENERAL TALL DIAMOND formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_TALL_DIAMOND; tf.mapStd([]).toStringDiagram('|');
-      *  |  1B-
+      *  js> tf = FormationList.GENERAL_TALL_DIAMOND; tf.toStringDiagram('|');
+      *  |  -
       *  |
       *  |
-      *  |1G|  3G|
+      *  ||    |
       *  |
       *  |
-      *  |  3B-
+      *  |  -
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [POINT]
       *  [CENTER]
@@ -679,12 +679,12 @@ abstract class FormationListFast {
 
     /** GENERAL ASYM DIAMOND formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_ASYM_DIAMOND; tf.mapStd([]).toStringDiagram('|');
-      *  |     1B-
+      *  js> tf = FormationList.GENERAL_ASYM_DIAMOND; tf.toStringDiagram('|');
+      *  |     -
       *  |
-      *  |1G|  3G|
+      *  ||    |
       *  |
-      *  |     3B-
+      *  |     -
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [POINT]
       *  [CENTER]
@@ -873,12 +873,12 @@ abstract class FormationListFast {
 
     /** GENERAL SINGLE QUARTER TAG formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_SINGLE_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
-      *  |  1B|
+      *  js> tf = FormationList.GENERAL_SINGLE_QUARTER_TAG; tf.toStringDiagram('|');
+      *  |  |
       *  |
-      *  |1G|  3G|
+      *  ||    |
       *  |
-      *  |  3B|
+      *  |  |
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [END]
       *  [CENTER]
@@ -895,12 +895,12 @@ abstract class FormationListFast {
 
     /** GENERAL ASYM SINGLE QUARTER TAG formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_ASYM_SINGLE_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
-      *  |     1B|
+      *  js> tf = FormationList.GENERAL_ASYM_SINGLE_QUARTER_TAG; tf.toStringDiagram('|');
+      *  |     |
       *  |
-      *  |1G|  3G|
+      *  ||    |
       *  |
-      *  |     3B|
+      *  |     |
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [END]
       *  [CENTER]
@@ -1053,8 +1053,8 @@ abstract class FormationListFast {
 
     /** 1x8 formation.
       * @doc.test
-      *  js> tf = FormationList._1x8; tf.mapStd([]).toStringDiagram('|');
-      *  |1B+  1G+  2B+  2G+  4G+  4B+  3G+  3B+
+      *  js> tf = FormationList._1x8; tf.toStringDiagram('|');
+      *  |+    +    +    +    +    +    +    +
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [OUTSIDE_4]
       *  [OUTSIDE_4]
@@ -1079,10 +1079,10 @@ abstract class FormationListFast {
 
     /** 2x4 formation.
       * @doc.test
-      *  js> tf = FormationList._2x4; tf.mapStd([]).toStringDiagram('|');
-      *  |1B+  1G+  2B+  2G+
+      *  js> tf = FormationList._2x4; tf.toStringDiagram('|');
+      *  |+    +    +    +
       *  |
-      *  |4G+  4B+  3G+  3B+
+      *  |+    +    +    +
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [OUTSIDE_4]
       *  [CENTER]
@@ -1107,10 +1107,10 @@ abstract class FormationListFast {
 
     /** PARALLEL GENERAL LINES formation.
       * @doc.test
-      *  js> tf = FormationList.PARALLEL_GENERAL_LINES; tf.mapStd([]).toStringDiagram('|');
-      *  |1B|  1G|  2B|  2G|
+      *  js> tf = FormationList.PARALLEL_GENERAL_LINES; tf.toStringDiagram('|');
+      *  ||    |    |    |
       *  |
-      *  |4G|  4B|  3G|  3B|
+      *  ||    |    |    |
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [OUTSIDE_4]
       *  [CENTER]
@@ -1135,14 +1135,14 @@ abstract class FormationListFast {
 
     /** GENERAL COLUMNS formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_COLUMNS; tf.mapStd([]).toStringDiagram('|');
-      *  |1B|  1G|
+      *  js> tf = FormationList.GENERAL_COLUMNS; tf.toStringDiagram('|');
+      *  ||    |
       *  |
-      *  |2B|  2G|
+      *  ||    |
       *  |
-      *  |4G|  4B|
+      *  ||    |
       *  |
-      *  |3G|  3B|
+      *  ||    |
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [OUTSIDE_4]
       *  [OUTSIDE_4]
@@ -1389,14 +1389,14 @@ abstract class FormationListFast {
 
     /** O SPOTS formation.
       * @doc.test
-      *  js> tf = FormationList.O_SPOTS; tf.mapStd([]).toStringDiagram('|');
-      *  |     3Go  3Bo
+      *  js> tf = FormationList.O_SPOTS; tf.toStringDiagram('|');
+      *  |     o    o
       *  |
-      *  |4Bo            2Go
+      *  |o              o
       *  |
-      *  |4Go            2Bo
+      *  |o              o
       *  |
-      *  |     1Bo  1Go
+      *  |     o    o
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  []
       *  []
@@ -2180,12 +2180,12 @@ abstract class FormationListFast {
 
     /** GENERAL 1/4 TAG formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_QUARTER_TAG; tf.mapStd([]).toStringDiagram('|');
-      *  |     1B|  1G|
+      *  js> tf = FormationList.GENERAL_QUARTER_TAG; tf.toStringDiagram('|');
+      *  |     |    |
       *  |
-      *  |2B|  2G|  4G|  4B|
+      *  ||    |    |    |
       *  |
-      *  |     3G|  3B|
+      *  |     |    |
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [OUTSIDE_4]
       *  [OUTSIDE_4]
@@ -2714,12 +2714,12 @@ abstract class FormationListFast {
 
     /** TWIN GENERAL DIAMONDS formation.
       * @doc.test
-      *  js> tf = FormationList.TWIN_GENERAL_DIAMONDS; tf.mapStd([]).toStringDiagram('|');
-      *  |  1B-       1G-
+      *  js> tf = FormationList.TWIN_GENERAL_DIAMONDS; tf.toStringDiagram('|');
+      *  |  -         -
       *  |
-      *  |2B|  2G|  4G|  4B|
+      *  ||    |    |    |
       *  |
-      *  |  3G-       3B-
+      *  |  -         -
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [POINT]
       *  [POINT]
@@ -2744,18 +2744,18 @@ abstract class FormationListFast {
 
     /** POINT-TO-POINT GENERAL DIAMONDS formation.
       * @doc.test
-      *  js> tf = FormationList.POINT_TO_POINT_GENERAL_DIAMONDS; tf.mapStd([]).toStringDiagram('|');
-      *  |  1B-
+      *  js> tf = FormationList.POINT_TO_POINT_GENERAL_DIAMONDS; tf.toStringDiagram('|');
+      *  |  -
       *  |
-      *  |1G|  2B|
+      *  ||    |
       *  |
-      *  |  2G-
+      *  |  -
       *  |
-      *  |  4G-
+      *  |  -
       *  |
-      *  |4B|  3G|
+      *  ||    |
       *  |
-      *  |  3B-
+      *  |  -
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [POINT]
       *  [CENTER]
@@ -2848,16 +2848,16 @@ abstract class FormationListFast {
 
     /** GENERAL HOURGLASS formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_HOURGLASS; tf.mapStd([]).toStringDiagram('|');
-      *  |       1B-
+      *  js> tf = FormationList.GENERAL_HOURGLASS; tf.toStringDiagram('|');
+      *  |       -
       *  |
-      *  |1G|            2B|
+      *  ||              |
       *  |
-      *  |     2G|  4G|
+      *  |     |    |
       *  |
-      *  |4B|            3G|
+      *  ||              |
       *  |
-      *  |       3B-
+      *  |       -
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [POINT, CENTER]
       *  [END, OUTSIDE_4]
@@ -3053,8 +3053,8 @@ abstract class FormationListFast {
 
     /** GENERAL TIDAL LINE formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_TIDAL_LINE; tf.mapStd([]).toStringDiagram('|');
-      *  |1B|  1G|  2B|  2G|  4G|  4B|  3G|  3B|
+      *  js> tf = FormationList.GENERAL_TIDAL_LINE; tf.toStringDiagram('|');
+      *  ||    |    |    |    |    |    |    |
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [OUTSIDE_4]
       *  [OUTSIDE_4]
@@ -3147,16 +3147,16 @@ abstract class FormationListFast {
 
     /** GENERAL GALAXY formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_GALAXY; tf.mapStd([]).toStringDiagram('|');
-      *  |       1B-
+      *  js> tf = FormationList.GENERAL_GALAXY; tf.toStringDiagram('|');
+      *  |       -
       *  |
-      *  |     1G|  2B|
+      *  |     |    |
       *  |
-      *  |2G|            4G|
+      *  ||              |
       *  |
-      *  |     4B|  3G|
+      *  |     |    |
       *  |
-      *  |       3B-
+      *  |       -
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [POINT, OUTSIDE_4]
       *  [CENTER]
@@ -3218,14 +3218,14 @@ abstract class FormationListFast {
 
     /** GENERAL O formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_O; tf.mapStd([]).toStringDiagram('|');
-      *  |     1B|  1G|
+      *  js> tf = FormationList.GENERAL_O; tf.toStringDiagram('|');
+      *  |     |    |
       *  |
-      *  |2B|            2G|
+      *  ||              |
       *  |
-      *  |4G|            4B|
+      *  ||              |
       *  |
-      *  |     3G|  3B|
+      *  |     |    |
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [END]
       *  [END]
@@ -3287,14 +3287,14 @@ abstract class FormationListFast {
 
     /** GENERAL BUTTERFLY formation.
       * @doc.test
-      *  js> tf = FormationList.GENERAL_BUTTERFLY; tf.mapStd([]).toStringDiagram('|');
-      *  |1B|            1G|
+      *  js> tf = FormationList.GENERAL_BUTTERFLY; tf.toStringDiagram('|');
+      *  ||              |
       *  |
-      *  |     2B|  2G|
+      *  |     |    |
       *  |
-      *  |     4G|  4B|
+      *  |     |    |
       *  |
-      *  |3G|            3B|
+      *  ||              |
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
       *  [END]
       *  [END]
@@ -3316,6 +3316,140 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.END),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.END));
+
+    /** TRIPLE GENERAL LINES formation.
+      * @doc.test
+      *  js> tf = FormationList.TRIPLE_GENERAL_LINES; tf.toStringDiagram('|');
+      *  ||    |    |    |
+      *  |
+      *  ||    |    |    |
+      *  |
+      *  ||    |    |    |
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      */
+    public static final NamedTaggedFormation TRIPLE_GENERAL_LINES =
+        new NamedTaggedFormation("TRIPLE GENERAL LINES",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8));
+
+    /** QUADRUPLE GENERAL LINES formation.
+      * @doc.test
+      *  js> tf = FormationList.QUADRUPLE_GENERAL_LINES; tf.toStringDiagram('|');
+      *  ||    |    |    |
+      *  |
+      *  ||    |    |    |
+      *  |
+      *  ||    |    |    |
+      *  |
+      *  ||    |    |    |
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      */
+    public static final NamedTaggedFormation QUADRUPLE_GENERAL_LINES =
+        new NamedTaggedFormation("QUADRUPLE GENERAL LINES",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8));
+
+    /** 4x4 formation.
+      * @doc.test
+      *  js> tf = FormationList._4x4; tf.toStringDiagram('|');
+      *  |+    +    +    +
+      *  |
+      *  |+    +    +    +
+      *  |
+      *  |+    +    +    +
+      *  |
+      *  |+    +    +    +
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      *  []
+      */
+    public static final NamedTaggedFormation _4x4 =
+        new NamedTaggedFormation("4x4",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(3), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(3), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(3), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(1), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(1), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(1), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+"))),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+"))));
 
     /** List of all formations defined here. */
     public static final List<NamedTaggedFormation> all =
@@ -3441,5 +3575,8 @@ abstract class FormationListFast {
             FormationListFast.O_DOUBLE_PASS_THRU,
             FormationListFast.GENERAL_O,
             FormationListFast.BUTTERFLY_DOUBLE_PASS_THRU,
-            FormationListFast.GENERAL_BUTTERFLY));
+            FormationListFast.GENERAL_BUTTERFLY,
+            FormationListFast.TRIPLE_GENERAL_LINES,
+            FormationListFast.QUADRUPLE_GENERAL_LINES,
+            FormationListFast._4x4));
 }
