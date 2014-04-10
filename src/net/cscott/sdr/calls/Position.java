@@ -311,7 +311,7 @@ public class Position implements Comparable<Position> {
                 return this; // no change
             // implement by iterating over the included ExactRotations,
             // performing the turn, and then unioning the results.
-            List<Rotation> rl = new ArrayList<Rotation>();
+            List<Rotation> rl = new ArrayList<Rotation>(8);
             for (ExactRotation er : facing.included())
                 rl.add(new Position(x, y, er).turn(amount, faceIn, reference)
                         .facing);
@@ -389,6 +389,9 @@ public class Position implements Comparable<Position> {
      */
     public Position relocate(Fraction x, Fraction y, Rotation facing) {
 	return new Position(x, y, facing, this._flags);
+    }
+    public Position relocate(Rotation facing) {
+        return relocate(this.x, this.y, facing);
     }
     /**
      * Return a roll amount from the {@link Flag#ROLL_LEFT} and

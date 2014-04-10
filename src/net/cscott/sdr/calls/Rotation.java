@@ -186,7 +186,36 @@ public class Rotation {
         return r1.equals(r2);
     }
     /**
-     * Returns an {@link Iterator} over the {@link ExactRotation}s included
+     * Returns true if the given rotations are consistent; that is, the
+     * intersections of their congruence class is not empty.  This is
+     * a transitive property.
+     * @doc.test Demonstrate the properties described above:
+     *  js> importPackage(net.cscott.sdr.util)
+     *  js> r1 = Rotation.fromAbsoluteString('+')
+     *  0 mod 1/4
+     *  js> r2 = Rotation.fromAbsoluteString('x')
+     *  1/8 mod 1/4
+     *  js> r3 = Rotation.fromAbsoluteString('|');
+     *  0 mod 1/2
+     *  js> r1.consistent(r2);
+     *  false
+     *  js> r2.consistent(r1);
+     *  false
+     *  js> r1.consistent(r3);
+     *  true
+     *  js> r3.consistent(r1);
+     *  true
+     * @doc.test Tricky case!
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> Rotation.create(Fraction.ONE_HALF, Fraction.ONE_THIRD).consistent(
+     *    >  Rotation.fromAbsoluteString('+'));
+     *  true
+     */
+    public boolean consistent(Rotation r) {
+        return this.intersect(r) != null;
+    }
+    /**
+     * Returns a {@link Collection} of the {@link ExactRotation}s included
      * in this {@link Rotation}.
      * @doc.test
      *  js> r = Rotation.fromAbsoluteString('+')
@@ -199,6 +228,7 @@ public class Rotation {
      *  1/8,3/8,5/8,7/8
      */
     public Collection<ExactRotation> included() {
+        assert !this.modulus.equals(Fraction.ZERO);
         final Fraction start = this.normalize().amount;
         return new AbstractCollection<ExactRotation>() {
             @Override
@@ -281,6 +311,72 @@ public class Rotation {
         assert r!=null : "nothing to union";
         return r;
     }
+    public static Rotation union(Rotation... rots) {
+        Rotation r = null;
+        for (Rotation rr : rots) {
+            r = (r==null) ? rr : r.union(rr);
+        }
+        assert r!=null : "nothing to union";
+        return r;
+    }
+    /**
+     * Return a {@link Rotation} which includes only those directions
+     * included in both {@code this} and the specified {@link Rotation}.
+     * Returns <code>null</code> if the provided rotations are not
+     * consistent.
+     * @doc.test Consistent rotations:
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> Rotation.fromAbsoluteString('|').intersect(
+     *    > Rotation.fromAbsoluteString('+')).toAbsoluteString();
+     *  |
+     *  js> Rotation.fromAbsoluteString('*').intersect(
+     *    > Rotation.fromAbsoluteString('x')).toAbsoluteString();
+     *  x
+     *  js> Rotation.fromAbsoluteString('*').intersect(
+     *    > Rotation.fromAbsoluteString('-')).toAbsoluteString();
+     *  -
+     *  js> Rotation.fromAbsoluteString('+').intersect(
+     *    > ExactRotation.fromAbsoluteString('n')).toAbsoluteString();
+     *  n
+     *  js> Rotation.create(Fraction.ONE_HALF, Fraction.ONE_THIRD).intersect(
+     *    >  Rotation.fromAbsoluteString('o'));
+     *  1/2 mod 1/3
+     * @doc.test Inconsistent rotations:
+     *  js> Rotation.fromAbsoluteString('|').intersect(
+     *    > Rotation.fromAbsoluteString('-'));
+     *  null
+     * @doc.test Weird cases:
+     *  js> importPackage(net.cscott.sdr.util) // for Fraction
+     *  js> Rotation.create(Fraction.ONE_HALF, Fraction.ONE_THIRD).intersect(
+     *    >  Rotation.fromAbsoluteString('+')).toAbsoluteString();
+     *  s
+     */
+    public Rotation intersect(Rotation r) {
+        if (this.includes(r)) return r;
+        if (r.includes(this)) return this;
+        if (this.isExact() || r.isExact()) return null; // fast case
+        // hm, this could be tricky
+        Rotation result = null;
+        for (ExactRotation rr : this.included())
+            if (r.includes(rr))
+                result = (result==null) ? rr : result.union(rr);
+        // the union may be inexact.  I don't *think* that can cause our
+        // result to be wrong, but let's protect our assumption with an
+        // assertion.
+        assert result == null ||
+            (this.includes(result) && r.includes(result));
+        return result;
+    }
+    public Rotation intersect(Rotation... rots) {
+        Rotation r = null;
+        for (Rotation rr : rots) {
+            r = (r==null) ? rr : r.intersect(rr);
+            if (r==null) return null;
+        }
+        return r;
+    }
+
+
     /** Returns a human-readable description of the rotation.  The output
      *  is a valid input to <code>ExactRotation.valueOf(String)</code>. */
     @Override
