@@ -80,6 +80,7 @@ public class PartsCounter extends ValueVisitor<Fraction, Void> {
                 // two args, subcall is last one
                 return new Apply(apply.call.args.get(1)).accept(this, t);
             if (apply.call.atom.equals("_quasi concentric") ||
+                apply.call.atom.equals("_o concentric") ||
                 apply.call.atom.equals("_concentric") ||
                 apply.call.atom.equals("_cross concentric")) {
                 // two args, apply to each

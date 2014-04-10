@@ -38,6 +38,22 @@ public class Box {
                 ll.x.add(ur.x).divide(Fraction.TWO),
                 ll.y.add(ur.y).divide(Fraction.TWO));
     }
+    /** Returns a box which contains both this box and the given one.
+     * @doc.test
+     *  js> function f(i) { return Fraction.valueOf(i); }
+     *  js> b1 = new Box(new Point(f(-1),f(-1)), new Point(f(1),f(1)));
+     *  (-1,-1;1,1)
+     *  js> b2 = new Box(new Point(f(0),f(0)), new Point(f(3),f(3)));
+     *  (0,0;3,3)
+     *  js> b3 = b1.union(b2);
+     *  (-1,-1;3,3)
+     */
+    public Box union(Box b) {
+        return new Box(new Point(Fraction.min(this.ll.x, b.ll.x),
+                                 Fraction.min(this.ll.y, b.ll.y)),
+                       new Point(Fraction.max(this.ur.x, b.ur.x),
+                                 Fraction.max(this.ur.y, b.ur.y)));
+    }
     /**
      * Returns true iff this box overlaps the given one.
      * @doc.test
@@ -139,6 +155,33 @@ public class Box {
                 ur.x.compareTo(p.x) > 0 &&
                 ur.y.compareTo(p.y) > 0);
     }
+    /**
+     * Mirror the box along the y-axis (that is, flip the x coordinates).
+     * @doc.test
+     *  js> function f(i) { return Fraction.valueOf(i); }
+     *  js> b = new Box(new Point(f(-1),f(-2)), new Point(f(3),f(4)));
+     *  (-1,-2;3,4)
+     *  js> b.mirrorX()
+     *  (-3,-2;1,4)
+     */
+    public Box mirrorX() {
+        return new Box(new Point(ur.x.negate(), ll.y),
+                       new Point(ll.x.negate(), ur.y));
+    }
+    /**
+     * Mirror the box along the x-axis (that is, flip the y coordinates).
+     * @doc.test
+     *  js> function f(i) { return Fraction.valueOf(i); }
+     *  js> b = new Box(new Point(f(-1),f(-2)), new Point(f(3),f(4)));
+     *  (-1,-2;3,4)
+     *  js> b.mirrorY()
+     *  (-1,-4;3,2)
+     */
+    public Box mirrorY() {
+        return new Box(new Point(ll.x, ur.y.negate()),
+                       new Point(ur.x, ll.y.negate()));
+    }
+
     public boolean equals(Object o) {
         if (!(o instanceof Box)) return false;
         Box b = (Box) o;

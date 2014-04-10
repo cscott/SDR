@@ -12,6 +12,9 @@ public class Point {
     public Point(Fraction x, Fraction y) {
         this.x = x; this.y = y;
     }
+    public Point(int x, int y) {
+        this(Fraction.valueOf(x), Fraction.valueOf(y));
+    }
     public Point add(Point p) {
         return new Point(this.x.add(p.x), this.y.add(p.y));
     }

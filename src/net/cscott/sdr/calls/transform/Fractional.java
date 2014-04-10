@@ -126,7 +126,8 @@ public class Fractional extends PartsVisitor<Fraction> {
     static Set<String> safeConcepts = new HashSet<String>(Arrays.asList(
             "as couples","tandem","_with designated","_anyone",
             "reverse", "left", "mirror",
-            "_quasi concentric", "_concentric", "_cross concentric",
+            "_quasi concentric", "_o concentric",
+            "_concentric", "_cross concentric",
             "concentric", "cross concentric"
             // xxx more fractionalization-safe calls?
             ));

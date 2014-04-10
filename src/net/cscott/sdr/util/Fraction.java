@@ -1228,6 +1228,15 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
             result = Fraction.max(result, f);
         return result;
     }
+    public static Fraction min(Fraction a, Fraction b) {
+        return a.compareTo(b) <= 0 ? a : b;
+    }
+    public static Fraction min(Fraction a, Fraction... rest) {
+        Fraction result = a;
+        for (Fraction f : rest)
+            result = Fraction.min(result, f);
+        return result;
+    }
 
     /**
      * <p>Gets the fraction as a <code>String</code>.</p>

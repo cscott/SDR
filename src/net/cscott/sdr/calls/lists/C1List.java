@@ -2,7 +2,9 @@ package net.cscott.sdr.calls.lists;
 
 import static net.cscott.sdr.util.Tools.l;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -188,8 +190,42 @@ public abstract class C1List {
         }
     };
 
+    /**
+     * Quasi-concentric variant that doesn't breathe ends in; this allows
+     * us to do "ends o circulate", for example.
+     * @doc.test
+     *  js> importPackage(net.cscott.sdr.calls)
+     *  js> importPackage(net.cscott.sdr.calls.ast)
+     *  js> ds = new DanceState(new DanceProgram(Program.C2),
+     *    >                     FormationList.LINES_FACING_OUT.mapStd([]));
+     *    > a = new Expr("_o concentric",
+     *    >              Expr.literal("nothing"), Expr.literal("press in"));
+     *  (Expr _o concentric 'nothing 'press in)
+     *  js> C1List.O_CONCENTRIC.getEvaluator(ds, a.args).evaluateAll(ds);
+     *    > ds.currentFormation().toStringDiagram("|");
+     *  |1B^  2G^
+     *  |
+     *  |1G^  2B^
+     *  |
+     *  |4Bv  3Gv
+     *  |
+     *  |4Gv  3Bv
+     */
+    public static final Call O_CONCENTRIC = new C1Call("_o concentric") {
+        @Override
+        public int getMinNumberOfArguments() { return 2; }
+        @Override
+        public Rule getRule() { return null; /* internal call */ }
+        @Override
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
+            assert args.size() == 2;
+            return new ConcentricEvaluator(args.get(0), args.get(1),
+                                           ConcentricType.O);
+        }
+    };
+
     /** Variant of 'concentric' to do. */
-    public static enum ConcentricType { QUASI, CONCENTRIC, CROSS };
+    public static enum ConcentricType { QUASI, CONCENTRIC, CROSS, O };
     /** Evaluator for concentric and quasi-concentric. */
     public static class ConcentricEvaluator extends Evaluator {
         private final Expr centersPart, endsPart;
@@ -222,7 +258,9 @@ public abstract class C1List {
                                 .compareTo(endF.bounds().height()) > 0;
             // do the call in each separate formation.
             // (breathe to eliminate space left by centers in end formation)
-            endF = Breather.breathe(endF);
+            if (which != ConcentricType.O)
+                // XXX replace with expandO to preserve phantom spots?
+                endF = Breather.breathe(endF);
             DanceState centerS = ds.cloneAndClear(centerF);
             DanceState endS = ds.cloneAndClear(endF);
             if (DEBUG) {
@@ -276,10 +314,12 @@ public abstract class C1List {
                 axisStartF = centerF; axisEndF = centerS.currentFormation();
             }
             if (which != ConcentricType.QUASI &&
+                which != ConcentricType.O &&
                 matches(MatcherList._2_X2, axisEndF) /* ends in 2x2 */) {
                 if (matches(MatcherList._2_X2, axisStartF)/* starts in 2x2 */) {
                     // XXX really need to evaluate individually for every
                     //     dancer in T-boned formations.
+                    // should be: Map<Dancer,Boolean> isWide
                     Position startP = axisStartF.location
                         (axisStartF.sortedDancers().get(0));
                     Position endP = axisEndF.location
@@ -306,12 +346,13 @@ public abstract class C1List {
             // breathed formation.
             TreeMap<Fraction,Formation> merged =
                 new TreeMap<Fraction,Formation>();
+            boolean isO = (which==ConcentricType.O);
             for (Fraction t : moments) {
                 boolean isCross = (which==ConcentricType.CROSS &&
                                    t.compareTo(endsOffset) >=0);
                 Formation mergeF = merge(centerS.formationAt(t),
                                          endS.formationAt(t),
-                                         isWide, isCross);
+                                         isWide, isCross, isO);
                 merged.put(t, mergeF);
             }
             // okay, now go through the individual dancer paths, adjusting the
@@ -340,46 +381,58 @@ public abstract class C1List {
                     return false;
                 }
             }
-        private static Formation merge(Formation center, Formation end, boolean isWide, boolean isCross) {
+        private static Formation merge(Formation center, Formation end, boolean isWide, boolean isCross, boolean isO) {
             // recurse to deal with wide/cross flags.
             if (isCross)
-                return merge(end, center, isWide, !isCross);
-            if (!isWide)
+                return merge(end, center, isWide, !isCross, isO);
+            if (!isWide && !isO)
                 return merge(center.rotate(ExactRotation.ONE_QUARTER),
                              end.rotate(ExactRotation.ONE_QUARTER),
-                             !isWide, isCross)
+                             !isWide, isCross, isO)
                        .rotate(ExactRotation.mONE_QUARTER);
             // XXX do we need to breathe the center/end formations here?
-            return mergeWide(center, end);
+            return mergeWide(center, end, isO);
         }
-        // hub of a "star like" end formation
-        private static Box starHub =
+        // nominal side of "centers" in o concentric
+        private static final Box centerNominalBox =
             new Box(new Point(Fraction.mTWO, Fraction.mTWO),
                     new Point(Fraction.TWO, Fraction.TWO));
-        private static Formation mergeWide(Formation center, Formation end) {
+        private static Formation mergeWide(Formation center, Formation end,
+                                           boolean isO) {
             Map<Dancer,Position> location = new HashMap<Dancer,Position>();
             for (Dancer d : center.dancers())
                 location.put(d, center.location(d));
             Box centerBounds = center.bounds();
+            Box endInsideBox = insideBox(end);
             // handle "star like" ends, like: (+/-2,0) (0,+/-2)
-            boolean starLike = true;
-            for (Dancer d : end.dancers()) {
-                Position p = end.location(d);
-                if (starHub.includesExcl(new Point(p.x, p.y)))
-                    starLike = false;
-            }
-            if (starLike) {
+            boolean starLike =
+                endInsideBox.width().compareTo(Fraction.TWO) >= 0 &&
+                endInsideBox.height().compareTo(Fraction.TWO) >= 0;
+            if (starLike && !isO) {
                 // shrink the center bounds to account for the empty spot
                 // in the middle of the end formation
-                Point oneone = new Point(Fraction.ONE, Fraction.ONE);
-                centerBounds = new Box(centerBounds.ll.add(oneone),
-                                       centerBounds.ur.subtract(oneone));
+                Point ONE = new Point(Fraction.ONE, Fraction.ONE);
+                centerBounds = new Box(centerBounds.ll.add(ONE),
+                                       centerBounds.ur.subtract(ONE));
             }
             for (Dancer d : end.dancers()) {
                 Position p = end.location(d);
                 Fraction nx = p.x, ny = p.y;
                 if (p.x.equals(Fraction.ZERO) && p.y.equals(Fraction.ZERO))
                     throw new BadCallException("Outside dancer ends up at origin!");
+                if (isO) {
+                    // We nominally work to spots, but consider "do 1/2 of
+                    // a bits and pieces" from columns.  In addition, some
+                    // of our animations result in intermediate positions
+                    // within the center 4 -- for example, the "O" concept
+                    // breathes in to an undistorted column, does the call,
+                    // then breathes out.
+                    // So ensure that outside positions are outside
+                    // max(2x2, center bounds).
+                    location.put(d, expandO(p, endInsideBox,
+                                            centerNominalBox, centerBounds));
+                    continue;
+                }
                 if (p.x.compareTo(Fraction.ZERO) == 0) {
                     ny = ny.add((p.y.compareTo(Fraction.ZERO) < 0 ?
                                  centerBounds.ll : centerBounds.ur).y);
@@ -390,6 +443,170 @@ public abstract class C1List {
                 location.put(d, p.relocate(nx, ny, p.facing));
             }
             return new Formation(location);
+        }
+        /** Move a {@link Position} which is supposed to be outside a
+         *  <code>nominal</code> box so that it is outside an
+         *  <code>actual</code> box.  If the point was actually inside
+         *  the nominal box, first move it to the appropriate border
+         *  or the nominal box.  This is used to keep the "centers 2x2"
+         *  clear in <code>_o concentric</code>.
+         * @doc.test
+         *  js> importPackage(net.cscott.sdr.calls);
+         *  js> importPackage(net.cscott.sdr.util);
+         *  js> expandO = C1List.ConcentricEvaluator.expandO;
+         *    > insideBox = C1List.ConcentricEvaluator.insideBox;
+         *    > Point = Point["(int,int)"]; // help resolve overloading
+         *    > undefined
+         *  js> // boundary of nominal 2x2
+         *  js> n = new Box(new Point(-2,-2), new Point(2,2));
+         *  (-2,-2;2,2)
+         *  js> // actual boundary (for example, because the centers
+         *  js> // did a peel and trail)
+         *  js> a = new Box(new Point(-4,-1), new Point(4,1))
+         *  (-4,-1;4,1)
+         *  js> // normal o spots
+         *  js> f = Formation.SQUARED_SET;
+         *    > ib = insideBox(f);
+         *  (-2,-2;2,2)
+         *  js> for each (d in StandardDancer.values()) {
+         *    >   f = f.move(d, expandO(f.location(d), ib, n, a));
+         *    > }
+         *    > f.toStringDiagram('|');
+         *  |          3Gv  3Bv
+         *  |
+         *  |4B>                      2G<
+         *  |
+         *  |4G>                      2B<
+         *  |
+         *  |          1B^  1G^
+         *  js> // thar spots (clear out centers)
+         *  js> f = FormationList.THAR.mapStd([]);
+         *    > ib = insideBox(f);
+         *  (0,0;0,0)
+         *  js> for each (d in StandardDancer.values()) {
+         *    >   f = f.move(d, expandO(f.location(d), ib, n, a));
+         *    > }
+         *    > f.toStringDiagram('|');
+         *  |                 1B<
+         *  |
+         *  |                 1G>
+         *  |
+         *  |
+         *  |2Bv  2G^                      4Gv  4B^
+         *  |
+         *  |
+         *  |                 3G<
+         *  |
+         *  |                 3B>
+         *  js> f.location(StandardDancer.COUPLE_1_GIRL);
+         *  0,3,e
+         *  js> f.location(StandardDancer.COUPLE_4_GIRL);
+         *  5,0,s
+         */
+        public static Position expandO(Position p,
+                                       Box inside, Box nominal, Box actual) {
+            Point pt = expandO(p.toPoint(),
+                               inside, nominal, actual.union(nominal));
+            return p.relocate(pt.x, pt.y, p.facing);
+        }
+        private static Point expandO(Point p,
+                                     Box inside, Box nominal, Box actual) {
+            // flip so we only have to deal with positive x
+            if (p.x.compareTo(Fraction.ZERO) < 0) {
+                p = expandO(new Point(p.x.negate(), p.y), inside.mirrorX(),
+                            nominal.mirrorX(), actual.mirrorX());
+                return new Point(p.x.negate(), p.y);
+            }
+            // flip so we only have to deal with positive y
+            if (p.y.compareTo(Fraction.ZERO) < 0) {
+                p = expandO(new Point(p.x, p.y.negate()), inside.mirrorX(),
+                            nominal.mirrorY(), actual.mirrorY());
+                return new Point(p.x, p.y.negate());
+            }
+            return expandO(p, inside.ur, nominal.ur, actual.ur);
+        }
+        private static Point expandO(Point p,
+                                     Point inside, Point nominal, Point actual){
+            // decide whether we will expand (if necessary) in x or y or both
+            int c = p.x.subtract(inside.x).compareTo(p.y.subtract(inside.y));
+            boolean expandX = c >= 0;
+            boolean expandY = c <= 0;
+            Fraction nx = p.x, ny = p.y;
+            // offset bounds to account for (-1,-1;1,1) bounds of this dancer
+            Point ONE = new Point(1,1);
+            inside = inside.add(ONE);
+            nominal = nominal.add(ONE);
+            actual = actual.add(ONE);
+            // expand inside to edge of nominal box if necessary
+            if (expandX && inside.x.compareTo(nominal.x) < 0)
+                nx = nx.add(nominal.x.subtract(inside.x));
+            if (expandY && inside.y.compareTo(nominal.y) < 0)
+                ny = ny.add(nominal.y.subtract(inside.y));
+            // adjust nominal box to match actual
+            if (expandX) nx = nx.add(actual.x.subtract(nominal.x));
+            if (expandY) ny = ny.add(actual.y.subtract(nominal.y));
+            return new Point(nx, ny);
+        }
+        /** Compute the amount of space "inside" of a given formation,
+         *  centered on the origin.
+         * @doc.test
+         *  js> importPackage(net.cscott.sdr.calls);
+         *  js> importPackage(net.cscott.sdr.util);
+         *  js> C1List.ConcentricEvaluator.insideBox(Formation.SQUARED_SET);
+         *  (-2,-2;2,2)
+         *  js> f = FormationList.RH_BOX.mapStd([]);
+         *    > for (d in Iterator(f.dancers())) {
+         *    >   f = f.move(d, f.location(d).forwardStep(Fraction.TWO, false)
+         *    >                              .sideStep(Fraction.mTWO, false));
+         *    > }
+         *    > f.toStringDiagram("|");
+         *  |1B^
+         *  |
+         *  |3G^
+         *  |
+         *  |               1Gv
+         *  |
+         *  |               3Bv
+         *  js> C1List.ConcentricEvaluator.insideBox(f);
+         *  (-2,-4;2,4)
+         */
+        public static Box insideBox(final Formation f) {
+            // sort by distance from the origin, so important constraints
+            // are considered first
+            List<Dancer> sorted = new ArrayList<Dancer>(f.sortedDancers());
+            Collections.sort(sorted, new Comparator<Dancer>() {
+                @Override
+                public int compare(Dancer a, Dancer b) {
+                    return f.location(a).toPoint().dist2(Point.ZERO)
+                        .compareTo(f.location(b).toPoint().dist2(Point.ZERO));
+                }
+            });
+            Box inside = f.bounds();
+            for (Dancer d : sorted) {
+                inside = trimInside(inside, f.bounds(d));
+            }
+            return inside;
+        }
+        private static Box trimInside(Box inside, Box b) {
+            Point cb = b.center();
+            if (cb.x.compareTo(Fraction.ZERO) < 0)
+                return trimInside(inside.mirrorX(), b.mirrorX()).mirrorX();
+            if (cb.y.compareTo(Fraction.ZERO) < 0)
+                return trimInside(inside.mirrorY(), b.mirrorY()).mirrorY();
+            assert cb.x.compareTo(Fraction.ZERO) >= 0;
+            assert cb.y.compareTo(Fraction.ZERO) >= 0;
+            // now we just have to worry about top right quadrant
+            Point ur = inside.ur, p1 = null, p2 = null;
+            if (b.ll.x.compareTo(ur.x) < 0)
+                p1 = new Point(b.ll.x, ur.y);
+            if (b.ll.y.compareTo(ur.y) < 0)
+                p2 = new Point(ur.x, b.ll.y);
+            if (p1 == null || p2 == null)
+                return inside;
+            // use the option which leaves the largest inside (by area)
+            if (p1.x.multiply(p1.y).compareTo(p2.x.multiply(p2.y)) > 0)
+                return new Box(inside.ll, p1);
+            return new Box(inside.ll, p2);
         }
     };
 }

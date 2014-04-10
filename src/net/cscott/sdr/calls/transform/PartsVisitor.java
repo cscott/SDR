@@ -49,6 +49,7 @@ public class PartsVisitor<T> extends TransformVisitor<T> {
                     (new Expr(apply.call.atom, apply.call.args.get(0),
                               applyConcept(t, apply.call.args.get(1))));
             if (apply.call.atom.equals("_quasi concentric") ||
+                apply.call.atom.equals("_o concentric") ||
                 apply.call.atom.equals("_concentric") ||
                 apply.call.atom.equals("_cross concentric"))
                 // two args, apply to each
