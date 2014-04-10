@@ -74,6 +74,7 @@ public abstract class PredicateList {
         public boolean evaluate(DanceState ds, List<Expr> args) {
             System.err.println("PRINT "+args);
             System.err.println(ds);
+            System.err.println(ds.currentFormation().toStringDiagramWithDetails());
             return true;
         }
         @Override
