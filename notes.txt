@@ -1732,13 +1732,6 @@ name for this "formation". ie,
 
 from: condition(equal num(NUM DANCERS(), 8), EIGHT DANCER FORMATION)
 ---
-make 'from: XYZ, PDQ' equivalent to:
- from: XYZ
-   ...
- from: PDQ
-   ...
-so that I can write: 'from: 2x2, ANY' to evaluate first in 'split'
----
 general 'blend' meta call that removes the first/last part *and its
 timing*.  Thus, instead of:
   def: _maybe touch // inherently takes 1 beat
@@ -1771,4 +1764,48 @@ Add a new Matcher function:
 means, roughly:
   from: ANY
     call: _diamond adjust, from(GENERAL DIAMOND, ...)
----
+------
+* squeeze something like:
+   from: CENTER 6 // xxx make this work for galaxy
+     call: _quasi concentric(squeeze, nothing)
+   from: use phantoms(GENERAL QUADRUPLE LINES, GENERAL TRIPLE LINES, \
+                       GENERAL PARALLEL LINES)
+     from: _allow unmatched(GENERAL LINE)
+       from: condition(match(are(NONCORPOREAL), " xx "))
+         call: slide
+         call: centers(trade)
+       from: condition(match(are(NONCORPOREAL), "x  x"))
+         call: centers(trade)
+         prim: slide
+
+  xxx what about t-bones?
+    ^  ^
+     >>
+     <<
+    v  v
+_allow unmatched(mixed(GENERAL COUPLE, ENDS OF LINE, GENERAL DIAMOND))
+
+
+* _o concentric should expand centers into 2x2 box in center
+* boys trade should work from:
+
+    >    <- girl
+   v v   <- boys
+   v ^   <- girls
+   ^ ^   <- boys
+    <    <- girl
+from: allow unmatched(GENERAL COUPLE)
+  from: condition(<both designated>) [commit!]
+    call: trade
+  from: condition(<none designated>) [commit!]
+    call: nothing
+  from: ANY
+    condition: false(), "not all designated dancers can trade"
+
+* "boys do half of a trade" should also work from:
+   Bv Bv G^ G^
+   Gv Gv B^ B^
+even though half of a partner trade yields an offset formation.
+
+- add a setFormation variant in PMSD that takes grid strings
+-----
