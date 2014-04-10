@@ -24,6 +24,13 @@ sdr> /setFormation(FormationList.RH_COLUMN)
 |
 | 3G^  3Bv
 sdr> initially breaker contour the line
+| 2G>  2B>
+|
+| 3G<  3B<
+|
+| 1B>  1G>
+|
+| 4B<  4G<
 sdr> /setFormation(FormationList.PARALLEL_RH_WAVES)
 | 1B^  1Gv  2B^  2Gv
 |

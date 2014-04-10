@@ -261,6 +261,9 @@ public abstract class C1List {
             if (which != ConcentricType.O)
                 // XXX replace with expandO to preserve phantom spots?
                 endF = Breather.breathe(endF);
+            else
+                // breathe out O to ensure there's a 2x2 inside
+                endF = expandO(endF, centerNominalBox, centerNominalBox);
             DanceState centerS = ds.cloneAndClear(centerF);
             DanceState endS = ds.cloneAndClear(endF);
             if (DEBUG) {
@@ -508,6 +511,14 @@ public abstract class C1List {
             Point pt = expandO(p.toPoint(),
                                inside, nominal, actual.union(nominal));
             return p.relocate(pt.x, pt.y, p.facing);
+        }
+        public static Formation expandO(Formation f, Box nominal, Box actual) {
+            Map<Dancer,Position> m = new HashMap<Dancer,Position>
+                (f.dancers().size());
+            Box inside = insideBox(f);
+            for (Dancer d : f.dancers())
+                m.put(d, expandO(f.location(d), inside, nominal, actual));
+            return new Formation(m);
         }
         private static Point expandO(Point p,
                                      Box inside, Box nominal, Box actual) {

@@ -1,0 +1,11 @@
+Peel and trail from a left-handed box.
+
+sdr> /program = A2
+A2
+sdr> sides lead right ; left swing thru
+| 2Bv  2G^  3Gv  3B^
+| 
+| 1Bv  1G^  4Gv  4B^
+sdr> peel and trail
+| 1B^  1Gv  2B^  2Gv  4G^  4Bv  3G^  3Bv
+sdr> /exit

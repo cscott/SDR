@@ -1,0 +1,85 @@
+Test cases for 'outpost'.
+
+This should be a danceable sequence.
+
+sdr> /program = C4
+C4
+sdr> sides lead left ; veer left ; as couples walk and dodge
+| 1B^  1G^  4B^  4G^
+| 
+| 2Gv  2Bv  3Gv  3Bv
+sdr> outpost
+| 1B>  2B>
+| 
+| 3G<  2G<
+| 
+| 4G>  1G>
+| 
+| 4B<  3B<
+sdr> outpost
+| 1Bv  1G^  4Bv  4G^
+| 
+| 2Gv  2B^  3Gv  3B^
+sdr> extend
+|      1G^  4G^
+| 
+| 1Bv  2B^  4Bv  3B^
+| 
+|      2Gv  3Gv
+sdr> finish outpost
+| 3G^  3Bv  2B^  2G^
+| 
+| 4Gv  4Bv  1B^  1Gv
+sdr> centers hinge
+|      2B<
+| 
+| 3G^  3B>  2G^
+| 
+| 4Gv  1B<  1Gv
+| 
+|      4B>
+sdr> like an outpost
+| 2Gv  3Gv
+| 
+| 3B<  4B<
+| 
+| 2B>  1B>
+| 
+| 1G^  4G^
+sdr> ends roll
+| 2G>  3G<
+| 
+| 3B<  4B<
+| 
+| 2B>  1B>
+| 
+| 1G>  4G<
+sdr> /// from here, "vertical tag zag-zig, left allemande"
+sdr> linear cycle
+| 2Bv  1Gv  1Bv  4Gv
+| 
+| 2G^  3B^  3G^  4B^
+sdr> /// it would be nice if this were more automatic, but there
+sdr> /// is a legit 4-person circle that we can't stomp on.
+sdr> /// obviously you wouldn't need to call this to real dancers
+sdr> sides face in
+| 2B>  1Gv  1Bv  4G<
+| 
+| 2G>  3B^  3G^  4B<
+sdr> circle left 1/2
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> you're home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> /exit

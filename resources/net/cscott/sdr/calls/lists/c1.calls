@@ -226,6 +226,7 @@ def: _finish butterfly
     select: OTHERS
       prim: 0, out 2, none, preserve-roll
   from: ANY // can't put back the distortion
+    condition: false(), "Can't do this shape-changing call with this concept."
     prim: 0, 0, none, preserve-roll
 
 def: _start o
@@ -246,6 +247,7 @@ def: _finish o
     select: OTHERS
       prim: 0, 0, none, preserve-roll
   from: ANY // can't put back the distortion
+    condition: false(), "Can't do this shape-changing call with this concept."
     prim: 0, 0, none, preserve-roll
 
 def: shakedown

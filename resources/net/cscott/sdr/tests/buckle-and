@@ -1,0 +1,54 @@
+Test cases for 'buckle and'.
+
+This should be a danceable sequence.
+
+sdr> /program = C4
+C4
+sdr> sides split swap ; veer left ; centers hinge
+|      2B>
+| 
+| 2G^  3G<  3Bv
+| 
+| 1B^  1G>  4Gv
+| 
+|      4B<
+sdr> buckle and do 2/3 of a recycle
+| 1Bv  2Gv
+| 
+| 4B^  3Gv
+| 
+| 1G^  2Bv
+| 
+| 4G^  3B^
+sdr> cheerio
+| 3Gv  1Bv  2Gv  4Bv
+| 
+| 2B^  4G^  3B^  1G^
+sdr> buckle and dixie diamond
+| 2Bv  1Gv
+| 
+|   3B>
+| 
+| 4G^  2Gv
+| 
+|   1B<
+| 
+| 3G^  4B^
+sdr> ends divide
+      3B>
+ 2BV       1GV
+    4G^ 2GV
+ 3G^       4B^
+      1B<
+sdr> /// "lines diamond circulate thru"
+sdr> centers diamond circulate while the ends circulate
+sdr> buckle and flip the diamond
+sdr> reverse the diamond
+sdr> clear the centers for a shakedown
+sdr> centers pass thru
+sdr> side boys face left
+sdr> short and sweet
+sdr> /// circulate, grand working forward walk and dodge,
+sdr> /// head boys 1/2, all u-turn back... or just
+sdr> reverse single file promenade home
+sdr> /exit

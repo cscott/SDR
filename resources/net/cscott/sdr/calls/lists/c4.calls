@@ -19,6 +19,29 @@ def: brace yourself
     from: condition(match(_selection pattern(BOY), "_x"))
       call: u turn back
 
+def: buckle and(call)
+  option: SUPERCALL
+  spoken: buckle and <call=anything>
+  from: CENTER HALF
+    call: _o concentric([call], _buckle)
+def: _buckle
+  in: 6
+  ipart:
+    from: use phantoms(PARALLEL GENERAL LINES)
+      select: and(END, MATCH(_INOUT PATTERN(), "o")) // "LEADER"
+        prim: in 2, 2, in                // cross fold
+        prim: 0, 2, in, sashay-finish
+        prim: 0, 0, none, preserve-roll
+      select: and(END, MATCH(_INOUT PATTERN(), "i")) // "TRAILER"
+        prim: 0, 2, none                 // circulate
+        prim: in 2, 2, in                // fold
+        prim: 0, 0, in
+      select: OTHERS
+        prim: 0, 0, none
+        prim: 0, 0, none
+        prim: 0, 0, none
+
+
 def: cross breed thru
   call: right pull by, _finish cross breed thru
 def: _finish cross breed thru
@@ -133,7 +156,10 @@ def: settle back
   call: 1/2(reset), _finish settle back
 def: _finish settle back
   from: CENTER HALF
-    call: _quasi concentric(cross back, 2(o circulate))
+    call: _o concentric(cross back, 2(_phantom o circulate))
+def: _phantom o circulate
+  from: use phantoms(GENERAL O)
+    call: o(column circulate)
 
 def: stack the wheel
   call: _roll(couples hinge)
@@ -464,23 +490,24 @@ def: bits and pieces
   call: _bits and pieces part 1
   call: _bits and pieces part 2
 def: _bits and pieces part 1
-  // XXX: the 'ends o circulate' isn't really concentric
-  call: anyone while others(CENTER, _flexible peel and trail, \
-                                    2(o circulate))
+  from: CENTER HALF
+    call: _o concentric(_flexible peel and trail, 2(_phantom o circulate))
 def: _bits and pieces part 2
-  call: anyone while others(CENTER, ah so, trade)
+  from: CENTER HALF
+    call: _quasi concentric(ah so, trade)
 
 // like peel and trail, but can also be done from couples facing or couples
 // back to back
 def: _flexible peel and trail
-  from: FACING COUPLES
-    ipart:
-      call: touch, lockit, lockit
-  from: BACK-TO-BACK COUPLES
-    ipart:
-      call: u turn back, touch
-  from: ANY
-    call: peel and trail
+  ipart:
+    from: FACING COUPLES
+      in: 6
+        call: touch, lockit, lockit
+    from: BACK-TO-BACK COUPLES
+      in: 6
+        call: u turn back, touch
+    from: ANY
+      call: peel and trail
 
 def: counterpoint
   call: concentric(recycle, counter rotate)
@@ -520,11 +547,10 @@ def: _outpost part 1
   from: ANY // "both ends looking out"
     call: 1/2(here comes the judge)
 def: _outpost part 2
-  call: anyone while others(CENTER 6, trade)
+  call: _center 6(trade)
 def: _outpost part 3
-  from: GENERAL QUARTER TAG
-    // XXX: this 'o circulate' isn't really concentric
-    call: _quasi concentric(ah so, 2(o circulate))
+  from: GENERAL QUARTER TAG, CENTER 4
+    call: _o concentric(ah so, 2(_phantom o circulate))
 
 // XXX test example in bill's book which ends in a collision to form clumps
 def: roll out to a column
