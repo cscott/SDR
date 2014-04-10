@@ -127,6 +127,7 @@ public class MatcherList {
             Formation meta = FormationList.SINGLE_DANCER;
 	    Dancer metaDancer = meta.dancers().iterator().next();
 	    return new FormationMatch(meta, m(p(metaDancer, tf)),
+				      Collections.<Dancer>emptySet(),
 				      Collections.<Dancer>emptySet());
         }
         public String getName() { return "ANY"; }
@@ -661,7 +662,7 @@ public class MatcherList {
             return new FormationMatch
                 (meta,
                  Tools.m(Tools.p(meta.dancers().iterator().next(), tf)),
-                 Collections.<Dancer>emptySet());
+                 Collections.<Dancer>emptySet(), Collections.<Dancer>emptySet());
         }
         public String getName() {
             if (half) return "CENTER HALF";
@@ -980,7 +981,8 @@ public class MatcherList {
                     }
                     Formation nMeta = Breather.insert(fm.meta, insertMap);
                     FormationMatch result =
-                            new FormationMatch(nMeta, nMatches, nUnmatched);
+                        new FormationMatch(nMeta, nMatches, nUnmatched,
+                                           Collections.<Dancer>emptySet());
                     return result;
                 }
             };

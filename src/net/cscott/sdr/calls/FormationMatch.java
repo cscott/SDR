@@ -30,12 +30,19 @@ public class FormationMatch {
      * SINGLE DANCER subformations) to unmatched real dancers.
      */
     public final Set<Dancer> unmatched;
+    /** The set of new NONCORPORAL dancers added in this match, who should
+     *  be removed after calls are done in the matched formation.  Unlike
+     *  {@link #unmatched}, these are "real" dancers present in the
+     *  {@link TaggedFormation}s in {@link #matches}.
+     */
+    public final Set<Dancer> inserted;
 
     public FormationMatch(Formation meta, Map<Dancer,TaggedFormation> matches,
-                          Set<Dancer> unmatched) {
+                          Set<Dancer> unmatched, Set<Dancer> inserted) {
         this.meta = meta;
         this.matches = Collections.unmodifiableMap(matches);
         this.unmatched = Collections.unmodifiableSet(unmatched);
+        this.inserted = Collections.unmodifiableSet(inserted);
     }
     /** Remap the meta dancers in the given {@link FormationMatch}, returning
      *  a new {@link FormationMatch}. */
@@ -49,13 +56,13 @@ public class FormationMatch {
             if (this.unmatched.contains(d))
                 nunmatched.add(m.get(d));
         }
-        return new FormationMatch(nmeta, nmatches, nunmatched);
+        return new FormationMatch(nmeta, nmatches, nunmatched, this.inserted);
     }
 
     /** Pretty-print a {@link FormationMatch}. */
     public String toString() {
         // sort the phantoms to ensure a consistent string representation
-	List<Dancer> phantoms = meta.sortedDancers();
+        List<Dancer> phantoms = meta.sortedDancers();
         // now map phantoms to 'AA', 'BB', etc.
         Map<Dancer,String> metaDancerNames =
             new HashMap<Dancer,String>(phantoms.size());
@@ -86,11 +93,15 @@ public class FormationMatch {
             for (Dancer dd: tf.sortedDancers()) {
                 List<Tag> tags = new ArrayList<Tag>(tf.tags(dd));
                 Collections.sort(tags);
-                if (tags.isEmpty()) continue;
+                if (tags.isEmpty() && !inserted.contains(dd)) continue;
                 sb.append(atLeastOne ? "; ":" [");
                 atLeastOne=true;
                 String name = Formation.dancerNames.get(dd);
                 sb.append(name!=null ? name : "ph");
+                if (inserted.contains(dd)) {
+                    sb.append(" inserted");
+                }
+                if (tags.isEmpty()) continue;
                 sb.append(": ");
                 boolean firstTag = true;
                 for (Tag t: tags) {

@@ -235,7 +235,8 @@ public abstract class A1List {
             // create new FormationMatch with the new meta formation
             TaggedFormation metaF =
                 new TaggedFormation(new Formation(metaPos), metaTags);
-            return new FormationMatch(metaF, matches, unmatched);
+            return new FormationMatch(metaF, matches, unmatched,
+                                      Collections.<Dancer>emptySet());
         }
         /** Return all the primitive tags for the given dancer (including
          *  the 'ALL' tag). */

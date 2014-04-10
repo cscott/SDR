@@ -454,7 +454,8 @@ public class GeneralFormationMatcher {
         // are unwarped and unrotated.  The key dancers in the canonical map
         // are the phantoms from the meta formation.
         return new FormationMatch(Breather.breathe(pieces), canonical,
-                                  unmatchedMetaDancers);
+                                  unmatchedMetaDancers,
+                                  Collections.<Dancer>emptySet());
     }
     private static class OneMatch {
         /** Which goal formation. */
@@ -670,7 +671,7 @@ public class GeneralFormationMatcher {
      *     v  3Gv  3Bv    v
      *     
      *     ^  1B^  1G^    ^
-     *   [ph: NONCORPOREAL,BELLE,TRAILER,END; 3G: BEAU,TRAILER,CENTER; 3B: BELLE,TRAILER,CENTER; ph: NONCORPOREAL,BEAU,TRAILER,END; ph: NONCORPOREAL,BEAU,TRAILER,END; 1B: BELLE,TRAILER,CENTER; 1G: BEAU,TRAILER,CENTER; ph: NONCORPOREAL,BELLE,TRAILER,END]
+     *   [ph inserted: NONCORPOREAL,BELLE,TRAILER,END; 3G: BEAU,TRAILER,CENTER; 3B: BELLE,TRAILER,CENTER; ph inserted: NONCORPOREAL,BEAU,TRAILER,END; ph inserted: NONCORPOREAL,BEAU,TRAILER,END; 1B: BELLE,TRAILER,CENTER; 1G: BEAU,TRAILER,CENTER; ph inserted: NONCORPOREAL,BELLE,TRAILER,END]
      * @doc.test Matching against general facing directions:
      *  js> goals = [ FormationList.GENERAL_O,
      *    >           FormationList.GENERAL_COLUMNS ]; undefined;
@@ -690,7 +691,7 @@ public class GeneralFormationMatcher {
      *     3B^  3G^
      *     
      *       |    |
-     *   [ph: NONCORPOREAL,OUTSIDE_4; ph: NONCORPOREAL,OUTSIDE_4; 1G: CENTER; 1B: CENTER; 3B: CENTER; 3G: CENTER; ph: NONCORPOREAL,OUTSIDE_4; ph: NONCORPOREAL,OUTSIDE_4]
+     *   [ph inserted: NONCORPOREAL,OUTSIDE_4; ph inserted: NONCORPOREAL,OUTSIDE_4; 1G: CENTER; 1B: CENTER; 3B: CENTER; 3G: CENTER; ph inserted: NONCORPOREAL,OUTSIDE_4; ph inserted: NONCORPOREAL,OUTSIDE_4]
      * @doc.test Matching against GENERAL O:
      *  js> goals = [ FormationList.GENERAL_O ];
      *    > f = FormationList.PARALLEL_RH_TWO_FACED_LINES.mapStd([]);
@@ -712,7 +713,7 @@ public class GeneralFormationMatcher {
      *     4B^            3Bv
      *     
      *            |    |
-     *   [ph: NONCORPOREAL,END; ph: NONCORPOREAL,END; 1B: CENTER; 2B: CENTER; 4B: CENTER; 3B: CENTER; ph: NONCORPOREAL,END; ph: NONCORPOREAL,END]
+     *   [ph inserted: NONCORPOREAL,END; ph inserted: NONCORPOREAL,END; 1B: CENTER; 2B: CENTER; 4B: CENTER; 3B: CENTER; ph inserted: NONCORPOREAL,END; ph inserted: NONCORPOREAL,END]
      * @doc.test Matching against O spots, then constraining inexact rotations:
      *  js> goals = [ FormationList.O_SPOTS ];
      *    > f = FormationList.PARALLEL_RH_TWO_FACED_LINES.mapStd([]);
@@ -734,7 +735,7 @@ public class GeneralFormationMatcher {
      *     4B^            3Bv
      *     
      *            o    o
-     *   [ph: NONCORPOREAL; ph: NONCORPOREAL; ph: NONCORPOREAL; ph: NONCORPOREAL]
+     *   [ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL]
      *  js> // constraint inexact rotations with goal rotations
      *  js> goals = [ FormationList.QUADRUPLE_GENERAL_LINES ];
      *    > f = fm.matches.values().iterator().next().mirror(false);
@@ -750,7 +751,7 @@ public class GeneralFormationMatcher {
      *     3Bv    |    |  4B^
      *     
      *       |    |    |    |
-     *   [ph: NONCORPOREAL,OUTSIDE_8; ph: OUTSIDE_8; ph: OUTSIDE_8; ph: NONCORPOREAL,OUTSIDE_8; 2B: CENTER; ph: NONCORPOREAL,CENTER; ph: NONCORPOREAL,CENTER; 1B: CENTER; 3B: CENTER; ph: NONCORPOREAL,CENTER; ph: NONCORPOREAL,CENTER; 4B: CENTER; ph: NONCORPOREAL,OUTSIDE_8; ph: OUTSIDE_8; ph: OUTSIDE_8; ph: NONCORPOREAL,OUTSIDE_8]
+     *   [ph inserted: NONCORPOREAL,OUTSIDE_8; ph: OUTSIDE_8; ph: OUTSIDE_8; ph inserted: NONCORPOREAL,OUTSIDE_8; 2B: CENTER; ph inserted: NONCORPOREAL,CENTER; ph inserted: NONCORPOREAL,CENTER; 1B: CENTER; 3B: CENTER; ph inserted: NONCORPOREAL,CENTER; ph inserted: NONCORPOREAL,CENTER; 4B: CENTER; ph inserted: NONCORPOREAL,OUTSIDE_8; ph: OUTSIDE_8; ph: OUTSIDE_8; ph inserted: NONCORPOREAL,OUTSIDE_8]
      */
     public static FormationMatch doPhantomMatch(
             final Formation input,
@@ -842,6 +843,7 @@ public class GeneralFormationMatcher {
         Map<Dancer,Position> locations = new LinkedHashMap<Dancer,Position>();
         MultiMap<Dancer,Tag> tags = new GenericMultiMap<Dancer,Tag>
             (Factories.enumSetFactory(Tag.class));
+        Set<Dancer> inserted = new LinkedHashSet<Dancer>();
         for (Dancer gd : goal.dancers()) {
             Dancer id; Position pp;
             if (matched.containsKey(gd)) {
@@ -851,6 +853,7 @@ public class GeneralFormationMatcher {
                 id = new PhantomDancer();
                 pp = goal.location(gd);
                 tags.add(id, Tag.NONCORPOREAL);
+                inserted.add(id);
             }
             locations.put(id, pp);
             tags.addAll(id, goal.tags(gd));
@@ -858,7 +861,7 @@ public class GeneralFormationMatcher {
         TaggedFormation tf =
             new TaggedFormation(locations,locations.keySet(),tags);
         return new FormationMatch(meta, m(p(metaDancer, tf)),
-                                  Collections.<Dancer>emptySet());
+                                  Collections.<Dancer>emptySet(), inserted);
     }
 
     /** Make a position with an {@link ExactRotation} from the given position

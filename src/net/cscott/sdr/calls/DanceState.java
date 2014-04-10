@@ -154,7 +154,7 @@ public class DanceState {
             new LinkedHashMap<Dancer,TaggedFormation>();
         for (Dancer d : fm.matches.keySet())
             nMatches.put(d, this.tagDesignated(fm.matches.get(d)));
-        return new FormationMatch(fm.meta, nMatches, fm.unmatched);
+        return new FormationMatch(fm.meta, nMatches, fm.unmatched, fm.inserted);
     }
     /** Access the environment's property map.
      *  @see ExprList#_PROPERTY

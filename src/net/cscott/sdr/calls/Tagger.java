@@ -98,7 +98,7 @@ public abstract class Tagger {
                 this.tag(tf, nTags);
                 nmatches.put(metaDancer, tf.addTags(nTags));
             }
-            return new FormationMatch(fm.meta, nmatches, fm.unmatched);
+            return new FormationMatch(fm.meta, nmatches, fm.unmatched, fm.inserted);
         }
         public abstract void tag(TaggedFormation tf, MultiMap<Dancer,Tag> nTags);
     }

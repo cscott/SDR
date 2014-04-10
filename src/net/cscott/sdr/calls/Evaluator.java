@@ -212,7 +212,8 @@ public abstract class Evaluator {
         TaggedFormation tf = TaggedFormation.coerce(f);
         FormationMatch fm = new FormationMatch
             (meta, Collections.singletonMap(rep, tf),
-                   Collections.<Dancer>emptySet());
+             Collections.<Dancer>emptySet(),
+             Collections.<Dancer>emptySet());
         return new MetaEvaluator(fm, c) {
             // crazy hack to reuse code -- I'm so lazy!
             @Override
@@ -509,15 +510,18 @@ public abstract class Evaluator {
         private final Formation meta;
         private final Map<Dancer,? extends Formation> parts;
         private final Map<Dancer,Evaluator> emap;
+        private final Set<Dancer> inserted;
         MetaEvaluator(Formation meta, Map<Dancer,? extends Formation> parts,
-                      Map<Dancer,Evaluator> emap) {
+                      Set<Dancer> inserted, Map<Dancer,Evaluator> emap) {
             this.meta = meta;
             this.parts = parts;
             this.emap = emap;
+            this.inserted = inserted;
             this.metaSize = meta.dancers().size();
         }
         MetaEvaluator(FormationMatch fm, Comp child) {
-            this(fm.meta, fm.matches, _makeStandardEvaluators(fm, child));
+            this(fm.meta, fm.matches, fm.inserted,
+                 _makeStandardEvaluators(fm, child));
         }
         private static Map<Dancer,Evaluator>
         _makeStandardEvaluators(FormationMatch fm, Comp child) {
@@ -594,6 +598,7 @@ public abstract class Evaluator {
                 for (Fraction time : moments)
                     nds.splitTime(time);
                 for (Dancer d : nds.dancers()) {
+                    if (inserted.contains(d)) continue; // skip inserted phantoms
                     Fraction t = Fraction.ZERO;
                     for (DancerPath dp : nds.movements(d)) {
                         Position nfrom = breathed.get(t).location(d);
