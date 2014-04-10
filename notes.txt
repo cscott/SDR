@@ -1647,7 +1647,7 @@ like:
 
 note how phantom dancers are rendered as spaces in the pattern.
 
-This particular example might better be matched as _use phantoms(ENDS OF 4x4)
+This particular example might better be matched as use phantoms(ENDS OF 4x4)
 where FormationList.ENDS_OF_4x4 is f("+--+","|  |","|  |","+--+")
 but I think in general being able to specify phantom positions in
 pattern matchers will be useful.
@@ -1656,7 +1656,7 @@ COLUMN CIRCULATE should match against something like "TRADE BY, EIGHT
 CHAIN, RH COLUMN, LH COLUMN, GENERAL COLUMN" so that phantom formations will
 match one of the non-general formations and thus be able to do the
 call without collisions.  This will allow:
-  _o concentric(<anything>, from(_use phantoms(GENERAL O), 2(o circulate))
+  _o concentric(<anything>, from(use phantoms(GENERAL O), 2(o circulate))
 
 Here we also let "o circulate" be a special case of "o(circulate)"
 which means "o(column circulate)"; we need a bit of grammar hack for

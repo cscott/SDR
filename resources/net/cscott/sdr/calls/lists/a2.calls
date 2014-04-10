@@ -52,7 +52,7 @@ def: _start mini busy
 /* XXX _use phantoms not yet implemented
 def: _middle mini busy
   ipart:
-    from: _use phantoms(TRIPLE LINES) // xxx centers are center line
+    from: use phantoms(TRIPLE LINES) // xxx centers are center line
       call: _quasi concentric(_centers(hinge), press ahead)
 */
 def: _finish mini busy

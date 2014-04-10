@@ -349,7 +349,9 @@ public abstract class Evaluator {
             @Override
             public Evaluator visit(OptCall oc, DanceState ds) {
                 // Match from the breathed version of the formation.
-                Formation f = Breather.breathe(ds.currentFormation());
+                Formation f = ds.currentFormation();
+                if (oc.matcher.atom!="use phantoms") // HACK
+                    f = Breather.breathe(f);
                 List<String> reasons = new ArrayList<String>();
                 // XXX bit of a hack here: we don't want BadCallExceptions to
                 // bail out of the entire top-level OR.  Eventually we'll want

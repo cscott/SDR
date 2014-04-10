@@ -889,6 +889,60 @@ public class MatcherList {
         }
     };
     /**
+     * The {@link #_USE_PHANTOMS} matcher works on a formation, matching to
+     * spots.  We can recognize ends of a wave as O spots, for example.
+     * @doc.test
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
+     *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf(
+     *    >     "(Expr use phantoms '4x4)");
+     *  (Expr use phantoms '4 x4)
+     *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), ds);
+     *  use phantoms(4x4)
+     *  js> sel.match(ds.currentFormation());
+     *  AA^
+     *  AA:
+     *       +  3Gv  3Bv    +
+     *     
+     *     4B>    +    +  2G<
+     *     
+     *     4G>    +    +  2B<
+     *     
+     *       +  1B^  1G^    +
+     *   [ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL]
+     */
+    public static ExprFunc<Matcher> _USE_PHANTOMS = new ExprFunc<Matcher>(){
+        @Override
+        public String getName() { return "use phantoms"; }
+        @Override
+        public Matcher evaluate(Class<? super Matcher> type, DanceState ds,
+                List<Expr> args) throws EvaluationException {
+            // parse the argument list as formations
+            assert args.size() > 0;
+            final List<TaggedFormation> goals = new ArrayList<TaggedFormation>();
+            for (Expr e : args)
+                goals.add(e.evaluate(TaggedFormation.class, ds));
+            final String name = getName() +
+                    "(" + GeneralFormationMatcher.targetName(goals) + ")";
+            return new Matcher() {
+                @Override
+                public String getName() { return name; }
+                @Override
+                public FormationMatch match(Formation f)
+                        throws NoMatchException {
+                    return GeneralFormationMatcher.doMatch(f, goals,
+                        false, true/*use phantoms*/);
+                }
+             };
+        }
+        @Override
+        public boolean isConstant(Class<? super Matcher> type, List<Expr> args){
+            for (Expr e : args)
+                if (!e.isConstant(Matcher.class))
+                    return false;
+            return true;
+        }
+    };
+    /**
      * "Not grand" matcher means means don't allow matches whose bounds
      *  include the origin unless total # of dancers is 4 or less.  This is
      *  used in definition of 'remake', etc.
@@ -1007,6 +1061,8 @@ public class MatcherList {
             return _CENTER;
         if (s == _ALLOW_UNMATCHED.getName())
             return _ALLOW_UNMATCHED;
+        if (s == _USE_PHANTOMS.getName())
+            return _USE_PHANTOMS;
         if (s == _NOT_GRAND.getName())
             return _NOT_GRAND;
         throw new IllegalArgumentException("No such Matcher function: "+s);
