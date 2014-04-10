@@ -361,12 +361,17 @@ public abstract class EvalPrim {
     }
     /** "Dance" the given primitive from the given position (in a
      * formation of the given size) to yield a {@link DancerPath}. */
-    public static DancerPath apply(Prim prim, final Position from, int formationSize) {
+    public static DancerPath apply(Prim prim, Position from, int formationSize) {
 	// use the center of the formation as the center point for
         // in/out/etc.  We deal with 'pass in' (which explicitly wants
         // to reference the flagpole center of the set) by
         // re-evaluating to an 8-person formation before the quarter in.
         final Point center = new Point(Fraction.ZERO, Fraction.ZERO);
+        // evaluate using an exact rotation; we'll check if that makes
+        // sense later
+        Rotation fromRot = from.facing;
+        if (!fromRot.isExact())
+            from = from.relocate(new ExactRotation(fromRot.amount));
         // evaluate ROLL/SWEEP modifiers
         Fraction fwdAmt = computeRollSweep
             (prim.y, prim.dirY, from,
@@ -479,6 +484,17 @@ public abstract class EvalPrim {
         if (prim.flags.contains(Prim.Flag.SASHAY_FINISH))
             flags.add(DancerPath.Flag.SASHAY_FINISH);
 
+        // restore inexact rotation, if necessary, and sanity-check
+        if (!fromRot.isExact()) {
+            to = to.relocate(new Rotation(to.facing.amount, fromRot.modulus));
+            if ((prim.dirX==Direction.ASIS && !prim.x.equals(Fraction.ZERO)) ||
+                (prim.dirY==Direction.ASIS && !prim.y.equals(Fraction.ZERO)))
+                throw new BadCallException("absolute motion not possible with "+
+                                           "uncertain facing direction");
+            if (fromRot.modulus.compareTo(Fraction.ONE_HALF) < 0 &&
+                !(prim.x.equals(Fraction.ZERO) && prim.y.equals(Fraction.ZERO)))
+                throw new BadCallException("don't know where my nose is");
+        }
         return new DancerPath(from, to, prim.time, por, flags);
     }
     /** Normalize an ExactRotation, and set appropriate 'right' or 'left'
