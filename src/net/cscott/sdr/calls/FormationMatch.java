@@ -106,4 +106,15 @@ public class FormationMatch {
         // convert to string, we're done!
         return sb.toString();
     }
+    public String toString(String prefix) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (String line : toString().split("\n")) {
+            if (!first) sb.append("\n");
+            sb.append(prefix);
+            sb.append(line);
+            first = false;
+        }
+        return sb.toString();
+    }
 }
