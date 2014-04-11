@@ -1,6 +1,8 @@
 C4 calls, week 1.
 
-clear out, stack the wheel, nicely.
+settle back, stack the wheel, hammerlane, clear out, step lively,
+tag the star, the action, turntable, bridge the gap, walk out to a
+column, spin tag the deucey, advance to a column.
 
 sdr> /program = C4 ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
@@ -38,4 +40,147 @@ sdr> nicely
 | 3G<  1B>  2G<  2B>
 | 
 | 4B<  4G>  3B<  1G>
+sdr> boys u-turn back
+| 3G<  1B<  2G<  2B<
+| 
+| 4B>  4G>  3B>  1G>
+sdr> settle back
+| 4G^  1Bv
+|
+| 1G^  2Bv
+|
+| 4B^  3Gv
+|
+| 3B^  2Gv
+sdr> finish settle back
+| 3B^  1Gv  4B^  4Gv
+|
+| 2G^  2Bv  3G^  1Bv
+sdr> do 1/2 of settle back
+| 2G<  2B<  3G<  1B<
+|
+| 3B>  1G>  4B>  4G>
+sdr> bridge the gap
+|           3B<  1G<  4B<  4G<
+|
+| 2G>  2B>  3G>  1B>
+sdr> tandem peel the top
+| 1B^  2Gv  4B^  1Gv
+|
+| 3G^  2Bv  4G^  3Bv
+sdr> step lively
+| 4G<  2B<
+|
+| 3B<  1G<
+|
+| 3G>  1B>
+|
+| 4B>  2G>
+sdr> do 1/3 reverse the pass
+| 3B>  2B<
+|
+| 4G>  1G<
+|
+| 3G>  2G<
+|
+| 4B>  1B<
+sdr> tag the star 1/2
+| 2B>  1G>
+|
+| 3B<  4G<
+|
+| 2G>  1B>
+|
+| 3G<  4B<
+sdr> spin tag the deucey left
+| 1B<  4G<
+|
+| 3G<  2B<
+|
+| 4B>  1G>
+|
+| 2G>  3B>
+sdr> bend the line
+| 1Bv  3Gv  4Gv  2Bv
+|
+| 4B^  2G^  1G^  3B^
+sdr> hammerlane
+| 2G^  3G^  4Bv  1Bv  3B^  2B^  1Gv  4Gv
+sdr> bend the line
+| 2G>  4B<  3B>  1G<
+|
+| 3G>  1B<  2B>  4G<
+sdr> turntable
+| 2B^  4Gv  3G^  1Bv
+|
+| 3B^  1Gv  2G^  4Bv
+sdr> walk out to a column
+| 3Bv  2G^
+|
+| 2Bv  1G^
+|
+| 3Gv  4B^
+|
+| 4Gv  1B^
+sdr> heads U-turn back
+| 3B^  2G^
+|
+| 2Bv  1Gv
+|
+| 3G^  4B^
+|
+| 4Gv  1Bv
+sdr> the action
+| 4B^  3Gv  3B^  2Gv
+|
+| 4G^  1Bv  1G^  2Bv
+sdr> recycle
+| 3Gv  4Bv
+|
+| 2G^  3B^
+|
+| 1Bv  4Gv
+|
+| 2B^  1G^
+sdr> beaus advance to a column
+| 3G^  3Bv
+|
+| 4B^  2Gv
+|
+| 4G^  2Bv
+|
+| 1B^  1Gv
+sdr> reverse single file promenade home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> /// unusual 'the action'
+sdr> heads right and left thru while the sides trade
+| 4G<  1Gv  1Bv  2B>
+|
+| 4B<  3B^  3G^  2G>
+sdr> the action
+| 4G>  3B>
+|
+| 4B<  1G<
+|
+| 3G>  2B>
+|
+| 1B<  2G<
+sdr> vertical left tag eroo
+| 4Gv  4Bv  3B^  3G^
+|
+| 1Gv  1Bv  2B^  2G^
+sdr> promenade home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
 sdr> /exit
