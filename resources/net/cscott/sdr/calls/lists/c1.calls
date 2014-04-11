@@ -122,7 +122,7 @@ def: cross by
 
 def: cross extend
   ipart:
-    call: _blend(extend, _finish cross extend)
+    call: _blend last(extend, _finish cross extend)
 def: _finish cross extend
   from: allow unmatched(RH MINIWAVE, LH MINIWAVE)
     prim: in 2, 0, none
@@ -165,11 +165,12 @@ def: galaxy circulate
 def: butterfly(c)
   spoken: butterfly <c=anything>
   option: CONCEPT
-  call: _butterfly([c])
+  call: _blend first(_start butterfly, _blend last([c], _finish butterfly))
+
 def: o(c)
   spoken: o <c=anything>
   option: CONCEPT
-  call: _o([c])
+  call: _blend first(_start o, _blend last([c], _finish o))
 
 def: _start butterfly
   from: GENERAL BUTTERFLY

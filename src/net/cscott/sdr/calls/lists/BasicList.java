@@ -6,6 +6,7 @@ import static net.cscott.sdr.util.Tools.foreach;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.StandardDancer;
 import static net.cscott.sdr.calls.StandardDancer.*;
 import net.cscott.sdr.calls.TaggedFormation;
+import net.cscott.sdr.calls.TimedFormation;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
@@ -476,6 +478,99 @@ public abstract class BasicList {
                     return null;
                 }
             };
+        }
+    };
+    /**
+     * This blends the first movement of the subcalls, including removing
+     * the time taken by the first movement.
+     */
+    public static final Call _BLEND_FIRST = new BasicCall("_blend first") {
+        @Override
+        public int getMinNumberOfArguments() { return 1; }
+        @Override
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
+            return new BlendedEvaluator(args, BlendedEvaluator.Type.FIRST);
+        }
+    };
+    /**
+     * This blends the last movement of the subcalls, including removing
+     * the time taken by the last movement.
+     */
+    public static final Call _BLEND_LAST = new BasicCall("_blend last") {
+        @Override
+        public int getMinNumberOfArguments() { return 1; }
+        @Override
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
+            return new BlendedEvaluator(args, BlendedEvaluator.Type.LAST);
+        }
+    };
+    public static class BlendedEvaluator extends Evaluator {
+        public static enum Type { FIRST, LAST };
+        private final Expr subcall;
+        private final Type type;
+        public BlendedEvaluator(List<Expr> args, Type type) {
+            assert args.size() >= 1;
+            this.subcall = (args.size() == 1) ? args.get(0) :
+                new Expr("and", args);
+            this.type = type;
+        }
+        @Override
+        public Evaluator evaluate(DanceState ds) {
+            DanceState ds0 = ds.cloneAndClear();
+            new Apply(this.subcall).evaluator(ds0).evaluateAll(ds0);
+            // now blend!
+            // find the time step we're going to blend
+            List<TimedFormation> formations = ds0.formations();
+            assert formations.size() >= 3;
+            Fraction blendTime=null, blendDuration=null;
+            switch (type) {
+            case FIRST:
+                blendTime = blendDuration = formations.get(1).time;
+                break;
+            case LAST:
+                blendTime = formations.get(formations.size() - 2).time;
+                blendDuration = formations.get(formations.size() - 1).time
+                    .subtract(blendTime);
+                break;
+            }
+            ds0.splitTime(blendTime); // be sure paths end at this time
+            // muck around with dancer paths in ds0
+            for (Dancer d : ds0.dancers()) {
+                boolean blended = false;
+                Fraction time = Fraction.ZERO;
+                for (Iterator<DancerPath> it = ds0.movements(d).iterator();
+                     it.hasNext(); ) {
+                    DancerPath dp = it.next();
+                    time = time.add(dp.time);
+                    if (time.equals(blendTime)) {
+                        dp = blend(ds, d, blendDuration, dp, it.next());
+                        blended = true;
+                    }
+                    ds.add(d, dp);
+                }
+                assert blended : d + " could not be blended at " + blendTime;
+            }
+            // no more to evaluate
+            return null;
+        }
+        private DancerPath blend(DanceState ds, Dancer d, Fraction removeTime,
+                                 DancerPath a, DancerPath b) {
+            // easy case -- no facing direction change, just remove the
+            // midpoint.
+            DancerPath keep = (type == Type.FIRST) ? b : a;
+            Fraction newTime = a.time.add(b.time).subtract(removeTime);
+            if (a.from.facing.equals(a.to.facing) ||
+                b.from.facing.equals(b.to.facing)) {
+                return new DancerPath(a.from, b.to, newTime,
+                                      keep.pointOfRotation,
+                                      keep.flags);
+            }
+            // ok, we need to keep both, just alter the timings
+            newTime = newTime.divide(Fraction.TWO);
+            ds.add(d, new DancerPath(a.from, a.to, newTime,
+                                     a.pointOfRotation, a.flags));
+            return new DancerPath(b.from, b.to, newTime,
+                                  b.pointOfRotation, b.flags);
         }
     };
 

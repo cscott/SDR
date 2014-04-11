@@ -273,7 +273,7 @@ def: by golly
 /* .... */
 
 def: change lanes
-  call: _blend(retain your lane, spread)
+  call: _blend last(retain your lane, spread)
 
 def: change the centers
   call: change the(slip)
@@ -340,8 +340,8 @@ def: _reactivate part 1
       from: allow unmatched(FACING DANCERS)
         call: pass thru
 def: _cross reactivate part 1
-  call: _blend(_ends sashay, \
-               _blend(_reactivate part 1, _ends sashay))
+  call: _blend first(_ends sashay, \
+                     _blend last(_reactivate part 1, _ends sashay))
 def: _ends sashay
   from: GENERAL QUARTER TAG
     select: OUTSIDE 4

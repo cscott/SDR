@@ -44,7 +44,9 @@ sdr> /// (according to callerlab) -- but we add just 1, 2 is visually excessive
 sdr> /checkBeats(6+1, "swing thru and roll", PARALLEL_RH_WAVES)
 sdr> /checkBeats(4+1, "trade and roll", LINES_FACING_OUT)
 sdr> /// "<anything> and spread" adds 2 beats to the timing of <anything>
-sdr> /checkBeats(6+2, "follow your neighbor and spread", PARALLEL_RH_WAVES)
+sdr> /// BUT for calls which end in waves (like follow your neighbor) we
+sdr> /// can blend the spread to take 0 additional time.
+sdr> /checkBeats(6+0, "follow your neighbor and spread", PARALLEL_RH_WAVES)
 sdr> /checkBeats(6+2, "ferris wheel and spread", PARALLEL_RH_TWO_FACED_LINES)
 sdr> /checkBeats( 6, "chase right", [LINES_FACING_OUT, TRADE_BY])
 sdr> /checkBeats( 8, "coordinate", [RH_COLUMN, LH_COLUMN])

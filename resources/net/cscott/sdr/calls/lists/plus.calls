@@ -87,7 +87,7 @@ def: and spread(c)
     // this applies only if the call ends in parallel lines (and isn't
     // being evaluated for parts)
     ipart: _add num(1, num parts([c]))
-      call: _blend(_start case 2 spread([c]), _spread)
+      call: _blend last(_start case 2 spread([c]), _spread)
   from: ANY
     // unblended version
     part: num parts([c])
@@ -104,6 +104,9 @@ def: _spread
   // "case 2" of the definition
   from: GENERAL LINE
     from: GENERAL PARTNERS
+      from: RH MINIWAVE, LH MINIWAVE, COUPLE
+        ipart:
+          prim: in 2, 0, none, sashay-start sashay-finish
       from: MINIWAVE
         call: _miniwave spread
       from: COUPLE

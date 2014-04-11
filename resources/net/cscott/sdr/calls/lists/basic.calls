@@ -23,18 +23,6 @@ def: face out
   in: 2
   prim: 0,0,out
 
-// XXX placeholder for real definition
-// should really remove the intermediate position between a and b
-// allowing the action of a to flow smoothly into b
-def: _blend(a, b)
-  xpart:
-    call: [a]
-    call: [b]
-// XXX placeholder.  this blends the first movement of a, including
-// the time it takes.
-def: _blend first(a)
-  call: [a]
-
 // grammar glue
 def: _apply concept(concept,call)
   spoken: [-20] <concept=concept> <call=anything>
@@ -250,7 +238,7 @@ def: _circle left 1/4
  from: 2x4
    in: 4
    ipart:
-     call: _blend(_centers back out, _circle left 1/4)
+     call: _blend first(_centers back out, _circle left 1/4)
  from: SINGLE STATIC SQUARE
    in: 2
    prim: -2, 2, right, sashay-start sashay-finish
@@ -1214,9 +1202,9 @@ def: four ladies chain(sel,n=1/2)
       condition: NOT(GREATER(1/4, [n])), "Must chain at least 1/4"
       call: _start belles chain
       call: _middle belles chain([n])
-      call: _blend(_finish belles chain, _in(1 1/2, _courtesy turn(1/2)))
+      call: _blend first(_finish belles chain, _in(1 1/2, _courtesy turn(1/2)))
     from: 2x4
-      call: _blend(_centers back out, four ladies chain([sel], [n]))
+      call: _blend first(_centers back out, four ladies chain([sel], [n]))
 
 def: _start belles chain
   in: 1 1/2

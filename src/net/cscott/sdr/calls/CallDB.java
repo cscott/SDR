@@ -107,6 +107,8 @@ public class CallDB {
                     Modifier.isStatic(f.getModifiers())) {
                 try {
                     Call call = (Call) f.get(null);
+                    assert !db.containsKey(call.getName()) :
+                        "duplicate call: "+call.getName();
                     db.put(call.getName(), call);
                 } catch (IllegalAccessException e) {
                     assert false : e;
