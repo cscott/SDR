@@ -151,14 +151,14 @@ def: cut the diamond
   call: _from diamond(and(_cut the diamond part 1, _cut the diamond part 2))
 def: _cut the diamond part 1
   in: 2
-  from: GENERAL DIAMOND
+  from: DIAMOND, GENERAL DIAMOND
     select: POINT
       prim: in 1, 0, none, sashay-start sashay-finish
     select: CENTER
       prim: in 1, 3, in
 def: _cut the diamond part 2
   in: 4
-  from: GENERAL LINE
+  from: LINE, GENERAL LINE
     call: _quasi concentric(trade, nothing)
 
 def: dixie grand
@@ -234,7 +234,7 @@ def: flip the diamond
 def: _flip the diamond after adjust
  in: 3
  ipart:
-  from: GENERAL DIAMOND
+  from: DIAMOND, GENERAL DIAMOND
     select: POINT
       prim: 0, 0, in
       prim: 0, 1, roll, sashay-finish
@@ -281,7 +281,7 @@ def: grand left swing thru
 
 // callerlab says "10-12" beats and 4 parts
 def: linear cycle
-  from: GENERAL LINE
+  from: OCEAN_WAVE, LINE, GENERAL LINE
     part:
       call: hinge
     // this is a cheat! we can't really do the phantom 2x4 called for in

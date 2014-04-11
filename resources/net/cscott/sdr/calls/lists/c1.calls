@@ -132,3 +132,31 @@ def: swing the fractions
   call: _those who can turn right(3/4)
   call: _those who can turn left(1/2)
   call: _those who can turn right(1/4)
+
+def: triple box(c)
+  spoken: triple box <c=anything>
+  option: CONCEPT
+  from: use phantoms(2x6)
+    from: 2x2
+      call: [c]
+def: triple column(c)
+  spoken: triple column <c=anything>
+  option: CONCEPT
+  from: use phantoms(3x4), use phantoms(1x12), \
+        use phantoms(TRIPLE GENERAL H), use phantoms(TRIPLE GENERAL PLUS)
+    from: GENERAL COLUMN // 1x4
+      call: [c]
+def: triple line(c)
+  spoken: triple line <c=anything>
+  option: CONCEPT
+  from: use phantoms(3x4), use phantoms(1x12), \
+        use phantoms(TRIPLE GENERAL H), use phantoms(TRIPLE GENERAL PLUS)
+    from: GENERAL LINE // 1x4
+      call: [c]
+def: triple wave(c)
+  spoken: triple wave <c=anything>
+  option: CONCEPT
+  from: use phantoms(3x4), use phantoms(1x12), \
+        use phantoms(TRIPLE GENERAL H), use phantoms(TRIPLE GENERAL PLUS)
+    from: RH OCEAN WAVE, LH OCEAN WAVE // 1x4
+      call: [c]

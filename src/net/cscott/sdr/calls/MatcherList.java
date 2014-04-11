@@ -170,6 +170,9 @@ public class MatcherList {
     public static final Matcher GENERAL_LINE =
         Tagger.autotag2
             (GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_LINE));
+    public static final Matcher GENERAL_COLUMN =
+        Tagger.autotag2
+            (GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_COLUMN));
     // this matcher has an extra underscore because the parser treats it
     // as two items: the number one, and the identifier x4.
     public static final Matcher _1_X4 =
@@ -222,6 +225,8 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.LH_SINGLE_THREE_QUARTER_ZEE);
     public static final Matcher SINGLE_THREE_QUARTER_ZEE =
         OR("SINGLE 3/4 ZEE", RH_SINGLE_THREE_QUARTER_ZEE, LH_SINGLE_THREE_QUARTER_ZEE);
+    public static final Matcher ONE_FACED_LINE =
+        GeneralFormationMatcher.makeMatcher(FormationList.ONE_FACED_LINE);
     public static final Matcher RH_TWO_FACED_LINE =
         GeneralFormationMatcher.makeMatcher(FormationList.RH_TWO_FACED_LINE);
     public static final Matcher LH_TWO_FACED_LINE =
@@ -230,6 +235,9 @@ public class MatcherList {
         OR("TWO-FACED LINE", RH_TWO_FACED_LINE, LH_TWO_FACED_LINE);
     public static final Matcher SINGLE_INVERTED_LINE =
         GeneralFormationMatcher.makeMatcher(FormationList.SINGLE_INVERTED_LINE);
+    public static final Matcher LINE =
+        OR("LINE", ONE_FACED_LINE, RH_TWO_FACED_LINE, LH_TWO_FACED_LINE,
+           RH_OCEAN_WAVE, LH_OCEAN_WAVE, SINGLE_INVERTED_LINE);
     public static final Matcher GENERAL_DIAMOND =
         GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_DIAMOND);
     public static final Matcher GENERAL_TALL_DIAMOND =
@@ -465,8 +473,38 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.BUTTERFLY_DOUBLE_PASS_THRU);
     public static final Matcher GENERAL_BUTTERFLY =
         GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_BUTTERFLY);
+
+    // 12-person matchers
+
+    // this matcher has an extra underscore because the parser treats it
+    // as two items: the number 1, and the identifier x12.
+    public static final Matcher _1_X12 =
+        GeneralFormationMatcher.makeMatcher(FormationList._1x12);
+    // this matcher has an extra underscore because the parser treats it
+    // as two items: the number 2, and the identifier x6.
+    public static final Matcher _2_X6 =
+        GeneralFormationMatcher.makeMatcher(FormationList._2x6);
+    // this matcher has an extra underscore because the parser treats it
+    // as two items: the number 3, and the identifier x4.
+    public static final Matcher _3_X4 =
+        GeneralFormationMatcher.makeMatcher(FormationList._3x4);
+    public static final Matcher TRIPLE_GENERAL_H =
+        GeneralFormationMatcher.makeMatcher(FormationList.TRIPLE_GENERAL_H);
+    public static final Matcher TRIPLE_GENERAL_PLUS =
+        GeneralFormationMatcher.makeMatcher(FormationList.TRIPLE_GENERAL_PLUS);
     public static final Matcher TRIPLE_GENERAL_LINES =
         GeneralFormationMatcher.makeMatcher(FormationList.TRIPLE_GENERAL_LINES);
+    public static final Matcher TRIPLE_GENERAL_DIAMONDS =
+        GeneralFormationMatcher.makeMatcher(FormationList.TRIPLE_GENERAL_DIAMONDS);
+    public static final Matcher TRIPLE_GENERAL_TALL_DIAMONDS =
+        GeneralFormationMatcher.makeMatcher(FormationList.TRIPLE_GENERAL_TALL_DIAMONDS);
+    public static final Matcher TRIPLE_GENERAL_ASYM_DIAMONDS =
+        GeneralFormationMatcher.makeMatcher(FormationList.TRIPLE_GENERAL_ASYM_DIAMONDS);
+    public static final Matcher TRIPLE_POINT_TO_POINT_GENERAL_DIAMONDS =
+        GeneralFormationMatcher.makeMatcher(FormationList.TRIPLE_POINT_TO_POINT_GENERAL_DIAMONDS);
+    public static final Matcher TRIPLE_POINT_TO_POINT_GENERAL_TALL_DIAMONDS =
+        GeneralFormationMatcher.makeMatcher(FormationList.TRIPLE_POINT_TO_POINT_GENERAL_TALL_DIAMONDS);
+    // 16-person matchers
     public static final Matcher QUADRUPLE_GENERAL_LINES =
         GeneralFormationMatcher.makeMatcher(FormationList.QUADRUPLE_GENERAL_LINES);
     // this matcher has an extra underscore because the parser treats it
@@ -908,7 +946,7 @@ public class MatcherList {
      *     4G>    +    +  2B<
      *     
      *       +  1B^  1G^    +
-     *   [ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL]
+     *   [ph inserted: NONCORPOREAL,OUTSIDE_8; 3G: OUTSIDE_8; 3B: OUTSIDE_8; ph inserted: NONCORPOREAL,OUTSIDE_8; 4B: CENTER; ph inserted: NONCORPOREAL,CENTER; ph inserted: NONCORPOREAL,CENTER; 2G: CENTER; 4G: CENTER; ph inserted: NONCORPOREAL,CENTER; ph inserted: NONCORPOREAL,CENTER; 2B: CENTER; ph inserted: NONCORPOREAL,OUTSIDE_8; 1B: OUTSIDE_8; 1G: OUTSIDE_8; ph inserted: NONCORPOREAL,OUTSIDE_8]
      */
     public static ExprFunc<Matcher> _USE_PHANTOMS = new ExprFunc<Matcher>(){
         @Override

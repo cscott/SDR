@@ -110,3 +110,42 @@ def: initially(concept,call)
     call: _apply([concept], _first part([call]))
   part: _subtract num(num parts([call]), 1)
     call: finish([call])
+
+def: release(c)
+  option: CONCEPT
+  spoken: release <c=anything>
+  ipart:
+    call: _start release // end of the center 4 press ahead
+    call: _finish release(c)
+def: _start release
+  call: not yet implemented
+// Vic sez: "Phantoms that end between the Outside dancers and the
+// Center are removed at the end of the call unless the anything call
+// involves a concept which specifically includes phantoms (e.g., Release
+// Triple Wave Ah So retains the Phantoms whereas Release Ah So
+// doesn't)."
+// So we try to do the call without a concept first, and if that fails
+// we use the TRIPLE LINE concept *but squash phantoms*
+def: _finish release(c)
+  from: ANY
+    call: [c]
+  from: ANY
+    ends in: no phantoms between centers and ends() // XXX
+    call: triple line([c])
+  from: ANY
+    call: breathe after(triple line([c]))
+
+// this is tricky because we have to insert the phantoms simultaneous with
+// recognizing which distorted diamond we have.  see plus '_from diamond'
+// helper
+def: triple diamond(c)
+  spoken: triple diamond <c=anything>
+  option: CONCEPT
+  // breathing.  let's hope we're symmetric
+  // xxx also asym diamonds?
+  from: use phantoms(TRIPLE GENERAL DIAMONDS), \
+        use phantoms(TRIPLE GENERAL TALL DIAMONDS), \
+        use phantoms(TRIPLE GENERAL ASYM DIAMONDS), \
+        use phantoms(TRIPLE POINT TO POINT GENERAL DIAMONDS), \
+        use phantoms(TRIPLE POINT TO POINT GENERAL TALL DIAMONDS)
+    call: _from diamond([c])

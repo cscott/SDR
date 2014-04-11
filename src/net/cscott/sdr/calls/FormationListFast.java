@@ -179,6 +179,30 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.END));
 
+    /** GENERAL COLUMN formation.
+      * @doc.test
+      *  js> tf = FormationList.GENERAL_COLUMN; tf.toStringDiagram('|');
+      *  ||
+      *  |
+      *  ||
+      *  |
+      *  ||
+      *  |
+      *  ||
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [END]
+      *  [CENTER]
+      *  [CENTER]
+      *  [END]
+      */
+    public static final NamedTaggedFormation GENERAL_COLUMN =
+        new NamedTaggedFormation("GENERAL COLUMN",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(3), Rotation.fromAbsoluteString("|")), Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-1), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.END));
+
     /** 1x4 formation.
       * @doc.test
       *  js> tf = FormationList._1x4; tf.toStringDiagram('|');
@@ -576,6 +600,24 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), ExactRotation.SOUTH), Tag.BELLE, Tag.TRAILER, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BELLE, Tag.TRAILER, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-2), ExactRotation.SOUTH), Tag.BELLE, Tag.LEADER));
+
+    /** ONE-FACED LINE formation.
+      * @doc.test
+      *  js> tf = FormationList.ONE_FACED_LINE; tf.mapStd([]).toStringDiagram('|');
+      *  |1B^  1G^  3G^  3B^
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [BEAU, END]
+      *  [BELLE, CENTER]
+      *  [BEAU, CENTER]
+      *  [BELLE, END]
+      */
+    public static final NamedTaggedFormation ONE_FACED_LINE =
+        new NamedTaggedFormation("ONE-FACED LINE",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BEAU, Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BELLE, Tag.END));
 
     /** RH TWO-FACED LINE formation.
       * @doc.test
@@ -3317,6 +3359,198 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.END),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.END));
 
+    /** 1x12 formation.
+      * @doc.test
+      *  js> tf = FormationList._1x12; tf.toStringDiagram('|');
+      *  |+    +    +    +    +    +    +    +    +    +    +    +
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      */
+    public static final NamedTaggedFormation _1x12 =
+        new NamedTaggedFormation("1x12",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-11), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-9), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-7), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-5), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(5), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(7), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(9), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(11), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8));
+
+    /** 2x6 formation.
+      * @doc.test
+      *  js> tf = FormationList._2x6; tf.toStringDiagram('|');
+      *  |+    +    +    +    +    +
+      *  |
+      *  |+    +    +    +    +    +
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      */
+    public static final NamedTaggedFormation _2x6 =
+        new NamedTaggedFormation("2x6",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-5), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(5), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-5), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(5), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8));
+
+    /** 3x4 formation.
+      * @doc.test
+      *  js> tf = FormationList._3x4; tf.toStringDiagram('|');
+      *  |+    +    +    +
+      *  |
+      *  |+    +    +    +
+      *  |
+      *  |+    +    +    +
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      */
+    public static final NamedTaggedFormation _3x4 =
+        new NamedTaggedFormation("3x4",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(2), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(2), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(2), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(2), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-2), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-2), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8));
+
+    /** TRIPLE GENERAL H formation.
+      * @doc.test
+      *  js> tf = FormationList.TRIPLE_GENERAL_H; tf.toStringDiagram('|');
+      *  |+    +    +    +
+      *  |
+      *  |       +
+      *  |
+      *  |       +
+      *  |
+      *  |       +
+      *  |
+      *  |       +
+      *  |
+      *  |+    +    +    +
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      */
+    public static final NamedTaggedFormation TRIPLE_GENERAL_H =
+        new NamedTaggedFormation("TRIPLE GENERAL H",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(5), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(5), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(5), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(5), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(3), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-5), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-5), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-5), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-5), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8));
+
+    /** TRIPLE GENERAL PLUS formation.
+      * @doc.test
+      *  js> tf = FormationList.TRIPLE_GENERAL_PLUS; tf.toStringDiagram('|');
+      *  |                    +
+      *  |
+      *  |                    +
+      *  |+    +    +    +         +    +    +    +
+      *  |                    +
+      *  |
+      *  |                    +
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      */
+    public static final NamedTaggedFormation TRIPLE_GENERAL_PLUS =
+        new NamedTaggedFormation("TRIPLE GENERAL PLUS",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(3), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-8), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-6), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-4), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(2), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(4), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(6), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(8), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+")), Tag.CENTER));
+
     /** TRIPLE GENERAL LINES formation.
       * @doc.test
       *  js> tf = FormationList.TRIPLE_GENERAL_LINES; tf.toStringDiagram('|');
@@ -3354,6 +3588,276 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8));
+
+    /** TRIPLE GENERAL DIAMONDS formation.
+      * @doc.test
+      *  js> tf = FormationList.TRIPLE_GENERAL_DIAMONDS; tf.toStringDiagram('|');
+      *  |  -         -         -
+      *  |
+      *  ||    |    |    |    |    |
+      *  |
+      *  |  -         -         -
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      */
+    public static final NamedTaggedFormation TRIPLE_GENERAL_DIAMONDS =
+        new NamedTaggedFormation("TRIPLE GENERAL DIAMONDS",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-4), Fraction.valueOf(2), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(2), Rotation.fromAbsoluteString("-")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(4), Fraction.valueOf(2), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-5), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(5), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-4), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(4), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8));
+
+    /** TRIPLE GENERAL TALL DIAMONDS formation.
+      * @doc.test
+      *  js> tf = FormationList.TRIPLE_GENERAL_TALL_DIAMONDS; tf.toStringDiagram('|');
+      *  |  -         -         -
+      *  |
+      *  |
+      *  ||    |    |    |    |    |
+      *  |
+      *  |
+      *  |  -         -         -
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      */
+    public static final NamedTaggedFormation TRIPLE_GENERAL_TALL_DIAMONDS =
+        new NamedTaggedFormation("TRIPLE GENERAL TALL DIAMONDS",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-4), Fraction.valueOf(3), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(3), Rotation.fromAbsoluteString("-")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(4), Fraction.valueOf(3), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-5), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(5), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-4), Fraction.valueOf(-3), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-3), Rotation.fromAbsoluteString("-")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(4), Fraction.valueOf(-3), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8));
+
+    /** TRIPLE GENERAL ASYM DIAMONDS formation.
+      * @doc.test
+      *  js> tf = FormationList.TRIPLE_GENERAL_ASYM_DIAMONDS; tf.toStringDiagram('|');
+      *  |     -      -       -
+      *  |
+      *  ||    |    |    |    |    |
+      *  |
+      *  |     -      -       -
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      */
+    public static final NamedTaggedFormation TRIPLE_GENERAL_ASYM_DIAMONDS =
+        new NamedTaggedFormation("TRIPLE GENERAL ASYM DIAMONDS",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(2), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(2), Rotation.fromAbsoluteString("-")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(2), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-5), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(5), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8));
+
+    /** TRIPLE POINT-TO-POINT GENERAL DIAMONDS formation.
+      * @doc.test
+      *  js> tf = FormationList.TRIPLE_POINT_TO_POINT_GENERAL_DIAMONDS; tf.toStringDiagram('|');
+      *  |  -
+      *  |
+      *  ||    |
+      *  |
+      *  |  -
+      *  |
+      *  |  -
+      *  |
+      *  ||    |
+      *  |
+      *  |  -
+      *  |
+      *  |  -
+      *  |
+      *  ||    |
+      *  |
+      *  |  -
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      */
+    public static final NamedTaggedFormation TRIPLE_POINT_TO_POINT_GENERAL_DIAMONDS =
+        new NamedTaggedFormation("TRIPLE POINT-TO-POINT GENERAL DIAMONDS",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(8), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(6), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(6), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(4), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(2), Rotation.fromAbsoluteString("-")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-4), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-6), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-6), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-8), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8));
+
+    /** TRIPLE POINT-TO-POINT GENERAL TALL DIAMONDS formation.
+      * @doc.test
+      *  js> tf = FormationList.TRIPLE_POINT_TO_POINT_GENERAL_TALL_DIAMONDS; tf.toStringDiagram('|');
+      *  |  -
+      *  |
+      *  |
+      *  ||    |
+      *  |
+      *  |
+      *  |  -
+      *  |
+      *  |  -
+      *  |
+      *  |
+      *  ||    |
+      *  |
+      *  |
+      *  |  -
+      *  |
+      *  |  -
+      *  |
+      *  |
+      *  ||    |
+      *  |
+      *  |
+      *  |  -
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      */
+    public static final NamedTaggedFormation TRIPLE_POINT_TO_POINT_GENERAL_TALL_DIAMONDS =
+        new NamedTaggedFormation("TRIPLE POINT-TO-POINT GENERAL TALL DIAMONDS",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(11), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(8), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(8), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(5), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(3), Rotation.fromAbsoluteString("-")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-3), Rotation.fromAbsoluteString("-")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-5), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-8), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-8), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-11), Rotation.fromAbsoluteString("-")), Tag.OUTSIDE_8));
+
+    /** 4x4 formation.
+      * @doc.test
+      *  js> tf = FormationList._4x4; tf.toStringDiagram('|');
+      *  |+    +    +    +
+      *  |
+      *  |+    +    +    +
+      *  |
+      *  |+    +    +    +
+      *  |
+      *  |+    +    +    +
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [CENTER]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      *  [OUTSIDE_8]
+      */
+    public static final NamedTaggedFormation _4x4 =
+        new NamedTaggedFormation("4x4",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(3), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(3), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(3), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+")), Tag.OUTSIDE_8));
 
     /** QUADRUPLE GENERAL LINES formation.
       * @doc.test
@@ -3403,54 +3907,6 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.OUTSIDE_8));
 
-    /** 4x4 formation.
-      * @doc.test
-      *  js> tf = FormationList._4x4; tf.toStringDiagram('|');
-      *  |+    +    +    +
-      *  |
-      *  |+    +    +    +
-      *  |
-      *  |+    +    +    +
-      *  |
-      *  |+    +    +    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
-      *  []
-      *  []
-      *  []
-      *  []
-      *  []
-      *  []
-      *  []
-      *  []
-      *  []
-      *  []
-      *  []
-      *  []
-      *  []
-      *  []
-      *  []
-      *  []
-      */
-    public static final NamedTaggedFormation _4x4 =
-        new NamedTaggedFormation("4x4",
-            null,
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(3), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(3), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(3), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(1), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(1), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(1), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(1), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-1), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+"))),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(-3), Rotation.fromAbsoluteString("+"))));
-
     /** List of all formations defined here. */
     public static final List<NamedTaggedFormation> all =
         Collections.unmodifiableList(Arrays.asList(
@@ -3465,6 +3921,7 @@ abstract class FormationListFast {
             FormationListFast.RH_MINIWAVE,
             FormationListFast.LH_MINIWAVE,
             FormationListFast.GENERAL_LINE,
+            FormationListFast.GENERAL_COLUMN,
             FormationListFast._1x4,
             FormationListFast._2x2,
             FormationListFast.SINGLE_STATIC_SQUARE,
@@ -3484,6 +3941,7 @@ abstract class FormationListFast {
             FormationListFast.LH_SINGLE_QUARTER_ZEE,
             FormationListFast.RH_SINGLE_THREE_QUARTER_ZEE,
             FormationListFast.LH_SINGLE_THREE_QUARTER_ZEE,
+            FormationListFast.ONE_FACED_LINE,
             FormationListFast.RH_TWO_FACED_LINE,
             FormationListFast.LH_TWO_FACED_LINE,
             FormationListFast.SINGLE_INVERTED_LINE,
@@ -3576,7 +4034,17 @@ abstract class FormationListFast {
             FormationListFast.GENERAL_O,
             FormationListFast.BUTTERFLY_DOUBLE_PASS_THRU,
             FormationListFast.GENERAL_BUTTERFLY,
+            FormationListFast._1x12,
+            FormationListFast._2x6,
+            FormationListFast._3x4,
+            FormationListFast.TRIPLE_GENERAL_H,
+            FormationListFast.TRIPLE_GENERAL_PLUS,
             FormationListFast.TRIPLE_GENERAL_LINES,
-            FormationListFast.QUADRUPLE_GENERAL_LINES,
-            FormationListFast._4x4));
+            FormationListFast.TRIPLE_GENERAL_DIAMONDS,
+            FormationListFast.TRIPLE_GENERAL_TALL_DIAMONDS,
+            FormationListFast.TRIPLE_GENERAL_ASYM_DIAMONDS,
+            FormationListFast.TRIPLE_POINT_TO_POINT_GENERAL_DIAMONDS,
+            FormationListFast.TRIPLE_POINT_TO_POINT_GENERAL_TALL_DIAMONDS,
+            FormationListFast._4x4,
+            FormationListFast.QUADRUPLE_GENERAL_LINES));
 }

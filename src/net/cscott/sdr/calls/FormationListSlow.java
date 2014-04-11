@@ -98,6 +98,9 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation GENERAL_LINE =
         create("GENERAL LINE", f("||||"), WhetherTagger.NO_AUTO_TAGS,
                 t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
+    public static final NamedTaggedFormation GENERAL_COLUMN =
+        create("GENERAL COLUMN", f("|","|","|","|"), WhetherTagger.NO_AUTO_TAGS,
+                t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
     public static final NamedTaggedFormation _1x4 =
         create("1x4", f("++++"), WhetherTagger.NO_AUTO_TAGS,
                 t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
@@ -189,6 +192,9 @@ abstract class FormationListSlow {
                 d(-1, 0, "s", BELLE, CENTER, TRAILER),
                 d(+1, 0, "n", BELLE, CENTER, TRAILER),
                 d(-1,-2, "s", BELLE, LEADER));
+    public static final NamedTaggedFormation ONE_FACED_LINE =
+        xofy("ONE-FACED LINE", COUPLE, COUPLE,
+             t(0, END), t(1, CENTER), t(2, CENTER), t(3, END));
     public static final NamedTaggedFormation RH_TWO_FACED_LINE = // callerlab #12
         xofy("RH TWO-FACED LINE", RH_MINIWAVE, COUPLE,
                 t(0, END), t(1, CENTER), t(2, CENTER), t(3, END));
@@ -750,20 +756,95 @@ abstract class FormationListSlow {
                 t(2, CENTER), t(3, CENTER),
                 t(4, CENTER), t(5, CENTER),
                 t(6, END),    t(7, END));
+    // 12-person formations
+    public static final NamedTaggedFormation _1x12 =
+        create("1x12", f("++++++++++++"), WhetherTagger.NO_AUTO_TAGS,
+               t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
+               t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
+               t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+    public static final NamedTaggedFormation _2x6 =
+        create("2x6", f("++++++","++++++"), WhetherTagger.NO_AUTO_TAGS,
+               t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, CENTER), t(3, CENTER),
+               t(4, OUTSIDE_8), t(5, OUTSIDE_8),
+               t(6, OUTSIDE_8), t(7, OUTSIDE_8), t(8, CENTER), t(9, CENTER),
+               t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+    public static final NamedTaggedFormation _3x4 =
+        create("3x4", f("++++","++++","++++"), WhetherTagger.NO_AUTO_TAGS,
+               t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
+               t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
+               t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+    public static final NamedTaggedFormation TRIPLE_GENERAL_H =
+        xofy("TRIPLE GENERAL H",
+             create("H", f("n","e","s"), WhetherTagger.NO_AUTO_TAGS),
+             noTags(_1x4), WhetherTagger.NO_AUTO_TAGS,
+             t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
+             t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
+             t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+    public static final NamedTaggedFormation TRIPLE_GENERAL_PLUS =
+        xofy("TRIPLE GENERAL PLUS",
+             create("PLUS", f("nes"), WhetherTagger.NO_AUTO_TAGS),
+             noTags(_1x4), WhetherTagger.NO_AUTO_TAGS,
+             t(0, CENTER), t(1, CENTER), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
+             t(4, OUTSIDE_8), t(5, OUTSIDE_8), t(6, OUTSIDE_8), t(7, OUTSIDE_8),
+             t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, CENTER), t(11, CENTER));
     public static final NamedTaggedFormation TRIPLE_GENERAL_LINES =
         create("TRIPLE GENERAL LINES", f("||||","||||","||||"), WhetherTagger.NO_AUTO_TAGS,
                t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
                t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
                t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+    public static final NamedTaggedFormation TRIPLE_GENERAL_DIAMONDS =
+        xofy("TRIPLE GENERAL DIAMONDS",
+             create("3", f("nnn"), WhetherTagger.NO_AUTO_TAGS),
+             noTags(GENERAL_DIAMOND), WhetherTagger.NO_AUTO_TAGS,
+             t(0, OUTSIDE_8), t(1, CENTER), t(2, OUTSIDE_8),
+             t(3, OUTSIDE_8), t(4, OUTSIDE_8), t(5, CENTER), t(6, CENTER),
+             t(7, OUTSIDE_8), t(8, OUTSIDE_8),
+             t(9, OUTSIDE_8), t(10, CENTER), t(11, OUTSIDE_8));
+    public static final NamedTaggedFormation TRIPLE_GENERAL_TALL_DIAMONDS =
+        xofy("TRIPLE GENERAL TALL DIAMONDS",
+             create("3", f("nnn"), WhetherTagger.NO_AUTO_TAGS),
+             noTags(GENERAL_TALL_DIAMOND), WhetherTagger.NO_AUTO_TAGS,
+             t(0, OUTSIDE_8), t(1, CENTER), t(2, OUTSIDE_8),
+             t(3, OUTSIDE_8), t(4, OUTSIDE_8), t(5, CENTER), t(6, CENTER),
+             t(7, OUTSIDE_8), t(8, OUTSIDE_8),
+             t(9, OUTSIDE_8), t(10, CENTER), t(11, OUTSIDE_8));
+    public static final NamedTaggedFormation TRIPLE_GENERAL_ASYM_DIAMONDS =
+        create("TRIPLE GENERAL ASYM DIAMONDS",
+               d(-3, 2,"-",OUTSIDE_8),d(0, 2,"-",CENTER),d(3, 2,"-",OUTSIDE_8),
+               d(-5, 0,"|",OUTSIDE_8),d(-3,0,"|",OUTSIDE_8),
+               d(-1, 0,"|",CENTER),   d(+1,0,"|",CENTER),
+               d(+3, 0,"|",OUTSIDE_8),d(+5,0,"|",OUTSIDE_8),
+               d(-3,-2,"-",OUTSIDE_8),d(0,-2,"-",CENTER),d(3,-2,"-",OUTSIDE_8));
+    public static final NamedTaggedFormation TRIPLE_POINT_TO_POINT_GENERAL_DIAMONDS =
+        xofy("TRIPLE POINT-TO-POINT GENERAL DIAMONDS",
+             create("3", f("n","n","n"), WhetherTagger.NO_AUTO_TAGS),
+             noTags(GENERAL_DIAMOND), WhetherTagger.NO_AUTO_TAGS,
+             t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
+             t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
+             t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+    public static final NamedTaggedFormation TRIPLE_POINT_TO_POINT_GENERAL_TALL_DIAMONDS =
+        xofy("TRIPLE POINT-TO-POINT GENERAL TALL DIAMONDS",
+             create("3", f("n","n","n"), WhetherTagger.NO_AUTO_TAGS),
+             noTags(GENERAL_TALL_DIAMOND), WhetherTagger.NO_AUTO_TAGS,
+             t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
+             t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
+             t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+    // XXX also: TRIPLE RH ZEE, TRIPLE LH ZEE
+
+    // 16-person formations
+    public static final NamedTaggedFormation _4x4 =
+        create("4x4", f("++++","++++","++++","++++"),
+               WhetherTagger.NO_AUTO_TAGS,
+               t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
+               t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
+               t(8, CENTER), t(9, CENTER), t(10, CENTER),t(11, CENTER),
+               t(12, OUTSIDE_8),t(13, OUTSIDE_8),t(14, OUTSIDE_8),t(15, OUTSIDE_8));
     public static final NamedTaggedFormation QUADRUPLE_GENERAL_LINES =
         create("QUADRUPLE GENERAL LINES", f("||||","||||","||||","||||"), WhetherTagger.NO_AUTO_TAGS,
                 t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
                 t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
                 t(8, CENTER), t(9, CENTER), t(10, CENTER),t(11, CENTER),
                 t(12, OUTSIDE_8),t(13, OUTSIDE_8),t(14, OUTSIDE_8),t(15, OUTSIDE_8));
-    public static final NamedTaggedFormation _4x4 =
-        create("4x4", f("++++","++++","++++","++++"),
-               WhetherTagger.NO_AUTO_TAGS);
 
     /** List of all formations defined in this class. */
     public static final List<NamedTaggedFormation> all = _enumerateFormations();
@@ -860,6 +941,10 @@ abstract class FormationListSlow {
     }
     private static NamedTaggedFormation xofy(final String name, Formation x, TaggedFormation y, WhetherTagger wt, StandardDancer[] normalCouples, NumAndTags... tags) {
         return addTags(name, _xofy(x,y), wt, normalCouples, tags);
+    }
+    private static TaggedFormation noTags(Formation f) {
+        return new TaggedFormation(f, new GenericMultiMap<Dancer,Tag>
+                                   (Factories.enumSetFactory(Tag.class)));
     }
     private static enum WhetherTagger { AUTO_TAGS, NO_AUTO_TAGS; }
     private static NamedTaggedFormation addTags(final String name, final Formation f,

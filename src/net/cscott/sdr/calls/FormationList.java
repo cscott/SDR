@@ -60,12 +60,7 @@ import org.junit.runner.RunWith;
  *    >            .replace(' ','_').replace('-','_')
  *    >            .replace("1/4","QUARTER")
  *    >            .replace("3/4","THREE_QUARTER")
- *    >            .replace("1x2", "_1x2")
- *    >            .replace("1x4", "_1x4")
- *    >            .replace("1x8", "_1x8")
- *    >            .replace("2x2", "_2x2")
- *    >            .replace("2x4", "_2x4")
- *    >            .replace("4x4", "_4x4")
+ *    >            .replaceAll("^(\\d+)", "_$1")
  *    >            .equals(name));
  *    > })
  *  true
@@ -75,12 +70,7 @@ import org.junit.runner.RunWith;
  *    >   let name = (f.getName()
  *    >                .replace("1/4","QUARTER")
  *    >                .replace("3/4","THREE_QUARTER")
- *    >                .replace("1x2", "_1_X2")
- *    >                .replace("1x4", "_1_X4")
- *    >                .replace("1x8", "_1_X8")
- *    >                .replace("2x2", "_2_X2")
- *    >                .replace("2x4", "_2_X4")
- *    >                .replace("4x4", "_4_X4"));
+ *    >                .replaceAll("^(\\d+)(\\w)", "_$1_$2"));
  *    >   try {
  *    >     if (Matcher.valueOf(name).toString() != f.getName())
  *    >        print("Matcher name mismatch: "+f.getName());
@@ -129,18 +119,7 @@ public abstract class FormationList extends FormationListFast {
              .replace(' ','_')
              .replace("1/4","QUARTER")
              .replace("3/4","THREE_QUARTER")
-             .replace("1X2", "_1x2")
-             .replace("1X4", "_1x4")
-             .replace("1X8", "_1x8")
-             .replace("2X2", "_2x2")
-             .replace("2X4", "_2x4")
-             .replace("4X4", "_4x4")
-             .replace("1_X2", "_1x2")
-             .replace("1_X4", "_1x4")
-             .replace("1_X8", "_1x8")
-             .replace("2_X2", "_2x2")
-             .replace("2_X4", "_2x4")
-             .replace("4_X4", "_4x4");
+             .replaceAll("(\\d+)_?X(\\d+)", "_$1x$2");
         try {
             return (NamedTaggedFormation)
                 FormationList.class.getField(s).get(null);

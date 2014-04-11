@@ -1350,7 +1350,7 @@ def: box circulate
 def: _box circulate
   // for internal use: this is the 2x2 version of circulate
   in: 4 // not official
-  from: 2x2
+  from: BOX, FACING COUPLES, BACK TO BACK COUPLES, 2x2
     select: LEADER
       call: _lead circ
     select: TRAILER

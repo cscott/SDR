@@ -421,7 +421,7 @@ def: revolve to a wave
     !   v   v
 
 def: rip off
-  from: 2x2
+  from: TANDEM COUPLES, BOX, INVERTED BOX, 2x2
     select: LEADER
       select: BEAU
         call: run
