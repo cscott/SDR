@@ -539,7 +539,7 @@ public class GeneralFormationMatcher {
         final List<Dancer> goalDancers;
         final List<Position> goalPositions;
         final TaggedFormation goal;
-        final Set<Dancer> eq0; // goal dancers who are symmetric to goal dancer #0
+
         GoalInfo(final TaggedFormation goal) {
             this.goal = goal;
             // make a canonical ordering for the goal dancers
@@ -549,18 +549,6 @@ public class GeneralFormationMatcher {
                     return PCOMP.compare(goal.location(d1), goal.location(d2));
                 }
             });
-            SetFactory<Dancer> gsf = new BitSetFactory<Dancer>(goalDancers);
-            // Identify dancers who are symmetric to dancer #0
-            assert goal.isCentered(); // Assumes center of goal formation is 0,0
-            Dancer gd0 = goalDancers.get(0);
-            this.eq0 = gsf.makeSet();
-            Position p0 = goal.location(gd0).normalize(); // remember p0.facing is most exact
-            for (Dancer gd : goalDancers)
-                for (Position rp: rotated(goal.location(gd)))
-                        if (rp.x.equals(p0.x) && rp.y.equals(p0.y)&&
-                                rp.facing.consistent(p0.facing))
-                            eq0.add(gd);
-            assert eq0.contains(gd0);//at the very least, gd0 is symmetric to itself
             // map dancer # to position
             this.goalPositions = new ArrayList<Position>(goalDancers.size());
             for (Dancer d : goalDancers) {
@@ -574,7 +562,6 @@ public class GeneralFormationMatcher {
                 .append("goalDancers", goalDancers)
                 .append("goalPositions", goalPositions)
                 .append("goal", goal)
-                .append("eq0", eq0)
                 .toString();
         }
     }
@@ -611,7 +598,6 @@ public class GeneralFormationMatcher {
     private static boolean validate(MatchInfo mi, GoalInfo goal, int dancerNum,
                                     Transform goal2input) {
         PersistentSet<Dancer> inFormation = mi.inFormation;
-        Set<Dancer> eq0 = goal.eq0;
         // find some Dancer in the input formation to correspond to each
         // Dancer in the goal formation.  Each such dancer must not already
         // be assigned.
@@ -636,22 +622,23 @@ public class GeneralFormationMatcher {
             assert ip.x.equals(gp.x) && ip.y.equals(gp.y);
             if (!gp.facing.consistent(ip.facing))
                 return false; // rotations aren't consistent
-            // check for symmetry: if this goal position is 'eq0' (ie,
-            // symmetric with the 0 dancer's position), then this dancer #
+            // Check for symmetry: if this goal position is
+            // symmetric with the 0 dancer's position, then this dancer #
             // must be >= the 0 dancer's input # (ie, dancerNum)
-            if (eq0.contains(goal.goalDancers.get(gNum)))
-                if (iNum < dancerNum) {
-                    // check that our matching rotation is really symmetric,
-                    // since the goal dancer may have a vague direction which
-                    // includes an asymmetric alternative (ie, "n|" as a target)
-                    for (Position gp0 : rotated(goal.goalPositions.get(0))) {
-                        gp0 = goal2input.apply(gp0);
-                        if (ip.x.equals(gp0.x) &&
-                            ip.y.equals(gp0.y) &&
-                            gp0.facing.consistent(ip.facing))
-                            return false; // symmetric to some other canonical formation
-                    }
+            // Be careful: the goal may be assymmetric (like "n|") so be
+            // sure the facing direction is included in the set of those
+            // tried for dancer #0.
+            if (iNum < dancerNum) {
+                assert goal.goal.isCentered() :
+                    "this test assumes center of goal formation is 0,0";
+                for (Position gp0 : rotated(goal.goalPositions.get(0))) {
+                    // do comparisons in 'input' space
+                    gp0 = goal2input.apply(gp0);
+                    if (gp.toPoint().equals(gp0.toPoint()) &&
+                        gp0.facing.includes(gp.facing.intersect(ip.facing)))
+                        return false;// symmetric to some other canonical match
                 }
+            }
             // update 'in formation' and 'gNum'
             inFormation = inFormation.add(iDan);
             gNum++;
