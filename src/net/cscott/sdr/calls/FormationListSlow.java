@@ -208,6 +208,12 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation SINGLE_INVERTED_LINE =
         create("SINGLE INVERTED LINE", f("snns"), WhetherTagger.AUTO_TAGS,
                 t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
+    public static final NamedTaggedFormation RH_THREE_AND_ONE_LINE =
+        create("RH THREE-AND-ONE LINE", f("nnns"), WhetherTagger.AUTO_TAGS,
+                t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
+    public static final NamedTaggedFormation LH_THREE_AND_ONE_LINE =
+        create("LH THREE-AND-ONE LINE", f("snnn"), WhetherTagger.AUTO_TAGS,
+                t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
     // NOTE that we use Vic Ceder's position of diamond points: at the 2
     // spot, not the 3 spot.  Diamonds belong to a 2x3 formation, not a 2x4
     // This matches the output of our breathing algorithm.

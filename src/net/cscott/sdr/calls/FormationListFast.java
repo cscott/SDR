@@ -689,6 +689,42 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), ExactRotation.SOUTH), Tag.BEAU, Tag.END));
 
+    /** RH THREE-AND-ONE LINE formation.
+      * @doc.test
+      *  js> tf = FormationList.RH_THREE_AND_ONE_LINE; tf.mapStd([]).toStringDiagram('|');
+      *  |1B^  1G^  3G^  3Bv
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [BEAU, END]
+      *  [BELLE, CENTER]
+      *  [BEAU, CENTER]
+      *  [BEAU, END]
+      */
+    public static final NamedTaggedFormation RH_THREE_AND_ONE_LINE =
+        new NamedTaggedFormation("RH THREE-AND-ONE LINE",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BEAU, Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), ExactRotation.SOUTH), Tag.BEAU, Tag.END));
+
+    /** LH THREE-AND-ONE LINE formation.
+      * @doc.test
+      *  js> tf = FormationList.LH_THREE_AND_ONE_LINE; tf.mapStd([]).toStringDiagram('|');
+      *  |1Bv  1G^  3G^  3B^
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [BELLE, END]
+      *  [BELLE, CENTER]
+      *  [BEAU, CENTER]
+      *  [BELLE, END]
+      */
+    public static final NamedTaggedFormation LH_THREE_AND_ONE_LINE =
+        new NamedTaggedFormation("LH THREE-AND-ONE LINE",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), ExactRotation.SOUTH), Tag.BELLE, Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BELLE, Tag.END));
+
     /** GENERAL DIAMOND formation.
       * @doc.test
       *  js> tf = FormationList.GENERAL_DIAMOND; tf.toStringDiagram('|');
@@ -3996,6 +4032,8 @@ abstract class FormationListFast {
             FormationListFast.RH_TWO_FACED_LINE,
             FormationListFast.LH_TWO_FACED_LINE,
             FormationListFast.SINGLE_INVERTED_LINE,
+            FormationListFast.RH_THREE_AND_ONE_LINE,
+            FormationListFast.LH_THREE_AND_ONE_LINE,
             FormationListFast.GENERAL_DIAMOND,
             FormationListFast.GENERAL_TALL_DIAMOND,
             FormationListFast.GENERAL_ASYM_DIAMOND,

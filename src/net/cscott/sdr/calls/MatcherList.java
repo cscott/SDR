@@ -240,9 +240,16 @@ public class MatcherList {
         OR("TWO-FACED LINE", RH_TWO_FACED_LINE, LH_TWO_FACED_LINE);
     public static final Matcher SINGLE_INVERTED_LINE =
         GeneralFormationMatcher.makeMatcher(FormationList.SINGLE_INVERTED_LINE);
+    public static final Matcher RH_THREE_AND_ONE_LINE =
+        GeneralFormationMatcher.makeMatcher(FormationList.RH_THREE_AND_ONE_LINE);
+    public static final Matcher LH_THREE_AND_ONE_LINE =
+        GeneralFormationMatcher.makeMatcher(FormationList.LH_THREE_AND_ONE_LINE);
+    public static final Matcher THREE_AND_ONE_LINE =
+        OR("THREE-AND-ONE LINE", RH_THREE_AND_ONE_LINE, LH_THREE_AND_ONE_LINE);
     public static final Matcher LINE =
         OR("LINE", ONE_FACED_LINE, RH_TWO_FACED_LINE, LH_TWO_FACED_LINE,
-           RH_OCEAN_WAVE, LH_OCEAN_WAVE, SINGLE_INVERTED_LINE);
+           RH_OCEAN_WAVE, LH_OCEAN_WAVE, SINGLE_INVERTED_LINE,
+           RH_THREE_AND_ONE_LINE, LH_THREE_AND_ONE_LINE);
     public static final Matcher GENERAL_DIAMOND =
         GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_DIAMOND);
     public static final Matcher GENERAL_TALL_DIAMOND =
