@@ -346,6 +346,7 @@ public class Position implements Comparable<Position> {
      *  0,0,n,[ROLL_RIGHT, SWEEP_LEFT]
      */
     public Position setFlags(Flag... flags) {
+        if (flags.length == 0 && this.flags.isEmpty()) return this;
 	return new Position(this.x, this.y, this.facing, flags);
     }
     /**
@@ -354,6 +355,7 @@ public class Position implements Comparable<Position> {
      * @see #setFlags(Flag...)
      */
     public Position setFlags(Collection<Flag> f) {
+        if (this.flags.equals(f)) return this;
         return setFlags(f.toArray(new Flag[f.size()]));
     }
     /**
@@ -798,6 +800,18 @@ public class Position implements Comparable<Position> {
         public boolean isCentered() {
             return this.translate.equals(Point.ZERO);
         }
+        @Override
+            public boolean equals(Object o) {
+            if (!(o instanceof Transform)) return false;
+            Transform t = (Transform) o;
+            return this.rotate.equals(t.rotate) &&
+                this.translate.equals(t.translate);
+        }
+        @Override
+        public int hashCode() {
+            return this.rotate.hashCode() + 7 * this.translate.hashCode();
+        }
+        @Override
         public String toString() {
             return new ToStringBuilder
                 (this, ToStringStyle.SIMPLE_STYLE)
