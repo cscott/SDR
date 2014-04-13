@@ -59,15 +59,15 @@
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
  *  js> cp("def:foo\n in: 8\n in: 4\n call: bar")
  *  (def (ITEM foo) (in (EXPR (ITEM 8)) (in (EXPR (ITEM 4)) (SEQ (call (EXPR (ITEM bar)))))))
- *  js> cp("def:foo\n in: 4\n from: RH_BOX\n  call: bar\n from: LH_BOX\n  call: bat")
- *  (def (ITEM foo) (in (EXPR (ITEM 4)) (OPT (from (EXPR (ITEM RH_BOX)) (SEQ (call (EXPR (ITEM bar))))) (from (EXPR (ITEM LH_BOX)) (SEQ (call (EXPR (ITEM bat))))))))
+ *  js> cp("def:foo\n in: 4\n from: RH BOX\n  call: bar\n from: LH BOX\n  call: bat")
+ *  (def (ITEM foo) (in (EXPR (ITEM 4)) (OPT (from (EXPR (ITEM RH BOX)) (SEQ (call (EXPR (ITEM bar))))) (from (EXPR (ITEM LH BOX)) (SEQ (call (EXPR (ITEM bat))))))))
  * @doc.test Grammar precedence: SEQs bind least tightly:
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
- *  js> cp("def:foo\n in: 4\n from: RH_MINIWAVE\n call: trade\n from: RH_BOX\n call: bar")
- *  (def (ITEM foo) (in (EXPR (ITEM 4)) (OPT (from (EXPR (ITEM RH_MINIWAVE)) (SEQ (call (EXPR (ITEM trade))))) (from (EXPR (ITEM RH_BOX)) (SEQ (call (EXPR (ITEM bar))))))))
+ *  js> cp("def:foo\n in: 4\n from: RH MINIWAVE\n call: trade\n from: RH BOX\n call: bar")
+ *  (def (ITEM foo) (in (EXPR (ITEM 4)) (OPT (from (EXPR (ITEM RH MINIWAVE)) (SEQ (call (EXPR (ITEM trade))))) (from (EXPR (ITEM RH BOX)) (SEQ (call (EXPR (ITEM bar))))))))
  * @doc.test FROM(CONDITION..) requires indentation.
  *  js> function cp(s) { return new CallFileParser(s).def().getTree().toStringTree() }
- *  js> cfp=new CallFileParser("def:foo\n in:4\n from:RH_BOX\n condition:true\n call: bar")
+ *  js> cfp=new CallFileParser("def:foo\n in:4\n from:RH BOX\n condition:true\n call: bar")
 *   net.cscott.sdr.calls.parser.CallFileParser@12a0f6c
  *  js> cfp.def() ; undefined
  *  js> cfp.getNumberOfSyntaxErrors()
