@@ -33,6 +33,27 @@ def: counter rotate(n=1/4)
     // 8 dancer version, no official timing.  we'll say 6 beats
     call: _fractional(_multiply num([n], 4), _in(6, _counter rotate 1/4))
 
+// as per vic cedar, from parallel waves ends in a thar, not in a
+// "wave between vertical miniwaves"
+def: cross by
+  from: PARALLEL WAVES
+    select: CENTER
+      select: LEADER
+        prim: in 1, 2, in
+      select: TRAILER
+        prim: out 2, 1, none
+    select: END
+      select: LEADER
+        prim: in 3, 0, in
+      select: TRAILER
+        prim: in 2, 1, none
+  from: THAR, WRONG WAY THAR
+   ends in: print(cross by)
+    select: CENTER
+      prim: out 2, 3, in 1/8
+    select: END
+      prim: in 2, 1, in 1/8
+
 /*
 def: cross roll to a wave
   ends in: WAVE
