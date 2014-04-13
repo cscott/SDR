@@ -74,6 +74,8 @@ abstract class FormationListSlow {
         create("COUPLE",
                 d(-1,0,"n",BEAU),
                 d(+1,0,"n",BELLE));
+    public static final NamedTaggedFormation COUPLE_NO_TAGS =
+        new NamedTaggedFormation("COUPLE NO TAGS", noTags(COUPLE));
     public static final NamedTaggedFormation FACING_DANCERS = // callerlab #2
         create("FACING DANCERS",
                 d(0,+1,"s",TRAILER),

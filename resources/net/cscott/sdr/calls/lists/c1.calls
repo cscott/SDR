@@ -12,6 +12,72 @@ def: press back
   prim: 0, -1, none
   prim: 0, -1, none
 
+def: ah so
+  in: 4
+  ipart:
+    from: OCEAN WAVE, GENERAL LINE
+      // vic sez: "many callers believe Ah So can only be done from a Wave."
+      from: OCEAN WAVE
+        call: hinge, _box counter rotate(1/4)
+      from: TWO-FACED LINE, ONE-FACED LINE
+        call: wheel and deal
+      from: SINGLE INVERTED LINE
+        call: _ah so part 1, hinge
+      from: LH THREE-AND-ONE LINE
+        call: mirror(ah so)
+      from: RH THREE-AND-ONE LINE
+        call: _ah so part 1, _ah so part 2
+      from: GENERAL LINE
+        // designate the centers who are not part of a couple
+        // (use COUPLE NO TAGS so that any BEAU or BELLE are part of miniwave)
+        call: _with designated(\
+                  AND(CENTER, \
+                      formation(mixed(RH MINIWAVE,LH MINIWAVE,COUPLE NO TAGS),\
+                                OR(BEAU,BELLE))), \
+                  _designated ah so)
+def: _ah so part 1
+  from: SINGLE INVERTED LINE
+    select: BEAU
+      select: END
+        prim: in 3, 3, in
+      select: CENTER
+        prim: in 1, -1, out
+    select: BELLE
+      select: END
+        prim: in 3, -1, in, sashay-start
+      select: CENTER
+        prim: in 1, 3, out
+  from: RH THREE-AND-ONE LINE
+    select: END
+      prim: in 3, 3, in
+    select: CENTER
+      select: BEAU
+        prim: in 1, -1, out
+      select: BELLE
+        prim: in 1, 1, in
+def: _ah so part 2
+  from: RH THREE-AND-ONE LINE
+    select: END
+      prim: in 2, 1, in
+    select: CENTER
+      select: BELLE
+        prim: 0, -1, in, sashay-finish
+      select: BEAU
+        prim: 0, 1, out, sashay-finish
+// catch-all definition, for weird 3-and-1 lines, etc.
+// designate the centers who are not part of a couple
+def: _designated ah so
+  call: _anyone(DESIGNATED, u turn back)
+  call: wheel and deal
+  call: _finish designated ah so
+def: _finish designated ah so
+  select: DESIGNATED // ensure that the final roll direction is correct
+    prim: 0, 0, out
+    prim: 0, 0, roll
+  select: OTHERS
+    prim: 0, 0, none, preserve-roll preserve-sweep
+    prim: 0, 0, none, preserve-roll preserve-sweep
+
 def: alter the wave
   call: quarter the alter(1/2, 3/4, 1/2)
 

@@ -152,8 +152,10 @@ public class MatcherList {
     public static final Matcher _1_X2 =
         Tagger.autotag2
             (GeneralFormationMatcher.makeMatcher(FormationList._1x2));
-    public static final Matcher COUPLE = 
+    public static final Matcher COUPLE =
         GeneralFormationMatcher.makeMatcher(FormationList.COUPLE);
+    public static final Matcher COUPLE_NO_TAGS =
+        GeneralFormationMatcher.makeMatcher(FormationList.COUPLE_NO_TAGS);
     public static final Matcher FACING_DANCERS =
         GeneralFormationMatcher.makeMatcher(FormationList.FACING_DANCERS);
     public static final Matcher BACK_TO_BACK_DANCERS =

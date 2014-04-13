@@ -85,6 +85,20 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BEAU),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BELLE));
 
+    /** COUPLE NO TAGS formation.
+      * @doc.test
+      *  js> tf = FormationList.COUPLE_NO_TAGS; tf.mapStd([]).toStringDiagram('|');
+      *  |1B^  1G^
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  []
+      *  []
+      */
+    public static final NamedTaggedFormation COUPLE_NO_TAGS =
+        new NamedTaggedFormation("COUPLE NO TAGS",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), ExactRotation.NORTH)),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.NORTH)));
+
     /** FACING DANCERS formation.
       * @doc.test
       *  js> tf = FormationList.FACING_DANCERS; tf.mapStd([]).toStringDiagram('|');
@@ -4001,6 +4015,7 @@ abstract class FormationListFast {
             FormationListFast.GENERAL_TANDEM,
             FormationListFast._1x2,
             FormationListFast.COUPLE,
+            FormationListFast.COUPLE_NO_TAGS,
             FormationListFast.FACING_DANCERS,
             FormationListFast.BACK_TO_BACK_DANCERS,
             FormationListFast.TANDEM,
