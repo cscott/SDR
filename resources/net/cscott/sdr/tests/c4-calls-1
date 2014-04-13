@@ -180,7 +180,21 @@ sdr> double down
 |
 | 2B<  3B<
 sdr> cross by
+|        4G<
+| 
+|        1B>
+| 1Gv  2B^  4Bv  3G^
+|        3B<
+| 
+|        2G>
 sdr> allemande left
+|      1B<  4G>
+| 
+| 1G^            4B^
+| 
+| 2Bv            3Gv
+| 
+|      2G<  3B>
 sdr> promenade home
 |      3Gv  3Bv
 | 

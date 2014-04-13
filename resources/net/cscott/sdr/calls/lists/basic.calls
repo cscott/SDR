@@ -751,8 +751,8 @@ def: allemande left
   spoken: (allemande left)|(left allemande)
   in: 4 // half
   ipart:
-    from: LH MINIWAVE
-      call: _miniwave trade, step thru
+    from: THAR, WRONG WAY THAR, LH MINIWAVE
+      call: trade, step thru
     from: ANY
       call: mirror(_turn and touch), allemande left
 
@@ -1586,7 +1586,14 @@ def: trade down the line(sel)
     call: _centers(trade)
 
 def: trade
-  from: mixed(COUPLE, RH_MINIWAVE, LH_MINIWAVE)
+  from: THAR, WRONG WAY THAR
+    select: CENTER
+      prim: out 2, 1, out
+      prim: in 1, 0, roll
+    select: END
+      prim: 0, 1, in
+      prim: in 1, 2, roll
+  from: mixed(COUPLE, RH MINIWAVE, LH MINIWAVE)
     from: COUPLE
       call: partner trade
     from: MINIWAVE
@@ -1624,6 +1631,11 @@ def: step to a left hand wave
 
 def: step thru
   in: 2 // not official
+  from: THAR, WRONG WAY THAR
+    select: CENTER
+      prim: out 2, 1, none
+    select: END
+      prim: 0, 1, none
   from: MINIWAVE
     call: _extend // the general case
 

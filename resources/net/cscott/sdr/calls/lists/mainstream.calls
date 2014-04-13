@@ -103,7 +103,7 @@ def: _hinge
   in: 2
   call: 1/2(trade)
 def: hinge
-  from: mixed(RH MINIWAVE, LH MINIWAVE)
+  from: THAR, WRONG WAY THAR, mixed(RH MINIWAVE, LH MINIWAVE)
     call: _hinge
   from: mixed(RH MINIWAVE, LH MINIWAVE, COUPLE)
     condition: PROGRAM AT LEAST(A1), "Partner hinge not allowed below A1"
