@@ -136,6 +136,12 @@ def: little more
   xpart: 2
     call: little, anyone while others(CENTER, circulate, nothing)
 
+def: split swap
+  option: REVERSE
+  from: FACING COUPLES, 2x2
+    condition: ARE(ALL, TRAILER)
+    call: mirror(shake and rattle)
+
 // XXX: can be done from promenade
 def: wheel the ocean
   call: _start wheel the, _finish wheel the ocean

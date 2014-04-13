@@ -94,6 +94,10 @@ abstract class FormationListSlow {
         create("LH MINIWAVE",
                d(-1,0,"s",BELLE),
                d(+1,0,"n",BELLE));
+    // 3-person formations
+    public static final NamedTaggedFormation _1x3 =
+        create("1x3", f("+++"), WhetherTagger.NO_AUTO_TAGS,
+                t(0, END), t(1, CENTER), t(2, END));
     // 4-person formations
     public static final NamedTaggedFormation GENERAL_LINE =
         create("GENERAL LINE", f("||||"), WhetherTagger.NO_AUTO_TAGS,
@@ -720,6 +724,16 @@ abstract class FormationListSlow {
                d(-1,-2, "|", CENTER),
                d(+1,-2, "|", CENTER),
                d( 0,-4, "-", OUTSIDE_4, POINT));
+    public static final NamedTaggedFormation GENERAL_SPINDLE =
+        create("GENERAL SPINDLE",
+               d( 0, 4, "-", END, POINT),
+               d(-1, 2, "|", CENTER_6),
+               d(+1, 2, "|", CENTER_6),
+               d(-1, 0, "|", VERY_CENTER, CENTER_6),
+               d(+1, 0, "|", VERY_CENTER, CENTER_6),
+               d(-1,-2, "|", CENTER_6),
+               d(+1,-2, "|", CENTER_6),
+               d( 0,-4, "-", END, POINT));
     public static final NamedTaggedFormation O_DOUBLE_PASS_THRU = // used for grand square
         create("O DOUBLE PASS THRU", f(" ss ","s  s","n  n"," nn "),
                 WhetherTagger.AUTO_TAGS,

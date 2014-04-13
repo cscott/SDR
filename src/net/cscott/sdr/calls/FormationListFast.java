@@ -161,6 +161,22 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), ExactRotation.SOUTH), Tag.BELLE),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BELLE));
 
+    /** 1x3 formation.
+      * @doc.test
+      *  js> tf = FormationList._1x3; tf.toStringDiagram('|');
+      *  |+    +    +
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [END]
+      *  [CENTER]
+      *  [END]
+      */
+    public static final NamedTaggedFormation _1x3 =
+        new NamedTaggedFormation("1x3",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(2), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.END));
+
     /** GENERAL LINE formation.
       * @doc.test
       *  js> tf = FormationList.GENERAL_LINE; tf.toStringDiagram('|');
@@ -3221,6 +3237,40 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-4), Rotation.fromAbsoluteString("-")), Tag.POINT, Tag.OUTSIDE_4));
 
+    /** GENERAL SPINDLE formation.
+      * @doc.test
+      *  js> tf = FormationList.GENERAL_SPINDLE; tf.toStringDiagram('|');
+      *  |  -
+      *  |
+      *  ||    |
+      *  |
+      *  ||    |
+      *  |
+      *  ||    |
+      *  |
+      *  |  -
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [POINT, END]
+      *  [CENTER_6]
+      *  [CENTER_6]
+      *  [VERY_CENTER, CENTER_6]
+      *  [VERY_CENTER, CENTER_6]
+      *  [CENTER_6]
+      *  [CENTER_6]
+      *  [POINT, END]
+      */
+    public static final NamedTaggedFormation GENERAL_SPINDLE =
+        new NamedTaggedFormation("GENERAL SPINDLE",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(4), Rotation.fromAbsoluteString("-")), Tag.POINT, Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(2), Rotation.fromAbsoluteString("|")), Tag.CENTER_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(2), Rotation.fromAbsoluteString("|")), Tag.CENTER_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.VERY_CENTER, Tag.CENTER_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.VERY_CENTER, Tag.CENTER_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.CENTER_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.CENTER_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-4), Rotation.fromAbsoluteString("-")), Tag.POINT, Tag.END));
+
     /** O DOUBLE PASS THRU formation.
       * @doc.test
       *  js> tf = FormationList.O_DOUBLE_PASS_THRU; tf.mapStd([]).toStringDiagram('|');
@@ -3920,6 +3970,7 @@ abstract class FormationListFast {
             FormationListFast.TANDEM,
             FormationListFast.RH_MINIWAVE,
             FormationListFast.LH_MINIWAVE,
+            FormationListFast._1x3,
             FormationListFast.GENERAL_LINE,
             FormationListFast.GENERAL_COLUMN,
             FormationListFast._1x4,
@@ -4030,6 +4081,7 @@ abstract class FormationListFast {
             FormationListFast.RH_GALAXY,
             FormationListFast.LH_GALAXY,
             FormationListFast.GENERAL_GALAXY,
+            FormationListFast.GENERAL_SPINDLE,
             FormationListFast.O_DOUBLE_PASS_THRU,
             FormationListFast.GENERAL_O,
             FormationListFast.BUTTERFLY_DOUBLE_PASS_THRU,

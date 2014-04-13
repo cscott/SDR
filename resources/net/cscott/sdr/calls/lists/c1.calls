@@ -117,6 +117,12 @@ def: _finish o
   from: ANY // can't put back the distortion
     prim: 0, 0, none, preserve-roll
 
+def: shakedown
+  option: LEFT
+  from: BACK TO BACK COUPLES, 2x2
+    condition: ARE(ALL, LEADER)
+      call: shake and rattle
+
 // XXX: square chain thru to a wave ... general 'to a wave' suffix?
 // see 'square thru' (basic) and 'square chain thru' (a1) definitions
 def: square chain the top

@@ -1,5 +1,14 @@
 program: c4
 
+def: _quarter cross(n)
+  call: 2/3(_quarter mix([n]))
+def: quarter cross
+  option: LEFT
+  call: _quarter cross(1/4)
+def: three quarter cross
+  option: LEFT
+  call: _quarter cross(3/4)
+
 def: brace yourself
   in: 4
   from: COUPLE
@@ -80,6 +89,10 @@ def: trail the top
   in: 6
     call: _in(2, _trail and step)
     call: _in(4, fan the top)
+
+def: you all
+  from: CENTER HALF
+    call: _quasi concentric(hinge, u turn back)
 
 // C4 class teaching order
 

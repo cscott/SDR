@@ -166,6 +166,11 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.LH_MINIWAVE);
     public static final Matcher MINIWAVE =
         OR("MINIWAVE", RH_MINIWAVE, LH_MINIWAVE);
+
+    // 3-person matchers
+    public static final Matcher _1_X3 =
+        GeneralFormationMatcher.makeMatcher(FormationList._1x3);
+
     // 4-person matchers
     public static final Matcher GENERAL_LINE =
         Tagger.autotag2
@@ -465,6 +470,8 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_GALAXY);
     public static final Matcher GALAXY =
         OR("GALAXY", RH_GALAXY, LH_GALAXY);
+    public static final Matcher GENERAL_SPINDLE =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_SPINDLE);
     public static final Matcher O_DOUBLE_PASS_THRU =
         GeneralFormationMatcher.makeMatcher(FormationList.O_DOUBLE_PASS_THRU);
     public static final Matcher GENERAL_O =

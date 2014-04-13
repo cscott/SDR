@@ -1,0 +1,21 @@
+Simple test of 'reactivate'.
+
+sdr> /program = C3B
+C3B
+sdr> heads pass the ocean
+|      1B>
+| 
+| 4B>  1G<  2G<
+| 
+| 4G>  3G>  2B<
+| 
+|      3B<
+sdr> reactivate
+| 3B>  2B>
+| 
+| 4G<  3G<
+| 
+| 1G>  2G>
+| 
+| 4B<  1B<
+sdr> /exit
