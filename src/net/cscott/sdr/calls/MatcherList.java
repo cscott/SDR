@@ -21,6 +21,7 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.ListUtils;
+import net.cscott.sdr.util.Point;
 import net.cscott.sdr.util.Tools;
 
 import org.junit.runner.RunWith;
@@ -523,6 +524,8 @@ public class MatcherList {
     // 16-person matchers
     public static final Matcher QUADRUPLE_GENERAL_LINES =
         GeneralFormationMatcher.makeMatcher(FormationList.QUADRUPLE_GENERAL_LINES);
+    public static final Matcher QUADRUPLE_GENERAL_COLUMNS =
+        GeneralFormationMatcher.makeMatcher(FormationList.QUADRUPLE_GENERAL_COLUMNS);
     // this matcher has an extra underscore because the parser treats it
     // as two items: the number four, and the identifier x4.
     public static final Matcher _4_X4 =
@@ -532,18 +535,14 @@ public class MatcherList {
     public static final Matcher CENTER_2 = new CenterMatcher(2);
     public static final Matcher CENTER_4 = new CenterMatcher(4);
     public static final Matcher CENTER_6 = new CenterMatcher(6);
+    public static final Matcher CENTER_8 = new CenterMatcher(8);
     public static final Matcher CENTER_HALF = new CenterMatcher();
     /**
      * Algorithmically select the center N dancers from a formation.
      * @doc.test Finding the centers of a 4-person formation:
-     *  js> SD = StandardDancer; undefined
      *  js> // rotate the formation 1/2 just to get rid of the original tags
-     *  js> f = FormationList.RH_OCEAN_WAVE.rotate(ExactRotation.ONE_HALF); f.
-     *    >     toStringDiagram()
-     *  ^    v    ^    v
-     *  js> // label those dancers
-     *  js> f= f.map(SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
-     *    >          SD.COUPLE_3_GIRL, SD.COUPLE_3_BOY); f.toStringDiagram()
+     *  js> f = FormationList.RH_OCEAN_WAVE.rotate(ExactRotation.ONE_HALF).
+     *    >     mapStd([]); f.toStringDiagram()
      *  1B^  1Gv  3G^  3Bv
      *  js> MatcherList.CENTER_HALF.match(f)
      *  AA^
@@ -563,19 +562,9 @@ public class MatcherList {
      *  js> try { MatcherList.CENTER_6.match(f); } catch (e) { print (e.javaException); }
      *  net.cscott.sdr.calls.NoMatchException: No match for CENTER(6): Can't find 6 center dancers
      * @doc.test Finding the centers of an 8-person formation:
-     *  js> SD = StandardDancer; undefined
      *  js> // rotate the formation 1/2 just to get rid of the original tags
-     *  js> f = FormationList.RH_QUARTER_TAG.rotate(ExactRotation.ONE_HALF); f.
-     *    >     toStringDiagram()
-     *       v    v
-     *  
-     *  ^    v    ^    v
-     *  
-     *       ^    ^
-     *  js> // label those dancers
-     *  js> f= f.map(SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL,
-     *    >          SD.COUPLE_2_BOY, SD.COUPLE_2_GIRL, SD.COUPLE_4_GIRL, SD.COUPLE_4_BOY,
-     *    >          SD.COUPLE_3_GIRL, SD.COUPLE_3_BOY); f.toStringDiagram()
+     *  js> f = FormationList.RH_QUARTER_TAG.rotate(ExactRotation.ONE_HALF).
+     *    >     mapStd([]); f.toStringDiagram()
      *       1Bv  1Gv
      *  
      *  2B^  2Gv  4G^  4Bv
@@ -618,18 +607,9 @@ public class MatcherList {
      *          3G^  3B^
      *   [1B: CENTER; 1G: CENTER; 2G: CENTER; 4G: CENTER; 3G: CENTER; 3B: CENTER]
      * @doc.test Finding the center six of a sausage.
-     *  js> SD = StandardDancer; undefined
      *  js> // rotate the formation 1/2 just to get rid of the original tags
-     *  js> f = FormationList.RH_COLUMN.rotate(ExactRotation.ONE_HALF); f.toStringDiagram()
-     *  ^    v
-     *  
-     *  ^    v
-     *  
-     *  ^    v
-     *  
-     *  ^    v
-     *  js> // label those dancers
-     *  js> f= f.mapStd(SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL, SD.COUPLE_2_BOY, SD.COUPLE_2_GIRL); f.toStringDiagram()
+     *  js> f = FormationList.RH_COLUMN.rotate(ExactRotation.ONE_HALF).
+     *    >     mapStd([]); f.toStringDiagram()
      *  1B^  1Gv
      *  
      *  2B^  2Gv
@@ -662,8 +642,31 @@ public class MatcherList {
      *     
      *       4B<
      *   [4G: CENTER; 1B: CENTER; 3G: CENTER; 1G: CENTER; 3B: CENTER; 2G: CENTER]
+     * @doc.test Note that the matching behavior can sometimes be surprising:
+     *  js> // rotate the formation 1/2 just to get rid of the original tags
+     *  js> f = FormationList.QUADRUPLE_GENERAL_LINES.rotate(ExactRotation.ONE_HALF);
+     *    > f.toStringDiagram()
+     *  |    |    |    |
+     *  
+     *  |    |    |    |
+     *  
+     *  |    |    |    |
+     *  
+     *  |    |    |    |
+     *  js> // show only the "CENTER 8" dancers
+     *  js> fm = MatcherList.CENTER_8.match(f);
+     *    > f = fm.matches.values().iterator().next();
+     *    > f = f.select(f.tagged(TaggedFormation.Tag.CENTER)).onlySelected();
+     *    > f.toStringDiagram()
+     *  |              |
+     *  
+     *       |    |
+     *  
+     *       |    |
+     *  
+     *  |              |
      */
-    private static class CenterMatcher extends Matcher {
+    static class CenterMatcher extends Matcher {
         private final boolean half;
         private final int howMany;
         /** Select the center "half" of the formation. */
@@ -694,7 +697,7 @@ public class MatcherList {
                  Factories.<Dancer>linkedHashSetFactory());
             for (Dancer d: f.dancers()) {
                 Position p = f.location(d);
-                Fraction dist2 = (p.x.multiply(p.x)).add(p.y.multiply(p.y));
+                Fraction dist2 = p.toPoint().dist2(Point.ZERO);
                 mm.add(dist2, d);
             }
             Set<Dancer> centerDancers = new LinkedHashSet<Dancer>();
@@ -962,7 +965,7 @@ public class MatcherList {
      *     4G>    +    +  2B<
      *     
      *       +  1B^  1G^    +
-     *   [ph inserted: NONCORPOREAL,OUTSIDE_8; 3G: OUTSIDE_8; 3B: OUTSIDE_8; ph inserted: NONCORPOREAL,OUTSIDE_8; 4B: CENTER; ph inserted: NONCORPOREAL,CENTER; ph inserted: NONCORPOREAL,CENTER; 2G: CENTER; 4G: CENTER; ph inserted: NONCORPOREAL,CENTER; ph inserted: NONCORPOREAL,CENTER; 2B: CENTER; ph inserted: NONCORPOREAL,OUTSIDE_8; 1B: OUTSIDE_8; 1G: OUTSIDE_8; ph inserted: NONCORPOREAL,OUTSIDE_8]
+     *   [ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL]
      */
     public static ExprFunc<Matcher> _USE_PHANTOMS = new ExprFunc<Matcher>(){
         @Override

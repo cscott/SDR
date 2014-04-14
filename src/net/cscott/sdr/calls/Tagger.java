@@ -31,8 +31,36 @@ public abstract class Tagger {
     //     point-to-point diamonds.
     public static void addAutomatic(Formation f, MultiMap<Dancer, Tag> tags) {
         switch(f.dancers().size()) {
+        case 16:
+            tagCenters(f, new MatcherList.CenterMatcher(8),
+                       Tag.CENTER, Tag.OUTSIDE_8, tags);
+            break;
+        case 12:
+            tagCenters(f, new MatcherList.CenterMatcher(4),
+                       Tag.CENTER, Tag.OUTSIDE_8, tags);
+            break;
         case 8:
-            // XXX: add center 2, outer 6
+            boolean centersOnEachSide = false;
+            if (f.bounds().width().compareTo(Fraction.valueOf(16)) >= 0)
+                // weird quirk of tidal wave formations, we never mean
+                // "centers" to mean "center 4"
+                centersOnEachSide = true;
+            tag4(f, tags);
+            if (!centersOnEachSide) {
+                // remove center/end tags
+                for (Dancer d : tags.keySet()) {
+                    tags.getValues(d).remove(Tag.CENTER);
+                    tags.getValues(d).remove(Tag.END);
+                }
+                tagCenters(f, new MatcherList.CenterMatcher(4),
+                           Tag.CENTER, Tag.END, tags);
+            }
+            tagCenters(f, new MatcherList.CenterMatcher(2),
+                       Tag.VERY_CENTER, Tag.OUTSIDE_6, tags);
+            tagCenters(f, new MatcherList.CenterMatcher(6),
+                       Tag.CENTER_6, Tag.OUTSIDE_2, tags);
+            tag2(f, tags);
+            break;
         case 4:
             tag4(f, tags);
         case 2:
@@ -114,6 +142,28 @@ public abstract class Tagger {
         tagN(4, f, tags);
     }
 
+    /** Apply center/end tags using the CENTER_x Matchers. */
+    private static void tagCenters(Formation input, Matcher m,
+                                      Tag centerTag, Tag outsideTag,
+                                      MultiMap<Dancer,Tag> tags) {
+        try {
+            FormationMatch fm = m.match(input);
+            for (Dancer md : fm.meta.dancers()) {
+                TaggedFormation tf = fm.matches.get(md);
+                for (Dancer d : tf.dancers())
+                    if (tf.isTagged(d, Tag.CENTER)) {
+                        if (centerTag != null)
+                            tags.add(d, centerTag);
+                    } else {
+                        if (outsideTag != null)
+                            tags.add(d, outsideTag);
+                    }
+            }
+        } catch (NoMatchException nme) {
+            /* no tags added */
+        }
+    }
+
     private static void tagN(int n, Formation f, MultiMap<Dancer,Tag> tags) {
         assert n==2 || n==4;
         Formation template = (n==2) ? template2 : (n==4) ? template4 : null;
@@ -122,14 +172,15 @@ public abstract class Tagger {
         LL<Dancer> allDancers = LL.create(f.sortedDancers());
         Map<Point,Dancer> where = new HashMap<Point,Dancer>();
         for (Dancer d: allDancers)
-            where.put(pos2pt(f.location(d)), d);
+            where.put(f.location(d).toPoint(), d);
         Match noMatch = new Match(allDancers);
         for (int i=0; i<4; i+=2)  { //change to +=1 to support 45-off formations
             try {
                 // rotate the template formation and attempt a match.
                 Fraction extraRot = Fraction.valueOf(i, 8);
                 Formation t = template.rotate(new ExactRotation(extraRot));
-                Match m = match(f, where, n, toff, pos2pt(t.location(dancer[toff+1])),
+                Match m = match(f, where, n, toff,
+                                t.location(dancer[toff+1]).toPoint(),
                                 extraRot.negate(), allDancers, noMatch);
                 // add tags from this match
                 tags.addAll(m.tags);
@@ -204,7 +255,7 @@ public abstract class Tagger {
         if (!partialMatch.assigned.contains(d0)) {
             // this dancer can be assigned.  try to make it into a match.
             boolean possible = true;
-            Point p0 = pos2pt(f.location(d0));
+            Point p0 = f.location(d0).toPoint();
             Point p1 = p0;
             for (int i=1; i<templateSize; i++) {
                 p1 = p1.add(offset);
@@ -246,13 +297,9 @@ public abstract class Tagger {
                 nBest0 : nBest1;
     }
 
-    /** Helper method: strip the facing direction from a {@link Position}. */
-    private static Point pos2pt(Position p) {
-        return new Point(p.x, p.y);
-    }
     /** Helper method: concisely create a {@link Position}. */
     private static Position pos(int x, int y, String dir) {
-        return new Position(x,y,Rotation.fromAbsoluteString(dir));
+        return Position.getGrid(x,y,dir);
     }
     /** Our private stash of phantom dancers. */
     private static final Dancer[] dancer = new Dancer[] {
@@ -286,17 +333,29 @@ public abstract class Tagger {
           p(dancer[2], m(p((Rotation)ExactRotation.NORTH, Tag.END),
                          p((Rotation)ExactRotation.SOUTH, Tag.END),
                          p((Rotation)ExactRotation.EAST, Tag.NUMBER_4),
-                         p((Rotation)ExactRotation.WEST, Tag.NUMBER_1))),
+                         p((Rotation)ExactRotation.WEST, Tag.NUMBER_1),
+                         p(Rotation.fromAbsoluteString("|"), Tag.END),
+                         p(Rotation.fromAbsoluteString("-"), Tag.END),
+                         p(Rotation.fromAbsoluteString("+"), Tag.END))),
           p(dancer[3], m(p((Rotation)ExactRotation.NORTH, Tag.CENTER),
                          p((Rotation)ExactRotation.SOUTH, Tag.CENTER),
                          p((Rotation)ExactRotation.EAST, Tag.NUMBER_3),
-                         p((Rotation)ExactRotation.WEST, Tag.NUMBER_2))),
+                         p((Rotation)ExactRotation.WEST, Tag.NUMBER_2),
+                         p(Rotation.fromAbsoluteString("|"), Tag.CENTER),
+                         p(Rotation.fromAbsoluteString("-"), Tag.CENTER),
+                         p(Rotation.fromAbsoluteString("+"), Tag.CENTER))),
           p(dancer[4], m(p((Rotation)ExactRotation.NORTH, Tag.CENTER),
                          p((Rotation)ExactRotation.SOUTH, Tag.CENTER),
                          p((Rotation)ExactRotation.EAST, Tag.NUMBER_2),
-                         p((Rotation)ExactRotation.WEST, Tag.NUMBER_3))),
+                         p((Rotation)ExactRotation.WEST, Tag.NUMBER_3),
+                         p(Rotation.fromAbsoluteString("|"), Tag.CENTER),
+                         p(Rotation.fromAbsoluteString("-"), Tag.CENTER),
+                         p(Rotation.fromAbsoluteString("+"), Tag.CENTER))),
           p(dancer[5], m(p((Rotation)ExactRotation.NORTH, Tag.END),
                          p((Rotation)ExactRotation.SOUTH, Tag.END),
                          p((Rotation)ExactRotation.EAST, Tag.NUMBER_1),
-                         p((Rotation)ExactRotation.WEST, Tag.NUMBER_4))));
+                         p((Rotation)ExactRotation.WEST, Tag.NUMBER_4),
+                         p(Rotation.fromAbsoluteString("|"), Tag.END),
+                         p(Rotation.fromAbsoluteString("-"), Tag.END),
+                         p(Rotation.fromAbsoluteString("+"), Tag.END))));
 }

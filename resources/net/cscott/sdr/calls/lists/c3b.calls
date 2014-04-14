@@ -344,7 +344,7 @@ def: _cross reactivate part 1
                      _blend last(_reactivate part 1, _ends sashay))
 def: _ends sashay
   from: GENERAL QUARTER TAG
-    select: OUTSIDE 4
+    select: END
       prim: in 2, 0, none, sashay-start sashay-finish
     select: OTHERS
       prim: 0, 0, none
@@ -679,10 +679,8 @@ def: wave the(sel)
   ipart:
     call: press ahead
   ipart:
-    select: OUTSIDE 4
-      call: kickoff([sel])
-    select: CENTER 4
-      call: concentric(walk others dodge([sel]))
+    from: CENTER_HALF
+      call: _quasi concentric(walk others dodge([sel]), kickoff([sel]))
   example: wave the(BEAU)
     before:
     !   ^ ^

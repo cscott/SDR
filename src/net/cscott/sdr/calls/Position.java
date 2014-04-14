@@ -553,7 +553,7 @@ public class Position implements Comparable<Position> {
      */
     public static Position getGrid(int x, int y, String direction,
 				   Flag... flags) {
-	return getGrid(x,y,ExactRotation.fromAbsoluteString(direction), flags);
+	return getGrid(x,y,Rotation.fromAbsoluteString(direction), flags);
     }
 
     // utility functions.

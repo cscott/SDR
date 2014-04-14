@@ -795,7 +795,7 @@ public class GeneralFormationMatcher {
      *     3B^  3G^
      *     
      *       |    |
-     *   [ph inserted: NONCORPOREAL,OUTSIDE_4; ph inserted: NONCORPOREAL,OUTSIDE_4; 1G: CENTER; 1B: CENTER; 3B: CENTER; 3G: CENTER; ph inserted: NONCORPOREAL,OUTSIDE_4; ph inserted: NONCORPOREAL,OUTSIDE_4]
+     *   [ph inserted: NONCORPOREAL,END; ph inserted: NONCORPOREAL,END; 1G: CENTER; 1B: CENTER; 3B: CENTER; 3G: CENTER; ph inserted: NONCORPOREAL,END; ph inserted: NONCORPOREAL,END]
      * @doc.test Matching against GENERAL O:
      *  js> goals = [ FormationList.GENERAL_O ];
      *    > f = FormationList.PARALLEL_RH_TWO_FACED_LINES.mapStd([]);

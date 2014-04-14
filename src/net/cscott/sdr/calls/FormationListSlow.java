@@ -333,21 +333,21 @@ abstract class FormationListSlow {
                 t(0,END),t(1,CENTER),t(2,CENTER),t(3,END));
     // 8-person formations. ///////////////////////////////
     public static final NamedTaggedFormation _1x8 =
-        create("1x8", f("++++++++"), WhetherTagger.NO_AUTO_TAGS,
-                t(0, OUTSIDE_4), t(1, OUTSIDE_4), t(2, CENTER), t(3, CENTER),
-                t(4, CENTER), t(5, CENTER), t(6, OUTSIDE_4), t(7, OUTSIDE_4));
+        create("1x8", f("++++++++"), WhetherTagger.AUTO_TAGS,
+                t(0, OUTSIDE_4), t(1, OUTSIDE_4),
+                t(6, OUTSIDE_4), t(7, OUTSIDE_4));
     public static final NamedTaggedFormation _2x4 =
         create("2x4", f("++++","++++"), WhetherTagger.NO_AUTO_TAGS,
-                t(0, OUTSIDE_4), t(1, CENTER), t(2, CENTER), t(3, OUTSIDE_4),
-                t(4, OUTSIDE_4), t(5, CENTER), t(6, CENTER), t(7, OUTSIDE_4));
+                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),
+                t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation PARALLEL_GENERAL_LINES =
         create("PARALLEL GENERAL LINES", f("||||","||||"), WhetherTagger.NO_AUTO_TAGS,
-                t(0, OUTSIDE_4), t(1, CENTER), t(2, CENTER), t(3, OUTSIDE_4),
-                t(4, OUTSIDE_4), t(5, CENTER), t(6, CENTER), t(7, OUTSIDE_4));
+                t(0, END), t(1, CENTER), t(2, CENTER), t(3, END),
+                t(4, END), t(5, CENTER), t(6, CENTER), t(7, END));
     public static final NamedTaggedFormation GENERAL_COLUMNS =
         create("GENERAL COLUMNS", f("||","||","||","||"), WhetherTagger.NO_AUTO_TAGS,
-                t(0, OUTSIDE_4), t(1, OUTSIDE_4), t(2, CENTER), t(3, CENTER),
-                t(4, CENTER), t(5, CENTER), t(6, OUTSIDE_4), t(7, OUTSIDE_4));
+                t(0, END), t(1, END), t(2, CENTER), t(3, CENTER),
+                t(4, CENTER), t(5, CENTER), t(6, END), t(7, END));
     public static final NamedTaggedFormation STATIC_SQUARE = // callerlab #14
         create("STATIC SQUARE", f(" ss ","e  w","e  w"," nn "),
                WhetherTagger.AUTO_TAGS,
@@ -549,74 +549,47 @@ abstract class FormationListSlow {
     // xxx do we want all variants here, or just the "canonical" ones?
     public static final NamedTaggedFormation GENERAL_QUARTER_TAG =
         create("GENERAL 1/4 TAG", f(" || ","||||"," || "),
-               WhetherTagger.NO_AUTO_TAGS,
-               t(0, OUTSIDE_4), t(1, OUTSIDE_4),
-               t(2, CENTER), t(3, CENTER), t(4, CENTER), t(5, CENTER),
-               t(6, OUTSIDE_4), t(7, OUTSIDE_4));
+               WhetherTagger.AUTO_TAGS);
     public static final NamedTaggedFormation RH_QUARTER_TAG = // callerlab #37(a)
-	_ends_in(xofy("RH 1/4 TAG", RH_MINIWAVE, RH_SINGLE_QUARTER_TAG,
-                      WhetherTagger.NO_AUTO_TAGS,
-		      t(0,OUTSIDE_6,CENTER_6,BELLE),
-		      t(1,OUTSIDE_6,CENTER_6,BEAU),
-		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
-		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
-		      t(6,OUTSIDE_6,CENTER_6,BEAU),
-		      t(7,OUTSIDE_6,CENTER_6,BELLE)));
+        _ends_in(xofy("RH 1/4 TAG", RH_MINIWAVE, RH_SINGLE_QUARTER_TAG,
+                      WhetherTagger.AUTO_TAGS,
+                      t(0,BELLE), t(1,BEAU),
+                      //t(2,BEAU),t(3,BEAU),t(4,BEAU),t(5,BEAU),
+                      t(6,BEAU), t(7,BELLE)));
     public static final NamedTaggedFormation LH_QUARTER_TAG = // callerlab #37(a)
-	_ends_in(xofy("LH 1/4 TAG", LH_MINIWAVE, LH_SINGLE_QUARTER_TAG,
-                      WhetherTagger.NO_AUTO_TAGS,
-		      t(0,OUTSIDE_6,CENTER_6,BELLE),
-		      t(1,OUTSIDE_6,CENTER_6,BEAU),
-		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
-		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
-		      t(6,OUTSIDE_6,CENTER_6,BEAU),
-		      t(7,OUTSIDE_6,CENTER_6,BELLE)));
+        _ends_in(xofy("LH 1/4 TAG", LH_MINIWAVE, LH_SINGLE_QUARTER_TAG,
+                      WhetherTagger.AUTO_TAGS,
+                      t(0,BELLE), t(1,BEAU),
+                      //t(2,BELLE),t(3,BELLE),t(4,BELLE),t(5,BELLE),
+                      t(6,BEAU), t(7,BELLE)));
     public static final NamedTaggedFormation RH_THREE_QUARTER_TAG = // callerlab #38(a)
-	_ends_in(xofy("RH 3/4 TAG", RH_MINIWAVE, RH_SINGLE_THREE_QUARTER_TAG,
-                      WhetherTagger.NO_AUTO_TAGS,
-		      t(0,OUTSIDE_6,CENTER_6,BEAU),
-		      t(1,OUTSIDE_6,CENTER_6,BELLE),
-		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
-		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
-		      t(6,OUTSIDE_6,CENTER_6,BELLE),
-		      t(7,OUTSIDE_6,CENTER_6,BEAU)));
+        _ends_in(xofy("RH 3/4 TAG", RH_MINIWAVE, RH_SINGLE_THREE_QUARTER_TAG,
+                      WhetherTagger.AUTO_TAGS,
+                      t(0,BEAU), t(1,BELLE),
+                      //t(2,BEAU),t(3,BEAU),t(4,BEAU),t(5,BEAU),
+                      t(6,BELLE), t(7,BEAU)));
     public static final NamedTaggedFormation LH_THREE_QUARTER_TAG = // callerlab #38(b)
-	_ends_in(xofy("LH 3/4 TAG", LH_MINIWAVE, LH_SINGLE_THREE_QUARTER_TAG,
-                      WhetherTagger.NO_AUTO_TAGS,
-		      t(0,OUTSIDE_6,CENTER_6,BEAU),
-		      t(1,OUTSIDE_6,CENTER_6,BELLE),
-		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
-		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
-		      t(6,OUTSIDE_6,CENTER_6,BELLE),
-		      t(7,OUTSIDE_6,CENTER_6,BEAU)));
+        _ends_in(xofy("LH 3/4 TAG", LH_MINIWAVE, LH_SINGLE_THREE_QUARTER_TAG,
+                      WhetherTagger.AUTO_TAGS,
+                      t(0,BEAU), t(1,BELLE),
+                      //t(2,BELLE),t(3,BELLE),t(4,BELLE),t(5,BELLE),
+                      t(6,BELLE), t(7,BEAU)));
     public static final NamedTaggedFormation RH_QUARTER_LINE = // callerlab #39(a)
-	_ends_in(xofy("RH 1/4 LINE", RH_SINGLE_QUARTER_TAG, COUPLE,
-                      WhetherTagger.NO_AUTO_TAGS,
-		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
-		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
-		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
-		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
+        /*_ends_in*/(xofy("RH 1/4 LINE", RH_SINGLE_QUARTER_TAG, COUPLE,
+                      WhetherTagger.AUTO_TAGS,
+                      t(0,BELLE), t(1,BEAU), t(6,BEAU), t(7,BELLE)));
     public static final NamedTaggedFormation LH_QUARTER_LINE = // callerlab #39(b)
-	_ends_in(xofy("LH 1/4 LINE", LH_SINGLE_QUARTER_TAG, COUPLE,
-                      WhetherTagger.NO_AUTO_TAGS,
-		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
-		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
-		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
-		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
+        /*_ends_in*/(xofy("LH 1/4 LINE", LH_SINGLE_QUARTER_TAG, COUPLE,
+                      WhetherTagger.AUTO_TAGS,
+                      t(0,BELLE), t(1,BEAU), t(6,BEAU), t(7,BELLE)));
     public static final NamedTaggedFormation RH_THREE_QUARTER_LINE = // callerlab #39(a)
-	_ends_in(xofy("RH 3/4 LINE", RH_SINGLE_THREE_QUARTER_TAG, COUPLE,
-                      WhetherTagger.NO_AUTO_TAGS,
-		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
-		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
-		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
-		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
+        /*_ends_in*/(xofy("RH 3/4 LINE", RH_SINGLE_THREE_QUARTER_TAG, COUPLE,
+                      WhetherTagger.AUTO_TAGS,
+                      t(0,BEAU), t(1,BELLE), t(6,BELLE), t(7,BEAU)));
     public static final NamedTaggedFormation LH_THREE_QUARTER_LINE = // callerlab #39(b)
-	_ends_in(xofy("LH 3/4 LINE", LH_SINGLE_THREE_QUARTER_TAG, COUPLE,
-                      WhetherTagger.NO_AUTO_TAGS,
-		      t(0,OUTSIDE_6,CENTER_6),t(1,OUTSIDE_6,CENTER_6),
-		      t(2,OUTSIDE_6),t(3,VERY_CENTER,CENTER_6),
-		      t(4,VERY_CENTER,CENTER_6),t(5,OUTSIDE_6),
-		      t(6,OUTSIDE_6,CENTER_6),t(7,OUTSIDE_6,CENTER_6)));
+        /*_ends_in*/(xofy("LH 3/4 LINE", LH_SINGLE_THREE_QUARTER_TAG, COUPLE,
+                      WhetherTagger.AUTO_TAGS,
+                      t(0,BEAU), t(1,BELLE), t(6,BELLE), t(7,BEAU)));
     public static final NamedTaggedFormation RH_TWIN_DIAMONDS = // callerlab #40
         xofy("RH TWIN DIAMONDS", COUPLE, RH_DIAMOND);
     public static final NamedTaggedFormation LH_TWIN_DIAMONDS = // callerlab #41
@@ -640,32 +613,32 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation RH_HOURGLASS =
         create("RH HOURGLASS",
                d( 0, 4, "e", CENTER, POINT),
-               d(-3, 2, "n", OUTSIDE_4, END),
-               d(+3, 2, "s", OUTSIDE_4, END),
+               d(-3, 2, "n", END),
+               d(+3, 2, "s", END),
                d(-1, 0, "n", BEAU, CENTER, VERY_CENTER),
                d(+1, 0, "s", BEAU, CENTER, VERY_CENTER),
-               d(-3,-2, "n", OUTSIDE_4, END),
-               d(+3,-2, "s", OUTSIDE_4, END),
+               d(-3,-2, "n", END),
+               d(+3,-2, "s", END),
                d( 0,-4, "w", CENTER, POINT)); // callerlab #45(a)
     public static final NamedTaggedFormation LH_HOURGLASS =
         create("LH HOURGLASS",
                d( 0, 4, "w", CENTER, POINT),
-               d(-3, 2, "s", OUTSIDE_4, END),
-               d(+3, 2, "n", OUTSIDE_4, END),
+               d(-3, 2, "s", END),
+               d(+3, 2, "n", END),
                d(-1, 0, "s", BELLE, CENTER, VERY_CENTER),
                d(+1, 0, "n", BELLE, CENTER, VERY_CENTER),
-               d(-3,-2, "s", OUTSIDE_4, END),
-               d(+3,-2, "n", OUTSIDE_4, END),
+               d(-3,-2, "s", END),
+               d(+3,-2, "n", END),
                d( 0,-4, "e", CENTER, POINT)); // callerlab #45(b)
     public static final NamedTaggedFormation GENERAL_HOURGLASS =
         create("GENERAL HOURGLASS",
                d( 0, 4, "-", CENTER, POINT),
-               d(-3, 2, "|", OUTSIDE_4, END),
-               d(+3, 2, "|", OUTSIDE_4, END),
+               d(-3, 2, "|", END),
+               d(+3, 2, "|", END),
                d(-1, 0, "|", CENTER, VERY_CENTER),
                d(+1, 0, "|", CENTER, VERY_CENTER),
-               d(-3,-2, "|", OUTSIDE_4, END),
-               d(+3,-2, "|", OUTSIDE_4, END),
+               d(-3,-2, "|", END),
+               d(+3,-2, "|", END),
                d( 0,-4, "-", CENTER, POINT));
     // XXX left hand Z, callerlab #46
     // XXX right hand Z, callerlab #47
@@ -699,39 +672,39 @@ abstract class FormationListSlow {
                 StandardDancer.COUPLE_2_GIRL,
                 StandardDancer.COUPLE_2_BOY));
     public static final NamedTaggedFormation GENERAL_TIDAL_LINE =
-        create("GENERAL TIDAL LINE", f("||||||||"), WhetherTagger.NO_AUTO_TAGS,
-                t(0, OUTSIDE_4), t(1, OUTSIDE_4), t(2, CENTER), t(3, CENTER),
-                t(4, CENTER), t(5, CENTER), t(6, OUTSIDE_4), t(7, OUTSIDE_4));
+        create("GENERAL TIDAL LINE", f("||||||||"), WhetherTagger.AUTO_TAGS,
+               t(0, OUTSIDE_4), t(1, OUTSIDE_4),
+               t(6, OUTSIDE_4), t(7, OUTSIDE_4));
     public static final NamedTaggedFormation RH_GALAXY =
         create("RH GALAXY",
-               d( 0, 4, "e", OUTSIDE_4, POINT),
+               d( 0, 4, "e", END, POINT),
                d(-1, 2, "n", CENTER, BEAU),
                d(+1, 2, "s", CENTER, BEAU),
-               d(-3, 0, "n", OUTSIDE_4, POINT),
-               d(+3, 0, "s", OUTSIDE_4, POINT),
+               d(-3, 0, "n", END, POINT),
+               d(+3, 0, "s", END, POINT),
                d(-1,-2, "n", CENTER, BEAU),
                d(+1,-2, "s", CENTER, BEAU),
-               d( 0,-4, "w", OUTSIDE_4, POINT)); // callerlab #53(a)
+               d( 0,-4, "w", END, POINT)); // callerlab #53(a)
     public static final NamedTaggedFormation LH_GALAXY =
         create("LH GALAXY",
-               d( 0, 4, "w", OUTSIDE_4, POINT),
+               d( 0, 4, "w", END, POINT),
                d(-1, 2, "s", CENTER, BELLE),
                d(+1, 2, "n", CENTER, BELLE),
-               d(-3, 0, "s", OUTSIDE_4, POINT),
-               d(+3, 0, "n", OUTSIDE_4, POINT),
+               d(-3, 0, "s", END, POINT),
+               d(+3, 0, "n", END, POINT),
                d(-1,-2, "s", CENTER, BELLE),
                d(+1,-2, "n", CENTER, BELLE),
-               d( 0,-4, "e", OUTSIDE_4, POINT)); // callerlab #53(b)
+               d( 0,-4, "e", END, POINT)); // callerlab #53(b)
     public static final NamedTaggedFormation GENERAL_GALAXY =
         create("GENERAL GALAXY",
-               d( 0, 4, "-", OUTSIDE_4, POINT),
+               d( 0, 4, "-", END, POINT),
                d(-1, 2, "|", CENTER),
                d(+1, 2, "|", CENTER),
-               d(-3, 0, "|", OUTSIDE_4, POINT),
-               d(+3, 0, "|", OUTSIDE_4, POINT),
+               d(-3, 0, "|", END, POINT),
+               d(+3, 0, "|", END, POINT),
                d(-1,-2, "|", CENTER),
                d(+1,-2, "|", CENTER),
-               d( 0,-4, "-", OUTSIDE_4, POINT));
+               d( 0,-4, "-", END, POINT));
     public static final NamedTaggedFormation GENERAL_SPINDLE =
         create("GENERAL SPINDLE",
                d( 0, 4, "-", END, POINT),
@@ -744,15 +717,20 @@ abstract class FormationListSlow {
                d( 0,-4, "-", END, POINT));
     public static final NamedTaggedFormation O_DOUBLE_PASS_THRU = // used for grand square
         create("O DOUBLE PASS THRU", f(" ss ","s  s","n  n"," nn "),
-                WhetherTagger.AUTO_TAGS,
+                WhetherTagger.NO_AUTO_TAGS, // gets confused by the distortion
                 sd(StandardDancer.COUPLE_1_GIRL,
                    StandardDancer.COUPLE_1_BOY,
                    StandardDancer.COUPLE_2_GIRL,
                    StandardDancer.COUPLE_2_BOY),
-                t(0, BELLE, END),    t(1, BEAU, END),
-                t(2, BELLE, CENTER), t(3, BEAU, CENTER),
-                t(4, BEAU, CENTER),  t(5, BELLE, CENTER),
-                t(6, BEAU, END),     t(7, BELLE, END));
+               // should have same tags as DOUBLE PASS THRU
+               t(0, BELLE, END,    TRAILER, NUMBER_4),
+               t(1, BEAU,  END,    TRAILER, NUMBER_4),
+               t(2, BELLE, CENTER, LEADER,  NUMBER_3),
+               t(3, BEAU,  CENTER, LEADER,  NUMBER_3),
+               t(4, BEAU,  CENTER, LEADER,  NUMBER_3),
+               t(5, BELLE, CENTER, LEADER,  NUMBER_3),
+               t(6, BEAU,  END,    TRAILER, NUMBER_4),
+               t(7, BELLE, END,    TRAILER, NUMBER_4));
     public static final NamedTaggedFormation GENERAL_O =
         create("GENERAL O", f(" || ","|  |","|  |"," || "),
                 WhetherTagger.NO_AUTO_TAGS,
@@ -762,15 +740,20 @@ abstract class FormationListSlow {
                 t(6, END),    t(7, END));
     public static final NamedTaggedFormation BUTTERFLY_DOUBLE_PASS_THRU = // used for grand square
         create("BUTTERFLY DOUBLE PASS THRU", f("s  s"," ss "," nn ","n  n"),
-                WhetherTagger.AUTO_TAGS,
-                sd(StandardDancer.COUPLE_1_GIRL,
-                   StandardDancer.COUPLE_1_BOY,
-                   StandardDancer.COUPLE_2_GIRL,
-                   StandardDancer.COUPLE_2_BOY),
-                t(0, BELLE, END),    t(1, BEAU, END),
-                t(2, BELLE, CENTER), t(3, BEAU, CENTER),
-                t(4, BEAU, CENTER),  t(5, BELLE, CENTER),
-                t(6, BEAU, END),     t(7, BELLE, END));
+               WhetherTagger.NO_AUTO_TAGS, // gets confused by the distortion
+               sd(StandardDancer.COUPLE_1_GIRL,
+                  StandardDancer.COUPLE_1_BOY,
+                  StandardDancer.COUPLE_2_GIRL,
+                  StandardDancer.COUPLE_2_BOY),
+               // should have same tags as DOUBLE PASS THRU
+               t(0, BELLE, END,    TRAILER, NUMBER_4),
+               t(1, BEAU,  END,    TRAILER, NUMBER_4),
+               t(2, BELLE, CENTER, LEADER,  NUMBER_3),
+               t(3, BEAU,  CENTER, LEADER,  NUMBER_3),
+               t(4, BEAU,  CENTER, LEADER,  NUMBER_3),
+               t(5, BELLE, CENTER, LEADER,  NUMBER_3),
+               t(6, BEAU,  END,    TRAILER, NUMBER_4),
+               t(7, BELLE, END,    TRAILER, NUMBER_4));
     public static final NamedTaggedFormation GENERAL_BUTTERFLY =
         create("GENERAL BUTTERFLY", f("|  |"," || "," || ","|  |"),
                 WhetherTagger.NO_AUTO_TAGS,
@@ -780,40 +763,22 @@ abstract class FormationListSlow {
                 t(6, END),    t(7, END));
     // 12-person formations
     public static final NamedTaggedFormation _1x12 =
-        create("1x12", f("++++++++++++"), WhetherTagger.NO_AUTO_TAGS,
-               t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
-               t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
-               t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+        create("1x12", f("++++++++++++"), WhetherTagger.AUTO_TAGS);
     public static final NamedTaggedFormation _2x6 =
-        create("2x6", f("++++++","++++++"), WhetherTagger.NO_AUTO_TAGS,
-               t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, CENTER), t(3, CENTER),
-               t(4, OUTSIDE_8), t(5, OUTSIDE_8),
-               t(6, OUTSIDE_8), t(7, OUTSIDE_8), t(8, CENTER), t(9, CENTER),
-               t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+        create("2x6", f("++++++","++++++"), WhetherTagger.AUTO_TAGS);
     public static final NamedTaggedFormation _3x4 =
-        create("3x4", f("++++","++++","++++"), WhetherTagger.NO_AUTO_TAGS,
-               t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
-               t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
-               t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+        create("3x4", f("++++","++++","++++"), WhetherTagger.AUTO_TAGS);
     public static final NamedTaggedFormation TRIPLE_GENERAL_H =
         xofy("TRIPLE GENERAL H",
              create("H", f("n","e","s"), WhetherTagger.NO_AUTO_TAGS),
-             noTags(_1x4), WhetherTagger.NO_AUTO_TAGS,
-             t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
-             t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
-             t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+             noTags(_1x4), WhetherTagger.AUTO_TAGS);
     public static final NamedTaggedFormation TRIPLE_GENERAL_PLUS =
         xofy("TRIPLE GENERAL PLUS",
              create("PLUS", f("nes"), WhetherTagger.NO_AUTO_TAGS),
-             noTags(_1x4), WhetherTagger.NO_AUTO_TAGS,
-             t(0, CENTER), t(1, CENTER), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
-             t(4, OUTSIDE_8), t(5, OUTSIDE_8), t(6, OUTSIDE_8), t(7, OUTSIDE_8),
-             t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, CENTER), t(11, CENTER));
+             noTags(_1x4), WhetherTagger.AUTO_TAGS);
     public static final NamedTaggedFormation TRIPLE_GENERAL_LINES =
-        create("TRIPLE GENERAL LINES", f("||||","||||","||||"), WhetherTagger.NO_AUTO_TAGS,
-               t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
-               t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
-               t(8, OUTSIDE_8), t(9, OUTSIDE_8), t(10, OUTSIDE_8), t(11, OUTSIDE_8));
+        create("TRIPLE GENERAL LINES", f("||||","||||","||||"),
+               WhetherTagger.AUTO_TAGS);
     public static final NamedTaggedFormation TRIPLE_GENERAL_DIAMONDS =
         xofy("TRIPLE GENERAL DIAMONDS",
              create("3", f("nnn"), WhetherTagger.NO_AUTO_TAGS),
@@ -856,17 +821,19 @@ abstract class FormationListSlow {
     // 16-person formations
     public static final NamedTaggedFormation _4x4 =
         create("4x4", f("++++","++++","++++","++++"),
-               WhetherTagger.NO_AUTO_TAGS,
-               t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
-               t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
-               t(8, CENTER), t(9, CENTER), t(10, CENTER),t(11, CENTER),
-               t(12, OUTSIDE_8),t(13, OUTSIDE_8),t(14, OUTSIDE_8),t(15, OUTSIDE_8));
+               WhetherTagger.NO_AUTO_TAGS);
     public static final NamedTaggedFormation QUADRUPLE_GENERAL_LINES =
         create("QUADRUPLE GENERAL LINES", f("||||","||||","||||","||||"), WhetherTagger.NO_AUTO_TAGS,
                 t(0, OUTSIDE_8), t(1, OUTSIDE_8), t(2, OUTSIDE_8), t(3, OUTSIDE_8),
                 t(4, CENTER), t(5, CENTER), t(6, CENTER), t(7, CENTER),
                 t(8, CENTER), t(9, CENTER), t(10, CENTER),t(11, CENTER),
                 t(12, OUTSIDE_8),t(13, OUTSIDE_8),t(14, OUTSIDE_8),t(15, OUTSIDE_8));
+    public static final NamedTaggedFormation QUADRUPLE_GENERAL_COLUMNS =
+        create("QUADRUPLE GENERAL COLUMNS", f("||||","||||","||||","||||"), WhetherTagger.NO_AUTO_TAGS,
+                t(0, OUTSIDE_8), t(1, CENTER), t(2, CENTER), t(3, OUTSIDE_8),
+                t(4, OUTSIDE_8), t(5, CENTER), t(6, CENTER), t(7, OUTSIDE_8),
+                t(8, OUTSIDE_8), t(9, CENTER), t(10,CENTER),t(11, OUTSIDE_8),
+                t(12, OUTSIDE_8),t(13,CENTER), t(14,CENTER),t(15, OUTSIDE_8));
 
     /** List of all formations defined in this class. */
     public static final List<NamedTaggedFormation> all = _enumerateFormations();

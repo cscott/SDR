@@ -298,9 +298,9 @@ def: hourglass circulate
   from: GENERAL HOURGLASS
     select: and(CENTER, POINT)
       prim: in 2, 3, in
-    select: and(OUTSIDE 4, MATCH(_INOUT PATTERN(), "o")) // LEADERS
+    select: and(END, MATCH(_INOUT PATTERN(), "o")) // LEADERS
       prim: in 3, 2, in
     select: and(CENTER, VERY CENTER)
       prim: out 2, 2, none, sashay-start sashay-finish
-    select: and(OUTSIDE 4, MATCH(_INOUT PATTERN(), "i")) // TRAILERS
+    select: and(END, MATCH(_INOUT PATTERN(), "i")) // TRAILERS
       prim: in 2, 2, none, sashay-start sashay-finish

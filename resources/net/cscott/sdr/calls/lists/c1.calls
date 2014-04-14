@@ -157,9 +157,9 @@ def: galaxy circulate
       prim: in 1, 2, in
     select: and(CENTER, MATCH(_INOUT PATTERN(), "i")) // trailers in box
       prim: out 2, 2, none, sashay-start sashay-finish
-    select: and(OUTSIDE 4, MATCH(_FACING PATTERN(), "[v^]"))
+    select: and(END, MATCH(_FACING PATTERN(), "[v^]"))
       prim: in 2, 2, none, sashay-start sashay-finish
-    select: OUTSIDE 4 // point on axis
+    select: END // point on axis
       prim: in 2, 1, in
 
 def: butterfly(c)
