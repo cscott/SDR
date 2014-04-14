@@ -340,22 +340,23 @@ def: _reactivate part 1
       from: allow unmatched(FACING DANCERS)
         call: pass thru
 def: _cross reactivate part 1
-  call: _blend first(_ends sashay, \
-                     _blend last(_reactivate part 1, _ends sashay))
-def: _ends sashay
+  call: _blend first(_very centers sashay, \
+                     _blend last(_reactivate part 1, _very centers sashay))
+def: _very centers sashay
   from: GENERAL QUARTER TAG
-    select: END
+    select: VERY CENTER
       prim: in 2, 0, none, sashay-start sashay-finish
     select: OTHERS
       prim: 0, 0, none
 def: _reactivate part 2
   condition: equal num(NUM DANCERS(), 8)
   from: CENTER 6
-    call: _quasi concentric(trade, counter rotate)
+    call: _quasi concentric(_in(4, trade), _in(4, counter rotate))
 def: _reactivate part 3
+  in: 2
   from: GENERAL SPINDLE
     select: VERY CENTER
-      prim: out 2, 1, none
+      prim: out 2, 1, none, sashay-start
     select: END
       prim: in 3, 3, in
     select: OTHERS
