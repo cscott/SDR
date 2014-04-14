@@ -693,6 +693,9 @@ expression grammar.
 <option> ::= `option' `:' <ID> ( `,' <ID> )*
 \end{grammar}
 
+Current options include ``LEFT'', ``REVERSE'', ``CONCEPT'', ``METACONCEPT'',
+and ``SUPERCALL''.  These serve as sugar to create derived grammar rules.
+
 \subsubsection{spoken}
 \begin{grammar}
 <spoken> ::= `spoken' `:' <priority>? <grm_rule>
@@ -733,12 +736,77 @@ quite yet.
 <from> ::= `from' `:' <or_body_seq> <pieces_term>
 \end{grammar}
 
+A \clause{from} clause applies a \texttt{Matcher} to the current
+formation.  If it returns a successful match, the
+\syntax{<pieces term>} is evaluated in the matched subformations,
+and then the pieces are breathed together to reassemble a
+complete formation.
+
 \subsubsection{select}
 \begin{grammar}
 <selectors> ::= <select>+
 
 <select> ::= `select' `:' <or_body_seq> <pieces_term>
 \end{grammar}
+
+A \clause{select} clause applies a \texttt{Selector} to the current
+formation in order to pick out specific dancers.  The most common
+\texttt{Selector}s use tags (such as \texttt{CENTER}, \texttt{END},
+\texttt{BEAU}, \texttt{BELLE}) which are applied to the dancers as
+a result of a successful match by a \texttt{Matcher} in a
+\clause{from} clause.
+
+The set of \syntax{<selectors>} must match all (selected) dancers in the
+current formation.  Earlier \syntax{<select>} clauses take
+precedence; for example in the following definition only the beaus who
+were not centers would do the \call{bar} call:
+\begin{lstlisting}
+select: CENTER
+  call: foo
+select: BEAU
+  call: bar
+\end{lstlisting}
+
+The \clause{select} clause interacts with the breathing done by
+the next \clause{from} clause inside it.  If the
+\syntax{<pieces_term>} involves a \clause{call} clause, this next
+matcher may be inside a different call definition.  When the select
+is active, we breathe in ``space invader mode'', which means instead
+of breathing out a set of subformations, we \emph{compress} them so
+that they are contained within their original bounding box.  This
+ensures that the select can simply overlay the (compressed) motions
+of the variously selected dancers, and then breath out the overlaid
+result.
+
+Consider, for example, ``boys hinge'' from parallel BBGG ocean waves:
+\begin{lstlisting}
+def: boys hinge // example only
+  from: OCEAN WAVE
+    select: BOY
+      call: hinge
+    select: OTHERS
+      call: nothing
+\end{lstlisting}
+The hinge turns a 1x2 into a 2x1.  By squeezeing the 2x1 into the
+original 1x2 spot before breathing, we ensure that the resulting
+boy miniwaves are centered on the girl miniwaves.
+\displaythree
+{ \gdancer 1e & \dancer 2e \cr
+  \gdancer 2w & \dancer 1w \cr
+  \dancer  3e & \gdancer 4e \cr
+  \dancer  4w & \gdancer 3w }%
+{Starting formation}
+{ \gdancer 1e  &  \cr
+  \gdancer 2w  & \npdancer ~x \cr
+               & \gdancer 4e \cr
+  \npdancer ~x & \gdancer 3w }%
+{Meta formation} % xxx not quite right, really want to draw dashed 2x1
+{
+\egdancer 1e \cr
+\egdancer 2w &            & \ndancer 1n & \ndancer 2s \cr
+             &            & \egdancer 4e \cr
+\ndancer 4n & \ndancer 3s & \egdancer 3w }%
+{After ``boys hinge''}
 
 \subsection{Sequence clauses}
 \begin{grammar}
