@@ -329,11 +329,25 @@ def: reactivate
       call: _reactivate part 1
       call: _reactivate part 2
       call: _reactivate part 3
+def: cross reactivate
+    from: QUARTER TAG, GENERAL QUARTER TAG
+      call: _cross reactivate part 1
+      call: _reactivate part 2
+      call: _reactivate part 3
 def: _reactivate part 1
   from: QUARTER TAG, GENERAL QUARTER TAG
     from: allow unmatched(1x3) // ensures we're balanced after breathing
       from: allow unmatched(FACING DANCERS)
         call: pass thru
+def: _cross reactivate part 1
+  call: _blend(_ends sashay, \
+               _blend(_reactivate part 1, _ends sashay))
+def: _ends sashay
+  from: GENERAL QUARTER TAG
+    select: OUTSIDE 4
+      prim: in 2, 0, none, sashay-start sashay-finish
+    select: OTHERS
+      prim: 0, 0, none
 def: _reactivate part 2
   condition: equal num(NUM DANCERS(), 8)
   from: CENTER 6
