@@ -54,6 +54,13 @@ def: cross by
     select: END
       prim: in 2, 1, in 1/8
 
+def: cross extend
+  ipart:
+    call: _blend(extend, _finish cross extend)
+def: _finish cross extend
+  from: allow unmatched(RH MINIWAVE, LH MINIWAVE)
+    prim: in 2, 0, none
+
 /*
 def: cross roll to a wave
   ends in: WAVE

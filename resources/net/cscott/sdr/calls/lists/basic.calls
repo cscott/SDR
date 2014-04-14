@@ -590,6 +590,8 @@ def: _start promenade
   from: ANY
     // circle adjust for 1/8 rotated version (circle choreo)
     call: _maybe circle adjust(_start promenade from facing)
+  from: TRADE BY
+    call: _quasi concentric(nothing, face in), _start promenade from facing
   from: 2x4
     condition: and(tboned(ALL), not(tboned(CENTER)), not(tboned(END)))
     condition: match(_inout pattern(), "oooooooo")

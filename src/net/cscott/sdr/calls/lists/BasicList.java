@@ -214,9 +214,10 @@ public abstract class BasicList {
         public Evaluator getEvaluator(DanceState ds, List<Expr> args)
             throws EvaluationException {
             // all but the last argument are names of tags
-            assert args.size()==2;
-            final Selector selector =
-                args.get(0).evaluate(Selector.class, ds);
+            assert args.size() >= 2;
+            Expr sexpr = (args.size() == 2) ? args.get(0) :
+                new Expr("OR", args.subList(0, args.size()-1));
+            final Selector selector = sexpr.evaluate(Selector.class, ds);
 
             // fetch the subcall, and wrap it with a "from: ANY" so that
             // the MetaEvaluator will apply the DESIGNATED tags to the
