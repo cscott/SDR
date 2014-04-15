@@ -162,7 +162,13 @@ def: _centers(c)
     call: _anyone(CENTER, [c])
 def: _ends(c)
   from: CENTER HALF
-    call: _anyone(END, [c])
+    call: _anyone(not(CENTER), [c])
+def: _center 2(c1, c2=nothing)
+  from: CENTER 2
+    call: _quasi concentric([c1],[c2])
+def: _center 4(c1, c2=nothing)
+  from: CENTER 4
+    call: _quasi concentric([c1],[c2])
 
 def: _square start(who)
  from: STATIC SQUARE
