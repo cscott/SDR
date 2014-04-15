@@ -401,20 +401,30 @@ def: _peel and step
         prim: 0, 0, none
 
 def: spin chain and exchange the gears(n=3/4)
-  spoken: spin chain and exchange the gears (but turn the stars <n=fraction>)?
-  in: 26
+  // 26 beats if you turn the star 3/4
+  spoken: spin chain and exchange the gears (but turn the star <n=fraction>)?
   part:
-    call: _maybe touch(_wave swing)
+    call: _maybe touch(_wave swing) // 3 beats
   xpart:
-    call: _spin chain and exchange the gears part 2
-    call: _fractional(_multiply num(4,[n]), diamond circulate)
+    call: _in(4, _from(GENERAL LINE, _quasi concentric(cast(3/4), u turn back)))
+    call: _in(2, _from(CENTER 2, _quasi concentric(trade, nothing)))
+    call: _fractional(_multiply num(4,[n]), diamond circulate)  // 3 beats/qtr
     call: _not yet functional // exchange the diamond doesn't work yet
-    call: _fractional(3/4, exchange the diamond)
-    call: interlocked flip the diamond
-def: _spin chain and exchange the gears part 2
-  in: 8 // official timing for "three quarter thru"
-  from: PARALLEL WAVES
-    call: _quasi concentric(any hand three quarter thru, u turn back)
+    call: _in(5, _fractional(3/4, exchange the diamond))
+    //call: _in(3, interlocked flip the diamond)
+
+// keep this in sync with 'spin chain and circulate the gears' (c4)
+def: spin chain the gears(n=3/4)
+  // 24 beats if you turn the star 3/4
+  spoken: spin chain the gears (but turn the star <n=fraction>)?
+  part:
+    call: _maybe touch(_wave swing) // 3 beats
+  xpart:
+    call: _in(4, _from(GENERAL LINE, _quasi concentric(cast(3/4), u turn back)))
+    call: _in(2, _from(CENTER 2, _quasi concentric(trade, nothing)))
+    call: _fractional(_multiply num(4,[n]), diamond circulate)  // 3 beats/qtr
+    call: _in(2, _from(CENTER 2, _quasi concentric(trade, nothing)))
+    call: _in(4, _from(CENTER 4, _quasi concentric(cast(3/4), u turn back)))
 
 def: trade the wave
   in: 6

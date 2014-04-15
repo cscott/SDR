@@ -641,7 +641,15 @@ Turn & Weave (1/4 tag)
 Splash
 Centers Cut Out
 Beep Beep
-4.7
+*/
+
+// 4.7
+
+def: deuces wild
+  from: CENTER 4
+    call: _quasi concentric(trade, zoom)
+
+/*
 Cross Sashay
 Clean Sweep
 Divi Up
@@ -655,9 +663,27 @@ Cloverflow
 Tag Circulate
 Ends Cut In
 Nice & Easy
+*/
 
-5.1
-Spin Chain & Circulate the Gears
+// 5.1
+
+// keep this in sync with 'spin chain the gears' (plus)
+def: spin chain and circulate the gears(n=3/4)
+  // allocate an extra 4 beats over spin chain the gears for the final circ.
+  // (2 for each circulate)
+  spoken: spin chain and circulate the gears (but turn the star <n=fraction>)?
+  part:
+    call: _maybe touch(_wave swing) // 3 beats
+  xpart:
+    call: _in(4, _from(GENERAL LINE, _quasi concentric(cast(3/4), u turn back)))
+    call: _in(4, _from(CENTER 4, _quasi concentric(\
+                 _from(CENTER 2, _quasi concentric(trade, nothing)),\
+                       circulate)))
+    call: _fractional(_multiply num(4,[n]), diamond circulate)  // 3 beats/qtr
+    call: _in(2, _from(CENTER 2, _quasi concentric(trade, nothing)))
+    call: _in(6, _from(CENTER 4, _quasi concentric(cast(3/4), and(u turn back, circulate))))
+
+/*
 Cross to a Diamond
 Reverse the Diamond
 Push Open the Gate
