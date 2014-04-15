@@ -254,7 +254,7 @@ Square Dance Revolution build file.
 	<jacoco:agent property="jacoco_agent"
                       destfile="${instrument_file}" append="false"
                       includes="net.cscott.sdr.*:EDU.*"
-                      excludes="net.cscott.sdr.calls.lists.C4GrammarParser"
+                      excludes="net.cscott.sdr.calls.lists.*GrammarParser"
                       />
 	<javadoc sourcepath="${src_dir}"
 		 destdir="${api_dir}"
