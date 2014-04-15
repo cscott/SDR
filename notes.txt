@@ -1758,6 +1758,8 @@ Hourglass/diamond adjustments:
 - diamond points may be at +/- 4 (instead of +/- 3) (like in hourglass)
 - galaxy box might be at +/-3,+/-1 instead of +/-3,+/-2
    (in addition to point being at +/-3 instead of +/-2)
+- hourglass box might also be at +/-3,+/-1
+   see "switch to an hourglass"
 ----
 Add a new Matcher function:
   from: call(_diamond adjust, GENERAL DIAMOND)
@@ -1808,4 +1810,56 @@ from: allow unmatched(GENERAL COUPLE)
 even though half of a partner trade yields an offset formation.
 
 - add a setFormation variant in PMSD that takes grid strings
+  (or a general formation parser, which can be used for !example
+  clauses in definitions as well)
+- top-level evaluator (like current breather) can move diamonds out
+  to point spots for nicer animation.
 -----
+refactor common clauses out of the various _maybe XXX as:
+def: _maybe(c1,c2,n=1)
+  from: ANY
+    call: [c2]
+  from: ANY // xxx optionally blend this part
+    part: 0
+      call: [c1]
+    part: [n]
+      call: [c2]
+---
+* expand grid string xfactor from 5/2 to 6
+* add 'undo' to PMSD
+* Update jline from https://github.com/jline/jline2
+* hook up PMSD to https://github.com/unconed/TermKit ?
+  Or hook up a slightly-hacked https://github.com/chjj/tty.js/ via a
+  websocket?
+  https://github.com/chjj/term.js/blob/master/src/term.js#L1315 is
+  a good place where you could look for <img src="data:..."> and
+  un-escape it to display animated gifs inline.
+* fix _blend to take an optional amount argument, or use the length of
+  the first/last part, and revert the hacks in circulate and spread
+  check animation of: change lanes, follow your neighbor and spread
+--
+1/2 of the first part of reactivate from 1/4 tag (those facing pass thru)
+has weird breathing where the miniwave is aligned with the outside dancer.
+ - cross reactivate also has weird blending, due to the intermediate
+   state
+ - needs to use the new 'compress it' semantics for select, so we can
+   do:
+     select: formation(allow unmatched(FACING DANCERS), TRAILER)
+       call: pass thru
+     select: OTHER
+       call: nothing
+---
+* settle back has weird animation at end, with a slide.  why?
+  (perhaps because of broken '_o concentric' breathing?)
+---
+* for future: get rid of OUTER_4 and weird tidal wave semantics.
+  See discussion in f02a2a94a7914af1f9ed49384124e91e60beaf29
+  CENTER -> CENTER 4, VERY CENTER -> CENTER 2 ?
+  The general uses of _centers (& etc) should explicitly match against
+  the formation size?  Also explicitly match against tidal wave?
+---
+* Document in calldefs.tex:
+  - new _blend calls
+  - strategy of using specific formations then general formations in
+    FROM clauses.
+---
