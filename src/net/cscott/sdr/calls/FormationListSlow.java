@@ -591,21 +591,29 @@ abstract class FormationListSlow {
                       WhetherTagger.AUTO_TAGS,
                       t(0,BEAU), t(1,BELLE), t(6,BELLE), t(7,BEAU)));
     public static final NamedTaggedFormation RH_TWIN_DIAMONDS = // callerlab #40
-        xofy("RH TWIN DIAMONDS", COUPLE, RH_DIAMOND);
+        xofy("RH TWIN DIAMONDS", COUPLE, RH_DIAMOND, WhetherTagger.AUTO_TAGS,
+             t(0, TRAILER), t(1, LEADER), t(6, LEADER), t(7, TRAILER));
     public static final NamedTaggedFormation LH_TWIN_DIAMONDS = // callerlab #41
-        xofy("LH TWIN DIAMONDS", COUPLE, LH_DIAMOND);
+        xofy("LH TWIN DIAMONDS", COUPLE, LH_DIAMOND, WhetherTagger.AUTO_TAGS,
+             t(0, LEADER), t(1, TRAILER), t(6, TRAILER), t(7, LEADER));
     public static final NamedTaggedFormation RH_POINT_TO_POINT_DIAMONDS = // callerlab #42(a)
-        xofy("RH POINT-TO-POINT DIAMONDS", TANDEM, RH_DIAMOND);
+        xofy("RH POINT-TO-POINT DIAMONDS", TANDEM, RH_DIAMOND, WhetherTagger.AUTO_TAGS,
+             t(1,LEADER), t(2,TRAILER), t(5,TRAILER), t(6,LEADER));
     public static final NamedTaggedFormation RH_POINT_TO_POINT_FACING_DIAMONDS = // callerlab #42(b)
-        xofy("RH POINT-TO-POINT FACING DIAMONDS", TANDEM, RH_FACING_DIAMOND);
+        xofy("RH POINT-TO-POINT FACING DIAMONDS", TANDEM, RH_FACING_DIAMOND, WhetherTagger.AUTO_TAGS,
+             t(1,LEADER), t(2,TRAILER), t(5,TRAILER), t(6,LEADER));
     public static final NamedTaggedFormation LH_POINT_TO_POINT_DIAMONDS = // callerlab #42(c)
-        xofy("LH POINT-TO-POINT DIAMONDS", TANDEM, LH_DIAMOND);
+        xofy("LH POINT-TO-POINT DIAMONDS", TANDEM, LH_DIAMOND, WhetherTagger.AUTO_TAGS,
+             t(1,TRAILER), t(2,LEADER), t(5,LEADER), t(6,TRAILER));
     public static final NamedTaggedFormation LH_POINT_TO_POINT_FACING_DIAMONDS = // callerlab #42(d)
-        xofy("LH POINT-TO-POINT FACING DIAMONDS", TANDEM, LH_FACING_DIAMOND);
+        xofy("LH POINT-TO-POINT FACING DIAMONDS", TANDEM, LH_FACING_DIAMOND, WhetherTagger.AUTO_TAGS,
+             t(1,TRAILER), t(2,LEADER), t(5,LEADER), t(6,TRAILER));
     public static final NamedTaggedFormation RH_TWIN_FACING_DIAMONDS = // callerlab #43
-        xofy("RH TWIN FACING DIAMONDS", COUPLE, RH_FACING_DIAMOND);
+        xofy("RH TWIN FACING DIAMONDS", COUPLE, RH_FACING_DIAMOND, WhetherTagger.AUTO_TAGS,
+             t(0, LEADER), t(1, TRAILER), t(6, TRAILER), t(7, LEADER));
     public static final NamedTaggedFormation LH_TWIN_FACING_DIAMONDS = // callerlab #44
-        xofy("LH TWIN FACING DIAMONDS", COUPLE, LH_FACING_DIAMOND);
+        xofy("LH TWIN FACING DIAMONDS", COUPLE, LH_FACING_DIAMOND, WhetherTagger.AUTO_TAGS,
+             t(0, TRAILER), t(1, LEADER), t(6, LEADER), t(7, TRAILER));
     public static final NamedTaggedFormation TWIN_GENERAL_DIAMONDS =
         xofy("TWIN GENERAL DIAMONDS", COUPLE, GENERAL_DIAMOND);
     public static final NamedTaggedFormation POINT_TO_POINT_GENERAL_DIAMONDS =
