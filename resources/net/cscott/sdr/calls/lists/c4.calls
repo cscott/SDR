@@ -444,7 +444,7 @@ def: _flexible peel and trail
   from: FACING COUPLES
     ipart:
       call: touch, lockit, lockit
-  from: COUPLES BACK TO BACK
+  from: BACK-TO-BACK COUPLES
     ipart:
       call: u turn back, touch
   from: ANY

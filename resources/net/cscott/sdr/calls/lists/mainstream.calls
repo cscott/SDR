@@ -8,7 +8,7 @@ def: cloverleaf
 
 def: _single cloverleaf
   in: 4
-  from: BACK TO BACK COUPLES // XXX suppress breathing
+  from: BACK-TO-BACK COUPLES // XXX suppress breathing
     ipart:
       prim: 0, 1, none    // 1,1,n -> 1,2,n "first step forward"
       prim: out 1, 1, out // 1,2,n -> 2,3,e
@@ -17,7 +17,7 @@ def: _single cloverleaf
       prim: 0, 1, none    // 2,1,w -> 1,1,w
 def: _single cross cloverleaf
   in: 10
-  from: BACK TO BACK COUPLES // XXX suppress breathing
+  from: BACK-TO-BACK COUPLES // XXX suppress breathing
     ipart:
       select: BEAU
                             // -1,1,n-> 0,1,n "half of a half sashay"

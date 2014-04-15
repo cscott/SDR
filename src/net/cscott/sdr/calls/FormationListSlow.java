@@ -81,7 +81,7 @@ abstract class FormationListSlow {
                 d(0,+1,"s",TRAILER),
                 d(0,-1,"n",TRAILER));
     public static final NamedTaggedFormation BACK_TO_BACK_DANCERS = // callerlab #3
-        create("BACK TO BACK DANCERS",
+        create("BACK-TO-BACK DANCERS",
                 d(0,+1,"n",LEADER),
                 d(0,-1,"s",LEADER));
     public static final NamedTaggedFormation TANDEM =
@@ -124,7 +124,7 @@ abstract class FormationListSlow {
              sd(StandardDancer.COUPLE_3_GIRL,
                 StandardDancer.COUPLE_3_BOY));
     public static final NamedTaggedFormation BACK_TO_BACK_COUPLES = // callerlab #7
-        xofy("BACK TO BACK COUPLES", BACK_TO_BACK_DANCERS, COUPLE);
+        xofy("BACK-TO-BACK COUPLES", BACK_TO_BACK_DANCERS, COUPLE);
     public static final NamedTaggedFormation TANDEM_COUPLES =
         xofy("TANDEM COUPLES", TANDEM, COUPLE,
              WhetherTagger.AUTO_TAGS,

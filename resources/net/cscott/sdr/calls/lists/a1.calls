@@ -142,7 +142,7 @@ def: brace thru
   call: right pull by
   call: _finish brace thru
 def: _finish brace thru
-  from: BACK TO BACK COUPLES
+  from: BACK-TO-BACK COUPLES
     ends in: formation(FACING COUPLES)
     call: brace yourself
 
@@ -204,7 +204,7 @@ def: partner hinge
 def: partner tag
   in: 3
   from: mixed(COUPLE, RH MINIWAVE, LH MINIWAVE)
-    ends in: formation(BACK TO BACK DANCERS)
+    ends in: formation(BACK-TO-BACK DANCERS)
     call: quarter in, pass thru
 
 def: pass in
@@ -223,7 +223,7 @@ def: right roll to a wave
   in: 4
   from: GENERAL TANDEM // group dancers
     ends in: formation(RH MINIWAVE)
-    from: FACING DANCERS, TANDEM, BACK TO BACK DANCERS // apply tags
+    from: FACING DANCERS, TANDEM, BACK-TO-BACK DANCERS // apply tags
       select: LEADER
         prim: 0, 0, right
         prim: 1, 1, right // can roll
@@ -238,7 +238,7 @@ def: square chain thru
   option: LEFT
   in: 14
   from: mixed(RH OCEAN WAVE, FACING COUPLES)
-    ends in: formation(BACK TO BACK COUPLES)
+    ends in: formation(BACK-TO-BACK COUPLES)
     call: _square thru part, left(swing thru), left(turn thru)
 
 def: transfer the column

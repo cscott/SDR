@@ -1340,7 +1340,7 @@ def: box circulate
 def: _box circulate
   // for internal use: this is the 2x2 version of circulate
   in: 4 // not official
-  from: BOX, FACING COUPLES, BACK TO BACK COUPLES, 2x2
+  from: BOX, FACING COUPLES, BACK-TO-BACK COUPLES, 2x2
     select: LEADER
       call: _lead circ
     select: TRAILER
@@ -1355,7 +1355,7 @@ def: right and left thru
   call: right pull by, _finish right and left thru(1/2)
 
 def: _finish right and left thru(n=1/2)
-  from: BACK TO BACK COUPLES
+  from: BACK-TO-BACK COUPLES
     call: _courtesy turn([n])
 
 def: right and left thru and a quarter more

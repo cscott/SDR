@@ -559,7 +559,7 @@ def: scramble
 /* ... */
 
 def: shake and rattle
-  from: TANDEM COUPLES, FACING COUPLES, BACK TO BACK COUPLES, BOX, \
+  from: TANDEM COUPLES, FACING COUPLES, BACK-TO-BACK COUPLES, BOX, \
         INVERTED BOX, 2x2
     select: LEADER
       select: BEAU

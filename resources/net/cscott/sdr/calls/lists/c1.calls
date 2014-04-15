@@ -227,7 +227,7 @@ def: _finish o
 
 def: shakedown
   option: LEFT
-  from: BACK TO BACK COUPLES, 2x2
+  from: BACK-TO-BACK COUPLES, 2x2
     condition: ARE(ALL, LEADER)
       call: shake and rattle
 
@@ -236,7 +236,7 @@ def: shakedown
 def: square chain the top
   option: LEFT
   from: mixed(RH OCEAN WAVE, FACING COUPLES)
-    ends in: formation(BACK TO BACK COUPLES)
+    ends in: formation(BACK-TO-BACK COUPLES)
     call: _square thru part, left(spin the top), left(turn thru)
 
 def: swing the fractions

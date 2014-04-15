@@ -138,7 +138,7 @@ def: chase left
 def: chase right
   in: 6
   ipart:
-    from: BACK TO BACK COUPLES
+    from: BACK-TO-BACK COUPLES
       call: _start chase right, _box circulate, _box circulate
 def: _start chase right
   in: 4 // so it's the same length as the box circulates

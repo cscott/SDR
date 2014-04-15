@@ -115,7 +115,7 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(1), ExactRotation.SOUTH), Tag.TRAILER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-1), ExactRotation.NORTH), Tag.TRAILER));
 
-    /** BACK TO BACK DANCERS formation.
+    /** BACK-TO-BACK DANCERS formation.
       * @doc.test
       *  js> tf = FormationList.BACK_TO_BACK_DANCERS; tf.mapStd([]).toStringDiagram('|');
       *  |1B^
@@ -126,7 +126,7 @@ abstract class FormationListFast {
       *  [LEADER]
       */
     public static final NamedTaggedFormation BACK_TO_BACK_DANCERS =
-        new NamedTaggedFormation("BACK TO BACK DANCERS",
+        new NamedTaggedFormation("BACK-TO-BACK DANCERS",
             null,
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(1), ExactRotation.NORTH), Tag.LEADER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-1), ExactRotation.SOUTH), Tag.LEADER));
@@ -316,7 +316,7 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), ExactRotation.NORTH), Tag.BEAU, Tag.TRAILER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), ExactRotation.NORTH), Tag.BELLE, Tag.TRAILER));
 
-    /** BACK TO BACK COUPLES formation.
+    /** BACK-TO-BACK COUPLES formation.
       * @doc.test
       *  js> tf = FormationList.BACK_TO_BACK_COUPLES; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^
@@ -329,7 +329,7 @@ abstract class FormationListFast {
       *  [BEAU, LEADER]
       */
     public static final NamedTaggedFormation BACK_TO_BACK_COUPLES =
-        new NamedTaggedFormation("BACK TO BACK COUPLES",
+        new NamedTaggedFormation("BACK-TO-BACK COUPLES",
             null,
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(1), ExactRotation.NORTH), Tag.BEAU, Tag.LEADER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(1), ExactRotation.NORTH), Tag.BELLE, Tag.LEADER),

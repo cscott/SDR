@@ -178,7 +178,7 @@ def: wheel the sea
   call: _start wheel the, _finish wheel the sea
 
 def: _start wheel the
-  from: BACK TO BACK COUPLES
+  from: BACK-TO-BACK COUPLES
     call: wheel around
   from: TANDEM COUPLES
     select: LEADER
