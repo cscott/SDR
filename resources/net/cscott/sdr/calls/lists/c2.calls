@@ -127,6 +127,35 @@ def: _finish drop in
     select: END
       prim: 1, in 1, none, sashay-start
 
+def: exchange the diamond
+  call: _from two diamonds(_exchange the diamond after adjust, 4)
+def: _exchange the diamond after adjust
+  from: RH TWIN DIAMONDS, RH POINT-TO-POINT DIAMONDS
+    call: mirror(_exchange the diamond after adjust)
+  // defined using LH diamonds to make 'collide to right hands' put the
+  // dancers on the outside
+  from: LH TWIN DIAMONDS
+    select: VERY CENTER
+      prim: 3, 2, right
+      prim: 2, 1, right
+      prim: 1, 2, right
+      prim: 2, 1, right
+    select: and(TRAILER,POINT)
+      prim: -2, 1, left
+      prim: 3, 2, right
+      prim: 2, 1, right
+      prim: 1, 2, right
+    select: CENTER
+      prim: -1, 2, left
+      prim: -2, 1, left
+      prim: 3, 2, right
+      prim: 2, 1, right
+    select: POINT
+      prim: -2, 1, left
+      prim: -1, 2, left
+      prim: -2, 1, left
+      prim: 3, 2, right
+
 // "little more" has a controversial division into parts.  Are the
 // two parts "little" and "centers circulate" (as the callerlab definition
 // would seem to imply) or is the first part "centers step and fold while

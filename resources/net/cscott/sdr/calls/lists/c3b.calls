@@ -343,7 +343,8 @@ def: _cross reactivate part 1
   call: _blend first(_very centers sashay, \
                      _blend last(_reactivate part 1, _very centers sashay))
 def: _very centers sashay
-  from: GENERAL QUARTER TAG
+  from: GENERAL QUARTER TAG, \
+        TWIN GENERAL DIAMONDS, POINT-TO-POINT GENERAL DIAMONDS
     select: VERY CENTER
       prim: in 2, 0, none, sashay-start sashay-finish
     select: OTHERS

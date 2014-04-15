@@ -304,3 +304,27 @@ def: hourglass circulate
       prim: out 2, 2, none, sashay-start sashay-finish
     select: and(END, MATCH(_INOUT PATTERN(), "i")) // TRAILERS
       prim: in 2, 2, none, sashay-start sashay-finish
+
+def: switch to a diamond
+  in: 4
+  from: OCEAN WAVE, GENERAL LINE
+    select: CENTER
+      prim: out 2, 0, out
+      prim: 0, 0, roll
+    select: END
+      prim: in 3, 1, in
+      prim: 0, 0, none
+
+// XXX this is different spacing than FormationList.RH_HOURGLASS
+def: switch to an hourglass
+  in: 4
+  from: PARALLEL WAVES, PARALLEL GENERAL LINES
+    select: CENTER
+      prim: out 2, 0, out
+      prim: 0, 0, roll
+    select: and(END, TRAILER)
+      prim: in 2, 1, none
+      prim: 0, 0, none
+    select: and(END, LEADER)
+      prim: in 3, 1, in
+      prim: 0, 0, none

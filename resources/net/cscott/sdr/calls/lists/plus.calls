@@ -2,6 +2,8 @@ program: plus
 
 // adjust a variety of formations to diamond spots
 def: _diamond adjust
+ from: mixed(GENERAL TALL DIAMOND, GENERAL ASYM SINGLE QUARTER TAG,\
+             GENERAL ASYM DIAMOND, GENERAL DIAMOND, GENERAL SINGLE QUARTER TAG)
   from: GENERAL TALL DIAMOND, GENERAL ASYM SINGLE QUARTER TAG
     select: CENTER
       prim: 0, 0, none
@@ -25,6 +27,12 @@ def: _from diamond(c, n=1)
   from: GENERAL DIAMOND
     call: [c]
   from: mixed(GENERAL TALL DIAMOND, GENERAL ASYM DIAMOND, GENERAL DIAMOND)
+    call: _blend first(_diamond adjust then([c],[n]))
+
+def: _from two diamonds(c, n=1)
+  from: TWIN GENERAL DIAMONDS, POINT-TO-POINT GENERAL DIAMONDS
+    call: [c]
+  from: ANY
     call: _blend first(_diamond adjust then([c],[n]))
 
 def: _from(f, c)
@@ -163,6 +171,16 @@ def: _cut the diamond part 2
   in: 4
   from: LINE, GENERAL LINE
     call: _quasi concentric(trade, nothing)
+
+def: diamond circulate
+  in: 3
+  call: _from diamond(_diamond circulate after adjust)
+def: _diamond circulate after adjust
+  from: DIAMOND, GENERAL DIAMOND
+    select: POINT
+      prim: in 2, 1, in
+    select: CENTER
+      prim: in 1, 2, in
 
 def: dixie grand
   // 3 parts
@@ -390,6 +408,7 @@ def: spin chain and exchange the gears(n=3/4)
   xpart:
     call: _spin chain and exchange the gears part 2
     call: _fractional(_multiply num(4,[n]), diamond circulate)
+    call: _not yet functional // exchange the diamond doesn't work yet
     call: _fractional(3/4, exchange the diamond)
     call: interlocked flip the diamond
 def: _spin chain and exchange the gears part 2

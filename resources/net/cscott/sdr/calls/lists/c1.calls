@@ -114,7 +114,6 @@ def: cross by
       select: TRAILER
         prim: in 2, 1, none
   from: THAR, WRONG WAY THAR
-   ends in: print(cross by)
     select: CENTER
       prim: out 2, 3, in 1/8
     select: END
@@ -161,6 +160,20 @@ def: galaxy circulate
       prim: in 2, 2, none, sashay-start sashay-finish
     select: END // point on axis
       prim: in 2, 1, in
+
+def: _interlocked(c)
+  call: _from two diamonds(_blend first(_very centers sashay, [c]))
+def: interlocked diamond circulate
+  call: _interlocked(_blend last(diamond circulate, _very centers sashay))
+def: interlocked cut the diamond
+  call: _interlocked(cut the diamond)
+def: interlocked flip the diamond
+  call: _interlocked(flip the diamond)
+def: interlocked diamond chain thru
+  call: _interlocked(diamond chain thru)
+def: switch to an interlocked diamond
+  call: _blend last(switch to a diamond, _very centers sashay)
+
 
 def: butterfly(c)
   spoken: butterfly <c=anything>
