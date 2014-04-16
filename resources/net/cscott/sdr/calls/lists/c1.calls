@@ -175,6 +175,29 @@ def: switch to an interlocked diamond
   call: _blend last(switch to a diamond, _very centers sashay)
 
 
+// see definition of 'explode' (plus)
+def: reverse explode
+  from: OCEAN WAVE, SINGLE INVERTED LINE
+    call: _reverse explode
+  from: GENERAL LINE
+    condition: PROGRAM AT LEAST(C4), \
+               "Reverse explode from general line not allowed below C4"
+      call: _reverse explode
+def: _reverse explode
+  in: 2
+  from: GENERAL LINE
+    select: formation(mixed(RH MINIWAVE,LH MINIWAVE,COUPLE NO TAGS), \
+                      OR(BEAU,BELLE))
+      select: CENTER // "centers of miniwaves"
+        prim: 0, 1, out
+      select: END // select "ends of miniwaves"
+        prim: in 2, 1, out
+    select: OTHERS
+      select: CENTER // "centers of couples"
+        prim: 0, -1, out
+      select: END // "ends of couples"
+        prim: in 2, 1, out
+
 def: butterfly(c)
   spoken: butterfly <c=anything>
   option: CONCEPT

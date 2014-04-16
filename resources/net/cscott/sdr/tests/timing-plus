@@ -56,8 +56,10 @@ sdr> /checkBeats( 6, "crossfire", [PARALLEL_RH_TWO_FACED_LINES,
 sdr> /checkBeats( 6, "cut the diamond", [RH_TWIN_DIAMONDS, LH_TWIN_DIAMONDS])
 sdr> /checkBeats( 3, "diamond circulate", [RH_TWIN_DIAMONDS, LH_TWIN_DIAMONDS])
 sdr> /checkBeats( 6, "dixie grand", [DOUBLE_PASS_THRU, RH_QUARTER_TAG])
+sdr> /checkBeats( 2, "explode", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,
+   >                        ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES])
 sdr> /// "explode and <anything>" adds 2 beats to the timing of <anything>
-sdr> /checkBeats(2+2, "explode and pass thru", PARALLEL_RH_WAVES)
+sdr> /checkBeats(2+2, "explode ; pass thru", PARALLEL_RH_WAVES)
 sdr> /checkBeats( 6, "explode the wave", [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES])
 sdr> /checkBeats( 2, "extend", [DOUBLE_PASS_THRU,
    >                            RH_QUARTER_TAG, LH_QUARTER_TAG,

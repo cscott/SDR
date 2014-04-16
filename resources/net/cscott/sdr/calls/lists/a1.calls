@@ -177,7 +177,12 @@ def: double star thru
   call: mirror(star thru)
 
 // XXX everyone can roll after 'ends bend'
-// XXX everyone can roll after 'explode and'
+
+def: explode the line
+  in: 6
+  from: GENERAL LINE
+    condition: not(formation(OCEAN WAVE)), "You mean 'explode the wave'"
+    call: _explode and(right pull by)
 
 def: horseshoe turn
   // Vic sez: "Consider a Squared Set after Heads Pass Thru. From this

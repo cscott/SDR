@@ -67,7 +67,7 @@ sdr> /checkBeats( 6, "double star thru", EIGHT_CHAIN_THRU)
 sdr> /checkBeats(4+10, "ends roll away ; triple star thru", DOUBLE_PASS_THRU)
 sdr> /checkBeats( 4, "ends bend", LINES_FACING_OUT)
 sdr> /// "explode and <anything>" adds 2 beats to the timing of <anything>
-sdr> /checkBeats(2+2, "explode and pass thru", [LINES_FACING_OUT, FACING_LINES,
+sdr> /checkBeats(2+2, "explode ; pass thru", [LINES_FACING_OUT, FACING_LINES,
    >                          ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES])
 sdr> /checkBeats( 6, "explode the line", [LINES_FACING_OUT, FACING_LINES,
    >                          ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES])

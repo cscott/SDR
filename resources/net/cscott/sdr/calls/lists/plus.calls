@@ -220,6 +220,37 @@ def: three quarter tag
   option: LEFT
   call: _tag the line(3/4)
 
+// see definition of 'reverse explode' (c1)
+def: explode
+  from: OCEAN WAVE, SINGLE INVERTED LINE
+    call: _explode
+  from: GENERAL LINE
+    condition: PROGRAM AT LEAST(A1), \
+               "Explode from general line not allowed below A1"
+      call: _explode
+def: _explode
+  in: 2
+  from: GENERAL LINE
+    select: CENTER
+      prim: 0, 1, in
+    // select "ends of miniwaves"
+    select: formation(mixed(RH MINIWAVE,LH MINIWAVE,COUPLE NO TAGS), \
+                      OR(BEAU,BELLE))
+      prim: in 2, 1, in
+    select: OTHERS // "ends of couples"
+      prim: in 2, -1, in
+
+def: _explode and(call)
+  option: SUPERCALL
+  // XXX: introduces grammar ambiguity, ie "explode and roll"
+  //spoken: explode and <call=anything>
+  call: explode, [call]
+
+def: explode the wave
+  in: 6
+  from: OCEAN WAVE, SINGLE INVERTED LINE
+    call: _explode and(right pull by)
+
 def: fan the top // "own the ends, counter rotate by centers cast off 3/4"
   option: LEFT
   in: 4

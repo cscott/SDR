@@ -688,20 +688,25 @@ abstract class FormationListFast {
     /** SINGLE INVERTED LINE formation.
       * @doc.test
       *  js> tf = FormationList.SINGLE_INVERTED_LINE; tf.mapStd([]).toStringDiagram('|');
-      *  |1Bv  1G^  3G^  3Bv
+      *  |1B^  1Gv  3Bv  3G^
       *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
-      *  [BELLE, END]
-      *  [BELLE, CENTER]
-      *  [BEAU, CENTER]
       *  [BEAU, END]
+      *  [BEAU, CENTER]
+      *  [BELLE, CENTER]
+      *  [BELLE, END]
       */
     public static final NamedTaggedFormation SINGLE_INVERTED_LINE =
         new NamedTaggedFormation("SINGLE INVERTED LINE",
-            null,
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), ExactRotation.SOUTH), Tag.BELLE, Tag.END),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BELLE, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BEAU, Tag.CENTER),
-            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), ExactRotation.SOUTH), Tag.BEAU, Tag.END));
+            new StandardDancer[] {
+                StandardDancer.COUPLE_1_BOY,
+                StandardDancer.COUPLE_1_GIRL,
+                StandardDancer.COUPLE_3_BOY,
+                StandardDancer.COUPLE_3_GIRL,
+            },
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BEAU, Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), ExactRotation.SOUTH), Tag.BEAU, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), ExactRotation.SOUTH), Tag.BELLE, Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), ExactRotation.NORTH), Tag.BELLE, Tag.END));
 
     /** RH THREE-AND-ONE LINE formation.
       * @doc.test

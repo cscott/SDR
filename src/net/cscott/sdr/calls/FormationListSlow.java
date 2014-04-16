@@ -208,7 +208,11 @@ abstract class FormationListSlow {
         xofy("LH TWO-FACED LINE", LH_MINIWAVE, COUPLE,
                 t(0, END), t(1, CENTER), t(2, CENTER), t(3, END));
     public static final NamedTaggedFormation SINGLE_INVERTED_LINE =
-        create("SINGLE INVERTED LINE", f("snns"), WhetherTagger.AUTO_TAGS,
+        create("SINGLE INVERTED LINE", f("nssn"), WhetherTagger.AUTO_TAGS,
+               sd(StandardDancer.COUPLE_1_BOY,
+                  StandardDancer.COUPLE_1_GIRL,
+                  StandardDancer.COUPLE_3_BOY,
+                  StandardDancer.COUPLE_3_GIRL),
                 t(0, END), t(1,CENTER), t(2,CENTER), t(3,END));
     public static final NamedTaggedFormation RH_THREE_AND_ONE_LINE =
         create("RH THREE-AND-ONE LINE", f("nnns"), WhetherTagger.AUTO_TAGS,
@@ -540,9 +544,9 @@ abstract class FormationListSlow {
                 t(6,NUMBER_1,END   ),t(7,NUMBER_4,END));
     // XXX 3-and-1 lines, 8 possible, callerlab #32
     public static final NamedTaggedFormation ENDS_IN_INVERTED_LINES = // callerlab #33
-        xofy("ENDS IN INVERTED LINES", BACK_TO_BACK_DANCERS, SINGLE_INVERTED_LINE);
+        xofy("ENDS IN INVERTED LINES", FACING_DANCERS, SINGLE_INVERTED_LINE);
     public static final NamedTaggedFormation ENDS_OUT_INVERTED_LINES = // callerlab #34
-        xofy("ENDS OUT INVERTED LINES", FACING_DANCERS, SINGLE_INVERTED_LINE);
+        xofy("ENDS OUT INVERTED LINES", BACK_TO_BACK_DANCERS, SINGLE_INVERTED_LINE);
     // XXX in t-bone lines, callerlab #35
     // XXX out t-bone lines, callerlab #36
     // xxx both diamond-spot quarter tag & compressed quarter tag?
