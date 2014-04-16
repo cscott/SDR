@@ -741,14 +741,140 @@ def: spin chain and circulate the gears(n=3/4)
     call: _in(2, _from(CENTER 2, _quasi concentric(trade, nothing)))
     call: _in(6, _from(CENTER 4, _quasi concentric(cast(3/4), and(u turn back, circulate))))
 
+def: cross to a diamond
+  ipart:
+    from: PARALLEL GENERAL LINES
+      call: _cross concentric(box circulate, hinge)
+    from: ANY
+      call: _from two diamonds(_cross to a diamond from diamonds)
+def: _cross to a diamond from diamonds
+  from: POINT-TO-POINT GENERAL DIAMONDS
+    call: _blend first(_smash diamond, _center 4(hinge, circulate))
+def: _smash diamond
+  from: GENERAL DIAMOND
+    select: POINT
+      prim: in 1, 0, none, sashay-start sashay-finish
+    select: CENTER
+      prim: out 1, 0, none, sashay-start sashay-finish
+
+def: cross to an hourglass
+  call: _blend last(cross to a diamond, _center 2(snake))
+def: cross to an interlocked diamond
+  call: _blend last(cross to a diamond, _very centers sashay)
+// xxx cross to a zee?
+
+def: reverse the diamond
+  from: CENTER 4
+    call: _quasi concentric(trade the wave, u turn back)
+
+def: push open the gate
+  from: EIGHT CHAIN THRU
+    part: 1
+      call: centers in
+    part: 2
+      call: push open the gate
+  from: INVERTED LINES
+    part:
+      call: cast(3/4)
+    xpart:
+      call: _push open the gate middle part
+      call: _ends(slide thru)
+def: _push open the gate middle part
+  from: CENTER HALF
+    call: _o concentric(pass thru,\
+                        _from(use phantoms(LINES FACING OUT), ends bend))
+
+def: clear the centers(call)
+  option: SUPERCALL
+  spoken: clear the centers for (a|an)? <call=anything>
+  call: _clear the centers part 1
+  call: _clear the centers part 2([call])
+def: _clear the centers part 1
+  ipart:
+    from: CENTER 4
+      call: _quasi concentric(and(hinge,box circulate), nothing)
+def: _clear the centers part 2(call)
+  // "tandem u turn back" isn't the best animation, but it gets the
+  // dancers to the correct spots.
+  ipart:
+    from: 2x4
+      condition: MATCH(_FACING PATTERN(CENTER), "[v^]+")
+      call: _cross concentric(tandem(u turn back), [call])
+    from: 2x4
+      condition: MATCH(_FACING PATTERN(CENTER), "[<>]+")
+      call: slim down
+      call: _from(CENTER 4, _quasi concentric([call], tandem(u turn back)))
+
+def: cross clear the centers(call)
+  option: SUPERCALL
+  spoken: ( cross clear the centers | clear the centers but cross it ) \
+          for (a|an)? <call=anything>
+  call: _clear the centers part 1
+  call: _cross clear the centers part 2([call])
+def: _cross clear the centers part 2(call)
+  // "cross concentric" isn't the best animation, but it gets the
+  // dancers to the correct spots.
+  ipart:
+    from: 2x4
+      condition: MATCH(_FACING PATTERN(CENTER), "[v^]+")
+      call: _cross concentric(2(box circulate), [call])
+    from: 2x4
+      condition: MATCH(_FACING PATTERN(CENTER), "[<>]+")
+      call: slim down
+      call: _from(CENTER 4, _quasi concentric([call], 2(box circulate)))
+
+def: dixie chain
+  from: FACING COUPLES
+    ipart:
+      call: _blend first(_start dixie chain, _centers(right pull by))
+    part: 2
+      call: _finish dixie chain
+def: _start dixie chain
+  from: FACING COUPLES
+    select: BELLE
+      prim: in 1, 0, none, sashay-start sashay-finish
+    select: BEAU
+      prim: in 1, -2, none, sashay-finish
+def: _finish dixie chain
+  from: GENERAL COLUMN
+    call: left pull by
+    call: _centers(right pull by)
+
+def: split dixie chain
+  part:
+    call: _centers(_blend last(right pull by,face out))
+  part: 2
+    call: _finish dixie chain
+
+
+def: cheerio
+  call: _cheerio part 1
+  call: press ahead
+  call: _ends(face in)
+def: _cheerio part 1
+  from: COLUMN, GENERAL COLUMNS
+    call: _quasi concentric(partner tag, _cheerio run)
+def: _cheerio run
+  from: 2x2
+    call: _with designated(LEADER, _designees run)
+def: _cheerio designees run
+  from: mixed(COUPLE, RH MINIWAVE, LH MINIWAVE)
+    from: condition(match(_selection pattern(DESIGNATED), "XX"))
+      call: trade
+    from: condition(match(_selection pattern(DESIGNATED), "__"))
+      call: nothing // don't sashay!
+    from: ANY
+      call: _designees run
+
+def: trixie
+  in: 2
+  from: 2x2
+    select: LEADER
+      prim: 0, 0, in
+    select: TRAILER
+      prim: 0, 0, out
+
 /*
-Cross to a Diamond
-Reverse the Diamond
-Push Open the Gate
-Clear the Centers
-Dixie Chain
-Cheerio
-Trixie
 5.2
 Right On & Left On <====
 Bail Out
@@ -787,9 +913,22 @@ Cloverleaf Turn
 Trim a Web
 Criss Cross the Diamond
 Roll the Wave
-5.6
-Derby / Dixie Derby
-Trixie Spin
+*/
+
+// 5.6
+
+// XXX define derby
+
+def: dixie derby
+  call: dixie style to a wave
+  call: derby
+
+def: trixie spin
+  call: trixie
+  call: cast(3/4)
+  call: cross run(CENTER)
+
+/*
 In Roll to a Wave
 Rip the Line
 Convert the Triangle

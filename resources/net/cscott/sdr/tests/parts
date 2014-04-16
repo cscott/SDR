@@ -154,7 +154,7 @@ sdr> /assertParts("peel the top", 2)
 sdr> /assertParts("percolate", 3)
 sdr> /assertParts("patch the boys", 2)
 sdr> /// "rally": centers have two parts, ends have (controversially)
-sdr> /// either 2 ("little; right roll to a wave) or 3 (1/4 right, counter
+sdr> /// either 2 (little; right roll to a wave) or 3 (1/4 right, counter
 sdr> /// rotate 1/4, right roll to a wave)
 sdr> /assertParts("central rally", 2)
 sdr> /assertParts("ramble", 2)
@@ -258,4 +258,6 @@ sdr> /assertParts("double the wave", 2)
 sdr> /assertParts("outpost", 3)
 sdr> /assertParts("roll out to a column", 3)
 sdr> /assertParts("turn on", 2)
+sdr> /assertParts("trixie spin", 3)
+sdr> /assertParts("dixie derby", 2)
 sdr> /exit
