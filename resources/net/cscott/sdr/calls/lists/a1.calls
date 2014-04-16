@@ -176,7 +176,23 @@ def: double star thru
   call: star thru
   call: mirror(star thru)
 
-// XXX everyone can roll after 'ends bend'
+def: ends bend
+  from: 1x4
+    condition: MATCH(_FACING PATTERN(), "[v^]..[v^]"), "Must be ends of lines"
+    in: 4
+    select: END
+      prim: in 2, 2, in
+    select: CENTER
+      prim: 0, 0, none
+  from: ANY
+    call: _from diamond(_ends bend from diamond)
+def: _ends bend from diamond
+  in: 4
+  from: GENERAL DIAMOND // xxx or diamond spots, if centers turned to face?
+    select: POINT
+      prim: in 1, 3, in
+    select: CENTER
+      prim: 0, 0, none
 
 def: explode the line
   in: 6
