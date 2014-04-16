@@ -135,6 +135,13 @@ def: _finish release(c)
   from: ANY
     call: breathe after(triple line([c]))
 
+def: travel thru
+  call: pass thru
+  call: as couples(quarter right)
+
+def: left travel thru
+  call: mirror(travel thru) // left shoulder pass
+
 // this is tricky because we have to insert the phantoms simultaneous with
 // recognizing which distorted diamond we have.  see plus '_from diamond'
 // helper
