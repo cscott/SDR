@@ -347,6 +347,15 @@ def: _finish atc to a diamond
       call: quarter left
     select: OTHERS
       call: nothing
+def: _atc to a z(atc)
+  ipart:
+    call: _blend last(_atc to a diamond([atc]), _from diamond(_diamond to z))
+def: _diamond to z
+  from: GENERAL DIAMOND
+    select: POINT
+      prim: 0,1,in
+    select: OTHERS
+      prim: 0,0,none
 
 def: snake
   from: RH_MINIWAVE
@@ -761,7 +770,8 @@ def: cross to an hourglass
   call: _blend last(cross to a diamond, _center 2(snake))
 def: cross to an interlocked diamond
   call: _blend last(cross to a diamond, _very centers sashay)
-// xxx cross to a zee?
+def: cross to a z
+  call: _blend last(cross to a diamond, _from diamond(_diamond to z))
 
 def: reverse the diamond
   from: CENTER 4
