@@ -25,6 +25,9 @@ public class Box {
     public Fraction width() {
         return ur.x.subtract(ll.x);
     }
+    public Fraction area() {
+        return height().multiply(width());
+    }
     /** Returns the center of the box.
      * @doc.test
      *  js> function f(i) { return Fraction.valueOf(i); }
@@ -55,7 +58,8 @@ public class Box {
                                  Fraction.max(this.ur.y, b.ur.y)));
     }
     /**
-     * Returns true iff this box overlaps the given one.
+     * Returns true iff this box overlaps the given one.  The edges count
+     * as part of the inside.
      * @doc.test
      *  js> function f(i) { return Fraction.valueOf(i); }
      *  js> b1 = new Box(new Point(f(-1),f(-1)), new Point(f(1),f(1)));
@@ -78,8 +82,8 @@ public class Box {
      *  false
      *  js> b2.overlaps(b4) == b4.overlaps(b2)
      *  true
-     *  js> b2.overlaps(b3)
-     *  false
+     *  js> b2.overlaps(b3) // not the same as overlapsExcl
+     *  true
      *  js> b2.overlaps(b3) == b3.overlaps(b2)
      *  true
      * @doc.test
@@ -89,11 +93,57 @@ public class Box {
      *  js> b2 = new Box(new Point(f(-4),f(-2)), new Point(f(0),f(0)));
      *  (-4,-2;0,0)
      *  js> b1.overlaps(b2)
-     *  false
+     *  true
      *  js> b2.overlaps(b1)
-     *  false
+     *  true
      */
     public boolean overlaps(Box b) {
+        return (ll.x.compareTo(b.ur.x) <= 0 &&
+                b.ll.x.compareTo(ur.x) <= 0 &&
+                ll.y.compareTo(b.ur.y) <= 0 &&
+                b.ll.y.compareTo(ur.y) <= 0);
+    }
+    /**
+     * Returns true iff this box overlaps the given one.  The edges
+     * DO NOT count as part of the inside.
+     * @doc.test
+     *  js> function f(i) { return Fraction.valueOf(i); }
+     *  js> b1 = new Box(new Point(f(-1),f(-1)), new Point(f(1),f(1)));
+     *  (-1,-1;1,1)
+     *  js> b2 = new Box(new Point(f(0),f(0)), new Point(f(3),f(3)));
+     *  (0,0;3,3)
+     *  js> b3 = new Box(new Point(f(-2),f(-2)), new Point(f(0),f(0)));
+     *  (-2,-2;0,0)
+     *  js> b4 = new Box(new Point(f(1),f(4)), new Point(f(2),f(4)));
+     *  (1,4;2,4)
+     *  js> b1.overlapsExcl(b2)
+     *  true
+     *  js> b1.overlapsExcl(b2) == b2.overlapsExcl(b1)
+     *  true
+     *  js> b1.overlapsExcl(b3)
+     *  true
+     *  js> b1.overlapsExcl(b3) == b3.overlapsExcl(b1)
+     *  true
+     *  js> b2.overlapsExcl(b4)
+     *  false
+     *  js> b2.overlapsExcl(b4) == b4.overlapsExcl(b2)
+     *  true
+     *  js> b2.overlapsExcl(b3) // not the same as overlaps()
+     *  false
+     *  js> b2.overlapsExcl(b3) == b3.overlapsExcl(b2)
+     *  true
+     * @doc.test
+     *  js> function f(i) { return Fraction.valueOf(i); }
+     *  js> b1 = new Box(new Point(f(-4),f(0)), new Point(f(0),f(2)));
+     *  (-4,0;0,2)
+     *  js> b2 = new Box(new Point(f(-4),f(-2)), new Point(f(0),f(0)));
+     *  (-4,-2;0,0)
+     *  js> b1.overlapsExcl(b2)
+     *  false
+     *  js> b2.overlapsExcl(b1)
+     *  false
+     */
+    public boolean overlapsExcl(Box b) {
         return (ll.x.compareTo(b.ur.x) < 0 &&
                 b.ll.x.compareTo(ur.x) < 0 &&
                 ll.y.compareTo(b.ur.y) < 0 &&

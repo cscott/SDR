@@ -570,43 +570,54 @@ public abstract class C1List {
          *  js> C1List.ConcentricEvaluator.insideBox(f);
          *  (-2,-4;2,4)
          */
-        public static Box insideBox(final Formation f) {
+        public static Box insideBox(Formation f) {
             // sort by distance from the origin, so important constraints
             // are considered first
-            List<Dancer> sorted = new ArrayList<Dancer>(f.sortedDancers());
-            Collections.sort(sorted, new Comparator<Dancer>() {
+            List<Box> sorted = new ArrayList<Box>(f.dancers().size());
+            for (Dancer d : f.sortedDancers())
+                sorted.add(f.bounds(d));
+            Collections.sort(sorted, new Comparator<Box>() {
                 @Override
-                public int compare(Dancer a, Dancer b) {
-                    return f.location(a).toPoint().dist2(Point.ZERO)
-                        .compareTo(f.location(b).toPoint().dist2(Point.ZERO));
+                public int compare(Box a, Box b) {
+                    return a.center().dist2(Point.ZERO)
+                        .compareTo(b.center().dist2(Point.ZERO));
                 }
             });
-            Box inside = f.bounds();
-            for (Dancer d : sorted) {
-                inside = trimInside(inside, f.bounds(d));
-            }
-            return inside;
+            return trimInside(sorted, 0, f.bounds(), null);
         }
-        private static Box trimInside(Box inside, Box b) {
-            Point cb = b.center();
-            if (cb.x.compareTo(Fraction.ZERO) < 0)
-                return trimInside(inside.mirrorX(), b.mirrorX()).mirrorX();
-            if (cb.y.compareTo(Fraction.ZERO) < 0)
-                return trimInside(inside.mirrorY(), b.mirrorY()).mirrorY();
-            assert cb.x.compareTo(Fraction.ZERO) >= 0;
-            assert cb.y.compareTo(Fraction.ZERO) >= 0;
-            // now we just have to worry about top right quadrant
-            Point ur = inside.ur, p1 = null, p2 = null;
-            if (b.ll.x.compareTo(ur.x) < 0)
-                p1 = new Point(b.ll.x, ur.y);
-            if (b.ll.y.compareTo(ur.y) < 0)
-                p2 = new Point(ur.x, b.ll.y);
-            if (p1 == null || p2 == null)
-                return inside;
-            // use the option which leaves the largest inside (by area)
-            if (p1.x.multiply(p1.y).compareTo(p2.x.multiply(p2.y)) > 0)
-                return new Box(inside.ll, p1);
-            return new Box(inside.ll, p2);
+        private static Box trimInside(List<Box> dancers, int which,
+                                      Box inside, Box best) {
+            if (best != null && inside.area().compareTo(best.area()) <= 0)
+                return best; // we can't find anything better
+            if (which >= dancers.size() || inside.ll.equals(inside.ur))
+                return inside; // we're done
+            Box b = dancers.get(which);
+            if (!b.overlapsExcl(inside))
+                // nothing to trim here, look at next dancer
+                return trimInside(dancers, which+1, inside, best);
+            List<Box> trims = new ArrayList<Box>(4);
+            // try trimming X
+            if (b.ur.x.compareTo(inside.ur.x) <= 0)
+                trims.add(new Box(new Point(b.ur.x, inside.ll.y), inside.ur));
+            if (b.ll.x.compareTo(inside.ll.x) >= 0)
+                trims.add(new Box(inside.ll, new Point(b.ll.x, inside.ur.y)));
+            // try trimming y
+            if (b.ur.y.compareTo(inside.ur.y) <= 0)
+                trims.add(new Box(new Point(inside.ll.x, b.ur.y), inside.ur));
+            if (b.ll.y.compareTo(inside.ll.y) >= 0)
+                trims.add(new Box(inside.ll, new Point(inside.ur.x, b.ll.y)));
+            // try largest area first
+            Collections.sort(trims, new Comparator<Box>() {
+                @Override
+                public int compare(Box a, Box b) {
+                    return -(a.area().compareTo(b.area()));
+                }
+            });
+            for (Box candidate : trims) {
+                if (candidate.includes(Point.ZERO))
+                    best = trimInside(dancers, which+1, candidate, best);
+            }
+            return best;
         }
     };
 }

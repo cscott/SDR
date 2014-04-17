@@ -894,7 +894,7 @@ public class Breather {
             Box iBounds = pieces.get(i).input.bounds();
             for (int j=i+1; j<pieces.size(); j++) {
                 Box jBounds = pieces.get(j).input.bounds();
-                if (iBounds.overlaps(jBounds))
+                if (iBounds.overlapsExcl(jBounds))
                     return true;
             }
         }
@@ -923,7 +923,7 @@ public class Breather {
                 // no Y overlap    skip           skip             skip
                 // some Y overlap  skip        resolve X or Y     resolve Y
                 // total Y overlap skip          resolve X         error
-                if (va.toBox().overlaps(vb.toBox())) {
+                if (va.toBox().overlapsExcl(vb.toBox())) {
                     PairedConstraint<ClLinearInequality> xOverlap =
                         va.overlapConstraint(vb,true);
                     PairedConstraint<ClLinearInequality> yOverlap =
@@ -1060,7 +1060,7 @@ public class Breather {
          */
         public PairedConstraint<ClLinearInequality> overlapConstraint(
                 VariableBox that, boolean isX) throws ExCLInternalError {
-            assert this.toBox().overlaps(that.toBox());
+            assert this.toBox().overlapsExcl(that.toBox());
             // flip-flop so that this has lowest start dim.
             int c = this.getStart(isX).value().compareTo(that.getStart(isX).value());
             if (c==0) c = -this.getEnd(isX).value().compareTo(that.getEnd(isX).value());
