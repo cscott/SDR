@@ -94,6 +94,38 @@ def: you all
   from: CENTER HALF
     call: _quasi concentric(hinge, u turn back)
 
+// see 'in roll circulate' (a2)
+def: zoom roll circulate
+  in: 4 // to match timing of 'zoom'
+  from: PARALLEL_WAVES, PARALLEL_TWO_FACED_LINES, PARALLEL_GENERAL_LINES
+    condition: equal num(NUM DANCERS(and(END,LEADER)), 2), \
+      "Exactly one end in each line must be facing out."
+    from: condition(MATCH(_SELECTION PATTERN(and(END,LEADER)), "X_+X"),\
+                    PARALLEL GENERAL LINES)
+      select: and(LEADER,END)
+        ipart:
+          prim: 0,0,out
+          prim: in 1, 1, roll
+        ipart:
+          prim: in 1, 1, roll
+          prim: 0,0,roll
+      select: TRAILER
+        ipart:
+          prim: 0, 0, none
+          prim: 1, 0, right
+        ipart:
+          prim: 0, 1, roll
+          prim: 0, 0, none, preserve-roll preserve-sweep
+      select: OTHERS
+        ipart:
+          prim: 0, 0, none
+          prim: -1, 0, left
+        ipart:
+          prim: 0, 1, roll
+          prim: 0, 0, none, preserve-roll preserve-sweep
+    from: condition(MATCH(_SELECTION PATTERN(and(END,LEADER)), "_+XX_+"))
+      call: mirror(zoom roll circulate)
+
 // C4 class teaching order
 
 // week 1

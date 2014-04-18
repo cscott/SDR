@@ -100,6 +100,9 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation _1x3 =
         create("1x3", f("+++"), WhetherTagger.NO_AUTO_TAGS,
                 t(0, END), t(1, CENTER), t(2, END));
+    public static final NamedTaggedFormation GENERAL_LINE_OF_3 =
+        create("GENERAL LINE OF 3", f("|||"), WhetherTagger.NO_AUTO_TAGS,
+               t(0, END), t(1, CENTER), t(2, END));
     // 4-person formations
     public static final NamedTaggedFormation GENERAL_LINE =
         create("GENERAL LINE", f("||||"), WhetherTagger.NO_AUTO_TAGS,

@@ -198,6 +198,48 @@ public class SelectorList {
     };
     static { addToList(MATCH); }
 
+    /** Select dancers matched on a regex match against a pattern
+     *  consisting of all dancers.  Any capturing groups select
+     *  corresponding dancers.
+     *  @see ExprList#_FACING_PATTERN
+     *  @see ExprList#_ROLL_PATTERN
+     *  @see ExprList#_INOUT_PATTERN
+     */
+    public static ExprFunc<Selector> MATCH_GROUPS = new ExprFunc<Selector>() {
+        @Override
+        public String getName() { return "match groups"; }
+        @Override
+        public Selector evaluate(Class<? super Selector> type,
+                                 final DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            if (args.size()!=2)
+                throw new EvaluationException("needs two arguments");
+            final String dancers = args.get(0).evaluate(String.class, ds);
+            final Pattern pattern = Pattern.compile
+                (args.get(1).evaluate(String.class, ds),
+                 Pattern.CASE_INSENSITIVE);
+            return new Selector() {
+                @Override
+                public Set<Dancer> select(TaggedFormation tf) {
+                    Set<Dancer> result = new LinkedHashSet<Dancer>();
+                    List<Dancer> sortedDancers = tf.sortedDancers();
+                    java.util.regex.Matcher m = pattern.matcher(dancers);
+                    if (m.matches()) {
+                        for (int i = 1; i <= m.groupCount(); i++) {
+                            // both start() and end() will be -1 if the group
+                            // doesn't match anything.
+                            for (int j = m.start(i); j < m.end(i); j++) {
+                                result.add(sortedDancers.get(j));
+                            }
+                        }
+                    }
+                    return result;
+                }
+            };
+        }
+    };
+    static { addToList(MATCH_GROUPS); }
+
     /** Complex selector: do a formation match and select tagged dancers from
      *  the match -- but don't change the dance state.  Most useful for
      *  'ends in' conditions, which don't have a TaggedFormation handy. */
@@ -230,6 +272,57 @@ public class SelectorList {
         }
     };
     static { addToList(FORMATION); }
+
+    /**
+     * The "condition" selector allows the introduction of predicates
+     * into the selection process.
+     * @see MatcherList#_CONDITION
+     *
+     * @doc.test Simple math in a selector.
+     *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr _add num '1 '1) '2))")
+     *  (Expr condition (Expr equal num (Expr _add num '1 '1) '2))
+     *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Selector"), null)
+     *    > sel.select(TaggedFormation.coerce(Formation.SQUARED_SET));
+     *  [COUPLE 1 BOY, COUPLE 1 GIRL, COUPLE 2 BOY, COUPLE 2 GIRL, COUPLE 3 BOY, COUPLE 3 GIRL, COUPLE 4 BOY, COUPLE 4 GIRL]
+     *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr _add num '1 '1) '3))")
+     *  (Expr condition (Expr equal num (Expr _add num '1 '1) '3))
+     *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Selector"), null)
+     *    > sel.select(TaggedFormation.coerce(Formation.SQUARED_SET));
+     *  []
+     * @doc.test Using the optional second argument.
+     *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined
+     *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr num dancers) '8) (Expr and 'BOY 'HEAD))")
+     *  (Expr condition (Expr equal num (Expr num dancers) '8) (Expr and 'BOY 'HEAD))
+     *  js> e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Selector"), ds).
+     *    >     select(TaggedFormation.coerce(ds.currentFormation()))
+     *  [COUPLE 1 BOY, COUPLE 3 BOY]
+     *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr num dancers) '4) 'BOY)")
+     *  (Expr condition (Expr equal num (Expr num dancers) '4) 'BOY)
+     *  js> e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Selector"), ds).
+     *    >     select(TaggedFormation.coerce(ds.currentFormation()))
+     *  []
+     */
+    public static ExprFunc<Selector> CONDITION = new ExprFunc<Selector>() {
+        @Override
+        public String getName() { return "condition"; }
+        @Override
+        public Selector evaluate(Class<? super Selector> type,
+                                 final DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            if (args.size() != 1 && args.size() != 2)
+                throw new EvaluationException("Needs one or two arguments");
+            Expr result;
+            boolean b = args.get(0).evaluate(Boolean.class, ds);
+            if (!b)
+                result = new Expr("NONE");
+            else if (args.size() > 1)
+                result = args.get(1);
+            else
+                result = new Expr("ALL");
+            return result.evaluate(Selector.class, ds);
+        }
+    };
+    static { addToList(CONDITION); }
 
     // Keep a list of Selector functions. //////////////////////
     private static String normalize(String s) {

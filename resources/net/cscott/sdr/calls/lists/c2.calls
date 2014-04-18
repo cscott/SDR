@@ -156,6 +156,17 @@ def: _exchange the diamond after adjust
       prim: -2, 1, left
       prim: 3, 2, right
 
+def: here comes the judge
+  from: LINES FACING OUT, ENDS OUT INVERTED LINES, PARALLEL GENERAL LINES
+    condition: equal num(NUM DANCERS(and(END,LEADER)), 4), \
+      "Both ends in each line must be facing out."
+    call: _with designated(and(LEADER,END,BELLE), _designees out roll circulate)
+  // vic thinks you can do this from a general line of 4, as long as the
+  // ends are facing the same way
+  from: GENERAL LINE, GENERAL LINE OF 3
+    condition: MATCH(_FACING PATTERN(END), "vv|^^")
+    call: _with designated(MATCH GROUPS(_FACING PATTERN(), "(v).+v|^.+(^)"),\
+                           _designees out roll circulate)
 // "little more" has a controversial division into parts.  Are the
 // two parts "little" and "centers circulate" (as the callerlab definition
 // would seem to imply) or is the first part "centers step and fold while
@@ -164,6 +175,9 @@ def: _exchange the diamond after adjust
 def: little more
   xpart: 2
     call: little, anyone while others(CENTER, circulate, nothing)
+
+def: sock it to me
+  call: mirror(here comes the judge)
 
 def: split swap
   option: REVERSE

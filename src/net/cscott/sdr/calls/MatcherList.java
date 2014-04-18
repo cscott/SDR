@@ -173,6 +173,8 @@ public class MatcherList {
     // 3-person matchers
     public static final Matcher _1_X3 =
         GeneralFormationMatcher.makeMatcher(FormationList._1x3);
+    public static final Matcher GENERAL_LINE_OF_3 =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_LINE_OF_3);
 
     // 4-person matchers
     public static final Matcher GENERAL_LINE =
@@ -831,6 +833,7 @@ public class MatcherList {
     /**
      * The "condition" matcher allows the introduction of predicates
      * into the match process.
+     * @see SelectorList#CONDITION
      *
      * @doc.test Simple math in a matcher.
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr _add num '1 '1) '2))")
@@ -875,7 +878,8 @@ public class MatcherList {
         public Matcher evaluate(Class<? super Matcher> type,
                                 DanceState ds, List<Expr> args)
             throws EvaluationException {
-            assert args.size() == 1 || args.size() == 2;
+            if (args.size() != 1 && args.size() != 2)
+                throw new EvaluationException("Needs one or two arguments");
             boolean b = args.get(0).evaluate(Boolean.class, ds);
             if (!b)
                 return NONE;

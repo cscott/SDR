@@ -191,6 +191,22 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.CENTER),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(2), Fraction.valueOf(0), Rotation.fromAbsoluteString("+")), Tag.END));
 
+    /** GENERAL LINE OF 3 formation.
+      * @doc.test
+      *  js> tf = FormationList.GENERAL_LINE_OF_3; tf.toStringDiagram('|');
+      *  ||    |    |
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [END]
+      *  [CENTER]
+      *  [END]
+      */
+    public static final NamedTaggedFormation GENERAL_LINE_OF_3 =
+        new NamedTaggedFormation("GENERAL LINE OF 3",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.END),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(2), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.END));
+
     /** GENERAL LINE formation.
       * @doc.test
       *  js> tf = FormationList.GENERAL_LINE; tf.toStringDiagram('|');
@@ -4075,6 +4091,7 @@ abstract class FormationListFast {
             FormationListFast.RH_MINIWAVE,
             FormationListFast.LH_MINIWAVE,
             FormationListFast._1x3,
+            FormationListFast.GENERAL_LINE_OF_3,
             FormationListFast.GENERAL_LINE,
             FormationListFast.GENERAL_COLUMN,
             FormationListFast._1x4,

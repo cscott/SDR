@@ -60,6 +60,53 @@ def: _finish mini busy
     from: CENTER HALF // does this include center diamond?
       call: _quasi concentric(flip the diamond, quarter in)
 
+// XXX vic would like to define this from parallel lines of 3 as well
+def: in roll circulate
+  in: 4
+  from: PARALLEL WAVES, PARALLEL TWO-FACED LINES, PARALLEL GENERAL LINES
+    condition: equal num(NUM DANCERS(and(END,TRAILER)), 2), \
+      "Exactly one end in each line must be facing in."
+    from: condition(MATCH(_SELECTION PATTERN(and(END,TRAILER)), "X_+X"),\
+                    PARALLEL GENERAL LINES)
+      select: and(TRAILER,END)
+        prim: out 1, 1, none
+        prim:  in 1, 1, none
+      select: TRAILER
+        prim: 1, 0, right
+        prim: 0, 1, roll
+      select: OTHERS
+        prim: -1, 0, left
+        prim: 0, 1, roll
+    from: condition(MATCH(_SELECTION PATTERN(and(END,TRAILER)), "_+XX_+"))
+      call: mirror(in roll circulate)
+
+// XXX vic would like to define this from parallel lines of 3 as well
+def: out roll circulate
+  in: 6
+  from: PARALLEL WAVES, PARALLEL TWO-FACED LINES, PARALLEL GENERAL LINES
+    call: _with designated(and(LEADER,END), _designees out roll circulate)
+// also used for sock it to me/here comes the judge:
+def: _designees out roll circulate
+  from: GENERAL LINE, GENERAL LINE OF 3
+    in: _multiply num(num dancers(), 2)
+    condition: equal num(NUM DANCERS(DESIGNATED), 1), \
+      "Exactly one end in each line must be facing out."
+    from: condition(MATCH(_SELECTION PATTERN(DESIGNATED), "X__+"))
+      select: and(DESIGNATED, condition(equal num(num dancers(), 4)))
+        prim: in 3, 2, in
+        prim: in 2, 3, roll
+      select: and(DESIGNATED, condition(equal num(num dancers(), 3)))
+        prim: in 2, 2, in
+        prim: in 2, 2, roll
+      select: MATCH(_FACING PATTERN(), "v")
+        prim: 1, 0, right
+        prim: 0, 1, roll
+      select: OTHERS
+        prim: -1, 0, left
+        prim: 0, 1, roll
+    from: condition(MATCH(_SELECTION PATTERN(DESIGNATED), "__+X"))
+      call: mirror(_designees out roll circulate)
+
 def: remake
   option: LEFT
   part: 2
