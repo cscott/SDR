@@ -363,6 +363,7 @@ def: switch to a diamond
       prim: 0, 0, none
 
 // XXX this is different spacing than FormationList.RH_HOURGLASS
+// XXX use _blend and snake, etc?
 def: switch to an hourglass
   in: 4
   from: PARALLEL WAVES, PARALLEL GENERAL LINES
@@ -375,3 +376,17 @@ def: switch to an hourglass
     select: and(END, LEADER)
       prim: in 3, 1, in
       prim: 0, 0, none
+
+def: switch the wave
+  from: OCEAN WAVE
+    call: _switch the line
+def: _switch the line
+  in: 6
+  part:
+    from: OCEAN WAVE, TWO-FACED LINE, ONE-FACED LINE, GENERAL LINE
+      select: CENTER
+        prim: out 1, 0, out
+        prim: 0, 1, roll
+      select: END
+        prim: in 3, 1, in
+        prim: in 1, 1, roll

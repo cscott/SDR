@@ -135,12 +135,14 @@ def: cross roll to a line
   call: cross roll
 def: cross roll
   // XXX: centers cross run while ends run; centers pass outside of ends
-def: switch the line
-  from: LINE OF 4
-  // XXX: centers run while ends cross run
   // XXX: look at bill's book under "run wild" for 1/2 way point
   //      centers take the outside track
 */
+
+def: switch the line
+  from: GENERAL LINE
+    condition: not(formation(OCEAN WAVE)), "Don't you mean: switch the wave?"
+    call: _switch the line // defined in a2.calls by 'switch the wave'
 
 def: dixie diamond
   call: dixie style, _finish dixie diamond

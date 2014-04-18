@@ -262,6 +262,18 @@ def: square chain thru
     ends in: formation(BACK-TO-BACK COUPLES)
     call: _square thru part, left(swing thru), left(turn thru)
 
+def: swap around
+  option: REVERSE
+  in: 4
+  from: FACING COUPLES, 2x2
+    condition: ARE(ALL, TRAILER), "Everyone must be a trailer"
+    select: BELLE
+      prim: 0, 1, none
+      prim: 0, 1, none
+    select: BEAU
+      prim: in 1, -1, right, sashay-start
+      prim: in 1,  1, right, sashay-finish
+
 def: transfer the column
   call: trans(extend)
 

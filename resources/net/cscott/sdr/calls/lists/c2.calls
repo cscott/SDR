@@ -185,6 +185,20 @@ def: split swap
     condition: ARE(ALL, TRAILER)
     call: mirror(shake and rattle)
 
+// vic sez: "The end result of Swap The Wave is as if everyone took a step
+// backward (to form Facing Couples) and then did a Swap Around."
+// in particular this definition has the centers *not* take hands; vic
+// believes the centers part is *not* an arm turn.
+def: swap the wave
+  ipart:
+    call: _blend first(_swap the wave adjust, swap around)
+def: _swap the wave adjust
+  from: OCEAN WAVE
+    select: CENTER
+      prim: 0, -1, none
+    select: END
+      prim: in 2, -1, none
+
 // XXX: can be done from promenade
 def: wheel the ocean
   call: _start wheel the, _finish wheel the ocean

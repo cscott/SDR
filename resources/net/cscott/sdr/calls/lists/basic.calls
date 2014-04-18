@@ -1328,6 +1328,33 @@ def: circulate // all-8
       call: concentric(_box circulate)
     from: GENERAL COLUMNS
       call: column circulate
+    from: 2x4
+      select: match groups(_facing pattern(), "([v>])......."), \
+              match groups(_facing pattern(), ".([<>v])......"),\
+              match groups(_facing pattern(), "..([<>v])....."),\
+              match groups(_facing pattern(), "...([<v])...."), \
+              match groups(_facing pattern(), "....([>^])..."), \
+              match groups(_facing pattern(), ".....([<>^]).."),\
+              match groups(_facing pattern(), "......([<>^])."),\
+              match groups(_facing pattern(), ".......([<^])")
+        prim: 0, 1, none
+        prim: 0, 1, none
+      select: match groups(_facing pattern(), "(<)......."),   \
+              match groups(_facing pattern(), ".(\\^)......"), \
+              match groups(_facing pattern(), "..(\\^)....."), \
+              match groups(_facing pattern(), "...(>)...."),   \
+              match groups(_facing pattern(), "....(<)..."),   \
+              match groups(_facing pattern(), ".....(v).."),   \
+              match groups(_facing pattern(), "......(v)."),   \
+              match groups(_facing pattern(), ".......(>)")
+        prim: in 1, 1, in
+        prim: in 1, 1, in
+      select: match groups(_facing pattern(), "(\\^)......."), \
+              match groups(_facing pattern(), "...(\\^)...."), \
+              match groups(_facing pattern(), "....(v)..."),   \
+              match groups(_facing pattern(), ".......(v)")
+        prim: in 3, 2, in
+        prim: in 2, 3, in
   from: condition(equal num(NUM DANCERS(), 4))
     from: 2x2
       call: _box circulate
