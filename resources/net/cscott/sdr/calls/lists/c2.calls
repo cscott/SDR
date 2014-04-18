@@ -199,6 +199,15 @@ def: _swap the wave adjust
     select: END
       prim: in 2, -1, none
 
+def: turn to a line
+  ipart:
+    call: zig zag
+    call: _blend last(tandem(_step thru preserve roll), roll)
+def: _step thru preserve roll
+  in: 2
+  from: MINIWAVE
+    prim: in 1, 1, none, preserve-roll
+
 // XXX: can be done from promenade
 def: wheel the ocean
   call: _start wheel the, _finish wheel the ocean

@@ -390,3 +390,19 @@ def: _switch the line
       select: END
         prim: in 3, 1, in
         prim: in 1, 1, roll
+
+def: zig zag
+  call: _zz(face right,face left)
+def: zag zig
+  call: _zz(face left, face right)
+def: zig zig
+  call: _zz(face right,face right)
+def: zag zag
+  call: _zz(face left, face left)
+def: _zz(lead, trail)
+  in: 2
+  from: GENERAL TANDEM
+    select: MATCH(_INOUT PATTERN(), "o") // LEADER
+      call: [lead]
+    select: MATCH(_INOUT PATTERN(), "i") // TRAILER
+      call: [trail]

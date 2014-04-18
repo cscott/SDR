@@ -135,6 +135,13 @@ def: _finish release(c)
   from: ANY
     call: breathe after(triple line([c]))
 
+// see 'turn to a line' (c2)
+def: single turn to a line
+  ipart:
+    from: TANDEM, FACING DANCERS, BACK-TO-BACK DANCERS
+      call: _blend last(zig zag, _step thru preserve roll)
+      call: roll
+
 def: travel thru
   call: pass thru
   call: as couples(quarter right)

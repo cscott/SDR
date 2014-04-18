@@ -579,7 +579,22 @@ def: scramble
 
 /* ... */
 
-/*sidetrack, single sidetrack, split sidetrack (different from single concept)*/
+def: sidetrack
+  call: zig zag
+  call: counter rotate(1/4)
+  call: roll
+
+def: single sidetrack
+  from: GENERAL COLUMN /* 1x4 */
+    call: zig zag
+    call: lockit // counter rotate with respect to the 1x4
+    call: roll
+
+def: split sidetrack
+  from: 2x4, 1x8 // XXX should be "1x8 column"
+    call: zig zag
+    call: split counter rotate(1/4)
+    call: roll
 
 /* ... */
 
