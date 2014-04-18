@@ -1,0 +1,98 @@
+Tests for rip off.
+
+sdr> /program = C4
+C4
+sdr> sides rip off
+| 3Gv  3Bv
+| 
+| 4G>  4B>
+| 
+| 2B<  2G<
+| 
+| 1B^  1G^
+sdr> /// at c3b, "leaders u-turn back"
+sdr> like a couple up
+| 3Gv  3Bv
+| 
+| 4G>  4B<
+| 
+| 2B>  2G<
+| 
+| 1B^  1G^
+sdr> sides back out
+|      3Gv  3Bv
+| 
+| 4G>            4B<
+| 
+| 2B>            2G<
+| 
+|      1B^  1G^
+sdr> heads pair off
+| 4G>  3G<  3B>  4B<
+| 
+| 2B>  1B<  1G>  2G<
+sdr> split swap
+| 3G^  1B^  4B^  2G^
+| 
+| 4Gv  2Bv  3Bv  1Gv
+sdr> trade and roll
+| 1B>  3G<  2G>  4B<
+| 
+| 2B>  4G<  1G>  3B<
+sdr> put centers in
+| 1B>  4B<
+| 
+| 3G<  2G>
+| 
+| 4G<  1G>
+| 
+| 2B>  3B<
+sdr> rip off and roll
+| 3Gv  1B>
+| 
+| 2Gv  4B<
+| 
+| 2B>  4G^
+| 
+| 3B<  1G^
+sdr> rip off
+| 2Gv  3Gv
+| 
+| 4B<  1B<
+| 
+| 3B>  2B>
+| 
+| 1G^  4G^
+sdr> trade
+| 3G^  2G^
+| 
+| 3B<  2B<
+| 
+| 4B>  1B>
+| 
+| 4Gv  1Gv
+sdr> concentric do half of a rip off and roll
+|           3Gv
+| 
+|           3Bv
+| 4G>  4B>       2B<  2G<
+|           1B^
+| 
+|           1G^
+sdr> right roll to a wave
+| 4G>  3B^  3Gv  2B>
+| 
+| 4B<  1G^  1Bv  2G<
+sdr> boys run
+| 4B>  3Gv  3Bv  2G<
+| 
+| 4G>  1B^  1G^  2B<
+sdr> you're home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> /exit

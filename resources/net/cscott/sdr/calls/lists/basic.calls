@@ -269,6 +269,17 @@ def: _centers back out
     select: OTHERS
       prim: 0, 0, none // stay where they are
 
+def: sides back out
+  from: 2x4
+    condition: MATCH(_SELECTION PATTERN(SIDE), "_XX__XX_"), \
+      "Sides aren't in the center."
+    call: _centers back out
+def: heads back out
+  from: 2x4
+    condition: MATCH(_SELECTION PATTERN(HEAD), "_XX__XX_"), \
+      "Heads aren't in the center."
+    call: _centers back out
+
 // callerlab #2: FORWARD AND BACK
 def: forward and back
   spoken: (forward and back) | (up to the middle and back)

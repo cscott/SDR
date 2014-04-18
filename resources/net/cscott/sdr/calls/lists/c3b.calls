@@ -462,14 +462,39 @@ def: revolve to a wave
     !   v   v
 
 def: rip off
+  in: 4
   from: TANDEM COUPLES, BOX, INVERTED BOX, 2x2
-    select: LEADER
-      select: BEAU
-        call: run
-      select: BELLE
-        call: zoom
-    select: TRAILER
-      call: walk others dodge(BEAU)
+    select: and(BEAU, LEADER)
+      // "run"
+      ipart:
+        prim: 0,0,none
+        prim: in 1, 1, right, sashay-start
+      ipart:
+        prim: in 1, 1, roll, sashay-finish
+        prim: 0,0,none, preserve-roll preserve-sweep
+    select: and(BELLE, LEADER)
+      // "zoom"
+      ipart:
+        prim: 0,0,right
+        prim: in 1,0,roll
+      ipart:
+        prim: 0, 1, roll
+        prim: 0, 0, roll
+    // "trailers, beau walk belle dodge"
+    select: and(BEAU, TRAILER)
+      ipart:
+        prim: 0,0,none
+        prim: 0,1,none
+      ipart:
+        prim: 0,1,none
+        prim: 0,0,none, preserve-sweep
+    select: and(BELLE, TRAILER)
+      ipart:
+        prim: 0,0,none
+        prim: -1,-1,none,sashay-start sashay-finish
+      ipart:
+        prim: -1,1,none,sashay-start sashay-finish
+        prim: 0,0,none, preserve-sweep
   example: rip off
     before:
     ! ^ ^
