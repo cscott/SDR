@@ -229,7 +229,8 @@ abstract class BuilderHelper {
             public Rule getRule() { return rule; }
             @Override
             public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
-                assert args.size() >= minNumberOfArguments;
+                assert args.size() >= minNumberOfArguments :
+                    "not enough arguments to call: "+getName();
                 List<Expr> nargs = new ArrayList<Expr>(args);
                 /* add default arguments if missing */
                 for (int i=nargs.size(); i<defaultArguments.size(); i++)
