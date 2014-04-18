@@ -108,7 +108,9 @@ def: concentric(c)
   from: GENERAL QUARTER TAG, TWIN GENERAL DIAMONDS, CONCENTRIC GENERAL DIAMONDS
     call: _concentric([c], [c])
   from: ANY
-    call: _blend first(_diamond adjust then(concentric([c])))
+    call: _blend first(_diamond adjust then(                              \
+            _from(or(TWIN GENERAL DIAMONDS, CONCENTRIC GENERAL DIAMONDS), \
+                  _concentric([c],[c]))))
   from: CENTER HALF
     call: _concentric([c], [c])
 

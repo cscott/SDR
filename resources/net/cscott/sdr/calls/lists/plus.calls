@@ -68,13 +68,12 @@ def: _from diamond or tag(c, n=1)
 
 
 def: acey deucey
-  from: CENTER HALF
-    call: _quasi concentric(trade, _acey circulate)
+  from: ANY
+    call: _center 4(trade, _acey circulate)
   // allow trailers to circulate only if they are ends of waves
   // (from 2x4 where the ends are facing N/S, or from diamonds)
-  // XXX: this could be more general!
-  from: TWIN GENERAL DIAMONDS
-    call: _quasi concentric(trade, _box circulate)
+  from: ANY
+    call: _from two diamonds(_center 4(trade, _box circulate))
   from: 2x4
     condition: match(_facing pattern(), "[<v^]..[v^>][<v^]..[v^>]")
     call: _quasi concentric(trade, _box circulate)

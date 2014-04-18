@@ -15,7 +15,7 @@ sdr> acey deucey
 | 
 | 4G>  1Bv  3Gv  2B<
 sdr> acey deucey
-* Invalid formation (CENTER HALF (Invalid formation (2x2 (Circulate is not allowed to cross the center))), TWIN GENERAL DIAMONDS (no matches), 2x4 (null))
+* Circulate is not allowed to cross the center
 sdr> /reset
 sdr> /program = PLUS
 PLUS
@@ -24,13 +24,13 @@ sdr> heads lead right ; boys run
 | 
 | 4B<  3G<  1B<  2G<
 sdr> acey deucey
-* Invalid formation (CENTER HALF (Invalid formation (2x2 (Circulate is not allowed to cross the center))), TWIN GENERAL DIAMONDS (no matches), 2x4 (null))
+* Circulate is not allowed to cross the center
 sdr> centers hinge
 | 4G>                      2B>
 |      3G^  3Bv  1B^  1Gv
 | 4B<                      2G<
 sdr> acey deucey
-* Invalid formation (CENTER HALF (Invalid formation (2x2 (Circulate is not allowed to cross the center))), TWIN GENERAL DIAMONDS (no matches), 2x4 (no matches))
+* Circulate is not allowed to cross the center
 sdr> girls u-turn back
 | 4G<                      2B>
 |      3Gv  3Bv  1B^  1G^
@@ -40,5 +40,18 @@ sdr> acey deucey
 |      3B^  3G^  1Gv  1Bv
 | 4G>                      2B<
 sdr> acey deucey
-* Invalid formation (CENTER HALF (Invalid formation (2x2 (Circulate is not allowed to cross the center))), TWIN GENERAL DIAMONDS (no matches), 2x4 (no matches))
+* Circulate is not allowed to cross the center
+sdr> /// no acey deucey from p2p diamonds either!
+sdr> /reset
+sdr> /program = A1
+A1
+sdr> heads pass the ocean ; extend ; fan the top
+| 3B^  4Gv  1G^  4Bv  2B^  3Gv  2G^  1Bv
+sdr> /// work around bugs w/ the more straightforward ways of making p2p dmds
+sdr> do 1/2 of a triple trade ; very centers hinge
+|      1G<            2G<
+| 3B^       2Bv  4B^       1Bv
+|      4G>            3G>
+sdr> acey deucey
+* Invalid formation
 sdr> /exit

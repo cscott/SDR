@@ -25,8 +25,12 @@ def: cross concentric(c)
   spoken: cross concentric <c=anything>
   option: CONCEPT
   // try "center wave" as centers
-  from: GENERAL QUARTER TAG, TWIN GENERAL DIAMONDS
+  from: GENERAL QUARTER TAG, TWIN GENERAL DIAMONDS, CONCENTRIC GENERAL DIAMONDS
     call: _cross concentric([c], [c])
+  from: ANY
+    call: _blend first(_diamond adjust then(                              \
+            _from(or(TWIN GENERAL DIAMONDS, CONCENTRIC GENERAL DIAMONDS), \
+                  _cross concentric([c],[c]))))
   from: CENTER HALF
     call: _cross concentric([c], [c])
 
