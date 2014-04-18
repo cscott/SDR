@@ -195,8 +195,13 @@ def: _start drop in
 
 /* slim down defined in C4List.java */
 
+def: the action(n=1/4)
+  spoken: the action (but turn the star <n=fraction>)?
+  call: _center 4(1/2(reverse(swap around)), hinge)
+  call: _chain reaction part 3([n])
+  call: _finish chain reaction
+
 /*
-def: the action
 def: turntable
 def: bridge the gap
 def: walk out to a column
@@ -209,6 +214,11 @@ def: advance to a column(sel)
   call: column circulate
   call: anyone while others(CENTER, trade, nothing)
   call: column circulate
+
+// grammar hack.  letting 'anyone' be optional in advance to a column
+// creates grammar conflicts :(
+def: finish advance to a column
+  call: finish(advance to a column(ALL))
 
 /*
 def: fractional twosome // concept

@@ -168,12 +168,13 @@ def: _chain reaction part 1
 def: _chain reaction part 2
   in: 2
   call: _center 6(_center 2(nothing, hinge), _counter rotate 1/4)
+// this version works with unusual "those who meet" (ie, t-bones)
 def: _chain reaction part 3(n)
-  from: ANY
-    call: _center 4(_turn the diamond([n]), _in(2, trade))
-  from: ANY // an alternative, if there is an unusual "those who meet"
-    call: _blend last(_center 4(_turn the star([n]), _in(2, trade)),\
-                      _center 6(_unsmash the star))
+  call: _blend last(_center 4(_turn the star([n]), _in(2, trade)),\
+                    _center 6(_unsmash the star))
+// an alternative for non-t-bones, doesn't do "those who meet"
+def: _chain reaction part 3 simple(n)
+  call: _center 4(_turn the diamond([n]), _in(2, trade))
 def: _finish chain reaction
   in: 6 // same as "cast 3/4"
   call: _blend last(_center 2(nothing, _center 4(cast(3/4), nothing)),\
