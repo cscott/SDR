@@ -19,6 +19,7 @@ import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.ast.Expr;
+import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.ListUtils;
 import net.cscott.sdr.util.Point;
@@ -533,7 +534,9 @@ public class MatcherList {
     public static final Matcher _4_X4 =
         GeneralFormationMatcher.makeMatcher(FormationList._4x4);
 
-    // special purpose matcher
+    // special purpose matchers
+    public static final Matcher SPLIT_WIDE = new SplitMatcher(true);
+    public static final Matcher SPLIT_TALL = new SplitMatcher(false);
     public static final Matcher CENTER_2 = new CenterMatcher(2);
     public static final Matcher CENTER_4 = new CenterMatcher(4);
     public static final Matcher CENTER_6 = new CenterMatcher(6);
@@ -710,7 +713,7 @@ public class MatcherList {
                 centerDancers.addAll(group);
             }
             if (centerDancers.size() != n)
-                throw new NoMatchException("CENTER("+n+")",
+                throw new NoMatchException(getName(),
                                            "Can't find "+n+" center dancers");
             // ok, apply the tags
             MultiMap<Dancer,Tag> newTags = new GenericMultiMap<Dancer,Tag>();
@@ -723,9 +726,98 @@ public class MatcherList {
                  Tools.m(Tools.p(meta.dancers().iterator().next(), tf)),
                  Collections.<Dancer>emptySet(), Collections.<Dancer>emptySet());
         }
+        @Override
         public String getName() {
             if (half) return "CENTER HALF";
             return "CENTER("+howMany+")";
+        }
+    }
+    /**
+     * Algorithmically split the formation along the given axis.
+     * @doc.test Splitting ocean waves.
+     *  js> f = FormationList.PARALLEL_RH_WAVES.mapStd([]);
+     *    > f.toStringDiagram("|");
+     *  |1B^  1Gv  2B^  2Gv
+     *  |
+     *  |4G^  4Bv  3G^  3Bv
+     *  js> MatcherList.SPLIT_WIDE.match(f);
+     *  AA^  BB^
+     *  AA:
+     *     1B^  1Gv
+     *     
+     *     4G^  4Bv
+     *  BB:
+     *     2B^  2Gv
+     *     
+     *     3G^  3Bv
+     *  js> MatcherList.SPLIT_TALL.match(f);
+     *  AA^
+     *  
+     *  BB^
+     *  AA:
+     *     1B^  1Gv  2B^  2Gv
+     *  BB:
+     *     4G^  4Bv  3G^  3Bv
+     * @doc.test Splitting a tidal wave.
+     *  js> f = FormationList.RH_TIDAL_WAVE.mapStd([]); f.toStringDiagram("|");
+     *  |1B^  1Gv  2B^  2Gv  4G^  4Bv  3G^  3Bv
+     *  js> MatcherList.SPLIT_WIDE.match(f);
+     *  AA^  BB^
+     *  AA:
+     *     1B^  1Gv  2B^  2Gv
+     *  BB:
+     *     4G^  4Bv  3G^  3Bv
+     *  js> try { MatcherList.SPLIT_TALL.match(f); } catch(e) { print(e.javaException); }
+     *  net.cscott.sdr.calls.NoMatchException: No match for SPLIT(tall): Can't split center dancer
+     */
+    static class SplitMatcher extends Matcher {
+        private final boolean isWide;
+        SplitMatcher(boolean isWide) {
+            this.isWide = isWide;
+        }
+        @Override
+        public String getName() {
+            return "SPLIT("+(isWide?"wide":"tall")+")";
+        }
+        @Override
+        public FormationMatch match(Formation f) throws NoMatchException {
+            int fsize = f.dancers().size();
+            if (fsize < 2)
+                throw new NoMatchException(getName(),
+                                           "Can't split a single dancer");
+            if (fsize % 2 != 0)
+                throw new NoMatchException(getName(),
+                                           "Can't split an odd # of dancers");
+            Box bounds = f.bounds();
+            boolean splitX = bounds.width().compareTo(bounds.height()) >= 0;
+            if (!isWide) splitX = !splitX;
+            // split the dancers into two groups.
+            Set<Dancer> topLeftHalf = new LinkedHashSet<Dancer>();
+            Set<Dancer> bottomRightHalf = new LinkedHashSet<Dancer>();
+            for (Dancer d : f.dancers()) {
+                Position p = f.location(d);
+                int c = splitX ?
+                    p.x.compareTo(Fraction.ZERO) :
+                    -p.y.compareTo(Fraction.ZERO);
+                if (c == 0)
+                    throw new NoMatchException(getName(),
+                                               "Can't split center dancer");
+                if (c < 0) topLeftHalf.add(d);
+                else bottomRightHalf.add(d);
+            }
+            // make the subformations
+            TaggedFormation topLeftF = TaggedFormation.coerce
+                (f.select(topLeftHalf).onlySelected().recenter());
+            TaggedFormation bottomRightF = TaggedFormation.coerce
+                (f.select(bottomRightHalf).onlySelected().recenter());
+            Formation meta = splitX ?
+                FormationList.COUPLE : FormationList.TANDEM;
+            List<Dancer> metaDancers = meta.sortedDancers();
+            return new FormationMatch
+                (meta, m(p(metaDancers.get(0), topLeftF),
+                         p(metaDancers.get(1), bottomRightF)),
+                 Collections.<Dancer>emptySet(),
+                 Collections.<Dancer>emptySet());
         }
     }
 

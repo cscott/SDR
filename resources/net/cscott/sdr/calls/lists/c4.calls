@@ -650,19 +650,18 @@ def: _lead the way part 2
 
 // one of the reasons why we can't add "and" to the grammar!
 // also, single hinge and trade will be problematic if we define the
-// "single" concept, so we'll underscore-prepend it
-// (in general we should define a preprocessing step such that
+// "single" concept.  It's not the only call with a 'single' prefix, though.
+// Iin general we should define a preprocessing step such that
 // an explicit 'single hinge and trade' definition always overrides
 // single(hinge and trade) -- basically preprocess the production
 // 'single <anything>' into 'single <anything except hinge and trade>'
 def: hinge and trade
-  call: as couples(_single hinge and trade)
+  call: as couples(single hinge and trade)
 
 // XXX from a 4-dancer setup
-def: _single hinge and trade // xxx see above
-  condition: equal num(NUM DANCERS(), 4)
+def: single hinge and trade // xxx see above
   call: hinge
-  call: anyone while others(CENTER, trade, _nothing preserve roll)
+  call: _four person call(_center 2(trade, _nothing preserve roll))
   call: roll
 
 // 4.2

@@ -172,6 +172,15 @@ def: _center 4(c1, c2=nothing)
 def: _center 6(c1, c2=nothing)
   from: CENTER 6
     call: _quasi concentric([c1],[c2])
+def: _four person call(c)
+  from: ANY
+    condition: equal num(NUM DANCERS(), 4), "Four person call"
+    call: [c]
+  from: condition(greater(NUM DANCERS(), 4))
+    from: SPLIT TALL
+      call: [c]
+    from: SPLIT WIDE
+      call: [c]
 
 def: _square start(who)
  from: STATIC SQUARE

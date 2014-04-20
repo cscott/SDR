@@ -14,7 +14,6 @@
  *   buckle-and at line 38
  *   c4-calls-1 at line 64
  *   c4-calls-2 at line 63
- *   c4-calls-4.1 at line 99
  *   cross-concentric-1 at line 43
  *   cross-fold-1 at line 20
  *   cross-to-a-diamond at line 46
