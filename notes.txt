@@ -1863,3 +1863,47 @@ has weird breathing where the miniwave is aligned with the outside dancer.
   - strategy of using specific formations then general formations in
     FROM clauses.
 ---
+"Bridge the gap" for c4-calls-1
+"Tag the star" for c4-calls-2
+"Single hinge and trade" for c4-calls-4.1
+"breaker" and "contour the line" for star-wars
+"ends divide" and "short and sweet" for "buckle-and" test
+ also "lines <anything> thru"
+"acey deucy" from twin diamonds (check p2p diamonds)
+
+fix tidal wave centers:
+heads pass the ocean ; extend ; fan the top
+girls hinge <-- crazy positioning!  what's going on?
+
+sdr> heads pass the ocean ; extend ; fan the top
+| 3B^  4Gv  1G^  4Bv  2B^  3Gv  2G^  1Bv
+sdr> girls hinge
+|           1G>       2G>
+| 
+| 3B^       4Bv  2B^       1Bv
+|      4G<
+|                3G<
+ -- doing a half partner trade w/ the boys, it looks like.
+----
+breathing: see vic's comment about cross fire from waves at:
+www.ceder.net/def/crossfire.php4
+In this case, dancers end on the same spot, and hence share the spot by stepping to a right-hand Mini-Wave. Dancers are offset because the shared ending spots are not on an axis of the original formation.
+----
+straight -- match "end facing in" then invoke _designated are straight(..)
+this does the call, and then creates a new (non-turning) path which
+swaps the ending positions of the two designated dancers.  Throw bad
+call if it is not a "press in", at least in theory (although allow for
+diamond point adjustments, etc).
+----
+_own(who, what, who, what, who, what...)
+replace all but 'who' with phantoms, do the call, reassemble.
+'do your part(x)' is _own(dancer1, x, dancer2, x, ...)
+  -- reuse 'use phantoms' code? this tries to preserve symmetry first
+---
+generous -- replace definition of 'trade from miniwave' with 'cast(1/2)'
+---
+update Matcher infrastructure to allow returning multiple possible matches.
+ - combine SPLIT_TALL/SPLIT_WIDE
+ - undo OR(...) hack in standard evaluator
+ - 'use phantoms' should first try to make the phantoms symmetric
+---
