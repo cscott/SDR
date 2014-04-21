@@ -262,4 +262,6 @@ sdr> /assertParts("trixie spin", 3)
 sdr> /assertParts("dixie derby", 2)
 sdr> /assertParts("bail out", 2)
 sdr> /assertParts("spin a wheel", 3)
+sdr> /assertParts("round off", 2)
+sdr> /assertParts("turn by", 2)
 sdr> /exit

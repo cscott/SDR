@@ -338,6 +338,12 @@ abstract class FormationListSlow {
     public static final NamedTaggedFormation COMPLETED_SINGLE_DOUBLE_PASS_THRU =
         xofy("COMPLETED SINGLE DOUBLE PASS THRU", BACK_TO_BACK_DANCERS, TANDEM,
                 t(0,END),t(1,CENTER),t(2,CENTER),t(3,END));
+    public static final NamedTaggedFormation SINGLE_EIGHT_CHAIN_THRU =
+        xofy("SINGLE EIGHT CHAIN THRU", FACING_DANCERS, FACING_DANCERS,
+                t(0,END),t(1,CENTER),t(2,CENTER),t(3,END));
+    public static final NamedTaggedFormation SINGLE_TRADE_BY =
+        xofy("SINGLE TRADE BY", FACING_DANCERS, BACK_TO_BACK_DANCERS,
+                t(0,END),t(1,CENTER),t(2,CENTER),t(3,END));
     // 8-person formations. ///////////////////////////////
     public static final NamedTaggedFormation _1x8 =
         create("1x8", f("++++++++"), WhetherTagger.AUTO_TAGS,

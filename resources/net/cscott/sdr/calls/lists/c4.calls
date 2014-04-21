@@ -1045,16 +1045,66 @@ def: cross linear cycle
   call: initially(once removed, linear cycle)
 
 // 5.3
+
+def: round off
+  from: LINES FACING OUT
+    call: face out
+    call: tandem(and roll(quarter in))
 /*
-Round Off <=====
 Out Roll to a Wave
-Cross to an Interlocked Diamond | Hourglass
-Turn By
-Curve Right | Left
-Swing Chain the Line
-Right | Left Anchor
-Straight Connect
-5.4
+*/
+// Cross to an Interlocked Diamond | Hourglass ; see cross to a diamond above
+
+def: turn by
+  from: SINGLE EIGHT CHAIN THRU
+    prim: -1, 1, none
+    prim:  1, 1, none
+  from: SINGLE TRADE BY
+    select: END
+      prim:  0, -1, right
+      prim: out 1, 0, right
+    select: CENTER
+      prim: -1, 1, none
+      prim:  1, 1, none
+
+def: curve right
+  in: 2
+  prim: 2, 2, right
+def: curve left
+  in: 2
+  prim: -2, 2, left
+def: curve in
+  in: 2
+  prim: in 2, 2, in
+def: curve out
+  in: 2
+  prim: out 2, 2, out
+
+// see 'spin chain the line' (C3A)
+def: swing chain the line
+  //call: _swing chain(spin chain the line)
+  call: _maybe touch(_wave swing)
+  call: _center 6(_center 2(trade, cast(1/4)))
+  call: _from diamond(and(_smash diamond, _center 2(cast(1/4))))
+
+def: right anchor(n)
+  spoken: right anchor <n=fraction>
+  call: _fractional(_multiply num(4, [n]), _right anchor 1/4)
+def: left anchor(n)
+  spoken: left anchor <n=fraction>
+  call: left(right anchor([n]))
+def: _right anchor 1/4
+  from: condition(formation(COUPLE)) // space invader
+    select: formation(COUPLE, BELLE)
+      prim: 0, 0, right
+    select: OTHERS
+      prim: 2, 2, right
+
+def: straight connect
+  call: straight(connect the diamond)
+
+// 5.4
+/*
 Flare the Star
 Dixie Daisy
 Round the Horn

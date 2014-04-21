@@ -1180,6 +1180,54 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-1), ExactRotation.SOUTH), Tag.TRAILER, Tag.CENTER, Tag.NUMBER_2),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.LEADER, Tag.END, Tag.NUMBER_1));
 
+    /** SINGLE EIGHT CHAIN THRU formation.
+      * @doc.test
+      *  js> tf = FormationList.SINGLE_EIGHT_CHAIN_THRU; tf.mapStd([]).toStringDiagram('|');
+      *  |1Bv
+      *  |
+      *  |1G^
+      *  |
+      *  |3Gv
+      *  |
+      *  |3B^
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [TRAILER, END, NUMBER_4]
+      *  [TRAILER, CENTER, NUMBER_2]
+      *  [TRAILER, CENTER, NUMBER_2]
+      *  [TRAILER, END, NUMBER_4]
+      */
+    public static final NamedTaggedFormation SINGLE_EIGHT_CHAIN_THRU =
+        new NamedTaggedFormation("SINGLE EIGHT CHAIN THRU",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(3), ExactRotation.SOUTH), Tag.TRAILER, Tag.END, Tag.NUMBER_4),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(1), ExactRotation.NORTH), Tag.TRAILER, Tag.CENTER, Tag.NUMBER_2),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-1), ExactRotation.SOUTH), Tag.TRAILER, Tag.CENTER, Tag.NUMBER_2),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-3), ExactRotation.NORTH), Tag.TRAILER, Tag.END, Tag.NUMBER_4));
+
+    /** SINGLE TRADE BY formation.
+      * @doc.test
+      *  js> tf = FormationList.SINGLE_TRADE_BY; tf.mapStd([]).toStringDiagram('|');
+      *  |1B^
+      *  |
+      *  |1Gv
+      *  |
+      *  |3G^
+      *  |
+      *  |3Bv
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [LEADER, END, NUMBER_1]
+      *  [LEADER, CENTER, NUMBER_3]
+      *  [LEADER, CENTER, NUMBER_3]
+      *  [LEADER, END, NUMBER_1]
+      */
+    public static final NamedTaggedFormation SINGLE_TRADE_BY =
+        new NamedTaggedFormation("SINGLE TRADE BY",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(3), ExactRotation.NORTH), Tag.LEADER, Tag.END, Tag.NUMBER_1),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(1), ExactRotation.SOUTH), Tag.LEADER, Tag.CENTER, Tag.NUMBER_3),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-1), ExactRotation.NORTH), Tag.LEADER, Tag.CENTER, Tag.NUMBER_3),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.LEADER, Tag.END, Tag.NUMBER_1));
+
     /** 1x8 formation.
       * @doc.test
       *  js> tf = FormationList._1x8; tf.toStringDiagram('|');
@@ -4248,6 +4296,8 @@ abstract class FormationListFast {
             FormationListFast.LH_SINGLE_THREE_QUARTER_TAG,
             FormationListFast.SINGLE_DOUBLE_PASS_THRU,
             FormationListFast.COMPLETED_SINGLE_DOUBLE_PASS_THRU,
+            FormationListFast.SINGLE_EIGHT_CHAIN_THRU,
+            FormationListFast.SINGLE_TRADE_BY,
             FormationListFast._1x8,
             FormationListFast._2x4,
             FormationListFast.PARALLEL_GENERAL_LINES,

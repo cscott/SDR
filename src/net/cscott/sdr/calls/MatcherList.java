@@ -357,8 +357,12 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.FACING_LINES);
     public static final Matcher EIGHT_CHAIN_THRU =
         GeneralFormationMatcher.makeMatcher(FormationList.EIGHT_CHAIN_THRU);
+    public static final Matcher SINGLE_EIGHT_CHAIN_THRU =
+        GeneralFormationMatcher.makeMatcher(FormationList.SINGLE_EIGHT_CHAIN_THRU);
     public static final Matcher TRADE_BY =
         GeneralFormationMatcher.makeMatcher(FormationList.TRADE_BY);
+    public static final Matcher SINGLE_TRADE_BY =
+        GeneralFormationMatcher.makeMatcher(FormationList.SINGLE_TRADE_BY);
     public static final Matcher DOUBLE_PASS_THRU =
         GeneralFormationMatcher.makeMatcher(FormationList.DOUBLE_PASS_THRU);
     public static final Matcher SINGLE_DOUBLE_PASS_THRU =
