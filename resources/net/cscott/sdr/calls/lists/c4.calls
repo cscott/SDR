@@ -919,17 +919,77 @@ def: trixie
     select: TRAILER
       prim: 0, 0, out
 
+// 5.2
+
+def: right on(n=4 3/4)
+  // grammar hack: split the fraction from the integer part
+  spoken: right on (<n=number>)?
+  from: condition(equal num(_fraction([n]), 0))
+    call: _right on([n], 3/4)
+  from: condition(not(equal num(_fraction([n]), 0))) // "else"
+    call: _right on(_floor([n]), _fraction([n]))
+def: left on(n=4 3/4)
+  spoken: left on (<n=number>)?
+    call: left(right on([n]))
+def: _right on(n=4,m=3/4)
+  call: square thru(_subtract num([n], 1/2))
+  call: and roll(cast([m]))
+
+def: bail out
+  call: bail out but(counter rotate)
+def: bail out but(c)
+  spoken: bail out but <c=anything>
+  call: _center 4(short and sweet, 1/2(_acey circulate), _o concentric)
+  call: _center 4([c], hinge)
+
+def: quarter chain and circulate in(n)
+  spoken: <n=fraction> chain and circulate in
+  part:
+    call: _center 4(and(cast([n]), _center 2(trade)), circulate)
+    call: _blend last(_center 4(cast(3/4), circulate), _quarter chain spread)
+def: _quarter chain spread
+  in: 2
+  from: PARALLEL GENERAL LINES
+    select: CENTER
+      prim: out 2, 0, none, sashay-start sashay-finish
+    select: END
+      prim: in 2, 0, none, sashay-start sashay-finish
+  from: 2x4
+    condition: MATCH(_FACING PATTERN(), "[v^][<>][<>][v^][v^][<>][<>][v^]"),\
+      "Not a t-boned spread"
+    call: slim down
+
+def: spin a wheel
+  call: couples hinge
+  call: triple trade
+  call: couples hinge
+
+def: straight fire
+  call: straight(cross fire)
+
+def: cross and divide
+  from: GENERAL LINE
+    select: CENTER
+      prim: in 2, 1, in
+    select: MATCH GROUPS(_FACING PATTERN(), "(v).v.|(\\^).\\^."),\
+            MATCH GROUPS(_FACING PATTERN(), ".v.(v)|.\\^.(\\^)")
+      prim: in 2, -1, out, sashay-start
+    select: MATCH GROUPS(_FACING PATTERN(), "(v).\\^.|(\\^).v."),\
+            MATCH GROUPS(_FACING PATTERN(), ".\\^.(v)|.v.(\\^)")
+      prim: in 2,  1, out, sashay-start
+
+def: ship ahoy
+  from: PARALLEL GENERAL LINES
+    condition: MATCH(_FACING PATTERN(END), ".\\^v.|\\^..v"), \
+      "One end in each line must be facing out"
+    // outer actives cycle and wheel, other center shove off (taking other end)
+    call: _not yet implemented
+
+def: cross linear cycle
+  call: initially(once removed, linear cycle)
+
+// 5.3
 /*
-5.2
-Right On & Left On <====
-Bail Out
-n/4 Chain & Circulate In
-Spin a Wheel
-Straightfire
-Cross & Divide
-Ship Ahoy
-Cross Linear Cycle
-5.3
 Round Off <=====
 Out Roll to a Wave
 Cross to an Interlocked Diamond | Hourglass
