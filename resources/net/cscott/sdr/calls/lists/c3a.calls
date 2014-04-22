@@ -142,6 +142,11 @@ def: single turn to a line
       call: _blend last(zig zag, _step thru preserve roll)
       call: roll
 
+def: spin chain the line
+  call: _maybe touch(_wave swing)
+  call: _center 6(_center 2(trade, cast(3/4)))
+  call: _from diamond(and(_smash diamond, _center 2(cast(3/4))))
+
 def: travel thru
   call: pass thru
   call: as couples(quarter right)
