@@ -597,6 +597,14 @@ def: quick change
 
 // Richard Tuck C4 Teach Order
 
+// 3.3
+
+// XXX use blend_last to remove last 'do nothing' actions
+def: short cut
+  from: 2x2
+    condition: ARE(ALL, TRAILER), "All must be trailers"
+      call: short and sweet
+
 // 4.1
 
 def: cooperate
@@ -684,8 +692,32 @@ Cooperate But …
 Mini Pleasure
 Scamper
 Square the Barge
-4.3
-Short & Sweet
+*/
+
+// 4.3
+def: short and sweet
+  in: 2
+  from: 2x2
+    select: LEADER
+      select: BEAU
+        prim: 2, 0, right, sashay-start force-roll-none // partner tag
+        prim: 0,  0, none
+        prim: 0,  0, none
+      select: BELLE
+        prim: 0, -2, right, sashay-finish // shakedown
+        prim: 0,  0, roll
+        prim: 0,  0, roll
+    select: TRAILER // short cut
+      select: BEAU
+        prim: 0, 2, right, sashay-finish
+        prim: 0,  0, none, preserve-roll
+        prim: 0,  0, none, preserve-roll
+      select: BELLE
+        prim: -2, 0, left, sashay-start force-roll-none // partner tag
+        prim: 0,  0, none
+        prim: 0,  0, none
+
+/*
 Lead the Class
 Press for Time
 use Hinge and Trade <====

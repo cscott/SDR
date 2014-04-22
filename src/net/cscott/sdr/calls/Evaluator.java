@@ -606,6 +606,8 @@ public abstract class Evaluator {
                         Position nfrom = breathed.get(t).location(d);
                         assert dp.time.compareTo(Fraction.ZERO) > 0;
                         t = t.add(dp.time);
+                        assert breathed.get(t) != null :
+                            "No formation at "+t+": "+breathed;
                         Position nto = breathed.get(t).location(d);
                         DancerPath ndp = dp.translate(nfrom, nto);
                         ds.add(d, ndp);

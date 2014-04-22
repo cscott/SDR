@@ -131,6 +131,12 @@ def: initially(concept,call)
   part: _subtract num(num parts([call]), 1)
     call: finish([call])
 
+def: mini chase
+  option: LEFT
+  from: 2x2
+    condition: ARE(ALL, LEADER), "All must be leaders"
+      call: short and sweet
+
 def: open up the column
   call: open up and(cast(3/4)), extend
 

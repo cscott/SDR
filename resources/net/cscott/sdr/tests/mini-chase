@@ -1,0 +1,21 @@
+Quick test cases for mini-chase.
+
+sdr> /program = C3A
+C3A
+sdr> /setFormation(FormationList.BACK_TO_BACK_COUPLES)
+| 1B^  1G^
+| 
+| 3Gv  3Bv
+sdr> mini-chase
+| 3G>  1B>
+| 
+| 3B<  1G<
+sdr> /setFormation(FormationList.BACK_TO_BACK_COUPLES)
+| 1B^  1G^
+| 
+| 3Gv  3Bv
+sdr> left mini-chase
+| 1G<  3B<
+| 
+| 1B>  3G>
+sdr> /exit
