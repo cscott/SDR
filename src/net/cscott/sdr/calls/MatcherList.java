@@ -447,6 +447,8 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.TWIN_GENERAL_DIAMONDS);
     public static final Matcher POINT_TO_POINT_GENERAL_DIAMONDS =
         GeneralFormationMatcher.makeMatcher(FormationList.POINT_TO_POINT_GENERAL_DIAMONDS);
+    public static final Matcher CONCENTRIC_GENERAL_DIAMONDS =
+        GeneralFormationMatcher.makeMatcher(FormationList.CONCENTRIC_GENERAL_DIAMONDS);
     public static final Matcher RH_HOURGLASS =
         GeneralFormationMatcher.makeMatcher(FormationList.RH_HOURGLASS);
     public static final Matcher LH_HOURGLASS =

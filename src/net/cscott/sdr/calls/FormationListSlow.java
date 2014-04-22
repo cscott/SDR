@@ -625,6 +625,17 @@ abstract class FormationListSlow {
         xofy("TWIN GENERAL DIAMONDS", COUPLE, GENERAL_DIAMOND);
     public static final NamedTaggedFormation POINT_TO_POINT_GENERAL_DIAMONDS =
         xofy("POINT-TO-POINT GENERAL DIAMONDS", TANDEM, GENERAL_DIAMOND);
+    public static final NamedTaggedFormation CONCENTRIC_GENERAL_DIAMONDS =
+        xofy("CONCENTRIC GENERAL DIAMONDS", RH_DIAMOND, GENERAL_PARTNERS,
+             WhetherTagger.NO_AUTO_TAGS,
+             t(0, END,    OUTSIDE_2, OUTSIDE_6),
+             t(1, END,    CENTER_6,  OUTSIDE_6),
+             t(2, CENTER, CENTER_6,  OUTSIDE_6),
+             t(3, CENTER, CENTER_6,  VERY_CENTER),
+             t(4, CENTER, CENTER_6,  VERY_CENTER),
+             t(5, CENTER, CENTER_6,  OUTSIDE_6),
+             t(6, END,    CENTER_6,  OUTSIDE_6),
+             t(7, END,    OUTSIDE_2, OUTSIDE_6));
     public static final NamedTaggedFormation RH_HOURGLASS =
         create("RH HOURGLASS",
                d( 0, 4, "e", CENTER, POINT),

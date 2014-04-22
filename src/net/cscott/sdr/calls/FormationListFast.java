@@ -2907,6 +2907,40 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), Rotation.fromAbsoluteString("|")), Tag.END, Tag.CENTER_6, Tag.OUTSIDE_6),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-5), Rotation.fromAbsoluteString("-")), Tag.POINT, Tag.CENTER, Tag.OUTSIDE_2, Tag.OUTSIDE_6));
 
+    /** CONCENTRIC GENERAL DIAMONDS formation.
+      * @doc.test
+      *  js> tf = FormationList.CONCENTRIC_GENERAL_DIAMONDS; tf.toStringDiagram('|');
+      *  |       -
+      *  |
+      *  |       -
+      *  |
+      *  ||    |    |    |
+      *  |
+      *  |       -
+      *  |
+      *  |       -
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [END, OUTSIDE_2, OUTSIDE_6]
+      *  [END, CENTER_6, OUTSIDE_6]
+      *  [CENTER, CENTER_6, OUTSIDE_6]
+      *  [CENTER, VERY_CENTER, CENTER_6]
+      *  [CENTER, VERY_CENTER, CENTER_6]
+      *  [CENTER, CENTER_6, OUTSIDE_6]
+      *  [END, CENTER_6, OUTSIDE_6]
+      *  [END, OUTSIDE_2, OUTSIDE_6]
+      */
+    public static final NamedTaggedFormation CONCENTRIC_GENERAL_DIAMONDS =
+        new NamedTaggedFormation("CONCENTRIC GENERAL DIAMONDS",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(4), Rotation.fromAbsoluteString("-")), Tag.END, Tag.OUTSIDE_2, Tag.OUTSIDE_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(2), Rotation.fromAbsoluteString("-")), Tag.END, Tag.CENTER_6, Tag.OUTSIDE_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER, Tag.CENTER_6, Tag.OUTSIDE_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER, Tag.VERY_CENTER, Tag.CENTER_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER, Tag.VERY_CENTER, Tag.CENTER_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(3), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER, Tag.CENTER_6, Tag.OUTSIDE_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-2), Rotation.fromAbsoluteString("-")), Tag.END, Tag.CENTER_6, Tag.OUTSIDE_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-4), Rotation.fromAbsoluteString("-")), Tag.END, Tag.OUTSIDE_2, Tag.OUTSIDE_6));
+
     /** RH HOURGLASS formation.
       * @doc.test
       *  js> tf = FormationList.RH_HOURGLASS; tf.mapStd([]).toStringDiagram('|');
@@ -4191,6 +4225,7 @@ abstract class FormationListFast {
             FormationListFast.LH_TWIN_FACING_DIAMONDS,
             FormationListFast.TWIN_GENERAL_DIAMONDS,
             FormationListFast.POINT_TO_POINT_GENERAL_DIAMONDS,
+            FormationListFast.CONCENTRIC_GENERAL_DIAMONDS,
             FormationListFast.RH_HOURGLASS,
             FormationListFast.LH_HOURGLASS,
             FormationListFast.GENERAL_HOURGLASS,
