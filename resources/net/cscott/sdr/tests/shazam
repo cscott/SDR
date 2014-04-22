@@ -1,0 +1,46 @@
+Shazam.
+
+sdr> /program = C2
+C2
+sdr> heads square thru
+| 4B>  3G<  3B>  2G<
+| 
+| 4G>  1B<  1G>  2B<
+sdr> /// vic sez: "This usage is rarely encountered nowadays."
+sdr> shazam
+| 3Gv  4B^  2Gv  3B^
+| 
+| 1Bv  4G^  2Bv  1G^
+sdr> shazam
+| 4B>  3B>
+| 
+| 3G<  2G<
+| 
+| 4G>  1G>
+| 
+| 1B<  2B<
+sdr> slither
+| 4B>  3B>
+| 
+| 4G>  1G>
+| 
+| 3G<  2G<
+| 
+| 1B<  2B<
+sdr> /// it's inappropriate to call shazam from a couple
+sdr> shazam
+* Invalid formation
+sdr> slither    
+| 4B>  3B>
+| 
+| 3G<  2G<
+| 
+| 4G>  1G>
+| 
+| 1B<  2B<
+sdr> /// u-turn back direction is toward your partner
+sdr> shazam and roll
+| 3G<  4B>  2G<  3B>
+| 
+| 1B<  4G>  2B<  1G>
+sdr> /exit

@@ -176,6 +176,10 @@ def: little more
   xpart: 2
     call: little, anyone while others(CENTER, circulate, nothing)
 
+def: shazam
+  call: _maybe touch(_from(MINIWAVE, cast(1/4)))
+  call: u turn back
+
 def: sock it to me
   call: mirror(here comes the judge)
 
