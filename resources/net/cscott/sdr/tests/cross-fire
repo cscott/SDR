@@ -1,0 +1,76 @@
+Cross fire (plus).
+
+sdr> /setFormation(FormationList.PARALLEL_RH_TWO_FACED_LINES)
+| 1B^  1G^  2Gv  2Bv
+| 
+| 4B^  4G^  3Gv  3Bv
+sdr> cross fire
+| 2G^  1Bv
+| 
+| 2B^  1Gv
+| 
+| 3G^  4Bv
+| 
+| 3B^  4Gv
+sdr> roll
+| 2G^  1B<
+| 
+| 2B>  1Gv
+| 
+| 3G^  4B<
+| 
+| 3B>  4Gv
+sdr> /setFormation(FormationList.RH_TIDAL_LINE)
+| 1B^  1G^  2B^  2G^  4Gv  4Bv  3Gv  3Bv
+sdr> cross fire
+| 2Gv  1Bv  3G^  4B^
+| 
+| 2Bv  1Gv  3B^  4G^
+sdr> roll
+| 2G>  1B<  3G^  4B^
+| 
+| 2Bv  1Gv  3B>  4G<
+sdr> /setFormation(FormationList.LH_TWIN_FACING_DIAMONDS)
+|   1B>       1G>
+| 
+| 2Bv  2G^  4Gv  4B^
+| 
+|   3G<       3B<
+sdr> cross fire
+| 3G>  2B^  3B>  4G^
+| 
+| 2Gv  1B<  4Bv  1G<
+sdr> roll
+| 3Gv  2B^  3Bv  4G^
+| 
+| 2Gv  1B^  4Bv  1G^
+sdr> /setFormation(FormationList.ENDS_IN_INVERTED_LINES)
+| 1Bv  1G^  2B^  2Gv
+| 
+| 4G^  4Bv  3Gv  3B^
+sdr> cross fire
+| 2G^  2Bv  1B^  1Gv
+| 
+| 3G^  3Bv  4B^  4Gv
+sdr> roll
+| 2G^  2Bv  1B^  1Gv
+| 
+| 3G^  3Bv  4B^  4Gv
+sdr> /// this is what callerlabs sez:
+sdr> /setFormation(FormationList.LINES_FACING_OUT)
+| 1B^  1G^  2B^  2G^
+| 
+| 4Gv  4Bv  3Gv  3Bv
+sdr> cross fire
+|      2Gv  1Bv
+| 
+| 3G^  2Bv  4B^  1Gv
+| 
+|      3B^  4G^
+sdr> roll
+|      2Gv  1Bv
+| 
+| 3G^  2Bv  4B^  1Gv
+| 
+|      3B^  4G^
+sdr> /exit

@@ -157,6 +157,49 @@ def: coordinate
   call: triple trade
   call: _like a coordinate
 
+def: cross fire
+  in: 6
+  ipart:
+    from: LINES FACING OUT // this is what callerlab sez
+      call: _center 4(trade)
+      call: _finish cross fire
+      call: _extend
+    from: TWO-FACED LINE, ONE-FACED LINE
+      call: _center 2(trade)
+      call: _finish cross fire
+    from: SINGLE INVERTED LINE
+      call: _center 2(trade)
+      call: cross fold(END)
+      call: _extend
+    from: ANY // facing diamond
+      call: _from diamond(_center 2(trade))
+      call: _from diamond(_finish cross fire)
+def: _finish cross fire
+  from: TWO-FACED LINE
+    select: END
+      prim: in 3, 2, in
+      prim: in 1, 1, roll
+    select: CENTER
+      prim: 0, 0, none
+      prim: 0, 1, none
+  from: FACING DIAMOND
+    select: POINT
+      prim: in 2, 3, in
+      prim: in 2, 1, roll
+    select: CENTER
+      prim: 0, 0, none
+      prim: 0, 1, none
+  from: SINGLE INVERTED LINE // was one-faced line before the centers traded
+    select: and(END,BELLE)
+      prim: in 3, 2, in
+      prim: in 1, 1, roll
+    select: and(END,BEAU) // pass right shoulders w/ belle
+      prim: in 3, 4, in
+      prim: in 3, 1, roll
+    select: CENTER
+      prim: 0, 0, none
+      prim: 0, 1, none
+
 def: cut the diamond
   in: 6
   call: _from diamond(and(_cut the diamond part 1, _cut the diamond part 2))
