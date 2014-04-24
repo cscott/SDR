@@ -266,6 +266,11 @@ def: square chain the top
     ends in: formation(BACK-TO-BACK COUPLES)
     call: _square thru part, left(spin the top), left(turn thru)
 
+def: stretch(c)
+  option: CONCEPT
+  spoken: stretch <c=anything>
+  call: _blend last([c], _stretch)
+
 def: swing the fractions
   option: LEFT
   call: _those who can turn right(1/4)

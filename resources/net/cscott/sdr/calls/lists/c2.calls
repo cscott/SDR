@@ -185,6 +185,40 @@ def: split swap
     condition: ARE(ALL, TRAILER)
     call: mirror(shake and rattle)
 
+def: stretched box(c)
+  option: CONCEPT
+  spoken: stretched box <c=anything>
+  call: _blend first(_from(2x4, _stretch), _from(2x2, [c]))
+def: stretched column(c)
+  option: CONCEPT
+  spoken: stretched (column (or line)? | line or column) <c=anything>
+  call: _blend first(_from(1x8, _stretch), _from(1x4, [c]))
+def: stretched line(c)
+  option: CONCEPT
+  spoken: stretched line <c=anything>
+  call: _blend first(_from(GENERAL TIDAL LINE, _stretch), _from(GENERAL LINE, [c]))
+def: stretched wave(c)
+  option: CONCEPT
+  spoken: stretched wave <c=anything>
+  call: _blend first(_from(TIDAL WAVE, _stretch), _from(OCEAN WAVE, [c]))
+def: _stretch
+  in: 2
+  from: 2x4
+    select: and(CENTER, match(_facing pattern(), "[v^]"))
+      prim: in 2, 0, none, sashay-start sashay-finish preserve-roll preserve-sweep
+    select: and(CENTER, match(_facing pattern(), "[<>]"))
+      prim: 0, in 2, none, preserve-roll preserve-sweep
+    select: OTHERS
+      prim: 0, 0, none, preserve-roll preserve-sweep
+  from: 1x8
+    from: CENTER 4
+      select: and(CENTER, match(_facing pattern(), "[v^]"))
+        prim: in 4, 0, none, sashay-start sashay-finish preserve-roll preserve-sweep
+      select: and(CENTER, match(_facing pattern(), "[<>]"))
+        prim: 0, in 4, none, preserve-roll preserve-sweep
+      select: OTHERS
+        prim: 0, 0, none, preserve-roll preserve-sweep
+
 // vic sez: "The end result of Swap The Wave is as if everyone took a step
 // backward (to form Facing Couples) and then did a Swap Around."
 // in particular this definition has the centers *not* take hands; vic

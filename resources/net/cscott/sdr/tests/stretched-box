@@ -1,0 +1,69 @@
+Stretched box concept (C2).  Examples from the ceder chest.
+
+sdr> /program = C2
+C2
+sdr> /setFormation(FormationList.RH_COLUMN)
+| 1B^  1Gv
+| 
+| 2B^  2Gv
+| 
+| 4G^  4Bv
+| 
+| 3G^  3Bv
+sdr> stretched box counter rotate 1/4
+| 4G>  1B>
+| 
+| 4B<  1G<
+| 
+| 3G>  2B>
+| 
+| 3B<  2G<
+sdr> /setFormation(FormationList.RH_TIDAL_LINE)
+| 1B^  1G^  2B^  2G^  4Gv  4Bv  3Gv  3Bv
+sdr> stretched line cross fire
+| 4G^  1Bv  3G^  2Bv
+| 
+| 4B^  1Gv  3B^  2Gv
+sdr> /setFormation(FormationList.LH_TIDAL_WAVE)
+| 1Bv  1G^  2Bv  2G^  4Gv  4B^  3Gv  3B^
+sdr> stretched wave recycle
+| 4Bv  4Gv  3Bv  3Gv
+| 
+| 1G^  1B^  2G^  2B^
+sdr> /setFormation(FormationList.RH_TIDAL_LINE)
+| 1B^  1G^  2B^  2G^  4Gv  4Bv  3Gv  3Bv
+sdr> face in
+| 1B>  1G>  2B>  2G>  4G<  4B<  3G<  3B<
+sdr> stretched column dixie style to a wave
+| 4Gv  1B^  4Bv  1G^  3Gv  2B^  3Bv  2G^
+sdr> /// compare:
+sdr> /setFormation(FormationList.LINES_FACING_OUT)
+| 1B^  1G^  2B^  2G^
+| 
+| 4Gv  4Bv  3Gv  3Bv
+sdr> stretched box shakedown
+| 4G>  1B<  4B>  1G<
+| 
+| 3G>  2B<  3B>  2G<
+sdr> /setFormation(FormationList.LINES_FACING_OUT)
+| 1B^  1G^  2B^  2G^
+| 
+| 4Gv  4Bv  3Gv  3Bv
+sdr> stretch shakedown
+| 4G>  3G>  1B<  2B<
+| 
+| 4B>  3B>  1G<  2G<
+sdr> /// compare:
+sdr> /setFormation(FormationList.RH_TIDAL_WAVE)
+| 1B^  1Gv  2B^  2Gv  4G^  4Bv  3G^  3Bv
+sdr> stretched wave ah so
+| 1G^  1Bv  2G^  2Bv
+| 
+| 4B^  4Gv  3B^  3Gv
+sdr> /setFormation(FormationList.RH_TIDAL_WAVE)
+| 1B^  1Gv  2B^  2Gv  4G^  4Bv  3G^  3Bv
+sdr> stretch ah so
+| 1G^  4B^  1Bv  4Gv
+| 
+| 2G^  3B^  2Bv  3Gv
+sdr> /exit
