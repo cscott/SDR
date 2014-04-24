@@ -534,13 +534,13 @@ def: make a pass
   call: make a pass but(cast(3/4))
 def: make a pass but(c)
   spoken: make a pass but <c=anything>
-  call: _reactivate part 1
+  call: _chain reaction part 1
   call: _finish make a pass([c])
 def: cross make a pass
   call: cross make a pass but(cast(3/4))
 def: cross make a pass but(c)
   spoken: cross make a pass but <c=anything>
-  call: _cross reactivate part 1
+  call: _cross chain reaction part 1
   call: _finish make a pass([c])
 def: _finish make a pass(c)
   from: GENERAL QUARTER TAG

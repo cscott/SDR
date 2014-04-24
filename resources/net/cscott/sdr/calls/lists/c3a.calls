@@ -84,6 +84,26 @@ def: _like a couple up
       prim: 0, 0, in
       prim: 0, 0, roll
 
+def: cross chain reaction(n=1/4)
+  spoken: cross chain reaction (but turn the star <n=fraction>)?
+  from: QUARTER TAG, GENERAL QUARTER TAG
+    part:
+      call: _cross chain reaction part 1
+    xpart:
+      call: _chain reaction part 2
+      call: _chain reaction part 3([n])
+      call: _finish chain reaction
+def: _cross chain reaction part 1
+  call: _blend first(_very centers sashay, \
+                     _blend last(_chain reaction part 1, _very centers sashay))
+def: _very centers sashay
+  from: GENERAL QUARTER TAG, \
+        TWIN GENERAL DIAMONDS, POINT-TO-POINT GENERAL DIAMONDS
+    select: VERY CENTER
+      prim: in 2, 0, none, sashay-start sashay-finish
+    select: OTHERS
+      prim: 0, 0, none
+
 def: hop(sel)
   spoken: <sel=anyone> hop
   call: walk others dodge([sel])

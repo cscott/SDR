@@ -6,22 +6,29 @@ def: _diamond adjust
              GENERAL ASYM DIAMOND, GENERAL DIAMOND, GENERAL SINGLE QUARTER TAG)
   from: GENERAL TALL DIAMOND, GENERAL ASYM SINGLE QUARTER TAG
     select: CENTER
-      prim: 0, 0, none
+      prim: 0, 0, none, preserve-roll preserve-sweep
     select: OTHERS
-      prim: in 1, 0, none, sashay-start sashay-finish
+      prim: in 1, 0, none, sashay-start sashay-finish preserve-roll preserve-sweep
   from: GENERAL ASYM DIAMOND
     select: CENTER
-      prim: 0, 0, none
+      prim: 0, 0, none, preserve-roll preserve-sweep
     select: OTHERS
-      prim: 0, in 1, none
+      prim: 0, in 1, none, preserve-roll preserve-sweep
   from: GENERAL DIAMOND, GENERAL SINGLE QUARTER TAG
-    prim: 0, 0, none
+    prim: 0, 0, none, preserve-roll preserve-sweep
 
 def: _diamond adjust then(c, n=1)
   part: 0
     call: _diamond adjust
   part: [n]
     call: [c]
+
+def: _diamond to star
+  from: GENERAL DIAMOND
+    select: POINT
+      prim: in 1, 0, none, preserve-roll preserve-sweep
+    select: OTHERS
+      prim: 0, 0, none, preserve-roll preserve-sweep
 
 def: _from diamond(c, n=1)
   from: GENERAL DIAMOND

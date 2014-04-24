@@ -146,6 +146,47 @@ def: _finish brace thru
     ends in: formation(FACING COUPLES)
     call: brace yourself
 
+// XXX eventually add "but don't turn the star" to grammar
+def: chain reaction(n=1/4)
+  spoken: chain reaction (but turn the star <n=fraction>)?
+  from: QUARTER TAG, GENERAL QUARTER TAG
+    condition: OR(PROGRAM AT LEAST(c1), FORMATION(QUARTER TAG)), \
+      "Only allowed from quarter tag below C1"
+    part:
+      call: _chain reaction part 1
+    xpart:
+      call: _chain reaction part 2
+      call: _chain reaction part 3([n])
+      call: _finish chain reaction
+// XXX this animates oddly, we probably want to tweak it eventually
+def: _chain reaction part 1
+  in: 2
+  from: QUARTER TAG, GENERAL QUARTER TAG
+    from: allow unmatched(1x3) // ensures we're balanced after breathing
+      from: allow unmatched(FACING DANCERS)
+        call: pass thru
+def: _chain reaction part 2
+  in: 2
+  call: _center 6(_center 2(nothing, hinge), _counter rotate 1/4)
+def: _chain reaction part 3(n)
+  from: condition(equal num([n], 0))
+    call: _center 4(nothing, trade)
+  from: condition(greater([n], 0))
+    call: _center 4(_from diamond(_blend first(_diamond to star,        \
+                      _in(_multiply num([n], 8), counter rotate([n])))),\
+                    _in(2, trade))
+def: _finish chain reaction
+  in: 6 // same as "cast 3/4"
+  call: _blend last(\
+         _blend first(_center 6(_unsmash the star),\
+                      _center 2(nothing, _center 4(cast(3/4), nothing))),\
+         _reactivate part 3)
+// this separates the three partners: the very centers, and the two
+// groups who are about to cast 3/4
+def: _unsmash the star
+  from: GENERAL PARTNERS
+    call: nothing // breathing does all the work
+
 def: clover and(call)
   option: SUPERCALL
   spoken: clover and <call=anything>

@@ -1,0 +1,163 @@
+Tests for chain reaction (A1/C1) and cross chain reaction (C3A).
+
+We go through all eight possible symmetric starting formations for
+chain reaction. (See the ceder chest description for the call.)
+
+sdr> /program = A1
+A1
+sdr> /setFormation(FormationList.RH_QUARTER_TAG)
+|      1Bv  1Gv
+| 
+| 2B^  2Gv  4G^  4Bv
+| 
+|      3G^  3B^
+sdr> chain reaction
+| 3B^  3Gv  2B^  4Gv
+| 
+| 2G^  4Bv  1G^  1Bv
+sdr> /setFormation(FormationList.LH_QUARTER_TAG)
+|      1Bv  1Gv
+| 
+| 2Bv  2G^  4Gv  4B^
+| 
+|      3G^  3B^
+sdr> chain reaction
+| 2Gv  4B^  3Bv  3G^
+| 
+| 1Gv  1B^  2Bv  4G^
+sdr> /setFormation(FormationList.LH_QUARTER_TAG)
+|      1Bv  1Gv
+| 
+| 2Bv  2G^  4Gv  4B^
+| 
+|      3G^  3B^
+sdr> head girls u-turn back
+|      1Bv  1G^
+| 
+| 2Bv  2G^  4Gv  4B^
+| 
+|      3Gv  3B^
+sdr> chain reaction
+* Only allowed from quarter tag below C1
+sdr> /program = C1
+C1
+sdr> chain reaction
+| 2Gv  4B^  3Bv  3G^
+| 
+| 1Gv  1B^  2Bv  4G^
+sdr> /setFormation(FormationList.RH_QUARTER_TAG)
+|      1Bv  1Gv
+| 
+| 2B^  2Gv  4G^  4Bv
+| 
+|      3G^  3B^
+sdr> head boys u-turn back
+|      1B^  1Gv
+| 
+| 2B^  2Gv  4G^  4Bv
+| 
+|      3G^  3Bv
+sdr> chain reaction
+| 1Bv  3Gv  2B^  2G^
+| 
+| 4Gv  4Bv  1G^  3B^
+sdr> /setFormation(FormationList.RH_QUARTER_LINE)
+|      1Bv  1Gv
+| 
+| 2B^  2G^  4Gv  4Bv
+| 
+|      3G^  3B^
+sdr> chain reaction
+| 2Gv  2Bv  3Bv  3G^
+| 
+| 1Gv  1B^  4B^  4G^
+sdr> /setFormation(FormationList.LH_QUARTER_LINE)
+|      1Bv  1Gv
+| 
+| 2Bv  2Gv  4G^  4B^
+| 
+|      3G^  3B^
+sdr> chain reaction
+| 3B^  3Gv  4Bv  4Gv
+| 
+| 2G^  2B^  1G^  1Bv
+sdr> /setFormation(FormationList.RH_QUARTER_LINE)
+|      1Bv  1Gv
+| 
+| 2B^  2G^  4Gv  4Bv
+| 
+|      3G^  3B^
+sdr> head girls u-turn back
+|      1Bv  1G^
+| 
+| 2B^  2G^  4Gv  4Bv
+| 
+|      3Gv  3B^
+sdr> chain reaction
+| 2Gv  2Bv  3Bv  3G^
+| 
+| 1Gv  1B^  4B^  4G^
+sdr> /setFormation(FormationList.LH_QUARTER_LINE)
+|      1Bv  1Gv
+| 
+| 2Bv  2Gv  4G^  4B^
+| 
+|      3G^  3B^
+sdr> head boys u-turn back
+|      1B^  1Gv
+| 
+| 2Bv  2Gv  4G^  4B^
+| 
+|      3G^  3Bv
+sdr> chain reaction
+| 1Bv  3Gv  4Bv  2G^
+| 
+| 4Gv  2B^  1G^  3B^
+sdr> /// ending in parallelogram 3 and 1 lines
+sdr> /setFormation(FormationList.RH_QUARTER_TAG)
+|      1Bv  1Gv
+| 
+| 2B^  2Gv  4G^  4Bv
+| 
+|      3G^  3B^
+sdr> head boys u-turn back
+|      1B^  1Gv
+| 
+| 2B^  2Gv  4G^  4Bv
+| 
+|      3G^  3Bv
+sdr> chain reaction but turn the star 1/2
+| 1G^  1Bv  2Bv  2Gv
+| 
+|           4G^  4B^  3B^  3Gv
+sdr> /// ending in parallelogram r-h waves
+sdr> /setFormation(FormationList.LH_QUARTER_LINE)
+|      1Bv  1Gv
+| 
+| 2Bv  2Gv  4G^  4B^
+| 
+|      3G^  3B^
+sdr> head boys u-turn back
+|      1B^  1Gv
+| 
+| 2Bv  2Gv  4G^  4B^
+| 
+|      3G^  3Bv
+sdr> chain reaction but turn the star 1/2
+| 1G^  1Bv  4B^  2Gv
+| 
+|           4G^  2Bv  3B^  3Gv
+sdr> /// cross chain reaction (C3A)
+sdr> /program = C3A
+C3A
+sdr> /setFormation(FormationList.RH_QUARTER_TAG)
+|      1Bv  1Gv
+| 
+| 2B^  2Gv  4G^  4Bv
+| 
+|      3G^  3B^
+sdr> cross chain reaction
+| 4Gv  3Bv  2B^  3G^
+| 
+| 1Gv  4Bv  1B^  2G^
+sdr> /exit
