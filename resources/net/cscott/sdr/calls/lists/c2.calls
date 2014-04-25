@@ -128,10 +128,12 @@ def: _finish drop in
       prim: 1, in 1, none, sashay-start
 
 def: exchange the diamond
+  spoken: exchange the ( diamond | diamonds )
   call: _from two diamonds(_exchange the diamond after adjust, 4)
 def: _exchange the diamond after adjust
   from: RH TWIN DIAMONDS, RH POINT-TO-POINT DIAMONDS
-    call: mirror(_exchange the diamond after adjust)
+    part: 4 // control recursion when counting parts
+      call: mirror(_exchange the diamond after adjust)
   // defined using LH diamonds to make 'collide to right hands' put the
   // dancers on the outside
   from: LH TWIN DIAMONDS
@@ -167,6 +169,20 @@ def: here comes the judge
     condition: MATCH(_FACING PATTERN(END), "vv|^^")
     call: _with designated(MATCH GROUPS(_FACING PATTERN(), "(v).+v|^.+(^)"),\
                            _designees out roll circulate)
+
+def: lines thru(c)
+  // XXX GRAMMAR CONFLICT boo: can't parse 'lines swing thru' or 'lines
+  // slide thru' because it can't decide whether the 'thru' goes with the
+  // concept or the call.  That's lame.
+  // See the ANTLR book chapter 11 p 278 regarding the difference between
+  // LL grammars and SLL grammars.  The solution is to split/clone the
+  // 'anything' production (or at least those members of <anything> with
+  // the suffix 'thru') to provide the necessary context.
+  //spoken: [-10] lines <c=anything> thru
+  option: CONCEPT
+  spoken: lines thru <c=anything> // XXX
+  call: _center 4([c], circulate)
+
 // "little more" has a controversial division into parts.  Are the
 // two parts "little" and "centers circulate" (as the callerlab definition
 // would seem to imply) or is the first part "centers step and fold while
@@ -175,6 +191,11 @@ def: here comes the judge
 def: little more
   xpart: 2
     call: little, anyone while others(CENTER, circulate, nothing)
+
+def: relocate
+  call: _center 2(cast(3/4), _counter rotate 1/4)
+def: relocate the diamond
+  call: _from two diamonds(relocate)
 
 def: shazam
   call: _maybe touch(_from(MINIWAVE, cast(1/4)))

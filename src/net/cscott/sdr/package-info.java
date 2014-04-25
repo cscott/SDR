@@ -21,6 +21,7 @@
  *   parse-2 at line 7
  *   pass-to-the-center-2 at line 8
  *   pass-to-the-center-3 at line 26
+ *   relocate-singer at line 38
  *   right-roll-to-a-wave at line 46
  *   square-chain-the-top at line 15
  *   square-thru at line 22

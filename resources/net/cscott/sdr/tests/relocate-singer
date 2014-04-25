@@ -1,0 +1,48 @@
+Singing progression using relocate the diamond.
+www.ceder.net/choreodb/viewsingle.php4?RecordId=1013
+
+sdr> /program = C2
+C2
+sdr> /ds.currentTime()
+0/1
+sdr> heads pass the ocean
+|      1B>
+| 
+| 4B>  1G<  2G<
+| 
+| 4G>  3G>  2B<
+| 
+|      3B<
+sdr> chain reaction
+| 1G>  4G>
+| 
+| 3B<  4B<
+| 
+| 2B>  1B>
+| 
+| 2G<  3G<
+sdr> switch to a diamond
+|      3B>  4B>
+| 
+| 2G^  1Gv  3G^  4Gv
+| 
+|      2B<  1B<
+sdr> /// xxx should be: 'lines swing thru thru'
+sdr> lines thru swing thru
+|      2B>  3B>
+| 
+| 1G^  4Gv  2G^  3Gv
+| 
+|      1B<  4B<
+sdr> exchange the diamonds
+|      3B<  2B<
+| 
+| 3Gv  2G^  4Gv  1G^
+| 
+|      4B>  1B>
+sdr> relocate the diamond
+sdr> flip the diamond and roll
+sdr> swing your partner
+sdr> promenade home
+sdr> /ds.currentTime()
+sdr> /exit

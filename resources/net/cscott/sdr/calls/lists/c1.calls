@@ -308,3 +308,16 @@ def: triple wave(c)
         use phantoms(TRIPLE GENERAL H), use phantoms(TRIPLE GENERAL PLUS)
     from: RH OCEAN WAVE, LH OCEAN WAVE // 1x4
       call: [c]
+
+def: zing
+  in: 4 // same as zoom?
+  ipart:
+    from: 2x2
+      select: LEADER
+        prim: 0, 0, out
+        prim: in 1, 2, roll
+        prim: in 2, 1, roll
+      select: TRAILER
+        prim: 0, 0, none
+        prim: 0, 1, none
+        prim: 0, 1, in
