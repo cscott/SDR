@@ -1,0 +1,59 @@
+Test case for outlet.
+
+http://www.ceder.net/choreodb/viewsingle.php4?RecordId=1010
+
+sdr> /program = C2
+C2
+sdr> heads ( circle by 1/4 by swing thru )
+|      3G>
+| 
+| 4B>  3B<  2G<
+| 
+| 4G>  1B>  2B<
+| 
+|      1G<
+sdr> outlet
+| 4G>  3B>
+| 
+| 4B<  3G<
+| 
+| 1G>  2B>
+| 
+| 1B<  2G<
+sdr> quarter thru
+| 4B^  3Gv  4G^  3Bv
+| 
+| 1B^  2Gv  1G^  2Bv
+sdr> swing thru
+| 3G^  3Bv  4B^  4Gv
+| 
+| 2G^  2Bv  1B^  1Gv
+sdr> explode ; chisel thru
+| 1Bv  1Gv  2Bv  2Gv
+| 
+| 4G^  4B^  3G^  3B^
+sdr> pass the ocean
+| 4G>  3G>
+| 
+| 4B<  3B<
+| 
+| 1B>  2B>
+| 
+| 1G<  2G<
+sdr> single wheel
+| 4B>  4G<  3B>  3G<
+| 
+| 1G>  1B<  2G>  2B<
+sdr> pass thru
+| 4G<  4B>  3G<  3B>
+| 
+| 1B<  1G>  2B<  2G>
+sdr> swing your partner
+| 1B>  3Gv  4Bv  2G<
+| 
+| 4G>  2B^  1G^  3B<
+sdr> /// corner progression
+sdr> ///promenade home
+sdr> /ds.currentTime()
+61/1
+sdr> /exit

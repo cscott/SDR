@@ -66,6 +66,11 @@ def: _designees u turn back in flow direction
       prim: 0, 0, none
       prim: 0, 0, none
 
+def: chisel thru
+  call: concentric(pass in)
+  call: _center 4(pass out, pass in)
+  call: pass in
+
 // keep this def in sync with 'and cross' (a1)
 def: cross back
   in: 2
@@ -191,6 +196,23 @@ def: lines thru(c)
 def: little more
   xpart: 2
     call: little, anyone while others(CENTER, circulate, nothing)
+
+def: outlet
+  option: LEFT
+  ipart:
+    from: RH QUARTER TAG, RH QUARTER LINE, GENERAL QUARTER TAG
+      condition: MATCH(_FACING PATTERN(), ".v\\^..v\\^."), \
+        "Did you mean 'left outlet'?"
+      call: _center 4(_outlet veer)
+      call: split recycle
+def: _outlet veer
+  from: GENERAL LINE
+    select: END,\
+            MATCH GROUPS(_FACING PATTERN(), "v(v)..|\\^(\\^).."),\
+            MATCH GROUPS(_FACING PATTERN(), "..(v)v|..(\\^)\\^")
+      prim: in 2, 1, none, sashay-start sashay-finish
+    select: OTHERS // centers who are miniwaves with their end
+      prim: in 2, -1, none, sashay-start sashay-finish
 
 def: relocate
   call: _center 2(cast(3/4), _counter rotate 1/4)
