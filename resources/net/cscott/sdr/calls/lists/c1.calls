@@ -81,6 +81,12 @@ def: _finish designated ah so
 def: alter the wave
   call: quarter the alter(1/2, 3/4, 1/2)
 
+def: box recycle
+  from: ANY
+    condition: not(formation(2x4)), \
+      "For clarity, use 'split recycle' or 'centers box recycle'"
+    call: split recycle
+
 def: concentric(c)
   spoken: concentric <c=anything>
   option: CONCEPT
@@ -259,6 +265,34 @@ def: shakedown
   from: BACK-TO-BACK COUPLES, 2x2
     condition: ARE(ALL, LEADER)
       call: shake and rattle
+
+// when called from facing couples this is an A2 "facing recycle"
+def: split recycle
+  in: 6
+  // cheat so we can say "recycle has 3 parts", although facing recycle
+  // is really indivisible
+  ipart: 3
+    from: BOX, FACING COUPLES, 2x2
+      condition: formation(or(BOX, mixed(RH MINIWAVE, COUPLE))), \
+        "T-bones or a mix of LH miniwaves and couples are not legal"
+      select: formation(allow unmatched(COUPLE), BEAU)
+        // 1/2 box circ & right-face u-turn back
+        prim: 0, 1, right, sashay-finish
+        prim: 0, 0, roll
+      select: formation(allow unmatched(COUPLE), BELLE)
+        // left dodge and veer left
+        prim: -2, -1, none, sashay-start sashay-finish
+        prim: -2, 2, none, sashay-start sashay-finish
+      select: and(TRAILER, \
+                  formation(allow unmatched(RH MINIWAVE, LH MINIWAVE), ALL))
+        // 1/2 box circ & inward u-turn back
+        prim: 0, 1, in, sashay-finish
+        prim: 0, 0, roll
+      select: and(LEADER, \
+                  formation(allow unmatched(RH MINIWAVE, LH MINIWAVE), ALL))
+        // leaders trail off
+        prim: in 2, 1, in
+        prim: in 2, 2, roll
 
 // XXX: square chain thru to a wave ... general 'to a wave' suffix?
 // see 'square thru' (basic) and 'square chain thru' (a1) definitions

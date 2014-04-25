@@ -1411,9 +1411,20 @@ def: _box circulate
   in: 4 // not official
   from: BOX, FACING COUPLES, BACK-TO-BACK COUPLES, 2x2
     select: LEADER
+      prim: in 1, 2, in
+      prim: in 2, 1, roll
+    select: TRAILER
+      prim: 0, 1, none
+      prim: 0, 1, none
+/*
+  // old definition; this is less reliable w/ our current wonky semantics
+  // for 'select'
+  from: BOX, FACING COUPLES, BACK-TO-BACK COUPLES, 2x2
+    select: LEADER
       call: _lead circ
     select: TRAILER
       call: _trail circ
+*/
 
 def: couples circulate
   call: as couples(circulate)

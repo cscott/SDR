@@ -1,5 +1,6 @@
-Tests for facing recycle.
+Tests for facing and split recycle.
 
+sdr> /// facing recycle
 sdr> /program = A2 ; setFormation(Formation.SQUARED_SET)
 |      3Gv  3Bv
 |
@@ -28,6 +29,8 @@ sdr> recycle twice
 | 4G>  1G>
 | 
 | 4B<  3B<
+sdr> do 2/3 of a recycle
+* Fractional recycle not allowed below C1
 sdr> /program = C1
 C1
 sdr> do 2/3 of a recycle
@@ -46,30 +49,143 @@ sdr> recycle
 | 1Bv  4Gv
 | 
 | 2B^  1G^
-sdr> step to a wave ; half tag
-| 2G>  3G>
+sdr> recycle
+| 3B^  2Gv  4B^  3Gv
 | 
-| 3B<  4B<
+| 1G^  2Bv  4G^  1Bv
+sdr> spin chain the gears
+| 1G^  2Bv  2G^  3Bv
 | 
-| 2B>  1B>
+| 1B^  4Gv  4B^  3Gv
+sdr> zing
+| 1B>  4G<  4B>  3G<
+| 
+| 1G>  2B<  2G>  3B<
+sdr> allemande left
+| 1B<  4G>  4B<  3G>
+| 
+| 1G<  2B>  2G<  3B>
+sdr> promenade home
+|      3Gv  3Bv
+| 
+| 4B>            2G<
+| 
+| 4G>            2B<
+| 
+|      1B^  1G^
+sdr> /program = A2
+A2
+sdr> /// split recycle
+sdr> heads square thru ; boys walk girls dodge
+| 4G>  4B>  1G>  3B>
+| 
+| 1B<  3G<  2B<  2G<
+sdr> recycle
+* Split recycle not allowed below C1
+sdr> /program = C1
+C1
+sdr> recycle
+| 1B>  2B>
+| 
+| 4G<  1G<
+| 
+| 3G>  2G>
+| 
+| 4B<  3B<
+sdr> roll
+| 1Bv  2Bv
+| 
+| 4G^  1G^
+| 
+| 3Gv  2Gv
+| 
+| 4B^  3B^
+sdr> heads walk sides dodge
+| 2Bv  1G^
+| 
+| 1Bv  4G^
+| 
+| 2Gv  3B^
+| 
+| 3Gv  4B^
+sdr> /// from lh column
+sdr> recycle
+| 1Gv  2B^  4Gv  1B^
+| 
+| 3Bv  2G^  4Bv  3G^
+sdr> roll
+| 1G>  2B<  4G>  1B<
+| 
+| 3B>  2G<  4B>  3G<
+sdr> head girls u-turn back
+| 1G<  2B<  4G>  1B<
+| 
+| 3B>  2G<  4B>  3G>
+sdr> recycle
+* T-bones or a mix of LH miniwaves and couples are not legal
+sdr> heads u-turn back
+| 1G>  2B<  4G>  1B>
+| 
+| 3B<  2G<  4B>  3G<
+sdr> recycle
+| 3B>  4B>
 | 
 | 1G<  4G<
-sdr> swing thru ; acey deucey
-| 2B>  3B>
 | 
-| 2G<  3G<
+| 2G>  3G>
 | 
-| 1G>  4G>
+| 2B<  1B<
+sdr> /// the belles of the facing couples can't roll
+sdr> roll
+| 3Bv  4B>
 | 
-| 1B<  4B<
-sdr> centers trade ; swing thru
-| 1G>  4G>
+| 1G^  4G^
 | 
-| 1B<  4B<
+| 2Gv  3Gv
 | 
-| 2B>  3B>
+| 2B<  1B^
+sdr> split circulate and roll
+| 1G^  4G^
 | 
-| 2G<  3G<
+| 3Bv  4B^
+| 
+| 2Bv  1B^
+| 
+| 2Gv  3Gv
+sdr> /program = C3B
+C3B
+sdr> shake and rattle
+| 3B>  1G<
+| 
+| 4B<  4G<
+| 
+| 2G>  2B>
+| 
+| 3G>  1B<
+sdr> recycle
+* Invalid formation
+sdr> box recycle
+* For clarity, use 'split recycle' or 'centers box recycle'
+sdr> split recycle
+| 4B>
+| 
+| 3B<
+| 
+| 4G>
+| 
+| 1G<
+| 
+| 3G>
+| 
+| 2G<
+| 
+| 1B>
+| 
+| 2B<
+sdr> relocate ; slip ; ah so
+| 2G^  2Bv  1B^  1Gv
+| 
+| 3G^  3Bv  4B^  4Gv
 sdr> right and left grand ; promenade home
 |      3Gv  3Bv
 | 

@@ -180,19 +180,6 @@ def: transfer and(c)
   spoken: transfer and <c=anything>
   call: unimplemented
 
-def: _facing recycle
-  in: 6
-  // cheat so we can say "recycle has 3 parts", although facing recycle
-  // is really indivisible
-  ipart: 3
-    from: FACING COUPLES
-      select: BEAU
-        prim: 0, 1, right
-        prim: 0, 0, right
-      select: BELLE
-        prim: -2, -1, none
-        prim: -2,  2, none
-
 // a2 timing doc says peel and trail from tandem couples is 4 beats
 // while peel and trail from waves or zees is 6 beats
 // ...but I'm guessing from a 3/4 zee (where trailers are already holding

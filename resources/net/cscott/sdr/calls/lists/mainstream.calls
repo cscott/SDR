@@ -458,8 +458,11 @@ def: _recycle face in // used in recycle cheat
 def: recycle
   from: ANY
     call: _wave recycle
-  from: ANY
+  from: FACING COUPLES
     condition: PROGRAM AT LEAST(A2), "Facing recycle not allowed below A2"
-    call: _facing recycle
+    call: split recycle
+  from: GENERAL COLUMNS // "or other unambiguous formations"
+    condition: PROGRAM AT LEAST(C1), "Split recycle not allowed below C1"
+    call: split recycle
 
 ////////// end of mainstream list //////////////
