@@ -163,6 +163,42 @@ def: _exchange the diamond after adjust
       prim: -2, 1, left
       prim: 3, 2, right
 
+def: grand chain eight
+  option: LEFT
+  from: DOUBLE PASS THRU, FACING LINES, EIGHT CHAIN THRU, ANY
+    part:
+      call: those facing(right pull by)
+    xpart:
+      // vic's alternative: "left touch 1/4 and leads u-turn back (roll twice)"
+      call: _move along and left touch 1/4
+      call: _leads roll twice from(2x4)
+def: _move along and left touch 1/4
+  from: LINES FACING OUT
+    call: bend the line // everyone 'move along'
+    call: left(_touch(1/4))
+  from: TRADE BY
+    call: _center 4(nothing, face in) // ends have to 'move along'
+    call: left(_touch(1/4))
+  from: FACING COUPLES, ANY
+    call: left(_touch(1/4)) // no 'move along' necessary
+def: _leads roll twice from(formation) // also used for 'split grand chain 8'
+  from: [formation]
+    select: LEADER
+      prim: 0, 0, roll
+      prim: 0, 0, roll
+    select: OTHERS
+      prim: 0, 0, none
+      prim: 0, 0, none
+
+def: split grand chain eight
+  option: LEFT
+  ipart:
+    call: those facing(right pull by)
+    call: XXX face the inactives XXX
+  xpart:
+    call: left(_touch(1/4))
+    call: _leads roll twice from(2x2)
+
 def: here comes the judge
   from: LINES FACING OUT, ENDS OUT INVERTED LINES, PARALLEL GENERAL LINES
     condition: equal num(NUM DANCERS(and(END,LEADER)), 4), \
