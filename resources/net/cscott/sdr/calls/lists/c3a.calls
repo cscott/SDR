@@ -131,6 +131,14 @@ def: initially(concept,call)
   part: _subtract num(num parts([call]), 1)
     call: finish([call])
 
+def: open up the column
+  call: open up and(cast(3/4)), extend
+
+def: open up and(c)
+  spoken: open up and <c=anything>
+  call: _transfer([c], _start trans trail and peel, \
+                       _finish trans trail and peel)
+
 def: release(c)
   option: CONCEPT
   spoken: release <c=anything>

@@ -178,7 +178,84 @@ def: swing and mix // 3 part call
 
 def: transfer and(c)
   spoken: transfer and <c=anything>
-  call: unimplemented
+  call: _transfer([c], _start trans trail and trail, \
+                       _finish trans trail and trail)
+// used for transfer and (a2), open up and (c3a), etc.
+def: _transfer(c, start, end)
+  ipart:
+    call: _in(3, [start])
+    call: _in(2, _from(CENTER 4, _o concentric(_trans normalize, [end])))
+  part:
+    call: _center 4([c], _in(3, nothing))
+
+// the 'trail and trail' and 'peel and peel' cases result in an outside
+// tandem after the _start action.
+def: _start trans trail and trail
+  // xxx can also be done from "2x4" where #3 and #4 are on c1 phantom spots
+  from: 2x4
+    select: NUMBER 1
+      prim: in 4, 2, in
+    select: NUMBER 2
+      prim: in 2, 4, in
+    select: OTHERS
+      prim: 0, 0, none
+def: _start trans peel and peel
+  from: 2x4
+    select: NUMBER 1
+      prim: out 2, 2, out
+    select: NUMBER 2
+      prim: 0, 4, out
+    select: OTHERS
+      prim: 0, 0, none
+// move the outside tandem to appropriate spots
+def: _finish trans trail and trail // or peel and peel
+  select: formation(TANDEM, LEADER)
+    prim: in 6, 0, roll
+    prim: 0, 0, roll
+  select: OTHERS
+    prim: in 4, 2, roll
+    prim: 0, 0, roll
+
+// the 'trail and peel' and 'peel and trail' cases result in outside
+// dancers back-to-back after the _start action.
+def: _start trans trail and peel
+  from: 2x4
+    select: NUMBER 1
+      prim: in 4, 2, in
+    select: NUMBER 2
+      prim: out 2, 4, out
+    select: OTHERS
+      prim: 0, 0, none
+def: _start trans peel and trail
+  from: 2x4
+    select: NUMBER 1
+      prim: out 2, 2, out
+    select: NUMBER 2
+      prim: in 4, 4, in
+    select: OTHERS
+      prim: 0, 0, none
+// move the outside dancers to the appropriate column spots
+def: _finish trans trail and peel // or peel and trail
+  prim: in 4, 0, roll
+  prim: 0, 0, roll
+
+// "move forward to a compact formation"
+// we define several amounts of "moving forward" and then check for various
+// compact formations
+def: _trans normalize
+  from: ANY
+    ends in: formation(2x2)
+    prim: 0, 2, none
+  from: ANY
+    ends in: formation(GENERAL LINE)
+    prim: 0, 1, none
+  from: ANY
+    call: _blend last(_trans normalize to tall diamond, _diamond adjust)
+def: _trans normalize to tall diamond
+  // xxx really ends in tall diamond, but right now we have an implicit breathe
+  // on the formation match, which makes it match GENERAL DIAMOND instead.
+  ends in: formation(or(GENERAL TALL DIAMOND, GENERAL DIAMOND))
+    prim: 0, 1, none
 
 // a2 timing doc says peel and trail from tandem couples is 4 beats
 // while peel and trail from waves or zees is 6 beats

@@ -420,7 +420,7 @@ def: transactivate
 def: trans(c)
   option: SUPERCALL
   spoken: trans <c=anything>
-  call: transfer and(cast(3/4))
+  call: transfer and(_in(3, cast(3/4)))
   call: [c]
 
 /*
