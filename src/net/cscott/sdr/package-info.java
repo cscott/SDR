@@ -7,7 +7,6 @@
  *  (fail-first development: note which cases are currently failing)
  *  js> PMSD.runAllTests()
  *  FAILED TESTS:
- *   acey-deucey-1 at line 79
  *   acey-deucey-3 at line 15
  *   acey-deucey-5 at line 117
  *   breathing-2 at line 26

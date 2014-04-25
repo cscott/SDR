@@ -321,13 +321,9 @@ def: transfer the column
 def: triple star thru
   in: 10
   // 3 parts
-  call: _those facing star thru
-  call: mirror(_those facing star thru)
-  call: _those facing star thru
-
-def: _those facing star thru
-  from: allow unmatched(FACING DANCERS)
-    call: star thru
+  call: those facing(star thru)
+  call: mirror(those facing(star thru))
+  call: those facing(star thru)
 
 def: triple trade
   from: CENTER 6

@@ -181,6 +181,15 @@ def: _four person call(c)
       call: [c]
     from: SPLIT WIDE
       call: [c]
+def: those facing(c)
+  option: CONCEPT
+  spoken: those facing <c=anything>
+  from: allow unmatched(FACING DANCERS)
+    call: [c]
+def: those facing start(c)
+  option: CONCEPT
+  spoken: those facing start (a | an)? <c=anything>
+  call: initially(those facing, [c])
 
 def: _square start(who)
  from: STATIC SQUARE
