@@ -169,18 +169,37 @@ def: _chain reaction part 2
   in: 2
   call: _center 6(_center 2(nothing, hinge), _counter rotate 1/4)
 def: _chain reaction part 3(n)
-  from: condition(equal num([n], 0))
-    call: _center 4(nothing, trade)
-  from: condition(greater([n], 0))
-    call: _center 4(_from diamond(_blend first(_diamond to star,        \
-                      _in(_multiply num([n], 8), counter rotate([n])))),\
-                    _in(2, trade))
+  from: ANY
+    call: _center 4(_turn the diamond([n]), _in(2, trade))
+  from: ANY // an alternative, if there is an unusual "those who meet"
+    call: _blend last(_center 4(_turn the star([n]), _in(2, trade)),\
+                      _center 6(_unsmash the star))
 def: _finish chain reaction
   in: 6 // same as "cast 3/4"
-  call: _blend last(\
-         _blend first(_center 6(_unsmash the star),\
-                      _center 2(nothing, _center 4(cast(3/4), nothing))),\
-         _like a coordinate)
+  call: _blend last(_center 2(nothing, _center 4(cast(3/4), nothing)),\
+                    _like a coordinate)
+
+// results in a diamond w/ the same orientation as originally, even if
+// rotate is odd number of quarters.
+def: _turn the diamond(n)
+  from: condition(equal num([n], 0))
+    call: nothing
+  from: condition(greater([n], 0))
+    in: _multiply num([n], 8)
+    call: _from diamond(_finish turn the diamond([n]))
+def: _finish turn the diamond(n)
+  from: condition(equal num(_mod num([n], 1/2), 0))
+    call: counter rotate([n])
+  from: condition(equal num(_mod num([n], 1/2), 1/4))
+    call: _blend last(counter rotate([n]), _smash diamond)
+// This creates a true star, but for some calls it can be hard to
+// identify dancers in the resulting star.
+def: _turn the star(n)
+  from: condition(equal num([n], 0))
+    call: nothing
+  from: condition(greater([n], 0))
+    call: _from diamond(_blend first(_diamond to star,        \
+                        _in(_multiply num([n], 8), counter rotate([n]))))
 // this separates the three partners: the very centers, and the two
 // groups who are about to cast 3/4
 def: _unsmash the star

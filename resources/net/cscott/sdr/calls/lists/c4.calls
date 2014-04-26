@@ -758,12 +758,6 @@ def: cross to a diamond
 def: _cross to a diamond from diamonds
   from: POINT-TO-POINT GENERAL DIAMONDS
     call: _blend first(_smash diamond, _center 4(hinge, circulate))
-def: _smash diamond
-  from: GENERAL DIAMOND
-    select: POINT
-      prim: in 1, 0, none, sashay-start sashay-finish
-    select: CENTER
-      prim: out 1, 0, none, sashay-start sashay-finish
 
 def: cross to an hourglass
   call: _blend last(cross to a diamond, _center 2(snake))

@@ -30,6 +30,13 @@ def: _diamond to star
     select: OTHERS
       prim: 0, 0, none, preserve-roll preserve-sweep
 
+def: _smash diamond
+  from: GENERAL DIAMOND
+    select: POINT
+      prim: in 1, 0, none, sashay-start sashay-finish
+    select: CENTER
+      prim: out 1, 0, none, sashay-start sashay-finish
+
 def: _from diamond(c, n=1)
   from: GENERAL DIAMOND
     call: [c]
