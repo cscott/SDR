@@ -741,6 +741,16 @@ abstract class FormationListSlow {
                d(-1,-2, "|", CENTER_6),
                d(+1,-2, "|", CENTER_6),
                d( 0,-4, "-", END, POINT));
+    public static final NamedTaggedFormation GENERAL_1x3_DIAMOND =
+        create("GENERAL 1x3 DIAMOND",
+               d(-6, 0, "|", OUTSIDE_6,   END,    OUTSIDE_2),
+               d(-4, 0, "|", OUTSIDE_6,   END,    CENTER_6),
+               d(-2, 0, "|", OUTSIDE_6,   CENTER, CENTER_6),
+               d( 0,+1, "-", VERY_CENTER, CENTER, CENTER_6),
+               d( 0,-1, "-", VERY_CENTER, CENTER, CENTER_6),
+               d(+2, 0, "|", OUTSIDE_6,   CENTER, CENTER_6),
+               d(+4, 0, "|", OUTSIDE_6,   END,    CENTER_6),
+               d(+6, 0, "|", OUTSIDE_6,   END,    OUTSIDE_2));
     public static final NamedTaggedFormation O_DOUBLE_PASS_THRU = // used for grand square
         create("O DOUBLE PASS THRU", f(" ss ","s  s","n  n"," nn "),
                 WhetherTagger.NO_AUTO_TAGS, // gets confused by the distortion

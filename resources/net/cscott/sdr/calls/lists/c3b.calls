@@ -328,25 +328,16 @@ def: reactivate
     from: QUARTER TAG, GENERAL QUARTER TAG
       call: _chain reaction part 1
       call: _reactivate part 2
-      call: _reactivate part 3
+      call: _like a coordinate
 def: cross reactivate
     from: QUARTER TAG, GENERAL QUARTER TAG
       call: _cross chain reaction part 1
       call: _reactivate part 2
-      call: _reactivate part 3
+      call: _like a coordinate
 def: _reactivate part 2
   condition: equal num(NUM DANCERS(), 8)
   from: CENTER 6
     call: _quasi concentric(_in(4, trade), _in(4, counter rotate))
-def: _reactivate part 3
-  in: 2
-  from: GENERAL SPINDLE
-    select: VERY CENTER
-      prim: out 2, 1, none, sashay-start
-    select: END
-      prim: in 3, 3, in
-    select: OTHERS
-      prim: 0, in 1, none
 
 /* .... */
 def: reset

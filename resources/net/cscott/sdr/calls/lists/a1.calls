@@ -180,7 +180,7 @@ def: _finish chain reaction
   call: _blend last(\
          _blend first(_center 6(_unsmash the star),\
                       _center 2(nothing, _center 4(cast(3/4), nothing))),\
-         _reactivate part 3)
+         _like a coordinate)
 // this separates the three partners: the very centers, and the two
 // groups who are about to cast 3/4
 def: _unsmash the star

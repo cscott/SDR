@@ -3376,6 +3376,34 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-2), Rotation.fromAbsoluteString("|")), Tag.CENTER_6),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-4), Rotation.fromAbsoluteString("-")), Tag.POINT, Tag.END));
 
+    /** GENERAL 1x3 DIAMOND formation.
+      * @doc.test
+      *  js> tf = FormationList.GENERAL_1x3_DIAMOND; tf.toStringDiagram('|');
+      *  |               -
+      *  ||    |    |         |    |    |
+      *  |               -
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [CENTER, VERY_CENTER, CENTER_6]
+      *  [END, OUTSIDE_2, OUTSIDE_6]
+      *  [END, CENTER_6, OUTSIDE_6]
+      *  [CENTER, CENTER_6, OUTSIDE_6]
+      *  [CENTER, CENTER_6, OUTSIDE_6]
+      *  [END, CENTER_6, OUTSIDE_6]
+      *  [END, OUTSIDE_2, OUTSIDE_6]
+      *  [CENTER, VERY_CENTER, CENTER_6]
+      */
+    public static final NamedTaggedFormation GENERAL_1x3_DIAMOND =
+        new NamedTaggedFormation("GENERAL 1x3 DIAMOND",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(1), Rotation.fromAbsoluteString("-")), Tag.CENTER, Tag.VERY_CENTER, Tag.CENTER_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-6), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.END, Tag.OUTSIDE_2, Tag.OUTSIDE_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-4), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.END, Tag.CENTER_6, Tag.OUTSIDE_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-2), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER, Tag.CENTER_6, Tag.OUTSIDE_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(2), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.CENTER, Tag.CENTER_6, Tag.OUTSIDE_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(4), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.END, Tag.CENTER_6, Tag.OUTSIDE_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(6), Fraction.valueOf(0), Rotation.fromAbsoluteString("|")), Tag.END, Tag.OUTSIDE_2, Tag.OUTSIDE_6),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(0), Fraction.valueOf(-1), Rotation.fromAbsoluteString("-")), Tag.CENTER, Tag.VERY_CENTER, Tag.CENTER_6));
+
     /** O DOUBLE PASS THRU formation.
       * @doc.test
       *  js> tf = FormationList.O_DOUBLE_PASS_THRU; tf.mapStd([]).toStringDiagram('|');
@@ -4240,6 +4268,7 @@ abstract class FormationListFast {
             FormationListFast.LH_GALAXY,
             FormationListFast.GENERAL_GALAXY,
             FormationListFast.GENERAL_SPINDLE,
+            FormationListFast.GENERAL_1x3_DIAMOND,
             FormationListFast.O_DOUBLE_PASS_THRU,
             FormationListFast.GENERAL_O,
             FormationListFast.BUTTERFLY_DOUBLE_PASS_THRU,

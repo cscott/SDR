@@ -1,0 +1,43 @@
+Tests for coordinate.
+
+sdr> /setFormation(FormationList.RH_COLUMN)
+| 1B^  1Gv
+| 
+| 2B^  2Gv
+| 
+| 4G^  4Bv
+| 
+| 3G^  3Bv
+sdr> coordinate
+| 1G^  1B^  4Gv  2Bv
+| 
+| 4B^  2G^  3Bv  3Gv
+sdr> /setFormation(FormationList.LH_COLUMN)
+| 1Bv  1G^
+| 
+| 2Bv  2G^
+| 
+| 4Gv  4B^
+| 
+| 3Gv  3B^
+sdr> coordinate
+| 2Gv  4Bv  1G^  1B^
+| 
+| 3Bv  3Gv  2B^  4G^
+sdr> /setFormation(FormationList.FACING_LINES)
+| 4Gv  4Bv  3Gv  3Bv
+| 
+| 1B^  1G^  2B^  2G^
+sdr> side boys u-turn back
+| 4Gv  4B^  3Gv  3Bv
+| 
+| 1B^  1G^  2Bv  2G^
+sdr> coordinate
+|      1G<
+| 
+| 4B^  2G>  1Bv
+| 
+| 3B^  4G<  2Bv
+| 
+|      3G>
+sdr> /exit

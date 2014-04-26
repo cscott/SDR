@@ -70,7 +70,8 @@ import org.junit.runner.RunWith;
  *    >   let name = (f.getName()
  *    >                .replace("1/4","QUARTER")
  *    >                .replace("3/4","THREE_QUARTER")
- *    >                .replaceAll("^(\\d+)(\\w)", "_$1_$2"));
+ *    >                .replaceAll("^(\\d+)", "_$1")
+ *    >                .replaceAll("(\\d+)([A-Za-z])", "$1_$2"));
  *    >   try {
  *    >     if (Matcher.valueOf(name).toString() != f.getName())
  *    >        print("Matcher name mismatch: "+f.getName());

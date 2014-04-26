@@ -487,6 +487,8 @@ public class MatcherList {
         OR("GALAXY", RH_GALAXY, LH_GALAXY);
     public static final Matcher GENERAL_SPINDLE =
         GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_SPINDLE);
+    public static final Matcher GENERAL_1_X3_DIAMOND =
+        GeneralFormationMatcher.makeMatcher(FormationList.GENERAL_1x3_DIAMOND);
     public static final Matcher O_DOUBLE_PASS_THRU =
         GeneralFormationMatcher.makeMatcher(FormationList.O_DOUBLE_PASS_THRU);
     public static final Matcher GENERAL_O =

@@ -159,10 +159,26 @@ def: _start chase right
 
 def: coordinate
   // 4 parts
-  call: circulate
-  call: 1/2(circulate)
-  call: triple trade
-  call: _like a coordinate
+  call: _in(2, circulate)
+  call: _in(1, 1/2(circulate))
+  call: _in(3, triple trade)
+  call: _in(2, _like a coordinate)
+def: _like a coordinate
+  in: 2
+  from: GENERAL SPINDLE
+    select: VERY CENTER
+      prim: out 2, 1, none, sashay-start
+    select: END
+      prim: in 3, 3, in
+    select: OTHERS
+      prim: 0, in 1, none
+  from: GENERAL 1x3 DIAMOND
+    select: VERY CENTER
+      prim: out 1, 2, none, sashay-start sashay-finish
+    select: OUTSIDE 2
+      prim: in 4, 2, in
+    select: OTHERS
+      prim: in 1, 0, none, sashay-start sashay-finish preserve-roll preserve-sweep
 
 def: cross fire
   in: 6
