@@ -87,6 +87,20 @@ def: box recycle
       "For clarity, use 'split recycle' or 'centers box recycle'"
     call: split recycle
 
+def: circle by(n,m)
+  spoken: circle by <n=fraction> by <m=fraction>
+  call: circle by but([n], cast([m]))
+def: circle by but(n,c)
+  option: SUPERCALL
+  spoken: circle by <n=fraction> by <c=anything>
+  call: _start circle by([n])
+  call: [c] // note that this could be an 8-personal call
+def: _start circle by(n)
+  ipart:
+    from: FACING COUPLES
+      call: circle left([n])
+      call: step to a wave
+
 def: concentric(c)
   spoken: concentric <c=anything>
   option: CONCEPT

@@ -200,11 +200,12 @@ public class BuildGrammars {
                 Grm last = c.sequence.get(c.sequence.size()-1);
                 if (last instanceof Grm.Nonterminal) {
                     Grm.Nonterminal nt = (Grm.Nonterminal) last;
-                    if (nt.ruleName.equals("anything") && nt.param==0) {
+                    if (nt.ruleName.equals("anything") &&
+                        nt.param==highestNontermParam(r.rhs)) {
                         // okay! munge this production!
                         g = new Grm.Concat(c.sequence.subList
                                            (0, c.sequence.size()-1));
-                        return new Rule("concept", g, r.prec);
+                        return new Rule("concept", g, r.prec, r.options);
                     }
                 }
             }
@@ -244,15 +245,24 @@ public class BuildGrammars {
         int numArgs = highestNontermParam(r.rhs) + 1;
         NumberParams np = new NumberParams(r.rhs);
         StringBuilder sb = new StringBuilder();
+        boolean isSuperCall =
+            r.options.contains(Rule.Option.SUPERCALL) ||
+            r.options.contains(Rule.Option.CONCEPT);
         if (numArgs == 0) {
             sb.append("r=Expr.literal(\"");
             sb.append(escapeJava(callName));
             sb.append("\");");
             return new RuleAndAction(r, sb.toString());
+        } else if (isSuperCall) {
+            // curry all but last option to make a 1-arg function
+            sb.append("r=new Expr(\"_curry\",Expr.literal(\"");
+            sb.append(escapeJava(callName));
+            sb.append("\")");
+        } else {
+            sb.append("r=new Expr(\"");
+            sb.append(escapeJava(callName));
+            sb.append('\"');
         }
-        sb.append("r=new Expr(\"");
-        sb.append(escapeJava(callName));
-        sb.append('\"');
         // now args
         for (int i=0; i<numArgs; i++) {
             sb.append(',');
@@ -266,6 +276,9 @@ public class BuildGrammars {
             }
         }
         // done!
+        if (isSuperCall) {
+            sb.append(",new Expr(\"_arg\", Expr.literal(\"0\"))");
+        }
         sb.append(");");
         return new RuleAndAction(r, sb.toString());
     }
