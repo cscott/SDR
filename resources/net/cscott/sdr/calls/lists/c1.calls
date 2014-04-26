@@ -141,6 +141,35 @@ def: cross by
     select: END
       prim: in 2, 1, in 1/8
 
+def: cross chain and roll(n=1/2)
+  spoken: cross chain and roll (but turn the star <n=fraction>)?
+  part: 2
+    call: cross chain thru([n])
+  part:
+    call: roll
+
+def: cross chain thru(n=1/2)
+  spoken: cross chain thru (but turn the star <n=fraction>)?
+  part:
+    call: right pull by
+  ipart:
+    call: _finish cross chain thru([n])
+def: _finish cross chain thru(n)
+  condition: not(less([n], 1/4)), "Can't turn the star less than 1/4"
+  from: TRADE BY
+    call: _center 4(_centers finish cross chain thru([n]), _courtesy turn(1/2))
+def: _centers finish cross chain thru(n)
+  call: 1/2(swap around)
+  call: _turn the diamond(_subtract num([n], 1/4))
+  call: _lh diamond to couple roll left
+def: _lh diamond to couple roll left
+  in: 2
+  from: LH DIAMOND
+    select: POINT
+      prim: in 1, 1, out, force-roll-left
+    select: CENTER
+      prim: 0, 1, none, force-roll-left
+
 def: cross extend
   ipart:
     call: _blend last(extend, _finish cross extend)
