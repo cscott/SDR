@@ -2,6 +2,7 @@ package net.cscott.sdr.calls.transform;
 
 import static net.cscott.sdr.calls.parser.CallFileLexer.APPLY;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -75,6 +76,11 @@ public class PartsCounter extends ValueVisitor<Fraction, Void> {
     public Fraction visit(Apply apply, Void t) {
         // optimization: some concepts are safe to hoist this concept thru
         if (safeConcepts.contains(apply.call.atom)) {
+            if (apply.call.atom.equals("_blend first") ||
+                apply.call.atom.equals("_blend last"))
+                // treat this as an 'and'
+                return new Apply(new Expr("and", apply.call.args))
+                    .accept(this,t);
             if (apply.call.atom.equals("_with designated") ||
                 apply.call.atom.equals("_anyone"))
                 // two args, subcall is last one
@@ -103,7 +109,7 @@ public class PartsCounter extends ValueVisitor<Fraction, Void> {
         // contents.
         Evaluator e = apply.evaluator(ds);
         if (!e.hasSimpleExpansion())
-            throw new CantCountPartsException("Can't expand complex concept to find parts");
+            throw new CantCountPartsException("Can't expand complex concept to find parts: "+apply);
         // okay, this concept can be simply expanded...
         return e.simpleExpansion().accept(this, t);
     }
@@ -221,5 +227,10 @@ public class PartsCounter extends ValueVisitor<Fraction, Void> {
 
     /** A list of concepts which do not affect the number of parts.
     That is, "num parts(as couples(swing thru))" == "num parts(swing thru)". */
-    static Set<String> safeConcepts = Fractional.safeConcepts;
+    static Set<String> safeConcepts =
+        new HashSet<String>(Fractional.safeConcepts);
+    static {
+        safeConcepts.add("_blend first");
+        safeConcepts.add("_blend last");
+    }
 }
