@@ -2251,6 +2251,54 @@ abstract class FormationListFast {
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.BELLE, Tag.LEADER, Tag.END, Tag.NUMBER_1),
             new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), ExactRotation.NORTH), Tag.BELLE, Tag.TRAILER, Tag.END, Tag.NUMBER_4));
 
+    /** TRANS RH COLUMN formation.
+      * @doc.test
+      *  js> tf = FormationList.TRANS_RH_COLUMN; tf.mapStd([]).toStringDiagram('|');
+      *  |1B^
+      *  |
+      *  |1G^
+      *  |
+      *  |     3Gv
+      *  |
+      *  |     3Bv
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [NUMBER_1]
+      *  [NUMBER_2]
+      *  [NUMBER_2]
+      *  [NUMBER_1]
+      */
+    public static final NamedTaggedFormation TRANS_RH_COLUMN =
+        new NamedTaggedFormation("TRANS RH COLUMN",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(3), ExactRotation.NORTH), Tag.NUMBER_1),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(1), ExactRotation.NORTH), Tag.NUMBER_2),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-1), ExactRotation.SOUTH), Tag.NUMBER_2),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.NUMBER_1));
+
+    /** TRANS LH COLUMN formation.
+      * @doc.test
+      *  js> tf = FormationList.TRANS_LH_COLUMN; tf.mapStd([]).toStringDiagram('|');
+      *  |     1B^
+      *  |
+      *  |     1G^
+      *  |
+      *  |3Gv
+      *  |
+      *  |3Bv
+      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  [NUMBER_1]
+      *  [NUMBER_2]
+      *  [NUMBER_2]
+      *  [NUMBER_1]
+      */
+    public static final NamedTaggedFormation TRANS_LH_COLUMN =
+        new NamedTaggedFormation("TRANS LH COLUMN",
+            null,
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(3), ExactRotation.NORTH), Tag.NUMBER_1),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(1), Fraction.valueOf(1), ExactRotation.NORTH), Tag.NUMBER_2),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-1), ExactRotation.SOUTH), Tag.NUMBER_2),
+            new TaggedDancerInfo(new PhantomDancer(), new Position(Fraction.valueOf(-1), Fraction.valueOf(-3), ExactRotation.SOUTH), Tag.NUMBER_1));
+
     /** ENDS IN INVERTED LINES formation.
       * @doc.test
       *  js> tf = FormationList.ENDS_IN_INVERTED_LINES; tf.mapStd([]).toStringDiagram('|');
@@ -4232,6 +4280,8 @@ abstract class FormationListFast {
             FormationListFast.PARALLEL_LH_TWO_FACED_LINES,
             FormationListFast.RH_COLUMN,
             FormationListFast.LH_COLUMN,
+            FormationListFast.TRANS_RH_COLUMN,
+            FormationListFast.TRANS_LH_COLUMN,
             FormationListFast.ENDS_IN_INVERTED_LINES,
             FormationListFast.ENDS_OUT_INVERTED_LINES,
             FormationListFast.GENERAL_QUARTER_TAG,

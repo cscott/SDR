@@ -183,27 +183,41 @@ def: transfer and(c)
 // used for transfer and (a2), open up and (c3a), etc.
 def: _transfer(c, start, end)
   ipart:
-    call: _in(3, [start])
-    call: _in(2, _from(CENTER 4, _o concentric(_trans normalize, [end])))
+    // designate the "non-leaders" so that the _o concentric is guaranteed
+    // to operate on the right 'centers'.  Otherwise we can have funny
+    // cases where some of the 'trailers' are actually further out than the
+    // leading tandem, and the normalize is applied to the wrong people.
+    // See the 'trans grand chain eight' example in the 'trans' test case.
+    call: _with designated( \
+            formation(allow unmatched(TRANS RH COLUMN, TRANS LH COLUMN), \
+                      or(NUMBER 1, NUMBER 2)), \
+            and(_in(3, [start]), \
+                _in(2, _o concentric(_trans normalize, [end], not(DESIGNATED)))\
+          ))
   part:
     call: _center 4([c], _in(3, nothing))
 
 // the 'trail and trail' and 'peel and peel' cases result in an outside
 // tandem after the _start action.
 def: _start trans trail and trail
-  // xxx can also be done from "2x4" where #3 and #4 are on c1 phantom spots
-  from: 2x4
-    select: NUMBER 1
+  // note that we don't match against TRANS COLUMN so as not to
+  // trigger breathing
+  from: ANY
+    select: formation(allow unmatched(TRANS RH COLUMN, TRANS LH COLUMN),\
+            NUMBER 1)
       prim: in 4, 2, in
-    select: NUMBER 2
+    select: formation(allow unmatched(TRANS RH COLUMN, TRANS LH COLUMN),\
+            NUMBER 2)
       prim: in 2, 4, in
     select: OTHERS
       prim: 0, 0, none
 def: _start trans peel and peel
-  from: 2x4
-    select: NUMBER 1
+  from: ANY
+    select: formation(allow unmatched(TRANS RH COLUMN, TRANS LH COLUMN),\
+            NUMBER 1)
       prim: out 2, 2, out
-    select: NUMBER 2
+    select: formation(allow unmatched(TRANS RH COLUMN, TRANS LH COLUMN),\
+            NUMBER 2)
       prim: 0, 4, out
     select: OTHERS
       prim: 0, 0, none
@@ -219,18 +233,22 @@ def: _finish trans trail and trail // or peel and peel
 // the 'trail and peel' and 'peel and trail' cases result in outside
 // dancers back-to-back after the _start action.
 def: _start trans trail and peel
-  from: 2x4
-    select: NUMBER 1
+  from: ANY
+    select: formation(allow unmatched(TRANS RH COLUMN, TRANS LH COLUMN),\
+            NUMBER 1)
       prim: in 4, 2, in
-    select: NUMBER 2
+    select: formation(allow unmatched(TRANS RH COLUMN, TRANS LH COLUMN),\
+            NUMBER 2)
       prim: out 2, 4, out
     select: OTHERS
       prim: 0, 0, none
 def: _start trans peel and trail
-  from: 2x4
-    select: NUMBER 1
+  from: ANY
+    select: formation(allow unmatched(TRANS RH COLUMN, TRANS LH COLUMN),\
+            NUMBER 1)
       prim: out 2, 2, out
-    select: NUMBER 2
+    select: formation(allow unmatched(TRANS RH COLUMN, TRANS LH COLUMN),\
+            NUMBER 2)
       prim: in 4, 4, in
     select: OTHERS
       prim: 0, 0, none

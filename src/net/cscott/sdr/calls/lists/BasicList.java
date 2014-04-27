@@ -270,9 +270,12 @@ public abstract class BasicList {
         @Override
         public Rule getRule() { return null; /* internal call */ }
         @Override
-        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
-            assert args.size() == 2;
-            return new ConcentricEvaluator(args.get(0), args.get(1),
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            assert args.size() == 2 || args.size() == 3;
+            Selector who  = (args.size()==3) ?
+                args.get(2).evaluate(Selector.class, ds) : null;
+            return new ConcentricEvaluator(args.get(0), args.get(1), who,
                                            ConcentricType.QUASI);
         }
     };

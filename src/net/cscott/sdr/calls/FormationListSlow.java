@@ -545,6 +545,17 @@ abstract class FormationListSlow {
                 t(2,NUMBER_3,CENTER),t(3,NUMBER_2,CENTER),
                 t(4,NUMBER_2,CENTER),t(5,NUMBER_3,CENTER),
                 t(6,NUMBER_1,END   ),t(7,NUMBER_4,END));
+    // used for 'transfer and'
+    public static final NamedTaggedFormation TRANS_RH_COLUMN =
+        create("TRANS RH COLUMN", f("n ","n "," s"," s"),
+               WhetherTagger.NO_AUTO_TAGS,
+               t(0, NUMBER_1), t(1, NUMBER_2),
+               t(2, NUMBER_2), t(3, NUMBER_1));
+    public static final NamedTaggedFormation TRANS_LH_COLUMN =
+        create("TRANS LH COLUMN", f(" n"," n","s ","s "),
+               WhetherTagger.NO_AUTO_TAGS,
+               t(0, NUMBER_1), t(1, NUMBER_2),
+               t(2, NUMBER_2), t(3, NUMBER_1));
     // XXX 3-and-1 lines, 8 possible, callerlab #32
     public static final NamedTaggedFormation ENDS_IN_INVERTED_LINES = // callerlab #33
         xofy("ENDS IN INVERTED LINES", FACING_DANCERS, SINGLE_INVERTED_LINE);

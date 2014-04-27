@@ -387,6 +387,12 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.LH_COLUMN);
     public static final Matcher COLUMN =
         OR("COLUMN", RH_COLUMN, LH_COLUMN);
+    public static final Matcher TRANS_RH_COLUMN =
+        GeneralFormationMatcher.makeMatcher(FormationList.TRANS_RH_COLUMN);
+    public static final Matcher TRANS_LH_COLUMN =
+        GeneralFormationMatcher.makeMatcher(FormationList.TRANS_LH_COLUMN);
+    public static final Matcher TRANS_COLUMN =
+        OR("TRANS COLUMN", TRANS_RH_COLUMN, TRANS_LH_COLUMN);
     public static final Matcher ENDS_IN_INVERTED_LINES =
         GeneralFormationMatcher.makeMatcher(FormationList.ENDS_IN_INVERTED_LINES);
     public static final Matcher ENDS_OUT_INVERTED_LINES =

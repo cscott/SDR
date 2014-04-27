@@ -7,6 +7,7 @@ import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.calls.lists.C1List.ConcentricEvaluator;
@@ -45,9 +46,12 @@ public abstract class C2List {
         @Override
         public Rule getRule() { return null; /* internal call */ }
         @Override
-        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
-            assert args.size() == 2;
-            return new ConcentricEvaluator(args.get(0), args.get(1),
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            assert args.size() == 2 || args.size() == 3;
+            Selector who  = (args.size()==3) ?
+                args.get(2).evaluate(Selector.class, ds) : null;
+            return new ConcentricEvaluator(args.get(0), args.get(1), who,
                                            ConcentricType.CROSS);
         }
     };

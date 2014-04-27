@@ -29,6 +29,7 @@ import net.cscott.sdr.calls.NoMatchException;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.Rotation;
+import net.cscott.sdr.calls.Selector;
 import net.cscott.sdr.calls.TaggedFormation;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.TimedFormation;
@@ -183,9 +184,12 @@ public abstract class C1List {
         @Override
         public Rule getRule() { return null; /* internal call */ }
         @Override
-        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
-            assert args.size() == 2;
-            return new ConcentricEvaluator(args.get(0), args.get(1),
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            assert args.size() == 2 || args.size() == 3;
+            Selector who  = (args.size()==3) ?
+                args.get(2).evaluate(Selector.class, ds) : null;
+            return new ConcentricEvaluator(args.get(0), args.get(1), who,
                                            ConcentricType.CONCENTRIC);
         }
     };
@@ -217,9 +221,12 @@ public abstract class C1List {
         @Override
         public Rule getRule() { return null; /* internal call */ }
         @Override
-        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
-            assert args.size() == 2;
-            return new ConcentricEvaluator(args.get(0), args.get(1),
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args)
+            throws EvaluationException {
+            assert args.size() == 2 || args.size() == 3;
+            Selector who  = (args.size()==3) ?
+                args.get(2).evaluate(Selector.class, ds) : null;
+            return new ConcentricEvaluator(args.get(0), args.get(1), who,
                                            ConcentricType.O);
         }
     };
@@ -230,20 +237,28 @@ public abstract class C1List {
     public static class ConcentricEvaluator extends Evaluator {
         private final Expr centersPart, endsPart;
         private final ConcentricType which;
+        private final Selector who;
         private static final Rotation NORTHSOUTH =
                 Rotation.fromAbsoluteString("|");
         private static final boolean DEBUG = false;
+        private static final Selector CENTER = new Selector() {
+            @Override
+            public Set<Dancer> select(TaggedFormation tf) {
+                return tf.tagged(Tag.CENTER);
+            }
+        };
         public ConcentricEvaluator(Expr centersPart, Expr endsPart,
-                                   ConcentricType which) {
+                                   Selector who, ConcentricType which) {
             this.centersPart = centersPart;
             this.endsPart = endsPart;
             this.which = which;
+            this.who = (who != null) ? who : CENTER;
         }
         @Override
         public Evaluator evaluate(DanceState ds) {
             // step 1: pull out the centers/ends
             TaggedFormation f = TaggedFormation.coerce(ds.currentFormation());
-            Set<Dancer> centerDancers = f.tagged(Tag.CENTER);
+            Set<Dancer> centerDancers = who.select(f);
             Set<Dancer> endDancers = new HashSet<Dancer>(f.dancers());
             endDancers.removeAll(centerDancers); // all those who aren't CENTERs
             if (centerDancers.isEmpty())
