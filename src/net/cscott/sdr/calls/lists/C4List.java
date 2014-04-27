@@ -1,5 +1,6 @@
 package net.cscott.sdr.calls.lists;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +14,7 @@ import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.Position;
 import net.cscott.sdr.calls.Program;
+import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
@@ -220,6 +222,79 @@ public abstract class C4List {
         @Override
         protected AllButLastPart getPartsVisitor(DanceState ds) {
             return new AllButLastPart(ds);
+        }
+    };
+
+    /**
+     * Helper for the "straight" concept. There should be exactly two
+     * designated dancers, who are the "ends facing in" who should
+     * do the call straight.
+     */
+    public static final Call DESIGNATED_STRAIGHT = new C4Call("_designated straight") {
+        @Override
+        public int getMinNumberOfArguments() { return 1; }
+        @Override
+        public Rule getRule() { return null; /* internal call */ }
+        @Override
+        public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
+            assert args.size() == 1;
+            final Apply subCall = new Apply(args.get(0));
+            return new Evaluator() {
+                public Evaluator evaluate(DanceState ds) {
+                    // Save the designated dancers
+                    List<Dancer> straightDancers =
+                        new ArrayList<Dancer>(ds.designated());
+                    straightDancers.retainAll(ds.dancers());
+                    if (straightDancers.size() != 2)
+                        throw new BadCallException
+                            ("Exactly two dancers must be designated straight");
+                    // Do the call normally
+                    DanceState nds = ds.cloneAndClear();
+                    subCall.evaluator(nds).evaluateAll(nds);
+                    nds.syncDancers();
+                    // Transfer all the movements of the non-designated dancers
+                    for (Dancer d : nds.dancers()) {
+                        if (straightDancers.contains(d)) continue;
+                        for (DancerPath dp : nds.movements(d)) {
+                            ds.add(d, dp);
+                        }
+                    }
+                    // Now swap the two designated dancers
+                    for (int i=0; i<2; i++) {
+                        Dancer d = straightDancers.get(i);
+                        Dancer other = straightDancers.get(1-i);
+                        // get start location of this dancer
+                        Position start =
+                            nds.formationAt(Fraction.ZERO).location(d);
+                        // get final location of 'other' dancer
+                        Position end =
+                            nds.currentFormation().location(other);
+                        // this should be a 'press in' (modulo breathing)
+                        // verify that facing direction doesn't change
+                        // (we allow `other` to be facing the
+                        // opposite direction as well)
+                        if (!(start.facing.equals(end.facing) ||
+                              start.facing.equals(end.facing.add
+                                                  (Fraction.ONE_HALF))))
+                            throw new BadCallException
+                                ("Straight dancers can't turn");
+                        // should cross exactly one axis
+                        if ((start.x.multiply(end.x)).multiply
+                            (start.y.multiply(end.y)).compareTo(Fraction.ZERO)
+                            >= 0)
+                            throw new BadCallException
+                                ("Straight dancers should cross one axis");
+                        // xxx use the last movement of this particular dancer?
+                        Fraction time = nds.lastMovement();
+                        // force no roll at end
+                        end = end.setFlags().relocate(start.facing);
+                        // create & add new dancer path
+                        DancerPath dp = new DancerPath(start, end, time, null);
+                        ds.add(d, dp);
+                    }
+                    return null; // no more to do
+                }
+            };
         }
     };
 }

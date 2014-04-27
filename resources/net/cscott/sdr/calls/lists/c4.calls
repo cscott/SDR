@@ -107,6 +107,33 @@ def: piecewise(concept, call)
     part: _subtract num(num parts([call]), 1)
       call: piecewise([concept], finish([call]))
 
+def: straight(call)
+  option: CONCEPT
+  spoken: straight <call=anything>
+  from: 2x4
+    condition: equal num(num dancers(and(END,TRAILER)), 2)
+    call: _with designated(and(END,TRAILER), _designated straight([call]))
+  from: 2x4 // can also sometimes do call w/ all ends facing in!
+    condition: equal num(num dancers(and(END,TRAILER)), 4)
+    call: _with designated(and(END,TRAILER,BEAU), _designated straight( \
+          _from(2x4, _with designated(and(END,TRAILER,BELLE), \
+                                      _designated straight([call])))))
+  from: ANY
+    call: _from two diamonds(_straight diamond([call]))
+def: _straight diamond(call)
+  from: TWIN GENERAL DIAMONDS
+    // all points facing in
+    condition: match(_facing pattern(POINT), "><><")
+    call: _with designated(match groups(_facing pattern, "(.)..(.)", POINT),\
+            _designated straight(_from(TWIN GENERAL DIAMONDS,\
+              _with designated(match groups(_facing pattern, ".(..).", POINT),\
+                _designated straight([call])))))
+  from: TWIN GENERAL DIAMONDS
+    condition: match(_facing pattern(POINT), ">><<|<<>>"), \
+      "Can't find points facing in"
+    call: _with designated(match groups(_facing pattern, "(>)..(<)|.(<>).",\
+                                        POINT), _designated straight([call]))
+
 def: trail and peel
   call: _in(2, _trail and step)
   call: _in(2, _centers(and roll(face out)))
