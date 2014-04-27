@@ -212,9 +212,15 @@ public class SelectorList {
         public Selector evaluate(Class<? super Selector> type,
                                  final DanceState ds, List<Expr> args)
             throws EvaluationException {
-            if (args.size()!=2)
-                throw new EvaluationException("needs two arguments");
-            final String dancers = args.get(0).evaluate(String.class, ds);
+            if (args.size() != 2 && args.size() != 3)
+                throw new EvaluationException("needs two or three arguments");
+            Expr who = (args.size()==3) ? args.get(2) :
+                Expr.literal("ALL");
+            Expr arg0 = args.get(0);
+            if (arg0.atom.equals("literal"))
+                arg0 = new Expr(arg0.evaluate(String.class, ds), who);
+            final Selector subset = who.evaluate(Selector.class, ds);
+            final String dancers = arg0.evaluate(String.class, ds);
             final Pattern pattern = Pattern.compile
                 (args.get(1).evaluate(String.class, ds),
                  Pattern.CASE_INSENSITIVE);
@@ -222,7 +228,9 @@ public class SelectorList {
                 @Override
                 public Set<Dancer> select(TaggedFormation tf) {
                     Set<Dancer> result = new LinkedHashSet<Dancer>();
-                    List<Dancer> sortedDancers = tf.sortedDancers();
+                    List<Dancer> sortedDancers =
+                        new ArrayList<Dancer>(tf.sortedDancers());
+                    sortedDancers.retainAll(subset.select(tf));
                     java.util.regex.Matcher m = pattern.matcher(dancers);
                     if (m.matches()) {
                         for (int i = 1; i <= m.groupCount(); i++) {
