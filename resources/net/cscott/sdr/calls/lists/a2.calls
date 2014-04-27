@@ -224,10 +224,10 @@ def: _start trans peel and peel
 // move the outside tandem to appropriate spots
 def: _finish trans trail and trail // or peel and peel
   select: formation(TANDEM, LEADER)
-    prim: in 6, 0, roll
+    prim: in 4, 0, roll
     prim: 0, 0, roll
   select: OTHERS
-    prim: in 4, 2, roll
+    prim: in 2, 2, roll
     prim: 0, 0, roll
 
 // the 'trail and peel' and 'peel and trail' cases result in outside
@@ -254,7 +254,7 @@ def: _start trans peel and trail
       prim: 0, 0, none
 // move the outside dancers to the appropriate column spots
 def: _finish trans trail and peel // or peel and trail
-  prim: in 4, 0, roll
+  prim: in 2, 0, roll, sashay-start
   prim: 0, 0, roll
 
 // "move forward to a compact formation"

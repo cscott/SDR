@@ -278,7 +278,7 @@ public abstract class C1List {
                 endF = Breather.breathe(endF);
             else
                 // breathe out O to ensure there's a 2x2 inside
-                endF = expandO(endF, centerNominalBox, centerNominalBox);
+                endF = expandO(endF, insideBox(endF), centerNominalBox);
             DanceState centerS = ds.cloneAndClear(centerF);
             DanceState endS = ds.cloneAndClear(endF);
             if (DEBUG) {
@@ -432,6 +432,8 @@ public abstract class C1List {
                 Point ONE = new Point(Fraction.ONE, Fraction.ONE);
                 centerBounds = new Box(centerBounds.ll.add(ONE),
                                        centerBounds.ur.subtract(ONE));
+            } else if (isO) {
+                centerBounds = centerBounds.union(centerNominalBox);
             }
             for (Dancer d : end.dancers()) {
                 Position p = end.location(d);
@@ -487,7 +489,7 @@ public abstract class C1List {
          *    > ib = insideBox(f);
          *  (-2,-2;2,2)
          *  js> for each (d in StandardDancer.values()) {
-         *    >   f = f.move(d, expandO(f.location(d), ib, n, a));
+         *    >   f = f.move(d, expandO(f.location(d), ib, n, a.union(n)));
          *    > }
          *    > f.toStringDiagram('|');
          *  |          3Gv  3Bv
@@ -502,7 +504,7 @@ public abstract class C1List {
          *    > ib = insideBox(f);
          *  (0,0;0,0)
          *  js> for each (d in StandardDancer.values()) {
-         *    >   f = f.move(d, expandO(f.location(d), ib, n, a));
+         *    >   f = f.move(d, expandO(f.location(d), ib, n, a.union(n)));
          *    > }
          *    > f.toStringDiagram('|');
          *  |                 1B<
@@ -524,7 +526,7 @@ public abstract class C1List {
         public static Position expandO(Position p,
                                        Box inside, Box nominal, Box actual) {
             Point pt = expandO(p.toPoint(),
-                               inside, nominal, actual.union(nominal));
+                               inside, nominal, actual);
             return p.relocate(pt.x, pt.y, p.facing);
         }
         public static Formation expandO(Formation f, Box nominal, Box actual) {

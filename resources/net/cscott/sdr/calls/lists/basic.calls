@@ -167,18 +167,18 @@ def: _center 2(c1, c2=nothing)
   from: CENTER 2
     call: _quasi concentric([c1],[c2])
 // see definition of 'concentric' (C1) and 'cross concentric' (C2)
-def: _center 4(c1, c2=nothing)
+def: _center 4(c1, c2=nothing, concentric=_quasi concentric)
   // try "center wave" as centers
   from: GENERAL QUARTER TAG, TWIN GENERAL DIAMONDS, CONCENTRIC GENERAL DIAMONDS
-    call: _quasi concentric([c1],[c2])
+    call: _apply([concentric], [c1], [c2])
   from: ANY
     call: _blend first(_diamond adjust then(\
             _from(or(TWIN GENERAL DIAMONDS, CONCENTRIC GENERAL DIAMONDS),\
-                  _quasi concentric([c1],[c2]))))
+                  _apply([concentric], [c1], [c2]))))
   from: CENTER 4
     // be careful of some formations with bogus 'center 4'
     condition: not(formation(POINT-TO-POINT GENERAL DIAMONDS))
-    call: _quasi concentric([c1],[c2])
+    call: _apply([concentric], [c1], [c2])
 def: _center 6(c1, c2=nothing)
   from: CENTER 6
     call: _quasi concentric([c1],[c2])

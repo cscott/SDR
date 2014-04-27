@@ -11,7 +11,9 @@ import org.junit.runner.RunWith;
 import net.cscott.jdoctest.JDoctestRunner;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Apply;
+import net.cscott.sdr.calls.ast.Comp;
 import net.cscott.sdr.calls.ast.Expr;
+import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.transform.PartsCounter;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
@@ -182,7 +184,22 @@ public class ExprList {
                 nArgs.add(subst(cArg, ds, rest));
             }
             // create new expr with new substituted args
-            Expr result = new Expr(func, nArgs);
+            final Expr result = new Expr(func, nArgs);
+            if (type.isAssignableFrom(Evaluator.class)) {
+                // expose the simple expansion, for PartsVisitor, etc.
+                return new Evaluator() {
+                    @Override
+                    public boolean hasSimpleExpansion() { return true; }
+                    @Override
+                    public Comp simpleExpansion() {
+                        return new Seq(new Apply(result));
+                    }
+                    @Override
+                    public Evaluator evaluate(DanceState ds) {
+                        return new Apply(result).evaluator(ds);
+                    }
+                };
+            }
             return result.evaluate(type, ds);
         }
         /** Substitute (Expr _arg 'N) with appropriate member of 'args'. */

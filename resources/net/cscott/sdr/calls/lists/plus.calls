@@ -69,19 +69,18 @@ def: _from diamond or tag(c, n=1)
 
 def: acey deucey
   from: ANY
-    call: _center 4(trade, _acey circulate)
+    call: _center 4(_in(4, trade), _acey circulate, _o concentric)
   // allow trailers to circulate only if they are ends of waves
   // (from 2x4 where the ends are facing N/S, or from diamonds)
   from: ANY
-    call: _from two diamonds(_center 4(trade, _box circulate))
-  from: 2x4
-    condition: match(_facing pattern(), "[<v^]..[v^>][<v^]..[v^>]")
-    call: _quasi concentric(trade, _box circulate)
+    call: _from two diamonds(_center 4(_in(4, trade), _in(4, _box circulate)))
 
 def: _acey circulate
-  from: 2x2
-    condition: ALL(LEADER), "Circulate is not allowed to cross the center"
-    call: _box circulate
+  in: 4
+  from: use phantoms(2x4)
+    condition: match(_facing pattern(), "[<v^]..[v^>][<v^]..[v^>]"),\
+               "Circulate is not allowed to cross the center"
+    call: _center 4(nothing, _box circulate)
 
 // XXX: ALL 8 SPIN THE TOP
 // XXX: reformulate as application of "all 8" concept

@@ -65,7 +65,7 @@ public class PartsVisitor<T> extends TransformVisitor<T> {
         // contents.
         Evaluator e = apply.evaluator(ds);
         if (!e.hasSimpleExpansion())
-            throw new BadCallException("Can't expand complex concept to find parts");
+            throw new BadCallException("Can't expand complex concept to find parts: "+apply);
         // okay, this concept can be simply expanded...
         Part result = new Part(DIVISIBLE, Fraction.ONE,
                                e.simpleExpansion().accept(this, t));

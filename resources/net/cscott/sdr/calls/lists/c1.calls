@@ -104,15 +104,7 @@ def: _start circle by(n)
 def: concentric(c)
   spoken: concentric <c=anything>
   option: CONCEPT
-  // try "center wave" as centers
-  from: GENERAL QUARTER TAG, TWIN GENERAL DIAMONDS, CONCENTRIC GENERAL DIAMONDS
-    call: _concentric([c], [c])
-  from: ANY
-    call: _blend first(_diamond adjust then(                              \
-            _from(or(TWIN GENERAL DIAMONDS, CONCENTRIC GENERAL DIAMONDS), \
-                  _concentric([c],[c]))))
-  from: CENTER HALF
-    call: _concentric([c], [c])
+  call: _center 4([c], [c], _concentric)
 
 def: counter rotate(n=1/4)
   spoken: counter rotate (<n=fraction>)?
