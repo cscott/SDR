@@ -163,9 +163,9 @@ def: _centers(c)
 def: _ends(c)
   from: CENTER HALF
     call: _anyone(not(CENTER), [c])
-def: _center 2(c1, c2=nothing)
+def: _center 2(c1, c2=nothing, concentric=_quasi concentric)
   from: CENTER 2
-    call: _quasi concentric([c1],[c2])
+    call: _apply([concentric], [c1], [c2])
 // see definition of 'concentric' (C1) and 'cross concentric' (C2)
 def: _center 4(c1, c2=nothing, concentric=_quasi concentric)
   // try "center wave" as centers
@@ -179,9 +179,9 @@ def: _center 4(c1, c2=nothing, concentric=_quasi concentric)
     // be careful of some formations with bogus 'center 4'
     condition: not(formation(POINT-TO-POINT GENERAL DIAMONDS))
     call: _apply([concentric], [c1], [c2])
-def: _center 6(c1, c2=nothing)
+def: _center 6(c1, c2=nothing, concentric=_quasi concentric)
   from: CENTER 6
-    call: _quasi concentric([c1],[c2])
+    call: _apply([concentric], [c1], [c2])
 def: _four person call(c)
   from: ANY
     condition: equal num(NUM DANCERS(), 4), "Four person call"
