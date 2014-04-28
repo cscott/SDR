@@ -333,6 +333,8 @@ public class MatcherList {
         GeneralFormationMatcher.makeMatcher(FormationList.RH_ALAMO_RING);
     public static final Matcher LH_ALAMO_RING =
         GeneralFormationMatcher.makeMatcher(FormationList.LH_ALAMO_RING);
+    public static final Matcher ALAMO_RING =
+        OR("ALAMO RING", RH_ALAMO_RING, LH_ALAMO_RING);
     public static final Matcher O_SPOTS =
         GeneralFormationMatcher.makeMatcher(FormationList.O_SPOTS);
     public static final Matcher PROMENADE =

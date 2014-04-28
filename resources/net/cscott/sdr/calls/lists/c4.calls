@@ -814,7 +814,7 @@ Turn & Weave (box & column)
 // 4.6
 
 def: spin chain the star
-  call: _quarter the deucey(2,3,2,3)
+  call: _maybe touch(_quarter the deucey(2,3,2,3))
 
 /*
 Straight Away
@@ -962,7 +962,7 @@ def: _start dixie chain
 def: _finish dixie chain
   from: GENERAL COLUMN
     call: left pull by
-    call: _centers(right pull by)
+    call: _center 2(right pull by)
 
 def: split dixie chain
   part:
@@ -1106,9 +1106,12 @@ def: curve out
 // see 'spin chain the line' (C3A)
 def: swing chain the line
   //call: _swing chain(spin chain the line)
+  call: swing chain the line but(cast(1/4))
+def: swing chain the line but(c)
+  spoken: swing chain the line but <c=anything>
   call: _maybe touch(_wave swing)
   call: _center 6(_center 2(trade, cast(1/4)))
-  call: _from diamond(and(_smash diamond, _center 2(cast(1/4))))
+  call: _blend first(_from diamond(_smash diamond), _center 4([c]))
 
 def: right anchor(n)
   spoken: right anchor <n=fraction>
@@ -1127,17 +1130,186 @@ def: straight connect
   call: straight(connect the diamond)
 
 // 5.4
+
+def: flare the star
+  from: FACING COUPLES
+    call: 1/2(reverse(swap around))
+    call: _counter rotate 1/4
+    call: reverse flip the diamond
+    call: chain down the line
+
+def: dixie daisy
+  from: FACING COUPLES
+    ipart:
+      call: _blend first(_start dixie chain, _centers(right pull by))
+    part: 2
+      call: _finish dixie daisy
+def: _finish dixie daisy
+  from: GENERAL COLUMN
+    call: left(turn thru)
+    call: _center 2(right pull by)
+
+def: split dixie daisy
+  part:
+    call: _centers(_blend last(right pull by,face out))
+  part: 2
+    call: _finish dixie daisy
+
+def: round the horn
+  ipart:
+    from: LINES FACING OUT
+      call: face out
+      call: tandem(quarter in)
+      call: _round the horn adjust
+      call: pass thru
+def: _round the horn adjust
+  in: 2
+  from: DOUBLE PASS THRU
+    select: CENTER
+      prim: 0, 0, roll
+    select: END
+      prim: out 2, 2, none
+
+def: clover the horn
+  ipart:
+    from: COMPLETED DOUBLE PASS THRU
+      call: tandem(and roll(quarter out))
+      call: _round the horn adjust
+      call: pass thru
+
+def: cross clover the horn
+  ipart:
+    from: COMPLETED DOUBLE PASS THRU
+      // XXX should indicate how much to blend here
+      call: _blend first(half sashay, clover the horn)
+
+def: erase
+  from: GENERAL LINE
+    call: _center 2(u turn back, _counter rotate 1/4, _concentric)
+  from: ANY
+    call: _from diamond(_center 2(u turn back, _counter rotate 1/4,_concentric))
+
 /*
-Flare the Star
-Dixie Daisy
-Round the Horn
-Erase
 Swing Chain the Gears & other Swing Chain calls
-Clover the Wave
-Remember the Alamo
-Break the Alamo
-Tap
-5.5
+*/
+// see 'spin chain the star' (C4)
+def: swing chain the star
+  call: _maybe touch(_quarter the deucey(2,1,2,1))
+// see 'swing chain the gears' (PLUS)
+def: swing chain the gears
+  part:
+    call: _maybe touch(_wave swing)
+  xpart:
+    call: _in(2, _from(GENERAL LINE, _quasi concentric(cast(1/4), u turn back)))
+    call: _in(2, _from(CENTER 2, _quasi concentric(trade, nothing)))
+    call: diamond circulate  // 3 beats/qtr
+    call: _in(2, _from(CENTER 2, _quasi concentric(trade, nothing)))
+    call: _in(2, _from(CENTER 4, _quasi concentric(cast(1/4), u turn back)))
+
+
+def: clover the wave
+  call: extend, extend, cloverleaf
+// XXX also <anything> the wave
+
+def: remember the alamo
+  ipart:
+    from: PARALLEL LH WAVES
+      call: mirror(_rh remember the alamo)
+    from: 2x4
+      condition: match(_facing pattern(), "[<>v].v\\^v\\^.[<>^]")
+      call: mirror(_rh remember the alamo)
+    from: ANY
+      call: _rh remember the alamo
+// definition is "outeractives ah so, while others split counter rotate"
+// but it's only valid from waves so we're going to define the movement
+// using primitives
+// ends on squared-set spots.
+def: _rh remember the alamo
+  from: PARALLEL RH WAVES
+    ends in: formation(O SPOTS)
+    select: and(LEADER,END)
+      prim: in 2, 2, right
+      prim: 0, 2, right
+    select: and(TRAILER,CENTER)
+      prim: 0, 0, right
+      prim: out 2, 0, right
+    select: and(LEADER,CENTER)
+      prim: out 2, 0, right
+      prim: 0, 0, none, preserve-roll
+    select: and(TRAILER,END)
+      prim: 0, 2, right
+      prim: 0, 0, none, preserve-roll
+  // yduj says the inneractives could be a couple (!)
+  from: 2x4
+    condition: match(_facing pattern(), "\\^v.[<>v][<>^].\\^v")
+    select: match groups(_facing pattern, "(\\^)......(v)")
+      // leader of ah so
+      prim: in 2, 2, right
+      prim: 0, 2, right
+    select: match groups(_facing pattern, ".(v)....(\\^).")
+      // trailer of ah so
+      prim: 0, 0, right
+      prim: out 2, 0, right
+    // split counter rotate from t-bones (wait 1 beat for ah so'ers to clear)
+    select: match groups(_facing pattern, "..(>).*"),\
+            match groups(_facing pattern, ".*(<).."),\
+            match groups(_facing pattern, "...(v).*"),\
+            match groups(_facing pattern, ".*(\\^)...")
+      prim: 0, 0, none
+      prim: 0, 2, right, sashay-finish
+    select: match groups(_facing pattern, "..(v).*"),\
+            match groups(_facing pattern, ".*(\\^).."),\
+            match groups(_facing pattern, "...(<).*"),\
+            match groups(_facing pattern, ".*(>)...")
+      prim: 0, 0, none
+      prim: 0, 2, left, sashay-finish
+    select: match groups(_facing pattern, "..(<).*"),\
+            match groups(_facing pattern, ".*(>).."),\
+            match groups(_facing pattern, "...(\\^).*"),\
+            match groups(_facing pattern, ".*(v)...")
+      prim: 0, 0, none
+      prim: -2, 0, left, sashay-start
+    select: match groups(_facing pattern, "..(\\^).*"),\
+            match groups(_facing pattern, ".*(v).."),\
+            match groups(_facing pattern, "...(>).*"),\
+            match groups(_facing pattern, ".*(<)...")
+      prim: 0, 0, none
+      prim: 2, 0, right, sashay-start
+
+def: break the alamo(sel)
+  spoken: <sel=anyone> break the alamo
+  ipart:
+    from: 2x4 // allow CENTERS break the alamo to work from a 2x4
+      call: _with designated([sel], _designees break the alamo)
+    from: ANY
+      call: _with designated([sel], _maybe circle adjust(\
+        _blend first(_alamo designees into center, _designees break the alamo)))
+def: _designees break the alamo
+  condition: equal num(num dancers(DESIGNATED), 4), \
+             "Four dancers must be designated"
+  from: 2x4
+    condition: ARE(DESIGNATED, CENTER)
+    call: _blend last(_quasi concentric(follow thru,_from(2x2,run(LEADER))),\
+                      as couples(_extend))
+def: _alamo designees into center
+  ends in: formation(2x4)
+  from: ALAMO RING
+    select: DESIGNATED
+      prim: 0, in 2, none
+    select: OTHERS
+      prim: 0, 0, none
+
+def: tap(sel)
+  spoken: tap the <sel=anyone>
+  from: FACING COUPLES
+    call: pass thru
+    call: _anyone([sel], u turn back)
+    call: _box counter rotate(1/4)
+    call: roll
+
+
+// 5.5
+/*
 Mix the Line
 Triple Turn
 Turn & Left Thru

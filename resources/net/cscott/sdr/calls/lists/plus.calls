@@ -517,6 +517,7 @@ def: spin chain and exchange the gears(n=3/4)
     //call: _in(3, interlocked flip the diamond)
 
 // keep this in sync with 'spin chain and circulate the gears' (c4)
+// and 'swing chain the gears' (c4)
 def: spin chain the gears(n=3/4)
   // 24 beats if you turn the star 3/4
   spoken: spin chain the gears (but turn the star <n=fraction>)?
