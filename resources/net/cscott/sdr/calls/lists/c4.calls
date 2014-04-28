@@ -107,6 +107,18 @@ def: piecewise(concept, call)
     part: _subtract num(num parts([call]), 1)
       call: piecewise([concept], finish([call]))
 
+def: _quarter the deucey(i,j,k,l)
+  // xxx leads to grammar conflicts :(
+  //spoken: <i=number> <j=number> <k=number> <l=number> quarter the deucey
+  call: cast(_divide num([i], 4))
+  call: _center 4(cast(_divide num([j], 4)), 1/2(circulate))
+  // this is "_chain reaction part 3" except no trade on outside
+  call: _blend last(_center 4(_turn the star(_divide num([k], 4))), \
+                    _center 6(_unsmash the star))
+  // this is "finish chain reaction" but parameterized
+  call: _blend last(_center 2(nothing, _center 4(cast(_divide num([l], 4)))),\
+                    _like a coordinate)
+
 def: straight(call)
   option: CONCEPT
   spoken: straight <call=anything>
@@ -797,8 +809,14 @@ Cross Pair the Line
 Continue to Cross Invert <====
 Stroll & Cycle
 Turn & Weave (box & column)
-4.6
-Spin Chain the Star
+*/
+
+// 4.6
+
+def: spin chain the star
+  call: _quarter the deucey(2,3,2,3)
+
+/*
 Straight Away
 Chip Off
 Turn & Weave (1/4 tag)
@@ -819,7 +837,12 @@ Clean Sweep
 Divi Up
 Roll 'Em
 Veer & Turn
-Fan Chain the Star
+*/
+
+def: fan chain the star
+  call: finish(spin chain the star)
+
+/*
 Set Back
 Cross Straight Away
 Deuces Wild

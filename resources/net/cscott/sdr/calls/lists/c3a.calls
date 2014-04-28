@@ -145,6 +145,11 @@ def: open up and(c)
   call: _transfer([c], _start trans trail and peel, \
                        _finish trans trail and peel)
 
+def: quarter the deucey
+  call: _quarter the deucey(1,1,1,1)
+def: three quarter the deucey
+  call: _quarter the deucey(3,3,3,3)
+
 def: release(c)
   option: CONCEPT
   spoken: release <c=anything>
