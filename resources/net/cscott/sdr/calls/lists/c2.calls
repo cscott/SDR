@@ -229,6 +229,13 @@ def: little more
   xpart: 2
     call: little, anyone while others(CENTER, circulate, nothing)
 
+// XXX this is a hack temporary definition, works from 2x4s only
+def: once removed(call)
+  option: CONCEPT
+  spoken: once removed <call=anything>
+  from: 2x4
+    call: stretch(stretched box([call]))
+
 def: outlet
   option: LEFT
   ipart:
