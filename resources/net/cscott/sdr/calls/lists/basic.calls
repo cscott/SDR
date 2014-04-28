@@ -1750,6 +1750,7 @@ def: _maybe touch(c, n=1)
 // NOTE THAT 'leads run' = 'IN YOUR BOX, leads run'
 // NOTE THAT 'boys run' = 'IN YOUR COUPLES, boys run'
 // ie, we need to select a formation to get dancers tagged first.
+// see 'kick off' (C2)
 def: run(sel)
   spoken: <sel=anyone> run
   in: 4

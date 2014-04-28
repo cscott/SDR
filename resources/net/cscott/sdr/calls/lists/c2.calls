@@ -207,6 +207,25 @@ def: here comes the judge
     call: _with designated(MATCH GROUPS(_FACING PATTERN(), "(v).+v|^.+(^)"),\
                            _designees out roll circulate)
 
+//see 'run' (BASIC)
+def: kick off(sel)
+  spoken: <sel=anyone> kick off
+  in: 4
+  from: 1x4, 2x4, BOX, mixed(COUPLE, RH MINIWAVE, LH MINIWAVE), 1x2
+    // do the select from the 1x4 and 2x4 so that 'centers' works right
+    call: _with designated([sel], _designees kick off)
+def: _designees kick off
+  // XXX definition is 'do your part' so should work from t-boned 2x2
+  from: COUPLE, MINIWAVE, mixed(COUPLE, RH MINIWAVE, LH MINIWAVE)
+    select: DESIGNATED
+      prim: in 1, 1, in
+      prim: in 1, 1, roll
+      prim: 0, 0, roll
+    select: OTHERS
+      prim: in 1, 0, in
+      prim: 0, 1, none
+      prim: 0, 0, none // partner tagger can't roll
+
 def: lines thru(c)
   // XXX GRAMMAR CONFLICT boo: can't parse 'lines swing thru' or 'lines
   // slide thru' because it can't decide whether the 'thru' goes with the
