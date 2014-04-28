@@ -29,6 +29,36 @@ def: evenly(concept,call)
     part: _subtract num(num parts([call]), 1)
       call: oddly([concept], finish([call]))
 
+def: secondly(concept,call)
+  option: METACONCEPT
+  spoken: secondly <0=concept> <1=anything>
+  condition: greater(num parts([call]), 1), "Call must have at least two parts"
+  part:
+    call: _first part([call])
+  part: _subtract num(num parts([call]), 1)
+    call: initially([concept], finish([call]))
+
+def: thirdly(concept,call)
+  option: METACONCEPT
+  spoken: thirdly <0=concept> <1=anything>
+  condition: greater(num parts([call]), 2),"Call must have at least three parts"
+  part:
+    call: _first part([call])
+  part: _subtract num(num parts([call]), 1)
+    call: secondly([concept], finish([call]))
+
+def: fourthly(concept,call)
+  option: METACONCEPT
+  spoken: fourthly <0=concept> <1=anything>
+  condition: greater(num parts([call]), 3), "Call must have at least four parts"
+  part:
+    call: _first part([call])
+  part: _subtract num(num parts([call]), 1)
+    call: thirdly([concept], finish([call]))
+
+// Vic sez: "Also possible, but rarely used: Fifthly, Sixthly,
+// Seventhly (e.g., Seventhly Twisted Eight Chain Thru). There are
+// very few calls that have more than 4 parts."
 
 /* ... */
 
