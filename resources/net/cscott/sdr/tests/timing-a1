@@ -60,7 +60,7 @@ sdr> /// cross trail thru is the same timing from facing couples and static
 sdr> /// square (according to callerlab), which seems wrong.  Let's say that
 sdr> /// it's only 4 beats from facing couples, and 6 beats from squared set
 sdr> /checkBeats( 4, "cross trail thru", [FACING_LINES, EIGHT_CHAIN_THRU])
-sdr> /checkBeats( 6, "cross trail thru", STATIC_SQUARE)
+sdr> /checkBeats( 6, "heads cross trail thru", STATIC_SQUARE)
 sdr> /checkBeats(2+4, "side boys u turn back ; cycle and wheel",
    >                  PARALLEL_RH_WAVES)
 sdr> /checkBeats( 6, "double star thru", EIGHT_CHAIN_THRU)

@@ -251,6 +251,32 @@ def: relocate
 def: relocate the diamond
   call: _from two diamonds(relocate)
 
+def: reverse cut the diamond
+  in: 6
+  ipart:
+    call: _blend last(_in(3, _from diamond(_center 2(trade))),\
+                      _in(3, _from diamond(_finish reverse cut the diamond)))
+def: _finish reverse cut the diamond
+  from: DIAMOND, GENERAL DIAMOND
+    select: POINT
+      prim: in 2, 1, in
+    select: CENTER
+      prim: out 2, 0, none, sashay-start sashay-finish
+
+def: reverse flip the diamond
+  in: 3
+  call: _from diamond(_reverse flip the diamond after adjust)
+def: _reverse flip the diamond after adjust
+  in: 3
+  ipart:
+    from: DIAMOND, GENERAL DIAMOND
+      select: CENTER
+        prim: 0, 0, out
+        prim: 0, 2, roll, sashay-finish
+      select: POINT
+        prim: 0, 0, none
+        prim: in 2, 1, in
+
 def: shazam
   call: _maybe touch(_from(MINIWAVE, cast(1/4)))
   call: u turn back

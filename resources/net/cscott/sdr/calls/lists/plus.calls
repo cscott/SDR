@@ -362,6 +362,7 @@ def: _flip the diamond after adjust
       prim: 0, 0, in
       prim: 0, 1, roll, sashay-finish
     select: CENTER
+      prim: 0, 0, none
       prim: in 1, 3, in
 
 // see the definition for 'scoot back'
