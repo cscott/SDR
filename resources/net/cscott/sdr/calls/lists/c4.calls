@@ -41,6 +41,9 @@ def: _buckle
         prim: 0, 0, none
         prim: 0, 0, none
 
+def: coordinate to a diamond
+  ipart:
+    call: _blend last(coordinate, _center 4(hinge))
 
 def: cross breed thru
   call: right pull by, _finish cross breed thru
@@ -112,6 +115,32 @@ def: trail the top
   in: 6
     call: _in(2, _trail and step)
     call: _in(4, fan the top)
+
+def: turn away
+  ipart:
+    from: GENERAL COLUMNS
+      call: _with designated(or(NUMBER 3, NUMBER 4), \
+                             and(_start turn away, _finish turn away))
+def: _start turn away
+  // we use a hack; #3 and #4 belles should peel off then all-8 circ.
+  select: and(BELLE, DESIGNATED)
+    prim: 0,0,left // this is a hack!
+  select: OTHERS
+    prim: 0,0,right
+def: _finish turn away
+  from: PARALLEL GENERAL LINES
+    select: and(LEADER, CENTER, not(DESIGNATED))
+      prim: in 2, 0, right
+    select: and(LEADER, END, not(DESIGNATED))
+      prim: in 4, 2, right
+    select: and(TRAILER, CENTER, not(DESIGNATED))
+      prim: 0, 2, right
+    select: and(TRAILER, END, not(DESIGNATED))
+      prim: in 2, 4, right
+    select: and(TRAILER, CENTER, DESIGNATED)
+      prim: 0, 4, right
+    select: and(TRAILER, END, DESIGNATED)
+      prim: in 2, 2, right
 
 def: you all
   from: CENTER HALF

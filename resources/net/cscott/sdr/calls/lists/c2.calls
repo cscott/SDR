@@ -312,6 +312,17 @@ def: _swap the wave adjust
     select: END
       prim: in 2, -1, none
 
+def: truck
+  select: BOY
+    prim: -2, 0, none, sashay-start sashay-finish
+  select: GIRL
+    prim:  2, 0, none, sashay-start sashay-finish
+def: reverse truck
+  select: GIRL
+    prim: -2, 0, none, sashay-start sashay-finish
+  select: BOY
+    prim:  2, 0, none, sashay-start sashay-finish
+
 def: turn to a line
   ipart:
     call: zig zag
