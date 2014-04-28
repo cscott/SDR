@@ -196,6 +196,9 @@ def: _finish dixie diamond
   from: 1x4
     call: _quasi concentric(hinge, u turn back)
 
+def: follow thru
+  call: 1/2(scoot back)
+
 def: galaxy circulate
   in: 4
   from: GENERAL GALAXY
