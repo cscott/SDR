@@ -207,6 +207,124 @@ def: here comes the judge
     call: _with designated(MATCH GROUPS(_FACING PATTERN(), "(v).+v|^.+(^)"),\
                            _designees out roll circulate)
 
+def: invert the column(n=1)
+  spoken: invert the column (<n=fraction>)?
+  call: _fractional([n], _invert the column all the way)
+def: _invert the column all the way
+  part: 4
+    from: COLUMN
+      select: NUMBER 1
+        // 1/4
+        prim: 0, 0, out
+        prim: in 3, 2, roll
+        // 1/2
+        prim: 0, 0, none
+        prim: 0, 1, none
+        // 3/4
+        prim: 0, 0, none
+        prim: 0, 1, none
+        // 4/4
+        prim: 0, 0, none
+        prim: in 2, 1, none
+      select: NUMBER 2
+        // 1/4
+        prim: 0, 0, none
+        prim: 0, 1, none
+        // 1/2
+        prim: 0, 0, out
+        prim: in 1, 2, roll
+        // 3/4
+        prim: 0, 0, none
+        prim: 0, 1, none
+        // 4/4
+        prim: 0, 0, none
+        prim: in 2, 1, none
+      select: NUMBER 3
+        // 1/4
+        prim: 0, 0, none
+        prim: 0, 1, none
+        // 1/2
+        prim: 0, 0, none
+        prim: 0, 1, none
+        // 3/4
+        prim: 0, 0, out
+        prim: out 1, 2, roll, sashay-start
+        // 4/4
+        prim: 0, 0, none
+        prim: in 2, 1, none
+      select: NUMBER 4
+        // 1/4
+        prim: 0, 0, none
+        prim: 0, 1, none
+        // 1/2
+        prim: 0, 0, none
+        prim: 0, 1, none
+        // 3/4
+        prim: 0, 0, none
+        prim: 0, 1, none
+        // 4/4
+        prim: 0, 2, out
+        prim: out 1, 0, roll, sashay-start
+
+def: cross invert the column(n=1)
+  spoken: cross invert the column (<n=fraction>)?
+  call: _fractional([n], _cross invert the column all the way)
+def: _cross invert the column all the way
+  part: 4
+    from: COLUMN
+      select: NUMBER 1
+        // 1/4
+        prim: in 2, 1, in
+        prim: in 4, 2, roll
+        // 1/2
+        prim: 0, 0, none
+        prim: 0, 1, none
+        // 3/4
+        prim: 0, 0, none
+        prim: 0, 1, none
+        // 4/4
+        prim: 0, 1, none
+        prim: in 2, 0, none
+      select: NUMBER 2
+        // 1/4
+        prim: 0, 1, none
+        prim: 0, 0, none
+        // 1/2
+        prim: in 1, 1, in
+        prim: in 2, 3, roll
+        // 3/4
+        prim: 0, 0, none
+        prim: 0, 1, none
+        // 4/4
+        prim: 0, 1, none
+        prim: in 2, 0, none
+      select: NUMBER 3
+        // 1/4
+        prim: 0, 1, none
+        prim: 0, 0, none
+        // 1/2
+        prim: 0, 1, none
+        prim: 0, 0, none
+        // 3/4
+        prim: in 1, 1, in
+        prim: 0, 3, roll
+        // 4/4
+        prim: 0, 1, none
+        prim: in 2, 0, none
+      select: NUMBER 4
+        // 1/4
+        prim: 0, 1, none
+        prim: 0, 0, none
+        // 1/2
+        prim: 0, 1, none
+        prim: 0, 0, none
+        // 3/4
+        prim: 0, 1, none
+        prim: 0, 0, none
+        // 4/4
+        prim: in 2, 3, in
+        prim: 0, 0, roll
+
 //see 'run' (BASIC)
 def: kick off(sel)
   spoken: <sel=anyone> kick off
