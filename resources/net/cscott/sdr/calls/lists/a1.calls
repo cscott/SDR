@@ -211,13 +211,14 @@ def: clover and(call)
   option: SUPERCALL
   spoken: clover and <call=anything>
   ipart:
-    call: _maybe start clover(_finish clover([call], _single cloverleaf))
+    call: _maybe start clover(_center 4([call], _finish clover, _o concentric))
 
 def: cross clover and(call)
   option: SUPERCALL
   spoken: cross clover and <call=anything>
   ipart:
-    call: _maybe start clover(_finish clover([call], _single cross cloverleaf))
+    call: _maybe start clover(_center 4([call], _finish cross clover, \
+                                        _o concentric))
 
 def: _maybe start clover(c)
   from: 2x4
@@ -227,9 +228,34 @@ def: _maybe start clover(c)
   from: ANY
     call: slim down, [c]
 
-def: _finish clover(call, clover)
-  from: CENTER HALF
-    call: _concentric([call], [clover])
+def: _finish clover
+  in: 4
+  from: use phantoms(COMPLETED DOUBLE PASS THRU)
+    select: LEADER
+      prim: out 2, 2, out
+      prim: in 2, 2, roll
+      prim: in 2, 2, roll
+    select: OTHERS
+      prim: 0,0,none
+      prim: 0,0,none
+      prim: 0,0,none
+
+def: _finish cross clover
+  in: 10
+  from: use phantoms(COMPLETED DOUBLE PASS THRU)
+    // pass left shoulders; belle in front
+    select: and(LEADER, BEAU)
+      prim: in 1, 0, in
+      prim: 0, 3, roll
+      prim: 0, 2, roll
+    select: and(LEADER, BELLE)
+      prim: in 1, 2, in
+      prim: in 2, 3, roll
+      prim: 0, 2, roll
+    select: OTHERS
+      prim: 0,0,none
+      prim: 0,0,none
+      prim: 0,0,none
 
 // xxx test "3/4 cross trail thru" from facing couples (see ceder chest)
 def: cross trail thru

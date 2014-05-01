@@ -465,13 +465,32 @@ def: switch the wave
 def: _switch the line
   in: 6
   part:
-    from: OCEAN WAVE, TWO-FACED LINE, ONE-FACED LINE, GENERAL LINE
+    from: ONE-FACED LINE, RH TWO-FACED LINE // ensure right shoulder pass
+      call: hinge, _finish switch the line
+    from: LH TWO-FACED LINE // ensure proper shoulder passes
+      select: CENTER
+        prim: 0, 2, out // right shoulder pass
+        prim: in 2, 1, roll
+        prim: out 1, 0, none, preserve-roll
+      select: END
+        prim: in 2, 0, in // right shoulder pass
+        prim: 1, 1, none, preserve-roll // left shoulder pass
+        prim: in 1, 1, roll
+    from: OCEAN WAVE, GENERAL LINE
       select: CENTER
         prim: out 1, 0, out
         prim: 0, 1, roll
       select: END
         prim: in 3, 1, in
         prim: in 1, 1, roll
+def: _finish switch the line
+  from: BOX
+    select: LEADER
+      prim: in 1, 1, roll
+      prim: out 1, 0, none, preserve-roll
+    select: TRAILER
+      prim: 0, 1, none, preserve-roll
+      prim: in 1, 1, roll
 
 def: zig zag
   call: _zz(face right,face left)

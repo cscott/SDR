@@ -324,7 +324,7 @@ def: cross cycle
   in: 4
   from: TWO FACED LINE
     ends in: formation(FACING COUPLES)
-    call: bounce(CENTER)
+    call: _blend first(bounce(CENTER))
     call: _box counter rotate(1/4)
     call: roll
   from: 2x2
