@@ -103,6 +103,11 @@ def: _very centers sashay
       prim: in 2, 0, none, sashay-start sashay-finish
     select: OTHERS
       prim: 0, 0, none
+  from: GENERAL COLUMNS // this variant is used for 'make a pass but' from 2x4s
+    select: CENTER
+      prim: in 2, 0, none, sashay-start sashay-finish
+    select: OTHERS
+      prim: 0, 0, none
 
 def: hop(sel)
   spoken: <sel=anyone> hop

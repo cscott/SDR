@@ -217,9 +217,79 @@ def: zoom roll circulate
     from: condition(MATCH(_SELECTION PATTERN(and(END,LEADER)), "_+XX_+"))
       call: mirror(zoom roll circulate)
 
-// C4 class teaching order
+// C4 class teaching order (Richard Tuck)
 
-// week 1
+// 1.1
+
+def: advance to a column(sel)
+  spoken: <sel=anyone> advance to a column
+  call: walk others dodge([sel])
+  call: column circulate
+  call: anyone while others(CENTER, trade, nothing)
+  call: column circulate
+
+// grammar hack.  letting 'anyone' be optional in advance to a column
+// creates grammar conflicts :(
+def: finish advance to a column
+  call: finish(advance to a column(ALL))
+
+def: bits and pieces
+  call: _bits and pieces part 1
+  call: _bits and pieces part 2
+def: _bits and pieces part 1
+  from: CENTER HALF
+    call: _o concentric(_flexible peel and trail, 2(_phantom o circulate))
+def: _bits and pieces part 2
+  from: CENTER HALF
+    call: _quasi concentric(ah so, trade)
+
+// like peel and trail, but can also be done from couples facing or couples
+// back to back
+def: _flexible peel and trail
+  ipart:
+    from: FACING COUPLES
+      in: 6
+        call: touch, lockit, lockit
+    from: BACK-TO-BACK COUPLES
+      in: 6
+        call: u turn back, touch
+    from: ANY
+      call: peel and trail
+
+def: clear out
+  call: circulate
+  call: _finish clear out
+def: _finish clear out
+  from: CENTER HALF
+    call: _quasi concentric(couple up, _like a couple up)
+
+def: dixie spin
+  call: dixie style
+  call: fan the top
+
+def: quick wrap
+  ipart:
+    call: _start quick wrap, _finish quick wrap
+def: magic quick wrap
+  ipart:
+    call: _start magic quick wrap, _finish quick wrap
+def: _finish quick wrap
+  call: _centers(1/2(reset))
+def: _start quick wrap
+  from: GENERAL COLUMNS
+    select: NUMBER 1, NUMBER 2
+      call: split counter rotate
+    select: NUMBER 3, NUMBER 4
+      call: circulate
+def: _start magic quick wrap
+  from: GENERAL COLUMNS
+    select: NUMBER 1
+      call: split counter rotate
+    select: NUMBER 2
+      call: magic circulate, face in
+    select: NUMBER 3, NUMBER 4
+      call: magic circulate
+
 def: settle back
   call: 1/2(reset), _finish settle back
 def: _finish settle back
@@ -232,17 +302,171 @@ def: _phantom o circulate
 def: stack the wheel
   call: _roll(couples hinge)
 
+def: the action(n=1/4)
+  spoken: the action (but turn the star <n=fraction>)?
+  call: _center 4(1/2(reverse(swap around)), hinge)
+  call: _chain reaction part 3([n])
+  call: _finish chain reaction
+
+def: transaction
+  call: trans(chain reaction)
+def: transactivate
+  call: trans(reactivate)
+def: trans(c)
+  option: SUPERCALL
+  spoken: trans <c=anything>
+  call: transfer and(_in(3, cast(3/4)))
+  call: [c]
+
+// 1.2
+
+// xxx write test case for walk out to a column from lh waves
+def: walk out to a column
+  from: PARALLEL WAVES
+    select: and(CENTER, TRAILER)
+      prim: 0, 2, none
+      prim: 0, 2, none // to become #1
+    select: and(END, TRAILER)
+      prim: 0, 4, in, sashay-finish
+      prim: 0, 2, in, sashay-finish // to become #4
+    // leads single-wheel is always a rh hinge
+    select: and(CENTER, LEADER, BEAU), /* rh waves */ \
+            and(END, LEADER, BELLE) /* lh waves */
+      prim: in 2, 0, in
+      prim: in 2, 0, roll // to become #2
+    select: and(END, LEADER, BEAU), /* rh waves */ \
+            and(CENTER, LEADER, BELLE)
+      prim: in 2, 2, in
+      prim: in 2, 0, roll // to become #3
+
+def: replace the column
+  call: replace the column but(2/3(recycle))
+def: replace the column but(c)
+  option: SUPERCALL
+  spoken: replace the column but <c=anything>
+  call: invert the column(1/2)
+  call: _center 4(_finish replace the column([c]), _counter rotate 1/4, _concentric)
+def: _finish replace the column(c)
+  call: 1/4(reset)
+  call: [c]
+def: cross replace the column
+  call: cross replace the column but(2/3(cross cycle))
+def: cross replace the column but(c)
+  option: SUPERCALL
+  spoken: cross replace the column but <c=anything>
+  call: cross invert the column(1/2)
+  call: _center 4(_finish cross replace the column([c]), _counter rotate 1/4, _concentric)
+def: _finish cross replace the column(c)
+  call: 1/4(cross reset) // trippy
+  call: [c]
+
+def: gravitate
+  ipart:
+    from: GENERAL QUARTER TAG
+      call: _with designated(CENTER, and(\
+        _o concentric(1/2(linear cycle), _reverse single rotate, DESIGNATED),\
+        _finish gravitate))
+def: _reverse single rotate
+  call: _quarter to reverse promenade
+  call: _counter rotate 1/4
+def: _quarter to reverse promenade
+  select: match(_inout pattern(), "o")
+    prim: 0,0,right
+  select: OTHERS
+    prim: 0,0,left
+def: _finish gravitate
+  // centers are designated
+  select: DESIGNATED
+    prim: 0, 4, none
+  select: formation(TANDEM, LEADER)
+    prim: in 4, 0, in
+  select: OTHERS
+    prim: in 2, 2, in
+
+/*
+<anything> Clear Out
+*/
+
+def: make a pass
+  call: make a pass but(cast(3/4))
+def: make a pass but(c)
+  spoken: make a pass but <c=anything>
+  call: _chain reaction part 1
+  call: _finish make a pass([c])
+def: cross make a pass
+  call: cross make a pass but(cast(3/4))
+def: cross make a pass but(c)
+  spoken: cross make a pass but <c=anything>
+  call: _cross chain reaction part 1
+  call: _finish make a pass([c])
+def: _finish make a pass(c)
+  call: _center 4([c], and roll(trade))
+
+def: jam thru
+  from: EIGHT CHAIN THRU
+    call: pass thru
+    call: cross clover and(_centers finish jam thru)
+def: _centers finish jam thru
+  call: pass thru, quarter in, pass thru
+
+/* slim down defined in C4List.java */
+
+// 1.3
+/*
+Tag the Star
+<ATC> the Yellow Brick Road / Yellow Bricking <any call>
+Run Wild
+Outpost
+Make a Pass variations
+Hammerlane (two of them)
+Replace the Column But <any call>
+Contour the Line
+Counterpoint
+Connect
+*/
+// 1.4
+/*
+Roll Out to a Column
+the Difference
+Walk the Plank
+Ride the Tide
+Double Down
+Spin Tag the Deucey
+*/
+// 1.5
+/*
+Presto
+Push Off
+Counteract
+3/4 the Alter
+<ATC> to a Diamond | Interlocked Diamond
+Star to a Wave
+Double the Wave
+*/
+// 1.6
+/*
+Snake <<===== (Lynette week 5)
+Turntable
+Split the Difference
+1/4 the Alter
+Tag to an Hourglass
+Roll Out the Barrel
+Bridge the Gap
+Tagger's Flow
+*/
+// 1.7
+/*
+Step Lively
+<ATC> Flow Variations (including Cross, Criss Cross, & Linear Flow)
+Turn On
+Finish Jam Thru versus Finish Ride the Tide
+*/
+
+// week 1
 def: hammerlane
   from: FACING COUPLES
     ipart:
       call: cross cycle
-
-def: clear out
-  call: circulate
-  call: _finish clear out
-def: _finish clear out
-  from: CENTER HALF
-    call: _quasi concentric(couple up, _like a couple up)
 
 def: step lively
   call: detour
@@ -261,32 +485,11 @@ def: _tag the star(n=1/2)
 def: _start drop in
   call: _from diamond(_quasi concentric(nothing, face in))
 
-/* slim down defined in C4List.java */
-
-def: the action(n=1/4)
-  spoken: the action (but turn the star <n=fraction>)?
-  call: _center 4(1/2(reverse(swap around)), hinge)
-  call: _chain reaction part 3([n])
-  call: _finish chain reaction
-
 /*
 def: turntable
 def: bridge the gap
-def: walk out to a column
 def: spin tag the deucey
 */
-
-def: advance to a column(sel)
-  spoken: <sel=anyone> advance to a column
-  call: walk others dodge([sel])
-  call: column circulate
-  call: anyone while others(CENTER, trade, nothing)
-  call: column circulate
-
-// grammar hack.  letting 'anyone' be optional in advance to a column
-// creates grammar conflicts :(
-def: finish advance to a column
-  call: finish(advance to a column(ALL))
 
 /*
 def: fractional twosome // concept
@@ -335,38 +538,10 @@ def: _finish criss cross flow
   call: tandem(trade the wave)
   call: slip
 
-def: replace the column
-  call: replace the column but(2/3(recycle))
-def: replace the column but(c)
-  option: SUPERCALL
-  spoken: replace the column but <c=anything>
-  call: invert the column(1/2)
-  call: _quasi concentric(_finish replace the column([c]), counter rotate(1/4))
-def: _finish replace the column(c)
-  call: 1/4(reset)
-  call: [c]
-def: cross replace the column
-  call: cross replace the column but(2/3(cross cycle))
-def: cross replace the column but(c)
-  option: SUPERCALL
-  spoken: cross replace the column but <c=anything>
-  call: cross invert the column(1/2)
-  call: _quasi concentric(_finish cross replace the column([c]), counter rotate(1/4))
-def: _finish cross replace the column(c)
-  call: 1/4(cross reset) // trippy
-  call: [c]
-
 def: presto
   ipart:
     call: _quasi concentric(scoot back, tandem(cross fold))
     call: press ahead
-
-def: jam thru
-  from: EIGHT CHAIN THRU
-    call: pass thru
-    call: cross clover and(_centers finish jam thru)
-def: _centers finish jam thru
-  call: pass thru, quarter in, pass thru
 
 /*
 def: roll out the barrel
@@ -441,33 +616,6 @@ def: snake
   from: LH_MINIWAVE
     call: quarter in, touch
 
-def: quick wrap
-  ipart:
-    call: _start quick wrap, _finish quick wrap
-def: magic quick wrap
-  ipart:
-    call: _start magic quick wrap, _finish quick wrap
-def: _finish quick wrap
-  call: _centers(1/2(reset))
-def: _start quick wrap
-  from: GENERAL COLUMNS
-    select: NUMBER 1, NUMBER 2
-      call: split counter rotate
-    select: NUMBER 3, NUMBER 4
-      call: circulate
-def: _start magic quick wrap
-  from: GENERAL COLUMNS
-    select: NUMBER 1
-      call: split counter rotate
-    select: NUMBER 2
-      call: magic circulate, face in
-    select: NUMBER 3, NUMBER 4
-      call: magic circulate
-
-/*
-def: gravitate
-*/
-
 def: ride the tide
   call: cross trail thru, clover and(square thru(2)), slide thru
 
@@ -490,16 +638,6 @@ def: split the difference
   call: _anything the difference(split circulate)
 def: split trade the difference
   call: _anything the difference(split trade circulate)
-
-def: transaction
-  call: trans(chain reaction)
-def: transactivate
-  call: trans(reactivate)
-def: trans(c)
-  option: SUPERCALL
-  spoken: trans <c=anything>
-  call: transfer and(_in(3, cast(3/4)))
-  call: [c]
 
 /*
 def: <atc> ers flow but criss cross it
@@ -573,56 +711,13 @@ def: yoyo concept
 
 // week 4
 
-def: bits and pieces
-  call: _bits and pieces part 1
-  call: _bits and pieces part 2
-def: _bits and pieces part 1
-  from: CENTER HALF
-    call: _o concentric(_flexible peel and trail, 2(_phantom o circulate))
-def: _bits and pieces part 2
-  from: CENTER HALF
-    call: _quasi concentric(ah so, trade)
-
-// like peel and trail, but can also be done from couples facing or couples
-// back to back
-def: _flexible peel and trail
-  ipart:
-    from: FACING COUPLES
-      in: 6
-        call: touch, lockit, lockit
-    from: BACK-TO-BACK COUPLES
-      in: 6
-        call: u turn back, touch
-    from: ANY
-      call: peel and trail
-
 def: counterpoint
   call: concentric(recycle, counter rotate)
 def: cross counterpoint
   call: concentric(cross cycle, counter rotate)
 
-def: dixie spin
-  call: dixie style
-  call: fan the top
-
 def: double the wave
   call: 2/3(hot foot spin)
-
-def: make a pass
-  call: make a pass but(cast(3/4))
-def: make a pass but(c)
-  spoken: make a pass but <c=anything>
-  call: _chain reaction part 1
-  call: _finish make a pass([c])
-def: cross make a pass
-  call: cross make a pass but(cast(3/4))
-def: cross make a pass but(c)
-  spoken: cross make a pass but <c=anything>
-  call: _cross chain reaction part 1
-  call: _finish make a pass([c])
-def: _finish make a pass(c)
-  from: GENERAL QUARTER TAG
-    call: _quasi concentric([c], and roll(trade))
 
 def: outpost
   call: _outpost part 1

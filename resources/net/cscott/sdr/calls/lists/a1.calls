@@ -165,6 +165,8 @@ def: _chain reaction part 1
     from: allow unmatched(1x3) // ensures we're balanced after breathing
       from: allow unmatched(FACING DANCERS)
         call: pass thru
+  from: GENERAL COLUMNS // this variant is used for 'make a pass but'
+    call: those facing(pass thru)
 def: _chain reaction part 2
   in: 2
   call: _center 6(_center 2(nothing, hinge), _counter rotate 1/4)

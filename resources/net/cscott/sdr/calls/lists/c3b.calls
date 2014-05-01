@@ -377,7 +377,7 @@ def: _reset(n)
   call: _fractional([n], reset)
 // cross replace the column (c4) is defined in terms of cross reset
 def: _cross reset 1/4
-  call: trail and(nothing) // XXX
+  call: _trail and step
 def: cross reset
   call: _cross reset 1/4, hinge, _cross reset 1/4, hinge
 def: _cross reset(n)
