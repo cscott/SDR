@@ -405,22 +405,33 @@ def: grand left swing thru
 
 // callerlab says "10-12" beats and 4 parts
 def: linear cycle
-  from: OCEAN_WAVE, LINE, GENERAL LINE
-    part:
-      call: hinge
-    // this is a cheat! we can't really do the phantom 2x4 called for in
-    // the proper 3-part definition yet.
-    ipart: 3
-      call: _box circulate, _finish linear cycle
-def: _finish linear cycle
-  in: 4
+  call: _four person call(and(\
+    hinge, \
+    _linear cycle part 2, \
+    _linear cycle part 3, \
+    _linear cycle part 4 ))
+def: _linear cycle part 2
+  in: 2
+  // "leaders fold"
   from: BOX
     select: LEADER
-      prim: in 2, 0, in
-      prim: 0, 0, in
-    select: TRAILER
-      prim: 0, 2, in, sashay-finish
-      prim: 0, 0, in
+      prim: in 2, 2, in
+      prim: 0, 0, roll
+    select: OTHERS
+      prim: 0, 0, none
+      prim: 0, 0, none
+def: _linear cycle part 3
+  from: use phantoms(DOUBLE PASS THRU)
+    call: double pass thru
+def: _linear cycle part 4
+  in: 2
+  // "peel off in direction of shoulder pass"
+  select: formation(TANDEM, LEADER)
+    prim: in 2, 0, in, sashay-start
+    prim: in 2, 0, in, sashay-start
+  select: OTHERS
+    prim: 0, 0, in
+    prim: 0, 0, roll
 
 def: peel off
   in: 4
