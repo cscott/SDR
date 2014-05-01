@@ -856,6 +856,23 @@ def: _start right and left grand
     select: and(END, LEADER)
       prim: 3, 1, right 1/4 // from 3,-1 to 0,-2
       prim: -2, 4, right 1/8 // from 0,-2 to -4,-4
+  // offset variants of parallel waves
+  from: ANY
+    call: _blend first(_remove offset from triple lines, \
+                       _start right and left grand)
+  from: ANY
+    call: _blend first(_remove offset from clumps, \
+                       _start right and left grand)
+def: _remove offset from clumps
+  ends in: formation(PARALLEL GENERAL LINES)
+  from: condition(not(formation(PARALLEL GENERAL LINES)))
+    select: ALL
+      prim: 0, in 2, none
+def: _remove offset from triple lines
+  ends in: formation(PARALLEL GENERAL LINES)
+  from: condition(not(formation(PARALLEL GENERAL LINES)))
+    select: ALL
+      prim: 0, in 1, none
 
 def: _finish right and left grand(who)
   in: 4
