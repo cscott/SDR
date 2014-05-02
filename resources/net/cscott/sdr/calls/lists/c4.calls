@@ -433,18 +433,84 @@ def: _centers finish jam thru
 /* slim down defined in C4List.java */
 
 // 1.3
-/*
-Tag the Star
-<ATC> the Yellow Brick Road / Yellow Bricking <any call>
-Run Wild
-Outpost
-Make a Pass variations
-Hammerlane (two of them)
-Replace the Column But <any call>
-Contour the Line
-Counterpoint
-Connect
-*/
+
+def: tag the star(m=1/2,n=1)
+  //XXX should this be "half tag the star"?
+  spoken: tag the star <n=fraction>? (but turn the star <m=fraction>)?
+  call: _tag(_tag the star([m]), [n])
+def: _tag the star(n=1/2)
+  from: FACING COUPLES
+    call: 1/2(reverse(swap around))
+    call: _turn the diamond([n]) // or whatever 'star turn' amount is indicated
+    call: _adjust star to zero tag // "points face in, you're at 1/4 tag"
+def: _adjust star to zero tag
+  from: GENERAL DIAMOND
+    select: CENTER // back out to zero tag
+      prim: in 1, -1, none
+    select: POINT
+      prim: out 1, 0, in // points face in
+
+def: follow the yellow brick road
+  call: follow the yellow bricking(wheel and deal)
+
+def: follow the yellow bricking(c)
+  option: SUPERCALL
+  spoken: follow the yellow bricking <c=anything>
+  call: and spread(follow your neighbor), slither
+  call: _center 4(and spread(follow your neighbor), 1 1/2(circulate))
+  call: _finish fascinating([c])
+
+def: _atc the yellow brick road(atc)
+  // XXX: 'spoken'
+  call: _tag([atc], 1/2)
+  call: follow the yellow brick road
+def: _atc the yellow bricking(atc, c)
+  // XXX: 'spoken'
+  call: _tag([atc], 1/2)
+  call: follow the yellow bricking([c])
+
+def: run wild
+  call: 2(cross roll)
+
+def: outpost
+  call: _outpost part 1
+  call: _outpost part 2
+  call: _outpost part 3
+def: _outpost part 1
+  from: ANY // "one end looking out"
+    call: 1/2(out roll circulate)
+  from: ANY // "both ends looking out"
+    call: 1/2(here comes the judge)
+def: _outpost part 2
+  call: _center 6(trade)
+def: _outpost part 3
+  from: GENERAL QUARTER TAG, CENTER 4
+    call: _o concentric(ah so, 2(_phantom o circulate))
+
+def: hammerlane
+  from: FACING COUPLES
+    ipart:
+      call: cross cycle
+
+def: contour the line
+  call: hinge, split circulate, split circulate, hinge
+
+def: counterpoint
+  call: _center 4(recycle, _counter rotate 1/4, _o concentric)
+def: cross counterpoint
+  call: _center 4(cross cycle, _counter rotate 1/4, _o concentric)
+
+def: connect the diamond
+  from: RH DIAMOND, LH DIAMOND // cheat!
+    call: drop in, counter rotate(1/4)
+  from: ANY
+    call: _from diamond(_center 2(hinge)), _finish connect the diamond
+def: _finish connect the diamond
+  from: OCEAN WAVE
+    call: step and fold
+  from: TWO FACED LINE
+    call: step and cross fold
+
 // 1.4
 /*
 Roll Out to a Column
@@ -484,27 +550,10 @@ Finish Jam Thru versus Finish Ride the Tide
 */
 
 // week 1
-def: hammerlane
-  from: FACING COUPLES
-    ipart:
-      call: cross cycle
-
 def: step lively
   call: detour
   call: slim down
   call: circulate
-
-def: tag the star(m=1/2,n=1)
-  //XXX should this be "half tag the star"?
-  spoken: tag the star <n=fraction>? (but turn the star <m=fraction>)?
-  call: _tag(_tag the star([m]), [n])
-def: _tag the star(n=1/2)
-  from: FACING COUPLES
-    call: 1/2(reverse(swap around))
-    call: counter rotate([n]) // or whatever 'star turn' amount is indicated
-    call: _start drop in      // "points face in"
-def: _start drop in
-  call: _from diamond(_quasi concentric(nothing, face in))
 
 /*
 def: turntable
@@ -517,25 +566,6 @@ def: fractional twosome // concept
 */
 
 // c4 class week 2
-def: follow the yellow brick road
-  call: follow the yellow bricking(wheel and deal)
-
-def: follow the yellow bricking(c)
-  option: SUPERCALL
-  spoken: follow the yellow bricking <c=anything>
-  call: and slither(and spread(follow your neighbor))
-  call: _quasi concentric(and spread(follow your neighbor), \
-                          _fractional(1 1/2, circulate))
-  call: _finish fascinating([c])
-
-def: _atc the yellow brick road(atc)
-  // XXX: 'spoken'
-  call: _tag([atc], 1/2)
-  call: follow the yellow brick road
-def: _atc the yellow bricking(atc, c)
-  // XXX: 'spoken'
-  call: _tag([atc], 1/2)
-  call: follow the yellow bricking([c])
 
 def: _atc flow(atc)
   // xxx: spoken: <atc=atc> ers flow
@@ -573,17 +603,6 @@ def: the plank
   // XXX: might need a 'from' in ends part to establish LEADER
   // XXX: maybe 'from: COLUMNS' and 'run(NUMBER_1)' ?
   call: _quasi concentric(walk and dodge, run(LEADER))
-
-def: connect the diamond
-  from: RH DIAMOND, LH DIAMOND // cheat!
-    call: drop in, counter rotate(1/4)
-  from: ANY
-    call: _from diamond(centers(hinge)), _finish connect the diamond
-def: _finish connect the diamond
-  from: OCEAN WAVE
-    call: step and fold
-  from: TWO FACED LINE
-    call: step and cross fold
 
 /*
 def: three by three
@@ -692,9 +711,6 @@ def: quarter the alter and circulate(i, j, k)
 def: double down
 */
 
-def: contour the line
-  call: hinge, split circulate, split circulate, hinge
-
 /*
 def: chase back // XXX this is C3B now.
 */
@@ -732,28 +748,8 @@ def: yoyo concept
 
 // week 4
 
-def: counterpoint
-  call: concentric(recycle, counter rotate)
-def: cross counterpoint
-  call: concentric(cross cycle, counter rotate)
-
 def: double the wave
   call: 2/3(hot foot spin)
-
-def: outpost
-  call: _outpost part 1
-  call: _outpost part 2
-  call: _outpost part 3
-def: _outpost part 1
-  from: ANY // "one end looking out"
-    call: 1/2(out roll circulate)
-  from: ANY // "both ends looking out"
-    call: 1/2(here comes the judge)
-def: _outpost part 2
-  call: _center 6(trade)
-def: _outpost part 3
-  from: GENERAL QUARTER TAG, CENTER 4
-    call: _o concentric(ah so, 2(_phantom o circulate))
 
 // XXX test example in bill's book which ends in a collision to form clumps
 def: roll out to a column
@@ -762,10 +758,6 @@ def: roll out to a column
       call: right anchor(1/4), roll, press ahead
     select: CENTER
       call: quarter right, counter rotate, press ahead
-
-// XXX write test to ensure that we do 1/4 and 3/4 run wild correctly.
-def: run wild
-  call: 2(cross roll)
 
 //def: shove off
 
