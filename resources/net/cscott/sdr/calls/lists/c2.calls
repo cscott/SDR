@@ -62,6 +62,14 @@ def: _designees u turn back in flow direction
       prim: 0, 0, none
       prim: 0, 0, none
 
+def: chain the square
+  option: LEFT
+  from: EIGHT CHAIN THRU, PARALLEL RH WAVES
+    call: right pull by
+    call: _center 4(and(left(step to a wave), _center 2(and roll(face left))))
+    call: _courtesy turn(1/2)
+    call: as couples(extend)
+
 def: chisel thru
   call: concentric(pass in)
   call: _center 4(pass out, pass in)
@@ -324,6 +332,17 @@ def: _cross invert the column all the way
         // 4/4
         prim: in 2, 3, in
         prim: 0, 0, roll
+
+def: fascinate
+  call: fascinating(wheel and deal)
+def: fascinating(c)
+  spoken: fascinating <c=anything>
+  call: _center 4(and(cast(3/4), _center 2(trade)), 1 1/2(circulate))
+  call: _finish fascinating([c])
+// see "follow the yellow brick road" (C4)
+def: _finish fascinating(c)
+  call: _center 4(_center 2(_in(4, nothing), _in(4, _counter rotate 1/4)),\
+                  [c], _concentric)
 
 //see 'run' (BASIC)
 def: kick off(sel)
