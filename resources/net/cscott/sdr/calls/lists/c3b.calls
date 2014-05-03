@@ -334,6 +334,24 @@ def: cross cycle
     ipart: 3
       call: box recycle, slither
 
+// see "flip the line" (C1)
+def: cross flip the line(n=1)
+  spoken: cross flip the line <n=fraction>?
+  from: RH TWO-FACED LINE
+    call: _tag(_cross flip the line, [n])
+  from: LH TWO-FACED LINE
+    call: mirror(_tag(_cross flip the line, [n]))
+def: _cross flip the line // to zero tag
+  from: RH TWO-FACED LINE
+    select: CENTER
+      prim: in 3, 1, in
+      prim: in 1, 1, roll
+      prim: 0, 0, roll, force-roll-none
+    select: END
+      prim: in 1, 1, in
+      prim: in 1, 1, none
+      prim: 0, 0, none
+
 /* .... */
 
 def: explode the diamond

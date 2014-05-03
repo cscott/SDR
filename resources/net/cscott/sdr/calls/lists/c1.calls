@@ -208,6 +208,25 @@ def: _finish dixie diamond
   from: 1x4
     call: _quasi concentric(hinge, u turn back)
 
+// see "cross flip the line" (C3B)
+def: flip the line(n=1)
+  spoken: flip the line <n=fraction>?
+  from: RH OCEAN WAVE
+    call: _tag(_flip the line, [n])
+  from: LH OCEAN WAVE // pass left shoulders when starting from lh wave
+    call: mirror(_tag(_flip the line, [n]))
+def: _flip the line // to zero tag
+  // centers run and tag the line
+  from: RH OCEAN WAVE
+    select: CENTER
+      prim: out 1, 1, out
+      prim: in 1, 1, roll
+      prim: 0, 0, roll, force-roll-none
+    select: END
+      prim: in 1, 1, in
+      prim: in 1, 1, none
+      prim: 0, 0, none
+
 def: follow thru
   call: 1/2(scoot back)
 
