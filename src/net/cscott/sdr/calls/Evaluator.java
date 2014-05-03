@@ -583,6 +583,9 @@ public abstract class Evaluator {
                     // But I'm lazy, and the top-level breathedEval can share
                     // 99% of this code if only I allow it to breathe here.
                     // So this is a HACK!
+                    // XXX but note that these subformations do not account for
+                    // dancers in motion.  So there may be collisions here
+                    // because dancer A arrives where dancer B *used to* be.
                     if (breatheParts())
                         subF = Breather.breathe(subF); // HACK!
                     components.put(metaDancer, subF);
