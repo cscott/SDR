@@ -342,6 +342,38 @@ def: square chain the top
     ends in: formation(BACK-TO-BACK COUPLES)
     call: _square thru part, left(spin the top), left(turn thru)
 
+// see "step and slide" (A1)
+def: step and flip
+  in: 4
+  from: GENERAL LINE
+    select: CENTER
+      prim: 0, 0, none
+      prim: 0, 2, none
+    select: END
+      prim: 0, 0, in
+      prim: 0, 2, roll
+
+// see "step and cross fold" (C4)
+def: step and fold
+  in: 4
+  from: OCEAN WAVE, SINGLE INVERTED LINE
+    select: CENTER
+      prim: 0, 1, none
+      prim: 0, 0, none
+    select: END
+      prim: in 2, 1, in
+      prim: 0, 0, roll
+  from: ANY
+    call: _from diamond(_step and fold from diamond)
+def: _step and fold from diamond
+  from: RH DIAMOND, LH DIAMOND
+    select: CENTER
+      prim: 0, 1, none
+      prim: 0, 0, none
+    select: POINT
+      prim: in 1, 1, in
+      prim: 0, 0, roll
+
 def: stretch(c)
   option: CONCEPT
   spoken: stretch <c=anything>

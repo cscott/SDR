@@ -357,6 +357,24 @@ def: square chain thru
     ends in: formation(BACK-TO-BACK COUPLES)
     call: _square thru part, left(swing thru), left(turn thru)
 
+// see "step and flip" (C1)
+def: step and slide
+  in: 4
+  from: GENERAL LINE
+    select: CENTER
+      prim: 0, 2, none
+    select: END
+      prim: in 2, 0, none, sashay-start sashay-finish
+  from: ANY
+    call: _four person call(_step and slide from z)
+def: _step and slide from z
+  ends in: formation(GENERAL COLUMN)
+  from: CENTER 2
+    select: CENTER
+      prim: 0, 2, none
+    select: OTHERS
+      prim: in 2, 0, none, sashay-start sashay-finish
+
 def: swap around
   option: REVERSE
   in: 4

@@ -119,6 +119,27 @@ def: _quarter the deucey(i,j,k,l)
   call: _blend last(_center 2(nothing, _center 4(cast(_divide num([l], 4)))),\
                     _like a coordinate)
 
+// see "step and fold" (C1)
+def: step and cross fold
+  in: 4
+  from: TWO-FACED LINE
+    select: CENTER
+      prim: 0, 0, none
+      prim: 0, 1, none
+    select: END
+      prim: in 2, 2, in
+      prim: in 1, 2, roll
+  from: ANY
+    call: _from diamond(_step and cross fold from diamond)
+def: _step and cross fold from diamond
+  from: FACING DIAMOND
+    select: CENTER
+      prim: 0, 0, none
+      prim: 0, 1, none
+    select: POINT
+      prim: in 2, 3, in
+      prim: in 2, 1, roll
+
 def: straight(call)
   option: CONCEPT
   spoken: straight <call=anything>
