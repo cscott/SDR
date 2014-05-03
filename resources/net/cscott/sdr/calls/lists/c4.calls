@@ -1301,9 +1301,10 @@ def: cross clover the horn
 
 def: erase
   from: GENERAL LINE
-    call: _center 2(u turn back, _counter rotate 1/4, _concentric)
+    call: _center 2(_in(4, u turn back), _counter rotate 1/4, _concentric)
   from: ANY
-    call: _from diamond(_center 2(u turn back, _counter rotate 1/4,_concentric))
+    call: _from diamond(_center 2(_in(4, u turn back), _counter rotate 1/4,\
+                                  _concentric))
 
 /*
 Swing Chain the Gears & other Swing Chain calls

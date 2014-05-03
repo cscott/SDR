@@ -169,7 +169,8 @@ def: _chain reaction part 1
     call: those facing(pass thru)
 def: _chain reaction part 2
   in: 2
-  call: _center 6(_center 2(nothing, hinge), _counter rotate 1/4)
+  call: _center 6(_center 2(_in(2, nothing), _in(2, hinge)), \
+                  _in(2, _counter rotate 1/4))
 // this version works with unusual "those who meet" (ie, t-bones)
 def: _chain reaction part 3(n)
   call: _blend last(_center 4(_turn the star([n]), _in(2, trade)),\

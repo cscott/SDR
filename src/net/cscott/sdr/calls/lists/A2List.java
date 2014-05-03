@@ -105,7 +105,7 @@ public abstract class A2List {
             return new Prim(Prim.Direction.ASIS, p.x,
                             Prim.Direction.ASIS, p.y,
                             Prim.Direction.IN, ExactRotation.ONE_QUARTER,
-                            Fraction.ONE);
+                            Fraction.FOUR);
         }
     };
 }
