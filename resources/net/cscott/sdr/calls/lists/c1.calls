@@ -171,18 +171,30 @@ def: _finish cross extend
   from: allow unmatched(RH MINIWAVE, LH MINIWAVE)
     prim: in 2, 0, none
 
-/*
 def: cross roll to a wave
-  ends in: WAVE
+  ends in: formation(or(RH OCEAN WAVE, LH OCEAN WAVE)), \
+           "Perhaps you mean 'cross roll to a line'?"
   call: cross roll
 def: cross roll to a line
-  ends in: LINE // XXX really, "does not end in wave")
+  ends in: not(formation(or(RH OCEAN WAVE, LH OCEAN WAVE))), \
+           "Perhaps you mean 'cross roll to a wave'?"
   call: cross roll
+// See Bill's book under "run wild" for 1/2 way point.
 def: cross roll
-  // XXX: centers cross run while ends run; centers pass outside of ends
-  // XXX: look at bill's book under "run wild" for 1/2 way point
-  //      centers take the outside track
-*/
+  from: OCEAN WAVE
+    select: CENTER // cross run, taking the outside track
+      prim: in 2, 3, in
+      prim: in 3, 2, roll
+    select: END // run, taking the inside track
+      prim: in 2, 1, in
+      prim: in 1, 0, roll
+  from: TWO-FACED LINE, ONE-FACED LINE, GENERAL LINE // boxes at midpoint
+    select: CENTER // cross run
+      prim: in 2, 1, in
+      prim: in 1, 2, roll
+    select: END // run
+      prim: in 2, 1, in
+      prim: in 1, 0, roll
 
 def: switch the line
   from: GENERAL LINE
