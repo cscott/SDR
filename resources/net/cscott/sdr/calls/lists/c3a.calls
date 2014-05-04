@@ -109,6 +109,53 @@ def: _very centers sashay
     select: OTHERS
       prim: 0, 0, none
 
+def: explode the top(n=1/4)
+  spoken: explode the top (but turn the star <n=fraction>)?
+  part:
+    call: explode
+  xpart:
+    call: _center 4(and(_touch(1/2), _center 2(cast(1/2))), 1/2(circulate))
+    call: _explode the top form stars
+    call: _turn the diamond([n])
+    call: _from(CENTER 2, _with designated(CENTER, \
+                _from diamond(_explode the top unwrap)))
+def: _explode the top form stars
+  from: RH TIDAL WAVE
+    select: OUTSIDE 2 // original end beau
+      prim: in 7, 3, in
+      prim: 0, 0, none
+    select: VERY CENTER // finish cast 1/4
+      prim: in 1, 1, in
+      prim: 0, 0, none
+    select: match groups(_facing pattern, ".(.).*(.).") // original end belle
+      prim: in 3, 2, in
+      prim: 0, 0, roll
+    select: OTHERS // going to lead "unwrap the star"
+      prim: in 1, 2, none
+      prim: 0, 0, none
+def: _explode the top unwrap
+  from: RH DIAMOND
+    select: and(CENTER, not(DESIGNATED)) // leader!
+      prim: 0, 2, none
+      prim: 0, 2, none
+      prim: 0, 2, none
+      prim: in 2, -3, in, sashay-start
+    select: match groups(_selection pattern(DESIGNATED), "__x(_)|(_)x__")
+      prim: in 2, 1, in
+      prim: 0, 2, none
+      prim: 0, 2, none
+      prim: in 2, -3, in, sashay-start
+    select: and(CENTER, DESIGNATED)
+      prim: in 1, 2, in
+      prim: in 2, 1, in
+      prim: 0, 2, none
+      prim: in 2, -3, in, sashay-start
+    select: POINT
+      prim: in 2, 1, in
+      prim: in 1, 2, in
+      prim: in 2, 1, in
+      prim: in 2, -3, in, sashay-start
+
 def: hop(sel)
   spoken: <sel=anyone> hop
   call: walk others dodge([sel])
