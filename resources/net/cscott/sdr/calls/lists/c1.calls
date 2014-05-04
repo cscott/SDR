@@ -446,6 +446,8 @@ def: triple wave(c)
     from: RH OCEAN WAVE, LH OCEAN WAVE // 1x4
       call: [c]
 
+/// xxx vertical tag -- starts with 'single shuffle' (C4) from FACING COUPLES
+
 def: zing
   in: 4 // same as zoom?
   ipart:

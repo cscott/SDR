@@ -1058,15 +1058,9 @@ def: _cross clear the centers part 2(call)
 def: dixie chain
   from: FACING COUPLES
     ipart:
-      call: _blend first(_start dixie chain, _centers(right pull by))
+      call: _blend first(single shuffle, _centers(right pull by))
     part: 2
       call: _finish dixie chain
-def: _start dixie chain
-  from: FACING COUPLES
-    select: BELLE
-      prim: in 1, 0, none, sashay-start sashay-finish
-    select: BEAU
-      prim: in 1, -2, none, sashay-finish
 def: _finish dixie chain
   from: GENERAL COLUMN
     call: left pull by
@@ -1249,7 +1243,7 @@ def: flare the star
 def: dixie daisy
   from: FACING COUPLES
     ipart:
-      call: _blend first(_start dixie chain, _centers(right pull by))
+      call: _blend first(single shuffle, _centers(right pull by))
     part: 2
       call: _finish dixie daisy
 def: _finish dixie daisy
@@ -1418,6 +1412,17 @@ def: tap(sel)
 
 
 // 5.5
+
+def: shuffle the deck
+  call: as couples(single shuffle)
+
+def: single shuffle
+  in: 2
+  from: COUPLE
+    select: BELLE
+      prim: in 1, 1, none, sashay-finish
+    select: BEAU
+      prim: in 1, -1, none, sashay-finish
 /*
 Mix the Line
 Triple Turn
