@@ -86,7 +86,7 @@ sdr> /checkBeats( 4, "single wheel", [FACING_LINES, EIGHT_CHAIN_THRU,
    >              ENDS_IN_INVERTED_LINES, ENDS_OUT_INVERTED_LINES])
 sdr> /checkBeats( 3, ["slip", "slide", "swing", "slither"],
    >                 [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES, RH_TIDAL_WAVE])
-sdr> /checkBeats(12, "spin the windmill",
+sdr> /checkBeats(12, "spin the windmill left",
    >                 [RH_THREE_QUARTER_TAG, LH_THREE_QUARTER_TAG, TRADE_BY])
 sdr> /checkBeats( 4, ["centers box counter rotate", "split counter rotate"],
    >                 [PARALLEL_RH_WAVES, PARALLEL_LH_WAVES,

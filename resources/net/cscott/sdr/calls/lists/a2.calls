@@ -434,6 +434,72 @@ def: hourglass circulate
     select: and(END, MATCH(_INOUT PATTERN(), "i")) // TRAILERS
       prim: in 2, 2, none, sashay-start sashay-finish
 
+def: spin the windmill in(n=2)
+  spoken: spin the windmill in (but ends circulate <n=number>)?
+  call: _spin the windmill(face in, [n])
+def: spin the windmill out(n=2)
+  spoken: spin the windmill out (but ends circulate <n=number>)?
+  call: _spin the windmill(face out, [n])
+def: spin the windmill right(n=2)
+  spoken: spin the windmill right (but ends circulate <n=number>)?
+  call: _spin the windmill(face right, [n])
+def: spin the windmill left(n=2)
+  spoken: spin the windmill left (but ends circulate <n=number>)?
+  call: _spin the windmill(face left, [n])
+def: spin the windmill forward(n=2)
+  spoken: spin the windmill (forward | as you are) (but ends circulate <n=number>)?
+  call: _spin the windmill(_in(2, nothing), [n])
+def: spin the windmill back(n=2)
+  spoken: spin the windmill back (but ends circulate <n=number>)?
+  call: _spin the windmill(u turn back, [n])
+def: _spin the windmill(c=face left, n=2)
+  spoken: spin the windmill <c=anything> (but ends circulate <n=number>)?
+  call: _center 4(_central spin the windmill,\
+                  and([c], _in(10, _fractional([n], _general circulate))))
+def: _central spin the windmill // should be 12 beats
+  call: _in(3, _maybe touch(cast(1/2)))
+  call: _in(3, _center 2(trade))
+  call: cast(3/4)
+
+// "left" version is weird, only the centers work mirror
+def: left spin the windmill in(n=2)
+  spoken: left spin the windmill in (but ends circulate <n=number>)?
+  call: _left spin the windmill(face in, [n])
+def: left spin the windmill out(n=2)
+  spoken: left spin the windmill out (but ends circulate <n=number>)?
+  call: _left spin the windmill(face out, [n])
+def: left spin the windmill right(n=2)
+  spoken: left spin the windmill right (but ends circulate <n=number>)?
+  call: _left spin the windmill(face right, [n])
+def: left spin the windmill left(n=2)
+  spoken: left spin the windmill left (but ends circulate <n=number>)?
+  call: _left spin the windmill(face left, [n])
+def: left spin the windmill forward(n=2)
+  spoken: left spin the windmill (forward | as you are) (but ends circulate <n=number>)?
+  call: _left spin the windmill(_in(2, nothing), [n])
+def: left spin the windmill back(n=2)
+  spoken: left spin the windmill back (but ends circulate <n=number>)?
+  call: _left spin the windmill(u turn back, [n])
+def: _left spin the windmill(c=face left, n=2)
+  spoken: left spin the windmill <c=anything> (but ends circulate <n=number>)?
+  call: _center 4(_central left spin the windmill,\
+                  and([c], _in(10, _fractional([n], _general circulate))))
+def: _central left spin the windmill
+  from: LH OCEAN WAVE, FACING COUPLES
+    call: mirror(_central spin the windmill)
+
+def: _general circulate
+  from: ANY
+    call: circulate // try "normal circulate" first
+  from: ANY
+    call: _from diamond(diamond circulate)
+  from: RH STAR, LH STAR
+    in: 4
+    prim: in 1, 1, in
+  from: RH SINGLE PROMENADE, LH SINGLE PROMENADE
+    in: 4
+    prim: in 2, 2, in
+
 def: switch to a diamond
   in: 4
   from: OCEAN WAVE, GENERAL LINE

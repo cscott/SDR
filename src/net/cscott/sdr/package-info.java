@@ -24,6 +24,7 @@
  *   pass-to-the-center-3 at line 26
  *   relocate-singer at line 38
  *   right-roll-to-a-wave at line 46
+ *   spin-the-windmill at line 48
  *   square-chain-the-top at line 15
  *   square-thru at line 22
  *   star-wars at line 27
