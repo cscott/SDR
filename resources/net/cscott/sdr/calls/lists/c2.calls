@@ -515,11 +515,11 @@ def: reverse truck
 def: turn to a line
   ipart:
     call: zig zag
-    call: _blend last(tandem(_step thru preserve roll), roll)
-def: _step thru preserve roll
+    call: _blend last(_tandem step thru preserve roll, roll)
+def: _tandem step thru preserve roll
   in: 2
-  from: MINIWAVE
-    prim: in 1, 1, none, preserve-roll
+  from: BOX
+    prim: in 1, 2, none, preserve-roll
 
 // XXX: can be done from promenade
 def: wheel the ocean

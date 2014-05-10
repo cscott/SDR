@@ -232,6 +232,11 @@ def: single turn to a line
     from: TANDEM, FACING DANCERS, BACK-TO-BACK DANCERS
       call: _blend last(zig zag, _step thru preserve roll)
       call: roll
+def: _step thru preserve roll
+  in: 2
+  from: MINIWAVE
+    prim: in 1, 1, none, preserve-roll
+
 
 def: spin chain the line
   call: _maybe touch(_wave swing)
