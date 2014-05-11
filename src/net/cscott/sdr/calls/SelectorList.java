@@ -282,6 +282,31 @@ public class SelectorList {
     static { addToList(FORMATION); }
 
     /**
+     * A synonym for ALL/{@link SelectorList#OTHERS}, used to dump
+     * dance state information for debugging call definitions.
+     */
+    public static ExprFunc<Selector> PRINT = new ExprFunc<Selector>() {
+        private ExprFunc<Selector> ALL = valueOf("all");
+        @Override
+        public String getName() { return "print"; }
+        @Override
+        public Selector evaluate(Class<? super Selector> type,
+                                 final DanceState ds, final List<Expr> args)
+                throws EvaluationException {
+            return new Selector() {
+                @Override
+                public Set<Dancer> select(TaggedFormation tf) {
+                    System.err.println("PRINT "+args);
+                    System.err.println(ds);
+                    System.err.println(tf.toStringDiagramWithDetails());
+                    return tf.dancers();
+                }
+            };
+        }
+    };
+    static { addToList(PRINT); }
+
+    /**
      * The "condition" selector allows the introduction of predicates
      * into the selection process.
      * @see MatcherList#_CONDITION
