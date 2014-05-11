@@ -404,7 +404,7 @@ public abstract class Evaluator {
                 TaggedFormation tf = TaggedFormation.coerce(f);
                 // we're going to want to ensure that every dancer matches
                 // some tag.
-                Set<Dancer> unmatched = new LinkedHashSet<Dancer>(f.dancers());
+                Set<Dancer> unmatched = new LinkedHashSet<Dancer>(f.selectedDancers());
                 PartsCombineEvaluator pce = new PartsCombineEvaluator();
                 for (ParCall pc : p.children) {
                     // find the dancers matched, adjusting unmatched set
@@ -417,7 +417,9 @@ public abstract class Evaluator {
                 }
                 // all dancers must match a part.
                 if (!unmatched.isEmpty())
-                    throw new BadCallException("Some dancers are not matched");
+                    throw new BadCallException("Some dancers are not matched "+
+                                               "(for example, " +
+                                               unmatched.iterator().next()+")");
                 // ok, now do one step of the evaluation.
                 return pce.evaluate(ds);
             }
