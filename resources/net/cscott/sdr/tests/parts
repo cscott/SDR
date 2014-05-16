@@ -214,6 +214,7 @@ sdr> /assertParts("squeeze", 2)
 sdr> /assertParts("stack the line", 2)
 sdr> /// "stampede": centers have three parts, outsides have two parts
 sdr> /assertParts("central stampede", 3)
+sdr> /assertParts("central invert stampede", 2)
 sdr> /assertParts("swing and circle", 4)
 sdr> /assertParts("swing and circle 1/2", 2)
 sdr> /assertParts("swing and mix", 3)
