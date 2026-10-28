@@ -35,6 +35,8 @@ Square Dance Revolution build file.
       <property name="classes_dir"	value="${basedir}/bin"/>
       <property name="instrument_file"  value="${basedir}/jacoco.exec" />
       <property name="resources_dir"	value="${basedir}/resources"/>
+      <!-- Java language level for javac/javadoc (override in build.properties) -->
+      <property name="java.release"	value="21"/>
       <if>
 	<not><isset property="javadoc.access" /></not>
 	<then>
@@ -179,7 +181,7 @@ Square Dance Revolution build file.
     <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
 		   includes="net/cscott/sdr/AddDoctestRunner.java"
-		   deprecation="on" source="1.7" target="1.7"
+		   deprecation="on" release="${java.release}"
 		   debug="true" includeantruntime="false">
     </javac>
     <java classname="net.cscott.sdr.AddDoctestRunner" failonerror="true">
@@ -192,7 +194,7 @@ Square Dance Revolution build file.
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
 		   excludes="**/package?info.java **/thunk/**/*.java **/webapp/**/*.java"
-		   deprecation="on" source="1.7" target="1.7"
+		   deprecation="on" release="${java.release}"
 		   debug="true" includeantruntime="false">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
@@ -262,7 +264,7 @@ Square Dance Revolution build file.
 		 doctitle="Square Dance Revolution!"
                  header="${ant.project.name} ${version}"
 		 overview="${src_dir}/overview.html"
-		 source="1.7"
+		 source="${java.release}"
                  access="${javadoc.access}" nodeprecated="false"
 		 failonerror="true"
                  author="true" use="true" version="true" breakiterator="true">
@@ -325,7 +327,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		 doctitle="INCOMPLETE QUICK DOCS DO NOT USE"
                  header="INCOMPLETE QUICK DOCS DO NOT USE"
 		 overview="${src_dir}/overview.html"
-		 source="1.7"
+		 source="${java.release}"
                  access="private" nodeprecated="false"
 		 failonerror="true"
                  author="true" use="true" version="true" breakiterator="true">
@@ -423,7 +425,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
     <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
 		   includes="net/cscott/sdr/**/package_info.java"
-		   deprecation="on" source="1.7" target="1.7"
+		   deprecation="on" release="${java.release}"
 		   debug="true" includeantruntime="false">
 		   <classpath refid="classpath.path" />
     </javac>
@@ -589,7 +591,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		   destdir="${classes_dir}"
 		   includes="net/cscott/sdr/calls/lists/*.java"
 		   excludes="**/package?info.java"
-		   deprecation="on" source="1.7" target="1.7"
+		   deprecation="on" release="${java.release}"
 		   debug="true" includeantruntime="false">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
@@ -628,7 +630,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    <javac srcdir="${src_dir}"
 		   destdir="${classes_dir}"
 		   includes="net/cscott/sdr/calls/FormationListFast.java"
-		   deprecation="on" source="1.7" target="1.7"
+		   deprecation="on" release="${java.release}"
 		   debug="true" includeantruntime="false">
                    <compilerarg value="-Xlint:unchecked"/>
 		   <classpath refid="classpath.path" />
@@ -785,7 +787,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
       <!-- compile GAE stuff -->
       <javac srcdir="${src_dir}" destdir="war/WEB-INF/classes"
 	     includes="net/cscott/sdr/webapp/server/**/*.java"
-	     deprecation="on" source="1.7" target="1.7" debug="true"
+	     deprecation="on" release="${java.release}" debug="true"
 	     includeantruntime="false">
 	<classpath>
 	  <pathelement location="war/WEB-INF/classes" />
