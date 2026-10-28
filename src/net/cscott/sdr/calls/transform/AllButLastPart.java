@@ -104,5 +104,5 @@ public class AllButLastPart extends FirstPart {
 
     /** A list of concepts which it is safe to hoist "_all but last part" through.
     That is, "_all but last part(as couples(swing thru))" == "as couples(_all but last part(swing thru))". */
-    static Set<String> safeConcepts = Fractional.safeConcepts;
+    static Set<String> safeConcepts = FirstPart.safeConcepts;
 }

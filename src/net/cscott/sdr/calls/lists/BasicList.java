@@ -309,7 +309,7 @@ public abstract class BasicList {
             throws EvaluationException {
             Fractional fv = new Fractional(ds); // visitor singleton
             boolean isDivisible = true;
-            assert args.size()==2;
+            assert args.size()==2 : "wrong # of arguments: "+args;
             Fraction n = args.get(0).evaluate(Fraction.class, ds);
             Apply a = new Apply(args.get(1));
             if (n.compareTo(Fraction.ZERO) <= 0)
@@ -524,7 +524,9 @@ public abstract class BasicList {
             // now blend!
             // find the time step we're going to blend
             List<TimedFormation> formations = ds0.formations();
-            assert formations.size() >= 3;
+            // XXX GRACEFULLY HANDLE NO BLENDING?
+            // this might occur with concept application
+            assert formations.size() >= 3 : "nothing to blend";
             Fraction blendTime=null, blendDuration=null;
             switch (type) {
             case FIRST:

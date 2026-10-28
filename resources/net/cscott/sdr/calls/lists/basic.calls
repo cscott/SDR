@@ -1757,6 +1757,9 @@ def: _maybe touch(c, n=1)
   from: ANY
     call: [c]
   from: ANY
+    call: _blend first(_blended touch([c], [n]))
+def: _blended touch(c, n=1)
+  from: ANY
     part: 0
       call: _mixed touch
     part: [n]

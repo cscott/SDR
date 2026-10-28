@@ -6,6 +6,7 @@ import static net.cscott.sdr.calls.parser.CallFileLexer.PART;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -189,7 +190,11 @@ public class Finish extends PartsVisitor<Void> {
 
     /** A list of concepts which it is safe to hoist "finish" through.
     That is, "finish(as couples(swing thru))" == "as couples(finish(swing thru))". */
-    static Set<String> safeConcepts = Fractional.safeConcepts;
+    static Set<String> safeConcepts =
+        new HashSet<String>(Fractional.safeConcepts);
+    static {
+        safeConcepts.add("_blend last"); // but not _blend first
+    }
 
     /**
      * Helper class to define concepts based on this class (and subclasses

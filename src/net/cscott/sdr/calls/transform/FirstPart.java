@@ -6,6 +6,7 @@ import static net.cscott.sdr.calls.parser.CallFileLexer.APPLY;
 import static net.cscott.sdr.calls.parser.CallFileLexer.PART;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -142,5 +143,9 @@ public class FirstPart extends Finish {
 
     /** A list of concepts which it is safe to hoist "_first part" through.
     That is, "_first part(as couples(swing thru))" == "as couples(_first part(swing thru))". */
-    static Set<String> safeConcepts = Fractional.safeConcepts;
+    static Set<String> safeConcepts =
+        new HashSet<String>(Fractional.safeConcepts);
+    static {
+        safeConcepts.add("_blend first"); // but not _blend last
+    }
 }

@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
  * the whole-number portions of the fraction.
  * @author C. Scott Ananian
  * @doc.test
- *  Use Fractional class to evaluate TWICE QUARTER RIGHT:
+ *  Use Fractional class to evaluate 1/4 DOSADO:
  *  js> importPackage(net.cscott.sdr.calls)
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> importPackage(net.cscott.sdr.util)
@@ -62,6 +62,7 @@ public class Fractional extends PartsVisitor<Fraction> {
     public Fractional(DanceState ds) {
         super("_fractional", safeConcepts, ds);
     }
+    @Override
     Expr applyConcept(Fraction f, Expr... args) {
         assert args.length==1;
         return new Expr(conceptName, Expr.literal(f), args[0]);
@@ -117,6 +118,14 @@ public class Fractional extends PartsVisitor<Fraction> {
                           new Expr("_multiply num",
                                    apply.call.args.get(0), Expr.literal(f)),
                           apply.call.args.get(1)));
+        }
+        // Handle _blend first and _blend last
+        if (apply.call.atom.equals("_blend first") ||
+            apply.call.atom.equals("_blend last")) {
+            // treat this as an 'and' // xxx timing may change
+            // xxx _blend first should be treated as a safe concept?
+            return new Apply(new Expr("and", apply.call.args))
+                .accept(this, f);
         }
         // use superclass implementation (handle safe concepts, expansion)
         return super.visit(apply, f);

@@ -105,5 +105,5 @@ public class LikeA extends Finish {
 
     /** A list of concepts which it is safe to hoist "like a" through.
     That is, "like a(as couples(swing thru))" == "as couples(like a(swing thru))". */
-    static Set<String> safeConcepts = Fractional.safeConcepts;
+    static Set<String> safeConcepts = Finish.safeConcepts;
 }

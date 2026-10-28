@@ -42,6 +42,13 @@ public class PartsVisitor<T> extends TransformVisitor<T> {
     public SeqCall visit(Apply apply, T t) {
         // optimization: some concepts are safe to hoist this concept thru
         if (safeConcepts.contains(apply.call.atom)) {
+            if (apply.call.atom.equals("_blend first") ||
+                apply.call.atom.equals("_blend last")) {
+                // if these are safe, hoist concept thru
+                return new Apply
+                    (new Expr(apply.call.atom, applyConcept
+                              (t, new Expr("and", apply.call.args))));
+            }
             if (apply.call.atom.equals("_with designated") ||
                 apply.call.atom.equals("_anyone"))
                 // two args, subcall is last one
@@ -60,6 +67,13 @@ public class PartsVisitor<T> extends TransformVisitor<T> {
             assert apply.call.args.size()==1;
             return new Apply(new Expr(apply.call.atom,
                                       applyConcept(t, apply.call.args.get(0))));
+        }
+        // handle _blend first and _blend last specially
+        // XXX not always correct!  timing may change
+        if (apply.call.atom.equals("_blend first") ||
+            apply.call.atom.equals("_blend last")) {
+            return new Apply(new Expr("and", apply.call.args))
+                .accept(this, t);
         }
         // okay, we have to expand the call in order to fractionalize the
         // contents.
