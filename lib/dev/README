@@ -3,13 +3,21 @@ ant-contrib.jar:
  from: http://ant-contrib.sourceforge.net/
 deployment-ant-pack200-1.0beta.jar:
  from https://deployment.dev.java.net
-junit-4.1.jar:
- from http://junit.org/
+junit-platform-console-standalone-6.1.3.jar:
+ from https://junit.org/ (Maven Central)
+jdoctest/jdoctest-2.1.jar, jdoctest/rhino-all-1.9.2.jar:
+ from https://cscott.net/Projects/JDoctest (Maven Central)
 antlr3-ant.jar:
  from: http://fisheye2.atlassian.com/browse/antlr-buildtools
  specifically:
   http://fisheye2.atlassian.com/browse/~raw,r=5375/antlr-buildtools/ant/antlr-ant/main/antlr3-task/antlr3.jar
-jacoco 0.6.4
- from http://www.eclemma.org/jacoco/
+jacoco-0.8.16/jacocoant.jar (org.jacoco.ant-0.8.16-nodeps.jar):
+ from https://www.jacoco.org/jacoco/ (Maven Central)
 antlr:
  from http://www.antlr.org/download.html
+package-lists/*/package-list:
+ javadoc package lists for linking to the docs of jars in lib/, made with
+  for j in JARS; do unzip -Z1 $j; done | grep '\.class$' | grep -v '^META-INF' \
+    | sed 's#/[^/]*$##' | grep / | tr / . | sort -u
+ from lib/commons-lang-2.4.jar, lib/sphinx/sphinx4.jar, lib/jme/jme*.jar
+ and lib/jutil.jar.

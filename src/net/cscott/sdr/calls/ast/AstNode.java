@@ -1,8 +1,6 @@
 package net.cscott.sdr.calls.ast;
 
-import org.junit.runner.RunWith;
-
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.parser.AstParser;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
@@ -12,7 +10,7 @@ import net.cscott.sdr.calls.transform.ValueVisitor;
  * tree nodes representing parsed call definitions and components.
  * @author C. Scott Ananian
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public abstract class AstNode {
     private final String name;
     public final int type;

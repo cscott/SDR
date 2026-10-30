@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.runner.RunWith;
-
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.Comp;
@@ -22,7 +20,7 @@ import net.cscott.sdr.util.Point;
  * The {@link ExprList} contains {@link ExprFunc} definitions and the
  * basic machinery used to evaluate generic {@link Expr}s.
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class ExprList {
     private ExprList() { assert false; }
 

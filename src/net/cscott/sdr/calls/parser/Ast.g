@@ -52,9 +52,7 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
 
 import net.cscott.sdr.util.Fraction;
 
-import org.junit.runner.RunWith;
-
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 }
 @parser::members {
     public AstParser(String s) {

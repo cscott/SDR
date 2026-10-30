@@ -7,8 +7,8 @@ import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /** Simple feasibility tests for SDR application. */
 public class BreatheTest {
@@ -68,13 +68,13 @@ public class BreatheTest {
         System.out.println("g="+g.value().toProperString());
         */
         // automate the check
-        Assert.assertEquals("a", Fraction.ZERO, a.value());
-        Assert.assertEquals("b", Fraction.valueOf(2, 3), b.value());
-        Assert.assertEquals("c", Fraction.valueOf(4, 3), c.value());
-        Assert.assertEquals("d", Fraction.TWO, d.value());
-        Assert.assertEquals("e", Fraction.valueOf(8, 3), e.value());
-        Assert.assertEquals("f", Fraction.valueOf(10, 3), f.value());
-        Assert.assertEquals("g", Fraction.valueOf(4), g.value());
+        Assertions.assertEquals(Fraction.ZERO, a.value(), "a");
+        Assertions.assertEquals(Fraction.valueOf(2, 3), b.value(), "b");
+        Assertions.assertEquals(Fraction.valueOf(4, 3), c.value(), "c");
+        Assertions.assertEquals(Fraction.TWO, d.value(), "d");
+        Assertions.assertEquals(Fraction.valueOf(8, 3), e.value(), "e");
+        Assertions.assertEquals(Fraction.valueOf(10, 3), f.value(), "f");
+        Assertions.assertEquals(Fraction.valueOf(4), g.value(), "g");
     }
 
     /** Feasibility test.
@@ -164,10 +164,10 @@ public class BreatheTest {
         System.out.println("c: "+cb);
         System.out.println("d: "+db);
         // automate the check
-        Assert.assertEquals("a", ab, boxFromStrings("-2","-1","0","1"));
-        Assert.assertEquals("b", bb, boxFromStrings("0","-1","2","1"));
-        Assert.assertEquals("c", cb, boxFromStrings("-1/2","-2","1 1/2","-1"));
-        Assert.assertEquals("d", db, boxFromStrings("-1 1/2","1","1/2","2"));
+        Assertions.assertEquals(ab, boxFromStrings("-2","-1","0","1"), "a");
+        Assertions.assertEquals(bb, boxFromStrings("0","-1","2","1"), "b");
+        Assertions.assertEquals(cb, boxFromStrings("-1/2","-2","1 1/2","-1"), "c");
+        Assertions.assertEquals(db, boxFromStrings("-1 1/2","1","1/2","2"), "d");
     }
     private static int LEFT=0, BOTTOM=1, RIGHT=2, TOP=3;
     private static Box boxFromStrings(String... points) {

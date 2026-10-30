@@ -10,14 +10,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.ast.Expr;
 import net.cscott.sdr.util.Fraction;
 
-import org.junit.runner.RunWith;
-
 /** This class contains all the predicates known to the system. */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public abstract class PredicateList {
     // zero-arg operators
     /**

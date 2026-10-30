@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
@@ -31,8 +31,6 @@ import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.calls.grm.Grm;
 import net.cscott.sdr.calls.grm.Rule;
 import net.cscott.sdr.util.Fraction;
-
-import org.junit.runner.RunWith;
 
 /**
  * Transformation implementing
@@ -62,7 +60,7 @@ import org.junit.runner.RunWith;
  *    > }
  *  net.cscott.sdr.calls.BadCallException: Only one part
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class Finish extends PartsVisitor<Void> {
     public Finish(DanceState ds) {
         this("finish", safeConcepts, ds);

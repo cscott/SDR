@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
@@ -32,14 +32,13 @@ import net.cscott.sdr.util.SdrToString;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.junit.runner.RunWith;
 
 /** A Formation is a set of dancers and positions for them.
  * Certain dancers in the formation can be selected. 
  * In addition, all dancers can be tagged with modifiers
  * such as 'BEAU', 'BELLE', 'LEADER', 'TRAILER', etc.
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class Formation {
     protected final Map<Dancer,Position> location;
     protected final Set<Dancer> selected;

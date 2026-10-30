@@ -46,9 +46,7 @@ import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
 
-import org.junit.runner.RunWith;
-
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 
 /**
  * The <code>C1List</code> class contains complex call
@@ -60,7 +58,7 @@ import net.cscott.jdoctest.JDoctestRunner;
  * executable component is required.
  * @author C. Scott Ananian
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public abstract class C1List {
     // hide constructor.
     private C1List() { }

@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.DanceProgram;
@@ -41,7 +41,6 @@ import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.grm.CompletionEngine;
 import net.cscott.sdr.util.ListUtils;
 
-import org.junit.runner.RunWith;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.EvaluatorException;
@@ -133,7 +132,7 @@ import org.mozilla.javascript.tools.shell.Global;
  *  ||sdr> /"whee!"
  *  ||whee!
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class PMSD {
     private PMSD() {}
     /** Class holding properties accessible from the {@link PMSD} front-end. */
@@ -450,8 +449,10 @@ public class PMSD {
         // create ReaderWriter
         ReaderWriter rw;
         try {
-            // try to use JLine
-            rw = new JLineReaderWriter(c!=null ? c.writer() :
+            // try to use JLine.  (The Console's writer doesn't flush on
+            // println as of JDK 21, and JLine won't flush it for us.)
+            rw = new JLineReaderWriter(c!=null ?
+                                       new PrintWriter(c.writer(), true) :
                                        new PrintWriter(System.out, true));
         } catch (Throwable t) {
             if (c!=null) {
@@ -784,7 +785,7 @@ public class PMSD {
         }
     }
 
-    /** JavaScript context with privileged access to Java. */
+    /** JavaScript context for PMSD. */
     private static ContextFactory contextFactory = new ContextFactory() {
         protected Context makeContext() {
             return new Context(this) {
@@ -792,10 +793,9 @@ public class PMSD {
                 { setLanguageVersion(Context.VERSION_1_8); }
             };
         }
-        // enable privileged access to Java
+        // enable some extra features
         public boolean hasFeature(Context cx, int featureIndex) {
             switch (featureIndex) {
-            case Context.FEATURE_ENHANCED_JAVA_ACCESS:
             case Context.FEATURE_RESERVED_KEYWORD_AS_IDENTIFIER:
             case Context.FEATURE_LOCATION_INFORMATION_IN_ERROR:
                 return true;

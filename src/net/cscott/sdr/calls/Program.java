@@ -1,14 +1,12 @@
 package net.cscott.sdr.calls;
 
-import net.cscott.jdoctest.JDoctestRunner;
-
-import org.junit.runner.RunWith;
+import net.cscott.jdoctest.Doctests;
 
 /** Enumeration of square dance programs.  Every call belongs to one or more
  *  square dance programs, which are usually arranged in a hierarchy such
  *  that each successive program contains all the calls from all previous
  *  programs. */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public enum Program {
     // There are probably other programs that could be used here:
     // Vic Cedar's "variant" lists, the different C4/C4X lists, etc.

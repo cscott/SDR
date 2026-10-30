@@ -3,12 +3,10 @@ package net.cscott.sdr.util;
 import java.util.Collection;
 import java.util.Iterator;
 
-import net.cscott.jdoctest.JDoctestRunner;
-
-import org.junit.runner.RunWith;
+import net.cscott.jdoctest.Doctests;
 
 /** Convenience functions for lists and strings. */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public final class ListUtils {
     private ListUtils() { /* hide the constructor */ }
 

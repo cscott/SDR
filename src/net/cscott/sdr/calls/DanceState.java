@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.sdr.calls.TaggedFormation.Tag;
@@ -22,7 +22,6 @@ import net.cscott.sdr.util.Tools.ListMultiMap;
 import static net.cscott.sdr.util.Tools.mml;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.junit.runner.RunWith;
 
 /**
  * {@link DanceState} captures all the <i>dynamic</i> information about a
@@ -32,7 +31,7 @@ import org.junit.runner.RunWith;
  *
  * @author C. Scott Ananian
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class DanceState {
     public final DanceProgram dance;
     private final NavigableMap<Fraction, Formation> formations;

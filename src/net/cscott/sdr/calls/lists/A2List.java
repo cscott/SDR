@@ -3,9 +3,7 @@ package net.cscott.sdr.calls.lists;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.runner.RunWith;
-
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
@@ -31,7 +29,7 @@ import net.cscott.sdr.util.Fraction;
  * executable component is required.
  * @author C. Scott Ananian
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public abstract class A2List {
     // hide constructor.
     private A2List() { }

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.Evaluator;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
@@ -28,8 +28,6 @@ import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.util.Fraction;
 import static net.cscott.sdr.util.Tools.s;
 
-import org.junit.runner.RunWith;
-
 /**
  * Propagate 'inherent' time bottom-up: where prim and part = 1, and IN resets
  * to its spec, whatever that is.  This is used by {@link RemoveIn} to
@@ -49,7 +47,7 @@ import org.junit.runner.RunWith;
  *  js> m.invoke(bc, s).toProperString() // bc.getBeats(s).toProperString()
  *  3
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 class BeatCounter extends ValueVisitor<Fraction,Void> {
     static class CantCountBeatsException extends RuntimeException {
         CantCountBeatsException(String msg) { super(msg); }

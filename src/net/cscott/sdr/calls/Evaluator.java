@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.ast.Apply;
 import net.cscott.sdr.calls.ast.AstNode;
@@ -31,8 +31,6 @@ import net.cscott.sdr.calls.transform.RemoveIn;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.ListUtils;
-
-import org.junit.runner.RunWith;
 
 /**
  * An {@link Evaluator} represents a current dance context.
@@ -155,7 +153,7 @@ import org.junit.runner.RunWith;
  *  js> ds.movements(StandardDancer.COUPLE_3_GIRL)
  *  [DancerPath[from=-1,1,s,to=-1,0,s,time=1,pointOfRotation=<null>], DancerPath[from=-1,0,s,to=-1,-1,s,time=1,pointOfRotation=<null>]]
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public abstract class Evaluator {
     /**
      * Do "one part" of the continuation, and return an {@link Evaluator}

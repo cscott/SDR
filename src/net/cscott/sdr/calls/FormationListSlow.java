@@ -12,9 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.runner.RunWith;
-
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
@@ -50,7 +48,7 @@ import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
  * may have doctests for its helper functions, but not on the formations
  * themselves.
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 abstract class FormationListSlow {
 
     // from http://www.penrod-sq-dancing.com/form2.html
@@ -1084,16 +1082,14 @@ abstract class FormationListSlow {
         pw.println("import java.util.Collections;");
         pw.println("import java.util.List;");
         pw.println();
-        pw.println("import org.junit.runner.RunWith;");
-        pw.println();
-        pw.println("import net.cscott.jdoctest.JDoctestRunner;");
+        pw.println("import net.cscott.jdoctest.Doctests;");
         pw.println();
         pw.println("import net.cscott.sdr.calls.TaggedFormation.Tag;");
         pw.println("import static net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;");
         pw.println("import net.cscott.sdr.util.Fraction;");
         pw.println();
         pw.println("/** Compiled version of {@link FormationListSlow}. */");
-        pw.println("@RunWith(value=JDoctestRunner.class)");
+        pw.println("@Doctests");
         pw.println("abstract class FormationListFast {");
     }
     private static void emitOne(PrintWriter pw, String fieldName,

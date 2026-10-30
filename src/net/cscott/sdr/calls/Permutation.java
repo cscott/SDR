@@ -12,14 +12,12 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.WeakHashMap;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.jutil.UnmodifiableIterator;
 import net.cscott.sdr.util.Fraction;
 
-import org.junit.runner.RunWith;
-
 /** A {@link Permutation} represents a reordering of dancers. */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class Permutation implements Comparable<Permutation> {
     /** Internal representation: if dancer #0 becomes dancer #3 in the
      *  new formation, then <code>p[0] == 3</code>. */

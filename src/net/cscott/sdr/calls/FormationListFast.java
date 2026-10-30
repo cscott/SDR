@@ -4,16 +4,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.runner.RunWith;
-
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 
 import net.cscott.sdr.calls.TaggedFormation.Tag;
 import static net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.util.Fraction;
 
 /** Compiled version of {@link FormationListSlow}. */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 abstract class FormationListFast {
     /** SINGLE DANCER formation.
       * @doc.test

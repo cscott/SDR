@@ -9,11 +9,10 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
 import org.apache.commons.lang.builder.*;
-import org.junit.runner.RunWith;
 
 /** Position objects represent the position and orientation of a dancer.
  *  The (0,0) coordinate represents the center of the square (or formation),
@@ -28,7 +27,7 @@ import org.junit.runner.RunWith;
  *  or when specifying "general lines") use a {@link Rotation} with a
  *  modulus of 0.
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class Position implements Comparable<Position> {
     /** Various flags describing boolean properties of a {@link Position}. */
     public enum Flag {
@@ -773,7 +772,7 @@ public class Position implements Comparable<Position> {
      *  js> t.unapply(t.apply(p))
      *  0,1,e
      */
-    @RunWith(value=JDoctestRunner.class)
+    @Doctests
     public static class Transform {
         public final ExactRotation rotate;
         public final Point translate;

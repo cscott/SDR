@@ -14,8 +14,8 @@ public class AddDoctestRunner {
         Reader r = new InputStreamReader(new FileInputStream(filename), cs);
         String input = readFully(r);
         r.close();
-        // add "@RunWith(value=JDoctestRunner.class)" before "public class"
-        String repl = "@RunWith(value=JDoctestRunner.class)\n";
+        // add "@Doctests" before "public class"
+        String repl = "@Doctests\n";
         if (Pattern.compile('^' + Pattern.quote(repl), Pattern.MULTILINE)
             .matcher(input).find()) {
             return; // replacement already present, no changes needed
@@ -29,8 +29,7 @@ public class AddDoctestRunner {
                                 Pattern.MULTILINE|Pattern.DOTALL);
             repl = "$2" +
                 Matcher.quoteReplacement
-                ("\nimport org.junit.runner.RunWith;\n" +
-                 "import net.cscott.jdoctest.JDoctestRunner;\n") +
+                ("\nimport net.cscott.jdoctest.Doctests;\n") +
                 "$1\n" +
                 Matcher.quoteReplacement
                 (repl + "abstract class package_info {}");

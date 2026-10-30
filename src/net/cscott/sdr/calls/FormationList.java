@@ -3,9 +3,7 @@ package net.cscott.sdr.calls;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import net.cscott.jdoctest.JDoctestRunner;
-
-import org.junit.runner.RunWith;
+import net.cscott.jdoctest.Doctests;
 
 /**
  * A list of common formations, specified with phantoms.
@@ -110,7 +108,7 @@ import org.junit.runner.RunWith;
  *  true
  */
 // can use MatcherList to associate phantoms with real dancers.
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public abstract class FormationList extends FormationListFast {
     // no implementation: all the interesting stuff is in FormationListSlow.
     

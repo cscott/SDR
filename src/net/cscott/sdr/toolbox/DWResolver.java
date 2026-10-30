@@ -5,9 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.runner.RunWith;
-
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.Dancer;
 import net.cscott.sdr.calls.Formation;
 import net.cscott.sdr.calls.FormationMatch;
@@ -104,7 +102,7 @@ import static net.cscott.sdr.util.Tools.*;
  *  Swing Thru
  *  Right and Left Grand
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class DWResolver {
     private DWResolver() { }
 

@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.ExactRotation;
@@ -26,8 +26,6 @@ import net.cscott.sdr.calls.ast.Prim;
 import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.ast.SeqCall;
 import net.cscott.sdr.util.Fraction;
-
-import org.junit.runner.RunWith;
 
 /**
  * Transformation implementing
@@ -57,7 +55,7 @@ import org.junit.runner.RunWith;
  *    > }
  *  net.cscott.sdr.calls.BadCallException: No formation options left: No formation options left: Primitives cannot be subdivided
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class Fractional extends PartsVisitor<Fraction> {
     public Fractional(DanceState ds) {
         super("_fractional", safeConcepts, ds);

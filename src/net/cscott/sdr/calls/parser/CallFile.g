@@ -132,9 +132,7 @@ tokens {
 
     import net.cscott.sdr.calls.ast.Prim;
 
-    import org.junit.runner.RunWith;
-
-    import net.cscott.jdoctest.JDoctestRunner;
+    import net.cscott.jdoctest.Doctests;
 }
 @parser::members {
     public CallFileParser(String s) {
@@ -147,9 +145,7 @@ tokens {
 
     import static org.apache.commons.lang.StringEscapeUtils.unescapeJava;
 
-    import org.junit.runner.RunWith;
-
-    import net.cscott.jdoctest.JDoctestRunner;
+    import net.cscott.jdoctest.Doctests;
 }
 @lexer::members {
     /** Have we seen the line-initial whitespace yet? */

@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.DanceState;
@@ -48,8 +48,6 @@ import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
 import net.cscott.sdr.util.Tools.F;
 
-import org.junit.runner.RunWith;
-
 /** 
  * The <code>BasicList</code> class contains complex call
  * and concept definitions which are on the 'basic' program.
@@ -61,7 +59,7 @@ import org.junit.runner.RunWith;
  * @author C. Scott Ananian
  * @version $Id: BasicList.java,v 1.20 2009-02-05 06:13:31 cananian Exp $
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public abstract class BasicList {
     // hide constructor.
     private BasicList() { }

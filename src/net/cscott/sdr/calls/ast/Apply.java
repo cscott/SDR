@@ -1,7 +1,7 @@
 package net.cscott.sdr.calls.ast;
 
 import static net.cscott.sdr.calls.parser.CallFileLexer.APPLY;
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.Call;
 import net.cscott.sdr.calls.CallDB;
@@ -11,8 +11,6 @@ import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
-
-import org.junit.runner.RunWith;
 
 /**
  * {@link Apply} represents a invocation of a call or concept, with
@@ -52,7 +50,7 @@ import org.junit.runner.RunWith;
  *  js> a.toShortString()
  *  _fractional(2, _roll(trade))
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class Apply extends SeqCall {
     public final Expr call;
 

@@ -15,8 +15,8 @@ import java.util.Random;
 
 import net.cscott.sdr.util.Fraction;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ClTests extends CL {
     public ClTests() {
@@ -394,7 +394,7 @@ public class ClTests extends CL {
 
     @Test
     public void runTests() throws Exception {
-        Assert.assertTrue(runAllTests(new String[] { "10", "10", "50" }));
+        Assertions.assertTrue(runAllTests(new String[] { "10", "10", "50" }));
     }
     public final static void main(String[] args) throws Exception {
         System.exit(runAllTests(args) ? 0 : 1);

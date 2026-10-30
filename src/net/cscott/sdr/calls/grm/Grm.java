@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.junit.runner.RunWith;
-
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.ast.Apply;
@@ -34,7 +32,7 @@ import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
  * @author C. Scott Ananian
  * @version $Id: Grm.java,v 1.3 2006-10-22 15:46:06 cananian Exp $
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public abstract class Grm {
     public abstract int precedence();
     public abstract <T> T accept(GrmVisitor<T> v);

@@ -2,9 +2,7 @@ package net.cscott.sdr.calls.ast;
 
 import static net.cscott.sdr.calls.parser.AstTokenTypes.IF;
 
-import org.junit.runner.RunWith;
-
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
@@ -23,7 +21,7 @@ import net.cscott.sdr.util.Fraction;
  *  js> iff = new If(If.When.BEFORE, new Expr("true"), new Seq(Apply.makeApply("nothing")), "Message!", Fraction.ONE_HALF);
  *  (If 'BEFORE (Expr true) (Seq (Apply 'nothing)) "Message!" 1/2)
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class If extends Comp {
     /** When to evaluate an {@link If}: before or after its child. */
     public enum When { BEFORE, AFTER };

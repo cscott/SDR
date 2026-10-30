@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.junit.runner.RunWith;
-
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.jutil.BinaryHeap;
 import net.cscott.jutil.Default;
 import net.cscott.jutil.Heap;
@@ -50,7 +48,7 @@ import net.cscott.sdr.util.LL;
  *  js> a.value().toProperString()
  *  1
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class ClBranchAndBound {
     private final ClSimplexSolver solver;
     private final List<ClIntegerVariable> intVars;

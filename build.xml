@@ -18,7 +18,7 @@ Square Dance Revolution build file.
              classpath="lib/dev/antlr3-ant.jar" />
     <!-- jacoco integration -->
     <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
-        <classpath path="${basedir}/lib/dev/jacoco-0.6.4/lib/jacocoant.jar"/>
+        <classpath path="${basedir}/lib/dev/jacoco-0.8.16/jacocoant.jar"/>
     </taskdef>
 
     <!-- load the variable definitions from another file -->
@@ -33,6 +33,7 @@ Square Dance Revolution build file.
       <property name="lib_dir"            value="${basedir}/lib"/>
       <property name="src_dir"            value="${basedir}/src"/>
       <property name="classes_dir"	value="${basedir}/bin"/>
+      <property name="test_reports_dir"	value="${basedir}/test-reports"/>
       <property name="instrument_file"  value="${basedir}/jacoco.exec" />
       <property name="resources_dir"	value="${basedir}/resources"/>
       <!-- Java language level for javac/javadoc (override in build.properties) -->
@@ -59,9 +60,6 @@ Square Dance Revolution build file.
           <include name="jdoctest/jdoctest*.jar" />
           <include name="jdoctest/rhino*.jar" />
         </fileset>
-	<pathelement path="${jdk.home}/lib/tools.jar"/>
-        <!-- this version is more portable -->
-	<pathelement path="${java.home}/../lib/tools.jar"/>
       </path>
       <path id="gwt.path">
 	<pathelement location="${gwt.sdk}/gwt-user.jar"/>
@@ -89,6 +87,7 @@ Square Dance Revolution build file.
 	<!-- classes and api docs -->
 	<delete dir="${classes_dir}" />
 	<delete dir="${api_dir}" />
+	<delete dir="${test_reports_dir}" />
 	<delete dir="${src_dir}/net/cscott/sdr/calls/parser/doc-files" />
 	<delete dir="${src_dir}/net/cscott/sdr/calls/lists/doc-files" />
 	<delete dir="${src_dir}/net/cscott/sdr/doc-files" />
@@ -250,13 +249,14 @@ Square Dance Revolution build file.
 	<!-- run javadoc -->
 	<mkdir dir="${api_dir}" />
 	<echo message="${javadoc.access}" file="${api_dir}/access" />
-        <!-- we get an over-size method error in class file
-             net/cscott/sdr/calls/lists/C4GrammarParser, so
-          we'll ignore it. -->
+        <!-- we get an over-size method error in class files
+             net/cscott/sdr/calls/lists/C4GrammarParser and
+             net/cscott/sdr/calls/FormationListFast, so
+          we'll ignore them. -->
 	<jacoco:agent property="jacoco_agent"
                       destfile="${instrument_file}" append="false"
                       includes="net.cscott.sdr.*:EDU.*"
-                      excludes="net.cscott.sdr.calls.lists.*GrammarParser"
+                      excludes="net.cscott.sdr.calls.lists.*GrammarParser:net.cscott.sdr.calls.FormationListFast"
                       />
 	<javadoc sourcepath="${src_dir}"
 		 destdir="${api_dir}"
@@ -291,17 +291,29 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		<arg value="-J${jacoco_agent}" />
 		<!-- JDK 8+ doclint rejects the js> doctest syntax -->
 		<arg value="-Xdoclint:none" />
+		<!-- let doctests access private members -->
+		<arg value="-J--add-opens=java.base/java.lang=ALL-UNNAMED" />
 		<arg value="-J-Xmx1024M" />
+		<!-- the bottom text loads loadpretty.js -->
+		<arg value="--allow-script-in-comments" />
 		<!-- write tests to api/tests -->
 		<arg value="-J-Dnet.cscott.jdoctest.output=${api_dir}/tests" />
 		<!-- enable assertions when evaluating doctests -->
 		<arg value="-J-ea:net.cscott..." />
-            <link href="http://jakarta.apache.org/commons/lang/api-release/"/>
-            <link href="http://cmusphinx.sourceforge.net/sphinx4/javadoc/"/>
-            <link href="http://www.jmonkeyengine.com/doc/"/>
-            <link href="http://cscott.net/Projects/JUtil/jutil-latest/doc/"/>
-            <!--<link href="http://java.sun.com/products/java-media/speech/forDevelopers/jsapi-doc/"/>-->
-            <link href="http://java.sun.com/javase/6/docs/api"/>
+            <link href="https://docs.oracle.com/en/java/javase/21/docs/api/"/>
+            <!-- These docs have no package-list online (javadoc fails if it
+                 can't fetch one), so we link offline, using package-lists
+                 generated from the jars in lib/; see lib/dev/README.
+                 The archive.org links are dated to the last commit before
+                 the move to JDK 21. -->
+            <link href="https://web.archive.org/web/20141230000000/http://commons.apache.org/proper/commons-lang/javadocs/api-2.4/"
+                  offline="true" packagelistLoc="lib/dev/package-lists/commons-lang"/>
+            <link href="https://web.archive.org/web/20141230000000/http://cmusphinx.sourceforge.net/sphinx4/javadoc/"
+                  offline="true" packagelistLoc="lib/dev/package-lists/sphinx4"/>
+            <link href="https://web.archive.org/web/20141230000000/http://www.jmonkeyengine.com/doc/"
+                  offline="true" packagelistLoc="lib/dev/package-lists/jme"/>
+            <link href="https://cscott.net/Projects/JUtil/jutil-latest/doc/"
+                  offline="true" packagelistLoc="lib/dev/package-lists/jutil"/>
 	</javadoc>
 	<!-- generate coverage report -->
 	<jacoco:report>
@@ -346,6 +358,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		</taglet>
 		<!-- JDK 8+ doclint rejects the js> doctest syntax -->
 		<arg value="-Xdoclint:none" />
+		<!-- let doctests access private members -->
+		<arg value="-J--add-opens=java.base/java.lang=ALL-UNNAMED" />
 		<arg value="-J-Xmx1024M" />
 		<!-- enable assertions when evaluating doctests -->
 		<arg value="-J-ea:net.cscott..." />
@@ -407,19 +421,22 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    run.  This is faster than run.junit, if you know you
 	    haven't changed any tests."
 	    depends="compile">
-      <junit>
-	<formatter type="plain"/>
-	<test name="net.cscott.jdoctest.RerunJDoctests" />
+      <mkdir dir="${test_reports_dir}" />
+      <junitlauncher printsummary="true" haltonfailure="true">
 	<classpath refid="classpath.path" />
-	<assertions>
-	  <enable package="net.cscott"/>
-	</assertions>
-      </junit>
+	<test name="net.cscott.jdoctest.RerunJDoctests">
+	  <fork>
+	    <jvmarg value="--add-opens=java.base/java.lang=ALL-UNNAMED" />
+	    <jvmarg value="-ea:net.cscott..." />
+	  </fork>
+	  <listener type="legacy-plain" sendSysOut="true" sendSysErr="true"
+		    outputDir="${test_reports_dir}" />
+	</test>
+      </junitlauncher>
     </target>
     <target name="run.junit"
 	    description="Runs all doctests."
 	    depends="compile,compile.index">
-      <!-- fork="yes" is required in order to get the classpath right -->
     <java classname="net.cscott.sdr.AddDoctestRunner" failonerror="true">
       <classpath><path refid="classpath.path"/></classpath>
       <arg value="src/net/cscott/sdr/package-info.java" />
@@ -433,68 +450,23 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		   debug="true" includeantruntime="false">
 		   <classpath refid="classpath.path" />
     </javac>
-      <junit printsummary="yes" fork="yes" forkmode="once" haltonfailure="yes">
-	<formatter type="plain" usefile="false"/>
-	<test name="net.cscott.sdr.package_info" /> <!-- package-info -->
-	<test name="net.cscott.sdr.PMSD" />
-	<test name="net.cscott.sdr.calls.Breather" />
-	<test name="net.cscott.sdr.calls.CallDB" />
-	<test name="net.cscott.sdr.calls.DancerPath" />
-	<test name="net.cscott.sdr.calls.DanceState" />
-	<test name="net.cscott.sdr.calls.EvalPrim" />
-	<test name="net.cscott.sdr.calls.Evaluator" />
-	<test name="net.cscott.sdr.calls.ExactRotation" />
-	<test name="net.cscott.sdr.calls.ExprList" />
-	<test name="net.cscott.sdr.calls.Formation" />
-	<test name="net.cscott.sdr.calls.FormationList" />
-	<test name="net.cscott.sdr.calls.FormationListFast" />
-	<test name="net.cscott.sdr.calls.FormationListSlow" />
-	<test name="net.cscott.sdr.calls.GeneralFormationMatcher" />
-	<test name="net.cscott.sdr.calls.MatcherList" />
-	<test name="net.cscott.sdr.calls.NamedTaggedFormation" />
-	<test name="net.cscott.sdr.calls.Permutation" />
-	<test name="net.cscott.sdr.calls.Position" />
-	<test name="net.cscott.sdr.calls.PredicateList" />
-	<test name="net.cscott.sdr.calls.Program" />
-	<test name="net.cscott.sdr.calls.Rotation" />
-	<test name="net.cscott.sdr.calls.StandardDancer" />
-	<test name="net.cscott.sdr.calls.TaggedFormation" />
-	<test name="net.cscott.sdr.calls.package_info" />  <!-- package-info -->
-	<test name="net.cscott.sdr.calls.ast.Apply" />
-	<test name="net.cscott.sdr.calls.ast.AstNode" />
-	<test name="net.cscott.sdr.calls.ast.Expr" />
-	<test name="net.cscott.sdr.calls.ast.If" />
-	<test name="net.cscott.sdr.calls.grm.CompletionEngine" />
-	<test name="net.cscott.sdr.calls.grm.Grm" />
-	<test name="net.cscott.sdr.calls.lists.A2List" />
-	<test name="net.cscott.sdr.calls.lists.BasicList" />
-	<test name="net.cscott.sdr.calls.lists.C1List" />
-	<test name="net.cscott.sdr.calls.lists.C4List" />
-	<test name="net.cscott.sdr.calls.parser.AstParser" />
-	<test name="net.cscott.sdr.calls.parser.CallFileBuilder" />
-	<test name="net.cscott.sdr.calls.parser.CallFileLexer" />
-	<test name="net.cscott.sdr.calls.parser.CallFileParser" />
-	<test name="net.cscott.sdr.calls.transform.BeatCounter" />
-	<test name="net.cscott.sdr.calls.transform.CallFileLoader" />
-	<test name="net.cscott.sdr.calls.transform.Finish" />
-	<test name="net.cscott.sdr.calls.transform.Fractional" />
-	<test name="net.cscott.sdr.calls.transform.PartsCounter" />
-	<test name="net.cscott.sdr.calls.transform.RemoveIn" />
-	<test name="net.cscott.sdr.calls.transform.package_info" />  <!-- package-info -->
-	<test name="net.cscott.sdr.toolbox.DWResolver" />
-	<test name="net.cscott.sdr.util.Bezier" />
-	<test name="net.cscott.sdr.util.Box" />
-	<test name="net.cscott.sdr.util.LL" />
-	<test name="net.cscott.sdr.util.ListUtils" />
-	<test name="net.cscott.sdr.util.Tools" />
-	<test name="EDU.Washington.grad.gjb.cassowary.BreatheTest" />
-	<test name="EDU.Washington.grad.gjb.cassowary.ClBranchAndBound" />
-	<test name="EDU.Washington.grad.gjb.cassowary.ClTests" />
+      <!-- JDoctest's test engine runs the doctests of every @Doctests
+           class in ${classes_dir}, rerunning javadoc on its source; JUnit
+           Jupiter runs the @Test methods.  The fork is required in order
+           to get the classpath right. -->
+      <mkdir dir="${test_reports_dir}" />
+      <junitlauncher printsummary="true" haltonfailure="true">
 	<classpath refid="classpath.path" />
-	<assertions>
-	  <enable package="net.cscott"/>
-	</assertions>
-      </junit>
+	<testclasses>
+	  <fileset dir="${classes_dir}" includes="**/*.class" />
+	  <fork>
+	    <jvmarg value="--add-opens=java.base/java.lang=ALL-UNNAMED" />
+	    <jvmarg value="-ea:net.cscott..." />
+	  </fork>
+	  <listener type="legacy-plain" sendSysOut="true" sendSysErr="true"
+		    outputDir="${test_reports_dir}" />
+	</testclasses>
+      </junitlauncher>
     </target>
 
     <!-- runs a javascript shell for interactive debugging -->

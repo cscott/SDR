@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
@@ -22,7 +22,6 @@ import static net.cscott.sdr.util.Tools.p;//pair constructor
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.junit.runner.RunWith;
 
 import EDU.Washington.grad.gjb.cassowary.CL;
 import EDU.Washington.grad.gjb.cassowary.ClBooleanVariable;
@@ -77,7 +76,7 @@ import EDU.Washington.grad.gjb.cassowary.ExCLRequiredFailure;
  * @author C. Scott Ananian
  * @version $Id: Breather.java,v 1.10 2006-10-30 22:09:29 cananian Exp $
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class Breather {
     private Breather() { }
 

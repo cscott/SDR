@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
@@ -24,8 +24,6 @@ import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.ListUtils;
 import net.cscott.sdr.util.Point;
 import net.cscott.sdr.util.Tools;
-
-import org.junit.runner.RunWith;
 
 /**
  * The {@link MatcherList} contains matchers for various formations.
@@ -118,7 +116,7 @@ import org.junit.runner.RunWith;
  *     ^    v
  *   [ph: BEAU; ph: BEAU]
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class MatcherList {
     private MatcherList() {}
 

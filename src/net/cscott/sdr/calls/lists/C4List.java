@@ -24,9 +24,7 @@ import net.cscott.sdr.calls.transform.FirstPart;
 import net.cscott.sdr.calls.transform.LikeA;
 import net.cscott.sdr.util.Fraction;
 
-import org.junit.runner.RunWith;
-
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 
 /**
  * The <code>C4List</code> class contains complex call
@@ -38,7 +36,7 @@ import net.cscott.jdoctest.JDoctestRunner;
  * executable component is required.
  * @author C. Scott Ananian
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public abstract class C4List {
     // hide constructor.
     private C4List() { }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.DanceState;
 import net.cscott.sdr.calls.ExprList;
 import net.cscott.sdr.calls.ExprFunc.EvaluationException;
@@ -17,14 +17,12 @@ import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Tools.F;
 
-import org.junit.runner.RunWith;
-
 /** {@link Expr} represents an expression to be computed at evaluation time.
  *  The value of an {@link Expr} may depend on the {@link DanceState} at the
  *  time it is evaluated.  Constants are encoded as special
  *  "literal" expressions.
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class Expr extends AstNode {
     public final String atom;
     public final List<Expr> args;

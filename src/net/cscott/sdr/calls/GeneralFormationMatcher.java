@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.cscott.jdoctest.JDoctestRunner;
+import net.cscott.jdoctest.Doctests;
 import net.cscott.jutil.BitSetFactory;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.Factories;
@@ -34,7 +34,6 @@ import net.cscott.sdr.util.Point;
 import net.cscott.sdr.util.SdrToString;
 
 import org.apache.commons.lang.builder.*;
-import org.junit.runner.RunWith;
 
 /**
  * {@link GeneralFormationMatcher} produces a {@link FormationMatch}
@@ -44,7 +43,7 @@ import org.junit.runner.RunWith;
  *
  * @author C. Scott Ananian
  */
-@RunWith(value=JDoctestRunner.class)
+@Doctests
 public class GeneralFormationMatcher {
     private GeneralFormationMatcher() {}
     // currying, oh, my
