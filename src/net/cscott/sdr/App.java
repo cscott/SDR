@@ -51,11 +51,7 @@ public class App {
         CyclicBarrier sphinxSync = new CyclicBarrier(2);
         final Game game =
             new Game(input, hud, danceFloor, mode, rendezvousBT, rendezvousRT, musicSync, sphinxSync);
-        new Thread() { // THIS IS THE GRAPHICS THREAD
-            @Override public void run() {
-                game.start();
-            }
-        }.start();
+        new Thread(game::start).start(); // THIS IS THE GRAPHICS THREAD
 
         // Create music player thread
         try { musicSync.await(); }

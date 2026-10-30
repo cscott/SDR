@@ -44,8 +44,6 @@ import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.ParsedLine;
-import org.jline.reader.Parser;
-import org.jline.reader.Parser.ParseContext;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
@@ -635,28 +633,19 @@ public class PMSD {
                 .terminal(terminal)
                 .appName("sdr")
                 // our completors complete the whole line, up to the cursor
-                .parser(new Parser() {
-                    public ParsedLine parse(String line, int cursor,
-                                            ParseContext context) {
-                        return new WholeLine(line, cursor);
-                    }
-                })
-                .completer(new Completer() {
-                    public void complete(LineReader reader, ParsedLine line,
-                                         List<Candidate> candidates) {
-                        String buffer = line.word();
-                        for (JLineCompletor jlc : completors) {
-                            List<String> clist = new ArrayList<>();
-                            int pos = jlc.complete(buffer, buffer.length(),
-                                                   clist);
-                            if (pos < 0) continue;
-                            String prefix = buffer.substring(0, pos);
-                            for (String c : clist)
-                                candidates.add(new Candidate
-                                    (prefix+c, c, null, null, null, null,
-                                     false/* don't add a space */));
-                            return;
-                        }
+                .parser((line, cursor, context) -> new WholeLine(line, cursor))
+                .completer((reader, line, candidates) -> {
+                    String buffer = line.word();
+                    for (JLineCompletor jlc : completors) {
+                        List<String> clist = new ArrayList<>();
+                        int pos = jlc.complete(buffer, buffer.length(), clist);
+                        if (pos < 0) continue;
+                        String prefix = buffer.substring(0, pos);
+                        for (String c : clist)
+                            candidates.add(new Candidate
+                                (prefix+c, c, null, null, null, null,
+                                 false/* don't add a space */));
+                        return;
                     }
                 })
                 // '!' is a javascript operator, not a history reference

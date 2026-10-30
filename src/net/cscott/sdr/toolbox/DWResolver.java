@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.calls.Dancer;
@@ -242,14 +243,10 @@ public class DWResolver {
             return "Swing Thru";
         return "Right and Left Grand";
     }
-    private static F<Dancer,StandardDancer> standardDancerFilter =
-        new F<>() {
-        public StandardDancer map(Dancer d) { return (StandardDancer) d; }
-    };
-    private static F<StandardDancer,Integer> coupleNumberFilter =
-        new F<>() {
-        public Integer map(StandardDancer d) { return d.coupleNumber(); }
-    };
+    private static final Function<Dancer,StandardDancer> standardDancerFilter =
+        StandardDancer.class::cast;
+    private static final Function<StandardDancer,Integer> coupleNumberFilter =
+        StandardDancer::coupleNumber;
 
     /** Convenience method to identify formations. */
     private static boolean matches(Formation f, Matcher m) {

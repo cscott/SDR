@@ -602,13 +602,7 @@ public abstract class C1List {
             List<Box> sorted = new ArrayList<>(f.dancers().size());
             for (Dancer d : f.sortedDancers())
                 sorted.add(f.bounds(d));
-            Collections.sort(sorted, new Comparator<>() {
-                @Override
-                public int compare(Box a, Box b) {
-                    return a.center().dist2(Point.ZERO)
-                        .compareTo(b.center().dist2(Point.ZERO));
-                }
-            });
+            sorted.sort(Comparator.comparing(b -> b.center().dist2(Point.ZERO)));
             return trimInside(sorted, 0, f.bounds(), null);
         }
         private static Box trimInside(List<Box> dancers, int which,
@@ -633,12 +627,7 @@ public abstract class C1List {
             if (b.ll.y.compareTo(inside.ll.y) >= 0)
                 trims.add(new Box(inside.ll, new Point(inside.ur.x, b.ll.y)));
             // try largest area first
-            Collections.sort(trims, new Comparator<>() {
-                @Override
-                public int compare(Box a, Box b) {
-                    return -(a.area().compareTo(b.area()));
-                }
-            });
+            trims.sort(Comparator.comparing(Box::area).reversed());
             for (Box candidate : trims) {
                 if (candidate.includes(Point.ZERO))
                     best = trimInside(dancers, which+1, candidate, best);

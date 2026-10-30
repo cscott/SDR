@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import net.cscott.sdr.DevSettings;
 import net.cscott.sdr.calls.Call;
@@ -33,7 +34,6 @@ import net.cscott.sdr.calls.grm.Grm.Mult;
 import net.cscott.sdr.calls.grm.Grm.Nonterminal;
 import net.cscott.sdr.calls.grm.Grm.Terminal;
 import net.cscott.sdr.util.Fraction;
-import net.cscott.sdr.util.Tools.F;
 
 /** Build speech/plain-text grammars for the various programs. */
 public class BuildGrammars {
@@ -400,11 +400,7 @@ public class BuildGrammars {
     private static Grm substNonterm(Grm g,
                                     final String from, final String to) {
         return g.accept(new GrmVisitor<>() {
-            private final GrmVisitor<Grm> self = this;
-            private F<Grm,Grm> map = new F<>() {
-                @Override
-                public Grm map(Grm g) { return g.accept(self); }
-            };
+            private final Function<Grm,Grm> map = g -> g.accept(this);
             @Override
             public Alt visit(Alt alt) {
                 return new Alt(foreach(alt.alternates, map));

@@ -286,13 +286,11 @@ public class GeneralFormationMatcher {
     }
     /** sort so that first dancers' target rotations are most constrained,
      *  for efficiency. (ie largest rotation moduli are first) */
-    private static Comparator<Position> PCOMP = new Comparator<>() {
-        public int compare(Position p1, Position p2) {
-            int c = -p1.facing.modulus.compareTo(p2.facing.modulus);
-            if (c!=0) return c;
-            // ignore flags when comparing positions
-            return p1.setFlags().compareTo(p2.setFlags());
-        }
+    private static final Comparator<Position> PCOMP = (p1, p2) -> {
+        int c = -p1.facing.modulus.compareTo(p2.facing.modulus);
+        if (c!=0) return c;
+        // ignore flags when comparing positions
+        return p1.setFlags().compareTo(p2.setFlags());
     };
     /** Further refine sort to group symmetric dancers, which will cause
      *  matches to tend toward symmetry. */
@@ -436,11 +434,7 @@ public class GeneralFormationMatcher {
             public boolean implementsReverseMapping() { return true; }
         };
         final PersistentSet<Dancer> inputEmpty = new PersistentSet<>
-        (new Comparator<>() {
-           public int compare(Dancer d1, Dancer d2) {
-               return inputIndex.getID(d1) - inputIndex.getID(d2);
-            }
-        });
+            (Comparator.comparingInt(inputIndex::getID));
 
         // now try setting each dancer in 'f' to d0 in the goal formation.
 
@@ -448,13 +442,8 @@ public class GeneralFormationMatcher {
         MatchInfo mi = new MatchInfo(input, goalInfo, minGoalDancers,
                                      inputDancers, inputIndex, inputEmpty);
         PersistentSet<OneMatch> initialAssignment = new PersistentSet<>
-        (new Comparator<>(){
-            public int compare(OneMatch o1, OneMatch o2) {
-                int c=inputIndex.getID(o1.dancer)-inputIndex.getID(o2.dancer);
-                if (c!=0) return c;
-                return o1.goal2input.rotate.compareTo(o2.goal2input.rotate);
-            }
-        }); 
+            (Comparator.comparingInt((OneMatch om) -> inputIndex.getID(om.dancer))
+             .thenComparing(om -> om.goal2input.rotate));
         // Do the match
         tryOne(mi, 0, initialAssignment, inputEmpty, allowUnmatchedDancers);
         if (mi.matches.isEmpty())
@@ -879,13 +868,7 @@ public class GeneralFormationMatcher {
                 // sort my proximity to input dancer so as to prefer
                 // an in-place match if possible
                 final Comparator<Position> cmp = Position.distComparator(ip);
-                Collections.sort(goalDancers, new Comparator<>() {
-                        public int compare(Dancer d1, Dancer d2) {
-                            Position p1 = goal.location(d1);
-                            Position p2 = goal.location(d2);
-                            return cmp.compare(p1, p2);
-                        }
-                    });
+                goalDancers.sort(Comparator.comparing(goal::location, cmp));
                 for (Dancer d: goalDancers) {
                     for (Position gp: makeAllExact(goal.location(d))) {
                         Transform goal2input = new Transform(gp, ip);

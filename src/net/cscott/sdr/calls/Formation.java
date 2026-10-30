@@ -269,20 +269,18 @@ public class Formation {
      * based on their positions within this {@link Formation}.
      */
     public Comparator<Dancer> dancerComparator() {
-        return new Comparator<>() {
-            public int compare(Dancer d1, Dancer d2) {
-                if (d1.equals(d2)) return 0; // easy out
-                Position p1 = Formation.this.location(d1);
-                Position p2 = Formation.this.location(d2);
-                int c = p1.compareTo(p2);
-                if (c!=0) return c;
-                // break dancer ties.
-                if (d1 instanceof StandardDancer sd1 && d2 instanceof StandardDancer sd2) {
-                    return sd1.ordinal() - sd2.ordinal();
-                }
-                // ugly, but workable.
-                return d1.hashCode() - d2.hashCode();
+        return (d1, d2) -> {
+            if (d1.equals(d2)) return 0; // easy out
+            Position p1 = location(d1);
+            Position p2 = location(d2);
+            int c = p1.compareTo(p2);
+            if (c!=0) return c;
+            // break dancer ties.
+            if (d1 instanceof StandardDancer sd1 && d2 instanceof StandardDancer sd2) {
+                return sd1.ordinal() - sd2.ordinal();
             }
+            // ugly, but workable.
+            return d1.hashCode() - d2.hashCode();
         };
     }
     /** Return the dancers of {@link #dancers()}, in the order given by

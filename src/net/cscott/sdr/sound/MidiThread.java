@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MetaEventListener;
-import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
@@ -116,21 +114,17 @@ public class MidiThread extends Thread
          *
          * Thanks to Espen Riskedal for finding this trick.
          */
-        sequencer.addMetaEventListener(new MetaEventListener()
-                {
-            public void meta(MetaMessage event)
+        sequencer.addMetaEventListener(event -> {
+            if (event.getType() == 47)
             {
-                if (event.getType() == 47)
+                sequencer.close();
+                if (synthesizer != null)
                 {
-                    sequencer.close();
-                    if (synthesizer != null)
-                    {
-                        synthesizer.close();
-                    }
-                    //System.exit(0);
+                    synthesizer.close();
                 }
+                //System.exit(0);
             }
-                });
+        });
         
         /* Here, we set the loop points to loop over the whole
          * sequence. Setting the loop end point to -1 means using the

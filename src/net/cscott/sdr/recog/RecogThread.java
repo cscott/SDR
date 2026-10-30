@@ -3,7 +3,6 @@ package net.cscott.sdr.recog;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -150,11 +149,7 @@ public class RecogThread extends Thread {
                 continue;
             }
             /* sort so the worst (lowest score) is first */
-            Collections.sort(tokens, new Comparator<>() {
-                public int compare(Token t1, Token t2) {
-                    return Float.compare(t1.getScore(), t2.getScore());
-                }
-            });
+            tokens.sort(Comparator.comparingDouble(Token::getScore));
             PossibleCommand pc = null;
             for (Token t : tokens) {
                 // get the words in the result

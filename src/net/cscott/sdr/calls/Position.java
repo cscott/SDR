@@ -732,11 +732,7 @@ public class Position implements Comparable<Position> {
      *  0
      */
     public static Comparator<Position> distComparator(final Position from) {
-        return new Comparator<>() {
-            public int compare(Position p1, Position p2) {
-                return from.dist2(p1).compareTo(from.dist2(p2));
-            }
-        };
+        return Comparator.comparing(from::dist2);
     }
     /**
      * A helper class to apply linear transformations (combinations of

@@ -2,7 +2,6 @@ package net.cscott.sdr.anim;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import net.cscott.sdr.BeatTimer;
 import net.cscott.sdr.DanceFloor;
@@ -94,16 +93,14 @@ public class VenueState extends CameraGameState {
         rootNode.setRenderState( lightState );
         
         // setup camera
-        GameTaskQueueManager.getManager().update(new Callable<Void>() {
-            public Void call() throws Exception {
-                cam.setFrustumPerspective( 45.0f, (float) display.getWidth()
-                        / (float) display.getHeight(), 1, 1000 );
-                cam.setParallelProjection( false );
-                cam.setLocation(camStartup);
-                cam.lookAt(new Vector3f(0,0,0), new Vector3f(0,0,1));
-                onCamera(); // initialize camera tracking.
-                return null;
-            }
+        GameTaskQueueManager.getManager().update(() -> {
+            cam.setFrustumPerspective( 45.0f, (float) display.getWidth()
+                    / (float) display.getHeight(), 1, 1000 );
+            cam.setParallelProjection( false );
+            cam.setLocation(camStartup);
+            cam.lookAt(new Vector3f(0,0,0), new Vector3f(0,0,1));
+            onCamera(); // initialize camera tracking.
+            return null;
         });
         
         // pretty sky box
@@ -146,11 +143,9 @@ public class VenueState extends CameraGameState {
         skybox.setTexture(Skybox.EAST, east);//west
         skybox.setTexture(Skybox.UP, up);//north
         skybox.setTexture(Skybox.DOWN, down);
-        GameTaskQueueManager.getManager().update(new Callable<Void>() {
-            public Void call() throws Exception {
+        GameTaskQueueManager.getManager().update(() -> {
 		skybox.preloadTextures();
 		return null;
-	    }
 	});
         Matrix3f skyRot = new Matrix3f();
         skyRot.fromAngleNormalAxis(FastMath.PI/2,new Vector3f(1,0,0));
@@ -258,10 +253,8 @@ public class VenueState extends CameraGameState {
     }
     protected void initCamera() {
         try {
-            GameTaskQueueManager.getManager().update(new Callable<Void>() {
-                public Void call() throws Exception {
-                    _initCamera(); return null;
-                }
+            GameTaskQueueManager.getManager().update(() -> {
+                _initCamera(); return null;
             })/*.get()*/;
         } catch (Exception e) { /* this is fatal */ assert false : e; }
     }

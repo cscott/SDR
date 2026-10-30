@@ -13,7 +13,6 @@ import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
 import net.cscott.sdr.util.SdrToString;
 import net.cscott.sdr.util.Tools.ListMultiMap;
-import net.cscott.sdr.util.Tools.F; // list comprehension helper
 import static net.cscott.sdr.util.Tools.foreach; // list comprehension
 import static net.cscott.sdr.util.Tools.l;//list constructor
 import static net.cscott.sdr.util.Tools.m;//map constructor
@@ -779,12 +778,8 @@ public class Breather {
     /* Ensure that fp.output is centered, for every formation pieces. */
     private static List<FormationPiece> centerOutputPieces(List<FormationPiece>
                                                            pieces) {
-        return foreach(pieces, new F<>() {
-            @Override
-            public FormationPiece map(FormationPiece fp) {
-                return new FormationPiece(fp.input, fp.output.recenter());
-            }
-        });
+        return foreach(pieces,
+                       fp -> new FormationPiece(fp.input, fp.output.recenter()));
     }
     /** Collide two formation pieces, creating a new FormationPiece
      * with the resulting miniwave of pieces. */

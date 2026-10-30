@@ -162,10 +162,6 @@ public class SimplifyGrm extends GrmVisitor<Grm> {
 
     /** Sort grm alt options pseudo-alphabetically, using the approximate
      *  {@link #firstTerm} method. */
-    private final static Comparator<Grm> altComparator = new Comparator<>(){
-        public int compare(Grm o1, Grm o2) {
-            String f1 = firstTerm(o1), f2 = firstTerm(o2);
-            return f1.compareTo(f2);
-        }
-    };
+    private final static Comparator<Grm> altComparator =
+        Comparator.comparing(SimplifyGrm::firstTerm);
 }

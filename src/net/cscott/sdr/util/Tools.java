@@ -4,16 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import net.cscott.jdoctest.Doctests;
 import net.cscott.jutil.Factories;
-import net.cscott.jutil.FilterIterator;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.PairMapEntry;
 import net.cscott.jutil.MultiMap;
@@ -313,14 +312,10 @@ public abstract class Tools {
     }
 
     /** Quasi-list comprehension. */
-    // xxx: possibly still too verbose to be useful
-    public static <A,B> List<B> foreach(List<A> list, FilterIterator.Filter<A,B> filter) {
+    public static <A,B> List<B> foreach(List<A> list, Function<? super A, ? extends B> f) {
         List<B> result = new ArrayList<>(list.size());
-        Iterator<B> it = new FilterIterator<>(list.iterator(), filter);
-        while (it.hasNext())
-            result.add(it.next());
+        for (A a : list)
+            result.add(f.apply(a));
         return result;
     }
-    /** Convenience alias for {@link net.cscott.jutil.FilterIterator.Filter}. */
-    public static abstract class F<A,B> extends FilterIterator.Filter<A,B> { }
 }

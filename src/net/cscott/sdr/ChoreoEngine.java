@@ -86,35 +86,29 @@ public class ChoreoEngine {
 
     public CountDownLatch switchToMenu() {
         final CountDownLatch done = new CountDownLatch(1);
-        new Thread() {
-            @Override
-            public void run() {
-                Evaluator e = new Evaluator.Standard
-                    (new Seq(new Apply(Expr.literal("_attract"))));
-                startNewDanceThread
-                    (new DanceThread(new DanceProgram(Program.PLUS), e));
-                done.countDown(); // signal
-            }
-        }.start();
+        new Thread(() -> {
+            Evaluator e = new Evaluator.Standard
+                (new Seq(new Apply(Expr.literal("_attract"))));
+            startNewDanceThread
+                (new DanceThread(new DanceProgram(Program.PLUS), e));
+            done.countDown(); // signal
+        }).start();
         return done;
     }
     public CountDownLatch switchToDancing() {
         final CountDownLatch done = new CountDownLatch(1);
-        new Thread() {
-            @Override
-            public void run() {
-                // XXX
-                Evaluator e = new Evaluator.Standard
-                    (new Seq(new Apply(Expr.literal("nothing"))));
-                synchronized (ChoreoEngine.this) {
-                startNewDanceThread
-                    (new DanceThread(new DanceProgram(Program.PLUS), e));
-                score.resetScore(Program.PLUS);
-                }
-                //hud.setNotice("Let's go!", 5000);
-                done.countDown(); // signal.
+        new Thread(() -> {
+            // XXX
+            Evaluator e = new Evaluator.Standard
+                (new Seq(new Apply(Expr.literal("nothing"))));
+            synchronized (this) {
+            startNewDanceThread
+                (new DanceThread(new DanceProgram(Program.PLUS), e));
+            score.resetScore(Program.PLUS);
             }
-        }.start();
+            //hud.setNotice("Let's go!", 5000);
+            done.countDown(); // signal.
+        }).start();
         return done;
     }
     

@@ -221,12 +221,7 @@ public class CompletionEngine {
             result.add(it.next());
         if (!it.hasNext())
             // sort, putting non-terminals last
-            Collections.sort(result, new Comparator<>() {
-                public int compare(String o1, String o2) {
-                    String s1 = o1.replace('<', '~');
-                    String s2 = o2.replace('<', '~');
-                    return s1.compareTo(s2);
-                }});
+            result.sort(Comparator.comparing(s -> s.replace('<', '~')));
         return result;
     }
     static class CompletionIterator extends UnmodifiableIterator<String>{

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.lang.ref.SoftReference;
-import java.util.concurrent.Callable;
 
 import com.jme.image.Texture;
 import com.jme.renderer.ColorRGBA;
@@ -108,11 +107,9 @@ public class TexturedQuad extends Quad {
         // set new texture
         texture.setImage(TextureManager.loadImage(textureImage,false));
         // refresh texture state
-        GameTaskQueueManager.getManager().update(new Callable<Void>() {
-            public Void call() throws Exception {
-                textureState.load();
-                return null;
-            }
+        GameTaskQueueManager.getManager().update(() -> {
+            textureState.load();
+            return null;
         });
         // make sure render state updates are noticed.
         updateRenderState();

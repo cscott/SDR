@@ -15,7 +15,6 @@ import net.cscott.sdr.calls.ExprFunc.EvaluationException;
 import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
-import net.cscott.sdr.util.Tools.F;
 
 /** {@link Expr} represents an expression to be computed at evaluation time.
  *  The value of an {@link Expr} may depend on the {@link DanceState} at the
@@ -265,10 +264,7 @@ public class Expr extends AstNode {
             try {
                 String func = curry.args.get(0).evaluate(String.class, null);
                 List<Expr> nArgs = curry.args.subList(1, curry.args.size());
-                return this.build(func, foreach(nArgs, new F<>() {
-                    @Override
-                    public Expr map(Expr e) { return e.subst(rest); }
-                })).simplify();
+                return this.build(func, foreach(nArgs, e -> e.subst(rest))).simplify();
             } catch (EvaluationException ee) {
                 assert false : "should never happen";
                 /* fall through */
@@ -277,10 +273,7 @@ public class Expr extends AstNode {
             }
         }
         // leave this expr alone, but simplify its args
-        return this.build(this.atom, foreach(this.args, new F<>() {
-            @Override
-            public Expr map(Expr e) { return e.simplify(); }
-        }));
+        return this.build(this.atom, foreach(this.args, Expr::simplify));
     }
     private static class CantSimplifyException extends RuntimeException { }
     // this is like ExprList._APPLY.subst, except we bail (throwing
@@ -306,10 +299,7 @@ public class Expr extends AstNode {
             throw new CantSimplifyException();
         }
         // recurse into args, looking for refs.
-        List<Expr> nArgs = foreach(this.args, new F<>() {
-            @Override
-            public Expr map(Expr e) { return e.subst(args); }
-        });
+        List<Expr> nArgs = foreach(this.args, e -> e.subst(args));
         return this.build(this.atom, nArgs);
     }
 

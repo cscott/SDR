@@ -3,7 +3,6 @@ package net.cscott.sdr.anim;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
 import java.util.logging.Level;
 
@@ -166,11 +165,9 @@ public class Game extends FixedFramerateGame {
                 final Image icon128= TextureManager.loadImage(
                         Game.class.getClassLoader().getResource(
                                 "net/cscott/sdr/icon128.png"), false);
-                queueMan.update(new Callable<Void>() {
-                    public Void call() throws Exception {
-                        display.setIcon(new Image[]{ icon128, icon32, icon16});
-                        return null;
-                    }
+                queueMan.update(() -> {
+                    display.setIcon(new Image[]{ icon128, icon32, icon16});
+                    return null;
                 });
  
                 inc("Loading formations...");
@@ -215,19 +212,17 @@ public class Game extends FixedFramerateGame {
                 
                 inc("Loading menus...");
                 menuState = new MenuState(Game.this);
-                queueMan.update(new Callable<Void>() {
-                    public Void call() throws Exception {
-                        GameStateManager m = GameStateManager.getInstance();
-                        musicState.setActive(true);
-                        hudState.setActive(false);
-                        menuState.setActive(true);
-                        m.attachChild(musicState);
-                        m.attachChild(hudState);
-                        m.attachChild(menuState);
-                        m.detachChild(loading);
-                        m.attachChild(loading);// reorder to keep on top.
-                        return null;
-                    }
+                queueMan.update(() -> {
+                    GameStateManager m = GameStateManager.getInstance();
+                    musicState.setActive(true);
+                    hudState.setActive(false);
+                    menuState.setActive(true);
+                    m.attachChild(musicState);
+                    m.attachChild(hudState);
+                    m.attachChild(menuState);
+                    m.detachChild(loading);
+                    m.attachChild(loading);// reorder to keep on top.
+                    return null;
                 });
 
                 // from now on, make sure that all update tasks are completed
@@ -239,19 +234,15 @@ public class Game extends FixedFramerateGame {
                 mode.switchToMenu();
             }
             private void attach(final GameState state,final boolean active){
-                queueMan.update(new Callable<Void>() {
-                    public Void call() throws Exception {
-                        state.setActive(active);
-                        GameStateManager.getInstance().attachChild(state);
-                        return null;
-                    }
+                queueMan.update(() -> {
+                    state.setActive(active);
+                    GameStateManager.getInstance().attachChild(state);
+                    return null;
                 });
             }
             private void inc(final String msg) {
-                queueMan.update(new Callable<Void>() {
-                    public Void call() throws Exception {
-                        loading.increment(msg); return null;
-                    }
+                queueMan.update(() -> {
+                    loading.increment(msg); return null;
                 });
             }
         }.start();

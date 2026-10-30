@@ -46,7 +46,6 @@ import net.cscott.sdr.calls.lists.C1List.ConcentricType;
 import net.cscott.sdr.calls.transform.Fractional;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
-import net.cscott.sdr.util.Tools.F;
 
 /** 
  * The <code>BasicList</code> class contains complex call
@@ -84,10 +83,7 @@ public abstract class BasicList {
         @Override
         public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
             assert args.size()>=1;
-            List<SeqCall> l = foreach(args, new F<>(){
-                @Override
-                public Apply map(Expr e) { return new Apply(e); }
-            });
+            List<SeqCall> l = foreach(args, Apply::new);
             return new Evaluator.Standard(new Seq(l));
         }
         @Override
