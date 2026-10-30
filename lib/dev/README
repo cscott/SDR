@@ -16,8 +16,8 @@ jacoco-0.8.16/jacocoant.jar (org.jacoco.ant-0.8.16-nodeps.jar):
 jline-0.9.94.jar:
  from https://jline.github.io/ (only for run-shell.sh; Rhino's shell
  doesn't know jline 3+, and PMSD uses lib/jline-4.4.8.jar)
-antlr:
- from http://www.antlr.org/download.html
+antlr-complete-3.5.3.jar (and ../antlr-runtime-3.5.3.jar):
+ from https://www.antlr3.org/ (Maven Central)
 package-lists/*/package-list:
  javadoc package lists for linking to the docs of jars in lib/, made with
   for j in JARS; do unzip -Z1 $j; done | grep '\.class$' | grep -v '^META-INF' \

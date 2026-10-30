@@ -19,7 +19,7 @@ public class AntlrPostProcessor {
     /**
      * Search-and-replace an ANTLR-generated grammar to move large static
      * initializers into their own class files, to avoid "code too large"
-     * errors.
+     * errors, and to quiet javac's warnings about ANTLR's code.
      */
     public static void main(String[] args) throws IOException {
         File f = new File(args[0].replaceFirst("\\.g$", "Parser.java"));
@@ -27,6 +27,9 @@ public class AntlrPostProcessor {
         String contents = readAll(r);
         // ok, look for the big initializers and break them up
         String nContents = replaceBigInitializers(contents);
+        // javac doesn't know "all"; ANTLR 3.4 used to add "unchecked" too
+        nContents = nContents.replace("@SuppressWarnings(\"all\")",
+                                      "@SuppressWarnings({\"all\", \"unchecked\"})");
         if (!contents.equals(nContents)) {
             System.err.println("Rewriting: "+f.getName());
             Writer fw = new OutputStreamWriter(new FileOutputStream(f), "utf-8");

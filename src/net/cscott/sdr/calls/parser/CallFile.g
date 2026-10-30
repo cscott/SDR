@@ -626,10 +626,10 @@ number
     @init { String nstr=null; }
     : ( opt_sign (INTEGER)? INTEGER SLASH INTEGER ) =>
       s=opt_sign (p=INTEGER)? n=INTEGER SLASH d=INTEGER
-        {nstr = s.s+(p==null?"":(p.getText()+" "))+n.getText()+"/"+d.getText();}
+        {nstr = $s.s+(p==null?"":(p.getText()+" "))+n.getText()+"/"+d.getText();}
         -> ^(NUMBER[nstr])
     | s=opt_sign i=INTEGER
-        { nstr = s.s+i.getText(); }
+        { nstr = $s.s+i.getText(); }
         -> ^(NUMBER[nstr])
     ;
 opt_sign returns [String s]
