@@ -43,7 +43,7 @@ public class ClSimplexSolver extends ClTableau {
         ClLinearExpression e = new ClLinearExpression();
         _rows.put(_objective, e);
         _stkCedcns = new Stack<Integer>();
-        _stkCedcns.push(new Integer(0));
+        _stkCedcns.push(Integer.valueOf(0));
 
         if (fTraceOn)
             traceprint("objective expr == " + rowExpression(_objective));
@@ -171,7 +171,7 @@ public class ClSimplexSolver extends ClTableau {
         // may later want to do more in here
         _infeasibleRows.clear();
         resetStayConstants();
-        _stkCedcns.addElement(new Integer(_editVarMap.size()));
+        _stkCedcns.addElement(Integer.valueOf(_editVarMap.size()));
         return this;
     }
 

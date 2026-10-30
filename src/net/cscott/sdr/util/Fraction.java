@@ -146,11 +146,8 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      * <code>Fraction</code> representation of 1/4.
      */
     public static final Fraction ONE_QUARTER = new Fraction(1, 4);
-    /**
-     * <code>Fraction</code> representation of 2/4.
-     * @deprecated This is an unreduced fraction for backwards-compatibility,
-     *   and is prone to overflow during arithmetic.  Use ONE_HALF instead.
-     */
+    // (An unreduced 2/4 was here for backwards-compatibility, but it was
+    // prone to overflow during arithmetic.  Use ONE_HALF instead.)
     //public static final Fraction TWO_QUARTERS = getFraction(2, 4);
     /**
      * <code>Fraction</code> representation of -3/4.
@@ -265,6 +262,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      *   thus subject to overflow.  It should not be used in new
      *   code.  Use valueOf() instead.
      */
+    @Deprecated
     public static Fraction getFraction(final int numerator,
                                        final int denominator) {
         Fraction f = valueOf(numerator, denominator);
@@ -411,6 +409,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      *   thus subject to overflow.  It should not be used in new
      *   code.  Use valueOf() instead.
      */
+    @Deprecated
     public static Fraction getFraction(int whole, int numerator, int denominator) {
         Fraction f = valueOf(whole, numerator, denominator);
         if (f.denominator!=Math.abs(denominator)) {
@@ -472,6 +471,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      * @deprecated All fractions are now stored as reduced fractions;
      *             use the valueOf() method instead.
      */
+    @Deprecated
     public static Fraction getReducedFraction(int numerator, int denominator) {
         return valueOf(numerator, denominator);
     }
@@ -491,6 +491,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      * @throws ArithmeticException if the the algorithm does not converge
      * @deprecated Renamed this method to valueOf() for consistency.
      */
+    @Deprecated
     public static Fraction getFraction(double value) {
         return valueOf(value);
     }
@@ -602,6 +603,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      *   thus subject to overflow.  It should not be used in new
      *   code.  Use valueOf() instead.
      */
+    @Deprecated
     public static Fraction getFraction(String str) {
         return valueOf(str, true/* backwards-compatible */);
     }
@@ -794,6 +796,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      * @deprecated Unless you are using deprecated methods
      *   this operation is a no-op.
      */
+    @Deprecated
     public Fraction reduce() { return this; /* do nothing */ }
 
     /**
@@ -1080,6 +1083,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      *  <code>Integer.MAX_VALUE</code>
      * @deprecated Renamed to multiply()
      */
+    @Deprecated
     public Fraction multiplyBy(Fraction fraction) {
         return multiply(fraction);
     }
@@ -1132,6 +1136,7 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
      *  <code>Integer.MAX_VALUE</code>
      * @deprecated Renamed to divide()
      */
+    @Deprecated
     public Fraction divideBy(Fraction fraction) {
         return divide(fraction);
     }

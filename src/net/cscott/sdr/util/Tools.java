@@ -57,6 +57,7 @@ public abstract class Tools {
      *  js> map = Tools.m(Tools.p(1,2), Tools.p(1,3), Tools.p(1,4))
      *  {1.0=4.0}
      */
+    @SafeVarargs
     public static <A,B> Map<A,B> m(Map.Entry<A,B>... items) {
         if (items.length==0) return Collections.emptyMap();
         LinkedHashMap<A,B> result = new LinkedHashMap<A,B>(items.length);
@@ -113,6 +114,7 @@ public abstract class Tools {
      *  js> ll.size()
      *  5
      */
+    @SafeVarargs
     public static <A> List<A> l(A... items) {
         switch(items.length) {
         case 0: return Collections.emptyList();
@@ -163,6 +165,7 @@ public abstract class Tools {
      *  js> ss.size()
      *  3
      */
+    @SafeVarargs
     public static <A> Set<A> s(A... items) {
         switch(items.length) {
         case 0: return Collections.emptySet();
@@ -211,6 +214,7 @@ public abstract class Tools {
      *  js> map = Tools.mms(Tools.p(1,2), Tools.p(1,3), Tools.p(1,2))
      *  {1.0=[2.0, 3.0]}
      */
+    @SafeVarargs
     public static <K,V> SetMultiMap<K,V> mms(Map.Entry<K,V>... items) {
 	SetMultiMap<K,V> result = new GSMM<K,V>();
 	for (Map.Entry<K,V> me : items)
@@ -253,6 +257,7 @@ public abstract class Tools {
      *  js> map = Tools.mml(Tools.p(1,2), Tools.p(1,3), Tools.p(1,2))
      *  {1.0=[2.0, 3.0, 2.0]}
      */
+    @SafeVarargs
     public static <K,V> ListMultiMap<K,V> mml(Map.Entry<K,V>... items) {
 	ListMultiMap<K,V> result = new GLMM<K,V>();
 	for (Map.Entry<K,V> me : items)

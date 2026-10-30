@@ -22,6 +22,7 @@ public class LL<T> implements Iterable<T> {
      *  js> l = LL.create("a","b","c","d");
      *  [a, b, c, d]
      */
+    @SafeVarargs
     public static <T> LL<T> create(T... elements) {
         LL<T> result = NULL();
         for (T t: elements)

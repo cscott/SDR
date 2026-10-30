@@ -35,6 +35,7 @@ import com.jme.util.geom.Debugger;
  * @version $Id: SdrBaseGame.java,v 1.4 2006-10-25 17:46:46 cananian Exp $
  * @deprecated Replaced by {@link Game}.
  */
+@Deprecated
 public abstract class SdrBaseGame extends FixedFramerateGame {
     /** Our camera. */
     protected Camera cam;

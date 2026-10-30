@@ -287,6 +287,7 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
      *  is a clockwise movement.
      * @deprecated don't really work on normalized rotations */
     // XXX careful: doesn't really work on normalized rotations
+    @Deprecated
     static boolean isCW(ExactRotation from, ExactRotation to) {
 	return from.compareTo(to) < 0;
     }
@@ -294,6 +295,7 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
      *  is a counter-clockwise movement.
      * @deprecated don't really work on normalized rotations */
     // XXX careful: doesn't really work on normalized rotations
+    @Deprecated
     static boolean isCCW(ExactRotation from, ExactRotation to) {
 	return from.compareTo(to) > 0;
     }

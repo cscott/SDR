@@ -29,6 +29,7 @@ import com.jme.util.TextureManager;
 /**
  * @deprecated This was the original implementation; replaced by {@link Game}.
  */
+@Deprecated
 public class SdrGame extends SdrBaseGame {
 
     private Skybox skybox;
