@@ -381,11 +381,12 @@ def: partner swing
       call: _swing to wall, _finish swing
     from: ANY
       // start with turn and touch if necessary
-      call: _turn and touch, _swing to wall, _finish swing
+      call: _in(1, _turn and touch), _swing to wall, _finish swing
 
 // turn 1/2 or 3/8, whichever will leave you aligned to a wall.
 // this also ensures that we always swing at least 3/8 around
 def: _swing to wall
+  call: cast(1/2) // extra cast to ensure everyone swings all the way around
   call: _with designated(MATCH(_FACING PATTERN(), "[<>^v]"), \
                          _designees swing to wall)
 def: _designees swing to wall
@@ -409,45 +410,26 @@ def: _finish swing
       // in RH MINIWAVE, but don't break into subformations
       condition: formation(RH MINIWAVE)
       from: ANY
-        condition: MATCH(_INOUT PATTERN(BOY), "iiii")
-        call: _break out from swing
+        call: _swing a quarter, _finish swing
       from: ANY
-        call: _swing until boys in, _break out from swing
+        call: _finish break out from swing
 
-// designated dancers do nothing; nondesignated dancers swing 1/8 if they
-// are not aligned to walls, else swing 1/4
-def: _swing until boys in
-  from: ANY
-    ends in: MATCH(_INOUT PATTERN(BOY), "iiii")
-      call: _outfacers swing
-  from: ANY
-    // tail recursion
-    call: _outfacers swing, _swing until boys in
-
-def: _outfacers swing
-  call: _with designated(MATCH(_INOUT PATTERN(), "i"), \
-                         _nondesignee boys swing 1/4)
-
-// swing 1/4 unless the boy is designated (which means he's facing in)
-def: _nondesignee boys swing 1/4
+// each couple swings another quarter, if it can; fails if no couple swings
+def: _swing a quarter
+  ends in: MATCH(_ROLL PATTERN(), ".*R.*"), "Nobody swings"
   from: RH MINIWAVE
-    from: condition(ARE(BOY, DESIGNATED))
-      call: nothing
     from: ANY
+      // keep swinging until the boy faces "in" (in the whole set, not
+      // just in his miniwave)...
+      condition: not(MATCH(_AT TOP LEVEL(_INOUT PATTERN(BOY)), "i"))
       call: cast(1/4)
-
-def: _break out from swing
-  from: ANY
-    call: _swing more, _finish break out from swing
-  from: ANY
-    call: _finish break out from swing
-
-// make sure we swing to promenade direction in certain pinwheel formations,
-// where we can go an extra quarter while still having all the boys
-// facing "in"
-def: _swing more
-  ends in: MATCH(_INOUT PATTERN(BOY), "iiii")
-    call: cast(1/4)
+    from: ANY
+      // ...and then as long as he still faces in at the end of it; this
+      // leaves the couples in a pinwheel in certain formations
+      ends in: MATCH(_AT TOP LEVEL(_INOUT PATTERN(BOY)), "i")
+        call: cast(1/4)
+    from: ANY
+      call: nothing
 
 def: _finish break out from swing
   in: 1
@@ -793,6 +775,23 @@ def: allemande left
       call: trade, step thru
     from: ANY
       call: mirror(_turn and touch), allemande left
+    from: ANY
+      // eg from the pinwheel after a swing: the boys face left to face
+      // the girl they allemande with, and everyone steps into a thar
+      call: _step to a thar, allemande left
+
+// boys face left and everyone takes a half-step forward, in one
+// primitive so the half-step isn't breathed away
+def: _step to a thar
+  in: 2
+  ends in: formation(THAR), "Didn't end in a thar"
+  from: ANY
+    select: BOY
+      prim: 0, 0, left
+      prim: 0, 1, none
+    select: GIRL
+      prim: 0, 0, none
+      prim: 0, 1, none
 
 // callerlab #7: ARM TURNS
 

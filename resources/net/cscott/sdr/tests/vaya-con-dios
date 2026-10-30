@@ -123,21 +123,21 @@ sdr> trade by
 | 
 | 4G>  1B<  1G>  2B<
 sdr> swing the corner
-| 4B>  2G<
+|           2G<
 | 
-| 3G>  3B<
+| 3Gv  4Bv  3B<
 | 
-| 1B>  1G<
+|      1B>  2B^  1G^
 | 
-| 4G>  2B<
+|      4G>
 sdr> left allemande
-| 4B<  2G>
+|      4B<  2G>
 | 
-| 3G^  3B^
+| 3G^            3B^
 | 
-| 1Bv  1Gv
+| 1Bv            1Gv
 | 
-| 4G<  2B>
+|      4G<  2B>
 sdr> promenade home
 |      2Gv  3Bv
 | 
