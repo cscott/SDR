@@ -198,20 +198,17 @@ public class TextureText extends Node {
      * alignment settings. */
     private void recenter() {
         // the "native" center of the quad is at its center.
-        float ox, oy;
-        switch (this.alignX) {
-        default:
-        case LEFT: ox = -this.width/2f; break;
-        case CENTER: ox = 0; break;
-        case RIGHT: ox = this.width/2f; break;
-        }
-        switch (this.alignY) {
-        case TOP: oy = this.height/2f; break;
-        case MIDDLE: oy = 0; break;
-        default:
-        case BASELINE: oy = this.baseline-this.height/2f; break;
-        case BOTTOM: oy = -this.height/2f; break;
-        }
+        float ox = switch (this.alignX) {
+        case LEFT -> -this.width/2f;
+        case CENTER -> 0;
+        case RIGHT -> this.width/2f;
+        };
+        float oy = switch (this.alignY) {
+        case TOP -> this.height/2f;
+        case MIDDLE -> 0;
+        case BASELINE -> this.baseline-this.height/2f;
+        case BOTTOM -> -this.height/2f;
+        };
         // 
         this.quad.setLocalTranslation(new Vector3f(-ox,-oy,0f));
     }

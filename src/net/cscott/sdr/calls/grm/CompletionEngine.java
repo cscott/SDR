@@ -277,16 +277,12 @@ public class CompletionEngine {
         final TokenType type;
         Token(String text, TokenType type) { this.text=text; this.type=type; }
         boolean matches(String literal) {
-            switch(type) {
-            case STRING:
-                return literal.equalsIgnoreCase(text);
-            case FRAGMENT:
-                return literal.toLowerCase().startsWith(text.toLowerCase());
-            case FRACTION:
-                return false;
-            }
-            assert false : "unmatched input";
-            return false;
+            return switch(type) {
+            case STRING -> literal.equalsIgnoreCase(text);
+            case FRAGMENT ->
+                literal.toLowerCase().startsWith(text.toLowerCase());
+            case FRACTION -> false;
+            };
         }
         public String toString() {
             return "<"+this.text+","+this.type+">";

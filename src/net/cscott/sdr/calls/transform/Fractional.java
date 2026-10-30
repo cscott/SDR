@@ -93,16 +93,15 @@ public class Fractional extends PartsVisitor<Fraction> {
     public Part visit(Part p, Fraction f) {
         if (Fraction.ONE.equals(f))
             return p;
-        switch (p.divisibility) {
-        case DIVISIBLE:
-            return (Part) super.visit(p, f);
-        case INDETERMINATE:
+        return switch (p.divisibility) {
+        case DIVISIBLE -> (Part) super.visit(p, f);
+        case INDETERMINATE -> {
             assert false : "should never recurse into seq containing indeterminate part";
-        default:
-            assert false : "case not handled in divisibility enum";
-        case INDIVISIBLE:
             throw new BadCallException("Can't divide indivisible part");
         }
+        case INDIVISIBLE ->
+            throw new BadCallException("Can't divide indivisible part");
+        };
     }
     @Override
     public SeqCall visit(Apply apply, Fraction f) {

@@ -487,11 +487,11 @@ public class Position implements Comparable<Position> {
         EnumSet<Flag> nflags = EnumSet.noneOf(Flag.class);
         for (Flag f : this.flags) {
             switch (f) {
-            case ROLL_LEFT: nflags.add(Flag.ROLL_RIGHT); break;
-            case ROLL_RIGHT: nflags.add(Flag.ROLL_LEFT); break;
-            case SWEEP_LEFT: nflags.add(Flag.SWEEP_RIGHT); break;
-            case SWEEP_RIGHT: nflags.add(Flag.SWEEP_LEFT); break;
-            case PASS_LEFT: /* we'll deal with this later */ break;
+            case ROLL_LEFT -> nflags.add(Flag.ROLL_RIGHT);
+            case ROLL_RIGHT -> nflags.add(Flag.ROLL_LEFT);
+            case SWEEP_LEFT -> nflags.add(Flag.SWEEP_RIGHT);
+            case SWEEP_RIGHT -> nflags.add(Flag.SWEEP_LEFT);
+            case PASS_LEFT -> { /* we'll deal with this later */ }
             }
         }
         if (mirrorShoulderPass ^ this.flags.contains(Flag.PASS_LEFT))

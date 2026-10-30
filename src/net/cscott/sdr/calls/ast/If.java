@@ -76,8 +76,8 @@ public class If extends Comp {
     public String argsToString() {
         StringBuilder sb = new StringBuilder();
         switch (when) {
-        case AFTER: sb.append("'AFTER "); break;
-        case BEFORE: sb.append("'BEFORE "); break;
+        case AFTER -> sb.append("'AFTER ");
+        case BEFORE -> sb.append("'BEFORE ");
         }
         sb.append(condition.toString()+" "+child.toString());
         if (message!=null) {

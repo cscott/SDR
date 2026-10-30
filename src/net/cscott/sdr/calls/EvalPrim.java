@@ -390,14 +390,13 @@ public abstract class EvalPrim {
         // XXX: we may need to do something smarter here eventually.
         // XXX: por should be the center of our formation, and mapped back
         //      to a real physical center?
-        PointOfRotation por = null;
-        switch(formationSize) {
-        case 1: por = PointOfRotation.SINGLE_DANCER; break;
-        case 2: por = PointOfRotation.TWO_DANCERS; break;
-        case 4: por = PointOfRotation.FOUR_DANCERS; break;
-        case 8: por = PointOfRotation.SQUARE_CENTER; break;
-        default: break;
-        }
+        PointOfRotation por = switch(formationSize) {
+        case 1 -> PointOfRotation.SINGLE_DANCER;
+        case 2 -> PointOfRotation.TWO_DANCERS;
+        case 4 -> PointOfRotation.FOUR_DANCERS;
+        case 8 -> PointOfRotation.SQUARE_CENTER;
+        default -> null;
+        };
         // the arc center is the center of the formation, although we should
         // set it to null if this motion doesn't involve rotation, or to the
         // dancer's location if only rotation is involved.

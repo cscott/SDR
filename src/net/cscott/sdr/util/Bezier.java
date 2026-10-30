@@ -107,56 +107,47 @@ public class Bezier {
         /** Evaluate the given Bezier at the given time parameter, which should
          *  be in the range [0, 1]. */
         public Point evaluate(Fraction t) {
-            switch (degree()) {
-            case 0:
-            case 1:
-                return raise().evaluate(t);
-            case 2:
-                return new Point
-                    (quadInterp(p[0].x, p[1].x, p[2].x, t),
-                     quadInterp(p[0].y, p[1].y, p[2].y, t));
-            case 3:
-                return new Point
-                    (cubicInterp(p[0].x, p[1].x, p[2].x, p[3].x, t),
-                     cubicInterp(p[0].y, p[1].y, p[2].y, p[3].y, t));
-            default:
-                throw new RuntimeException
-                    ("Higher-order beziers not supported.");
-            }
+            return switch (degree()) {
+            case 0, 1 -> raise().evaluate(t);
+            case 2 -> new Point
+                (quadInterp(p[0].x, p[1].x, p[2].x, t),
+                 quadInterp(p[0].y, p[1].y, p[2].y, t));
+            case 3 -> new Point
+                (cubicInterp(p[0].x, p[1].x, p[2].x, p[3].x, t),
+                 cubicInterp(p[0].y, p[1].y, p[2].y, p[3].y, t));
+            default -> throw new RuntimeException
+                ("Higher-order beziers not supported.");
+            };
         }
         /** Evaluate one dimension of the given Bezier in floating point. */
         public double evaluateX(double t) {
-            switch (degree()) {
-            case 0:
-            case 1: return raise().evaluateX(t);
-            case 2: return quadInterp(p[0].x.doubleValue(),
-                                      p[1].x.doubleValue(),
-                                      p[2].x.doubleValue(), t);
-            case 3: return cubicInterp(p[0].x.doubleValue(),
-                                       p[1].x.doubleValue(),
-                                       p[2].x.doubleValue(),
-                                       p[3].x.doubleValue(), t);
-            default:
-                throw new RuntimeException
-                    ("Higher-order beziers not supported.");
-            }
+            return switch (degree()) {
+            case 0, 1 -> raise().evaluateX(t);
+            case 2 -> quadInterp(p[0].x.doubleValue(),
+                                 p[1].x.doubleValue(),
+                                 p[2].x.doubleValue(), t);
+            case 3 -> cubicInterp(p[0].x.doubleValue(),
+                                  p[1].x.doubleValue(),
+                                  p[2].x.doubleValue(),
+                                  p[3].x.doubleValue(), t);
+            default -> throw new RuntimeException
+                ("Higher-order beziers not supported.");
+            };
         }
         /** Evaluate one dimension of the given Bezier in floating point. */
         public double evaluateY(double t) {
-            switch (degree()) {
-            case 0:
-            case 1: return raise().evaluateY(t);
-            case 2: return quadInterp(p[0].y.doubleValue(),
-                                      p[1].y.doubleValue(),
-                                      p[2].y.doubleValue(), t);
-            case 3: return cubicInterp(p[0].y.doubleValue(),
-                                       p[1].y.doubleValue(),
-                                       p[2].y.doubleValue(),
-                                       p[3].y.doubleValue(), t);
-            default:
-                throw new RuntimeException
-                    ("Higher-order beziers not supported.");
-            }
+            return switch (degree()) {
+            case 0, 1 -> raise().evaluateY(t);
+            case 2 -> quadInterp(p[0].y.doubleValue(),
+                                 p[1].y.doubleValue(),
+                                 p[2].y.doubleValue(), t);
+            case 3 -> cubicInterp(p[0].y.doubleValue(),
+                                  p[1].y.doubleValue(),
+                                  p[2].y.doubleValue(),
+                                  p[3].y.doubleValue(), t);
+            default -> throw new RuntimeException
+                ("Higher-order beziers not supported.");
+            };
         }
         /** Compute the derivative of the given Bezier curve.
          * @doc.test Derivative of a straight line is a constant:

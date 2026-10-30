@@ -836,13 +836,11 @@ public class PMSD {
         }
         // enable some extra features
         public boolean hasFeature(Context cx, int featureIndex) {
-            switch (featureIndex) {
-            case Context.FEATURE_RESERVED_KEYWORD_AS_IDENTIFIER:
-            case Context.FEATURE_LOCATION_INFORMATION_IN_ERROR:
-                return true;
-            default:
-                return super.hasFeature(cx, featureIndex);
-            }
+            return switch (featureIndex) {
+            case Context.FEATURE_RESERVED_KEYWORD_AS_IDENTIFIER,
+                 Context.FEATURE_LOCATION_INFORMATION_IN_ERROR -> true;
+            default -> super.hasFeature(cx, featureIndex);
+            };
         }
     };
 }

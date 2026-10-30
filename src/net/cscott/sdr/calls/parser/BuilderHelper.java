@@ -40,14 +40,12 @@ abstract class BuilderHelper {
         ASIS, IN, OUT, ROLL, SWEEP;
         /** Translate {@link BDirection}s to {@link Direction}s. */
         Prim.Direction primDir() {
-            switch (this) {
-            case OUT:
-            case IN: return Prim.Direction.IN;
-            case ROLL: return Prim.Direction.ROLL;
-            case SWEEP: return Prim.Direction.SWEEP;
-            default: assert false;
-            case ASIS: return Prim.Direction.ASIS;
-            }
+            return switch (this) {
+            case OUT, IN -> Prim.Direction.IN;
+            case ROLL -> Prim.Direction.ROLL;
+            case SWEEP -> Prim.Direction.SWEEP;
+            case ASIS -> Prim.Direction.ASIS;
+            };
         }
         /** Flip the sign of the given fraction if {@link BDirection} is OUT. */
         Fraction setSign(Fraction f) {

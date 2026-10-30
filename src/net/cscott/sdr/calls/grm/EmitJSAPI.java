@@ -39,12 +39,10 @@ public class EmitJSAPI extends AbstractEmit {
     }
     @Override
     public String visit(Mult mult) {
-        switch(mult.type) {
-        case QUESTION:
-            return "["+mult.operand.accept(this)+"]";
-        default:
-            return super.visit(mult);
-        }
+        return switch(mult.type) {
+        case QUESTION -> "["+mult.operand.accept(this)+"]";
+        default -> super.visit(mult);
+        };
     }
     @Override
     public String visit(Nonterminal nt) {

@@ -132,17 +132,11 @@ public class HUDState extends BaseState {
         } else {
             this.callText.setText(message);
             this.callText.setCullMode(Spatial.CULL_NEVER);
-            ColorRGBA c = ColorRGBA.magenta; // should never see this!
-            switch (messageType) {
-            case CALL:
-                c = ColorRGBA.white; break;
-            case ADVICE:
-                c = ColorRGBA.yellow; break;
-            case ERROR:
-                c = ColorRGBA.red; break;
-            default:
-                assert false;
-            }
+            ColorRGBA c = switch (messageType) {
+            case CALL -> ColorRGBA.white;
+            case ADVICE -> ColorRGBA.yellow;
+            case ERROR -> ColorRGBA.red;
+            };
             this.callText.setColor(c);
         }
         lastMessage = message;

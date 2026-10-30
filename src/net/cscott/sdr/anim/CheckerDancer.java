@@ -85,20 +85,16 @@ public class CheckerDancer extends AnimDancer {
     static MaterialState getMaterial(DisplaySystem display, StandardDancer d) {
         int i = d.coupleNumber() - 1;
         if (materials[i]==null) {
-            ColorRGBA color;
-            switch (i) {
-            case 0:
-                color = new ColorRGBA(1,10/255f,18/255f,1); break;
-            case 1:
-                color = new ColorRGBA(0,135/255f,250/255f,1); break;
-            case 2:
-                color = new ColorRGBA(240/255f,1,69/255f,1); break;
-            case 3:
-                color = new ColorRGBA(151/255f,1,84/255f,1); break;
-            default:
-                color = null;
+            ColorRGBA color = switch (i) {
+            case 0 -> new ColorRGBA(1,10/255f,18/255f,1);
+            case 1 -> new ColorRGBA(0,135/255f,250/255f,1);
+            case 2 -> new ColorRGBA(240/255f,1,69/255f,1);
+            case 3 -> new ColorRGBA(151/255f,1,84/255f,1);
+            default -> {
                 assert false : "Bad couple number";
+                yield null;
             }
+            };
             materials[i] = display.getRenderer().createMaterialState();
             materials[i].setAmbient(color);
         }

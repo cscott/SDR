@@ -523,14 +523,12 @@ public abstract class BasicList {
             assert formations.size() >= 3 : "nothing to blend";
             Fraction blendTime=null, blendDuration=null;
             switch (type) {
-            case FIRST:
-                blendTime = blendDuration = formations.get(1).time;
-                break;
-            case LAST:
+            case FIRST -> blendTime = blendDuration = formations.get(1).time;
+            case LAST -> {
                 blendTime = formations.get(formations.size() - 2).time;
                 blendDuration = formations.get(formations.size() - 1).time
                     .subtract(blendTime);
-                break;
+            }
             }
             ds0.splitTime(blendTime); // be sure paths end at this time
             // muck around with dancer paths in ds0
