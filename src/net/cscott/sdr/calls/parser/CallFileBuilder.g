@@ -89,12 +89,12 @@ import net.cscott.jdoctest.Doctests;
         // Token.getInputStream() and try to cast the result to an
         // ANTLRStringStream.  If this is successful (whew!) use
         // ANTLRStringStream.getSourceName() to get the source filename.
-        if (!(a instanceof CommonTree)) return null;
-        Token t = ((CommonTree)a).getToken();
+        if (!(a instanceof CommonTree ct)) return null;
+        Token t = ct.getToken();
         if (t==null) return null;
         CharStream cs = t.getInputStream();
-        if (!(cs instanceof ANTLRStringStream)) return null;
-        return ((ANTLRStringStream)cs).getSourceName();
+        if (!(cs instanceof ANTLRStringStream ss)) return null;
+        return ss.getSourceName();
     }
     class SemanticException extends RuntimeException {
         SemanticException(String msg, String sourceName, int line, int column) {

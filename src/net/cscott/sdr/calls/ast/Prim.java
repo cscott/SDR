@@ -198,8 +198,7 @@ public class Prim extends SeqCall {
     }
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Prim)) return false;
-        Prim p = (Prim) o;
+        if (!(o instanceof Prim p)) return false;
         return new EqualsBuilder()
             .append(dirX, p.dirX)
             .append(x, p.x)

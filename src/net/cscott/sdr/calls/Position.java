@@ -558,8 +558,7 @@ public class Position implements Comparable<Position> {
     // utility functions.
     @Override
     public boolean equals(Object o) {
-	if (!(o instanceof Position)) return false;
-	Position p = (Position) o;
+	if (!(o instanceof Position p)) return false;
 	return new EqualsBuilder()
 	    .append(x, p.x)
 	    .append(y, p.y)
@@ -801,8 +800,7 @@ public class Position implements Comparable<Position> {
         }
         @Override
             public boolean equals(Object o) {
-            if (!(o instanceof Transform)) return false;
-            Transform t = (Transform) o;
+            if (!(o instanceof Transform t)) return false;
             return this.rotate.equals(t.rotate) &&
                 this.translate.equals(t.translate);
         }

@@ -85,13 +85,11 @@ public class BuildGrammars {
         Set<String> leftRecursiveLHS = new LinkedHashSet<>();
         for (RuleAndAction ra : rules) {
             if (!ra.rule.lhs.startsWith("anything_")) continue;
-            if (!(ra.rule.rhs instanceof Grm.Concat)) continue;
-            Grm.Concat c = (Grm.Concat) ra.rule.rhs;
+            if (!(ra.rule.rhs instanceof Grm.Concat c)) continue;
             assert c.sequence.size() > 1;
             Grm first = c.sequence.get(0);
             Grm tail = new Grm.Concat(c.sequence.subList(1, c.sequence.size()));
-            if (!(first instanceof Grm.Nonterminal)) continue;
-            Grm.Nonterminal nt = (Grm.Nonterminal) first;
+            if (!(first instanceof Grm.Nonterminal nt)) continue;
             if (!(ra.rule.lhs.equals(nt.ruleName))) continue;
             // ok, this sure is left recursive!
             leftRecursiveLHS.add(ra.rule.lhs);
@@ -194,12 +192,10 @@ public class BuildGrammars {
         Grm g = r.rhs;
         // spoken form should be ".... <anything>"; remove "<anything>"
         // and add to 'concept' production.
-        if (g instanceof Grm.Concat) {
-            Grm.Concat c = (Grm.Concat) g;
+        if (g instanceof Grm.Concat c) {
             if (c.sequence.size() > 1) {
                 Grm last = c.sequence.get(c.sequence.size()-1);
-                if (last instanceof Grm.Nonterminal) {
-                    Grm.Nonterminal nt = (Grm.Nonterminal) last;
+                if (last instanceof Grm.Nonterminal nt) {
                     if (nt.ruleName.equals("anything") &&
                         nt.param==highestNontermParam(r.rhs)) {
                         // okay! munge this production!
@@ -217,15 +213,12 @@ public class BuildGrammars {
         Grm g = r.rhs;
         // spoken form should be ".... <concept> <anything>"; remove
         // "<concept> <anything>" and add to 'metaconcept' production.
-        if (g instanceof Grm.Concat) {
-            Grm.Concat c = (Grm.Concat) g;
+        if (g instanceof Grm.Concat c) {
             if (c.sequence.size()>2) {
                 Grm penult = c.sequence.get(c.sequence.size()-2);
                 Grm last = c.sequence.get(c.sequence.size()-1);
-                if (penult instanceof Grm.Nonterminal &&
-                    last instanceof Grm.Nonterminal) {
-                    Grm.Nonterminal nt1 = (Grm.Nonterminal) penult;
-                    Grm.Nonterminal nt2 = (Grm.Nonterminal) last;
+                if (penult instanceof Grm.Nonterminal nt1 &&
+                    last instanceof Grm.Nonterminal nt2) {
                     if (nt1.ruleName.equals("concept") && nt1.param==0 &&
                         nt2.ruleName.equals("anything") && nt2.param==1) {
                         // okay! munge this production!
@@ -289,9 +282,9 @@ public class BuildGrammars {
         return l;
     }
     private static List<Grm> splitTopLevelAlt(Grm g, List<Grm> l) {
-        if (!(g instanceof Alt))
+        if (!(g instanceof Alt a))
             l.add(g);
-        else for (Grm gg : ((Alt)g).alternates)
+        else for (Grm gg : a.alternates)
             splitTopLevelAlt(gg, l);
         return l; // for convenience.
     }

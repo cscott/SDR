@@ -166,9 +166,9 @@ public class RecogThread extends Thread {
                 FloatData firstFeature = null, lastFeature = null;
                 while (t!=null) {
                     Data feature = t.getData();
-                    if (feature != null && feature instanceof FloatData) {
-                        if (firstFeature==null) firstFeature=(FloatData)feature;
-                        lastFeature=(FloatData)feature;
+                    if (feature instanceof FloatData fd) {
+                        if (firstFeature==null) firstFeature=fd;
+                        lastFeature=fd;
                     }
                     t = t.getPredecessor();
                 }

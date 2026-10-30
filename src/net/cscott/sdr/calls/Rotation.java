@@ -134,8 +134,7 @@ public class Rotation {
     @Override
     public boolean equals(Object o) {
         if (this==o) return true; // common case.
-	if (!(o instanceof Rotation)) return false;
-        Rotation r = (Rotation) o;
+	if (!(o instanceof Rotation r)) return false;
         if (!this.modulus.equals(r.modulus)) return false;
         return this.normalize().amount.equals(r.normalize().amount);
     }

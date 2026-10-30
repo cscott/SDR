@@ -27,16 +27,14 @@ public class JavaSoundTest {
             int i=0;
             for (Line.Info lInfo : mixer.getSourceLineInfo()) {
                 System.out.println("  "+lInfo+" ("+lInfo.getClass()+")");
-                if (lInfo instanceof Port.Info) {
-                    Port.Info pInfo = (Port.Info) lInfo;
+                if (lInfo instanceof Port.Info pInfo) {
                     System.out.println("   NAME:"+pInfo.getName());
                 }
             }
             System.out.println(" TARGETS:");
             for (Line.Info lInfo : mixer.getTargetLineInfo()) {
                 System.out.println("  "+lInfo+" ("+lInfo.getClass()+")");
-                if (lInfo instanceof DataLine.Info) {
-                    DataLine.Info dli = (DataLine.Info) lInfo;
+                if (lInfo instanceof DataLine.Info dli) {
                     System.out.println(Arrays.asList(dli.getFormats()));
                 }
             }
@@ -66,8 +64,8 @@ public class JavaSoundTest {
                     l.open();
                     List<Control> lc = new ArrayList<>();
                     for (Control ctrl : l.getControls()) {
-                        if (ctrl instanceof CompoundControl) {
-                            lc.addAll(Arrays.asList(((CompoundControl)ctrl).getMemberControls()));
+                        if (ctrl instanceof CompoundControl cc) {
+                            lc.addAll(Arrays.asList(cc.getMemberControls()));
                         } else
                             lc.add(ctrl);
                     }

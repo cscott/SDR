@@ -89,8 +89,8 @@ public abstract class SdrFirstPersonHandler extends InputHandler {
             public void addAction( final InputActionInterface inputAction, String triggerCommand, boolean allowRepeats ) {
                 InputAction wrapperAction = new InputAction() {
                     {
-                        if (inputAction instanceof InputAction)
-                            setSpeed(((InputAction)inputAction).getSpeed());
+                        if (inputAction instanceof InputAction ia)
+                            setSpeed(ia.getSpeed());
                     }
                     public void performAction(InputActionEvent evt) {
                         inputAction.performAction(evt);

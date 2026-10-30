@@ -27,8 +27,7 @@ public class SimplifyGrm extends GrmVisitor<Grm> {
         Tools.ListMultiMap<Grm,Grm> commonPrefix = Tools.mml();
         for (Grm g : alt.alternates) {
             g = g.accept(this); // recursively simplify
-            if (g instanceof Concat) {
-                Concat c = ((Concat) g);
+            if (g instanceof Concat c) {
                 Grm head = c.sequence.get(0);
                 Grm tail = new Concat(c.sequence.subList(1, c.sequence.size()));
                 if (head instanceof Terminal || head instanceof Nonterminal) {
@@ -57,8 +56,8 @@ public class SimplifyGrm extends GrmVisitor<Grm> {
         // hoist nested concats into a single sequence.
         for (Grm g : concat.sequence) {
             g = g.accept(this);
-            if (g instanceof Concat)
-                l.addAll(((Concat)g).sequence);
+            if (g instanceof Concat c)
+                l.addAll(c.sequence);
             else
                 l.add(g);
         }

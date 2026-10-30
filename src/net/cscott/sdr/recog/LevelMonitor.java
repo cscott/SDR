@@ -60,8 +60,7 @@ public class LevelMonitor extends BaseDataProcessor {
     @Override
     public Data getData() throws DataProcessingException {
         Data audio = getPredecessor().getData();
-        if (audio!=null && audio instanceof DoubleData) {
-            DoubleData dd = (DoubleData) audio;
+        if (audio instanceof DoubleData dd) {
             addData(dd);
         }
         return audio;

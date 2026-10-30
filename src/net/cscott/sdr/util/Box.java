@@ -232,8 +232,7 @@ public class Box {
     }
 
     public boolean equals(Object o) {
-        if (!(o instanceof Box)) return false;
-        Box b = (Box) o;
+        if (!(o instanceof Box b)) return false;
         return new EqualsBuilder()
             .append(this.ll, b.ll)
             .append(this.ur, b.ur)

@@ -589,8 +589,7 @@ public abstract class BasicList {
                 public Evaluator evaluate(DanceState ds) {
                     Formation currentFormation = ds.currentFormation();
                     for (Dancer d : currentFormation.dancers()) {
-                        if (!(d instanceof StandardDancer)) continue;
-                        StandardDancer sd = (StandardDancer) d;
+                        if (!(d instanceof StandardDancer sd)) continue;
                         Position current = currentFormation.location(sd);
                         Position target = targetFormation.location(sd);
                         Fraction time = Fraction.ZERO;

@@ -83,8 +83,7 @@ public abstract class Grm {
     private transient int hashCache = 0;
     public boolean equals(Object o) {
         if (this==o) return true;
-        if (!(o instanceof Grm)) return false;
-        Grm g = (Grm) o;
+        if (!(o instanceof Grm g)) return false;
         if (!this.getName().equals(g.getName())) return false;
         List<Grm> a = this.getOperands();
         List<Grm> b = g.getOperands();

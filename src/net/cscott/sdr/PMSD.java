@@ -276,8 +276,7 @@ public class PMSD {
                 Set<Map.Entry<String,String>> result =
                     new HashSet<>();
                 for (Object key : ScriptableObject.getPropertyIds(props())) {
-                    if (!(key instanceof String)) continue;
-                    String name = (String) key;
+                    if (!(key instanceof String name)) continue;
                     String value = get(name);
                     result.add(new SimpleImmutableEntry<>
                                 (name, value));
@@ -804,8 +803,8 @@ public class PMSD {
             return buffer.length() - lastPart.length();
         }
         private static void addIdsFromObj(Scriptable obj, List<String> idList) {
-            Object[] ids = (obj instanceof ScriptableObject)
-                ? ((ScriptableObject)obj).getAllIds()
+            Object[] ids = (obj instanceof ScriptableObject so)
+                ? so.getAllIds()
                 : obj.getIds();
              for (Object o: ids) {
                  if (!(o instanceof String))

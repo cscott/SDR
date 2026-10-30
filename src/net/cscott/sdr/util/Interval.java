@@ -29,8 +29,7 @@ public class Interval implements Comparable<Interval> {
         return this.end.compareTo(i.end);
     }
     public boolean equals(Object o) {
-        if (!(o instanceof Interval)) return false;
-        Interval i = (Interval) o;
+        if (!(o instanceof Interval i)) return false;
         return new EqualsBuilder()
             .append(this.start, i.start)
             .append(this.end, i.end)

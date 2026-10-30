@@ -183,8 +183,8 @@ public class ClBranchAndBound {
             return v.hashCode() ^ branchVal.hashCode() ^ (isUp?61:0);
         }
         public boolean equals(Object o) {
-            if (!(o instanceof Branch)) return false;
-            return this.compareTo((Branch)o) == 0;
+            if (!(o instanceof Branch b)) return false;
+            return this.compareTo(b) == 0;
         }
         public String toString() {
             return "Branch("+v.name()+","

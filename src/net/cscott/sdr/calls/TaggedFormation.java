@@ -134,8 +134,7 @@ public class TaggedFormation extends Formation {
 
     // utility functions.
     public boolean equals(Object o) {
-	if (!(o instanceof TaggedFormation)) return false;
-	TaggedFormation f = (TaggedFormation) o;
+	if (!(o instanceof TaggedFormation f)) return false;
 	return new EqualsBuilder()
             .appendSuper(super.equals(o))
 	    .append(tags, f.tags)
@@ -242,8 +241,8 @@ public class TaggedFormation extends Formation {
         this.tags = UnmodifiableMultiMap.proxy(tags);//tags can be changed
     }
     public static TaggedFormation coerce(Formation f) {
-        if (f instanceof TaggedFormation)
-            return (TaggedFormation) f;
+        if (f instanceof TaggedFormation tf)
+            return tf;
         return new TaggedFormation(f, Tools.<Dancer,Tag>mml());
     }
     

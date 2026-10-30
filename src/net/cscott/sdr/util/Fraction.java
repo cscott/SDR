@@ -1176,10 +1176,9 @@ public class Fraction extends Number implements Serializable, Comparable<Fractio
         if (obj == this) {
             return true;
         }
-        if (obj instanceof Fraction == false) {
+        if (!(obj instanceof Fraction other)) {
             return false;
         }
-        Fraction other = (Fraction) obj;
         return (getNumerator() == other.getNumerator() &&
                 getDenominator() == other.getDenominator());
     }

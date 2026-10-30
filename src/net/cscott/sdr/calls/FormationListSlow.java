@@ -993,9 +993,9 @@ abstract class FormationListSlow {
         MultiMap<Dancer,Tag> tm = new GenericMultiMap<>
             (Factories.enumSetFactory(Tag.class));
         // add existing tags
-        if (f instanceof TaggedFormation)
+        if (f instanceof TaggedFormation tf)
             for (Dancer d : f.dancers())
-                tm.addAll(d, ((TaggedFormation)f).tags(d));
+                tm.addAll(d, tf.tags(d));
         // add explicitly specified tags.
         for (NumAndTags nt : tags)
             tm.addAll(dancers.get(nt.dancerNum), nt.tags);

@@ -102,18 +102,15 @@ public class EmitANTLRv3 extends AbstractEmit {
     private static Grm[] matchSuffix(Grm rhs) {
         // oh, for a pattern-matching language, oh
         // Grm.Concat(....., Grm.Mult(Grm.NonTerminal(..."_suffix"), STAR))
-        if (!(rhs instanceof Grm.Concat)) return nomatch(rhs);
-        Grm.Concat c = (Grm.Concat) rhs;
+        if (!(rhs instanceof Grm.Concat c)) return nomatch(rhs);
         if (c.sequence.size() < 2)
             return matchSuffix(c.sequence.get(0));
         List<Grm> headseq = c.sequence.subList(0, c.sequence.size()-1);
         Grm head=(headseq.size()==1) ? headseq.get(0) : new Grm.Concat(headseq);
         Grm tail = c.sequence.get(c.sequence.size()-1);
-        if (!(tail instanceof Grm.Mult)) return nomatch(rhs);
-        Grm.Mult m = (Grm.Mult) tail;
+        if (!(tail instanceof Grm.Mult m)) return nomatch(rhs);
         if (m.type != Grm.Mult.Type.STAR) return nomatch(rhs);
-        if (!(m.operand instanceof Grm.Nonterminal)) return nomatch(rhs);
-        Grm.Nonterminal nt = (Grm.Nonterminal) m.operand;
+        if (!(m.operand instanceof Grm.Nonterminal nt)) return nomatch(rhs);
         if (!nt.ruleName.endsWith("_suffix")) return nomatch(rhs);
         // A match! (whew!)
         return new Grm[] { head, nt };

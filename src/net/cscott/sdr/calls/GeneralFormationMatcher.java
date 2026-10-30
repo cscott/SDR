@@ -275,8 +275,8 @@ public class GeneralFormationMatcher {
         StringBuilder sb = new StringBuilder();
         assert goals.size() > 0;
         for (TaggedFormation goal : goals) {
-            String name = (goal instanceof NamedTaggedFormation) ?
-                    ((NamedTaggedFormation) goal).getName() : goal.toString();
+            String name = (goal instanceof NamedTaggedFormation ntf) ?
+                    ntf.getName() : goal.toString();
             if (sb.length()>0) sb.append(',');
             sb.append(name);
         }

@@ -77,8 +77,7 @@ public abstract class Call extends ExprFunc<Evaluator> {
     public final int hashCode() { return getName().hashCode(); }
     @Override
     public final boolean equals(Object o) {
-        if (!(o instanceof Call)) return false;
-        Call c = (Call) o;
+        if (!(o instanceof Call c)) return false;
         return this.getName().equals(c.getName());
     }
 

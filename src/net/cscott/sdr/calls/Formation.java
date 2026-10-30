@@ -277,8 +277,8 @@ public class Formation {
                 int c = p1.compareTo(p2);
                 if (c!=0) return c;
                 // break dancer ties.
-                if (d1 instanceof StandardDancer && d2 instanceof StandardDancer) {
-                    return ((StandardDancer)d1).ordinal() - ((StandardDancer)d2).ordinal();
+                if (d1 instanceof StandardDancer sd1 && d2 instanceof StandardDancer sd2) {
+                    return sd1.ordinal() - sd2.ordinal();
                 }
                 // ugly, but workable.
                 return d1.hashCode() - d2.hashCode();
@@ -295,8 +295,7 @@ public class Formation {
     // utility functions.
     @Override
     public boolean equals(Object o) {
-	if (!(o instanceof Formation)) return false;
-	Formation f = (Formation) o;
+	if (!(o instanceof Formation f)) return false;
 	return new EqualsBuilder()
 	    .append(location, f.location)
 	    .append(selected, f.selected)

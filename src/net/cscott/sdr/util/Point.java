@@ -30,8 +30,7 @@ public class Point {
         return dx.multiply(dx).add(dy.multiply(dy));
     }
     public boolean equals(Object o) {
-        if (!(o instanceof Point)) return false;
-        Point p = (Point) o;
+        if (!(o instanceof Point p)) return false;
         return new EqualsBuilder()
             .append(this.x, p.x)
             .append(this.y, p.y)

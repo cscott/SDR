@@ -40,8 +40,7 @@ public abstract class Predicate extends ExprFunc<Boolean> {
     public final int hashCode() { return getName().hashCode(); }
     @Override
     public final boolean equals(Object o) {
-        if (!(o instanceof Predicate)) return false;
-        Predicate c = (Predicate) o;
+        if (!(o instanceof Predicate c)) return false;
         return this.getName().equals(c.getName());
     }
 

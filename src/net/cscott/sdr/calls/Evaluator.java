@@ -236,8 +236,8 @@ public abstract class Evaluator {
         public boolean hasSimpleExpansion() { return true; }
         @Override
         public Comp simpleExpansion() {
-            if (continuation instanceof SeqCall)
-                return new Seq((SeqCall)continuation);
+            if (continuation instanceof SeqCall sc)
+                return new Seq(sc);
             return (Comp) continuation;
         }
         @Override

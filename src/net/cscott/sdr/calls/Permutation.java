@@ -140,8 +140,8 @@ public class Permutation implements Comparable<Permutation> {
         // even though we use hash consing, we need to implement equals
         // the "slow way", so that the hash cons map itself works
         // properly.
-        if (!(o instanceof Permutation)) return false;
-        return Arrays.equals(this.p, ((Permutation)o).p);
+        if (!(o instanceof Permutation pp)) return false;
+        return Arrays.equals(this.p, pp.p);
     }
     public int hashCode() {
         if (this.hash == 0)

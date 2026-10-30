@@ -621,9 +621,9 @@ public class ExprList {
         new SubsetPatternFunc("_couple num pattern") {
         @Override
         protected String dancerToString(TaggedFormation tf, Dancer d) {
-            if (!(d instanceof StandardDancer))
+            if (!(d instanceof StandardDancer sd))
                 return " ";
-            return ""+((StandardDancer)d).coupleNumber();
+            return ""+sd.coupleNumber();
         }
     };
     static { exprStringFuncs.put(_COUPLE_NUM_PATTERN.getName(), _COUPLE_NUM_PATTERN); }
