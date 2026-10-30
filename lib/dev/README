@@ -13,6 +13,9 @@ antlr3-ant.jar:
   http://fisheye2.atlassian.com/browse/~raw,r=5375/antlr-buildtools/ant/antlr-ant/main/antlr3-task/antlr3.jar
 jacoco-0.8.16/jacocoant.jar (org.jacoco.ant-0.8.16-nodeps.jar):
  from https://www.jacoco.org/jacoco/ (Maven Central)
+jline-0.9.94.jar:
+ from https://jline.github.io/ (only for run-shell.sh; Rhino's shell
+ doesn't know jline 3+, and PMSD uses lib/jline-4.4.8.jar)
 antlr:
  from http://www.antlr.org/download.html
 package-lists/*/package-list:

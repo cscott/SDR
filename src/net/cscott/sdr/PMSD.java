@@ -10,10 +10,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +37,18 @@ import net.cscott.sdr.calls.ast.Seq;
 import net.cscott.sdr.calls.grm.CompletionEngine;
 import net.cscott.sdr.util.ListUtils;
 
+import org.jline.reader.Candidate;
+import org.jline.reader.Completer;
+import org.jline.reader.CompletingParsedLine;
+import org.jline.reader.EndOfFileException;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.ParsedLine;
+import org.jline.reader.Parser;
+import org.jline.reader.Parser.ParseContext;
+import org.jline.reader.UserInterruptException;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.EvaluatorException;
@@ -446,18 +454,19 @@ public class PMSD {
         }
         // console i/o
         final Console c = System.console();
+        final boolean tty = isTerminal(c);
         // create ReaderWriter
         ReaderWriter rw;
         try {
-            // try to use JLine.  (The Console's writer doesn't flush on
-            // println as of JDK 21, and JLine won't flush it for us.)
-            rw = new JLineReaderWriter(c!=null ?
-                                       new PrintWriter(c.writer(), true) :
-                                       new PrintWriter(System.out, true));
+            // try to use JLine, if we're talking to a terminal
+            if (!tty) throw new IOException("not a terminal");
+            rw = new JLineReaderWriter();
         } catch (Throwable t) {
-            if (c!=null) {
+            if (tty) {
                 // try to use the System console, if available.
                 rw = new ReaderWriter() {
+                    // (the Console's writer doesn't flush on println)
+                    final PrintWriter pw = new PrintWriter(c.writer(), true);
                     @Override
                     String sourceName() { return "<stdin>"; }
                     @Override
@@ -465,7 +474,7 @@ public class PMSD {
                         return c.readLine("%s", prompt);
                     }
                     @Override
-                    PrintWriter writer() { return c.writer(); }
+                    PrintWriter writer() { return pw; }
                 };
             } else {
                 // ok, give up: use the simplest possible thing that could work
@@ -588,78 +597,122 @@ public class PMSD {
         }
         s._isDone = wasDone; // support nested invocations.
     }
-    /** Attempt to create a ReaderWriter based on JLine, without a
-     *  compile-time dependency.  Will throw an exception if JLine is not
-     *  available at runtime.
+    /** Returns true if {@code c} is attached to a terminal.  As of JDK 22,
+     *  {@link System#console()} returns a {@link Console} even when stdin
+     *  or stdout is redirected, and {@code Console.isTerminal()} says
+     *  whether it is a terminal; before then, it returns null.  (Call
+     *  {@code isTerminal()} reflectively until we require JDK 22.)
+     */
+    static boolean isTerminal(Console c) {
+        if (c==null) return false;
+        try {
+            return (Boolean) Console.class.getMethod("isTerminal").invoke(c);
+        } catch (ReflectiveOperationException e) {
+            return true; // JDK 21 or earlier
+        }
+    }
+    /** A ReaderWriter based on JLine.  Will throw an exception (or
+     *  error) if JLine is not available at runtime, or can't open the
+     *  terminal.
      */
     static class JLineReaderWriter extends ReaderWriter {
-        PrintWriter pw;
-        Class<?> consoleReaderClass;
-        Class<?> completorClass;
-        Method addCompletor;
-        Method readLine;
-        Object cr = null;
+        final Terminal terminal;
+        final PrintWriter pw;
+        LineReader lr = null;
 
-        JLineReaderWriter(PrintWriter pw) throws ClassNotFoundException, NoSuchMethodException {
-            this.pw = pw;
-            this.consoleReaderClass = Class.forName
-                ("jline.ConsoleReader", false, PMSD.class.getClassLoader());
-            this.completorClass = Class.forName
-                ("jline.Completor", false, PMSD.class.getClassLoader());
-            this.addCompletor = consoleReaderClass.getMethod
-                ("addCompletor", completorClass);
-            this.readLine = consoleReaderClass.getMethod
-                ("readLine", String.class);
+        JLineReaderWriter() throws IOException {
+            this.terminal = TerminalBuilder.builder()
+                .system(true).dumb(false).build();
+            // (as with the Console, the Terminal's writer doesn't flush
+            // on println)
+            this.pw = new PrintWriter(terminal.writer(), true);
         }
-        private Object initJLine(State state)
-            throws InstantiationException, IllegalAccessException,
-                   IllegalArgumentException, InvocationTargetException {
-            // initialize JLine!
-            Object consoleReader = consoleReaderClass.newInstance();
-            // add JLineCompletors
-            addCompletor(consoleReader, new SDRCallCompletor(state));
-            addCompletor(consoleReader, new JavascriptCompletor(state));
-            return consoleReader;
-        }
-        private void addCompletor(Object consoleReader,final JLineCompletor jlc)
-            throws IllegalArgumentException, IllegalAccessException,
-                   InvocationTargetException {
-            // Wow, this is ugly!
-            InvocationHandler handler = new InvocationHandler() {
-                @SuppressWarnings("unchecked")
-                public Object invoke(Object proxy, Method method, Object[] args)
-                    throws Throwable {
-                    assert args.length == 3;
-                    return jlc.complete((String) args[0],
-                            (Integer) args[1],
-                            (List) args[2]);
-                }
+        private LineReader initJLine(State state) {
+            final JLineCompletor[] completors = new JLineCompletor[] {
+                new SDRCallCompletor(state),
+                new JavascriptCompletor(state),
             };
-            Object proxy = Proxy.newProxyInstance
-                (PMSD.class.getClassLoader(),
-                 new Class[] { completorClass },
-                 handler);
-            addCompletor.invoke(consoleReader, proxy);
+            return LineReaderBuilder.builder()
+                .terminal(terminal)
+                .appName("sdr")
+                // our completors complete the whole line, up to the cursor
+                .parser(new Parser() {
+                    public ParsedLine parse(String line, int cursor,
+                                            ParseContext context) {
+                        return new WholeLine(line, cursor);
+                    }
+                })
+                .completer(new Completer() {
+                    public void complete(LineReader reader, ParsedLine line,
+                                         List<Candidate> candidates) {
+                        String buffer = line.word();
+                        for (JLineCompletor jlc : completors) {
+                            List<String> clist = new ArrayList<String>();
+                            int pos = jlc.complete(buffer, buffer.length(),
+                                                   clist);
+                            if (pos < 0) continue;
+                            String prefix = buffer.substring(0, pos);
+                            for (String c : clist)
+                                candidates.add(new Candidate
+                                    (prefix+c, c, null, null, null, null,
+                                     false/* don't add a space */));
+                            return;
+                        }
+                    }
+                })
+                // '!' is a javascript operator, not a history reference
+                .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
+                .build();
         }
         @Override
         String sourceName() { return "<stdin>"; }
         @Override
         String readLine(State state, String prompt) throws IOException {
-            try {
-                if (cr==null) {
-                    cr=initJLine(state);
+            if (lr==null) {
+                lr=initJLine(state);
+            }
+            while (true) {
+                try {
+                    return lr.readLine(prompt);
+                } catch (UserInterruptException uie) {
+                    continue; // ^C abandons the current line
+                } catch (EndOfFileException eofe) {
+                    return null;
                 }
-                return (String) readLine.invoke(cr, prompt);
-            } catch (Throwable t) {
-                throw new IOException("Couldn't read line using JLine", t);
             }
         }
         @Override
         PrintWriter writer() { return pw; }
     }
-    /** This is our version of jline.Completor, defined here to avoid a
-     *  compile-time (or run-time) dependency on jline. */
+    /** A JLine {@link ParsedLine} whose one "word" is the line up to the
+     *  cursor. */
+    private static class WholeLine implements CompletingParsedLine {
+        final String line;
+        final int cursor;
+        WholeLine(String line, int cursor) {
+            this.line = line; this.cursor = cursor;
+        }
+        public String word() { return line.substring(0, cursor); }
+        public int wordCursor() { return cursor; }
+        public int wordIndex() { return 0; }
+        public List<String> words() {
+            return Collections.singletonList(word());
+        }
+        public String line() { return line; }
+        public int cursor() { return cursor; }
+        // we don't do quoting or escapes
+        public CharSequence escape(CharSequence candidate, boolean complete) {
+            return candidate;
+        }
+        public int rawWordCursor() { return wordCursor(); }
+        public int rawWordLength() { return word().length(); }
+    }
+    /** Completes the line in {@code buffer} up to {@code cursor}; JLine's
+     *  {@link Completer} completes words, which we don't want. */
     static abstract class JLineCompletor {
+        /** Adds completions to {@code candidates}, and returns the position
+         *  in {@code buffer} where they start, or -1 if this completor
+         *  doesn't apply. */
         public abstract int complete(String buffer, int cursor,
                                      List<String> candidates);
     }

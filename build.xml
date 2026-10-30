@@ -483,7 +483,8 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	  </fileset>
 	  <!-- the jline library is optional; it just nicer line
 	  editing.  It's apparently unfriendly to Eclipse's console,
-	  though. -->
+	  though.  Rhino's shell only knows jline 1 and 2, so this
+	  is the old lib/dev/jline-0.9.94.jar, not PMSD's lib/jline. -->
 	  <fileset dir="lib/dev">
 	    <include name="jline*.jar" />
 	  </fileset>
