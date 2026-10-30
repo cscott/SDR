@@ -31,7 +31,7 @@ public class HUDState extends BaseState {
     private TextureText bonusText;
     /** The "originality" gauge. */
     private Gauge origGauge;
-    /** The "timing & flow" gauge. */
+    /** The "timing &amp; flow" gauge. */
     private Gauge timeFlowGauge;
     /** The "sequence length" gauge. */
     private Gauge seqLenGauge;

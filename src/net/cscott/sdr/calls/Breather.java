@@ -59,7 +59,7 @@ import EDU.Washington.grad.gjb.cassowary.ExCLRequiredFailure;
  * u-turn back and everyone extends again, the formation has to
  * squeeze in again to erase the space.</p>
  *
- * <h3>Theory of breathing</h3>
+ * <h2>Theory of breathing</h2>
  * <p>First: identify collisions.  Collided dancers are
  * inserted into a miniwave which replaces them in the remainder of the
  * algorithm.  Second: resolve overlaps.  Dancers which overlap have their

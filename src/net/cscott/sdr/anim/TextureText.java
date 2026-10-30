@@ -21,7 +21,7 @@ import com.jme.scene.state.LightState;
 import com.jme.util.geom.BufferUtils;
 
 /** {@link TextureText} renders text to a textured quad.  This allows great
- * flexibility in choice of font & size, albeit by burning texture memory.
+ * flexibility in choice of font &amp; size, albeit by burning texture memory.
  * {@link TextureText} stripes the text across a square texture to (hopefully)
  * optimally use the texels, allowing the use of very small texture sizes.
  * In my experiments, a 64x64 texture yields only-slightly-fuzzy text for

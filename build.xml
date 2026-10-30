@@ -289,8 +289,9 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		</taglet>
 		<!-- write coverage info to cobertura.ser -->
 		<arg value="-J${jacoco_agent}" />
-		<!-- JDK 8+ doclint rejects the js> doctest syntax -->
-		<arg value="-Xdoclint:none" />
+		<!-- doclint's html and syntax checks reject the js> doctest
+		     syntax, and we don't (yet) document everything -->
+		<arg value="-Xdoclint:all,-missing,-html,-syntax" />
 		<!-- let doctests access private members -->
 		<arg value="-J--add-opens=java.base/java.lang=ALL-UNNAMED" />
 		<arg value="-J-Xmx1024M" />
@@ -356,8 +357,9 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 		    <path refid="classpath.path" />
 		  </path>
 		</taglet>
-		<!-- JDK 8+ doclint rejects the js> doctest syntax -->
-		<arg value="-Xdoclint:none" />
+		<!-- doclint's html and syntax checks reject the js> doctest
+		     syntax, and we don't (yet) document everything -->
+		<arg value="-Xdoclint:all,-missing,-html,-syntax" />
 		<!-- let doctests access private members -->
 		<arg value="-J--add-opens=java.base/java.lang=ALL-UNNAMED" />
 		<arg value="-J-Xmx1024M" />

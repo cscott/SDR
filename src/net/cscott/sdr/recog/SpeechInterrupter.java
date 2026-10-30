@@ -31,7 +31,7 @@ public class SpeechInterrupter extends BaseDataProcessor {
     private static class Interruption implements Data { }
     /** Insertion queue for Data which should be provided to the clients. */
     private final LinkedList<Data> pushbackQueue = new LinkedList<Data>();
-    /** Thread-safe queue to buffer incoming data & record interruptions. */
+    /** Thread-safe queue to buffer incoming data &amp; record interruptions. */
     private final BlockingQueue<Data> dataQueue =
         new LinkedBlockingQueue<Data>();
     private Data padPacket = null;
