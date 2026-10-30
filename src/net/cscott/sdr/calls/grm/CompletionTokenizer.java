@@ -17,7 +17,7 @@ abstract class CompletionTokenizer {
     private CompletionTokenizer() { /* don't ever create an instance */ }
     /** Return a list of {@link Token}s corresponding to the input string. */
     public static List<Token> tokenize(String input) {
-        List<Token> result = new ArrayList<Token>();
+        List<Token> result = new ArrayList<>();
         Matcher m = TOKPAT.matcher(input.replaceFirst("^\\s+", ""));
         while (m.lookingAt()) {
             if (m.group(1) != null) {

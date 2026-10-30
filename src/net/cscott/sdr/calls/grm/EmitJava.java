@@ -27,14 +27,14 @@ import net.cscott.sdr.util.Tools;
 public class EmitJava extends AbstractEmit {
     public final static EmitJava INSTANCE = new EmitJava();
     Map<Program,Map<String,Grm>> grmTable =
-        new TreeMap<Program,Map<String,Grm>>();
+        new TreeMap<>();
     public void collect(Program program, List<RuleAndAction> l) {
         // collect all the rules with the same LHS
         MultiMap<String,RuleAndAction> mm = collectLHS(l);
         // join all the alternatives
-        Map<String,Grm> m = new LinkedHashMap<String,Grm>();
+        Map<String,Grm> m = new LinkedHashMap<>();
         for (String lhs : sorted(mm.keySet())) {
-            List<Grm> alts = new ArrayList<Grm>();
+            List<Grm> alts = new ArrayList<>();
             for (RuleAndAction ra : mm.getValues(lhs))
                 alts.add(ra.rule.rhs);
             m.put(lhs, new Grm.Alt(alts));
@@ -70,8 +70,8 @@ public class EmitJava extends AbstractEmit {
     final String NL = System.getProperty("line.separator");
     final String INDENT = "        ";
     final StringBuilder sb = new StringBuilder();
-    Map<Grm,Integer> numbering = new HashMap<Grm,Integer>();
-    final List<String> buildLines = new ArrayList<String>();
+    Map<Grm,Integer> numbering = new HashMap<>();
+    final List<String> buildLines = new ArrayList<>();
     public int num(Grm g) {
         if (!numbering.containsKey(g)) {
             String repr = g.accept(numberVisitor);
@@ -86,7 +86,7 @@ public class EmitJava extends AbstractEmit {
         }
         return numbering.get(g);
     }
-    final GrmVisitor<String> numberVisitor = new GrmVisitor<String>() {
+    final GrmVisitor<String> numberVisitor = new GrmVisitor<>() {
         @Override
         public String visit(Alt alt) {
             StringBuilder sb = new StringBuilder("new Grm.Alt(Tools.l(");
@@ -153,7 +153,7 @@ public class EmitJava extends AbstractEmit {
             sb.append(INDENT);
             sb.append("Map<String,Grm> _");
             sb.append(p.name());
-            sb.append(" = new HashMap<String,Grm>();");
+            sb.append(" = new HashMap<>();");
             sb.append(NL);
             for (String nonterm : m.keySet()) {
                 Grm g = SimplifyGrm.simplify(m.get(nonterm)).intern();
@@ -187,7 +187,7 @@ public class EmitJava extends AbstractEmit {
         // exceeding the maximum method size limit.
         sb.append("    private static List<Grm> _build() {"+NL);
         sb.append(INDENT);
-        sb.append("List<Grm> l = new ArrayList<Grm>("+numbering.size()+");");
+        sb.append("List<Grm> l = new ArrayList<>("+numbering.size()+");");
         sb.append(NL);
         sb.append(INDENT);
         sb.append("/* Break construction into multiple functions to avoid");

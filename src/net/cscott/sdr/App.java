@@ -44,9 +44,9 @@ public class App {
 
         // Start the game thread.
         BlockingQueue<RecogThread.Control> rendezvousRT =
-            new ArrayBlockingQueue<RecogThread.Control>(1);
+            new ArrayBlockingQueue<>(1);
         BlockingQueue<BeatTimer> rendezvousBT =
-            new ArrayBlockingQueue<BeatTimer>(1);
+            new ArrayBlockingQueue<>(1);
         CyclicBarrier musicSync = new CyclicBarrier(2);
         CyclicBarrier sphinxSync = new CyclicBarrier(2);
         final Game game =

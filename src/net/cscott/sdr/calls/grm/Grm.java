@@ -71,7 +71,7 @@ public abstract class Grm {
         }
         return internMap.get(this);
     }
-    private static final Map<Grm,Grm> internMap = new WeakHashMap<Grm,Grm>();
+    private static final Map<Grm,Grm> internMap = new WeakHashMap<>();
     public int hashCode() {
         if (hashCache == 0) {
             hashCache = getName().hashCode();
@@ -121,7 +121,7 @@ public abstract class Grm {
         }
         @Override
         protected Alt buildIntern() {
-            List<Grm> l = new ArrayList<Grm>(this.alternates.size());
+            List<Grm> l = new ArrayList<>(this.alternates.size());
             for (Grm g : this.alternates)
                 l.add(g.intern());
             return new Alt(l) {
@@ -159,7 +159,7 @@ public abstract class Grm {
         }
         @Override
         protected Concat buildIntern() {
-            List<Grm> l = new ArrayList<Grm>(this.sequence.size());
+            List<Grm> l = new ArrayList<>(this.sequence.size());
             for (Grm g : this.sequence)
                 l.add(g.intern());
             return new Concat(l) {
@@ -294,7 +294,7 @@ public abstract class Grm {
     /** Make a {@link Grm} which will recognize the given
      * sequence of terminal symbols. */
     public static Grm mkGrm(String... terminals) {
-        List<Grm> l = new ArrayList<Grm>(terminals.length);
+        List<Grm> l = new ArrayList<>(terminals.length);
         for (String s : terminals)
             l.add(new Terminal(s));
         return new Concat(l);

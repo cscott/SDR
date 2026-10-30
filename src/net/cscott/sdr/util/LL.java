@@ -52,7 +52,7 @@ public class LL<T> implements Iterable<T> {
      *  [f, e, a, b, c, d]
      */
     public LL<T> push(T head) {
-        return new LL<T>(head, this);
+        return new LL<>(head, this);
     }
     /**
      * Remove the head of the list.
@@ -112,7 +112,7 @@ public class LL<T> implements Iterable<T> {
      *  0
      */
     public Iterator<T> iterator() {
-        return new LLIterator<T>(this);
+        return new LLIterator<>(this);
     }
     /** Helper class to implement the {@link Iterable} interface. */
     private static class LLIterator<T> extends UnmodifiableIterator<T> {
@@ -129,7 +129,7 @@ public class LL<T> implements Iterable<T> {
         }
     }
     @SuppressWarnings("unchecked")
-    private static final LL NULL = new LL<Object>(null,null);
+    private static final LL NULL = new LL<>(null,null);
     /**
      * Return a new empty list.
      * @doc.test
@@ -155,7 +155,7 @@ public class LL<T> implements Iterable<T> {
     public LL<T> reverse() {
         LL<T> result = NULL();
         for(LL<T> l = this; l!=NULL; l=l.tail)
-            result = new LL<T>(l.head, result);
+            result = new LL<>(l.head, result);
         return result;
     }
     @Override
@@ -173,7 +173,7 @@ public class LL<T> implements Iterable<T> {
     }
     * END REMOVAL */
     public List<T> toList() {
-        List<T> result = new ArrayList<T>(this.size());
+        List<T> result = new ArrayList<>(this.size());
         for (T t : this)
             result.add(t);
         return result;

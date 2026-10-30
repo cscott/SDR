@@ -476,7 +476,7 @@ public abstract class EvalPrim {
 	    to = to.addFlags(Position.Flag.PASS_LEFT);
 
         // set dancerpath flags
-        List<DancerPath.Flag> flags = new ArrayList<DancerPath.Flag>();
+        List<DancerPath.Flag> flags = new ArrayList<>();
         if (prim.flags.contains(Prim.Flag.SASHAY_START))
             flags.add(DancerPath.Flag.SASHAY_START);
         if (prim.flags.contains(Prim.Flag.SASHAY_FINISH))

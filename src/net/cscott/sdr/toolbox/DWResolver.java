@@ -167,7 +167,7 @@ public class DWResolver {
 	    assert false : "should have been caught above";
 	    return null;
         }
-        List<TaggedFormation> waves = new ArrayList<TaggedFormation>
+        List<TaggedFormation> waves = new ArrayList<>
             (fm.matches.values());
         assert waves.size() == 2;
         List<StandardDancer> wave0 = foreach(waves.get(0).sortedDancers(),
@@ -193,7 +193,7 @@ public class DWResolver {
         assert wave0.get(1).isBoy() == wave0.get(2).isBoy();
         assert wave0.get(0).isBoy() != wave0.get(1).isBoy();
         // step 4: at least one couple in same wave? if no, acey deucey
-        Set<Integer> couplesInWave0 = new HashSet<Integer>
+        Set<Integer> couplesInWave0 = new HashSet<>
             (foreach(wave0, coupleNumberFilter));
         if (couplesInWave0.size()==4) // all dancers are different
             return "Acey Deucey";
@@ -243,11 +243,11 @@ public class DWResolver {
         return "Right and Left Grand";
     }
     private static F<Dancer,StandardDancer> standardDancerFilter =
-        new F<Dancer,StandardDancer>() {
+        new F<>() {
         public StandardDancer map(Dancer d) { return (StandardDancer) d; }
     };
     private static F<StandardDancer,Integer> coupleNumberFilter =
-        new F<StandardDancer,Integer>() {
+        new F<>() {
         public Integer map(StandardDancer d) { return d.coupleNumber(); }
     };
 

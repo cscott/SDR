@@ -72,7 +72,7 @@ public class AntlrPostProcessor {
             sb.append(ind+"static final String[] "+fld+";\n");
             sb.append(ind+"static {\n");
             sb.append(ind+"    java.util.List<String> tmp = ");
-            sb.append(               "new java.util.ArrayList<String>();\n");
+            sb.append(               "new java.util.ArrayList<>();\n");
             for (int i=0; i<n; i++) {
                 sb.append(ind+"    tmp.addAll(java.util.Arrays.asList("+
                                      fld+"Class"+i+".value));\n");

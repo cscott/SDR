@@ -40,7 +40,7 @@ import org.antlr.runtime.TokenStream;
 @Doctests
 public class CallDB {
     public static final CallDB INSTANCE = new CallDB();
-    private Map<String, Call> db = new HashMap<String,Call>();
+    private Map<String, Call> db = new HashMap<>();
     /** Lookup a call in the database.
      * @throws IllegalArgumentException if the call name is
      * unknown.

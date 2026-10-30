@@ -26,7 +26,7 @@ class AbstractEmit extends ToStringVisitor {
     }
     // sort a collection of strings
     static List<String> sorted(Collection<String> s) {
-        List<String> l = new ArrayList<String>(s);
+        List<String> l = new ArrayList<>(s);
         Collections.sort(l);
         return l;
     }

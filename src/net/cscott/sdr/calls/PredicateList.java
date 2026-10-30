@@ -520,7 +520,7 @@ public abstract class PredicateList {
 
     /** List of all the {@link Predicate}s defined here. */
     private final static Map<String, Predicate> predicateList =
-        new LinkedHashMap<String, Predicate>();
+        new LinkedHashMap<>();
     static {
         for (Field f : PredicateList.class.getDeclaredFields()) {
             if (f.getName().equals(f.getName().toUpperCase()) &&

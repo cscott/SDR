@@ -19,11 +19,11 @@ class ClTableau extends CL {
     // ctr is protected, since this only supports an ADT for
     // the ClSimplexSolved class
     protected ClTableau() {
-        _columns = new LinkedHashMap<ClAbstractVariable, Set<ClAbstractVariable>>();
-        _rows = new LinkedHashMap<ClAbstractVariable, ClLinearExpression>();
-        _infeasibleRows = new LinkedHashSet<ClAbstractVariable>();
-        _externalRows = new LinkedHashSet<ClAbstractVariable>();
-        _externalParametricVars = new LinkedHashSet<ClAbstractVariable>();
+        _columns = new LinkedHashMap<>();
+        _rows = new LinkedHashMap<>();
+        _infeasibleRows = new LinkedHashSet<>();
+        _externalRows = new LinkedHashSet<>();
+        _externalParametricVars = new LinkedHashSet<>();
     }
 
     // Variable v has been removed from an expression. If the
@@ -97,7 +97,7 @@ class ClTableau extends CL {
             ClAbstractVariable rowvar) {
         Set<ClAbstractVariable> rowset = _columns.get(param_var);
         if (rowset == null)
-            _columns.put(param_var, rowset = new LinkedHashSet<ClAbstractVariable>());
+            _columns.put(param_var, rowset = new LinkedHashSet<>());
         rowset.add(rowvar);
     }
 

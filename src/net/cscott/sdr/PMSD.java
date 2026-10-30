@@ -250,7 +250,7 @@ public class PMSD {
         // special helper to list test cases
         public String jsFunction_listTests(String basedir) {
             StringBuffer sb = new StringBuffer();
-            List<String> files = new ArrayList<String>
+            List<String> files = new ArrayList<>
                 (Arrays.asList(new File(basedir).list()));
             Collections.sort(files);
             for (String f : files) {
@@ -274,12 +274,12 @@ public class PMSD {
             @Override
             public Set<Map.Entry<String, String>> entrySet() {
                 Set<Map.Entry<String,String>> result =
-                    new HashSet<Map.Entry<String,String>>();
+                    new HashSet<>();
                 for (Object key : ScriptableObject.getPropertyIds(props())) {
                     if (!(key instanceof String)) continue;
                     String name = (String) key;
                     String value = get(name);
-                    result.add(new SimpleImmutableEntry<String,String>
+                    result.add(new SimpleImmutableEntry<>
                                 (name, value));
                 }
                 return Collections.unmodifiableSet(result);
@@ -299,7 +299,7 @@ public class PMSD {
     }
     /** Run all tests from the {@code net.cscott.sdr.tests.index} resource. */
     public static String runAllTests() throws IOException {
-        List<String> failedTests = new ArrayList<String>();
+        List<String> failedTests = new ArrayList<>();
         List<String> resources =
             readLines(PMSD.class.getResourceAsStream("tests/index"));
         if (resources==null)
@@ -351,7 +351,7 @@ public class PMSD {
     /** Read a file fully, returning as an list of lines. */
     private static List<String> readLines(InputStream is) throws IOException {
         if (is == null) return null; // pass up the error
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         Reader r = new InputStreamReader(is, "utf-8");
         BufferedReader br = new BufferedReader(r);
         while (true) {
@@ -393,8 +393,8 @@ public class PMSD {
         StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);
         // very simple regexp to find input lines
-        List<String> title = new ArrayList<String>();
-        List<String> input = new ArrayList<String>();
+        List<String> title = new ArrayList<>();
+        List<String> input = new ArrayList<>();
         for (String line: lines) {
             if (line.startsWith("sdr> ") || line.startsWith("   > "))
                 input.add(line.substring(5));
@@ -647,7 +647,7 @@ public class PMSD {
                                          List<Candidate> candidates) {
                         String buffer = line.word();
                         for (JLineCompletor jlc : completors) {
-                            List<String> clist = new ArrayList<String>();
+                            List<String> clist = new ArrayList<>();
                             int pos = jlc.complete(buffer, buffer.length(),
                                                    clist);
                             if (pos < 0) continue;
@@ -729,7 +729,7 @@ public class PMSD {
             // XXX: really want set of maximal completions, so that if all
             //      suffixes start with "pass thru" then we return the one
             //      string "pass thru"
-            SortedSet<String> results = new TreeSet<String>();
+            SortedSet<String> results = new TreeSet<>();
             Program p = state.ds.dance.getProgram();
             for (String s : CompletionEngine.complete(p, start, 50)) {
                 // XXX: do we need to filter out the <foo> nonterminals?
@@ -748,7 +748,7 @@ public class PMSD {
         public int complete(String buffer, int cursor, List<String> candidates) {
             // only try to complete strings starting with "/"
             if (buffer==null || !buffer.startsWith("/")) return -1;
-            List<String> clist = new ArrayList<String>();
+            List<String> clist = new ArrayList<>();
             int v = _complete(buffer.substring(1), cursor-1, clist);
             if (v<0) return -1;
             candidates.addAll(clist);
@@ -784,7 +784,7 @@ public class PMSD {
             String lastPart = names[names.length-1];
             // zoom up the scope chain and down the prototype chain
             // enumerating all properties.
-            List<String> idList = new ArrayList<String>();
+            List<String> idList = new ArrayList<>();
             if (inScope)
                 addIdsFromScope(obj, idList);
             else

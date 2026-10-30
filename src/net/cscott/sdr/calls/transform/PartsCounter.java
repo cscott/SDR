@@ -226,7 +226,7 @@ public class PartsCounter extends ValueVisitor<Fraction, Void> {
     /** A list of concepts which do not affect the number of parts.
     That is, "num parts(as couples(swing thru))" == "num parts(swing thru)". */
     static Set<String> safeConcepts =
-        new HashSet<String>(Fractional.safeConcepts);
+        new HashSet<>(Fractional.safeConcepts);
     static {
         safeConcepts.add("_blend first");
         safeConcepts.add("_blend last");

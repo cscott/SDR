@@ -73,11 +73,11 @@ public class Permutation implements Comparable<Permutation> {
             if (pp!=null)
                 return pp;
         }
-        hashConsMap.put(p, new WeakReference<Permutation>(p));
+        hashConsMap.put(p, new WeakReference<>(p));
         return p;
     }
     private static WeakHashMap<Permutation,WeakReference<Permutation>> hashConsMap =
-        new WeakHashMap<Permutation,WeakReference<Permutation>>();
+        new WeakHashMap<>();
 
     /** Invert a permutation.
      * @doc.test The identity transform is its own inverse.
@@ -227,7 +227,7 @@ public class Permutation implements Comparable<Permutation> {
      *  [E, D, C, B, A]
      */
     public <T> void permute(List<T> l) {
-        List<T> orig = new ArrayList<T>(l);
+        List<T> orig = new ArrayList<>(l);
         for (int i=0; i<orig.size(); i++)
             l.set(i, orig.get(this.p[i]));
     }
@@ -262,7 +262,7 @@ public class Permutation implements Comparable<Permutation> {
      *  12345670
      */
     public static Permutation fromFormation(final Formation f) {
-        List<Dancer> dancers = new ArrayList<Dancer>(f.dancers());
+        List<Dancer> dancers = new ArrayList<>(f.dancers());
         Collections.sort(dancers, new DancerComparator(f));
         byte[] b = new byte[dancers.size()];
         for (int i=0; i<b.length; i++)
@@ -292,9 +292,9 @@ public class Permutation implements Comparable<Permutation> {
      *       2B^  2G^
      */
     public Formation permute(Formation f) {
-        List<Dancer> dancers = new ArrayList<Dancer>(f.dancers());
+        List<Dancer> dancers = new ArrayList<>(f.dancers());
         Collections.sort(dancers, new DancerComparator(f));
-        Map<Dancer,Dancer> map = new LinkedHashMap<Dancer,Dancer>();
+        Map<Dancer,Dancer> map = new LinkedHashMap<>();
         for (int i=0; i < this.p.length; i++) {
             map.put(dancers.get(i), dancers.get(this.p[i]));
         }
@@ -378,7 +378,7 @@ public class Permutation implements Comparable<Permutation> {
      *  1B^  4Bv  4G^  1Gv
      */
     public static Iterator<Permutation> generate(final Permutation first) {
-        return new UnmodifiableIterator<Permutation>() {
+        return new UnmodifiableIterator<>() {
             private Permutation next = first;
             private int i=0, j=0;
             @Override
@@ -432,7 +432,7 @@ public class Permutation implements Comparable<Permutation> {
      */
     public Iterator<Permutation> rotated() {
         final Permutation first = this;
-        return new UnmodifiableIterator<Permutation>() {
+        return new UnmodifiableIterator<>() {
             private Permutation next = first;
             @Override
             public boolean hasNext() {
@@ -462,7 +462,7 @@ public class Permutation implements Comparable<Permutation> {
      */
     public Permutation canonical() {
         // XXX: this could be more efficient, but I'm lazy.
-        List<Permutation> r = new ArrayList<Permutation>(4);
+        List<Permutation> r = new ArrayList<>(4);
         for (Iterator<Permutation> it = this.rotated(); it.hasNext(); )
             r.add(it.next());
         return Collections.min(r);

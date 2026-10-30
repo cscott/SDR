@@ -88,7 +88,7 @@ public class PartsVisitor<T> extends TransformVisitor<T> {
     // useful utility: desugar "and" concept to expose parts
     protected static Seq desugarAnd(Seq s) {
         // desugar 'and' pseudo-concept into parts
-        ArrayList<SeqCall> nChildren = new ArrayList<SeqCall>(s.children.size());
+        ArrayList<SeqCall> nChildren = new ArrayList<>(s.children.size());
         for (SeqCall sc: s.children) {
             if (sc.type==APPLY) {
                 Expr call = ((Apply)sc).call;

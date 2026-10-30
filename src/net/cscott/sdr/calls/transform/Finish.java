@@ -166,7 +166,7 @@ public class Finish extends PartsVisitor<Void> {
             // harder case: "finish" the first part
             assert firstCall.type == PART || firstCall.type == APPLY;
             SeqCall nFirst = firstCall.accept(this, t);
-            List<SeqCall> nChildren = new ArrayList<SeqCall>(s.children);
+            List<SeqCall> nChildren = new ArrayList<>(s.children);
             nChildren.set(0, nFirst);
             return s.build(nChildren);
         }
@@ -189,7 +189,7 @@ public class Finish extends PartsVisitor<Void> {
     /** A list of concepts which it is safe to hoist "finish" through.
     That is, "finish(as couples(swing thru))" == "as couples(finish(swing thru))". */
     static Set<String> safeConcepts =
-        new HashSet<String>(Fractional.safeConcepts);
+        new HashSet<>(Fractional.safeConcepts);
     static {
         safeConcepts.add("_blend last"); // but not _blend first
     }

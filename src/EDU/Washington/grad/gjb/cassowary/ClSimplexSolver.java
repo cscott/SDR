@@ -19,18 +19,18 @@ import net.cscott.sdr.util.Fraction;
 public class ClSimplexSolver extends ClTableau {
     // Ctr initializes the fields, and creates the objective row
     public ClSimplexSolver() {
-        _stayMinusErrorVars = new ArrayList<ClSlackVariable>();
-        _stayPlusErrorVars = new ArrayList<ClSlackVariable>();
-        _errorVars = new LinkedHashMap<ClConstraint, Set<ClAbstractVariable>>();
-        _markerVars = new LinkedHashMap<ClConstraint, ClAbstractVariable>();
+        _stayMinusErrorVars = new ArrayList<>();
+        _stayPlusErrorVars = new ArrayList<>();
+        _errorVars = new LinkedHashMap<>();
+        _markerVars = new LinkedHashMap<>();
 
-        _resolve_pair = new ArrayList<ClFractionWrapper>(2);
+        _resolve_pair = new ArrayList<>(2);
         _resolve_pair.add(new ClFractionWrapper(Fraction.ZERO));
         _resolve_pair.add(new ClFractionWrapper(Fraction.ZERO));
 
         _objective = new ClObjectiveVariable("Z");
 
-        _editVarMap = new LinkedHashMap<ClVariable, ClEditInfo>();
+        _editVarMap = new LinkedHashMap<>();
 
         _slackCounter = 0;
         _artificialCounter = 0;
@@ -42,7 +42,7 @@ public class ClSimplexSolver extends ClTableau {
 
         ClLinearExpression e = new ClLinearExpression();
         _rows.put(_objective, e);
-        _stkCedcns = new Stack<Integer>();
+        _stkCedcns = new Stack<>();
         _stkCedcns.push(Integer.valueOf(0));
 
         if (fTraceOn)
@@ -79,7 +79,7 @@ public class ClSimplexSolver extends ClTableau {
         if (fTraceOn)
             fnenterprint("addConstraint: " + cn);
 
-        List<ClSlackVariable> eplus_eminus = new ArrayList<ClSlackVariable>(2);
+        List<ClSlackVariable> eplus_eminus = new ArrayList<>(2);
         ClFractionWrapper prevEConstant = new ClFractionWrapper();
         ClLinearExpression expr = newExpression(cn, /* output to: */
                 eplus_eminus, prevEConstant);
@@ -197,7 +197,7 @@ public class ClSimplexSolver extends ClTableau {
     public final ClSimplexSolver removeEditVarsTo(int n)
             throws ExCLInternalError {
         try {
-            for (ClVariable v: new ArrayList<ClVariable>(_editVarMap.keySet())){
+            for (ClVariable v: new ArrayList<>(_editVarMap.keySet())){
                 ClEditInfo cei = _editVarMap.get(v);
                 if (cei.Index() >= n) {
                     removeEditVar(v);
@@ -1122,7 +1122,7 @@ public class ClSimplexSolver extends ClTableau {
 
         Set<ClAbstractVariable> cnset = _errorVars.get(var);
         if (cnset == null)
-            _errorVars.put(cn, cnset = new LinkedHashSet<ClAbstractVariable>());
+            _errorVars.put(cn, cnset = new LinkedHashSet<>());
         cnset.add(var);
     }
 

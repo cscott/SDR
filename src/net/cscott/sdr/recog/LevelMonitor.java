@@ -26,7 +26,7 @@ public class LevelMonitor extends BaseDataProcessor {
         }
     }
     private final BlockingQueue<LevelMeasurement> levels =
-        new LinkedBlockingQueue<LevelMeasurement>();
+        new LinkedBlockingQueue<>();
     private void addData(DoubleData dd) {
         long when = dd.getCollectTime();
         double[] data = dd.getValues();

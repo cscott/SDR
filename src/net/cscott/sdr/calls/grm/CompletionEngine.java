@@ -216,12 +216,12 @@ public class CompletionEngine {
     public static List<String> complete(Program program, String input,
                                         int limit) {
         Iterator<String> it = complete(program, input);
-        List<String> result = new ArrayList<String>(limit);
+        List<String> result = new ArrayList<>(limit);
         for (int i=0; i<limit && it.hasNext(); i++)
             result.add(it.next());
         if (!it.hasNext())
             // sort, putting non-terminals last
-            Collections.sort(result, new Comparator<String>() {
+            Collections.sort(result, new Comparator<>() {
                 public int compare(String o1, String o2) {
                     String s1 = o1.replace('<', '~');
                     String s2 = o2.replace('<', '~');
@@ -368,7 +368,7 @@ public class CompletionEngine {
         @Override
         public Boolean visit(Concat concat) {
             CompleteState saved = this.cs.clone();
-            List<Integer> n = new ArrayList<Integer>();
+            List<Integer> n = new ArrayList<>();
             assert this.cs.nextState.isEmpty();
             // no choices here, either we match or we don't.
             AGAIN: while (true) {

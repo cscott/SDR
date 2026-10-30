@@ -50,7 +50,7 @@ public class HUD {
     private Map.Entry<String, MessageType> message = null;
     public synchronized Map.Entry<String,MessageType> getMessage() { return this.message; }
     public synchronized void setMessage(String message, MessageType type) {
-        this.message = new AbstractMap.SimpleImmutableEntry<String,MessageType>(message, type);
+        this.message = new AbstractMap.SimpleImmutableEntry<>(message, type);
     }
     /** What type of message this is. */
     public enum MessageType {

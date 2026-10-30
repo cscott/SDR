@@ -310,7 +310,7 @@ public class Position implements Comparable<Position> {
                 return this; // no change
             // implement by iterating over the included ExactRotations,
             // performing the turn, and then unioning the results.
-            List<Rotation> rl = new ArrayList<Rotation>(8);
+            List<Rotation> rl = new ArrayList<>(8);
             for (ExactRotation er : facing.included())
                 rl.add(new Position(x, y, er).turn(amount, faceIn, reference)
                         .facing);
@@ -733,7 +733,7 @@ public class Position implements Comparable<Position> {
      *  0
      */
     public static Comparator<Position> distComparator(final Position from) {
-        return new Comparator<Position>() {
+        return new Comparator<>() {
             public int compare(Position p1, Position p2) {
                 return from.dist2(p1).compareTo(from.dist2(p2));
             }

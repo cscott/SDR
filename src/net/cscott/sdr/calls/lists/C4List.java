@@ -241,7 +241,7 @@ public abstract class C4List {
                 public Evaluator evaluate(DanceState ds) {
                     // Save the designated dancers
                     List<Dancer> straightDancers =
-                        new ArrayList<Dancer>(ds.designated());
+                        new ArrayList<>(ds.designated());
                     straightDancers.retainAll(ds.dancers());
                     if (straightDancers.size() != 2)
                         throw new BadCallException

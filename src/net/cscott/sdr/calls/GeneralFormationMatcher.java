@@ -286,7 +286,7 @@ public class GeneralFormationMatcher {
     }
     /** sort so that first dancers' target rotations are most constrained,
      *  for efficiency. (ie largest rotation moduli are first) */
-    private static Comparator<Position> PCOMP = new Comparator<Position>() {
+    private static Comparator<Position> PCOMP = new Comparator<>() {
         public int compare(Position p1, Position p2) {
             int c = -p1.facing.modulus.compareTo(p2.facing.modulus);
             if (c!=0) return c;
@@ -300,12 +300,12 @@ public class GeneralFormationMatcher {
         return sortedDancers(f, f.dancers());
     }
     private static List<Dancer> sortedDancers(final Formation f, Collection<Dancer> dancers) {
-        List<Dancer> result = new ArrayList<Dancer>(dancers);
+        List<Dancer> result = new ArrayList<>(dancers);
         final Map<Position,Position> halfMinCache =
-            new HashMap<Position,Position>(result.size());
+            new HashMap<>(result.size());
         final Map<Position,Position> qtrMinCache =
-            new HashMap<Position,Position>(result.size());
-        Collections.sort(result, new Comparator<Dancer>() {
+            new HashMap<>(result.size());
+        Collections.sort(result, new Comparator<>() {
             /** minimum of position rotated through 4 quarter rotations */
             private Position qtrMin(Position p) {
                 if (!qtrMinCache.containsKey(p))
@@ -409,7 +409,7 @@ public class GeneralFormationMatcher {
         // (note that 'dancer #1' is really 'dancer #0' below)
         assert goals.size() > 0;
         int minGoalDancers = goals.get(0).dancers().size();
-        List<GoalInfo> goalInfo = new ArrayList<GoalInfo>(goals.size());
+        List<GoalInfo> goalInfo = new ArrayList<>(goals.size());
         for (TaggedFormation goal : goals) {
             // create GoalInfo
             goalInfo.add(new GoalInfo(goal));
@@ -425,8 +425,8 @@ public class GeneralFormationMatcher {
         // that the resulting matches tend to symmetry.
         final List<Dancer> inputDancers =
             sortedDancers(input, input.selectedDancers());
-        final Indexer<Dancer> inputIndex = new Indexer<Dancer>() {
-            Map<Dancer,Integer> index = new HashMap<Dancer,Integer>();
+        final Indexer<Dancer> inputIndex = new Indexer<>() {
+            Map<Dancer,Integer> index = new HashMap<>();
             { int i=0; for (Dancer d: inputDancers) index.put(d, i++); }
             @Override
             public int getID(Dancer d) { return index.get(d); }
@@ -435,8 +435,8 @@ public class GeneralFormationMatcher {
             @Override
             public boolean implementsReverseMapping() { return true; }
         };
-        final PersistentSet<Dancer> inputEmpty = new PersistentSet<Dancer>
-        (new Comparator<Dancer>() {
+        final PersistentSet<Dancer> inputEmpty = new PersistentSet<>
+        (new Comparator<>() {
            public int compare(Dancer d1, Dancer d2) {
                return inputIndex.getID(d1) - inputIndex.getID(d2);
             }
@@ -447,8 +447,8 @@ public class GeneralFormationMatcher {
         // Construct MatchInfo & initial (empty) assignment
         MatchInfo mi = new MatchInfo(input, goalInfo, minGoalDancers,
                                      inputDancers, inputIndex, inputEmpty);
-        PersistentSet<OneMatch> initialAssignment = new PersistentSet<OneMatch>
-        (new Comparator<OneMatch>(){
+        PersistentSet<OneMatch> initialAssignment = new PersistentSet<>
+        (new Comparator<>(){
             public int compare(OneMatch o1, OneMatch o2) {
                 int c=inputIndex.getID(o1.dancer)-inputIndex.getID(o2.dancer);
                 if (c!=0) return c;
@@ -477,16 +477,16 @@ public class GeneralFormationMatcher {
                 }
         assert found;
         // track the input dancers who aren't involved in matches
-        Set<Dancer> unmappedInputDancers = new LinkedHashSet<Dancer>(input.dancers());
+        Set<Dancer> unmappedInputDancers = new LinkedHashSet<>(input.dancers());
         // Create a FormationMatch object from FormationPieces.
-	List<FormationPiece> pieces = new ArrayList<FormationPiece>(max);
-        Map<Dancer,TaggedFormation> canonical=new LinkedHashMap<Dancer,TaggedFormation>();
+	List<FormationPiece> pieces = new ArrayList<>(max);
+        Map<Dancer,TaggedFormation> canonical=new LinkedHashMap<>();
         for (OneMatch om : bestMatch) {
             Dancer id0 = om.dancer;//input dancer who's #1 in the goal formation
             int dn0 = inputIndex.getID(id0);
             Transform goal2input = om.goal2input;
-            Map<Dancer,Position> subPos = new LinkedHashMap<Dancer,Position>();
-            MultiMap<Dancer,Tag> subTag = new GenericMultiMap<Dancer,Tag>();
+            Map<Dancer,Position> subPos = new LinkedHashMap<>();
+            MultiMap<Dancer,Tag> subTag = new GenericMultiMap<>();
             for (Dancer goD : om.gi.goalDancers) {
                 Position goP = om.gi.goal.location(goD);
                 // transform to find which input dancer corresponds to this one
@@ -515,7 +515,7 @@ public class GeneralFormationMatcher {
             pieces.add(new FormationPiece(pieceI, pieceO));
         }
         // add pieces for unmapped dancers (see spec for FormationMatch.meta)
-        Set<Dancer> unmatchedMetaDancers = new LinkedHashSet<Dancer>();
+        Set<Dancer> unmatchedMetaDancers = new LinkedHashSet<>();
         for (Dancer d : unmappedInputDancers) {
 	    // these clauses are parallel to the ones above for matched dancers
             Position inP = input.location(d);
@@ -571,7 +571,7 @@ public class GeneralFormationMatcher {
             // make a canonical ordering for the goal dancers
             this.goalDancers = sortedDancers(goal);
             // map dancer # to position
-            this.goalPositions = new ArrayList<Position>(goalDancers.size());
+            this.goalPositions = new ArrayList<>(goalDancers.size());
             for (Dancer d : goalDancers) {
                 Position p = goal.location(d);
                 this.goalPositions.add(p);
@@ -582,11 +582,11 @@ public class GeneralFormationMatcher {
                 "goal dancer #0 should be symmetric to himself!";
         }
         private Set<Dancer> computeSymmetry() {
-            SetFactory<Dancer> gsf = new BitSetFactory<Dancer>(goalDancers);
+            SetFactory<Dancer> gsf = new BitSetFactory<>(goalDancers);
             Set<Dancer> eq0 = gsf.makeSet();
             assert goal.isCentered() :
                 "this assumes the center of the goal formation is 0,0";
-            Map<Point,Dancer> m = new HashMap<Point,Dancer>();
+            Map<Point,Dancer> m = new HashMap<>();
             for (Dancer d : goalDancers)
                 m.put(goal.location(d).toPoint(), d);
             Position p0 = goal.location(goalDancers.get(0));
@@ -618,10 +618,10 @@ public class GeneralFormationMatcher {
         }
     }
     private static class MatchInfo {
-        final List<PersistentSet<OneMatch>> matches = new ArrayList<PersistentSet<OneMatch>>();
+        final List<PersistentSet<OneMatch>> matches = new ArrayList<>();
         final Indexer<Dancer> inputIndex;
-        final Map<Point,Dancer> inputPositionMap = new HashMap<Point,Dancer>();
-        final List<Position> inputPositions = new ArrayList<Position>();
+        final Map<Point,Dancer> inputPositionMap = new HashMap<>();
+        final List<Position> inputPositions = new ArrayList<>();
         final List<GoalInfo> goals;
         final int minGoalDancers;
         final int numInput;
@@ -732,7 +732,7 @@ public class GeneralFormationMatcher {
         if (!inFormation.contains(thisDancer)) {
             // okay, try to assign the thisDancer, possibly w/ some extra rotation
             for (GoalInfo gi : mi.goals) {
-                Set<Transform> tried = new HashSet<Transform>(8);
+                Set<Transform> tried = new HashSet<>(8);
                 for (Position pIn : makeAllExact(mi.inputPositions.get(dancerNum))) {
                     for (Position pGoal : makeAllExact(gi.goalPositions.get(0))) {
                         Transform goal2input = new Transform(pGoal, pIn);
@@ -866,7 +866,7 @@ public class GeneralFormationMatcher {
         // canonical ordering for input dancers
         List<Dancer> inputDancers = sortedDancers(input);
         List<Position> inputPositions =
-            new ArrayList<Position>(inputDancers.size());
+            new ArrayList<>(inputDancers.size());
         for (Dancer d : inputDancers)
             inputPositions.add(input.location(d));
 
@@ -875,11 +875,11 @@ public class GeneralFormationMatcher {
             // don't worry about symmetry, if there are two possible matches
             // we'll just return the first.
             for (Position ip: makeAllExact(inputPositions.get(0))) {
-                List<Dancer> goalDancers=new ArrayList<Dancer>(goal.dancers());
+                List<Dancer> goalDancers=new ArrayList<>(goal.dancers());
                 // sort my proximity to input dancer so as to prefer
                 // an in-place match if possible
                 final Comparator<Position> cmp = Position.distComparator(ip);
-                Collections.sort(goalDancers, new Comparator<Dancer>() {
+                Collections.sort(goalDancers, new Comparator<>() {
                         public int compare(Dancer d1, Dancer d2) {
                             Position p1 = goal.location(d1);
                             Position p2 = goal.location(d2);
@@ -908,7 +908,7 @@ public class GeneralFormationMatcher {
     private static FormationMatch validatePhantomMatch(
             Formation input, TaggedFormation goal, Transform goal2input) {
         Map<Point,PairMapEntry<Dancer,Position>> m =
-            new HashMap<Point,PairMapEntry<Dancer,Position>>();
+            new HashMap<>();
         for (Dancer d : goal.dancers()) {
             Position pp = goal2input.apply(goal.location(d));
             m.put(pp.toPoint(), p(d, pp));
@@ -916,7 +916,7 @@ public class GeneralFormationMatcher {
         // verify that each input position corresponds to a goal dancer
         // matched is goal dancer -> input dancer
         Map<Dancer,PairMapEntry<Dancer,Position>> matched =
-            new HashMap<Dancer,PairMapEntry<Dancer,Position>>();
+            new HashMap<>();
         for (Dancer id: input.dancers()) {
             Position p = input.location(id);
             PairMapEntry<Dancer,Position> gp = m.remove(p.toPoint());
@@ -931,10 +931,10 @@ public class GeneralFormationMatcher {
         Position metaPos = new Position
             (goal2input.translate.x, goal2input.translate.y, goal2input.rotate);
         Formation meta = new Formation(m(p(metaDancer, metaPos)));
-        Map<Dancer,Position> locations = new LinkedHashMap<Dancer,Position>();
-        MultiMap<Dancer,Tag> tags = new GenericMultiMap<Dancer,Tag>
+        Map<Dancer,Position> locations = new LinkedHashMap<>();
+        MultiMap<Dancer,Tag> tags = new GenericMultiMap<>
             (Factories.enumSetFactory(Tag.class));
-        Set<Dancer> inserted = new LinkedHashSet<Dancer>();
+        Set<Dancer> inserted = new LinkedHashSet<>();
         for (Dancer gd : goal.dancers()) {
             Dancer id; Position pp;
             if (matched.containsKey(gd)) {
@@ -975,13 +975,13 @@ public class GeneralFormationMatcher {
             r = Rotation.fromAbsoluteString("*"); // don't infinite loop!
         }
         Collection<ExactRotation> included = r.included();
-        List<Position> all = new ArrayList<Position>(included.size());
+        List<Position> all = new ArrayList<>(included.size());
         for (ExactRotation rr : included)
             all.add(p.relocate(rr));
         return all;
     }
     private static Set<Position> rotated(Position p) {
-        Set<Position> s = new LinkedHashSet<Position>(4);
+        Set<Position> s = new LinkedHashSet<>(4);
         for (int i=0; i<4; i++) {
             s.add(p);
             p = p.rotateAroundOrigin(ExactRotation.ONE_QUARTER);

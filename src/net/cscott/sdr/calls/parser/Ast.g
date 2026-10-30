@@ -106,7 +106,7 @@ seqcall returns [SeqCall r]
     | prim  { $r=$prim.r; }
     ;
 expr returns [Expr r]
-@init { List<Expr> args = new ArrayList<Expr>(); }
+@init { List<Expr> args = new ArrayList<>(); }
     : {input.LT(2).getText().equalsIgnoreCase("Expr")}?
         '(' IDENT atom=list_elem (ee=expr {args.add(ee);})* ')'
         { $r=new Expr($atom.r, args); }
@@ -173,19 +173,19 @@ in returns [In r]
         { $r = new In($count.r, $child.r); }
     ;
 opt returns [Opt r]
-@init { List<OptCall> oc = new ArrayList<OptCall>(); }
+@init { List<OptCall> oc = new ArrayList<>(); }
     : {input.LT(2).getText().equalsIgnoreCase("Opt")}?
         '(' IDENT (optcall { oc.add($optcall.r); })* ')'
         { $r = new Opt(oc); }
     ;
 par returns [Par r]
-@init { List<ParCall> pc = new ArrayList<ParCall>(); }
+@init { List<ParCall> pc = new ArrayList<>(); }
     : {input.LT(2).getText().equalsIgnoreCase("Par")}?
         '(' IDENT (parcall { pc.add($parcall.r); })* ')'
         { $r = new Par(pc); }
     ;
 seq returns [Seq r]
-@init { List<SeqCall> sc = new ArrayList<SeqCall>(); }
+@init { List<SeqCall> sc = new ArrayList<>(); }
     : {input.LT(2).getText().equalsIgnoreCase("Seq")}?
         '(' IDENT (seqcall {sc.add($seqcall.r); })* ')'
         { $r = new Seq(sc); }
@@ -193,7 +193,7 @@ seq returns [Seq r]
 
 fragment
 string_list returns [List<String> r]
-@init { $r = new ArrayList<String>(); }
+@init { $r = new ArrayList<>(); }
     : '[' e1=list_elem { $r.add($e1.r); }
         ( ',' e2=list_elem { $r.add($e2.r); } )* ']'
     ;

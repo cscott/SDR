@@ -33,7 +33,7 @@ import com.jme.util.TextureManager;
 public class SdrGame extends SdrBaseGame {
 
     private Skybox skybox;
-    private List<AnimDancer> dancers = new ArrayList<AnimDancer>(8);
+    private List<AnimDancer> dancers = new ArrayList<>(8);
     private final static Vector3f camCaller = new Vector3f(0, -8.5f, 9.4f);
     private final static Vector3f camStartup = new Vector3f(8,20,50);
     private final static Vector3f camCeiling = new Vector3f(0, -.1f, 11);

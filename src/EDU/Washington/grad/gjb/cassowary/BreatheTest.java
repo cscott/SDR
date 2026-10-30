@@ -113,7 +113,7 @@ public class BreatheTest {
         ClVariable[] dv = makeVars(solver, "d", db);
         // for each pair of overlapping boxes, add constraints to prevent the
         // overlap.
-        List<ClBooleanVariable> switches = new ArrayList<ClBooleanVariable>();
+        List<ClBooleanVariable> switches = new ArrayList<>();
         ClBooleanVariable sw;
         // (1) a<->b (no overlap)
         // (2) a<->c (0=ar<cl, 1=ct<ab)

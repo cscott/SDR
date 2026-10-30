@@ -47,7 +47,7 @@ public class Formation {
         this.selected = selected;
     }
     public Formation(Map<Dancer,Position> location) {
-        this.location = Collections.unmodifiableMap(new LinkedHashMap<Dancer,Position>(location));
+        this.location = Collections.unmodifiableMap(new LinkedHashMap<>(location));
         this.selected = this.location.keySet();
     }
 
@@ -70,7 +70,7 @@ public class Formation {
      *  4G>            2B<
      */
     public Formation onlySelected() {
-	Map<Dancer,Position> nloc = new LinkedHashMap<Dancer,Position>
+	Map<Dancer,Position> nloc = new LinkedHashMap<>
 	    (this.location);
 	nloc.keySet().retainAll(this.selected);
 	return new Formation(nloc);
@@ -161,7 +161,7 @@ public class Formation {
      *  ]
      */
     public Formation select(Collection<Dancer> d) {
-        Set<Dancer> nSel = new LinkedHashSet<Dancer>(dancers());
+        Set<Dancer> nSel = new LinkedHashSet<>(dancers());
         nSel.retainAll(d);
         return new Formation(location, Collections.unmodifiableSet(nSel));
     }
@@ -212,7 +212,7 @@ public class Formation {
         Fraction oy = bounds.ll.y.add(bounds.ur.y).divide(Fraction.TWO);
         if (ox.equals(Fraction.ZERO) && oy.equals(Fraction.ZERO))
             return this; // efficiency
-        Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>(location.size());
+        Map<Dancer,Position> m = new LinkedHashMap<>(location.size());
         for (Map.Entry<Dancer,Position> me : location.entrySet()) {
             Dancer d = me.getKey();
             Position p = me.getValue();
@@ -247,7 +247,7 @@ public class Formation {
      *       1G7       2B`
      */
     public Formation rotate(ExactRotation rotation) {
-        Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>(location.size());
+        Map<Dancer,Position> m = new LinkedHashMap<>(location.size());
         for (Map.Entry<Dancer,Position> me : location.entrySet())
             m.put(me.getKey(), me.getValue().rotateAroundOrigin(rotation));
         return new Formation(Collections.unmodifiableMap(m), selected);
@@ -269,7 +269,7 @@ public class Formation {
      * based on their positions within this {@link Formation}.
      */
     public Comparator<Dancer> dancerComparator() {
-        return new Comparator<Dancer>() {
+        return new Comparator<>() {
             public int compare(Dancer d1, Dancer d2) {
                 if (d1.equals(d2)) return 0; // easy out
                 Position p1 = Formation.this.location(d1);
@@ -288,7 +288,7 @@ public class Formation {
     /** Return the dancers of {@link #dancers()}, in the order given by
      * {@link #dancerComparator()}. */
     public List<Dancer> sortedDancers() {
-        List<Dancer> result = new ArrayList<Dancer>(this.dancers());
+        List<Dancer> result = new ArrayList<>(this.dancers());
         Collections.sort(result, this.dancerComparator());
         return Collections.unmodifiableList(result);
     }
@@ -313,9 +313,9 @@ public class Formation {
 	// order dancers by location so that string representation is
 	// consistent
 	SortedMap<Dancer,Position> location =
-	    new TreeMap<Dancer,Position>(this.dancerComparator());
+	    new TreeMap<>(this.dancerComparator());
 	location.putAll(this.location);
-	List<Dancer> selected = new ArrayList<Dancer>(this.selected);
+	List<Dancer> selected = new ArrayList<>(this.selected);
 	Collections.sort(selected, this.dancerComparator());
 	// build the result string
 	return new ToStringBuilder(this, SdrToString.STYLE)
@@ -423,7 +423,7 @@ public class Formation {
         GridString gs = new GridString(prefix);
         _toStringDiagram(gs, Fraction.ZERO, dancerNames);
         // now add the roll details
-        Map<Dancer,String> details = new HashMap<Dancer,String>();
+        Map<Dancer,String> details = new HashMap<>();
         for (Dancer d : dancers()) {
             details.put(d, location(d).shortFlagString());
         }
@@ -431,7 +431,7 @@ public class Formation {
         return gs.toString();
     }
     private static final Map<Dancer,String> _dancerNames =
-	new LinkedHashMap<Dancer,String>(8);
+	new LinkedHashMap<>(8);
     /**
      * Map from {@link StandardDancer}s to 2-character dancer representations.
      * @doc.test
@@ -459,7 +459,7 @@ public class Formation {
     private static class GridString {
         private final String prefix;
         private int minx=0, miny=0;
-        private final List<StringBuilder> grid = new ArrayList<StringBuilder>();
+        private final List<StringBuilder> grid = new ArrayList<>();
         GridString(String prefix) { this.prefix=prefix; }
 	/** Set the character at position (x,y) to c.  */
         void set(int x, int y, char c) {
@@ -556,8 +556,8 @@ public class Formation {
         );
 
     protected Formation(Formation f, Map<Dancer,Dancer> map) {
-        Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
-        Set<Dancer> s = new LinkedHashSet<Dancer>();
+        Map<Dancer,Position> m = new LinkedHashMap<>();
+        Set<Dancer> s = new LinkedHashSet<>();
         for (Map.Entry<Dancer,Position> me : f.location.entrySet())
             m.put(map.get(me.getKey()), me.getValue());
         for (Dancer d : f.selected)
@@ -573,7 +573,7 @@ public class Formation {
      * top-to-bottom).
      */
     public Formation map(Dancer... dancers) {
-        Map<Dancer,Dancer> m = new LinkedHashMap<Dancer,Dancer>();
+        Map<Dancer,Dancer> m = new LinkedHashMap<>();
         List<Dancer> sortedDancers = this.sortedDancers();
         for (int i=0; i<dancers.length; i++)
             m.put(sortedDancers.get(i), dancers[i]);
@@ -605,8 +605,8 @@ public class Formation {
     }
     
     Formation(DancerInfo... dis) {
-	Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
-	Set<Dancer> s = new LinkedHashSet<Dancer>();
+	Map<Dancer,Position> m = new LinkedHashMap<>();
+	Set<Dancer> s = new LinkedHashSet<>();
 	for (DancerInfo di : dis) {
 	    m.put(di.dancer, di.position);
             if (di.isSelected)
@@ -648,7 +648,7 @@ public class Formation {
      */
     public Formation move(Dancer d, Position p) {
 	assert this.location.containsKey(d);
-	Map<Dancer,Position> nmap = new LinkedHashMap<Dancer,Position>
+	Map<Dancer,Position> nmap = new LinkedHashMap<>
 	    (this.location);
 	nmap.put(d, p);
 	return new Formation(nmap, this.selected);
@@ -685,7 +685,7 @@ public class Formation {
      *  1,-3,n,[PASS_LEFT]
      */
     public Formation mirror(boolean mirrorShoulderPass) {
-        Map<Dancer,Position> nmap = new LinkedHashMap<Dancer,Position>();
+        Map<Dancer,Position> nmap = new LinkedHashMap<>();
         for (Map.Entry<Dancer, Position> me: this.location.entrySet()) {
             nmap.put(me.getKey(), me.getValue().mirror(mirrorShoulderPass));
         }

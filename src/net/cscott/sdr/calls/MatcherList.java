@@ -711,7 +711,7 @@ public class MatcherList {
             // (ie, in an hourglass, the box points might be nearer than the
             //  diamond points, but we can't take them all w/o going over
             //  half the dancers)
-            MultiMap<Fraction,Dancer> mm = new GenericMultiMap<Fraction,Dancer>
+            MultiMap<Fraction,Dancer> mm = new GenericMultiMap<>
                 (Factories.<Fraction,Collection<Dancer>>treeMapFactory(),
                  Factories.<Dancer>linkedHashSetFactory());
             for (Dancer d: f.dancers()) {
@@ -719,7 +719,7 @@ public class MatcherList {
                 Fraction dist2 = p.toPoint().dist2(Point.ZERO);
                 mm.add(dist2, d);
             }
-            Set<Dancer> centerDancers = new LinkedHashSet<Dancer>();
+            Set<Dancer> centerDancers = new LinkedHashSet<>();
             for (Fraction dist2 : mm.keySet()) {
                 Collection<Dancer> group = mm.getValues(dist2);
                 if (centerDancers.size()+group.size() > n)
@@ -730,7 +730,7 @@ public class MatcherList {
                 throw new NoMatchException(getName(),
                                            "Can't find "+n+" center dancers");
             // ok, apply the tags
-            MultiMap<Dancer,Tag> newTags = new GenericMultiMap<Dancer,Tag>();
+            MultiMap<Dancer,Tag> newTags = new GenericMultiMap<>();
             for (Dancer d : centerDancers)
                 newTags.add(d, Tag.CENTER);
             TaggedFormation tf = new TaggedFormation(f, newTags);
@@ -806,8 +806,8 @@ public class MatcherList {
             boolean splitX = bounds.width().compareTo(bounds.height()) >= 0;
             if (!isWide) splitX = !splitX;
             // split the dancers into two groups.
-            Set<Dancer> topLeftHalf = new LinkedHashSet<Dancer>();
-            Set<Dancer> bottomRightHalf = new LinkedHashSet<Dancer>();
+            Set<Dancer> topLeftHalf = new LinkedHashSet<>();
+            Set<Dancer> bottomRightHalf = new LinkedHashSet<>();
             for (Dancer d : f.dancers()) {
                 Position p = f.location(d);
                 int c = splitX ?
@@ -872,7 +872,7 @@ public class MatcherList {
         return new Matcher() {
             @Override
             public FormationMatch match(Formation f) throws NoMatchException {
-                List<String> reasons = new ArrayList<String>(3);
+                List<String> reasons = new ArrayList<>(3);
                 for (Matcher s : alternatives) {
                     try {
                         return s.match(f);
@@ -891,7 +891,7 @@ public class MatcherList {
     public static Matcher mixed(String name, TaggedFormation... goals) {
         return GeneralFormationMatcher.makeMatcher(name, Arrays.asList(goals));
     }
-    public static final ExprFunc<Matcher> _MIXED = new ExprFunc<Matcher>() {
+    public static final ExprFunc<Matcher> _MIXED = new ExprFunc<>() {
         @Override
         public String getName() { return "mixed"; }
         @Override
@@ -900,7 +900,7 @@ public class MatcherList {
             throws EvaluationException {
             // parse the argument list as formations
             assert args.size() > 0;
-            List<TaggedFormation> goals = new ArrayList<TaggedFormation>();
+            List<TaggedFormation> goals = new ArrayList<>();
             for (Expr e : args)
                 goals.add(e.evaluate(TaggedFormation.class, ds));
             // XXX if args are constant, cache Matcher
@@ -915,14 +915,14 @@ public class MatcherList {
             return true;
         }
     };
-    public static final ExprFunc<Matcher> _OR = new ExprFunc<Matcher>(){
+    public static final ExprFunc<Matcher> _OR = new ExprFunc<>(){
         @Override
         public String getName() { return "or"; }
         @Override
         public Matcher evaluate(Class<? super Matcher> type,
                                 DanceState ds, List<Expr> args)
             throws EvaluationException {
-            List<Matcher> ml = new ArrayList<Matcher>(args.size());
+            List<Matcher> ml = new ArrayList<>(args.size());
             for (Expr alternative : args)
                 ml.add(alternative.evaluate(Matcher.class, ds));
             String name = new Expr(getName(), args).toShortString();
@@ -977,7 +977,7 @@ public class MatcherList {
      *  js> try { e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), ds).match(ds.currentFormation()) } catch (e) { print (e.javaException); }
      *  net.cscott.sdr.calls.NoMatchException: No match for NONE: NONE matcher used
      */
-    public static ExprFunc<Matcher> _CONDITION = new ExprFunc<Matcher>() {
+    public static ExprFunc<Matcher> _CONDITION = new ExprFunc<>() {
         @Override
         public String getName() { return "condition"; }
         @Override
@@ -1003,7 +1003,7 @@ public class MatcherList {
     };
 
     public static ExprFunc<Matcher> _CENTER =
-        new ExprFunc<Matcher>() {
+        new ExprFunc<>() {
         @Override
         public String getName() { return "center"; }
         @Override
@@ -1023,7 +1023,7 @@ public class MatcherList {
             return args.get(0).isConstant(type);
         }
     };
-    public static ExprFunc<Matcher> _ALLOW_UNMATCHED = new ExprFunc<Matcher>(){
+    public static ExprFunc<Matcher> _ALLOW_UNMATCHED = new ExprFunc<>(){
         @Override
         public String getName() { return "allow unmatched"; }
         @Override
@@ -1031,7 +1031,7 @@ public class MatcherList {
                 List<Expr> args) throws EvaluationException {
             // parse the argument list as formations
             assert args.size() > 0;
-            final List<TaggedFormation> goals = new ArrayList<TaggedFormation>();
+            final List<TaggedFormation> goals = new ArrayList<>();
             for (Expr e : args)
                 goals.add(e.evaluate(TaggedFormation.class, ds));
             final String name = getName() +
@@ -1077,7 +1077,7 @@ public class MatcherList {
      *       +  1B^  1G^    +
      *   [ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL; ph inserted: NONCORPOREAL]
      */
-    public static ExprFunc<Matcher> _USE_PHANTOMS = new ExprFunc<Matcher>(){
+    public static ExprFunc<Matcher> _USE_PHANTOMS = new ExprFunc<>(){
         @Override
         public String getName() { return "use phantoms"; }
         @Override
@@ -1085,7 +1085,7 @@ public class MatcherList {
                 List<Expr> args) throws EvaluationException {
             // parse the argument list as formations
             assert args.size() > 0;
-            final List<TaggedFormation> goals = new ArrayList<TaggedFormation>();
+            final List<TaggedFormation> goals = new ArrayList<>();
             for (Expr e : args)
                 goals.add(e.evaluate(TaggedFormation.class, ds));
             final String name = getName() +
@@ -1139,7 +1139,7 @@ public class MatcherList {
      *  FF: (unmatched)
      *     3B^
      */
-    public static ExprFunc<Matcher> _NOT_GRAND = new ExprFunc<Matcher>() {
+    public static ExprFunc<Matcher> _NOT_GRAND = new ExprFunc<>() {
         @Override
         public String getName() { return "not grand"; }
         @Override
@@ -1175,10 +1175,10 @@ public class MatcherList {
                     // to unmatch to enforce "not grand"
                     // 1. make new unmatched dancer set
                     Set<Dancer> nUnmatched =
-                            new LinkedHashSet<Dancer>(fm.unmatched);
+                            new LinkedHashSet<>(fm.unmatched);
                     // 2. make new single dancer phantoms
                     Map<Dancer,Dancer> nPhantoms =
-                            new LinkedHashMap<Dancer,Dancer>
+                            new LinkedHashMap<>
                                 (centerFormation.dancers().size());
                     for (Dancer d : centerFormation.dancers())
                         nPhantoms.put(d, new PhantomDancer());
@@ -1187,7 +1187,7 @@ public class MatcherList {
                     // 3. make new "matches" map, with new phantoms mapped to
                     //    new single dancer formations
                     Map<Dancer, TaggedFormation> nMatches =
-                            new LinkedHashMap<Dancer, TaggedFormation>(fm.matches);
+                            new LinkedHashMap<>(fm.matches);
                     nMatches.remove(centerDancer);
                     for (Dancer d : centerFormation.dancers()) {
                         nMatches.put(nPhantoms.get(d),
@@ -1195,7 +1195,7 @@ public class MatcherList {
                     }
                     // 4. create a new meta formation.
                     Map<Dancer,Formation> insertMap =
-                            new LinkedHashMap<Dancer,Formation>();
+                            new LinkedHashMap<>();
                     for (Dancer d : fm.meta.dancers()) {
                         insertMap.put(d, (d==centerDancer) ? nCenter :
                                          FormationList.SINGLE_DANCER.map(d));

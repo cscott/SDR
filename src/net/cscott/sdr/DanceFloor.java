@@ -18,7 +18,7 @@ import net.cscott.sdr.util.Fraction;
  */
 public class DanceFloor {
     private final Map<Dancer,Queue<DancerBezierPath>> pathQueueMap =
-        new HashMap<Dancer,Queue<DancerBezierPath>>();
+        new HashMap<>();
 
     /** Current (interpolated) path for the given dancer.  Will return
      *  <code>null</code> if the dancer is not currently on the floor. */
@@ -45,13 +45,13 @@ public class DanceFloor {
     }
     private synchronized Queue<DancerBezierPath> pathQueue(Dancer d) {
         if (!pathQueueMap.containsKey(d))
-            pathQueueMap.put(d, new PriorityQueue<DancerBezierPath>());
+            pathQueueMap.put(d, new PriorityQueue<>());
         return pathQueueMap.get(d);
     }
 
     /// ------------------ sync to the beat --------------
     private final BlockingQueue<Fraction> beatQueue =
-        new LinkedBlockingQueue<Fraction>();
+        new LinkedBlockingQueue<>();
 
     /** Notify the choreography engine that the given beat is now occurring.
      *  Thread-safe. */

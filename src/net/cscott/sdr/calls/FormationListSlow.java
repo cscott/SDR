@@ -889,7 +889,7 @@ abstract class FormationListSlow {
     /** List of all formations defined in this class. */
     public static final List<NamedTaggedFormation> all = _enumerateFormations();
     private static List<NamedTaggedFormation> _enumerateFormations() {
-        List<NamedTaggedFormation> result = new ArrayList<NamedTaggedFormation>();
+        List<NamedTaggedFormation> result = new ArrayList<>();
         for (Field f: FormationListSlow.class.getDeclaredFields()) {
             if (Modifier.isStatic(f.getModifiers()) &&
                 Modifier.isPublic(f.getModifiers()) &&
@@ -915,7 +915,7 @@ abstract class FormationListSlow {
                                   TaggedFormation.mkTags(tags));
     }
     private static NamedTaggedFormation create(final String name, PositionAndTag... ptl) {
-	List<TaggedDancerInfo> dil = new ArrayList<TaggedDancerInfo>(ptl.length);
+	List<TaggedDancerInfo> dil = new ArrayList<>(ptl.length);
 	for (PositionAndTag pt: ptl)
 	    dil.add(new TaggedDancerInfo(new PhantomDancer(), pt.position, pt.tags, true));
 	return new NamedTaggedFormation(name, null, dil.toArray(new TaggedDancerInfo[dil.size()]));
@@ -923,7 +923,7 @@ abstract class FormationListSlow {
     // first string is 'top' of diagram (closest to caller)
     // dancers are numbered left to right, top to bottom. (reading order)
     private static NamedTaggedFormation create(String name, String[] sa, WhetherTagger wt, StandardDancer[] normalCouples, NumAndTags... tags) {
-        Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
+        Map<Dancer,Position> m = new LinkedHashMap<>();
 	// check validity
 	assert sa.length>0;
 	for (int i=0; i<sa.length-1; i++)
@@ -953,11 +953,11 @@ abstract class FormationListSlow {
     /** Formation composition: create a formation with an X of Ys. */
     private static TaggedFormation _xofy(Formation x, TaggedFormation y) {
         /* create an instance of 'y' for each dancer in 'x'. */
-        Map<Dancer,Formation> sub = new LinkedHashMap<Dancer,Formation>();
-        MultiMap<Dancer,Tag> tags = new GenericMultiMap<Dancer,Tag>
+        Map<Dancer,Formation> sub = new LinkedHashMap<>();
+        MultiMap<Dancer,Tag> tags = new GenericMultiMap<>
                                         (Factories.enumSetFactory(Tag.class));
         for (Dancer d: x.dancers()) {
-            Map<Dancer,Position> m = new LinkedHashMap<Dancer,Position>();
+            Map<Dancer,Position> m = new LinkedHashMap<>();
             for (Dancer dd : y.dancers()) {
                 Dancer phantom = new PhantomDancer();
                 m.put(phantom, y.location(dd));
@@ -983,14 +983,14 @@ abstract class FormationListSlow {
         return addTags(name, _xofy(x,y), wt, normalCouples, tags);
     }
     private static TaggedFormation noTags(Formation f) {
-        return new TaggedFormation(f, new GenericMultiMap<Dancer,Tag>
+        return new TaggedFormation(f, new GenericMultiMap<>
                                    (Factories.enumSetFactory(Tag.class)));
     }
     private static enum WhetherTagger { AUTO_TAGS, NO_AUTO_TAGS; }
     private static NamedTaggedFormation addTags(final String name, final Formation f,
         WhetherTagger wt, StandardDancer[] normalCouples, NumAndTags... tags) {
         List<Dancer> dancers = f.sortedDancers();
-        MultiMap<Dancer,Tag> tm = new GenericMultiMap<Dancer,Tag>
+        MultiMap<Dancer,Tag> tm = new GenericMultiMap<>
             (Factories.enumSetFactory(Tag.class));
         // add existing tags
         if (f instanceof TaggedFormation)
@@ -1052,7 +1052,7 @@ abstract class FormationListSlow {
         }
     }
     private static void emit(PrintWriter pw) {
-        List<String> allFormations = new ArrayList<String>();
+        List<String> allFormations = new ArrayList<>();
         emitHeader(pw);
         for (Field f : FormationListSlow.class.getDeclaredFields()) {
             if (Modifier.isPublic(f.getModifiers()) &&
@@ -1106,7 +1106,7 @@ abstract class FormationListSlow {
         pw.println(mntf.toStringDiagram("      *  |"));
         pw.println("      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\\n');");
         for (Dancer d : ntf.sortedDancers())
-            pw.println("      *  "+new ArrayList<Tag>(ntf.tags(d)));
+            pw.println("      *  "+new ArrayList<>(ntf.tags(d)));
         pw.println("      */");
         pw.println("    public static final NamedTaggedFormation "+fieldName+" =");
         pw.println("        new NamedTaggedFormation(\""+escapedName+"\",");

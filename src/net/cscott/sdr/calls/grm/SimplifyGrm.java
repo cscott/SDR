@@ -23,7 +23,7 @@ public class SimplifyGrm extends GrmVisitor<Grm> {
         assert !alt.alternates.isEmpty();
         if (alt.alternates.size()==1)
             return alt.alternates.get(0).accept(this);
-        List<Grm> l = new ArrayList<Grm>(alt.alternates.size());
+        List<Grm> l = new ArrayList<>(alt.alternates.size());
         Tools.ListMultiMap<Grm,Grm> commonPrefix = Tools.mml();
         for (Grm g : alt.alternates) {
             g = g.accept(this); // recursively simplify
@@ -53,7 +53,7 @@ public class SimplifyGrm extends GrmVisitor<Grm> {
         assert !concat.sequence.isEmpty();
         if (concat.sequence.size()==1)
             return concat.sequence.get(0).accept(this);
-        List<Grm> l = new ArrayList<Grm>(concat.sequence.size());
+        List<Grm> l = new ArrayList<>(concat.sequence.size());
         // hoist nested concats into a single sequence.
         for (Grm g : concat.sequence) {
             g = g.accept(this);
@@ -84,8 +84,8 @@ public class SimplifyGrm extends GrmVisitor<Grm> {
      *  yielded by the given grammar. */
     private final static String firstTerm(Grm g) {
         // visitor to return set of terminal/nonterminals which could be first
-        GrmVisitor<Set<String>> v = new GrmVisitor<Set<String>>() {
-            final SetFactory<String> sf = new PersistentSetFactory<String>
+        GrmVisitor<Set<String>> v = new GrmVisitor<>() {
+            final SetFactory<String> sf = new PersistentSetFactory<>
                 (Default.<String>comparator());
             @Override
             public Set<String> visit(Alt alt) {
@@ -154,7 +154,7 @@ public class SimplifyGrm extends GrmVisitor<Grm> {
         };
 
         // return the alphabetically-first of the possibilities
-        List<String> firsts = new ArrayList<String>(g.accept(v));
+        List<String> firsts = new ArrayList<>(g.accept(v));
         for (Iterator<String> it=firsts.iterator(); it.hasNext(); )
             if (it.next() == null) it.remove();
         Collections.sort(firsts);
@@ -163,7 +163,7 @@ public class SimplifyGrm extends GrmVisitor<Grm> {
 
     /** Sort grm alt options pseudo-alphabetically, using the approximate
      *  {@link #firstTerm} method. */
-    private final static Comparator<Grm> altComparator = new Comparator<Grm>(){
+    private final static Comparator<Grm> altComparator = new Comparator<>(){
         public int compare(Grm o1, Grm o2) {
             String f1 = firstTerm(o1), f2 = firstTerm(o2);
             return f1.compareTo(f2);

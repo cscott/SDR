@@ -205,7 +205,7 @@ public class MusicState extends BaseState {
         return true;
     }
     private final List<LevelMeasurement> levels =
-        new ArrayList<LevelMeasurement>(128);
+        new ArrayList<>(128);
     /** Find a color for the given level 0-1.  Interpolate green->yellow->red. */
     private Color levelColor(float val) {
         if (val < 0) val = 0;

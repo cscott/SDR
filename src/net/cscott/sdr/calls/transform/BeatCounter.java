@@ -54,7 +54,7 @@ class BeatCounter extends ValueVisitor<Fraction,Void> {
     }
     private final DanceState ds;
     public BeatCounter(DanceState ds) { this.ds = ds; }
-    private final Map<AstNode,Fraction> inherent = new HashMap<AstNode,Fraction>();
+    private final Map<AstNode,Fraction> inherent = new HashMap<>();
     public Fraction getBeats(AstNode ast) {
         if (!inherent.containsKey(ast))
             inherent.put(ast, ast.accept(this, null));

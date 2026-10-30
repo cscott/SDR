@@ -30,9 +30,9 @@ public class CommandInput {
     
     /** This is the actual cmdQueue we'll use for synchronization. */
     private final BlockingQueue<PossibleCommand> cmdQueue =
-        new LinkedBlockingQueue<PossibleCommand>();
+        new LinkedBlockingQueue<>();
     private final BlockingQueue<InputMode> modeQueue =
-        new LinkedBlockingQueue<InputMode>();
+        new LinkedBlockingQueue<>();
 
     /**
      * Called by input methods (voice recognition, keyboard input,

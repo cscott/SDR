@@ -192,7 +192,7 @@ public abstract class Evaluator {
 
     /** Convenience method for easy testing. */
     public static void parseAndEval(DanceState ds, String... calls) {
-        List<Apply> l = new ArrayList<Apply>(calls.length);
+        List<Apply> l = new ArrayList<>(calls.length);
         for (String s : calls)
             l.add(CallDB.INSTANCE.parse(ds.dance.getProgram(), s));
         Comp c = new Seq(l.toArray(new SeqCall[l.size()]));
@@ -321,7 +321,7 @@ public abstract class Evaluator {
             /** Try all the options, keeping the first one which works. */
             @Override
             public Evaluator visit(Opt opt, DanceState ds) {
-                List<String> reasons=new ArrayList<String>(opt.children.size());
+                List<String> reasons=new ArrayList<>(opt.children.size());
                 for (OptCall oc: opt.children) {
                     try {
                         return oc.accept(this, ds);
@@ -350,7 +350,7 @@ public abstract class Evaluator {
                 Formation f = ds.currentFormation();
                 if (oc.matcher.atom!="use phantoms") // HACK
                     f = Breather.breathe(f);
-                List<String> reasons = new ArrayList<String>();
+                List<String> reasons = new ArrayList<>();
                 // XXX bit of a hack here: we don't want BadCallExceptions to
                 // bail out of the entire top-level OR.  Eventually we'll want
                 // to introduce some other sort of combiner for this.
@@ -402,7 +402,7 @@ public abstract class Evaluator {
                 TaggedFormation tf = TaggedFormation.coerce(f);
                 // we're going to want to ensure that every dancer matches
                 // some tag.
-                Set<Dancer> unmatched = new LinkedHashSet<Dancer>(f.selectedDancers());
+                Set<Dancer> unmatched = new LinkedHashSet<>(f.selectedDancers());
                 PartsCombineEvaluator pce = new PartsCombineEvaluator();
                 for (ParCall pc : p.children) {
                     // find the dancers matched, adjusting unmatched set
@@ -528,7 +528,7 @@ public abstract class Evaluator {
         private static Map<Dancer,Evaluator>
         _makeStandardEvaluators(FormationMatch fm, Comp child) {
             boolean matchedOne = false;
-            Map<Dancer,Evaluator> emap = new HashMap<Dancer,Evaluator>
+            Map<Dancer,Evaluator> emap = new HashMap<>
                 (fm.meta.dancers().size());
             for (Dancer d : fm.meta.dancers()) {
                 Evaluator e = fm.unmatched.contains(d)
@@ -542,11 +542,11 @@ public abstract class Evaluator {
         protected boolean breatheParts() { return false; }
         @Override
         public Evaluator evaluate(DanceState ds) {
-            List<Dancer> metaDancers=new ArrayList<Dancer>(this.meta.dancers());
+            List<Dancer> metaDancers=new ArrayList<>(this.meta.dancers());
             Map<Dancer,DanceState> substates =
-                new HashMap<Dancer,DanceState>(this.metaSize);
+                new HashMap<>(this.metaSize);
             // maintain a list of unique time values.
-            TreeSet<Fraction> moments = new TreeSet<Fraction>();
+            TreeSet<Fraction> moments = new TreeSet<>();
             // do a sub-evaluation in each part of the match
             // use evaluateAll here because the subformations could
             // have different #s of parts (for the same call) and we
@@ -570,10 +570,10 @@ public abstract class Evaluator {
             // go through all the moments in time, constructing an appropriately
             // breathed formation.
             TreeMap<Fraction,Formation> breathed =
-                new TreeMap<Fraction,Formation>();
+                new TreeMap<>();
             for (Fraction t : moments) {
                 Map<Dancer,Formation> components =
-                    new HashMap<Dancer,Formation>();
+                    new HashMap<>();
                 for (Dancer metaDancer : metaDancers) {
                     Formation subF = substates.get(metaDancer).formationAt(t);
                     // in general, don't breathe subformations here!
@@ -636,7 +636,7 @@ public abstract class Evaluator {
                 this.ds = ds;
             }
         }
-        private List<SubPart> parts = new ArrayList<SubPart>();
+        private List<SubPart> parts = new ArrayList<>();
         void add(Set<Dancer> matched, Comp subcall, DanceState ds) {
             this.add(matched, new Standard(subcall), ds);
         }

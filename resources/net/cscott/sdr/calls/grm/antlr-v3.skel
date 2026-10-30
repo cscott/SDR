@@ -42,7 +42,7 @@ start returns [Expr r]
 	;
 
 anything_list returns [Expr r]
-@init { List<Expr> l = new ArrayList<Expr>(); }
+@init { List<Expr> l = new ArrayList<>(); }
 	// semicolons are just for ease of typing (not spoken)
 	: a=anything { l.add(a); } (';' b=anything { l.add(b); } )*
 	  {

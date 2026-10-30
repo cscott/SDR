@@ -69,7 +69,7 @@ abstract class BuilderHelper {
         public boolean isConstant() { return false; } // always safe
     }
     static <T> B<T> mkConstant(final T t) {
-        return new B<T>() {
+        return new B<>() {
             @Override
             public T build(List<Expr> args) { return t; }
             @Override
@@ -82,7 +82,7 @@ abstract class BuilderHelper {
         return true;
     }
     static <T> List<T> reduce(List<? extends B<? extends T>> l, List<Expr> args) {
-        List<T> ll = new ArrayList<T>(l.size());
+        List<T> ll = new ArrayList<>(l.size());
         for (B<? extends T> b : l)
             ll.add(b.build(args));
         return ll;
@@ -91,14 +91,14 @@ abstract class BuilderHelper {
         return (isConstant) ? mkConstant(b.build(null)) : b;
     }
     static B<Apply> mkApply(final B<Expr> call) {
-        return optimize(new B<Apply>() {
+        return optimize(new B<>() {
             public Apply build(List<Expr> fargs) {
                 return new Apply(call.build(fargs));
             }
         }, call.isConstant());
     }
     static B<Expr> mkExpr(final String predicate, final List<B<Expr>> args) {
-        return optimize(new B<Expr>() {
+        return optimize(new B<>() {
             public Expr build(List<Expr> fargs) {
                 return new Expr(predicate, reduce(args, fargs));
             }
@@ -107,7 +107,7 @@ abstract class BuilderHelper {
     static B<If> mkIf(final If.When when,
 		      final B<Expr> cond, final Fraction priority,
                       final String msg, final B<? extends Comp> child) {
-        return optimize(new B<If>() {
+        return optimize(new B<>() {
             public If build(List<Expr> fargs) {
                 return new If(when, cond.build(fargs), child.build(fargs),
                               msg, priority);
@@ -115,42 +115,42 @@ abstract class BuilderHelper {
         }, cond.isConstant() && child.isConstant());
     }
     static B<In> mkIn(final B<Expr> count, final B<? extends Comp> child) {
-        return optimize(new B<In>() {
+        return optimize(new B<>() {
             public In build(List<Expr> fargs) {
                 return new In(count.build(fargs), child.build(fargs));
             }
         }, count.isConstant() && child.isConstant());
     }
     static B<Opt> mkOpt(final List<B<OptCall>> children) {
-        return optimize(new B<Opt>() {
+        return optimize(new B<>() {
             public Opt build(List<Expr> fargs) {
                 return new Opt(reduce(children, fargs));
             }
         }, isConstant(children));
     }
     static B<OptCall> mkOptCall(final B<Expr> matcher, final B<? extends Comp> child) {
-        return optimize(new B<OptCall>() {
+        return optimize(new B<>() {
             public OptCall build(List<Expr> fargs) {
                 return new OptCall(matcher.build(fargs), child.build(fargs));
             }
         }, matcher.isConstant() && child.isConstant());
     }
     static B<Par> mkPar(final List<B<ParCall>> children) {
-        return optimize(new B<Par>() {
+        return optimize(new B<>() {
             public Par build(List<Expr> fargs) {
                 return new Par(reduce(children, fargs));
             }
         }, isConstant(children));
     }
     static B<ParCall> mkParCall(final B<Expr> selector, final B<? extends Comp> child) {
-        return optimize(new B<ParCall>() {
+        return optimize(new B<>() {
             public ParCall build(List<Expr> fargs) {
                 return new ParCall(selector.build(fargs), child.build(fargs));
             }
         }, child.isConstant() && selector.isConstant());
     }
     static B<Part> mkPart(final Divisibility divisible, final B<Expr> howMany, final B<? extends Comp> child) {
-        return optimize(new B<Part>() {
+        return optimize(new B<>() {
             public Part build(List<Expr> fargs) {
                 return new Part(divisible, howMany.build(fargs), child.build(fargs));
             }
@@ -168,7 +168,7 @@ abstract class BuilderHelper {
 				   ));
     }
     static B<Seq> mkSeq(final List<B<? extends SeqCall>> children) {
-        return optimize(new B<Seq>() {
+        return optimize(new B<>() {
             public Seq build(List<Expr> fargs) {
                 return new Seq(reduce(children, fargs));
             }
@@ -206,7 +206,7 @@ abstract class BuilderHelper {
         if (i==0) /* no default arguments */
             defaultArguments = Collections.emptyList(); /* save memory */
         else {
-             defaultArguments = new ArrayList<Expr>();
+             defaultArguments = new ArrayList<>();
              for (ArgAndDefault a: args)
                  defaultArguments.add(a.defaultValue==null ? null :
                                       Expr.literal(a.defaultValue));
@@ -231,7 +231,7 @@ abstract class BuilderHelper {
             public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
                 assert args.size() >= minNumberOfArguments :
                     "not enough arguments to call: "+getName();
-                List<Expr> nargs = new ArrayList<Expr>(args);
+                List<Expr> nargs = new ArrayList<>(args);
                 /* add default arguments if missing */
                 for (int i=nargs.size(); i<defaultArguments.size(); i++)
                     nargs.add(defaultArguments.get(i));

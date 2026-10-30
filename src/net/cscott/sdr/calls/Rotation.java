@@ -228,10 +228,10 @@ public class Rotation {
     public Collection<ExactRotation> included() {
         assert !this.modulus.equals(Fraction.ZERO);
         final Fraction start = this.normalize().amount;
-        return new AbstractCollection<ExactRotation>() {
+        return new AbstractCollection<>() {
             @Override
             public Iterator<ExactRotation> iterator() {
-                return new UnmodifiableIterator<ExactRotation>() {
+                return new UnmodifiableIterator<>() {
                     Fraction next = start;
                     @Override
                     public boolean hasNext() {
@@ -293,7 +293,7 @@ public class Rotation {
         // sort the first two ExactRotations in each Rotation
         Rotation a = this.normalize(), b = r.normalize();
         TreeSet<Fraction> rots =
-            new TreeSet<Fraction>(l(a.amount, a.amount.add(a.modulus),
+            new TreeSet<>(l(a.amount, a.amount.add(a.modulus),
                                     b.amount, b.amount.add(b.modulus)));
         // amount is first, modulus is diff of third and second.
         Fraction first = rots.first(),

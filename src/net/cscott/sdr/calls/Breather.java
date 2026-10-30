@@ -157,7 +157,7 @@ public class Breather {
     public static Formation insert(final Formation meta,
                                    final Map<Dancer,Formation> components) {
         List<FormationPiece> l =
-            new ArrayList<FormationPiece>(meta.dancers().size());
+            new ArrayList<>(meta.dancers().size());
         for (Dancer d : meta.dancers()) {
             assert meta.location(d).facing.isExact();
             l.add(new FormationPiece(meta.select(d).onlySelected(),
@@ -453,7 +453,7 @@ public class Breather {
             Formation ff = breathe(f.rotate(ExactRotation.ONE_EIGHTH));
             return ff.rotate(ExactRotation.ONE_EIGHTH.negate());
         }
-        List<FormationPiece> fpl = new ArrayList<FormationPiece>
+        List<FormationPiece> fpl = new ArrayList<>
             (f.dancers().size());
         for (Dancer d: f.dancers()) {
             Formation in = f.select(Collections.singleton(d)).onlySelected();
@@ -625,7 +625,7 @@ public class Breather {
             //               objective function minimizes all boundaries
             ClSimplexSolver solver = new ClSimplexSolver();
             Map<Fraction, ClVariable> vars =
-                new LinkedHashMap<Fraction, ClVariable>();
+                new LinkedHashMap<>();
             for (Fraction f: axis.bounds.keySet()) {
                 ClVariable v = new ClVariable(Fraction.ZERO);
                 ClStrength s = f.equals(Fraction.ZERO) ?
@@ -677,7 +677,7 @@ public class Breather {
             }
         }
         // assemble meta formation.
-        Map<Dancer,Position> nf = new LinkedHashMap<Dancer,Position>();
+        Map<Dancer,Position> nf = new LinkedHashMap<>();
         for (int i=0; i<pieces.size(); i++) {
             FormationPiece fp = pieces.get(i);
             Box origBounds = inputBounds.get(i);
@@ -725,9 +725,9 @@ public class Breather {
      * with. */
     private static class Axis {
         final TreeMap<Fraction,Fraction> bounds =
-            new TreeMap<Fraction,Fraction>();
+            new TreeMap<>();
         final List<Bit> bits =
-            new ArrayList<Bit>();
+            new ArrayList<>();
         public Axis() {}
         void addBit(Fraction start, Fraction end, Fraction size) {
             // if this bit straddles zero, add two bits of half the size
@@ -757,7 +757,7 @@ public class Breather {
         // now assemble result list of FormationPieces, merging collisions as
         // we find them.
         List<FormationPiece> result =
-            new ArrayList<FormationPiece>(pieces.size());
+            new ArrayList<>(pieces.size());
         for (Point center: mm.keySet()) {
             List<FormationPiece> l= mm.getValues(center);
             switch(l.size()) {
@@ -779,7 +779,7 @@ public class Breather {
     /* Ensure that fp.output is centered, for every formation pieces. */
     private static List<FormationPiece> centerOutputPieces(List<FormationPiece>
                                                            pieces) {
-        return foreach(pieces, new F<FormationPiece,FormationPiece>() {
+        return foreach(pieces, new F<>() {
             @Override
             public FormationPiece map(FormationPiece fp) {
                 return new FormationPiece(fp.input, fp.output.recenter());
@@ -903,12 +903,12 @@ public class Breather {
         throws ExCLRequiredFailure, ExCLInternalError {
         // quick out if no overlaps
         if (!hasAnyOverlaps(pieces)) {
-            List<Box> bounds = new ArrayList<Box>(pieces.size());
+            List<Box> bounds = new ArrayList<>(pieces.size());
             for (FormationPiece fp : pieces)
                 bounds.add(fp.input.bounds());
             return bounds;
         }
-        List<VariableBox> vars = new ArrayList<VariableBox>(pieces.size());
+        List<VariableBox> vars = new ArrayList<>(pieces.size());
         // create variables and basic constraints
         ClBranchAndBound solver = new ClBranchAndBound();
         for (FormationPiece fp : pieces)
@@ -930,7 +930,7 @@ public class Breather {
                     List<PairedConstraint<ClLinearEquation>> star =
                         va.starConstraints(vb);
                     List<ClBooleanVariable> options =
-                        new ArrayList<ClBooleanVariable>(3);
+                        new ArrayList<>(3);
 
                     if (star!=null) {
                         // option 1: could make a star
@@ -990,7 +990,7 @@ public class Breather {
 
         // solve constraints, return list of new boundaries.
         solver.solve();
-        List<Box> bounds = new ArrayList<Box>(pieces.size());
+        List<Box> bounds = new ArrayList<>(pieces.size());
         for (VariableBox v : vars)
             bounds.add(v.toBox());
         return bounds;
@@ -1076,7 +1076,7 @@ public class Breather {
             // as to where we'd like the new edge to go; otherwise any cut
             // (from trimming 'this' only to trimming 'that' only) yields
             // the same value for the objective function.
-            return new PairedConstraint<ClLinearInequality>
+            return new PairedConstraint<>
                 (new ClLinearInequality
                         (this.getEnd(isX), CL.Op.LEQ, that.getStart(isX)),
                  new ClLinearEquation
@@ -1146,8 +1146,8 @@ public class Breather {
                  bHand.nontrivialX() ?
                  new ClLinearEquation(this.height(), that.width(), ClStrength.weak) :
                  null) : null;
-            return l(new PairedConstraint<ClLinearEquation>(x, xsym),
-                     new PairedConstraint<ClLinearEquation>(y, ysym));
+            return l(new PairedConstraint<>(x, xsym),
+                     new PairedConstraint<>(y, ysym));
         }
         /** This is not quite right if the box's width doesn't match its height,
          *  but it's close enough -- and works for the orthogonal cases that we

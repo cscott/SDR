@@ -139,10 +139,10 @@ public abstract class A1List {
             // go through all the moments in time, constructing an appropriately
             // breathed formation.
             TreeMap<Fraction,Formation> merged =
-                new TreeMap<Fraction,Formation>();
+                new TreeMap<>();
             for (TimedFormation tf : metaS.formations()) {
                 Map<Dancer,Formation> pieces =
-                    new LinkedHashMap<Dancer,Formation>();
+                    new LinkedHashMap<>();
                 for (Entry<Dancer,TaggedFormation> e : fm.matches.entrySet()) {
                     Dancer d = e.getKey();
                     TaggedFormation solidPiece = e.getValue();
@@ -191,14 +191,14 @@ public abstract class A1List {
         /** Add any tags which a subformation has in common to the meta-dancer
          *  and meta-formation. */
         private static FormationMatch transferTags(FormationMatch fm) {
-            MultiMap<Dancer,Tag> metaTags = new GenericMultiMap<Dancer,Tag>
+            MultiMap<Dancer,Tag> metaTags = new GenericMultiMap<>
                 (Factories.enumSetFactory(Tag.class));
             Map<Dancer,Position> metaPos =
-                new LinkedHashMap<Dancer,Position>();
+                new LinkedHashMap<>();
             Set<Dancer> unmatched =
-                new LinkedHashSet<Dancer>();
+                new LinkedHashSet<>();
             Map<Dancer,TaggedFormation> matches =
-                new LinkedHashMap<Dancer,TaggedFormation>();
+                new LinkedHashMap<>();
 
             for (Dancer md : fm.meta.dancers()) {
                 // this is a little bit awkward because primitive tags are

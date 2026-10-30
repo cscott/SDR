@@ -47,16 +47,16 @@ public class DanceState {
     public DanceState(DanceProgram dance, Formation f,
                       Map<String,String> properties) {
         this.dance = dance;
-        this.formations = new TreeMap<Fraction,Formation>();
+        this.formations = new TreeMap<>();
         this.formations.put(Fraction.ZERO, f);
         this.actions = mml();
         // initialize movements
-        this.movements = new LinkedHashMap<Dancer,NavigableMap<Fraction,DancerPath>>
+        this.movements = new LinkedHashMap<>
             (f.dancers().size());
         for (Dancer d: f.dancers())
-            this.movements.put(d, new TreeMap<Fraction,DancerPath>());
+            this.movements.put(d, new TreeMap<>());
         // xxx: initialize actions?
-        this.designatedStack = new Stack<Set<Dancer>>();
+        this.designatedStack = new Stack<>();
         this.properties = properties;
     }
     // convenience constructor.
@@ -137,7 +137,7 @@ public class DanceState {
     public TaggedFormation tagDesignated(Formation f) {
         TaggedFormation tf = TaggedFormation.coerce(f);
         GenericMultiMap<Dancer,Tag> newTags =
-            new GenericMultiMap<Dancer,Tag>
+            new GenericMultiMap<>
                 (Factories.enumSetFactory(Tag.class));
         for (Dancer d : this.designated())
             if (f.dancers().contains(d))
@@ -150,7 +150,7 @@ public class DanceState {
             this.designatedStack.peek().isEmpty())
             return fm; // fast out for common case
         Map<Dancer,TaggedFormation> nMatches =
-            new LinkedHashMap<Dancer,TaggedFormation>();
+            new LinkedHashMap<>();
         for (Dancer d : fm.matches.keySet())
             nMatches.put(d, this.tagDesignated(fm.matches.get(d)));
         return new FormationMatch(fm.meta, nMatches, fm.unmatched, fm.inserted);
@@ -385,7 +385,7 @@ public class DanceState {
      */
     public List<DancerPath> movements(Dancer d) {
         return Collections.unmodifiableList
-            (new ArrayList<DancerPath>(this.movements.get(d).values()));
+            (new ArrayList<>(this.movements.get(d).values()));
     }
 
     /** Return all the {@link Dancer}s in this {@link DanceState}. */
@@ -411,7 +411,7 @@ public class DanceState {
      */
     public List<TimedFormation> formations() {
         List<TimedFormation> result =
-            new ArrayList<TimedFormation>(this.formations.size());
+            new ArrayList<>(this.formations.size());
         for (Map.Entry<Fraction,Formation> me: this.formations.entrySet()) {
             result.add(new TimedFormation(me.getValue(), me.getKey(), true));
         }

@@ -51,7 +51,7 @@ public abstract class Timed<T extends Timed<T>> implements Comparable<T> {
      * be taken relative to a reference of zero.
      */
     public static <T extends Timed<T>> List<T> makeAbsolute(List<T> l) {
-        List<T> result = new ArrayList<T>(l.size());
+        List<T> result = new ArrayList<>(l.size());
         T last = null;
         for (T t : l) {
             last = t.makeAbsolute(last);

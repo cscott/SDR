@@ -16,7 +16,7 @@ import net.cscott.sdr.calls.ast.Expr;
 public class SelectorList {
     private SelectorList() {}
     private static Map<String,ExprFunc<Selector>> selectorList =
-        new LinkedHashMap<String,ExprFunc<Selector>>();
+        new LinkedHashMap<>();
 
     /** Return the {@link Selector} function with the given (case-insensitive)
      *  name.
@@ -39,7 +39,7 @@ public class SelectorList {
                 return tf.tagged(t);
             }
         };
-        return new ExprFunc<Selector>() {
+        return new ExprFunc<>() {
             @Override
             public String getName() { return name; }
             @Override
@@ -57,7 +57,7 @@ public class SelectorList {
     }
 
     /** Selector which matches no dancers. */
-    public static ExprFunc<Selector> NONE = new ExprFunc<Selector>() {
+    public static ExprFunc<Selector> NONE = new ExprFunc<>() {
         private final Selector selector = new Selector() {
             @Override
             public Set<Dancer> select(TaggedFormation tf) {
@@ -76,7 +76,7 @@ public class SelectorList {
     static { addToList(NONE); }
 
     /** Human-friendly synonym for ALL. */
-    public static ExprFunc<Selector> OTHERS = new ExprFunc<Selector>() {
+    public static ExprFunc<Selector> OTHERS = new ExprFunc<>() {
         private ExprFunc<Selector> ALL = valueOf("all");
         @Override
         public String getName() { return "others"; }
@@ -91,7 +91,7 @@ public class SelectorList {
 
     /** Selector combiner: select dancers who <i>don't</i> match the selector
      *  argument. */
-    public static ExprFunc<Selector> NOT = new ExprFunc<Selector>() {
+    public static ExprFunc<Selector> NOT = new ExprFunc<>() {
         @Override
         public String getName() { return "not"; }
         @Override
@@ -104,7 +104,7 @@ public class SelectorList {
             return new Selector() {
                 @Override
                 public Set<Dancer> select(TaggedFormation tf) {
-                    Set<Dancer> d = new LinkedHashSet<Dancer>(tf.dancers());
+                    Set<Dancer> d = new LinkedHashSet<>(tf.dancers());
                     d.removeAll(arg.select(tf));
                     return d;
                 }
@@ -115,20 +115,20 @@ public class SelectorList {
 
     /** Selector combiner: select dancers who match all of the selector
      *  arguments. */
-    public static ExprFunc<Selector> AND = new ExprFunc<Selector>() {
+    public static ExprFunc<Selector> AND = new ExprFunc<>() {
         @Override
         public String getName() { return "and"; }
         @Override
         public Selector evaluate(Class<? super Selector> type,
                                  final DanceState ds, List<Expr> args)
             throws EvaluationException {
-            final List<Selector> ls = new ArrayList<Selector>(args.size());
+            final List<Selector> ls = new ArrayList<>(args.size());
             for (Expr arg : args)
                 ls.add(arg.evaluate(Selector.class, ds));
             return new Selector() {
                 @Override
                 public Set<Dancer> select(TaggedFormation tf) {
-                    Set<Dancer> d = new LinkedHashSet<Dancer>(tf.dancers());
+                    Set<Dancer> d = new LinkedHashSet<>(tf.dancers());
                     for (Selector s : ls)
                         d.retainAll(s.select(tf));
                     return d;
@@ -140,20 +140,20 @@ public class SelectorList {
 
     /** Selector combiner: select dancers who match any of the selector
      *  arguments. */
-    public static ExprFunc<Selector> OR = new ExprFunc<Selector>() {
+    public static ExprFunc<Selector> OR = new ExprFunc<>() {
         @Override
         public String getName() { return "or"; }
         @Override
         public Selector evaluate(Class<? super Selector> type,
                                  final DanceState ds, List<Expr> args)
             throws EvaluationException {
-            final List<Selector> ls = new ArrayList<Selector>(args.size());
+            final List<Selector> ls = new ArrayList<>(args.size());
             for (Expr arg : args)
                 ls.add(arg.evaluate(Selector.class, ds));
             return new Selector() {
                 @Override
                 public Set<Dancer> select(TaggedFormation tf) {
-                    Set<Dancer> d = new LinkedHashSet<Dancer>();
+                    Set<Dancer> d = new LinkedHashSet<>();
                     for (Selector s : ls)
                         d.addAll(s.select(tf));
                     return d;
@@ -168,7 +168,7 @@ public class SelectorList {
      *  @see ExprList#_ROLL_PATTERN
      *  @see ExprList#_INOUT_PATTERN
      */
-    public static ExprFunc<Selector> MATCH = new ExprFunc<Selector>() {
+    public static ExprFunc<Selector> MATCH = new ExprFunc<>() {
         @Override
         public String getName() { return "match"; }
         @Override
@@ -184,7 +184,7 @@ public class SelectorList {
             return new Selector() {
                 @Override
                 public Set<Dancer> select(TaggedFormation tf) {
-                    Set<Dancer> result = new LinkedHashSet<Dancer>();
+                    Set<Dancer> result = new LinkedHashSet<>();
                     List<Dancer> sortedDancers = tf.sortedDancers();
                     for (int i=0; i<sortedDancers.size(); i++) {
                         String d = dancers.substring(i, i+1);
@@ -205,7 +205,7 @@ public class SelectorList {
      *  @see ExprList#_ROLL_PATTERN
      *  @see ExprList#_INOUT_PATTERN
      */
-    public static ExprFunc<Selector> MATCH_GROUPS = new ExprFunc<Selector>() {
+    public static ExprFunc<Selector> MATCH_GROUPS = new ExprFunc<>() {
         @Override
         public String getName() { return "match groups"; }
         @Override
@@ -227,9 +227,9 @@ public class SelectorList {
             return new Selector() {
                 @Override
                 public Set<Dancer> select(TaggedFormation tf) {
-                    Set<Dancer> result = new LinkedHashSet<Dancer>();
+                    Set<Dancer> result = new LinkedHashSet<>();
                     List<Dancer> sortedDancers =
-                        new ArrayList<Dancer>(tf.sortedDancers());
+                        new ArrayList<>(tf.sortedDancers());
                     sortedDancers.retainAll(subset.select(tf));
                     java.util.regex.Matcher m = pattern.matcher(dancers);
                     if (m.matches()) {
@@ -251,7 +251,7 @@ public class SelectorList {
     /** Complex selector: do a formation match and select tagged dancers from
      *  the match -- but don't change the dance state.  Most useful for
      *  'ends in' conditions, which don't have a TaggedFormation handy. */
-    public static ExprFunc<Selector> FORMATION = new ExprFunc<Selector>() {
+    public static ExprFunc<Selector> FORMATION = new ExprFunc<>() {
         @Override
         public String getName() { return "formation"; }
         @Override
@@ -267,7 +267,7 @@ public class SelectorList {
                 public Set<Dancer> select(TaggedFormation tf) {
                     try {
                         FormationMatch fm = m.match(Breather.breathe(tf));
-                        Set<Dancer> d = new LinkedHashSet<Dancer>();
+                        Set<Dancer> d = new LinkedHashSet<>();
                         for (TaggedFormation ntf : fm.matches.values())
                             d.addAll(s.select(ntf));
                         return d;
@@ -285,7 +285,7 @@ public class SelectorList {
      * A synonym for ALL/{@link SelectorList#OTHERS}, used to dump
      * dance state information for debugging call definitions.
      */
-    public static ExprFunc<Selector> PRINT = new ExprFunc<Selector>() {
+    public static ExprFunc<Selector> PRINT = new ExprFunc<>() {
         private ExprFunc<Selector> ALL = valueOf("all");
         @Override
         public String getName() { return "print"; }
@@ -335,7 +335,7 @@ public class SelectorList {
      *    >     select(TaggedFormation.coerce(ds.currentFormation()))
      *  []
      */
-    public static ExprFunc<Selector> CONDITION = new ExprFunc<Selector>() {
+    public static ExprFunc<Selector> CONDITION = new ExprFunc<>() {
         @Override
         public String getName() { return "condition"; }
         @Override

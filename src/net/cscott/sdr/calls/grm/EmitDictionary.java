@@ -24,7 +24,7 @@ import net.cscott.sdr.calls.grm.Grm.Terminal;
  */
 public class EmitDictionary extends AbstractEmit {
     public final static EmitDictionary INSTANCE = new EmitDictionary();
-    Set<String> words = new HashSet<String>();
+    Set<String> words = new HashSet<>();
     {   // extra words, from the stock grammar skeleton
         // (see resources/net/cscott/sdr/calls/grm/jsapi.skel)
         words.addAll(Arrays.asList(
@@ -45,7 +45,7 @@ public class EmitDictionary extends AbstractEmit {
         for (RuleAndAction ra : l)
             ra.rule.rhs.accept(tokenVisitor);
     }
-    final GrmVisitor<Void> tokenVisitor = new GrmVisitor<Void>() {
+    final GrmVisitor<Void> tokenVisitor = new GrmVisitor<>() {
         @Override
         public Void visit(Alt alt) {
             for (Grm g : alt.alternates)
@@ -101,8 +101,8 @@ public class EmitDictionary extends AbstractEmit {
         // read both CMU pronunciation dictionary and some extra entries we've
         // compiled for square-dance-specific terms.
         // (make sure cmudict and extradict are on the classpath)
-        Set<String> missing = new HashSet<String>(words);
-        List<String> entries = new ArrayList<String>(words.size());
+        Set<String> missing = new HashSet<>(words);
+        List<String> entries = new ArrayList<>(words.size());
         for (String resourceName : Arrays.asList("/cmudict.0.6d", "/extradict"))
             readPronunciationDictionary(resourceName, entries, missing);
         // warn about missing words

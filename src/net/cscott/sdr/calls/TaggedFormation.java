@@ -87,7 +87,7 @@ public class TaggedFormation extends Formation {
     /** Return the set of dancers tagged by any of the given set of tags. */
     public Set<Dancer> tagged(Set<Tag> tags) {
         Set<Dancer> dancers = dancers();
-        Set<Dancer> s = new LinkedHashSet<Dancer>(dancers.size());
+        Set<Dancer> s = new LinkedHashSet<>(dancers.size());
         for(Dancer d : dancers)
             if (isTagged(d, tags))
                 s.add(d);
@@ -110,7 +110,7 @@ public class TaggedFormation extends Formation {
     }
     @Override
     public TaggedFormation select(Collection<Dancer> d) {
-        Set<Dancer> nSel = new LinkedHashSet<Dancer>(dancers());
+        Set<Dancer> nSel = new LinkedHashSet<>(dancers());
         nSel.retainAll(d);
         return new TaggedFormation
         (location, Collections.unmodifiableSet(nSel), tags);
@@ -118,14 +118,14 @@ public class TaggedFormation extends Formation {
     @Override
     public TaggedFormation move(Dancer d, Position p) {
 	assert this.location.containsKey(d);
-	Map<Dancer,Position> nmap = new LinkedHashMap<Dancer,Position>
+	Map<Dancer,Position> nmap = new LinkedHashMap<>
 	    (this.location);
 	nmap.put(d, p);
 	return new TaggedFormation(nmap, this.selected, this.tags);
     }
     /** Add additional tags to the given formation. */
     public TaggedFormation addTags(MultiMap<Dancer,Tag> newTags) {
-        MultiMap<Dancer,Tag> nmap = new GenericMultiMap<Dancer,Tag>
+        MultiMap<Dancer,Tag> nmap = new GenericMultiMap<>
             (Factories.enumSetFactory(Tag.class));
         nmap.addAll(this.tags);
         nmap.addAll(newTags);
@@ -172,7 +172,7 @@ public class TaggedFormation extends Formation {
 
     protected TaggedFormation(TaggedFormation tf, Map<Dancer,Dancer> map) {
         super(tf, map);
-        MultiMap<Dancer,Tag> t = new GenericMultiMap<Dancer,Tag>
+        MultiMap<Dancer,Tag> t = new GenericMultiMap<>
         (Factories.enumSetFactory(Tag.class));
         for (Dancer d : tf.dancers())
             t.addAll(map.get(d), tf.tags.getValues(d));
@@ -249,7 +249,7 @@ public class TaggedFormation extends Formation {
     
     TaggedFormation(TaggedDancerInfo... dis) {
         super((Formation.DancerInfo[])dis);
-        MultiMap<Dancer,Tag> t = new GenericMultiMap<Dancer,Tag>
+        MultiMap<Dancer,Tag> t = new GenericMultiMap<>
         (Factories.enumSetFactory(Tag.class));
 	for (TaggedDancerInfo di : dis) {
 	    t.addAll(di.dancer, di.tags);

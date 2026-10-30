@@ -49,8 +49,8 @@ public class FormationMatch {
     public FormationMatch map(Map<Dancer,Dancer> m) {
         Formation nmeta = this.meta.map(m);
         Map<Dancer,TaggedFormation> nmatches =
-            new LinkedHashMap<Dancer,TaggedFormation>();
-        Set<Dancer> nunmatched = new LinkedHashSet<Dancer>();
+            new LinkedHashMap<>();
+        Set<Dancer> nunmatched = new LinkedHashSet<>();
         for (Dancer d : this.meta.dancers()) {
             nmatches.put(m.get(d), this.matches.get(d));
             if (this.unmatched.contains(d))
@@ -65,7 +65,7 @@ public class FormationMatch {
         List<Dancer> phantoms = meta.sortedDancers();
         // now map phantoms to 'AA', 'BB', etc.
         Map<Dancer,String> metaDancerNames =
-            new HashMap<Dancer,String>(phantoms.size());
+            new HashMap<>(phantoms.size());
         char tag='A';
         for (Dancer d: phantoms) {
             metaDancerNames.put(d, new String(new char[] { tag, tag }));
@@ -91,7 +91,7 @@ public class FormationMatch {
             // such as HEAD/SIDE/BOY/GIRL, etc.
             boolean atLeastOne=false;
             for (Dancer dd: tf.sortedDancers()) {
-                List<Tag> tags = new ArrayList<Tag>(tf.tags(dd));
+                List<Tag> tags = new ArrayList<>(tf.tags(dd));
                 Collections.sort(tags);
                 if (tags.isEmpty() && !inserted.contains(dd)) continue;
                 sb.append(atLeastOne ? "; ":" [");

@@ -320,8 +320,8 @@ tokens {
     public static class IndentProcessor
         implements TokenSource {
         protected TokenSource input;
-        private final List<Token> pushBack = new ArrayList<Token>();
-        private final List<Integer> stack = new ArrayList<Integer>();
+        private final List<Token> pushBack = new ArrayList<>();
+        private final List<Integer> stack = new ArrayList<>();
 
         /** Stream to read tokens from */
         public IndentProcessor(TokenSource in) {

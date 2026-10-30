@@ -84,7 +84,7 @@ public abstract class BasicList {
         @Override
         public Evaluator getEvaluator(DanceState ds, List<Expr> args) {
             assert args.size()>=1;
-            List<SeqCall> l = foreach(args, new F<Expr,SeqCall>(){
+            List<SeqCall> l = foreach(args, new F<>(){
                 @Override
                 public Apply map(Expr e) { return new Apply(e); }
             });
@@ -313,7 +313,7 @@ public abstract class BasicList {
             if (n.compareTo(Fraction.ZERO) <= 0)
                 throw new BadCallException("Non-positive fractions are not allowed");
             int whole = n.floor();
-            List<SeqCall> l = new ArrayList<SeqCall>(whole+1);
+            List<SeqCall> l = new ArrayList<>(whole+1);
             // easy case: do the whole repetitions of the
             // call.
             for (int i=0; i<whole; i++)

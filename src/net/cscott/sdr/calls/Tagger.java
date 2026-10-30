@@ -116,11 +116,11 @@ public abstract class Tagger {
             FormationMatch fm = s.match(f);
             // now go through the match and add autotags to the pieces.
             Map<Dancer,TaggedFormation> nmatches =
-                new LinkedHashMap<Dancer,TaggedFormation>();
+                new LinkedHashMap<>();
             for (Dancer metaDancer : fm.meta.dancers()) {
                 TaggedFormation tf = fm.matches.get(metaDancer);
                 MultiMap<Dancer,Tag> nTags =
-                    new GenericMultiMap<Dancer,Tag>
+                    new GenericMultiMap<>
                 (Factories.<Dancer,Collection<Tag>>linkedHashMapFactory(),
                         Factories.enumSetFactory(Tag.class));
                 this.tag(tf, nTags);
@@ -170,7 +170,7 @@ public abstract class Tagger {
         int toff = (n==2) ? 0 : (n==4) ? 2 : -1;
         // match against our beau/belle pattern.
         LL<Dancer> allDancers = LL.create(f.sortedDancers());
-        Map<Point,Dancer> where = new HashMap<Point,Dancer>();
+        Map<Point,Dancer> where = new HashMap<>();
         for (Dancer d: allDancers)
             where.put(f.location(d).toPoint(), d);
         Match noMatch = new Match(allDancers);
@@ -193,7 +193,7 @@ public abstract class Tagger {
 
     /** Compare {@link Dancer}s by their order in the supplied list. */
     private static class DancerComparator implements Comparator<Dancer> {
-        Map<Dancer,Integer> order = new HashMap<Dancer,Integer>();
+        Map<Dancer,Integer> order = new HashMap<>();
         DancerComparator(LL<Dancer> dancerList) {
             int i=0;
             for (Dancer d: dancerList)

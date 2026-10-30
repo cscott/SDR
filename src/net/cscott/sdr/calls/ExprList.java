@@ -27,11 +27,11 @@ public class ExprList {
     /** Map of all the {@link ExprFunc}s defined here. */
     @SuppressWarnings({ "rawtypes" })
     private final static Map<String, ExprFunc> exprGenericFuncs =
-        new LinkedHashMap<String,ExprFunc>();
+        new LinkedHashMap<>();
     private final static Map<String, ExprFunc<Fraction>> exprMathFuncs =
-        new LinkedHashMap<String,ExprFunc<Fraction>>();
+        new LinkedHashMap<>();
     private final static Map<String, ExprFunc<String>> exprStringFuncs =
-        new LinkedHashMap<String,ExprFunc<String>>();
+        new LinkedHashMap<>();
 
     /** This method evaluates {@link Expr} nodes. */
     public static <T> T evaluate(String atom, Class<T> type,
@@ -177,7 +177,7 @@ public class ExprList {
             // evaluate first _curry arg as a string; this is function name
             String func = curry.args.get(0).evaluate(String.class, ds);
             // substitute for (Expr _arg) in _curry argument list
-            List<Expr> nArgs = new ArrayList<Expr>(curry.args.size()-1);
+            List<Expr> nArgs = new ArrayList<>(curry.args.size()-1);
             for (Expr cArg : curry.args.subList(1, curry.args.size())) {
                 nArgs.add(subst(cArg, ds, rest));
             }
@@ -219,7 +219,7 @@ public class ExprList {
                     throw new EvaluationException("missing argument "+n);
             }
             // recurse down the tree
-            List<Expr> nArgs = new ArrayList<Expr>(e.args.size());
+            List<Expr> nArgs = new ArrayList<>(e.args.size());
             for (Expr ee : e.args) {
                 nArgs.add(subst(ee, ds, args));
             }
@@ -378,7 +378,7 @@ public class ExprList {
      *  js> c.evaluate(fc, ds).toProperString()
      *  -3
      */
-    public static final ExprFunc<Fraction> _CEIL = new ExprFunc<Fraction>() {
+    public static final ExprFunc<Fraction> _CEIL = new ExprFunc<>() {
         @Override
         public String getName() { return "_ceil"; }
         @Override
@@ -413,7 +413,7 @@ public class ExprList {
      *  js> c.evaluate(fc, ds).toProperString()
      *  -4
      */
-    public static final ExprFunc<Fraction> _FLOOR = new ExprFunc<Fraction>() {
+    public static final ExprFunc<Fraction> _FLOOR = new ExprFunc<>() {
         @Override
         public String getName() { return "_floor"; }
         @Override
@@ -449,7 +449,7 @@ public class ExprList {
      *  js> c.evaluate(fc, ds).toProperString()
      *  1/4
      */
-    public static final ExprFunc<Fraction> _FRACTION = new ExprFunc<Fraction>() {
+    public static final ExprFunc<Fraction> _FRACTION = new ExprFunc<>() {
         @Override
         public String getName() { return "_fraction"; }
         @Override
@@ -486,7 +486,7 @@ public class ExprList {
      *  js> c.evaluate(fc, ds).toProperString()
      *  4
      */
-    public static final ExprFunc<Fraction> NUM_DANCERS = new ExprFunc<Fraction>() {
+    public static final ExprFunc<Fraction> NUM_DANCERS = new ExprFunc<>() {
         @Override
         public String getName() { return "num dancers"; }
         @Override
@@ -514,7 +514,7 @@ public class ExprList {
      *  js> c.evaluate(fc, ds).toProperString()
      *  2
      */
-    public static final ExprFunc<Fraction> NUM_PARTS = new ExprFunc<Fraction>() {
+    public static final ExprFunc<Fraction> NUM_PARTS = new ExprFunc<>() {
         @Override
         public String getName() { return "num parts"; }
         @Override
@@ -834,7 +834,7 @@ public class ExprList {
      *  js> expr.evaluate(sc, ds)
      *  bat
      */
-    public static final ExprFunc<String> _PROPERTY = new ExprFunc<String>() {
+    public static final ExprFunc<String> _PROPERTY = new ExprFunc<>() {
         @Override
         public String getName() { return "_property"; }
         @Override

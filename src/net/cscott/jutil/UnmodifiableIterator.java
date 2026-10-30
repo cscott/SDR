@@ -19,7 +19,7 @@ public abstract class UnmodifiableIterator<E> implements Iterator<E> {
      * modifiable) {@link Iterator}.
      */
     public static <E> UnmodifiableIterator<E> proxy(final Iterator<E> it) {
-        return new UnmodifiableIterator<E>() {
+        return new UnmodifiableIterator<>() {
             @Override
             public boolean hasNext() { return it.hasNext(); }
             @Override

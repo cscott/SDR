@@ -89,7 +89,7 @@ public class FirstPart extends Finish {
             throw new BadCallException("Only one part");
         }
         // just look at first part, verify that 'howMany' is one
-        List<SeqCall> zeroParts = new ArrayList<SeqCall>(2);
+        List<SeqCall> zeroParts = new ArrayList<>(2);
         SeqCall firstCall=null;
         Fraction firstParts=null;
         int i;
@@ -144,7 +144,7 @@ public class FirstPart extends Finish {
     /** A list of concepts which it is safe to hoist "_first part" through.
     That is, "_first part(as couples(swing thru))" == "as couples(_first part(swing thru))". */
     static Set<String> safeConcepts =
-        new HashSet<String>(Fractional.safeConcepts);
+        new HashSet<>(Fractional.safeConcepts);
     static {
         safeConcepts.add("_blend first"); // but not _blend last
     }

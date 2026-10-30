@@ -53,7 +53,7 @@ public class ChoreoEngine {
     }
 
     private BlockingQueue<DanceThread> danceQueue =
-        new LinkedBlockingQueue<DanceThread>();
+        new LinkedBlockingQueue<>();
 
     private synchronized void waitUntilStopped() {
         if (danceThread == null) return;
@@ -150,7 +150,7 @@ public class ChoreoEngine {
 
     class DanceThread extends Thread {
         private final ConcurrentMap<String,String> props =
-            new ConcurrentHashMap<String,String>();
+            new ConcurrentHashMap<>();
         private final Fraction MARGIN = Fraction.TWO; // dance two beats ahead
         private final DanceState initialDanceState;
         private final Evaluator initialEvaluator;

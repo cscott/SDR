@@ -96,7 +96,7 @@ public class AllButLastPart extends FirstPart {
             // harder case: "all but last part" the last part
             assert lastCall.type == PART || lastCall.type == APPLY;
             SeqCall nLast = lastCall.accept(this, t);
-            List<SeqCall> nChildren = new ArrayList<SeqCall>(s.children);
+            List<SeqCall> nChildren = new ArrayList<>(s.children);
             nChildren.set(nChildren.size()-1, nLast);
             return s.build(nChildren);
         }

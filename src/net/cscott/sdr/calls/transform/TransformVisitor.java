@@ -30,7 +30,7 @@ public abstract class TransformVisitor<T> {
     }
 //  public Comp visit(Comp c, T t) { }
     public Expr visit(Expr e, T t) {
-        List<Expr> l = new ArrayList<Expr>(e.args.size());
+        List<Expr> l = new ArrayList<>(e.args.size());
         for (Expr ee : e.args) {
             l.add(ee.accept(this, t));
         }
@@ -45,7 +45,7 @@ public abstract class TransformVisitor<T> {
     }
     public Comp visit(Opt opt, T t) {
         BadCallException bce=null;
-        List<OptCall> l = new ArrayList<OptCall>(opt.children.size());
+        List<OptCall> l = new ArrayList<>(opt.children.size());
         for (OptCall oc : opt.children) {
             try {
                 l.add(oc.accept(this, t));
@@ -64,7 +64,7 @@ public abstract class TransformVisitor<T> {
     }
     public Comp visit(Par p, T t) {
         BadCallException bce=null;
-        List<ParCall> l = new ArrayList<ParCall>(p.children.size());
+        List<ParCall> l = new ArrayList<>(p.children.size());
         for (ParCall pc : p.children) {
             try {
                 l.add(pc.accept(this, t));
@@ -88,7 +88,7 @@ public abstract class TransformVisitor<T> {
         return p; // leaf
     }
     public Comp visit(Seq s, T t) {
-        List<SeqCall> l = new ArrayList<SeqCall>(s.children.size());
+        List<SeqCall> l = new ArrayList<>(s.children.size());
         for (SeqCall sc : s.children) {
             // note that we don't catch BadCallException:
             // if any call in a Seq is bad, then the whole

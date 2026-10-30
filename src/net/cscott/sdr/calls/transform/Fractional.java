@@ -130,7 +130,7 @@ public class Fractional extends PartsVisitor<Fraction> {
     }
     /** A list of concepts which it is safe to hoist fractionalization through.
      That is, "1/2(as couples(swing thru))" == "as couples(1/2(swing thru))". */
-    static Set<String> safeConcepts = new HashSet<String>(Arrays.asList(
+    static Set<String> safeConcepts = new HashSet<>(Arrays.asList(
             "as couples","tandem","_with designated","_anyone",
             "reverse", "left", "mirror",
             "_quasi concentric", "_o concentric",
@@ -147,7 +147,7 @@ public class Fractional extends PartsVisitor<Fraction> {
         // go through the children and count up parts, accounting for the
         // 'howMany' field of any Parts.
         Fraction totalParts = Fraction.ZERO;
-        List<Fraction> childParts = new ArrayList<Fraction>(s.children.size());
+        List<Fraction> childParts = new ArrayList<>(s.children.size());
         for (SeqCall child : s.children) {
             Fraction part;
             if (child.isIndeterminate())
@@ -164,7 +164,7 @@ public class Fractional extends PartsVisitor<Fraction> {
         }
 
         f = f.multiply(totalParts);
-        List<SeqCall> l = new ArrayList<SeqCall>(s.children.size());
+        List<SeqCall> l = new ArrayList<>(s.children.size());
         Iterator<Fraction> it = childParts.iterator();
         for (SeqCall child : s.children) {
             Fraction part = it.next();

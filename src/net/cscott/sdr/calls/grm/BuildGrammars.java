@@ -54,7 +54,7 @@ public class BuildGrammars {
     public static void build(Program program)
         throws IOException, EvaluationException {
         // collect all the grammar rules & make actions.
-        List<RuleAndAction> rules = new ArrayList<RuleAndAction>();
+        List<RuleAndAction> rules = new ArrayList<>();
         for (Call c : CallDB.INSTANCE.allCalls)
             if (c.getRule()!=null)
                 // filter out the appropriate level
@@ -62,13 +62,13 @@ public class BuildGrammars {
                     rules.addAll(mkAction(c));
 
         // collect all the precedence levels.
-        Set<Fraction> precSet = new LinkedHashSet<Fraction>();
+        Set<Fraction> precSet = new LinkedHashSet<>();
         for (RuleAndAction ra : rules)
             precSet.add(ra.rule.prec);
-        List<Fraction> precList = new ArrayList<Fraction>(precSet);
+        List<Fraction> precList = new ArrayList<>(precSet);
         Collections.sort(precList);
         // now renumber them.
-        Map<Fraction,Integer> precLevel = new HashMap<Fraction,Integer>();
+        Map<Fraction,Integer> precLevel = new HashMap<>();
         for (int i=0; i<precList.size(); i++)
             precLevel.put(precList.get(i), i);
         int highestPrec = precList.size();
@@ -82,7 +82,7 @@ public class BuildGrammars {
         }
         // remove left recursion, step 1:
         // pull out left recursive rules; rewrite them as 'suffix' rules
-        Set<String> leftRecursiveLHS = new LinkedHashSet<String>();
+        Set<String> leftRecursiveLHS = new LinkedHashSet<>();
         for (RuleAndAction ra : rules) {
             if (!ra.rule.lhs.startsWith("anything_")) continue;
             if (!(ra.rule.rhs instanceof Grm.Concat)) continue;
@@ -129,7 +129,7 @@ public class BuildGrammars {
             rules.add(new RuleAndAction(new Rule("anything_"+highestPrec,
                     new Nonterminal(s+"_anything",null,0),null),"r=a;"));
         // add metaconcept rules
-        Set<String> allLHS = new HashSet<String>();
+        Set<String> allLHS = new HashSet<>();
         for (RuleAndAction ra: rules)
             allLHS.add(ra.rule.lhs);
         if (allLHS.contains("metaconcept")) {
@@ -165,7 +165,7 @@ public class BuildGrammars {
     
     private static List<RuleAndAction> mkAction(Call c)
         throws EvaluationException {
-        List<RuleAndAction> l = new ArrayList<RuleAndAction>(2);
+        List<RuleAndAction> l = new ArrayList<>(2);
         for (Rule r : splitTopLevelAlt(c.getRule())) {
             // handle leftable/reversable
             if (r.options.contains(Rule.Option.LEFT) ||
@@ -283,8 +283,8 @@ public class BuildGrammars {
         return new RuleAndAction(r, sb.toString());
     }
     private static List<Rule> splitTopLevelAlt(Rule r) {
-        List<Rule> l = new ArrayList<Rule>(2);
-        for (Grm g : splitTopLevelAlt(SimplifyGrm.simplify(r.rhs), new ArrayList<Grm>(2)))
+        List<Rule> l = new ArrayList<>(2);
+        for (Grm g : splitTopLevelAlt(SimplifyGrm.simplify(r.rhs), new ArrayList<>(2)))
             l.add(new Rule(r.lhs, g, r.prec, r.options));
         return l;
     }
@@ -299,7 +299,7 @@ public class BuildGrammars {
         return highestNontermParam(g)!=-1;
     }
     private static int highestNontermParam(Grm g) {
-        return g.accept(new GrmVisitor<Integer>() {
+        return g.accept(new GrmVisitor<>() {
             @Override
             public Integer visit(Alt alt) {
                 int max=-1;
@@ -335,7 +335,7 @@ public class BuildGrammars {
         return new Rule(ruleName, rewriteForPrec(r.rhs, prec), null);
     }
     private static Grm rewriteForPrec(Grm g, final int prec) {
-        return g.accept(new GrmVisitor<Grm>() {
+        return g.accept(new GrmVisitor<>() {
              /* These booleans are true if the visited nonterminal *must*
               * be in leftmost/rightmost position (if present).  For example,
               *     (<foo>)? <bar> (<baz>)?
@@ -348,7 +348,7 @@ public class BuildGrammars {
             
             @Override
             public Grm visit(Alt alt) {
-                List<Grm> l = new ArrayList<Grm>(alt.alternates.size());
+                List<Grm> l = new ArrayList<>(alt.alternates.size());
                 // save isLeftmost/isRightmost; restore it before
                 // traversing each alt.
                 boolean myLeft = isLeftmost, myRight = isRightmost;
@@ -362,7 +362,7 @@ public class BuildGrammars {
             @Override
             public Grm visit(Concat concat) {
                 int len = concat.sequence.size();
-                List<Grm> l = new ArrayList<Grm>(len);
+                List<Grm> l = new ArrayList<>(len);
 
                 boolean wasRightmost = isRightmost;
                 if (len > 1) isRightmost = false;
@@ -406,9 +406,9 @@ public class BuildGrammars {
     }
     private static Grm substNonterm(Grm g,
                                     final String from, final String to) {
-        return g.accept(new GrmVisitor<Grm>() {
+        return g.accept(new GrmVisitor<>() {
             private final GrmVisitor<Grm> self = this;
-            private F<Grm,Grm> map = new F<Grm,Grm>() {
+            private F<Grm,Grm> map = new F<>() {
                 @Override
                 public Grm map(Grm g) { return g.accept(self); }
             };

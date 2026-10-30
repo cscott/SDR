@@ -39,7 +39,7 @@ public abstract class Tools {
      *  4.0
      */
     public static <A,B> PairMapEntry<A,B> p(A a, B b) {
-	return new PairMapEntry<A,B>(a, b);
+	return new PairMapEntry<>(a, b);
     }
     /**
      * Convenience constructor for maps, specified as a list of pairs.
@@ -60,7 +60,7 @@ public abstract class Tools {
     @SafeVarargs
     public static <A,B> Map<A,B> m(Map.Entry<A,B>... items) {
         if (items.length==0) return Collections.emptyMap();
-        LinkedHashMap<A,B> result = new LinkedHashMap<A,B>(items.length);
+        LinkedHashMap<A,B> result = new LinkedHashMap<>(items.length);
         for (Map.Entry<A,B> e : items)
             result.put(e.getKey(), e.getValue());
         return result;
@@ -170,7 +170,7 @@ public abstract class Tools {
         switch(items.length) {
         case 0: return Collections.emptySet();
         case 1: return Collections.singleton(items[0]);
-        default:return new LinkedHashSet<A>(Arrays.asList(items));
+        default:return new LinkedHashSet<>(Arrays.asList(items));
         }
     }
     // suppress harmless "unchecked cast in varargs" for common uses
@@ -216,7 +216,7 @@ public abstract class Tools {
      */
     @SafeVarargs
     public static <K,V> SetMultiMap<K,V> mms(Map.Entry<K,V>... items) {
-	SetMultiMap<K,V> result = new GSMM<K,V>();
+	SetMultiMap<K,V> result = new GSMM<>();
 	for (Map.Entry<K,V> me : items)
 	    result.add(me.getKey(), me.getValue());
 	return result;
@@ -259,7 +259,7 @@ public abstract class Tools {
      */
     @SafeVarargs
     public static <K,V> ListMultiMap<K,V> mml(Map.Entry<K,V>... items) {
-	ListMultiMap<K,V> result = new GLMM<K,V>();
+	ListMultiMap<K,V> result = new GLMM<>();
 	for (Map.Entry<K,V> me : items)
 	    result.add(me.getKey(), me.getValue());
 	return result;
@@ -315,8 +315,8 @@ public abstract class Tools {
     /** Quasi-list comprehension. */
     // xxx: possibly still too verbose to be useful
     public static <A,B> List<B> foreach(List<A> list, FilterIterator.Filter<A,B> filter) {
-        List<B> result = new ArrayList<B>(list.size());
-        Iterator<B> it = new FilterIterator<A,B>(list.iterator(), filter);
+        List<B> result = new ArrayList<>(list.size());
+        Iterator<B> it = new FilterIterator<>(list.iterator(), filter);
         while (it.hasNext())
             result.add(it.next());
         return result;

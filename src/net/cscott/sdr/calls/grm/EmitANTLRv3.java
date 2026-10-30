@@ -61,13 +61,13 @@ public class EmitANTLRv3 extends AbstractEmit {
         return result;
     }
     private static void splitLargeProductions(final MultiMap<String,RuleAndAction> rules) {
-        List<String> toSplit = new ArrayList<String>();
+        List<String> toSplit = new ArrayList<>();
         for (String lhs : rules.keySet())
             if (rules.getValues(lhs).size() > MAXIMUM_ALTERNATES)
                 toSplit.add(lhs);
         for (String lhs: toSplit) {
             List<RuleAndAction> rhs =
-                new ArrayList<RuleAndAction>(rules.getValues(lhs));
+                new ArrayList<>(rules.getValues(lhs));
             // split list in half
             List<RuleAndAction> rhs1 = rhs.subList(0, rhs.size()/2);
             List<RuleAndAction> rhs2 = rhs.subList(rhs1.size(), rhs.size());

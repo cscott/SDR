@@ -24,7 +24,7 @@ public class ClLinearExpression extends CL {
             System.err.println("new ClLinearExpression");
 
         _constant = new ClFractionWrapper(constant);
-        _terms = new LinkedHashMap<ClAbstractVariable, ClFractionWrapper>(7);
+        _terms = new LinkedHashMap<>(7);
         if (clv != null)
             _terms.put(clv, new ClFractionWrapper(value));
     }
@@ -51,7 +51,7 @@ public class ClLinearExpression extends CL {
         if (CL.fGC)
             System.err.println("clone ClLinearExpression");
         _constant = constant.clone();
-        _terms = new LinkedHashMap<ClAbstractVariable, ClFractionWrapper>();
+        _terms = new LinkedHashMap<>();
         // need to unalias the ClDouble-s that we clone (do a deep clone)
         for (ClAbstractVariable clv : terms.keySet()) {
             _terms.put(clv, terms.get(clv).clone());

@@ -265,7 +265,7 @@ public class Expr extends AstNode {
             try {
                 String func = curry.args.get(0).evaluate(String.class, null);
                 List<Expr> nArgs = curry.args.subList(1, curry.args.size());
-                return this.build(func, foreach(nArgs, new F<Expr, Expr>() {
+                return this.build(func, foreach(nArgs, new F<>() {
                     @Override
                     public Expr map(Expr e) { return e.subst(rest); }
                 })).simplify();
@@ -277,7 +277,7 @@ public class Expr extends AstNode {
             }
         }
         // leave this expr alone, but simplify its args
-        return this.build(this.atom, foreach(this.args, new F<Expr,Expr>() {
+        return this.build(this.atom, foreach(this.args, new F<>() {
             @Override
             public Expr map(Expr e) { return e.simplify(); }
         }));
@@ -306,7 +306,7 @@ public class Expr extends AstNode {
             throw new CantSimplifyException();
         }
         // recurse into args, looking for refs.
-        List<Expr> nArgs = foreach(this.args, new F<Expr,Expr>() {
+        List<Expr> nArgs = foreach(this.args, new F<>() {
             @Override
             public Expr map(Expr e) { return e.subst(args); }
         });
@@ -327,7 +327,7 @@ public class Expr extends AstNode {
         if (this.atom == "_curry") { return this; }
         // turn a string function name into:
         //    (Expr _curry 'name (Expr _arg '0))
-        List<Expr> args = new ArrayList<Expr>(nArgs+1);
+        List<Expr> args = new ArrayList<>(nArgs+1);
         args.add(this);
         for (int i=0; i<nArgs; i++)
             args.add(new Expr("_arg", Expr.literal(Fraction.valueOf(i))));

@@ -257,7 +257,7 @@ public abstract class C1List {
             // step 1: pull out the centers/ends
             TaggedFormation f = TaggedFormation.coerce(ds.currentFormation());
             Set<Dancer> centerDancers = who.select(f);
-            Set<Dancer> endDancers = new HashSet<Dancer>(f.dancers());
+            Set<Dancer> endDancers = new HashSet<>(f.dancers());
             endDancers.removeAll(centerDancers); // all those who aren't CENTERs
             if (centerDancers.isEmpty())
                 throw new BadCallException("No centers!");
@@ -283,7 +283,7 @@ public abstract class C1List {
                 System.err.println("CENTER\n"+centerF.toStringDiagram());
                 System.err.println("END\n"+endF.toStringDiagram());
             }
-            TreeSet<Fraction> moments = new TreeSet<Fraction>();
+            TreeSet<Fraction> moments = new TreeSet<>();
             new Apply(this.centersPart).evaluator(centerS).evaluateAll(centerS);
             Fraction endTime = centerS.currentTime();
             Fraction lastMovement = centerS.lastMovement();
@@ -361,7 +361,7 @@ public abstract class C1List {
             // go through all the moments in time, constructing an appropriately
             // breathed formation.
             TreeMap<Fraction,Formation> merged =
-                new TreeMap<Fraction,Formation>();
+                new TreeMap<>();
             boolean isO = (which==ConcentricType.O);
             for (Fraction t : moments) {
                 boolean isCross = (which==ConcentricType.CROSS &&
@@ -415,7 +415,7 @@ public abstract class C1List {
                     new Point(Fraction.TWO, Fraction.TWO));
         private static Formation mergeWide(Formation center, Formation end,
                                            boolean isO) {
-            Map<Dancer,Position> location = new HashMap<Dancer,Position>();
+            Map<Dancer,Position> location = new HashMap<>();
             for (Dancer d : center.dancers())
                 location.put(d, center.location(d));
             Box centerBounds = center.bounds();
@@ -528,7 +528,7 @@ public abstract class C1List {
             return p.relocate(pt.x, pt.y, p.facing);
         }
         public static Formation expandO(Formation f, Box nominal, Box actual) {
-            Map<Dancer,Position> m = new HashMap<Dancer,Position>
+            Map<Dancer,Position> m = new HashMap<>
                 (f.dancers().size());
             Box inside = insideBox(f);
             for (Dancer d : f.dancers())
@@ -599,10 +599,10 @@ public abstract class C1List {
         public static Box insideBox(Formation f) {
             // sort by distance from the origin, so important constraints
             // are considered first
-            List<Box> sorted = new ArrayList<Box>(f.dancers().size());
+            List<Box> sorted = new ArrayList<>(f.dancers().size());
             for (Dancer d : f.sortedDancers())
                 sorted.add(f.bounds(d));
-            Collections.sort(sorted, new Comparator<Box>() {
+            Collections.sort(sorted, new Comparator<>() {
                 @Override
                 public int compare(Box a, Box b) {
                     return a.center().dist2(Point.ZERO)
@@ -621,7 +621,7 @@ public abstract class C1List {
             if (!b.overlapsExcl(inside))
                 // nothing to trim here, look at next dancer
                 return trimInside(dancers, which+1, inside, best);
-            List<Box> trims = new ArrayList<Box>(4);
+            List<Box> trims = new ArrayList<>(4);
             // try trimming X
             if (b.ur.x.compareTo(inside.ur.x) <= 0)
                 trims.add(new Box(new Point(b.ur.x, inside.ll.y), inside.ur));
@@ -633,7 +633,7 @@ public abstract class C1List {
             if (b.ll.y.compareTo(inside.ll.y) >= 0)
                 trims.add(new Box(inside.ll, new Point(inside.ur.x, b.ll.y)));
             // try largest area first
-            Collections.sort(trims, new Comparator<Box>() {
+            Collections.sort(trims, new Comparator<>() {
                 @Override
                 public int compare(Box a, Box b) {
                     return -(a.area().compareTo(b.area()));

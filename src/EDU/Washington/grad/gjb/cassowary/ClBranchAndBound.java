@@ -56,8 +56,8 @@ public class ClBranchAndBound {
     public ClBranchAndBound() {
         this.solver = new ClSimplexSolver();
         this.solver.setAutosolve(false);
-        this.intVars = new ArrayList<ClIntegerVariable>();
-        this.activeIntegerConstraints = new ArrayList<ClConstraint>();
+        this.intVars = new ArrayList<>();
+        this.activeIntegerConstraints = new ArrayList<>();
     }
 
     public void addConstraint(ClConstraint cl)
@@ -135,7 +135,7 @@ public class ClBranchAndBound {
         public State() {
             this.soFar = LL.<ClConstraint>NULL();
             this.psf =
-                new PersistentSetFactory<Branch>(Default.<Branch>comparator());
+                new PersistentSetFactory<>(Default.<Branch>comparator());
             this.branches = psf.makeSet();
         }
         private State(State s, ClIntegerVariable v, CL.Op op, Fraction val,
@@ -214,12 +214,12 @@ public class ClBranchAndBound {
 
         // first time through we're going to solve the relaxed linear
         // programming problem without constraints.
-        Heap<Fraction,State> active = new BinaryHeap<Fraction,State>();
+        Heap<Fraction,State> active = new BinaryHeap<>();
         active.insert(Fraction.ZERO/* ignored*/, new State());
         clearIntegerConstraints();
 
         // process each yet-unseen active state
-        Set<Set<Branch>> seen = new HashSet<Set<Branch>>();
+        Set<Set<Branch>> seen = new HashSet<>();
         while (!active.isEmpty()) {
             Entry<Fraction,State> e = active.extractMinimum();
             if (upperBound!=null && upperBound.compareTo(e.getKey()) <= 0)
@@ -231,7 +231,7 @@ public class ClBranchAndBound {
             seen.add(s.branches);
 
             // add all the constraints
-            List<ClConstraint> added = new ArrayList<ClConstraint>();
+            List<ClConstraint> added = new ArrayList<>();
             try {
                 for (ClConstraint c : s.soFar) {
                     solver.addConstraint(c);

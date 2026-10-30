@@ -91,7 +91,7 @@ public class TexturedQuad extends Quad {
         if (ti==null) {
             ti = new BufferedImage
                      (textureSize,textureSize,BufferedImage.TYPE_4BYTE_ABGR);
-            textureImageRef = new SoftReference<BufferedImage>(ti);
+            textureImageRef = new SoftReference<>(ti);
         }
         // always clear the old (since we might have just recreated the image)
         Graphics2D g2 = ti.createGraphics();

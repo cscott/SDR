@@ -47,8 +47,8 @@ public class Microphone extends BaseDataProcessor {
     private static final boolean END_WHEN_SWITCHING = false;
 
     public Microphone() {
-        this.audioQueue = new ArrayBlockingQueue<Data>(4096);
-        this.switchQueue = new LinkedBlockingQueue<NameAndLine>();
+        this.audioQueue = new ArrayBlockingQueue<>(4096);
+        this.switchQueue = new LinkedBlockingQueue<>();
     }
     @Override
     public void initialize() {
@@ -58,7 +58,7 @@ public class Microphone extends BaseDataProcessor {
     }
     /** Look for all mixers providing our desired input format. */
     public List<NameAndLine> availableMixers() {
-        List<NameAndLine> result = new ArrayList<NameAndLine>();
+        List<NameAndLine> result = new ArrayList<>();
         DataLine.Info info = new DataLine.Info
             (TargetDataLine.class, desiredFormat);
         // enumerate the mixers which can support this input format.
@@ -103,7 +103,7 @@ public class Microphone extends BaseDataProcessor {
         desc = desc.replaceAll("^Direct Audio Device: ", "");
         // split at commas, keep only the unique items
         UniqueVector<String> uniq =
-            new UniqueVector<String>(Arrays.asList(desc.split("\\s*,\\s*")));
+            new UniqueVector<>(Arrays.asList(desc.split("\\s*,\\s*")));
         return ListUtils.join(uniq, ", ");
     }
 

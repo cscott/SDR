@@ -64,7 +64,7 @@ public class JavaSoundTest {
                     Line l = m.getLine(pi);
                     System.out.println(" "+pi.getName());
                     l.open();
-                    List<Control> lc = new ArrayList<Control>();
+                    List<Control> lc = new ArrayList<>();
                     for (Control ctrl : l.getControls()) {
                         if (ctrl instanceof CompoundControl) {
                             lc.addAll(Arrays.asList(((CompoundControl)ctrl).getMemberControls()));

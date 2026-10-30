@@ -71,14 +71,14 @@ import java.util.Set;
 import net.cscott.jdoctest.Doctests;
 }
 @members {
-    private final Set<String> names = new HashSet<String>();
-    private final List<Call> db = new ArrayList<Call>();
+    private final Set<String> names = new HashSet<>();
+    private final List<Call> db = new ArrayList<>();
     public List<Call> getList() { return Collections.unmodifiableList(db); }
     Program currentProgram = null;
     // quick helper
     public <T> T ifNull(T t, T otherwise) { return (t==null)?otherwise:t; }
     public BDirection d(BDirection d) { return ifNull(d, BDirection.ASIS); }
-    private Map<String,Integer> scope = new HashMap<String,Integer>();
+    private Map<String,Integer> scope = new HashMap<>();
     private void semex(Tree a, String s) throws SemanticException {
         throw new SemanticException(s, sourceName(a),
                                     a.getLine(), a.getCharPositionInLine());
@@ -212,7 +212,7 @@ rule_option[Set<Rule.Option> s]
     ;
 
 decl_args returns [List<ArgAndDefault> l]
-@init { $l = new ArrayList<ArgAndDefault>(); }
+@init { $l = new ArrayList<>(); }
     : (a=decl_arg {$l.add(a);} )*
     ;
 
@@ -236,7 +236,7 @@ pieces returns [B<? extends Comp> r]
 // XXX we should pass the Tree corresponding to OPT into mkOpt
 //     so we can eventually record the source file name and line #
 opt returns [B<Opt> o]
-@init { List<B<OptCall>> l = new ArrayList<B<OptCall>>(); }
+@init { List<B<OptCall>> l = new ArrayList<>(); }
     : ^(OPT (oc=one_opt {l.add(oc);})+)
     { $o = mkOpt(l); }
     ;
@@ -245,7 +245,7 @@ one_opt returns [B<OptCall> oc]
     { $oc = mkOptCall(eb, co); }
     ;
 seq returns [B<Seq> s]
-@init { List<B<? extends SeqCall>> l = new ArrayList<B<? extends SeqCall>>(); }
+@init { List<B<? extends SeqCall>> l = new ArrayList<>(); }
     : ^(SEQ (sc=one_seq {l.add(sc);})+)
     { $s = mkSeq(l); }
     ;
@@ -279,7 +279,7 @@ prim_flag[Set<Prim.Flag> s]
     ;
 
 par returns [B<Par> p]
-@init { List<B<ParCall>> l = new ArrayList<B<ParCall>>(); }
+@init { List<B<ParCall>> l = new ArrayList<>(); }
     : ^(PAR (pc=one_par {l.add(pc);})+)
     { $p = mkPar(l); }
     ;
@@ -317,7 +317,7 @@ words_or_ref returns [B<String> b]
     { $b = mkConstant(s); }
     | r=ref
     { final int param = r;
-      $b = new B<String>() {
+      $b = new B<>() {
         public String build(List<Expr> args) {
           // XXX: this should be an Expr retval, not a String
           try {
@@ -352,7 +352,7 @@ expr_body returns [B<Expr> eb]
     { final int param = r;
       final List<B<Expr>> expr_args = args;
       // use the given parameter as a string.
-      $eb = new B<Expr>() {
+      $eb = new B<>() {
         public Expr build(List<Expr> args) {
             Expr e = args.get(param);
             // note that this strips off the arguments.
@@ -377,12 +377,12 @@ expr_body returns [B<Expr> eb]
        $eb = mkExpr(s.intern(), args);
     };
 expr_args returns [List<B<Expr>> l]
-@init { $l = new ArrayList<B<Expr>>(); }
+@init { $l = new ArrayList<>(); }
     : LPAREN (eb=expr_body {$l.add(eb);} )*
     | { $l = null; }
     ;
 expr_args_plus returns [List<B<Expr>> l]
-@init { $l = new ArrayList<B<Expr>>(); }
+@init { $l = new ArrayList<>(); }
     : LPAREN (eb=expr_body {$l.add(eb);} )+
     ;
 
@@ -392,7 +392,7 @@ number returns [Fraction r]
     ;
 
 grm_rule returns [Grm g]
-@init { List<Grm> l = new ArrayList<Grm>(); }
+@init { List<Grm> l = new ArrayList<>(); }
     : ^(VBAR (gg=grm_rule {l.add(gg);})+ )
     { $g = new Grm.Alt(l); }
     | ^(ADJ (gg=grm_rule {l.add(gg);})+ )

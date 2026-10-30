@@ -35,7 +35,7 @@ public class RecogThread extends Thread {
     private final CommandInput input;
     private final BlockingQueue<Control> rendezvous;
     private final BlockingQueue<InputMode> modeQueue =
-        new LinkedBlockingQueue<InputMode>();
+        new LinkedBlockingQueue<>();
 
     public RecogThread(CommandInput input,
                        BlockingQueue<Control> rendezvous) {
@@ -141,7 +141,7 @@ public class RecogThread extends Thread {
             }
             
             /* Get all final result tokens. */
-            List<Token> tokens = new ArrayList<Token>();
+            List<Token> tokens = new ArrayList<>();
             for (Object t : result.getResultTokens())
                 tokens.add((Token)t); // typecast; sphinx has a loose type
             if (tokens.isEmpty()) {
@@ -150,7 +150,7 @@ public class RecogThread extends Thread {
                 continue;
             }
             /* sort so the worst (lowest score) is first */
-            Collections.sort(tokens, new Comparator<Token>() {
+            Collections.sort(tokens, new Comparator<>() {
                 public int compare(Token t1, Token t2) {
                     return Float.compare(t1.getScore(), t2.getScore());
                 }

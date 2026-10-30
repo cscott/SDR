@@ -64,7 +64,7 @@ public class RemoveIn extends TransformVisitor<Fraction> {
     // f is target # of beats
     @Override
     public Seq visit(Seq s, Fraction f) {
-        List<SeqCall> l = new ArrayList<SeqCall>(s.children.size());
+        List<SeqCall> l = new ArrayList<>(s.children.size());
         // simple but common case
         if (s.children.size()==1) {
             // weird special case: make sure we don't get caught in a loop:
@@ -106,7 +106,7 @@ public class RemoveIn extends TransformVisitor<Fraction> {
     // note: f is target # of beats.
     @Override
     public Par visit(Par p, Fraction f) {
-        List<ParCall> l=new ArrayList<ParCall>();
+        List<ParCall> l=new ArrayList<>();
         for (ParCall pc : p.children)
             l.add(new ParCall(pc.selector, new In(Expr.literal(f), pc.child)));
         return p.build(l);
@@ -115,7 +115,7 @@ public class RemoveIn extends TransformVisitor<Fraction> {
     // untaken branches
     @Override
     public Opt visit(Opt o, Fraction f) {
-        List<OptCall> l=new ArrayList<OptCall>();
+        List<OptCall> l=new ArrayList<>();
         for (OptCall oc : o.children)
             l.add(new OptCall(oc.matcher, new In(Expr.literal(f), oc.child)));
         return o.build(l);
