@@ -9,6 +9,13 @@
     <welcome-file>SDRweb.html</welcome-file>
   </welcome-file-list>
   
+  <!-- Set to true to let File > Server refresh reload the call
+       definitions (for development only). -->
+  <context-param>
+    <param-name>sdr.allowReload</param-name>
+    <param-value>false</param-value>
+  </context-param>
+
   <!-- Servlets -->
   <servlet>
     <servlet-name>danceService</servlet-name>

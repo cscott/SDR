@@ -32,8 +32,15 @@ import com.google.gwt.user.server.rpc.jakarta.RemoteServiceServlet;
 public class DanceEngineServiceImpl extends RemoteServiceServlet
     implements DanceEngineService {
 
-    /** Reload call definitions. */
+    /** Reload call definitions.  Allowed only if the
+     *  <code>sdr.allowReload</code> context parameter is
+     *  <code>true</code>, so that a public server can't be made to
+     *  reload over and over. */
     public void reloadDB() {
+        if (!Boolean.parseBoolean
+            (getServletContext().getInitParameter("sdr.allowReload")))
+            throw new UnsupportedOperationException
+                ("Reloading call definitions is disabled on this server");
         CallDB.INSTANCE.reload();
     }
 
