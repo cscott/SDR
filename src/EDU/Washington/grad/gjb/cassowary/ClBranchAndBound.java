@@ -1,6 +1,7 @@
 package EDU.Washington.grad.gjb.cassowary;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -8,7 +9,6 @@ import java.util.Set;
 
 import net.cscott.jdoctest.Doctests;
 import net.cscott.jutil.BinaryHeap;
-import net.cscott.jutil.Default;
 import net.cscott.jutil.Heap;
 import net.cscott.jutil.PersistentSetFactory;
 import net.cscott.sdr.util.Fraction;
@@ -134,8 +134,8 @@ public class ClBranchAndBound {
         final Set<Branch> branches;
         public State() {
             this.soFar = LL.<ClConstraint>NULL();
-            this.psf =
-                new PersistentSetFactory<>(Default.<Branch>comparator());
+            this.psf = new PersistentSetFactory<>
+                (Comparator.nullsFirst(Comparator.<Branch>naturalOrder()));
             this.branches = psf.makeSet();
         }
         private State(State s, ClIntegerVariable v, CL.Op op, Fraction val,

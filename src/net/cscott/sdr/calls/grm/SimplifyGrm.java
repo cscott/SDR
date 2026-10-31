@@ -1,6 +1,5 @@
 package net.cscott.sdr.calls.grm;
 
-import net.cscott.jutil.Default;
 import net.cscott.jutil.PersistentSetFactory;
 import net.cscott.jutil.SetFactory;
 import net.cscott.sdr.calls.grm.Grm.Alt;
@@ -85,7 +84,7 @@ public class SimplifyGrm extends GrmVisitor<Grm> {
         // visitor to return set of terminal/nonterminals which could be first
         GrmVisitor<Set<String>> v = new GrmVisitor<>() {
             final SetFactory<String> sf = new PersistentSetFactory<>
-                (Default.<String>comparator());
+                (Comparator.nullsFirst(Comparator.<String>naturalOrder()));
             @Override
             public Set<String> visit(Alt alt) {
                 // Any of the alternates could yield a first element.

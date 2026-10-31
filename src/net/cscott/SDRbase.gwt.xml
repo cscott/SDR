@@ -3,8 +3,6 @@
 <!-- This GWT module exports only a small subset of the SDR classes,
      sufficient for the client-server interface for SDRweb -->
 <module>
-  <!-- Inherit from JUtil -->
-  <inherits name='net.cscott.JUtil'/>
   <!-- Source path -->
   <source path="sdr/calls">
     <include name="Program.java"/>

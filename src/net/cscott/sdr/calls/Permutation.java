@@ -13,7 +13,6 @@ import java.util.NoSuchElementException;
 import java.util.WeakHashMap;
 
 import net.cscott.jdoctest.Doctests;
-import net.cscott.jutil.UnmodifiableIterator;
 import net.cscott.sdr.util.Fraction;
 
 /** A {@link Permutation} represents a reordering of dancers. */
@@ -383,7 +382,7 @@ public class Permutation implements Comparable<Permutation> {
      *  1B^  4Bv  4G^  1Gv
      */
     public static Iterator<Permutation> generate(final Permutation first) {
-        return new UnmodifiableIterator<>() {
+        return new Iterator<>() {
             private Permutation next = first;
             private int i=0, j=0;
             @Override
@@ -438,7 +437,7 @@ public class Permutation implements Comparable<Permutation> {
      */
     public Iterator<Permutation> rotated() {
         final Permutation first = this;
-        return new UnmodifiableIterator<>() {
+        return new Iterator<>() {
             private Permutation next = first;
             @Override
             public boolean hasNext() {

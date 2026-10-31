@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.TreeSet;
 
 import net.cscott.jdoctest.Doctests;
-import net.cscott.jutil.UnmodifiableIterator;
 import net.cscott.sdr.util.Fraction;
 import static net.cscott.sdr.util.Tools.l;
 
@@ -230,7 +229,7 @@ public class Rotation {
         return new AbstractCollection<>() {
             @Override
             public Iterator<ExactRotation> iterator() {
-                return new UnmodifiableIterator<>() {
+                return new Iterator<>() {
                     Fraction next = start;
                     @Override
                     public boolean hasNext() {

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.cscott.jdoctest.Doctests;
-import net.cscott.jutil.UnmodifiableIterator;
 import net.cscott.sdr.calls.Program;
 import net.cscott.sdr.calls.grm.Grm.Alt;
 import net.cscott.sdr.calls.grm.Grm.Concat;
@@ -224,7 +223,7 @@ public class CompletionEngine {
             result.sort(Comparator.comparing(s -> s.replace('<', '~')));
         return result;
     }
-    static class CompletionIterator extends UnmodifiableIterator<String>{
+    static class CompletionIterator implements Iterator<String>{
         final Program program;
         final List<Token> input;
         List<Integer> lastState;

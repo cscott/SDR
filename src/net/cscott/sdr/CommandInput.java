@@ -1,6 +1,5 @@
 package net.cscott.sdr;
 
-import net.cscott.jutil.UnmodifiableIterator;
 import net.cscott.sdr.calls.BadCallException;
 import net.cscott.sdr.calls.CallDB;
 import net.cscott.sdr.calls.DanceProgram;
@@ -123,7 +122,7 @@ public class CommandInput {
             return new PCIterator(this);
         };
         private static class PCIterator
-        extends UnmodifiableIterator<PossibleCommand> {
+        implements Iterator<PossibleCommand> {
             private PossibleCommand pc;
             PCIterator(PossibleCommand pc) { this.pc = pc; }
             @Override

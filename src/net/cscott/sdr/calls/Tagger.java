@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import net.cscott.jutil.Default;
 import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
@@ -214,7 +213,7 @@ public abstract class Tagger {
         }
         private Match(Comparator<Dancer> c) {
             this(new PersistentMultiMapFactory<Dancer,Tag>
-                     (c, Default.<Tag>comparator()),
+                     (c, Comparator.nullsFirst(Comparator.<Tag>naturalOrder())),
                  new PersistentSet<Dancer>(c));
         }
         private Match(PersistentMultiMapFactory<Dancer,Tag> mmf,

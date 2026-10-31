@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.cscott.jdoctest.Doctests;
-import net.cscott.jutil.UnmodifiableIterator;
 
 /** Persistent Linked List. */
 @Doctests
@@ -115,7 +114,7 @@ public class LL<T> implements Iterable<T> {
         return new LLIterator<>(this);
     }
     /** Helper class to implement the {@link Iterable} interface. */
-    private static class LLIterator<T> extends UnmodifiableIterator<T> {
+    private static class LLIterator<T> implements Iterator<T> {
         LL<T> next;
         LLIterator(LL<T> ll) { this.next = ll; }
         @Override
