@@ -16,6 +16,16 @@
     <param-value>false</param-value>
   </context-param>
 
+  <!-- Don't let browsers keep running an old version after a deploy -->
+  <filter>
+    <filter-name>cacheControl</filter-name>
+    <filter-class>net.cscott.sdr.webapp.server.CacheControlFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>cacheControl</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <!-- Servlets -->
   <servlet>
     <servlet-name>danceService</servlet-name>
