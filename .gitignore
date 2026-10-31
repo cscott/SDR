@@ -21,9 +21,10 @@ test-reports
 war/sdrweb
 war/sdr
 war/WEB-INF/classes
-war/WEB-INF/lib/sdrweb.jar
+sdrweb.war
 src/**/package_info.java
 doc/calldefs.aux
 doc/calldefs.log
 doc/calldefs.pdf
 doc/calldefs.run?.log
+gwt-unitCache

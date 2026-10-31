@@ -23,8 +23,6 @@ Square Dance Revolution build file.
 
     <!-- load the variable definitions from another file -->
     <property file="build.properties" />
-    <!-- local copy of GAE ant macros -->
-    <import file="${gae.sdk}/config/user/ant-macros.xml" optional="true" />
 
     <!-- define some variables for the script -->
     <target name="init">
@@ -61,16 +59,15 @@ Square Dance Revolution build file.
           <include name="jdoctest/rhino*.jar" />
         </fileset>
       </path>
+      <!-- GWT SDK, for the web UI (set gwt.sdk in build.properties) -->
+      <property name="gwt.sdk" value="${basedir}/gwt-sdk-not-set"/>
+      <property name="gwt.servlet.jar"
+		value="${gwt.sdk}/gwt-servlet-jakarta.jar"/>
       <path id="gwt.path">
 	<pathelement location="${gwt.sdk}/gwt-user.jar"/>
-	<fileset dir="${gwt.sdk}" includes="gwt-dev*.jar"/>
-	<fileset dir="${gwt.sdk}" includes="validation-api-*.jar"/>
-	<fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
-      </path>
-      <path id="gae.path">
-	<pathelement location="${gae.sdk}/lib/appengine-tools-api.jar" />
-	<fileset dir="${gae.sdk}/lib" includes="shared/**/*.jar" />
-	<fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
+	<pathelement location="${gwt.sdk}/gwt-dev.jar"/>
+	<fileset dir="${gwt.sdk}" includes="validation-api-*.jar"
+		 erroronmissingdir="false"/>
       </path>
     </target>
 
@@ -735,116 +732,116 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	</delete>
     </target>
 
-    <!-- **************** GWT/GAE web UI stuff ************* -->
-    <target name="compile.jdo" depends="compile"
-	    description="JDO-enhance the SDRweb web server">
-      <!-- sync up war classes -->
+    <!-- **************** GWT web UI stuff ************* -->
+    <!-- The web UI is a GWT client (src/net/cscott/sdr/webapp/client,
+	 plus the classes named in src/net/cscott/SDRbase.gwt.xml) which
+	 asks a servlet (webapp/server) to run the dance engine.  'ant war'
+	 packages both as sdrweb.war, for a jakarta servlet container such
+	 as Tomcat 10.1. -->
+    <target name="check.gwt" depends="init">
+      <fail message="Set gwt.sdk in build.properties to the directory of a GWT 2.13 SDK">
+	<condition><not>
+	  <available file="${gwt.sdk}/gwt-dev.jar"/>
+	</not></condition>
+      </fail>
+      <fail message="${gwt.servlet.jar} not found; set gwt.servlet.jar in build.properties">
+	<condition><not>
+	  <available file="${gwt.servlet.jar}"/>
+	</not></condition>
+      </fail>
+    </target>
+
+    <target name="compile.server" depends="compile,check.gwt"
+	    description="Compile the SDRweb servlet into war/WEB-INF">
       <copy todir="war/WEB-INF/classes">
 	<fileset dir="${classes_dir}">
-          <!-- save space to fit into the GAE limits -->
+	  <!-- the servlet doesn't need these -->
 	  <exclude name="net/cscott/sdr/sound/**/*" />
 	  <exclude name="net/cscott/sdr/recog/**/*" />
-	  <!-- compress all the definition/grammar files -->
-	  <exclude name="net/cscott/sdr/calls/lists/*.class" />
 	</fileset>
-	<fileset dir="${src_dir}" includes="META-INF/**/*" />
-	<fileset dir="${src_dir}" includes="log4j.properties" />
-	<fileset dir="${src_dir}" includes="**/*.gwt.xml" />
-	<fileset dir="${src_dir}" includes="net/cscott/sdr/webapp/**/*.png" />
-	<fileset dir="${src_dir}" includes="net/cscott/sdr/webapp/**/*.ico" />
       </copy>
-      <jar destfile="war/WEB-INF/lib/sdrweb.jar" update="true"
-           basedir="${classes_dir}"
-	   includes="net/cscott/sdr/calls/lists/*.class" />
-      <!-- move library files into war/WEB-INF/lib -->
-      <copy todir="war/WEB-INF/lib">
+      <copy todir="war/WEB-INF/lib" flatten="true">
 	<fileset dir="${lib_dir}"
 		 includes="antlr-runtime-*.jar commons-lang-*.jar jutil.jar"/>
-	<fileset dir="${lib_dir}/dev"
-		 includes="junit-*.jar" />
+	<file file="${gwt.servlet.jar}"/>
       </copy>
-      <!-- compile GAE stuff -->
       <javac srcdir="${src_dir}" destdir="war/WEB-INF/classes"
 	     includes="net/cscott/sdr/webapp/server/**/*.java"
 	     deprecation="on" release="${java.release}" debug="true"
 	     includeantruntime="false">
+	<compilerarg value="-Xlint:unchecked"/>
 	<classpath>
 	  <pathelement location="war/WEB-INF/classes" />
 	  <fileset dir="war/WEB-INF/lib" includes="*.jar"/>
-	  <path refid="gae.path" />
-	  <path refid="gwt.path" />
+	  <pathelement location="${lib_dir}/dev/jakarta.servlet-api-6.0.0.jar"/>
 	</classpath>
       </javac>
-      <enhance failonerror="true">
-	<classpath>
-	  <pathelement location="war/WEB-INF/classes" />
-	  <path refid="classpath.path" />
-	  <path refid="gae.path" />
-	</classpath>
-	<fileset dir="war/WEB-INF/classes"
-		 includes="net/cscott/sdr/webapp/**/*.class"/>
-      </enhance>
     </target>
 
-    <target name="compile.gwt" depends="compile.jdo"
+    <target name="compile.gwt" depends="compile,check.gwt"
 	    description="Compile web UI to javascript">
       <java failonerror="true" fork="true"
 	    classname="com.google.gwt.dev.Compiler">
 	<classpath>
           <pathelement location="src"/>
           <pathelement location="src/net/cscott/sdr/webapp/client/thunk"/>
-          <pathelement location="war/WEB-INF/classes"/>
           <path refid="classpath.path"/>
           <path refid="gwt.path"/>
 	</classpath>
 	<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
-	<jvmarg value="-Xmx256M"/>
+	<jvmarg value="-Xmx1g"/>
+	<jvmarg value="-Djava.io.tmpdir=${java.io.tmpdir}"/>
 	<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
 	<arg value="-strict"/>
+	<!-- GWT 2.13 understands Java 17 at most; this is the language
+	     level of everything GWT compiles: webapp/client, thunk/, and
+	     the classes SDRbase.gwt.xml names. -->
+	<arg line="-sourceLevel 17"/>
+	<arg line="-war war"/>
+	<arg line="-workDir ${java.io.tmpdir}/sdrweb-gwt"/>
 	<arg value="net.cscott.sdr.webapp.SDRweb"/>
       </java>
     </target>
+
+    <target name="war" depends="compile.gwt,compile.server"
+	    description="Package the web UI and its servlet as sdrweb.war">
+      <war destfile="${basedir}/sdrweb.war" webxml="war/WEB-INF/web.xml">
+	<fileset dir="war" excludes="WEB-INF/** **/*~" />
+	<classes dir="war/WEB-INF/classes" />
+	<lib dir="war/WEB-INF/lib" includes="*.jar" />
+      </war>
+    </target>
+
     <target name="clean.gwt"
-	    description="Delete generated files from JDO/GWT compilation">
+	    description="Delete generated files from GWT compilation">
       <delete dir="war/sdrweb" />
       <delete dir="war/sdr" />
       <delete dir="war/WEB-INF/classes" />
       <delete dir="war/WEB-INF/deploy" />
+      <delete dir="war/WEB-INF/lib" />
+      <delete file="${basedir}/sdrweb.war" />
     </target>
 
-    <target name="run.devmode" depends="compile.jdo"
-	    description="Run web UI development mode">
-      <!-- start up dev mode -->
+    <target name="run.codeserver" depends="compile,check.gwt"
+	    description="Run the GWT code server (Super Dev Mode) for the web UI">
+      <!-- Writes war/sdrweb/sdrweb.nocache.js, which loads the UI from
+	   the code server and recompiles it on reload.  Serve war/ (with
+	   the servlet) from a servlet container: for example, run 'ant
+	   compile.server' and point Tomcat at the war directory. -->
       <java failonerror="true" fork="true"
-	    classname="com.google.gwt.dev.DevMode">
+	    classname="com.google.gwt.dev.codeserver.CodeServer">
 	<classpath>
-	  <!-- put resources/ on the classpath for ease of
-	       development: we can edit the call definitions and
-	       reload without rebuilding the .jar -->
-	  <pathelement location="resources"/>
-	  <pathelement location="src"/> <!-- for GWT source files -->
+	  <pathelement location="src"/>
           <pathelement location="src/net/cscott/sdr/webapp/client/thunk"/>
-	  <pathelement location="war/WEB-INF/classes" /> <!-- for enhanced -->
 	  <path refid="classpath.path" />
 	  <path refid="gwt.path" />
 	</classpath>
-	<jvmarg value="-Xmx256M"/>
-	<arg value="-startupUrl"/>
-	<arg value="SDRweb.html"/>
-	<arg value="-war"/>
-	<arg value="war"/>
-	<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
-	<!--
-	<arg value="-logdir"/><arg value="warlog"/>
-	<arg value="-logLevel"/><arg value="ALL"/>
-	-->
+	<jvmarg value="-Xmx1g"/>
+	<jvmarg value="-Djava.io.tmpdir=${java.io.tmpdir}"/>
+	<arg line="-sourceLevel 17"/>
+	<arg line="-launcherDir war"/>
 	<arg value="net.cscott.sdr.webapp.SDRweb"/>
       </java>
-    </target>
-
-    <target name="gae.update" depends="compile.gwt"
-	    description="Uploads the SDR web UI to App Engine.">
-      <appcfg action="update" war="war" />
     </target>
 
     <!-- **************** java web start stuff ************* -->

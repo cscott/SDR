@@ -26,7 +26,7 @@ import net.cscott.sdr.webapp.client.EngineResults;
 import net.cscott.sdr.webapp.client.Sequence;
 import net.cscott.sdr.webapp.client.Sequence.StartingFormationType;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.gwt.user.server.rpc.jakarta.RemoteServiceServlet;
 
 @SuppressWarnings("serial")
 public class DanceEngineServiceImpl extends RemoteServiceServlet
