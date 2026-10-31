@@ -830,8 +830,8 @@ public class PMSD {
     private static ContextFactory contextFactory = new ContextFactory() {
         protected Context makeContext() {
             return new Context(this) {
-                // JavaScript 1.8 by default
-                { setLanguageVersion(Context.VERSION_1_8); }
+                // ES6 by default
+                { setLanguageVersion(Context.VERSION_ES6); }
             };
         }
         // enable some extra features

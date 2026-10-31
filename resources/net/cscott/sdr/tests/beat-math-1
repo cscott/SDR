@@ -3,8 +3,8 @@ Dick Leger example from http://www.tiac.net/~mabaker/beat-math.html
 sdr> /last = 0;
 0
 sdr> /function time() {
-   >  now = ds.currentTime().floatValue();
-   >  diff = now - last; last = now;
+   >  const now = ds.currentTime().floatValue();
+   >  const diff = now - last; last = now;
    >  return diff;
    > }
 sdr> /time()

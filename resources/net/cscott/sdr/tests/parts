@@ -14,10 +14,9 @@ sdr> heads square thru ; touch
 | 1B<  2B<
 sdr> /// helper function to invoke the internal 'num parts' function.
 sdr> /function parts(s) {
-   >   fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction');
-   >   apply = CallDB.INSTANCE.parse(ds.dance.getProgram(), s)
-   >   expr = new net.cscott.sdr.calls.ast.Expr("num parts", apply.call)
-   >   return expr.evaluate(fc, ds);
+   >   const apply = CallDB.INSTANCE.parse(ds.dance.getProgram(), s);
+   >   const expr = new net.cscott.sdr.calls.ast.Expr("num parts", apply.call);
+   >   return expr.evaluate(net.cscott.sdr.util.Fraction, ds);
    > }
 sdr> /parts("swing thru").toProperString()
 2
@@ -25,13 +24,14 @@ sdr> /// check the timing of a call, without failing if the call isn't
 sdr> /// defined yet.
 sdr> /function assertParts(call, n) {
    >   try {
-   >     m = parts(call)
+   >     const m = parts(call);
    >     if (!net.cscott.sdr.util.Fraction.valueOf(n).equals(m))
-   >       return "Number of parts incorrect!  Actual: "+m.toProperString()
-   >   } catch (e if e.javaException instanceof BadCallException) {
-   >       msg = e.javaException.getMessage()
-   >       if (!(/Not on list:/.test(msg)))
-   >         return "* "+msg
+   >       return `Number of parts incorrect!  Actual: ${m.toProperString()}`;
+   >   } catch (e) {
+   >     if (!(e.javaException instanceof BadCallException)) throw e;
+   >     const msg = e.javaException.getMessage();
+   >     if (!/Not on list:/.test(msg))
+   >       return `* ${msg}`;
    >   }
    > }
 sdr> /// this is a successful check, with the correct # of parts

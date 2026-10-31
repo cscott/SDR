@@ -9,29 +9,29 @@ sdr> /function beats(call, formation) {
    >   // put real dancers symmetrically in the given formation template.
    >   setFormation(formation.mapStd([]));
    >   //java.lang.System.err.println(printFormation); //debugging
-   >   var now = ds.currentTime();
+   >   const now = ds.currentTime();
    >   Evaluator.parseAndEval(ds, call);
-   >   var then = ds.currentTime();
+   >   const then = ds.currentTime();
    >   return then.subtract(now);
    > }
-sdr> /function isArray(a) { return typeof(a)==='object' && 'length' in a; }
 sdr> /function checkBeats(count, calls, formations) {
-   >   if (!isArray(formations)) { formations = [formations]; }
-   >   if (!isArray(calls)) { calls = [calls]; }
+   >   if (!Array.isArray(formations)) { formations = [formations]; }
+   >   if (!Array.isArray(calls)) { calls = [calls]; }
    >   count = net.cscott.sdr.util.Fraction.valueOf(count);
-   >   for each (var call in calls) {
-   >     for each (var formation in formations) {
+   >   for (let call of calls) {
+   >     for (let formation of formations) {
    >       try {
-   >         var b = beats(call, formation);
+   >         const b = beats(call, formation);
    >         if (!count.equals(b))
-   >           return "Timing incorrect for "+call+
-   >                  " from "+formation.getName()+"!"+
-   >                  " "+b.toProperString()+
-   >                  " instead of "+count.toProperString()+" beats";
-   >       } catch (e if e.javaException instanceof BadCallException) {
-   >           var msg = e.javaException.getMessage()
-   >           if (!(/(Not on list|Unknown call):/.test(msg)))
-   >             return "* "+call+"/"+formation.getName()+": "+msg;
+   >           return `Timing incorrect for ${call}` +
+   >                  ` from ${formation.getName()}!` +
+   >                  ` ${b.toProperString()}` +
+   >                  ` instead of ${count.toProperString()} beats`;
+   >       } catch (e) {
+   >         if (!(e.javaException instanceof BadCallException)) throw e;
+   >         const msg = e.javaException.getMessage();
+   >         if (!/(Not on list|Unknown call):/.test(msg))
+   >           return `* ${call}/${formation.getName()}: ${msg}`;
    >       }
    >     }
    >   }
