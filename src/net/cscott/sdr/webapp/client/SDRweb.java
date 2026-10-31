@@ -143,7 +143,8 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                     }});
             }});
          */
-        // XXX: only add this menu entry in "debug" mode.
+        // shown only if the server allows reloading call definitions
+        final MenuItem refreshItem =
         fileMenu.addItem("Server refresh", new Command() {
             public void execute() {
                 danceEngine.reloadDB(new EAsyncCallback<Void>(){
@@ -154,6 +155,13 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                         model.fireEvent(new SequenceChangeEvent());
                     }});
             }});
+        refreshItem.setVisible(false);
+        danceEngine.isReloadAllowed(new AsyncCallback<Boolean>() {
+            public void onSuccess(Boolean allowed) {
+                refreshItem.setVisible(allowed);
+            }
+            public void onFailure(Throwable caught) { /* leave it hidden */ }
+        });
         fileMenu.addItem("Close", new Command() {
             public native void execute() /*-{ $wnd.close(); }-*/;
             });

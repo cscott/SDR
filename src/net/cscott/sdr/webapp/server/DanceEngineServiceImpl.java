@@ -37,11 +37,15 @@ public class DanceEngineServiceImpl extends RemoteServiceServlet
      *  <code>true</code>, so that a public server can't be made to
      *  reload over and over. */
     public void reloadDB() {
-        if (!Boolean.parseBoolean
-            (getServletContext().getInitParameter("sdr.allowReload")))
+        if (!isReloadAllowed())
             throw new UnsupportedOperationException
                 ("Reloading call definitions is disabled on this server");
         CallDB.INSTANCE.reload();
+    }
+
+    public boolean isReloadAllowed() {
+        return Boolean.parseBoolean
+            (getServletContext().getInitParameter("sdr.allowReload"));
     }
 
     /** An angle multiplier used when transforming a standard formation

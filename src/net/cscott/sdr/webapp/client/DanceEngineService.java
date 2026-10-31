@@ -18,6 +18,11 @@ public interface DanceEngineService extends RemoteService {
      */
     public void reloadDB();
 
+    /**
+     * Return true if this server allows {@link #reloadDB()}.
+     */
+    public boolean isReloadAllowed();
+
     // eventually there may be other dance-engine tasks, like 'resolve'
     // or 'classify formation' (at home, allemande left, dixie grand, etc)
 }

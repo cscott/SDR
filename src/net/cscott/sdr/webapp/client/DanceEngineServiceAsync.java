@@ -15,6 +15,10 @@ public interface DanceEngineServiceAsync {
      * local edits to the call definitions have been made.
      */
     public void reloadDB(AsyncCallback<Void> async);
+    /**
+     * Return true if this server allows {@link #reloadDB(AsyncCallback)}.
+     */
+    public void isReloadAllowed(AsyncCallback<Boolean> async);
 
     // eventually there may be other dance-engine tasks, like 'resolve'
     // or 'classify formation' (at home, allemande left, dixie grand, etc)
