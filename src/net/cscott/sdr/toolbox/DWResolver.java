@@ -35,8 +35,9 @@ import static net.cscott.sdr.util.Tools.*;
  *  2B^  2Gv  1G^  1Bv
  *  
  *  3B^  3Gv  4G^  4Bv
- *  js> fs = []; Permutation.generate(Permutation.IDENTITY8)
- *    >   .forEachRemaining(pp => fs.push(pp.permute(f))); fs.length
+ *  js> importPackage(net.cscott.sdr.util);
+ *  js> fs = ListUtils.toArray(Permutation.generate(Permutation.IDENTITY8))
+ *    >   .map(pp => pp.permute(f)); fs.length
  *  96
  *  js> dss = fs.map(f => new DanceState(new DanceProgram(Program.PLUS), f));
  *    > undefined;

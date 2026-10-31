@@ -1,7 +1,9 @@
 package net.cscott.sdr.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import net.cscott.jdoctest.Doctests;
 
@@ -51,5 +53,26 @@ public final class ListUtils {
             result.append(s);
         }
         return result.toString();
+    }
+
+    /**
+     * Return an array of the remaining elements of {@code it}.  JavaScript
+     * can't iterate over a Java {@link Iterator}, but it can iterate over
+     * the array, and call {@code map()} or {@code every()} on it.
+     * Use {@code Array.from()} to print it.
+     *
+     * @doc.test
+     * js> it = Tools.l("a", "b", "c").iterator(); it.next()
+     * a
+     * js> ListUtils.toArray(it).map(s => s.toUpperCase())
+     * B,C
+     * js> ListUtils.toArray(it).length
+     * 0
+     */
+    public static Object[] toArray(Iterator<?> it) {
+        List<Object> result = new ArrayList<Object>();
+        while (it.hasNext())
+            result.add(it.next());
+        return result.toArray();
     }
 }

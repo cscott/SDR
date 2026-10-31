@@ -322,33 +322,37 @@ public class Permutation implements Comparable<Permutation> {
      * @doc.test Count the number of permutations
      *  js> p = Permutation.IDENTITY8
      *  01234567
-     *  js> n = 0; Permutation.generate(p).forEachRemaining(pp => n++); n
+     *  js> importPackage(net.cscott.sdr.util);
+     *  js> ListUtils.toArray(Permutation.generate(p)).length
      *  96
      * @doc.test Ensure they are unique:
      *  js> o = {}
      *  [object Object]
      *  js> i=0
      *  0
-     *  js> Permutation.generate(Permutation.valueOf("01234567")).forEachRemaining(pp => {
-     *    >   pp.rotated().forEachRemaining(rp => {
+     *  js> importPackage(net.cscott.sdr.util);
+     *  js> for (let pp of ListUtils.toArray(Permutation.generate(Permutation.valueOf("01234567")))) {
+     *    >   for (let rp of ListUtils.toArray(pp.rotated())) {
      *    >     if (rp.toString() in o) throw new Error(`${i} ${rp} not unique!`);
      *    >     o[rp.toString()] = rp;
-     *    >   });
+     *    >   }
      *    >   i++;
-     *    > }); i
+     *    > }; i
      *  96
      * @doc.test Ensure they are symmetric:
      *  js> p = Permutation.IDENTITY8
      *  01234567
-     *  js> ps = []; Permutation.generate(p).forEachRemaining(pp => ps.push(pp)); ps.length
+     *  js> importPackage(net.cscott.sdr.util);
+     *  js> ps = ListUtils.toArray(Permutation.generate(p)); ps.length
      *  96
      *  js> ps.every(pp => pp.isSymmetric())
      *  true
      * @doc.test Ensure that each permutation returned is canonical
-     *  js> Permutation.generate(Permutation.valueOf("01234567")).forEachRemaining(pp => {
+     *  js> importPackage(net.cscott.sdr.util);
+     *  js> for (let pp of ListUtils.toArray(Permutation.generate(Permutation.valueOf("01234567")))) {
      *    >   if (pp.canonical() !== pp)
      *    >     throw new Error(`Not canonical! ${pp}`);
-     *    > }); "OK";
+     *    > }; "OK";
      *  OK
      * @doc.test Generate permutations of normal in-sequence RH ocean waves:
      *  js> const SD = StandardDancer;
@@ -361,7 +365,9 @@ public class Permutation implements Comparable<Permutation> {
      *  3B^  3Gv  4G^  4Bv
      *  js> p = Permutation.IDENTITY8;
      *  01234567
-     *  js> fs = []; Permutation.generate(p).forEachRemaining(pp => fs.push(pp.permute(f))); fs.length
+     *  js> importPackage(net.cscott.sdr.util);
+     *  js> fs = ListUtils.toArray(Permutation.generate(p))
+     *    >   .map(pp => pp.permute(f)); fs.length
      *  96
      *  js> fs[0].toStringDiagram()
      *  2B^  2Gv  1G^  1Bv
@@ -426,7 +432,8 @@ public class Permutation implements Comparable<Permutation> {
     };
     /** Generate the four rotated versions of the given permutation.
      * @doc.test
-     *  js> r = []; Permutation.valueOf("01234567").rotated().forEachRemaining(p => r.push(p)); r
+     *  js> importPackage(net.cscott.sdr.util);
+     *  js> Array.from(ListUtils.toArray(Permutation.valueOf("01234567").rotated()))
      *  01234567,23456701,45670123,67012345
      */
     public Iterator<Permutation> rotated() {
@@ -456,7 +463,9 @@ public class Permutation implements Comparable<Permutation> {
      * @doc.test
      *  js> Permutation.valueOf("23456701").canonical()
      *  01234567
-     *  js> r = []; Permutation.valueOf("23456701").rotated().forEachRemaining(p => r.push(p.canonical())); r
+     *  js> importPackage(net.cscott.sdr.util);
+     *  js> ListUtils.toArray(Permutation.valueOf("23456701").rotated())
+     *    >   .map(p => p.canonical())
      *  01234567,01234567,01234567,01234567
      */
     public Permutation canonical() {
