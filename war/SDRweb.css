@@ -26,7 +26,7 @@ body {
   z-index: 3;
 }
 .gwt-MenuBarPopup, .gwt-SuggestBoxPopup { z-index: 4; }
-.login-popup { z-index: 6; position: relative; top: 0; left: 0; }
+.gwt-DialogBox { z-index: 6; }
 /* end layering */
 
 /* positioning */
@@ -71,17 +71,9 @@ div.dance-floor {
 .sdr-menu-selected {
   font-weight: bold;
 }
-/* login popup */
-.login-popup {
-   background: white;
-}
-.login-popup .login-popup-caption,
-.login-popup .login-popup-frame {
-   border: none;
-}
-.login-popup .login-popup-frame {
-   width: 100%;
-   height: 100%;
+/* "open sequence" dialog */
+.openTable td {
+   padding: 2px 6px;
 }
 /* call list */
 .callList {

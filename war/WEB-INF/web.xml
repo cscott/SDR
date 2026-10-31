@@ -21,13 +21,4 @@
     <url-pattern>/sdrweb/dance</url-pattern>
   </servlet-mapping>
 
-  <servlet>
-    <servlet-name>storageServlet</servlet-name>
-    <servlet-class>net.cscott.sdr.webapp.server.SequenceStorageServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>storageServlet</servlet-name>
-    <url-pattern>/sdrweb/storage</url-pattern>
-  </servlet-mapping>
 </web-app>

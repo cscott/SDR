@@ -1,5 +1,6 @@
 package net.cscott.sdr.webapp.client;
 
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -35,6 +36,8 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
@@ -46,18 +49,17 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CaptionPanel;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype.ImagePrototypeElement;
@@ -86,8 +88,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
 
     final DanceEngineServiceAsync danceEngine =
         GWT.create(DanceEngineService.class);
-    final SequenceStorageServiceAsync storageService =
-        GWT.create(SequenceStorageService.class);
+    final SequenceStore store = new SequenceStore();
     final Model model = new Model(danceEngine) {
         @Override
         public void handleFailure(Throwable caught) {
@@ -112,7 +113,7 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                 if (!confirmDiscard()) return;
                 model.newSequence();
             }});
-        fileMenu.addItem("Open", new Command() {
+        fileMenu.addItem("Open...", new Command() {
             public void execute() {
                 if (!confirmDiscard()) return;
                 doOpen();
@@ -120,6 +121,12 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         });
         fileMenu.addItem("Save", new Command() {
             public void execute() { doSave(); }
+        });
+        fileMenu.addItem("Export all...", new Command() {
+            public void execute() { doExport(); }
+        });
+        fileMenu.addItem("Import...", new Command() {
+            public void execute() { chooseImportFile(); }
         });
         fileMenu.addItem("Print", new Command() {
             public void execute() {
@@ -145,17 +152,6 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
                         Window.alert("Call database reloaded");
                         // reload dance sequence results
                         model.fireEvent(new SequenceChangeEvent());
-                    }});
-            }});
-        fileMenu.addItem("Logout", new Command() {
-            public void execute() {
-                storageService.logout(new EAsyncCallback<String>() {
-                    public void onSuccess(String logoutURL) {
-                        new SdrPopup("Logout from Google", logoutURL) {
-                            @Override
-                            public void onClose() {
-                                Window.alert("You are now logged out");
-                            }};
                     }});
             }});
         fileMenu.addItem("Close", new Command() {
@@ -479,77 +475,129 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
         postLoadTimer.schedule(1);
     }
 
-    void selectSequence(AsyncCallback<SequenceInfo> cb) {
-        Window.alert("select one");
-    }
     void doOpen() {
-        selectSequence(new EAsyncCallback<SequenceInfo>() {
-            public void onSuccess(final SequenceInfo info) {
-                storageService.load(info.id, new EAsyncCallback<Sequence>(){
-                    public void onSuccess(Sequence sequence) {
-                        model.load(info, sequence);
-                    }});
-            }});
+        final List<SequenceInfo> saved = store.list();
+        if (saved.isEmpty()) {
+            Window.alert(store.isSupported() ? "No saved sequences" :
+                         "This browser does not support local storage");
+            return;
+        }
+        final DialogBox dialog = new DialogBox(true, true);
+        dialog.setText("Open sequence");
+        final FlexTable table = new FlexTable();
+        table.setStyleName("openTable");
+        DateTimeFormat fmt =
+            DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT);
+        for (int i=0; i<saved.size(); i++) {
+            final SequenceInfo info = saved.get(i);
+            Button open = new Button("Open", new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    dialog.hide();
+                    try {
+                        model.load(info, store.load(info.id));
+                    } catch (SequenceStore.StoreException e) {
+                        Window.alert(e.getMessage());
+                    }
+                }});
+            Button delete = new Button("Delete", new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    if (!Window.confirm("Delete \""+info.title+"\"?"))
+                        return;
+                    store.delete(info.id);
+                    if (info.id.equals(model.getSequenceInfo().id))
+                        model.getSequenceInfo().id = null; // now unsaved
+                    dialog.hide();
+                    doOpen(); // show the updated list
+                }});
+            table.setText(i, 0, info.title);
+            table.setText(i, 1, info.lastModified == null ? "" :
+                          fmt.format(info.lastModified));
+            table.setText(i, 2, String.join(" ", info.tags));
+            table.setWidget(i, 3, open);
+            table.setWidget(i, 4, delete);
+        }
+        VerticalPanel panel = new VerticalPanel();
+        ScrollPanel scroll = new ScrollPanel(table);
+        scroll.setHeight((Window.getClientHeight()/2)+"px");
+        panel.add(scroll);
+        panel.add(new Button("Cancel", new ClickHandler() {
+            public void onClick(ClickEvent event) { dialog.hide(); }
+        }));
+        dialog.setWidget(panel);
+        dialog.center(); // and show
     }
     void doSave() {
         model.regenerateTags(); // ensure automatic tags are up-to-date
-        if (model.getSequenceInfo().title.equals(SequenceInfo.UNTITLED))
-            model.setTitle(Window.prompt("Title for this sequence",
-                                         model.getSequenceInfo().title));
+        if (model.getSequenceInfo().title.equals(SequenceInfo.UNTITLED)) {
+            String title = Window.prompt("Title for this sequence",
+                                         model.getSequenceInfo().title);
+            if (title == null) return; // cancelled
+            model.setTitle(title);
+        }
         // XXX ask for tags; use nicer interface
-        storageService.save(model.getSequenceInfo(), model.getSequence(),
-                            new LAsyncCallback<Long>() {
-            @Override
-            public void onSuccess(Long result) {
-                model.getSequenceInfo().id = result;
-                model.clean();
-                Window.alert("Saved!");
-            }
-            @Override
-            public void retry() { doSave(); /* retry */ }
+        try {
+            store.save(model.getSequenceInfo(), model.getSequence());
+        } catch (SequenceStore.StoreException e) {
+            Window.alert(e.getMessage());
+            return;
+        }
+        model.clean();
+        Window.alert("Saved!");
+    }
+    void doExport() {
+        String json;
+        try {
+            json = store.exportAll();
+        } catch (SequenceStore.StoreException e) {
+            Window.alert(e.getMessage());
+            return;
+        }
+        String date = DateTimeFormat.getFormat("yyyy-MM-dd").format(new Date());
+        download("sdr-sequences-"+date+".json", json);
+    }
+    /** Called with the contents of the file chosen by
+     *  {@link #chooseImportFile()}. */
+    void doImport(String json) {
+        try {
+            int n = store.importAll(json);
+            Window.alert("Imported "+n+" sequence"+(n==1?"":"s"));
+        } catch (SequenceStore.StoreException e) {
+            Window.alert("Could not import: "+e.getMessage());
+        }
+    }
+    /** Ask the user for a file, and pass its contents to
+     *  {@link #doImport(String)}. */
+    native void chooseImportFile() /*-{
+        var self = this;
+        var input = $doc.createElement('input');
+        input.type = 'file';
+        input.accept = '.json,application/json';
+        input.onchange = $entry(function() {
+            var file = input.files[0];
+            if (!file) return;
+            var reader = new $wnd.FileReader();
+            reader.onload = $entry(function() {
+                self.@net.cscott.sdr.webapp.client.SDRweb::doImport(Ljava/lang/String;)(reader.result);
+            });
+            reader.onerror = function() {
+                $wnd.alert('Could not read ' + file.name);
+            };
+            reader.readAsText(file);
         });
-    }
-    /** Create a new popup which logs into/out of Google and then closes. */
-    public static abstract class SdrPopup extends PopupPanel {
-        public SdrPopup(String caption, String loginUrl) {
-            CaptionPanel cp = new CaptionPanel
-                (caption+" (<a href=\"javascript:cancelPopup()\">close</a>)",
-                 true);
-            Frame frame = new Frame(loginUrl);
-            cp.add(frame);
-            setTitle("Login with your Google ID");
-            cp.setWidth((Window.getClientWidth()*3/4)+"px");
-            cp.setHeight((Window.getClientHeight()*3/4)+"px");
-            frame.setStyleName("login-popup-frame");
-            cp.addStyleName("login-popup-caption");
-            this.addStyleName("login-popup");
-            setWidget(cp);
-            setPopup(this);
-            this.center(); // and show
-        }
-        public final void closeMe() {
-            this.hide();
-            // okay, proceed.
-            onClose();
-        }
-        public final void cancelMe() {
-            this.hide();
-            // but don't call onClose
-        }
-        /* called after login */
-        protected abstract void onClose();
-    }
-    // stash a reference to the static 'hidePopup' method in a place where the
-    // inner iframe can get to it.
-    public static native void setPopup(SdrPopup p) /*-{
-        $wnd.cancelPopup = function() {
-            p.@net.cscott.sdr.webapp.client.SDRweb.SdrPopup::cancelMe()();
-        };
-        $wnd.hidePopup = function() {
-            p.@net.cscott.sdr.webapp.client.SDRweb.SdrPopup::closeMe()();
-        };
+        input.click();
     }-*/;
-    // --- end popup support
+    /** Offer the given text to the user as a file to save. */
+    static native void download(String filename, String text) /*-{
+        var blob = new $wnd.Blob([text], { type: 'application/json' });
+        var url = $wnd.URL.createObjectURL(blob);
+        var a = $doc.createElement('a');
+        a.href = url;
+        a.download = filename;
+        $doc.body.appendChild(a);
+        a.click();
+        $doc.body.removeChild(a);
+        $wnd.setTimeout(function() { $wnd.URL.revokeObjectURL(url); }, 1000);
+    }-*/;
 
     void activate() {
         String newCall = callEntry.getText();
@@ -763,22 +811,6 @@ public class SDRweb implements EntryPoint, SequenceChangeHandler, PlayStatusChan
             Window.alert(caught.getMessage());
         }
         public abstract void onSuccess(T result);
-    }
-    /** Callback interface which retries if the user is not yet logged in. */
-    abstract class LAsyncCallback<T> extends EAsyncCallback<T> {
-        @Override
-        public final void onFailure(Throwable error) {
-            if (error instanceof NotLoggedInException) {
-                NotLoggedInException nlie = (NotLoggedInException) error;
-                new SdrPopup("Login to Google", nlie.loginUrl) {
-                    @Override
-                    public void onClose() { retry(); }
-                };
-                return;
-            }
-            super.onFailure(error);
-        }
-        public abstract void retry();
     }
     public interface SdrImageBundle extends ClientBundle {
         @Source("icon_add.png")

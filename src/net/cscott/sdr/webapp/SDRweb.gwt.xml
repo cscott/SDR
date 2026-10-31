@@ -13,6 +13,8 @@
 
   <!-- Other module inherits                                      -->
   <inherits name='net.cscott.SDR'/> <!-- for CompletionEngine, etc -->
+  <inherits name='com.google.gwt.json.JSON'/> <!-- for SequenceStore -->
+  <inherits name='com.google.gwt.storage.Storage'/>
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='net.cscott.sdr.webapp.client.SDRweb'/>
