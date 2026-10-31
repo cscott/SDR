@@ -217,11 +217,11 @@ public class Rotation {
      * @doc.test
      *  js> r = Rotation.fromAbsoluteString('+')
      *  0 mod 1/4
-     *  js> [x for (x in Iterator(r.included()))]
+     *  js> Array.from(r.included())
      *  0,1/4,1/2,3/4
      *  js> r = Rotation.fromAbsoluteString('x')
      *  1/8 mod 1/4
-     *  js> [x for (x in Iterator(r.included()))]
+     *  js> Array.from(r.included())
      *  1/8,3/8,5/8,7/8
      */
     public Collection<ExactRotation> included() {

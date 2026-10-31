@@ -76,7 +76,7 @@ public abstract class C4List {
      *  |
      *  |3Gv  3Bv  2Gv  2Bv
      *  js> // merge these formations
-     *  js> f3 = f2; [SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL, SD.COUPLE_3_BOY, SD.COUPLE_3_GIRL].forEach(function(d) { f3 = f3.move(d, f1.location(d)); });
+     *  js> f3 = f2; [SD.COUPLE_1_BOY, SD.COUPLE_1_GIRL, SD.COUPLE_3_BOY, SD.COUPLE_3_GIRL].forEach(d => { f3 = f3.move(d, f1.location(d)); });
      *  js> f3.toStringDiagram("|")
      *  |          1Gv
      *  |

@@ -17,7 +17,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.SINGLE_DANCER; tf.mapStd([]).toStringDiagram('|');
       *  |1B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       */
     public static final NamedTaggedFormation SINGLE_DANCER =
@@ -29,7 +29,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.GENERAL_PARTNERS; tf.toStringDiagram('|');
       *  ||    |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       *  []
       */
@@ -45,7 +45,7 @@ abstract class FormationListFast {
       *  ||
       *  |
       *  ||
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       *  []
       */
@@ -59,7 +59,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList._1x2; tf.toStringDiagram('|');
       *  |+    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       *  []
       */
@@ -73,7 +73,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.COUPLE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU]
       *  [BELLE]
       */
@@ -87,7 +87,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.COUPLE_NO_TAGS; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       *  []
       */
@@ -103,7 +103,7 @@ abstract class FormationListFast {
       *  |1Bv
       *  |
       *  |1G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [TRAILER]
       *  [TRAILER]
       */
@@ -119,7 +119,7 @@ abstract class FormationListFast {
       *  |1B^
       *  |
       *  |1Gv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [LEADER]
       *  [LEADER]
       */
@@ -135,7 +135,7 @@ abstract class FormationListFast {
       *  |1B^
       *  |
       *  |1G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [LEADER]
       *  [TRAILER]
       */
@@ -149,7 +149,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.RH_MINIWAVE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1Gv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU]
       *  [BEAU]
       */
@@ -163,7 +163,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.LH_MINIWAVE; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE]
       *  [BELLE]
       */
@@ -177,7 +177,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList._1x3; tf.toStringDiagram('|');
       *  |+    +    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [CENTER]
       *  [END]
@@ -193,7 +193,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.GENERAL_LINE_OF_3; tf.toStringDiagram('|');
       *  ||    |    |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [CENTER]
       *  [END]
@@ -209,7 +209,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.GENERAL_LINE; tf.toStringDiagram('|');
       *  ||    |    |    |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [CENTER]
       *  [CENTER]
@@ -233,7 +233,7 @@ abstract class FormationListFast {
       *  ||
       *  |
       *  ||
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [CENTER]
       *  [CENTER]
@@ -251,7 +251,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList._1x4; tf.toStringDiagram('|');
       *  |+    +    +    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [CENTER]
       *  [CENTER]
@@ -271,7 +271,7 @@ abstract class FormationListFast {
       *  |+    +
       *  |
       *  |+    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       *  []
       *  []
@@ -293,7 +293,7 @@ abstract class FormationListFast {
       *  |1G>       3G<
       *  |
       *  |     3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       *  []
       *  []
@@ -313,7 +313,7 @@ abstract class FormationListFast {
       *  |3Gv  3Bv
       *  |
       *  |1B^  1G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER]
       *  [BEAU, TRAILER]
       *  [BEAU, TRAILER]
@@ -336,7 +336,7 @@ abstract class FormationListFast {
       *  |1B^  1G^
       *  |
       *  |3Gv  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, LEADER]
       *  [BELLE, LEADER]
       *  [BELLE, LEADER]
@@ -356,7 +356,7 @@ abstract class FormationListFast {
       *  |3B^  3G^
       *  |
       *  |1B^  1G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, LEADER]
       *  [BELLE, LEADER]
       *  [BEAU, TRAILER]
@@ -379,7 +379,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.RH_OCEAN_WAVE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  3Gv  1G^  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END]
       *  [BEAU, CENTER]
       *  [BEAU, CENTER]
@@ -400,7 +400,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.LH_OCEAN_WAVE; tf.mapStd([]).toStringDiagram('|');
       *  |3Gv  1B^  3Bv  1G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END]
       *  [BELLE, CENTER]
       *  [BELLE, CENTER]
@@ -423,7 +423,7 @@ abstract class FormationListFast {
       *  |1B^  1Gv
       *  |
       *  |3G^  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, LEADER]
       *  [BEAU, TRAILER]
       *  [BEAU, TRAILER]
@@ -443,7 +443,7 @@ abstract class FormationListFast {
       *  |1Bv  1G^
       *  |
       *  |3Gv  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER]
       *  [BELLE, LEADER]
       *  [BELLE, LEADER]
@@ -463,7 +463,7 @@ abstract class FormationListFast {
       *  |1Bv  1G^
       *  |
       *  |3G^  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER]
       *  [BELLE, LEADER]
       *  [BEAU, TRAILER]
@@ -483,7 +483,7 @@ abstract class FormationListFast {
       *  |1B>  1Gv
       *  |
       *  |3G^  3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, TRAILER]
       *  [BEAU, TRAILER]
       *  [BEAU, TRAILER]
@@ -503,7 +503,7 @@ abstract class FormationListFast {
       *  |1Bv  1G<
       *  |
       *  |3G>  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER]
       *  [BELLE, TRAILER]
       *  [BELLE, TRAILER]
@@ -523,7 +523,7 @@ abstract class FormationListFast {
       *  |1B^  1G>
       *  |
       *  |3G<  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, LEADER]
       *  [BEAU, LEADER]
       *  [BEAU, LEADER]
@@ -543,7 +543,7 @@ abstract class FormationListFast {
       *  |1B<  1G^
       *  |
       *  |3Gv  3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, LEADER]
       *  [BELLE, LEADER]
       *  [BELLE, LEADER]
@@ -565,7 +565,7 @@ abstract class FormationListFast {
       *  |1G^  3Gv
       *  |
       *  |3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, TRAILER]
       *  [BEAU, LEADER, CENTER]
       *  [BEAU, LEADER, CENTER]
@@ -587,7 +587,7 @@ abstract class FormationListFast {
       *  |1Gv  3G^
       *  |
       *  |     3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER]
       *  [BELLE, LEADER, CENTER]
       *  [BELLE, LEADER, CENTER]
@@ -609,7 +609,7 @@ abstract class FormationListFast {
       *  |1G^  3Gv
       *  |
       *  |     3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, LEADER]
       *  [BEAU, TRAILER, CENTER]
       *  [BEAU, TRAILER, CENTER]
@@ -631,7 +631,7 @@ abstract class FormationListFast {
       *  |1Gv  3G^
       *  |
       *  |3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, LEADER]
       *  [BELLE, TRAILER, CENTER]
       *  [BELLE, TRAILER, CENTER]
@@ -649,7 +649,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.ONE_FACED_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^  3G^  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END]
       *  [BELLE, CENTER]
       *  [BEAU, CENTER]
@@ -667,7 +667,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.RH_TWO_FACED_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^  3Gv  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END]
       *  [BELLE, CENTER]
       *  [BELLE, CENTER]
@@ -685,7 +685,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.LH_TWO_FACED_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1Gv  3G^  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END]
       *  [BEAU, CENTER]
       *  [BEAU, CENTER]
@@ -703,7 +703,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.SINGLE_INVERTED_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1Gv  3Bv  3G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END]
       *  [BEAU, CENTER]
       *  [BELLE, CENTER]
@@ -726,7 +726,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.RH_THREE_AND_ONE_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^  3G^  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END]
       *  [BELLE, CENTER]
       *  [BEAU, CENTER]
@@ -744,7 +744,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.LH_THREE_AND_ONE_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1G^  3G^  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END]
       *  [BELLE, CENTER]
       *  [BEAU, CENTER]
@@ -766,7 +766,7 @@ abstract class FormationListFast {
       *  ||    |
       *  |
       *  |  -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT]
       *  [CENTER]
       *  [CENTER]
@@ -790,7 +790,7 @@ abstract class FormationListFast {
       *  |
       *  |
       *  |  -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT]
       *  [CENTER]
       *  [CENTER]
@@ -812,7 +812,7 @@ abstract class FormationListFast {
       *  ||    |
       *  |
       *  |     -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT]
       *  [CENTER]
       *  [CENTER]
@@ -834,7 +834,7 @@ abstract class FormationListFast {
       *  |1G^  3Gv
       *  |
       *  |  3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT]
       *  [BEAU, CENTER]
       *  [BEAU, CENTER]
@@ -856,7 +856,7 @@ abstract class FormationListFast {
       *  |1G^  3Gv
       *  |
       *  |  3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT]
       *  [BEAU, CENTER]
       *  [BEAU, CENTER]
@@ -878,7 +878,7 @@ abstract class FormationListFast {
       *  |1Gv  3G^
       *  |
       *  |  3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT]
       *  [BELLE, CENTER]
       *  [BELLE, CENTER]
@@ -900,7 +900,7 @@ abstract class FormationListFast {
       *  |1Gv  3G^
       *  |
       *  |  3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT]
       *  [BELLE, CENTER]
       *  [BELLE, CENTER]
@@ -920,7 +920,7 @@ abstract class FormationListFast {
       *  |  1B>
       *  |1G^  3Gv
       *  |  3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       *  []
       *  []
@@ -940,7 +940,7 @@ abstract class FormationListFast {
       *  |  1B<
       *  |1Gv  3G^
       *  |  3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       *  []
       *  []
@@ -962,7 +962,7 @@ abstract class FormationListFast {
       *  |1G^       3Gv
       *  |
       *  |     3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       *  []
       *  []
@@ -984,7 +984,7 @@ abstract class FormationListFast {
       *  |1Gv       3G^
       *  |
       *  |     3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       *  []
       *  []
@@ -1006,7 +1006,7 @@ abstract class FormationListFast {
       *  ||    |
       *  |
       *  |  |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [CENTER]
       *  [CENTER]
@@ -1028,7 +1028,7 @@ abstract class FormationListFast {
       *  ||    |
       *  |
       *  |     |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [CENTER]
       *  [CENTER]
@@ -1050,7 +1050,7 @@ abstract class FormationListFast {
       *  |1G^  3Gv
       *  |
       *  |  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [BEAU, CENTER]
       *  [BEAU, CENTER]
@@ -1072,7 +1072,7 @@ abstract class FormationListFast {
       *  |1Gv  3G^
       *  |
       *  |  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [BELLE, CENTER]
       *  [BELLE, CENTER]
@@ -1094,7 +1094,7 @@ abstract class FormationListFast {
       *  |1G^  3Gv
       *  |
       *  |  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [BEAU, CENTER]
       *  [BEAU, CENTER]
@@ -1116,7 +1116,7 @@ abstract class FormationListFast {
       *  |1Gv  3G^
       *  |
       *  |  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [BELLE, CENTER]
       *  [BELLE, CENTER]
@@ -1140,7 +1140,7 @@ abstract class FormationListFast {
       *  |3G^
       *  |
       *  |3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [TRAILER, END, NUMBER_4]
       *  [LEADER, CENTER, NUMBER_3]
       *  [LEADER, CENTER, NUMBER_3]
@@ -1164,7 +1164,7 @@ abstract class FormationListFast {
       *  |3Gv
       *  |
       *  |3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [LEADER, END, NUMBER_1]
       *  [TRAILER, CENTER, NUMBER_2]
       *  [TRAILER, CENTER, NUMBER_2]
@@ -1188,7 +1188,7 @@ abstract class FormationListFast {
       *  |3Gv
       *  |
       *  |3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [TRAILER, END, NUMBER_4]
       *  [TRAILER, CENTER, NUMBER_2]
       *  [TRAILER, CENTER, NUMBER_2]
@@ -1212,7 +1212,7 @@ abstract class FormationListFast {
       *  |3G^
       *  |
       *  |3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [LEADER, END, NUMBER_1]
       *  [LEADER, CENTER, NUMBER_3]
       *  [LEADER, CENTER, NUMBER_3]
@@ -1230,7 +1230,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList._1x8; tf.toStringDiagram('|');
       *  |+    +    +    +    +    +    +    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END, OUTSIDE_2, OUTSIDE_4, OUTSIDE_6]
       *  [CENTER, OUTSIDE_4, CENTER_6, OUTSIDE_6]
       *  [CENTER, CENTER_6, OUTSIDE_6]
@@ -1258,7 +1258,7 @@ abstract class FormationListFast {
       *  |+    +    +    +
       *  |
       *  |+    +    +    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [CENTER]
       *  [CENTER]
@@ -1286,7 +1286,7 @@ abstract class FormationListFast {
       *  ||    |    |    |
       *  |
       *  ||    |    |    |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [CENTER]
       *  [CENTER]
@@ -1318,7 +1318,7 @@ abstract class FormationListFast {
       *  ||    |
       *  |
       *  ||    |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [END]
       *  [CENTER]
@@ -1350,7 +1350,7 @@ abstract class FormationListFast {
       *  |4G>            2B<
       *  |
       *  |     1B^  1G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE]
       *  [BEAU]
       *  [BEAU]
@@ -1387,7 +1387,7 @@ abstract class FormationListFast {
       *  |4B<            2G>
       *  |
       *  |     1Gv  1Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU]
       *  [BELLE]
       *  [BELLE]
@@ -1424,7 +1424,7 @@ abstract class FormationListFast {
       *  |4Gv            2B^
       *  |
       *  |     1B>  1G>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [LEADER]
       *  [TRAILER]
       *  [TRAILER]
@@ -1461,7 +1461,7 @@ abstract class FormationListFast {
       *  |4G^            2Bv
       *  |
       *  |     1B<  1G<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [TRAILER]
       *  [LEADER]
       *  [LEADER]
@@ -1498,7 +1498,7 @@ abstract class FormationListFast {
       *  |4G<            2B<
       *  |
       *  |     1B^  1Gv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU]
       *  [BEAU]
       *  [BEAU]
@@ -1535,7 +1535,7 @@ abstract class FormationListFast {
       *  |4G>            2B>
       *  |
       *  |     1Bv  1G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE]
       *  [BELLE]
       *  [BELLE]
@@ -1572,7 +1572,7 @@ abstract class FormationListFast {
       *  |o              o
       *  |
       *  |     o    o
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       *  []
       *  []
@@ -1611,7 +1611,7 @@ abstract class FormationListFast {
       *  |          1B>
       *  |
       *  |          1G>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END]
       *  [BEAU, CENTER]
       *  [BELLE, END]
@@ -1650,7 +1650,7 @@ abstract class FormationListFast {
       *  |          3G<
       *  |
       *  |          3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END]
       *  [BELLE, CENTER]
       *  [BEAU, END]
@@ -1682,7 +1682,7 @@ abstract class FormationListFast {
       *  |       1B>
       *  |
       *  |       1G>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END]
       *  [BEAU, CENTER]
       *  [BELLE, END]
@@ -1719,7 +1719,7 @@ abstract class FormationListFast {
       *  |       3G<
       *  |
       *  |       3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END]
       *  [BELLE, CENTER]
       *  [BEAU, END]
@@ -1751,7 +1751,7 @@ abstract class FormationListFast {
       *  |       3G<
       *  |
       *  |       3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END]
       *  [BELLE, CENTER]
       *  [BELLE, END]
@@ -1783,7 +1783,7 @@ abstract class FormationListFast {
       *  |       3G>
       *  |
       *  |       3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END]
       *  [BEAU, CENTER]
       *  [BEAU, END]
@@ -1817,7 +1817,7 @@ abstract class FormationListFast {
       *  |          3G>
       *  |
       *  |          3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END]
       *  [BEAU, CENTER]
       *  [BEAU, END]
@@ -1851,7 +1851,7 @@ abstract class FormationListFast {
       *  |       3G>
       *  |
       *  |       3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, POINT, END, OUTSIDE_2, OUTSIDE_6]
       *  [BEAU, POINT, CENTER, CENTER_6, OUTSIDE_6]
       *  [BEAU, END, CENTER_6, OUTSIDE_6]
@@ -1885,7 +1885,7 @@ abstract class FormationListFast {
       *  |          3G<
       *  |
       *  |          3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END]
       *  [BELLE, CENTER]
       *  [BELLE, END]
@@ -1913,7 +1913,7 @@ abstract class FormationListFast {
       *  |4Gv  4Bv  3Gv  3Bv
       *  |
       *  |1B^  1G^  2B^  2G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER, END]
       *  [BEAU, TRAILER, CENTER]
       *  [BELLE, TRAILER, CENTER]
@@ -1950,7 +1950,7 @@ abstract class FormationListFast {
       *  |4Gv  4Bv
       *  |
       *  |3B^  3G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER, END, NUMBER_4]
       *  [BEAU, TRAILER, END, NUMBER_4]
       *  [BEAU, TRAILER, CENTER, NUMBER_2]
@@ -1987,7 +1987,7 @@ abstract class FormationListFast {
       *  |4B^  4G^
       *  |
       *  |3Gv  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, LEADER, END, NUMBER_1]
       *  [BELLE, LEADER, END, NUMBER_1]
       *  [BELLE, LEADER, CENTER, NUMBER_3]
@@ -2024,7 +2024,7 @@ abstract class FormationListFast {
       *  |4B^  4G^
       *  |
       *  |3B^  3G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER, END, NUMBER_4]
       *  [BEAU, TRAILER, END, NUMBER_4]
       *  [BELLE, LEADER, CENTER, NUMBER_3]
@@ -2061,7 +2061,7 @@ abstract class FormationListFast {
       *  |4Gv  4Bv
       *  |
       *  |3Gv  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, LEADER, END, NUMBER_1]
       *  [BELLE, LEADER, END, NUMBER_1]
       *  [BEAU, TRAILER, CENTER, NUMBER_2]
@@ -2089,7 +2089,7 @@ abstract class FormationListFast {
       *  |1B^  1G^  2B^  2G^
       *  |
       *  |4Gv  4Bv  3Gv  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, LEADER, END]
       *  [BELLE, LEADER, CENTER]
       *  [BEAU, LEADER, CENTER]
@@ -2117,7 +2117,7 @@ abstract class FormationListFast {
       *  |1B^  1Gv  2B^  2Gv
       *  |
       *  |4G^  4Bv  3G^  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, LEADER, END]
       *  [BEAU, TRAILER, CENTER]
       *  [BEAU, LEADER, CENTER]
@@ -2145,7 +2145,7 @@ abstract class FormationListFast {
       *  |1Bv  1G^  2Bv  2G^
       *  |
       *  |4Gv  4B^  3Gv  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER, END]
       *  [BELLE, LEADER, CENTER]
       *  [BELLE, TRAILER, CENTER]
@@ -2173,7 +2173,7 @@ abstract class FormationListFast {
       *  |1B^  1G^  2Gv  2Bv
       *  |
       *  |4B^  4G^  3Gv  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, LEADER, END]
       *  [BELLE, LEADER, CENTER]
       *  [BELLE, TRAILER, CENTER]
@@ -2206,7 +2206,7 @@ abstract class FormationListFast {
       *  |1Gv  1Bv  2B^  2G^
       *  |
       *  |4Gv  4Bv  3B^  3G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER, END]
       *  [BEAU, TRAILER, CENTER]
       *  [BEAU, LEADER, CENTER]
@@ -2243,7 +2243,7 @@ abstract class FormationListFast {
       *  |4G^  4Bv
       *  |
       *  |3G^  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, LEADER, END, NUMBER_1]
       *  [BEAU, TRAILER, END, NUMBER_4]
       *  [BEAU, TRAILER, CENTER, NUMBER_2]
@@ -2275,7 +2275,7 @@ abstract class FormationListFast {
       *  |4Gv  4B^
       *  |
       *  |3Gv  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER, END, NUMBER_4]
       *  [BELLE, LEADER, END, NUMBER_1]
       *  [BELLE, LEADER, CENTER, NUMBER_3]
@@ -2307,7 +2307,7 @@ abstract class FormationListFast {
       *  |     3Gv
       *  |
       *  |     3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [NUMBER_1]
       *  [NUMBER_2]
       *  [NUMBER_2]
@@ -2331,7 +2331,7 @@ abstract class FormationListFast {
       *  |3Gv
       *  |
       *  |3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [NUMBER_1]
       *  [NUMBER_2]
       *  [NUMBER_2]
@@ -2351,7 +2351,7 @@ abstract class FormationListFast {
       *  |1Bv  1G^  2B^  2Gv
       *  |
       *  |4G^  4Bv  3Gv  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER, END]
       *  [BELLE, LEADER, CENTER]
       *  [BEAU, LEADER, CENTER]
@@ -2379,7 +2379,7 @@ abstract class FormationListFast {
       *  |1B^  1Gv  2Bv  2G^
       *  |
       *  |4Gv  4B^  3G^  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, LEADER, END]
       *  [BEAU, TRAILER, CENTER]
       *  [BELLE, TRAILER, CENTER]
@@ -2409,7 +2409,7 @@ abstract class FormationListFast {
       *  ||    |    |    |
       *  |
       *  |     |    |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END, CENTER_6, OUTSIDE_6]
       *  [END, CENTER_6, OUTSIDE_6]
       *  [CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2439,7 +2439,7 @@ abstract class FormationListFast {
       *  |2B^  2Gv  4G^  4Bv
       *  |
       *  |     3G^  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END, CENTER_6, OUTSIDE_6]
       *  [BEAU, END, CENTER_6, OUTSIDE_6]
       *  [BEAU, CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2469,7 +2469,7 @@ abstract class FormationListFast {
       *  |2Bv  2G^  4Gv  4B^
       *  |
       *  |     3G^  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END, CENTER_6, OUTSIDE_6]
       *  [BEAU, END, CENTER_6, OUTSIDE_6]
       *  [BELLE, CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2499,7 +2499,7 @@ abstract class FormationListFast {
       *  |2B^  2Gv  4G^  4Bv
       *  |
       *  |     3Gv  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END, CENTER_6, OUTSIDE_6]
       *  [BELLE, END, CENTER_6, OUTSIDE_6]
       *  [BEAU, CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2529,7 +2529,7 @@ abstract class FormationListFast {
       *  |2Bv  2G^  4Gv  4B^
       *  |
       *  |     3Gv  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END, CENTER_6, OUTSIDE_6]
       *  [BELLE, END, CENTER_6, OUTSIDE_6]
       *  [BELLE, CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2559,7 +2559,7 @@ abstract class FormationListFast {
       *  |2B^  2G^  4Gv  4Bv
       *  |
       *  |     3G^  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END, CENTER_6, OUTSIDE_6]
       *  [BEAU, END, CENTER_6, OUTSIDE_6]
       *  [BEAU, CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2589,7 +2589,7 @@ abstract class FormationListFast {
       *  |2Bv  2Gv  4G^  4B^
       *  |
       *  |     3G^  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END, CENTER_6, OUTSIDE_6]
       *  [BEAU, END, CENTER_6, OUTSIDE_6]
       *  [BELLE, CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2619,7 +2619,7 @@ abstract class FormationListFast {
       *  |2B^  2G^  4Gv  4Bv
       *  |
       *  |     3Gv  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END, CENTER_6, OUTSIDE_6]
       *  [BELLE, END, CENTER_6, OUTSIDE_6]
       *  [BEAU, CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2649,7 +2649,7 @@ abstract class FormationListFast {
       *  |2Bv  2Gv  4G^  4B^
       *  |
       *  |     3Gv  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END, CENTER_6, OUTSIDE_6]
       *  [BELLE, END, CENTER_6, OUTSIDE_6]
       *  [BELLE, CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2679,7 +2679,7 @@ abstract class FormationListFast {
       *  |2B^  2Gv  4G^  4Bv
       *  |
       *  |  3G<       3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [TRAILER, POINT, END, CENTER_6, OUTSIDE_6]
       *  [LEADER, POINT, END, CENTER_6, OUTSIDE_6]
       *  [BEAU, CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2709,7 +2709,7 @@ abstract class FormationListFast {
       *  |2Bv  2G^  4Gv  4B^
       *  |
       *  |  3G>       3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [LEADER, POINT, END, CENTER_6, OUTSIDE_6]
       *  [TRAILER, POINT, END, CENTER_6, OUTSIDE_6]
       *  [BELLE, CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2745,7 +2745,7 @@ abstract class FormationListFast {
       *  |4B^  3Gv
       *  |
       *  |  3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, CENTER, OUTSIDE_2, OUTSIDE_6]
       *  [BEAU, LEADER, END, CENTER_6, OUTSIDE_6]
       *  [BEAU, TRAILER, END, CENTER_6, OUTSIDE_6]
@@ -2781,7 +2781,7 @@ abstract class FormationListFast {
       *  |4B^  3Gv
       *  |
       *  |  3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, CENTER, OUTSIDE_2, OUTSIDE_6]
       *  [BEAU, LEADER, END, CENTER_6, OUTSIDE_6]
       *  [BEAU, TRAILER, END, CENTER_6, OUTSIDE_6]
@@ -2817,7 +2817,7 @@ abstract class FormationListFast {
       *  |4Bv  3G^
       *  |
       *  |  3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, CENTER, OUTSIDE_2, OUTSIDE_6]
       *  [BELLE, TRAILER, END, CENTER_6, OUTSIDE_6]
       *  [BELLE, LEADER, END, CENTER_6, OUTSIDE_6]
@@ -2853,7 +2853,7 @@ abstract class FormationListFast {
       *  |4Bv  3G^
       *  |
       *  |  3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, CENTER, OUTSIDE_2, OUTSIDE_6]
       *  [BELLE, TRAILER, END, CENTER_6, OUTSIDE_6]
       *  [BELLE, LEADER, END, CENTER_6, OUTSIDE_6]
@@ -2883,7 +2883,7 @@ abstract class FormationListFast {
       *  |2B^  2Gv  4G^  4Bv
       *  |
       *  |  3G>       3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [LEADER, POINT, END, CENTER_6, OUTSIDE_6]
       *  [TRAILER, POINT, END, CENTER_6, OUTSIDE_6]
       *  [BEAU, CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2913,7 +2913,7 @@ abstract class FormationListFast {
       *  |2Bv  2G^  4Gv  4B^
       *  |
       *  |  3G<       3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [TRAILER, POINT, END, CENTER_6, OUTSIDE_6]
       *  [LEADER, POINT, END, CENTER_6, OUTSIDE_6]
       *  [BELLE, CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2943,7 +2943,7 @@ abstract class FormationListFast {
       *  ||    |    |    |
       *  |
       *  |  -         -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, END, CENTER_6, OUTSIDE_6]
       *  [POINT, END, CENTER_6, OUTSIDE_6]
       *  [CENTER, OUTSIDE_2, OUTSIDE_6]
@@ -2979,7 +2979,7 @@ abstract class FormationListFast {
       *  ||    |
       *  |
       *  |  -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, CENTER, OUTSIDE_2, OUTSIDE_6]
       *  [END, CENTER_6, OUTSIDE_6]
       *  [END, CENTER_6, OUTSIDE_6]
@@ -3013,7 +3013,7 @@ abstract class FormationListFast {
       *  |       -
       *  |
       *  |       -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END, OUTSIDE_2, OUTSIDE_6]
       *  [END, CENTER_6, OUTSIDE_6]
       *  [CENTER, CENTER_6, OUTSIDE_6]
@@ -3047,7 +3047,7 @@ abstract class FormationListFast {
       *  |4B^            3Gv
       *  |
       *  |       3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, CENTER]
       *  [END]
       *  [END]
@@ -3081,7 +3081,7 @@ abstract class FormationListFast {
       *  |4Bv            3G^
       *  |
       *  |       3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, CENTER]
       *  [END]
       *  [END]
@@ -3115,7 +3115,7 @@ abstract class FormationListFast {
       *  ||              |
       *  |
       *  |       -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, CENTER]
       *  [END]
       *  [END]
@@ -3141,7 +3141,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.RH_TIDAL_WAVE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1Gv  2B^  2Gv  4G^  4Bv  3G^  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END, OUTSIDE_2, OUTSIDE_6]
       *  [BEAU, CENTER, CENTER_6, OUTSIDE_6]
       *  [BEAU, CENTER, CENTER_6, OUTSIDE_6]
@@ -3167,7 +3167,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.LH_TIDAL_WAVE; tf.mapStd([]).toStringDiagram('|');
       *  |1Bv  1G^  2Bv  2G^  4Gv  4B^  3Gv  3B^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END, OUTSIDE_2, OUTSIDE_6]
       *  [BELLE, CENTER, CENTER_6, OUTSIDE_6]
       *  [BELLE, CENTER, CENTER_6, OUTSIDE_6]
@@ -3193,7 +3193,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.RH_TIDAL_TWO_FACED_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^  2Gv  2Bv  4B^  4G^  3Gv  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END, OUTSIDE_2, OUTSIDE_6]
       *  [BELLE, CENTER, CENTER_6, OUTSIDE_6]
       *  [BELLE, CENTER, CENTER_6, OUTSIDE_6]
@@ -3224,7 +3224,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.LH_TIDAL_TWO_FACED_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1Gv  1Bv  2B^  2G^  4Gv  4Bv  3B^  3G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END, OUTSIDE_2, OUTSIDE_6]
       *  [BEAU, CENTER, CENTER_6, OUTSIDE_6]
       *  [BEAU, CENTER, CENTER_6, OUTSIDE_6]
@@ -3255,7 +3255,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.RH_TIDAL_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1B^  1G^  2B^  2G^  4Gv  4Bv  3Gv  3Bv
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BEAU, END, OUTSIDE_2, OUTSIDE_6]
       *  [BELLE, CENTER, CENTER_6, OUTSIDE_6]
       *  [BEAU, CENTER, CENTER_6, OUTSIDE_6]
@@ -3281,7 +3281,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.LH_TIDAL_LINE; tf.mapStd([]).toStringDiagram('|');
       *  |1Gv  1Bv  2Gv  2Bv  4B^  4G^  3B^  3G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, END, OUTSIDE_2, OUTSIDE_6]
       *  [BEAU, CENTER, CENTER_6, OUTSIDE_6]
       *  [BELLE, CENTER, CENTER_6, OUTSIDE_6]
@@ -3312,7 +3312,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList.GENERAL_TIDAL_LINE; tf.toStringDiagram('|');
       *  ||    |    |    |    |    |    |    |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END, OUTSIDE_2, OUTSIDE_4, OUTSIDE_6]
       *  [CENTER, OUTSIDE_4, CENTER_6, OUTSIDE_6]
       *  [CENTER, CENTER_6, OUTSIDE_6]
@@ -3346,7 +3346,7 @@ abstract class FormationListFast {
       *  |     4B^  3Gv
       *  |
       *  |       3B<
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, END]
       *  [BEAU, CENTER]
       *  [BEAU, CENTER]
@@ -3380,7 +3380,7 @@ abstract class FormationListFast {
       *  |     4Bv  3G^
       *  |
       *  |       3B>
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, END]
       *  [BELLE, CENTER]
       *  [BELLE, CENTER]
@@ -3414,7 +3414,7 @@ abstract class FormationListFast {
       *  |     |    |
       *  |
       *  |       -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, END]
       *  [CENTER]
       *  [CENTER]
@@ -3448,7 +3448,7 @@ abstract class FormationListFast {
       *  ||    |
       *  |
       *  |  -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [POINT, END]
       *  [CENTER_6]
       *  [CENTER_6]
@@ -3476,7 +3476,7 @@ abstract class FormationListFast {
       *  |               -
       *  ||    |    |         |    |    |
       *  |               -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [CENTER, VERY_CENTER, CENTER_6]
       *  [END, OUTSIDE_2, OUTSIDE_6]
       *  [END, CENTER_6, OUTSIDE_6]
@@ -3508,7 +3508,7 @@ abstract class FormationListFast {
       *  |4B^            4G^
       *  |
       *  |     3B^  3G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER, END, NUMBER_4]
       *  [BEAU, TRAILER, END, NUMBER_4]
       *  [BELLE, LEADER, CENTER, NUMBER_3]
@@ -3545,7 +3545,7 @@ abstract class FormationListFast {
       *  ||              |
       *  |
       *  |     |    |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [END]
       *  [CENTER]
@@ -3577,7 +3577,7 @@ abstract class FormationListFast {
       *  |     4B^  4G^
       *  |
       *  |3B^            3G^
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [BELLE, TRAILER, END, NUMBER_4]
       *  [BEAU, TRAILER, END, NUMBER_4]
       *  [BELLE, LEADER, CENTER, NUMBER_3]
@@ -3614,7 +3614,7 @@ abstract class FormationListFast {
       *  |     |    |
       *  |
       *  ||              |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [END]
       *  [END]
       *  [CENTER]
@@ -3640,7 +3640,7 @@ abstract class FormationListFast {
       * @doc.test
       *  js> tf = FormationList._1x12; tf.toStringDiagram('|');
       *  |+    +    +    +    +    +    +    +    +    +    +    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
@@ -3676,7 +3676,7 @@ abstract class FormationListFast {
       *  |+    +    +    +    +    +
       *  |
       *  |+    +    +    +    +    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
       *  [CENTER]
@@ -3714,7 +3714,7 @@ abstract class FormationListFast {
       *  |+    +    +    +
       *  |
       *  |+    +    +    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
@@ -3758,7 +3758,7 @@ abstract class FormationListFast {
       *  |       +
       *  |
       *  |+    +    +    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
@@ -3798,7 +3798,7 @@ abstract class FormationListFast {
       *  |                    +
       *  |
       *  |                    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [CENTER]
       *  [OUTSIDE_8]
@@ -3836,7 +3836,7 @@ abstract class FormationListFast {
       *  ||    |    |    |
       *  |
       *  ||    |    |    |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
@@ -3874,7 +3874,7 @@ abstract class FormationListFast {
       *  ||    |    |    |    |    |
       *  |
       *  |  -         -         -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [CENTER]
       *  [OUTSIDE_8]
@@ -3914,7 +3914,7 @@ abstract class FormationListFast {
       *  |
       *  |
       *  |  -         -         -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [CENTER]
       *  [OUTSIDE_8]
@@ -3952,7 +3952,7 @@ abstract class FormationListFast {
       *  ||    |    |    |    |    |
       *  |
       *  |     -      -       -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [CENTER]
       *  [OUTSIDE_8]
@@ -4002,7 +4002,7 @@ abstract class FormationListFast {
       *  ||    |
       *  |
       *  |  -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
@@ -4058,7 +4058,7 @@ abstract class FormationListFast {
       *  |
       *  |
       *  |  -
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
@@ -4098,7 +4098,7 @@ abstract class FormationListFast {
       *  |+    +    +    +
       *  |
       *  |+    +    +    +
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  []
       *  []
       *  []
@@ -4146,7 +4146,7 @@ abstract class FormationListFast {
       *  ||    |    |    |
       *  |
       *  ||    |    |    |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
       *  [OUTSIDE_8]
@@ -4194,7 +4194,7 @@ abstract class FormationListFast {
       *  ||    |    |    |
       *  |
       *  ||    |    |    |
-      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\n');
+      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\n');
       *  [OUTSIDE_8]
       *  [CENTER]
       *  [CENTER]

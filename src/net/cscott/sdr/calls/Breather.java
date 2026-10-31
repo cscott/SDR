@@ -85,11 +85,11 @@ public class Breather {
      * @doc.test Insert COUPLEs, then TANDEMs into a RH_OCEAN_WAVE.  Then, for
      *  a challenge, insert TANDEMs into a DIAMOND to give a t-bone column:
      *  js> function xofy(meta, f) {
-     *    >   var i=0
-     *    >   var m=new java.util.LinkedHashMap()
-     *    >   for (d in Iterator(meta.sortedDancers())) {
-     *    >     var mm=new java.util.LinkedHashMap()
-     *    >     for (dd in Iterator(f.sortedDancers())) {
+     *    >   let i=0
+     *    >   const m=new java.util.LinkedHashMap()
+     *    >   for (let d of meta.sortedDancers()) {
+     *    >     const mm=new java.util.LinkedHashMap()
+     *    >     for (let dd of f.sortedDancers()) {
      *    >       mm.put(dd, StandardDancer.values()[i++])
      *    >     }
      *    >     m.put(d, f.map(mm))
@@ -220,7 +220,7 @@ public class Breather {
      *  ^    ^
      *  
      *  v    v
-     *  js> for (d in Iterator(f.dancers())) {
+     *  js> for (let d of f.dancers()) {
      *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE, false));
      *    > }; f.toStringDiagram()
      *  ^    ^
@@ -238,7 +238,7 @@ public class Breather {
      *  v    v
      *  
      *  ^    ^
-     *  js> for (d in Iterator(f.dancers())) {
+     *  js> for (let d of f.dancers()) {
      *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE_HALF, false));
      *    > }; f.toStringDiagram()
      *  v    v
@@ -255,7 +255,7 @@ public class Breather {
      *  ^    v
      *  
      *    v
-     *  js> for (d in Iterator(f.tagged(TaggedFormation.Tag.END))) {
+     *  js> for (let d of f.tagged(TaggedFormation.Tag.END)) {
      *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE, false));
      *    > }; f.toStringDiagram()
      *    ^
@@ -279,7 +279,7 @@ public class Breather {
      *  ^    v
      *  
      *    ^
-     *  js> for (d in Iterator(f.tagged(TaggedFormation.Tag.END))) {
+     *  js> for (let d of f.tagged(TaggedFormation.Tag.END)) {
      *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE, false));
      *    > }; f.toStringDiagram()
      *    v
@@ -299,7 +299,7 @@ public class Breather {
      *  |^    v
      *  |
      *  |  <
-     *  js> for (d in Iterator(f.tagged(TaggedFormation.Tag.POINT))) {
+     *  js> for (let d of f.tagged(TaggedFormation.Tag.POINT)) {
      *    >   f=f.move(d,f.location(d).sideStep(Fraction.valueOf(1,2), true));
      *    > }; f.toStringDiagram("|", Formation.dancerNames)
      *  |  >
@@ -320,7 +320,7 @@ public class Breather {
      *  |^    v
      *  |
      *  |  <
-     *  js> for (d in Iterator(f.tagged(TaggedFormation.Tag.POINT))) {
+     *  js> for (let d of f.tagged(TaggedFormation.Tag.POINT)) {
      *    >   f=f.move(d,f.location(d).sideStep(Fraction.valueOf(3,2), true));
      *    > }; f.toStringDiagram("|", Formation.dancerNames)
      *  |  >
@@ -335,7 +335,7 @@ public class Breather {
      *  v
      *  
      *  ^
-     *  js> for (d in Iterator(f.dancers())) {
+     *  js> for (let d of f.dancers()) {
      *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE, false));
      *    > }; f
      *  net.cscott.sdr.calls.TaggedFormation[
@@ -352,7 +352,7 @@ public class Breather {
      *  v    v
      *  
      *  ^    ^
-     *  js> for (d in Iterator(f.dancers())) {
+     *  js> for (let d of f.dancers()) {
      *    >   f=f.move(d,f.location(d).forwardStep(Fraction.ONE, false).addFlags(Position.Flag.PASS_LEFT));
      *    > }; undefined
      *  js> Breather.breathe(f).toStringDiagram()
@@ -369,7 +369,7 @@ public class Breather {
      *  ^
      *  ^    v
      *       v
-     *  js> [f.location(d) for (d in Iterator(f.sortedDancers()))].join('  ')
+     *  js> Array.from(f.sortedDancers(), d => f.location(d)).join('  ')
      *  -1,1,n  -1,0,n  1,0,s  1,-1,s
      *  js> ff = Breather.breathe(f); ff.toStringDiagram()
      *  ^
@@ -377,16 +377,14 @@ public class Breather {
      *  ^    v
      *
      *       v
-     *  js> [ff.location(d) for (d in Iterator(ff.sortedDancers()))].join('  ')
+     *  js> Array.from(ff.sortedDancers(), d => ff.location(d)).join('  ')
      *  -1,2,n  -1,0,n  1,0,s  1,-2,s
      * @doc.test From 'do half of an ends cross run':
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
      *  js> function mkform(pos) {
-     *    >  var m = new java.util.HashMap();
-     *    >  pos.forEach(function(p, i) {
-     *    >    var flags = p[3] ? p[3].map(function(f) {
-     *    >      return Position.Flag.valueOf(f);
-     *    >    }) : [];
+     *    >  const m = new java.util.HashMap();
+     *    >  pos.forEach((p, i) => {
+     *    >    const flags = p[3] ? p[3].map(f => Position.Flag.valueOf(f)) : [];
      *    >    m.put(StandardDancer.values()[i],
      *    >          new Position(Fraction.valueOf(''+p[0]),
      *    >                       Fraction.valueOf(''+p[1]),
@@ -402,7 +400,7 @@ public class Breather {
      *   4G<       1G<
      *  4B^  3Bv  1B^  2Bv
      *     3G>       2G>
-     *  js> [f.location(d) for (d in Iterator(f.sortedDancers()))].join('  ')
+     *  js> Array.from(f.sortedDancers(), d => f.location(d)).join('  ')
      *  -2 1/2,1,w  1 1/2,1,w  -3,0,n,[ROLL_RIGHT]  -1,0,s,[ROLL_RIGHT]  1,0,n,[ROLL_RIGHT]  3,0,s,[ROLL_RIGHT]  -1 1/2,-1,e  2 1/2,-1,e
      *  js> ff = Breather.breathe(f); ff.toStringDiagram()
      *   4G<       1G<
@@ -410,16 +408,14 @@ public class Breather {
      *  4B^  3Bv  1B^  2Bv
      *
      *     3G>       2G>
-     *  js> [ff.location(d) for (d in Iterator(ff.sortedDancers()))].join('  ')
+     *  js> Array.from(ff.sortedDancers(), d => ff.location(d)).join('  ')
      *  -2 1/3,2,w  1 2/3,2,w  -3,0,n,[ROLL_RIGHT]  -1,0,s,[ROLL_RIGHT]  1,0,n,[ROLL_RIGHT]  3,0,s,[ROLL_RIGHT]  -1 2/3,-2,e  2 1/3,-2,e
      * @doc.test Should not crash, even from an unusual position.
      *  js> importPackage(net.cscott.sdr.util) // for Fraction
      *  js> function mkform(pos) {
-     *    >  var m = new java.util.HashMap();
-     *    >  pos.forEach(function(p, i) {
-     *    >    var flags = p[3] ? p[3].map(function(f) {
-     *    >      return Position.Flag.valueOf(f);
-     *    >    }) : [];
+     *    >  const m = new java.util.HashMap();
+     *    >  pos.forEach((p, i) => {
+     *    >    const flags = p[3] ? p[3].map(f => Position.Flag.valueOf(f)) : [];
      *    >    m.put(StandardDancer.values()[i],
      *    >          new Position(Fraction.valueOf(''+p[0]),
      *    >                       Fraction.valueOf(''+p[1]),
@@ -433,7 +429,7 @@ public class Breather {
      *  |3B>            1G<
      *  |4G^  4Bv  2B^  2Gv
      *  |3G>            1B<
-     *  js> [f.location(d) for (d in Iterator(f.sortedDancers()))].join('  ')
+     *  js> Array.from(f.sortedDancers(), d => f.location(d)).join('  ')
      *  -3,1,e  3,1,w  -3,0,n  -1,0,s  1,0,n  3,0,s  -3,-1,e  3,-1,w
      *  js> ff = Breather.breathe(f); ff.toStringDiagram("|")
      *  |3B>            1G<
@@ -441,7 +437,7 @@ public class Breather {
      *  |4G^  4Bv  2B^  2Gv
      *  |
      *  |3G>            1B<
-     *  js> [ff.location(d) for (d in Iterator(ff.sortedDancers()))].join('  ')
+     *  js> Array.from(ff.sortedDancers(), d => ff.location(d)).join('  ')
      *  -3,2,e  3,2,w  -3,0,n  -1,0,s  1,0,n  3,0,s  -3,-2,e  3,-2,w
      */
     public static Formation breathe(Formation f) {

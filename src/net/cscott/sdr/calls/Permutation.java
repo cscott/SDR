@@ -322,33 +322,33 @@ public class Permutation implements Comparable<Permutation> {
      * @doc.test Count the number of permutations
      *  js> p = Permutation.IDENTITY8
      *  01234567
-     *  js> [pp for each (pp in Iterator(Permutation.generate(p)))].length
+     *  js> n = 0; Permutation.generate(p).forEachRemaining(pp => n++); n
      *  96
      * @doc.test Ensure they are unique:
      *  js> o = {}
      *  [object Object]
      *  js> i=0
      *  0
-     *  js> for each (pp in Iterator(Permutation.generate(Permutation.valueOf("01234567")))) {
-     *    >   for each (rp in Iterator(pp.rotated())) {
-     *    >     if (rp.toString() in o) throw new Error(i+" "+rp+" not unique!");
+     *  js> Permutation.generate(Permutation.valueOf("01234567")).forEachRemaining(pp => {
+     *    >   pp.rotated().forEachRemaining(rp => {
+     *    >     if (rp.toString() in o) throw new Error(`${i} ${rp} not unique!`);
      *    >     o[rp.toString()] = rp;
-     *    >   }
+     *    >   });
      *    >   i++;
-     *    > }; i
+     *    > }); i
      *  96
      * @doc.test Ensure they are symmetric:
      *  js> p = Permutation.IDENTITY8
      *  01234567
-     *  js> p = [pp for each (pp in Iterator(Permutation.generate(p)))]; p.length
+     *  js> ps = []; Permutation.generate(p).forEachRemaining(pp => ps.push(pp)); ps.length
      *  96
-     *  js> p.every(function(pp) { return pp.isSymmetric(); })
+     *  js> ps.every(pp => pp.isSymmetric())
      *  true
      * @doc.test Ensure that each permutation returned is canonical
-     *  js> for each (pp in Iterator(Permutation.generate(Permutation.valueOf("01234567")))) {
+     *  js> Permutation.generate(Permutation.valueOf("01234567")).forEachRemaining(pp => {
      *    >   if (pp.canonical() !== pp)
-     *    >     throw new Error("Not canonical! "+pp);
-     *    > }; "OK";
+     *    >     throw new Error(`Not canonical! ${pp}`);
+     *    > }); "OK";
      *  OK
      * @doc.test Generate permutations of normal in-sequence RH ocean waves:
      *  js> const SD = StandardDancer;
@@ -361,8 +361,7 @@ public class Permutation implements Comparable<Permutation> {
      *  3B^  3Gv  4G^  4Bv
      *  js> p = Permutation.IDENTITY8;
      *  01234567
-     *  js> fs = [pp.permute(f) for each
-     *    >       (pp in Iterator(Permutation.generate(p)))]; fs.length
+     *  js> fs = []; Permutation.generate(p).forEachRemaining(pp => fs.push(pp.permute(f))); fs.length
      *  96
      *  js> fs[0].toStringDiagram()
      *  2B^  2Gv  1G^  1Bv
@@ -427,7 +426,7 @@ public class Permutation implements Comparable<Permutation> {
     };
     /** Generate the four rotated versions of the given permutation.
      * @doc.test
-     *  js> [p for each (p in Iterator(Permutation.valueOf("01234567").rotated()))]
+     *  js> r = []; Permutation.valueOf("01234567").rotated().forEachRemaining(p => r.push(p)); r
      *  01234567,23456701,45670123,67012345
      */
     public Iterator<Permutation> rotated() {
@@ -457,7 +456,7 @@ public class Permutation implements Comparable<Permutation> {
      * @doc.test
      *  js> Permutation.valueOf("23456701").canonical()
      *  01234567
-     *  js> [p.canonical() for each (p in Iterator(Permutation.valueOf("23456701").rotated()))]
+     *  js> r = []; Permutation.valueOf("23456701").rotated().forEachRemaining(p => r.push(p.canonical())); r
      *  01234567,01234567,01234567,01234567
      */
     public Permutation canonical() {

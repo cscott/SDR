@@ -17,8 +17,8 @@ import net.cscott.sdr.util.Point;
  * @doc.test Partner trade:
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> fm = MatcherList.COUPLE.match(Formation.FOUR_SQUARE); undefined
- *  js> f=[ff for (ff in Iterator(fm.matches.values()))
- *    >    if (ff.dancers().contains(StandardDancer.COUPLE_1_BOY))][0]
+ *  js> f = Array.from(fm.matches.values())
+ *    >    .find(ff => ff.dancers().contains(StandardDancer.COUPLE_1_BOY))
  *  net.cscott.sdr.calls.TaggedFormation[
  *    location={COUPLE 1 BOY=-1,0,n, COUPLE 1 GIRL=1,0,n}
  *    selected=[COUPLE 1 BOY, COUPLE 1 GIRL]
@@ -58,8 +58,8 @@ import net.cscott.sdr.util.Point;
  * @doc.test Check that in/out motions are computed correctly:
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> fm = MatcherList.COUPLE.match(Formation.FOUR_SQUARE); undefined
- *  js> f=[ff for (ff in Iterator(fm.matches.values()))
- *    >    if (ff.dancers().contains(StandardDancer.COUPLE_1_BOY))][0]; f.toStringDiagram()
+ *  js> f = Array.from(fm.matches.values())
+ *    >    .find(ff => ff.dancers().contains(StandardDancer.COUPLE_1_BOY)); f.toStringDiagram()
  *  1B^  1G^
  *  js> // boy face in, girl face out
  *  js> p1b = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f,
@@ -82,10 +82,9 @@ import net.cscott.sdr.util.Point;
  *  (Prim sweep 2, 2, right, 2)
  *  js> primGirl= AstNode.valueOf('(Prim -2, roll 2, right, 2)')
  *  (Prim -2, roll 2, right, 2)
- *  js> paths =
- *    > [[d,EvalPrim.apply(d, f, d.isBoy() ? primBoy : primGirl)] for each
- *    >   (d in Iterator(f.dancers()))]; undefined
- *  js> paths.forEach(function(e) { f = f.move(e[0], e[1].to); });
+ *  js> paths = Array.from(f.dancers(), d =>
+ *    >   [d, EvalPrim.apply(d, f, d.isBoy() ? primBoy : primGirl)]); undefined
+ *  js> paths.forEach(([d, path]) => { f = f.move(d, path.to); });
  *  js> // now we have roll right and sweep left
  *  js> f.toStringDiagramWithDetails()
  *  1B>  3G<         RL>  RL<
@@ -95,10 +94,9 @@ import net.cscott.sdr.util.Point;
  *  (Prim 0, sweep 2, roll 1/4, 2)
  *  js> primGirl = AstNode.valueOf('(Prim sweep 2, 0, roll 1/4, 2)')
  *  (Prim sweep 2, 0, roll 1/4, 2)
- *  js> paths =
- *    > [[d,EvalPrim.apply(d, f, d.isBoy() ? primBoy : primGirl)] for each
- *    >   (d in Iterator(f.dancers()))]; undefined
- *  js> paths.forEach(function(e) { f = f.move(e[0], e[1].to); });
+ *  js> paths = Array.from(f.dancers(), d =>
+ *    >   [d, EvalPrim.apply(d, f, d.isBoy() ? primBoy : primGirl)]); undefined
+ *  js> paths.forEach(([d, path]) => { f = f.move(d, path.to); });
  *  js> f.toStringDiagramWithDetails()
  *  1Gv  1Bv         RLv  RLv
  *  
@@ -113,9 +111,9 @@ import net.cscott.sdr.util.Point;
  *  js> // (modifiers should yield zeros here; not yet any sweep or roll)
  *  js> prim = AstNode.valueOf('(Prim sweep 2, 2, in 1/4, 2)')
  *  (Prim sweep 2, 2, in 1/4, 2)
- *  js> paths = [[d,EvalPrim.apply(d, f, prim)] for each
- *    >   (d in Iterator(f.dancers()))]; undefined
- *  js> paths.forEach(function(e) { f = f.move(e[0], e[1].to); });
+ *  js> paths = Array.from(f.dancers(), d => [d, EvalPrim.apply(d, f, prim)]);
+ *    > undefined
+ *  js> paths.forEach(([d, path]) => { f = f.move(d, path.to); });
  *  js> // now we have a mix of roll and sweep directions
  *  js> f.toStringDiagramWithDetails()
  *  1B>  1G<         RL>  LR<
@@ -123,9 +121,9 @@ import net.cscott.sdr.util.Point;
  *  3G>  3B<         LR>  RL<
  *  js> prim = AstNode.valueOf('(Prim 0, sweep 2, roll -1/4, 2)')
  *  (Prim 0, sweep 2, roll -1/4, 2)
- *  js> paths = [[d,EvalPrim.apply(d, f, prim)] for each
- *    >   (d in Iterator(f.dancers()))]; undefined
- *  js> paths.forEach(function(e) { f = f.move(e[0], e[1].to); });
+ *  js> paths = Array.from(f.dancers(), d => [d, EvalPrim.apply(d, f, prim)]);
+ *    > undefined
+ *  js> paths.forEach(([d, path]) => { f = f.move(d, path.to); });
  *  js> f.toStringDiagramWithDetails()
  *  1G^  1B^         RR^  LL^
  *  
@@ -133,8 +131,7 @@ import net.cscott.sdr.util.Point;
  *  js> // veer in reverse sweep direction, should put everyone on origin
  *  js> prim = AstNode.valueOf('(Prim sweep -1, in 1, none, 2)')
  *  (Prim sweep -1, in 1, none, 2)
- *  js> [EvalPrim.apply(d, f, prim).to for each
- *    >  (d in Iterator(f.sortedDancers()))]
+ *  js> Array.from(f.sortedDancers(), d => EvalPrim.apply(d, f, prim).to)
  *  0,0,n,0,0,n,0,0,s,0,0,s
  * @doc.test Check that roll/sweep work, even if you turn more than 360 degrees:
  *  js> importPackage(net.cscott.sdr.calls.ast)
@@ -204,7 +201,7 @@ import net.cscott.sdr.util.Point;
  *  
  *  1B^  1G^
  *  js> // girls u-turn back
- *  js> for each (d in [StandardDancer.COUPLE_1_GIRL, StandardDancer.COUPLE_3_GIRL]) {
+ *  js> for (let d of [StandardDancer.COUPLE_1_GIRL, StandardDancer.COUPLE_3_GIRL]) {
  *    >   f=f.move(d,f.location(d).turn(net.cscott.sdr.util.Fraction.ONE_HALF,false));
  *    > }; f.toStringDiagram()
  *  3G^  3Bv
@@ -291,8 +288,8 @@ import net.cscott.sdr.util.Point;
  *  PRESERVE_ROLL flag.
  *  js> importPackage(net.cscott.sdr.calls.ast)
  *  js> fm = MatcherList.COUPLE.match(Formation.FOUR_SQUARE); undefined
- *  js> f=[ff for (ff in Iterator(fm.matches.values()))
- *    >    if (ff.dancers().contains(StandardDancer.COUPLE_1_BOY))][0]; f.toStringDiagram()
+ *  js> f = Array.from(fm.matches.values())
+ *    >    .find(ff => ff.dancers().contains(StandardDancer.COUPLE_1_BOY)); f.toStringDiagram()
  *  1B^  1G^
  *  js> // boy face out
  *  js> p1a = EvalPrim.apply(StandardDancer.COUPLE_1_BOY, f,

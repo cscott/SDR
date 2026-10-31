@@ -16,14 +16,14 @@ import net.cscott.jdoctest.Doctests;
  *  This includes single diamonds, which are defined on a 2x3 grid, but
  *  twin diamonds have unbreathed points.
  *  (EXPECT FAIL: our breather is pushing in the points of twin diamonds)
- *  js> for (f in Iterator(FormationList.all)) {
+ *  js> for (let f of FormationList.all) {
  *    >   if (!Breather.breathe(f).equals(f)) {
  *    >     print("Unbreathed formation: "+f.getName());
  *    >   }
  *    > }
  *  js> // note: no output from the above
  * @doc.test Canonical formations should be centered.
- *  js> for (f in Iterator(FormationList.all)) {
+ *  js> for (let f of FormationList.all) {
  *    >   if (!f.isCentered()) {
  *    >     print("Uncentered formation: "+f.getName());
  *    >   }
@@ -34,11 +34,11 @@ import net.cscott.jdoctest.Doctests;
  *  diagrams best.
  *  js> ns = Rotation.fromAbsoluteString("|");
  *  0 mod 1/2
- *  js> for (f in Iterator(FormationList.all)) {
- *    >   facing = [f.location(d).facing for (d in Iterator(f.dancers()))]
- *    >   l=[(ns.includes(dir) || dir.includes(ns)) for each (dir in facing)]
- *    >   if ([b for each (b in l) if (b)].length <
- *    >       [b for each (b in l) if (!b)].length) {
+ *  js> for (let f of FormationList.all) {
+ *    >   facing = Array.from(f.dancers(), d => f.location(d).facing)
+ *    >   l=facing.map(dir => (ns.includes(dir) || dir.includes(ns)))
+ *    >   if (l.filter(b => b).length <
+ *    >       l.filter(b => !b).length) {
  *    >     print("Unexpected orientation: "+f.getName());
  *    >   }
  *    > } ; undefined
@@ -48,12 +48,12 @@ import net.cscott.jdoctest.Doctests;
  *  minor abbreviations/tweaks occur, see below).
  *  js> flc = java.lang.Class.forName('net.cscott.sdr.calls.FormationList')
  *  class net.cscott.sdr.calls.FormationList
- *  js> flds = [f for each (f in flc.getFields()) if
- *    >         (java.lang.reflect.Modifier.isPublic(f.getModifiers()) &&
- *    >          java.lang.reflect.Modifier.isStatic(f.getModifiers()) &&
- *    >          !f.getName().equals("all"))]; undefined
- *  js> flds.every(function(f) {
- *    >    name = f.getName();
+ *  js> flds = Array.from(flc.getFields()).filter(f =>
+ *    >         java.lang.reflect.Modifier.isPublic(f.getModifiers()) &&
+ *    >         java.lang.reflect.Modifier.isStatic(f.getModifiers()) &&
+ *    >         !f.getName().equals("all")); undefined
+ *  js> flds.every(f => {
+ *    >    const name = f.getName();
  *    >    return (FormationList[name].getName()
  *    >            .replace(' ','_').replace('-','_')
  *    >            .replace("1/4","QUARTER")
@@ -64,7 +64,7 @@ import net.cscott.jdoctest.Doctests;
  *  true
  * @doc.test There should be a matcher for every formation. (Although there
  *  are more matchers than there are formations.)
- *  js> for (f in Iterator(FormationList.all)) {
+ *  js> for (let f of FormationList.all) {
  *    >   let name = (f.getName()
  *    >                .replace("1/4","QUARTER")
  *    >                .replace("3/4","THREE_QUARTER")

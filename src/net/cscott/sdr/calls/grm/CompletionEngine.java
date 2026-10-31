@@ -29,7 +29,7 @@ import net.cscott.sdr.util.Tools;
  * @doc.test Get completions for partial phrases, based on the grammar:
  *  js> importPackage(net.cscott.sdr.calls);
  *  js> function c(txt) {
- *    >   for (s in Iterator(CompletionEngine.complete(Program.PLUS, txt, 100))) {
+ *    >   for (let s of CompletionEngine.complete(Program.PLUS, txt, 100)) {
  *    >     print(s);
  *    >   }
  *    > }

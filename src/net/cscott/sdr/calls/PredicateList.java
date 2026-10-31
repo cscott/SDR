@@ -348,7 +348,7 @@ public abstract class PredicateList {
      *  js> // rotate the formation 1/2 just to get rid of the original tags
      *  js> f = FormationList.RH_OCEAN_WAVE; f.toStringDiagram()
      *  ^    v    ^    v
-     *  js> d = [d for (d in Iterator(f.sortedDancers()))]; undefined
+     *  js> d = Array.from(f.sortedDancers()); undefined
      *  js> f = f.move(d[1], f.location(d[1]).turn
      *    >                 (Fraction.ONE_QUARTER, false)) ; f.toStringDiagram()
      *  ^    <    ^    v

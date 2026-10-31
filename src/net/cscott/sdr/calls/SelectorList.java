@@ -314,24 +314,24 @@ public class SelectorList {
      * @doc.test Simple math in a selector.
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr _add num '1 '1) '2))")
      *  (Expr condition (Expr equal num (Expr _add num '1 '1) '2))
-     *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Selector"), null)
+     *  js> sel = e.evaluate(net.cscott.sdr.calls.Selector, null)
      *    > sel.select(TaggedFormation.coerce(Formation.SQUARED_SET));
      *  [COUPLE 1 BOY, COUPLE 1 GIRL, COUPLE 2 BOY, COUPLE 2 GIRL, COUPLE 3 BOY, COUPLE 3 GIRL, COUPLE 4 BOY, COUPLE 4 GIRL]
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr _add num '1 '1) '3))")
      *  (Expr condition (Expr equal num (Expr _add num '1 '1) '3))
-     *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Selector"), null)
+     *  js> sel = e.evaluate(net.cscott.sdr.calls.Selector, null)
      *    > sel.select(TaggedFormation.coerce(Formation.SQUARED_SET));
      *  []
      * @doc.test Using the optional second argument.
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr num dancers) '8) (Expr and 'BOY 'HEAD))")
      *  (Expr condition (Expr equal num (Expr num dancers) '8) (Expr and 'BOY 'HEAD))
-     *  js> e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Selector"), ds).
+     *  js> e.evaluate(net.cscott.sdr.calls.Selector, ds).
      *    >     select(TaggedFormation.coerce(ds.currentFormation()))
      *  [COUPLE 1 BOY, COUPLE 3 BOY]
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr num dancers) '4) 'BOY)")
      *  (Expr condition (Expr equal num (Expr num dancers) '4) 'BOY)
-     *  js> e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Selector"), ds).
+     *  js> e.evaluate(net.cscott.sdr.calls.Selector, ds).
      *    >     select(TaggedFormation.coerce(ds.currentFormation()))
      *  []
      */

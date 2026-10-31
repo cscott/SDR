@@ -1093,7 +1093,7 @@ abstract class FormationListSlow {
         pw.println("      * @doc.test");
         pw.println("      *  js> tf = FormationList."+fieldName+"; tf"+mapStd+".toStringDiagram('|');");
         pw.println(mntf.toStringDiagram("      *  |"));
-        pw.println("      *  js> [tf.tags(dd) for each (dd in Iterator(tf.sortedDancers())) ].join('\\n');");
+        pw.println("      *  js> Array.from(tf.sortedDancers(), dd => tf.tags(dd)).join('\\n');");
         for (Dancer d : ntf.sortedDancers())
             pw.println("      *  "+new ArrayList<>(ntf.tags(d)));
         pw.println("      */");

@@ -56,7 +56,7 @@ public class Formation {
      *  Create a formation containing only the sides from a squared set:
      *  js> importPackage(java.util)
      *  js> f = Formation.SQUARED_SET ; undefined
-     *  js> sides = [d for each (d in Iterator(f.sortedDancers())) if (d.isSide())]
+     *  js> sides = Array.from(f.sortedDancers()).filter(d => d.isSide())
      *  COUPLE 4 BOY,COUPLE 2 GIRL,COUPLE 4 GIRL,COUPLE 2 BOY
      *  js> f2 = f.select(Arrays.asList(sides)).onlySelected()
      *  net.cscott.sdr.calls.Formation[
@@ -80,18 +80,18 @@ public class Formation {
      *  the expected results:
      *  js> importPackage(java.util)
      *  js> f = Formation.SQUARED_SET ; undefined
-     *  js> heads = [d for each (d in Iterator(f.sortedDancers())) if (d.isHead())]
+     *  js> heads = Array.from(f.sortedDancers()).filter(d => d.isHead())
      *  COUPLE 3 GIRL,COUPLE 3 BOY,COUPLE 1 BOY,COUPLE 1 GIRL
-     *  js> sides = [d for each (d in Iterator(f.sortedDancers())) if (d.isSide())]
+     *  js> sides = Array.from(f.sortedDancers()).filter(d => d.isSide())
      *  COUPLE 4 BOY,COUPLE 2 GIRL,COUPLE 4 GIRL,COUPLE 2 BOY
      *  js> f2 = f.select(Arrays.asList(sides)); undefined
-     *  js> [f2.isSelected(d) for each (d in sides)]
+     *  js> sides.map(d => f2.isSelected(d))
      *  true,true,true,true
-     *  js> [f2.selectedDancers().contains(d) for each (d in sides)]
+     *  js> sides.map(d => f2.selectedDancers().contains(d))
      *  true,true,true,true
-     *  js> [f2.isSelected(d) for each (d in heads)]
+     *  js> heads.map(d => f2.isSelected(d))
      *  false,false,false,false
-     *  js> [f2.selectedDancers().contains(d) for each (d in heads)]
+     *  js> heads.map(d => f2.selectedDancers().contains(d))
      *  false,false,false,false
      */
     public boolean isSelected(Dancer d) {
@@ -151,7 +151,7 @@ public class Formation {
      * @doc.test
      *  js> importPackage(java.util)
      *  js> f = Formation.SQUARED_SET ; undefined
-     *  js> heads = [d for each (d in Iterator(f.sortedDancers())) if (d.isHead())]
+     *  js> heads = Array.from(f.sortedDancers()).filter(d => d.isHead())
      *  COUPLE 3 GIRL,COUPLE 3 BOY,COUPLE 1 BOY,COUPLE 1 GIRL
      *  js> f2 = f.select(Arrays.asList(heads))
      *  net.cscott.sdr.calls.Formation[
@@ -366,8 +366,8 @@ public class Formation {
      * @doc.test Use AA through HH to represent dancers
      *  js> m = java.util.LinkedHashMap()
      *  {}
-     *  js> for (i in Iterator(StandardDancer.values())) {
-     *    >   m.put(i[1], String.fromCharCode(65+i[0],65+i[0]))
+     *  js> for (let [i, d] of Array.from(StandardDancer.values()).entries()) {
+     *    >   m.put(d, String.fromCharCode(65+i, 65+i))
      *    > }
      *  null
      *  js> Formation.SQUARED_SET.toStringDiagram("|", m)

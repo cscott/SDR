@@ -486,7 +486,7 @@ public abstract class C1List {
          *  js> f = Formation.SQUARED_SET;
          *    > ib = insideBox(f);
          *  (-2,-2;2,2)
-         *  js> for each (d in StandardDancer.values()) {
+         *  js> for (let d of StandardDancer.values()) {
          *    >   f = f.move(d, expandO(f.location(d), ib, n, a.union(n)));
          *    > }
          *    > f.toStringDiagram('|');
@@ -501,7 +501,7 @@ public abstract class C1List {
          *  js> f = FormationList.THAR.mapStd([]);
          *    > ib = insideBox(f);
          *  (0,0;0,0)
-         *  js> for each (d in StandardDancer.values()) {
+         *  js> for (let d of StandardDancer.values()) {
          *    >   f = f.move(d, expandO(f.location(d), ib, n, a.union(n)));
          *    > }
          *    > f.toStringDiagram('|');
@@ -581,7 +581,7 @@ public abstract class C1List {
          *  js> C1List.ConcentricEvaluator.insideBox(Formation.SQUARED_SET);
          *  (-2,-2;2,2)
          *  js> f = FormationList.RH_BOX.mapStd([]);
-         *    > for (d in Iterator(f.dancers())) {
+         *    > for (let d of f.dancers()) {
          *    >   f = f.move(d, f.location(d).forwardStep(Fraction.TWO, false)
          *    >                              .sideStep(Fraction.mTWO, false));
          *    > }

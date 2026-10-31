@@ -33,12 +33,12 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
  *  true
  *  js> d.matchesTag(Tag.SIDE)
  *  false
- *  js> [d.matchesTag(t) for each (t in
- *    >  [Tag.COUPLE_1, Tag.COUPLE_2, Tag.COUPLE_3, Tag.COUPLE_4])]
+ *  js> [Tag.COUPLE_1, Tag.COUPLE_2, Tag.COUPLE_3, Tag.COUPLE_4]
+ *    >   .map(t => d.matchesTag(t))
  *  true,false,false,false
- *  js> [d.matchesTag(t) for each (t in
- *    >  [Tag.DANCER_1, Tag.DANCER_2, Tag.DANCER_3, Tag.DANCER_4,
- *    >   Tag.DANCER_5, Tag.DANCER_6, Tag.DANCER_7, Tag.DANCER_8])]
+ *  js> [Tag.DANCER_1, Tag.DANCER_2, Tag.DANCER_3, Tag.DANCER_4,
+ *    >  Tag.DANCER_5, Tag.DANCER_6, Tag.DANCER_7, Tag.DANCER_8]
+ *    >   .map(t => d.matchesTag(t))
  *  true,false,false,false,false,false,false,false
  *  js> d.matchesTag(Tag.NONE)
  *  false
@@ -72,12 +72,12 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
  *  false
  *  js> d.matchesTag(Tag.SIDE)
  *  true
- *  js> [d.matchesTag(t) for each (t in
- *    >  [Tag.COUPLE_1, Tag.COUPLE_2, Tag.COUPLE_3, Tag.COUPLE_4])]
+ *  js> [Tag.COUPLE_1, Tag.COUPLE_2, Tag.COUPLE_3, Tag.COUPLE_4]
+ *    >   .map(t => d.matchesTag(t))
  *  false,false,false,true
- *  js> [d.matchesTag(t) for each (t in
- *    >  [Tag.DANCER_1, Tag.DANCER_2, Tag.DANCER_3, Tag.DANCER_4,
- *    >   Tag.DANCER_5, Tag.DANCER_6, Tag.DANCER_7, Tag.DANCER_8])]
+ *  js> [Tag.DANCER_1, Tag.DANCER_2, Tag.DANCER_3, Tag.DANCER_4,
+ *    >  Tag.DANCER_5, Tag.DANCER_6, Tag.DANCER_7, Tag.DANCER_8]
+ *    >   .map(t => d.matchesTag(t))
  *  false,false,false,false,false,false,false,true
  *  js> d.matchesTag(Tag.NONE)
  *  false

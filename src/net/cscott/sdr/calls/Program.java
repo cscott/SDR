@@ -23,9 +23,9 @@ public enum Program {
      *  true
      *  js> Program.MAINSTREAM.includes(Program.A1)
      *  false
-     *  js> [Program.BASIC.includes(p) for each (p in Program.values())]
+     *  js> Array.from(Program.values(), p => Program.BASIC.includes(p))
      *  true,false,false,false,false,false,false,false,false,false
-     *  js> [Program.C3B.includes(p) for each (p in Program.values())]
+     *  js> Array.from(Program.values(), p => Program.C3B.includes(p))
      *  true,true,true,true,true,true,true,true,true,false
      */
     public boolean includes(Program p) {

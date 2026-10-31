@@ -205,7 +205,7 @@ public class DanceState {
      *    >                     Formation.FOUR_SQUARE); undefined;
      *  js> function addPrim(d, str, f) {
      *    >   if (!f) f = ds.formationAt(net.cscott.sdr.util.Fraction.ZERO);
-     *    >   var prim = net.cscott.sdr.calls.ast.AstNode.valueOf(str);
+     *    >   const prim = net.cscott.sdr.calls.ast.AstNode.valueOf(str);
      *    >   ds.add(d, EvalPrim.apply(d, f, prim));
      *    > }
      *  js> addPrim(StandardDancer.COUPLE_1_GIRL,'(Prim 0, 0, left, 1)');
@@ -260,7 +260,7 @@ public class DanceState {
      *    >                     Formation.SQUARED_SET); undefined;
      *  js> function addPrim(d, str, f) {
      *    >   if (!f) f = ds.formationAt(net.cscott.sdr.util.Fraction.ZERO);
-     *    >   var prim = net.cscott.sdr.calls.ast.AstNode.valueOf(str);
+     *    >   const prim = net.cscott.sdr.calls.ast.AstNode.valueOf(str);
      *    >   ds.add(d, EvalPrim.apply(d, f, prim));
      *    > }
      *  js> addPrim(StandardDancer.COUPLE_1_BOY, '(Prim 0, 1, none, 2)');
@@ -291,7 +291,7 @@ public class DanceState {
      *    >                     Formation.SQUARED_SET); undefined;
      *  js> function addPrim(d, str, f) {
      *    >   if (!f) f = ds.formationAt(net.cscott.sdr.util.Fraction.ZERO);
-     *    >   var prim = net.cscott.sdr.calls.ast.AstNode.valueOf(str);
+     *    >   const prim = net.cscott.sdr.calls.ast.AstNode.valueOf(str);
      *    >   ds.add(d, EvalPrim.apply(d, f, prim));
      *    > }
      *  js> addPrim(StandardDancer.COUPLE_1_GIRL,'(Prim 0, 0, left, 1)');
@@ -350,18 +350,18 @@ public class DanceState {
      *    >                     Formation.SQUARED_SET); undefined;
      *  js> function addPrim(d, str, f) {
      *    >   if (!f) f = ds.formationAt(net.cscott.sdr.util.Fraction.ZERO);
-     *    >   var prim = net.cscott.sdr.calls.ast.AstNode.valueOf(str);
+     *    >   const prim = net.cscott.sdr.calls.ast.AstNode.valueOf(str);
      *    >   ds.add(d, EvalPrim.apply(d, f, prim));
      *    > }
      *  js> addPrim(StandardDancer.COUPLE_1_BOY, '(Prim 0, 1, none, 2)');
      *  js> addPrim(StandardDancer.COUPLE_2_BOY, '(Prim 0, 0, none, 3)');
      *  js> addPrim(StandardDancer.COUPLE_3_BOY, '(Prim 0, 0, none, 4, preserve-roll)');
-     *  js> [tf.time.toProperString() for (tf in Iterator(ds.formations()))]
+     *  js> Array.from(ds.formations(), tf => tf.time.toProperString())
      *  0,2,3,4
      *  js> // unsyncDancers from here should remove the formations @ 3 and 4
      *  js> // (note that good practice here is to split @ 2 first)
      *  js> ds.splitTime(Fraction.TWO) ; ds.unsyncDancers()
-     *  js> [tf.time.toProperString() for (tf in Iterator(ds.formations()))]
+     *  js> Array.from(ds.formations(), tf => tf.time.toProperString())
      *  0,2
      */
     public void unsyncDancers() {

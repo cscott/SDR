@@ -106,9 +106,9 @@ public class LL<T> implements Iterable<T> {
      * @doc.test
      *  js> l = LL.create("a","b","c","d");
      *  [a, b, c, d]
-     *  js> [x for (x in Iterator(l))]
+     *  js> Array.from(l)
      *  a,b,c,d
-     *  js> [x for (x in Iterator(LL.NULL()))].length
+     *  js> Array.from(LL.NULL()).length
      *  0
      */
     public Iterator<T> iterator() {

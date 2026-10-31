@@ -148,7 +148,7 @@ public class GeneralFormationMatcher {
      *  |3Gv  4Gv
      *  |
      *  |3B^  4B^
-     *  js> heads = [d for each (d in StandardDancer.values()) if (d.isHead())]
+     *  js> heads = Array.from(StandardDancer.values()).filter(d => d.isHead())
      *  COUPLE 1 BOY,COUPLE 1 GIRL,COUPLE 3 BOY,COUPLE 3 GIRL
      *  js> f = f.select(heads) ; undefined
      *  js> GeneralFormationMatcher.doMatch(f, FormationList.FACING_DANCERS,
@@ -206,7 +206,7 @@ public class GeneralFormationMatcher {
      *    >       .relocate(Rotation.fromAbsoluteString(r)));
      *    > }
      *    > f = FormationList.RH_COLUMN.mapStd([]);
-     *    > for (d in Iterator(f.dancers())) {
+     *    > for (let d of f.dancers()) {
      *    >   if (d.isSide()) f = makePhantom(f, d, "|");
      *    > }
      *    > f.toStringDiagram("|");
@@ -232,7 +232,7 @@ public class GeneralFormationMatcher {
      *  js> // try again the other way.
      *  js> // (we had a bug which made this an ambiguous match)
      *  js> f = FormationList.LH_COLUMN.mapStd([]);
-     *    > for (d in Iterator(f.dancers())) {
+     *    > for (let d of f.dancers()) {
      *    >   if (d.isHead()) f = makePhantom(f, d, "|");
      *    > }
      *    > f.toStringDiagram("|");
@@ -339,7 +339,7 @@ public class GeneralFormationMatcher {
      * @doc.test A successful match on a Siamese Diamond.
      *  js> importPackage(net.cscott.sdr.util); // for Fraction
      *  js> f = Formation.SQUARED_SET; undefined
-     *  js> for each (d in StandardDancer.values()) {
+     *  js> for (let d of StandardDancer.values()) {
      *    >   if (d.isHead()) continue;
      *    >   p = f.location(d).forwardStep(Fraction.valueOf(2), true).
      *    >                     turn(Fraction.valueOf(1,4), false);
@@ -785,7 +785,7 @@ public class GeneralFormationMatcher {
      * @doc.test Matching against GENERAL O:
      *  js> goals = [ FormationList.GENERAL_O ];
      *    > f = FormationList.PARALLEL_RH_TWO_FACED_LINES.mapStd([]);
-     *    > boys = [d for each (d in Iterator(f.sortedDancers())) if (d.isBoy())];
+     *    > boys = Array.from(f.sortedDancers()).filter(d => d.isBoy());
      *    > f = f.select(java.util.Arrays.asList(boys)).onlySelected();
      *    > f.toStringDiagram();
      *  1B^            2Bv
@@ -807,7 +807,7 @@ public class GeneralFormationMatcher {
      * @doc.test Matching against O spots, then constraining inexact rotations:
      *  js> goals = [ FormationList.O_SPOTS ];
      *    > f = FormationList.PARALLEL_RH_TWO_FACED_LINES.mapStd([]);
-     *    > boys = [d for each (d in Iterator(f.sortedDancers())) if (d.isBoy())];
+     *    > boys = Array.from(f.sortedDancers()).filter(d => d.isBoy());
      *    > f = f.select(java.util.Arrays.asList(boys)).onlySelected();
      *    > f.toStringDiagram();
      *  1B^            2Bv

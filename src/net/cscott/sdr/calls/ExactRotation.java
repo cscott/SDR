@@ -308,13 +308,13 @@ public class ExactRotation extends Rotation implements Comparable<ExactRotation>
      *  The southeast and northwest characters are a little funny.
      * @doc.test Show rotations going CW from north:
      *  js> function c2s(c) { return String.fromCharCode(c) }
-     *  js> [c2s(r.toDiagramChar()) for each (r in 
-     *    >  [ExactRotation.NORTH, ExactRotation.EAST,
-     *    >   ExactRotation.SOUTH, ExactRotation.WEST])]
+     *  js> [ExactRotation.NORTH, ExactRotation.EAST,
+     *    >  ExactRotation.SOUTH, ExactRotation.WEST]
+     *    >   .map(r => c2s(r.toDiagramChar()))
      *  ^,>,v,<
-     *  js> [c2s(r.toDiagramChar()) for each (r in 
-     *    >  [ExactRotation.ONE_EIGHTH, ExactRotation.THREE_EIGHTHS,
-     *    >   ExactRotation.FIVE_EIGHTHS, ExactRotation.SEVEN_EIGHTHS])]
+     *  js> [ExactRotation.ONE_EIGHTH, ExactRotation.THREE_EIGHTHS,
+     *    >  ExactRotation.FIVE_EIGHTHS, ExactRotation.SEVEN_EIGHTHS]
+     *    >   .map(r => c2s(r.toDiagramChar()))
      *  7,Q,L,`
      *  js> c2s(new ExactRotation(net.cscott.sdr.util.Fraction.valueOf(1,3))
      *    >     .toDiagramChar())

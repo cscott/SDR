@@ -269,7 +269,7 @@ public class ExprList {
      * Simple math: addition.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> fc = net.cscott.sdr.util.Fraction; undefined
      *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _add num '2 '1)")
      *  (Expr _add num '2 '1)
      *  js> c.evaluate(fc, ds).toProperString()
@@ -288,7 +288,7 @@ public class ExprList {
      * Simple math: multiplication.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> fc = net.cscott.sdr.util.Fraction; undefined
      *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _multiply num '3 '2)")
      *  (Expr _multiply num '3 '2)
      *  js> c.evaluate(fc, ds).toProperString()
@@ -307,7 +307,7 @@ public class ExprList {
      * Simple math: subtraction.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> fc = net.cscott.sdr.util.Fraction; undefined
      *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _subtract num '3 '2)")
      *  (Expr _subtract num '3 '2)
      *  js> c.evaluate(fc, ds).toProperString()
@@ -326,7 +326,7 @@ public class ExprList {
      * Simple math: division.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> fc = net.cscott.sdr.util.Fraction; undefined
      *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _divide num '3 '2)")
      *  (Expr _divide num '3 '2)
      *  js> c.evaluate(fc, ds).toProperString()
@@ -345,7 +345,7 @@ public class ExprList {
      * Simple math: modulo.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> fc = net.cscott.sdr.util.Fraction; undefined
      *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _mod num '3/4 '1/2)")
      *  (Expr _mod num '3/4 '1/2)
      *  js> c.evaluate(fc, ds).toProperString()
@@ -368,7 +368,7 @@ public class ExprList {
      * Simple math: return smallest integer greater than a fraction.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> fc = net.cscott.sdr.util.Fraction; undefined
      *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _ceil '3 1/4)")
      *  (Expr _ceil '3 1/4)
      *  js> c.evaluate(fc, ds).toProperString()
@@ -403,7 +403,7 @@ public class ExprList {
      * Simple math: return integer part of a fraction.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> fc = net.cscott.sdr.util.Fraction; undefined
      *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _floor '3 3/4)")
      *  (Expr _floor '3 3/4)
      *  js> c.evaluate(fc, ds).toProperString()
@@ -438,7 +438,7 @@ public class ExprList {
      * Simple math: return fractional part of a number.
      * @doc.test
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> fc = net.cscott.sdr.util.Fraction; undefined
      *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _fraction '3 3/4)")
      *  (Expr _fraction '3 3/4)
      *  js> c.evaluate(fc, ds).toProperString()
@@ -476,7 +476,7 @@ public class ExprList {
      * @doc.test
      *  Count number of dancers, and then number of boys, in a squared set.
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> fc = net.cscott.sdr.util.Fraction; undefined
      *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr num dancers)")
      *  (Expr num dancers)
      *  js> c.evaluate(fc, ds).toProperString()
@@ -508,7 +508,7 @@ public class ExprList {
      * @doc.test
      *  Count number of parts in 'swing thru'.
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined;
-     *  js> fc = java.lang.Class.forName('net.cscott.sdr.util.Fraction'); undefined
+     *  js> fc = net.cscott.sdr.util.Fraction; undefined
      *  js> c=net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr num parts 'swing thru)")
      *  (Expr num parts 'swing thru)
      *  js> c.evaluate(fc, ds).toProperString()
@@ -643,7 +643,7 @@ public class ExprList {
      *
      *  ^    v    ^    v
      *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
-     *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
+     *  js> e.evaluate(java.lang.String, ds);
      *  oioiioio
      *  js> f = FormationList.TRADE_BY; f.toStringDiagram()
      *  ^    ^
@@ -654,7 +654,7 @@ public class ExprList {
      *
      *  v    v
      *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
-     *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
+     *  js> e.evaluate(java.lang.String, ds);
      *  ooiiiioo
      *  js> f = Formation.SQUARED_SET ; f.toStringDiagram()
      *       3Gv  3Bv
@@ -665,7 +665,7 @@ public class ExprList {
      *
      *       1B^  1G^
      *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
-     *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
+     *  js> e.evaluate(java.lang.String, ds);
      *  iiiiiiii
      *  js> f = Formation.SQUARED_SET.rotate(ExactRotation.ONE_EIGHTH) ; f.toStringDiagram()
      *       4BQ       3GL
@@ -678,7 +678,7 @@ public class ExprList {
      *  
      *       1G7       2B`
      *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
-     *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
+     *  js> e.evaluate(java.lang.String, ds);
      *  iiiiiiii
      *  js> f = FormationList.SINGLE_STATIC_SQUARE ; f.toStringDiagram("|")
      *  |     v
@@ -687,7 +687,7 @@ public class ExprList {
      *  |
      *  |     ^
      *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
-     *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
+     *  js> e.evaluate(java.lang.String, ds);
      *  iiii
      *  js> f = FormationList.THAR ; f.toStringDiagram("|")
      *  |       <
@@ -698,7 +698,7 @@ public class ExprList {
      *  |
      *  |       >
      *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined;
-     *  js> e.evaluate(java.lang.Class.forName("java.lang.String"), ds);
+     *  js> e.evaluate(java.lang.String, ds);
      *  xxxxxxxx
      */
     public static final ExprFunc<String> _INOUT_PATTERN =
@@ -822,7 +822,7 @@ public class ExprList {
      * environment, as exposed by {@link DanceState#property(String, String)}.
      * @doc.test
      *  js> let expr = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr _PROPERTY 'foo 'bar)");
-     *  js> sc = java.lang.Class.forName("java.lang.String"); undefined
+     *  js> sc = java.lang.String; undefined
      *  js> // default dance state contains no property mappings
      *  js> ds = new DanceState(new DanceProgram(Program.PLUS), Formation.SQUARED_SET); undefined
      *  js> expr.evaluate(sc, ds)

@@ -944,17 +944,17 @@ public class MatcherList {
      * @doc.test Simple math in a matcher.
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr _add num '1 '1) '2))")
      *  (Expr condition (Expr equal num (Expr _add num '1 '1) '2))
-     *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), null)
+     *  js> sel = e.evaluate(net.cscott.sdr.calls.Matcher, null)
      *  ANY
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr _add num '1 '1) '3))")
      *  (Expr condition (Expr equal num (Expr _add num '1 '1) '3))
-     *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), null)
+     *  js> sel = e.evaluate(net.cscott.sdr.calls.Matcher, null)
      *  NONE
      * @doc.test Using the optional second argument.
      *  js> ds = new DanceState(new DanceProgram(Program.C4), Formation.SQUARED_SET); undefined
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr num dancers) '8) 'COUPLE)")
      *  (Expr condition (Expr equal num (Expr num dancers) '8) 'COUPLE)
-     *  js> e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), ds).match(ds.currentFormation())
+     *  js> e.evaluate(net.cscott.sdr.calls.Matcher, ds).match(ds.currentFormation())
      *       AAv
      *  
      *  BB>       CC<
@@ -974,7 +974,7 @@ public class MatcherList {
      *   [1B: BEAU; 1G: BELLE]
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr condition (Expr equal num (Expr num dancers) '4) 'COUPLE)")
      *  (Expr condition (Expr equal num (Expr num dancers) '4) 'COUPLE)
-     *  js> try { e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), ds).match(ds.currentFormation()) } catch (e) { print (e.javaException); }
+     *  js> try { e.evaluate(net.cscott.sdr.calls.Matcher, ds).match(ds.currentFormation()) } catch (e) { print (e.javaException); }
      *  net.cscott.sdr.calls.NoMatchException: No match for NONE: NONE matcher used
      */
     public static ExprFunc<Matcher> _CONDITION = new ExprFunc<>() {
@@ -1063,7 +1063,7 @@ public class MatcherList {
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf(
      *    >     "(Expr use phantoms '4x4)");
      *  (Expr use phantoms '4 x4)
-     *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), ds);
+     *  js> sel = e.evaluate(net.cscott.sdr.calls.Matcher, ds);
      *  use phantoms(4x4)
      *  js> sel.match(ds.currentFormation());
      *  AA^
@@ -1117,7 +1117,7 @@ public class MatcherList {
      * @doc.test LH miniwaves in RH tidal wave:
      *  js> e = net.cscott.sdr.calls.ast.AstNode.valueOf("(Expr not grand (Expr allow unmatched 'LH MINIWAVE))")
      *  (Expr not grand (Expr allow unmatched 'LH MINIWAVE))
-     *  js> sel = e.evaluate(java.lang.Class.forName("net.cscott.sdr.calls.Matcher"), null)
+     *  js> sel = e.evaluate(net.cscott.sdr.calls.Matcher, null)
      *  not grand(allow unmatched(LH MINIWAVE))
      *  js> SD = StandardDancer.values(); undefined
      *  js> f = FormationList.RH_TIDAL_WAVE.mapStd([SD[0],SD[1],SD[2],SD[3]]) ; f.toStringDiagram()

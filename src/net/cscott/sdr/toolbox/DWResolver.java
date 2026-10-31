@@ -35,13 +35,13 @@ import static net.cscott.sdr.util.Tools.*;
  *  2B^  2Gv  1G^  1Bv
  *  
  *  3B^  3Gv  4G^  4Bv
- *  js> fs = [pp.permute(f) for each (pp in Iterator
- *    >       (Permutation.generate(Permutation.IDENTITY8)))]; fs.length
+ *  js> fs = []; Permutation.generate(Permutation.IDENTITY8)
+ *    >   .forEachRemaining(pp => fs.push(pp.permute(f))); fs.length
  *  96
- *  js> dss = [new DanceState(new DanceProgram(Program.PLUS), f)
- *    >        for each (f in fs)]; undefined;
+ *  js> dss = fs.map(f => new DanceState(new DanceProgram(Program.PLUS), f));
+ *    > undefined;
  *  js> // look at first step from each formation
- *  js> s = [DWResolver.resolveStep(ff) for each (ff in fs)]; s.slice(0,5)
+ *  js> s = fs.map(ff => DWResolver.resolveStep(ff)); s.slice(0,5)
  *  Trade,Hinge,Hinge,Acey Deucey,Half Tag
  *  js> // compute number of calls until resolve for each starting formation
  *  js> // we could memoize intermediate results, but we're lazy.
@@ -55,7 +55,7 @@ import static net.cscott.sdr.util.Tools.*;
  *    >   // keep dancing.
  *    >   return dance(ds, steps+1, verbose);
  *    > }
- *  js> nums = [dance(ds, 0) for each (ds in dss)]; nums.slice(0,5)
+ *  js> nums = dss.map(ds => dance(ds, 0)); nums.slice(0,5)
  *  2,2,5,4,5
  *  js> // the minimum ought to be one: from some formation, a RLG is possible
  *  js> Math.min.apply(null, nums)
@@ -64,8 +64,7 @@ import static net.cscott.sdr.util.Tools.*;
  *  js> max = Math.max.apply(null, nums)
  *  8
  *  js> // average:
- *  js> let [sum,count] = [0,0]
- *  js> nums.map(function(e) { sum+=e; count+=1; }); (sum/count).toFixed(2);
+ *  js> (nums.reduce((a, b) => a + b, 0) / nums.length).toFixed(2);
  *  4.92
  *  js> // formations which require the maximum number of calls:
  *  js> // (the first here is a 'sides lead right, swing thru 1 1/4,

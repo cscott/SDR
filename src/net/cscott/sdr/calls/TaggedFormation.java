@@ -26,7 +26,7 @@ import net.cscott.sdr.util.Tools;
  * @doc.test Fetch tagged dancers from a TaggedFormation:
  *  js> f = FormationList.STATIC_SQUARE ; f.getClass()
  *  class net.cscott.sdr.calls.NamedTaggedFormation
- *  js> [ f.location(d) for each (d in Iterator(f.tagged(TaggedFormation.Tag.BEAU)))]
+ *  js> Array.from(f.tagged(TaggedFormation.Tag.BEAU), d => f.location(d))
  *  1,3,s,-3,1,e,3,-1,w,-1,-3,n
  */
 @Doctests
