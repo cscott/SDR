@@ -442,8 +442,9 @@ public class GeneralFormationMatcher {
         MatchInfo mi = new MatchInfo(input, goalInfo, minGoalDancers,
                                      inputDancers, inputIndex, inputEmpty);
         PersistentSet<OneMatch> initialAssignment = new PersistentSet<>
-            (Comparator.comparingInt((OneMatch om) -> inputIndex.getID(om.dancer))
-             .thenComparing(om -> om.goal2input.rotate));
+            (Comparator.comparingInt
+                 ((OneMatch om) -> inputIndex.getID(om.dancer()))
+             .thenComparing(om -> om.goal2input().rotate));
         // Do the match
         tryOne(mi, 0, initialAssignment, inputEmpty, allowUnmatchedDancers);
         if (mi.matches.isEmpty())
@@ -471,13 +472,13 @@ public class GeneralFormationMatcher {
 	List<FormationPiece> pieces = new ArrayList<>(max);
         Map<Dancer,TaggedFormation> canonical=new LinkedHashMap<>();
         for (OneMatch om : bestMatch) {
-            Dancer id0 = om.dancer;//input dancer who's #1 in the goal formation
+            Dancer id0 = om.dancer();//input dancer who's #1 in the goal formation
             int dn0 = inputIndex.getID(id0);
-            Transform goal2input = om.goal2input;
+            Transform goal2input = om.goal2input();
             Map<Dancer,Position> subPos = new LinkedHashMap<>();
             MultiMap<Dancer,Tag> subTag = new GenericMultiMap<>();
-            for (Dancer goD : om.gi.goalDancers) {
-                Position goP = om.gi.goal.location(goD);
+            for (Dancer goD : om.gi().goalDancers) {
+                Position goP = om.gi().goal.location(goD);
                 // transform to find which input dancer corresponds to this one
                 Position inP = goal2input.apply(goP);
                 Dancer inD = mi.inputPositionMap.get(inP.toPoint());
@@ -490,7 +491,7 @@ public class GeneralFormationMatcher {
                 goP = goPr.relocate(goP.x, goP.y, goR);
                 // add to this subformation.
                 subPos.put(inD, goP);
-                subTag.addAll(inD, om.gi.goal.tags(goD));
+                subTag.addAll(inD, om.gi().goal.tags(goD));
                 unmappedInputDancers.remove(inD);
             }
             TaggedFormation tf =
@@ -531,16 +532,13 @@ public class GeneralFormationMatcher {
                                   unmatchedMetaDancers,
                                   Collections.<Dancer>emptySet());
     }
-    private static class OneMatch {
-        /** Which goal formation. */
-        public final GoalInfo gi;
-        /** This input dancer is #1 in the goal formation. */
-        public final Dancer dancer;
-        /** This is the transformation needed to align the goal formation. */
-        public final Transform goal2input;
-        OneMatch(GoalInfo gi, Dancer dancer, Transform goal2input) {
-            this.gi = gi; this.dancer = dancer; this.goal2input = goal2input;
-        }
+    /** One placement of a goal formation on the input.
+     * @param gi Which goal formation.
+     * @param dancer This input dancer is #1 in the goal formation.
+     * @param goal2input This is the transformation needed to align the
+     *        goal formation.
+     */
+    private record OneMatch(GoalInfo gi, Dancer dancer, Transform goal2input) {
         @Override
         public String toString() {
             return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)

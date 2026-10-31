@@ -181,7 +181,7 @@ def
     { // if there are arguments, add them to our scope.
       int i=0;
       for (ArgAndDefault arg : args) {
-        scope.put(arg.name, i++);
+        scope.put(arg.name(), i++);
       }
     }
        ( ^(OPTION ( rule_option[options] )+ ) )?

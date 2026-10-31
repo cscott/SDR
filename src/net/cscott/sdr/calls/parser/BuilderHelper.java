@@ -174,11 +174,8 @@ abstract class BuilderHelper {
     }
     //////////////
     /** Calls can have defaults for arguments. */
-    static class ArgAndDefault {
-        public final String name, defaultValue;
-        public ArgAndDefault(String name, String defaultValue) {
-            this.name = name; this.defaultValue = defaultValue;
-        }
+    record ArgAndDefault(String name, String defaultValue) {
+        @Override
         public String toString() {
             if (defaultValue==null) return name;
             return name+"="+defaultValue;
@@ -193,21 +190,21 @@ abstract class BuilderHelper {
         // min # of arguments is the last arg w/o a default.
         int i;
         for (i=args.size(); i>0; i--)
-            if (args.get(i-1).defaultValue == null)
+            if (args.get(i-1).defaultValue() == null)
                 break;
         final int minNumberOfArguments = i;
         // make default arguments list.
         final List<Expr> defaultArguments;
         for (i=args.size(); i>0; i--)
-            if (args.get(i-1).defaultValue != null)
+            if (args.get(i-1).defaultValue() != null)
                 break;
         if (i==0) /* no default arguments */
             defaultArguments = Collections.emptyList(); /* save memory */
         else {
              defaultArguments = new ArrayList<>();
              for (ArgAndDefault a: args)
-                 defaultArguments.add(a.defaultValue==null ? null :
-                                      Expr.literal(a.defaultValue));
+                 defaultArguments.add(a.defaultValue()==null ? null :
+                                      Expr.literal(a.defaultValue()));
         }
 
         return new Call() {

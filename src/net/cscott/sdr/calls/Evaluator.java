@@ -626,16 +626,8 @@ public abstract class Evaluator {
      * then mashes the results together.
      */
     private static class PartsCombineEvaluator extends Evaluator {
-        private static class SubPart {
-            public final Set<Dancer> matched;
-            public final DanceState ds;
-            public final Evaluator eval;
-            public SubPart(Set<Dancer> matched, Evaluator eval, DanceState ds) {
-                this.matched = matched;
-                this.eval = eval;
-                this.ds = ds;
-            }
-        }
+        private record SubPart(Set<Dancer> matched, Evaluator eval,
+                               DanceState ds) { }
         private List<SubPart> parts = new ArrayList<>();
         void add(Set<Dancer> matched, Comp subcall, DanceState ds) {
             this.add(matched, new Standard(subcall), ds);
@@ -653,19 +645,19 @@ public abstract class Evaluator {
             PartsCombineEvaluator pce = new PartsCombineEvaluator();
             // do one part of each subcall
             for (SubPart p: parts) {
-                Evaluator ne = p.eval.evaluate(p.ds);
+                Evaluator ne = p.eval().evaluate(p.ds());
                 // add only the selected dancer's actions
-                for (Dancer d: p.matched)
+                for (Dancer d: p.matched())
                     // sometimes phantoms introduced by a par can match a
                     // subsidiary par.  So make sure that this dancer actually
                     // belonged to the parent DanceState before we add its
                     // movements.
                     if (ds.dancers().contains(d))
-                        for (DancerPath dp : p.ds.movements(d))
+                        for (DancerPath dp : p.ds().movements(d))
                             ds.add(d, dp);
                 if (ne==null) continue;
                 // create an evaluator for the next part
-                pce.add(p.matched, ne, p.ds);
+                pce.add(p.matched(), ne, p.ds());
             }
             if (!pce.parts.isEmpty())
                 // return continuation, if there is one

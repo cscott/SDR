@@ -901,13 +901,7 @@ abstract class FormationListSlow {
         }
         return Collections.unmodifiableList(result);
     }
-    private static class PositionAndTag {
-        public final Position position;
-        public final Set<Tag> tags;
-        PositionAndTag(Position position, Set<Tag> tags) {
-            this.position = position; this.tags = tags;
-        }
-    }
+    private record PositionAndTag(Position position, Set<Tag> tags) { }
     private static PositionAndTag d(int x, int y, String facing,
                                     Tag... tags) {
         return new PositionAndTag(Position.getGrid
@@ -917,7 +911,7 @@ abstract class FormationListSlow {
     private static NamedTaggedFormation create(final String name, PositionAndTag... ptl) {
 	List<TaggedDancerInfo> dil = new ArrayList<>(ptl.length);
 	for (PositionAndTag pt: ptl)
-	    dil.add(new TaggedDancerInfo(new PhantomDancer(), pt.position, pt.tags, true));
+	    dil.add(new TaggedDancerInfo(new PhantomDancer(), pt.position(), pt.tags(), true));
 	return new NamedTaggedFormation(name, null, dil.toArray(new TaggedDancerInfo[dil.size()]));
     }
     // first string is 'top' of diagram (closest to caller)
@@ -998,18 +992,13 @@ abstract class FormationListSlow {
                 tm.addAll(d, tf.tags(d));
         // add explicitly specified tags.
         for (NumAndTags nt : tags)
-            tm.addAll(dancers.get(nt.dancerNum), nt.tags);
+            tm.addAll(dancers.get(nt.dancerNum()), nt.tags());
         // add implicit/automatic tags
         if (wt != WhetherTagger.NO_AUTO_TAGS) // general formations don't get tags
             Tagger.addAutomatic(f, tm);
         return new NamedTaggedFormation(name, f, tm, normalCouples);
     }
-    private static class NumAndTags {
-        public final int dancerNum;
-        public final Set<Tag> tags;
-        NumAndTags(int dancerNum, Set<Tag> tags)
-        { this.dancerNum=dancerNum; this.tags=tags; }
-    }
+    private record NumAndTags(int dancerNum, Set<Tag> tags) { }
     // helper function, for brevity
     private static NumAndTags t(int dancerNum, Tag...  tags) {
         EnumSet<Tag> t = (tags.length==0) ? EnumSet.noneOf(Tag.class) :

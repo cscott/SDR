@@ -643,16 +643,16 @@ public class Breather {
             // Constraint 2: Must fit formation (outer-inner >= size)
             //               (required constraint)
             for (Bit b : axis.bits) {
-                ClVariable lo = vars.get(b.start), hi = vars.get(b.end);
+                ClVariable lo = vars.get(b.start()), hi = vars.get(b.end());
                 solver.addConstraint(new ClLinearInequality
-                        (CL.Plus(lo, b.size), CL.Op.LEQ, hi));
+                        (CL.Plus(lo, b.size()), CL.Op.LEQ, hi));
             }
             // Symmetry constraint: moving from edges in, gaps should
             // be equal. (strong constraint, not required)
             for (Bit b : axis.bits) {
                 // (inner and outer are actually reversed for negative coords,
                 //  but it doesn't matter)
-                Fraction lastInner = b.start, lastOuter = b.end;
+                Fraction lastInner = b.start(), lastOuter = b.end();
                 while(true) {
                     Fraction inner = axis.bounds.higherKey(lastInner);
                     Fraction outer = axis.bounds.lowerKey(lastOuter);
@@ -695,20 +695,15 @@ public class Breather {
     }
     /** Abstract representation of one dimension of a formation, used
      * for the expansion algorithm. */
-    private static class Bit {
-        /** Original boundary corresponding to the inner border of the
-         *  formation. */
-        final Fraction start;
-        /** Original boundary corresponding to the outer border of the
-         *  formation. */
-        final Fraction end;
-        /** Minimum size needed for this formation piece. */
-        final Fraction size;
-        public Bit(Fraction start, Fraction end, Fraction size) {
-            this.start = start;
-            this.end = end;
-            this.size = size;
-        }
+    /** One formation piece's extent along an axis.
+     * @param start Original boundary corresponding to the inner border of
+     *        the formation.
+     * @param end Original boundary corresponding to the outer border of
+     *        the formation.
+     * @param size Minimum size needed for this formation piece.
+     */
+    private record Bit(Fraction start, Fraction end, Fraction size) {
+        @Override
         public String toString() {
             return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .append("start", start.toProperString())
@@ -929,24 +924,24 @@ public class Breather {
                         // option 1: could make a star
                         ClBooleanVariable sw = new ClBooleanVariable(solver);
                         for (PairedConstraint<ClLinearEquation> pc : star) {
-                            solver.addConstraintIf(sw, pc.required);
-                            if (pc.symmetry != null)
-                                solver.addConstraintIf(sw, pc.symmetry);
+                            solver.addConstraintIf(sw, pc.required());
+                            if (pc.symmetry() != null)
+                                solver.addConstraintIf(sw, pc.symmetry());
                         }
                         options.add(sw);
                     }
                     if (xOverlap!=null) {
                         // option 2: could resolve the x overlap
                         ClBooleanVariable sw = new ClBooleanVariable(solver);
-                        solver.addConstraintIf(sw, xOverlap.required);
-                        solver.addConstraintIf(sw, xOverlap.symmetry);
+                        solver.addConstraintIf(sw, xOverlap.required());
+                        solver.addConstraintIf(sw, xOverlap.symmetry());
                         options.add(sw);
                     }
                     if (yOverlap!=null) {
                         // option 3: could resolve the y overlap
                         ClBooleanVariable sw = new ClBooleanVariable(solver);
-                        solver.addConstraintIf(sw, yOverlap.required);
-                        solver.addConstraintIf(sw, yOverlap.symmetry);
+                        solver.addConstraintIf(sw, yOverlap.required());
+                        solver.addConstraintIf(sw, yOverlap.symmetry());
                         options.add(sw);
                     }
 
@@ -966,9 +961,9 @@ public class Breather {
                 if (handConstraints!=null) {
                     ClBooleanVariable sw = new ClBooleanVariable(solver);
                     for (PairedConstraint<ClLinearEquation> pc:handConstraints){
-                        solver.addConstraintIf(sw, pc.required);
-                        if (pc.symmetry != null)
-                            solver.addConstraintIf(sw, pc.symmetry);
+                        solver.addConstraintIf(sw, pc.required());
+                        if (pc.symmetry() != null)
+                            solver.addConstraintIf(sw, pc.symmetry());
                     }
                     // w/ medium strength, request sw to be 1
                     solver.addConstraint
@@ -1117,8 +1112,8 @@ public class Breather {
             if (onlyActual && !aHand.toPoint().equals(bHand.toPoint()))
                 return null; // "possible" not *actual* handhold
             // well! we could hold hands!
-            ClLinearEquation x = new ClLinearEquation(aHand.x, bHand.x);
-            ClLinearEquation y = new ClLinearEquation(aHand.y, bHand.y);
+            ClLinearEquation x = new ClLinearEquation(aHand.x(), bHand.x());
+            ClLinearEquation y = new ClLinearEquation(aHand.y(), bHand.y());
             // Because our objective function is linear, we need to provide
             // additional guidance on *how* this constraint should be satisfied,
             // otherwise it will just arbitrarily move one endpoint, leaving an
@@ -1196,11 +1191,7 @@ public class Breather {
     /** The equivalent of a {@link Point}, except the x/y coordinates are
      *  represented as {@link ClLinearExpression}s.
      */
-    private static class VarPoint {
-        final ClLinearExpression x, y;
-        VarPoint(ClLinearExpression x, ClLinearExpression y) {
-            this.x=x; this.y=y;
-        }
+    private record VarPoint(ClLinearExpression x, ClLinearExpression y) {
         Point toPoint() {
             return new Point(x.evaluate(), y.evaluate());
         }
@@ -1222,13 +1213,9 @@ public class Breather {
      *  ({@link ClLinearInequality} or {@link ClLinearEquation}) with a
      *  weak symmetry constraint that goes with it.
      */
-    private static class PairedConstraint<CONSTRAINT extends ClConstraint> {
-        final CONSTRAINT required;
-        final ClLinearEquation symmetry;
-        PairedConstraint(CONSTRAINT required, ClLinearEquation symmetry) {
-            this.required = required;
-            this.symmetry = symmetry;
-        }
+    private record PairedConstraint<CONSTRAINT extends ClConstraint>
+        (CONSTRAINT required, ClLinearEquation symmetry) {
+        @Override
         public String toString() {
             return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .append("req", required)
