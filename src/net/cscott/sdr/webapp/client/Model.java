@@ -35,6 +35,8 @@ public class Model implements HasHandlers {
     private double _sliderPos = 0;
     private int _highlightedCall = -1;
     private int _insertionPoint = -1;
+    // first newly-added call to play when the engine results come in
+    private int _autoPlayCall = -1;
 
     // constructor
     public Model(final DanceEngineServiceAsync danceEngine) {
@@ -67,6 +69,18 @@ public class Model implements HasHandlers {
                             Model.this.setPlaying(false);
                             Model.this.setSliderPos
                                 (Model.this._engineResults.totalBeats);
+                        }
+                        // play the newly-added call(s), so that the dance
+                        // floor ends up showing the result.
+                        int autoPlay = Model.this._autoPlayCall;
+                        Model.this._autoPlayCall = -1;
+                        if (autoPlay >= 0 && !isPlaying() &&
+                            autoPlay < Model.this._engineResults.firstInvalidCall) {
+                            double beat = 0;
+                            for (int i=0; i<autoPlay; i++)
+                                beat += Model.this._engineResults.timing.get(i);
+                            Model.this.setSliderPos(beat);
+                            Model.this.setPlaying(true);
                         }
                         // if not playing, reset slider position to match
                         // highlighted call
@@ -107,6 +121,9 @@ public class Model implements HasHandlers {
         idx = (idx < 0) ? 0 : (idx <= this._sequence.calls.size()) ? idx :
             this._sequence.calls.size();
         this._sequence.calls.add(idx, s);
+        // play it (and any earlier new call still waiting for results)
+        this._autoPlayCall = (this._autoPlayCall < 0) ? idx :
+            Math.min(this._autoPlayCall, idx);
         this._isDirty = true;
         this.fireEvent(new SequenceChangeEvent());
         // move the insertion point after the new call
@@ -117,6 +134,8 @@ public class Model implements HasHandlers {
         // so it seems to stay in the same place.
         if (this._insertionPoint > index)
             setInsertionPoint(this._insertionPoint-1);
+        if (this._autoPlayCall > index)
+            this._autoPlayCall--;
         this._sequence.calls.remove(index);
         this._isDirty = true;
         this.fireEvent(new SequenceChangeEvent());
@@ -160,6 +179,7 @@ public class Model implements HasHandlers {
     }
     public void load(SequenceInfo info, Sequence sequence) {
         this.setPlaying(false);
+        this._autoPlayCall = -1;
         this.setInsertionPoint(0);
         this.setHighlightedCall(0);
         this.setSliderPos(0);
