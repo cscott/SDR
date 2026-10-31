@@ -5,6 +5,7 @@ import static net.cscott.sdr.calls.parser.CallFileLexer.PRIM;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 
 import net.cscott.sdr.calls.ExactRotation;
@@ -13,8 +14,6 @@ import net.cscott.sdr.calls.transform.TransformVisitor;
 import net.cscott.sdr.calls.transform.ValueVisitor;
 import net.cscott.sdr.util.Fraction;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * A {@link Prim} represents a primitive action: a certain distance traveled
@@ -199,25 +198,17 @@ public class Prim extends SeqCall {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Prim p)) return false;
-        return new EqualsBuilder()
-            .append(dirX, p.dirX)
-            .append(x, p.x)
-            .append(dirY, p.dirY)
-            .append(y, p.y)
-            .append(dirRot, p.dirRot)
-            .append(rot, p.rot)
-            .append(time, p.time)
-	    .append(flags, p.flags)
-            .isEquals();
+        return dirX == p.dirX && Objects.equals(x, p.x) &&
+            dirY == p.dirY && Objects.equals(y, p.y) &&
+            dirRot == p.dirRot && Objects.equals(rot, p.rot) &&
+            Objects.equals(time, p.time) &&
+            Objects.equals(flags, p.flags);
     }
     @Override
     public int hashCode() {
         if (hashCode==0)
-            hashCode = new HashCodeBuilder()
-            .append(x).append(y).append(rot).append(time)
-            .append(dirX).append(dirY).append(dirRot)
-	    .append(flags)
-            .toHashCode();
+            hashCode = Objects.hash(x, y, rot, time, dirX, dirY, dirRot,
+                                    flags);
         return hashCode;
     }
     private transient int hashCode = 0;

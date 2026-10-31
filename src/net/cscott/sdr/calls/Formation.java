@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -27,11 +28,9 @@ import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
-import net.cscott.sdr.util.SdrToString;
+import net.cscott.sdr.util.ToStringBuilder;
+import net.cscott.sdr.util.ToStringStyle;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 /** A Formation is a set of dancers and positions for them.
  * Certain dancers in the formation can be selected. 
@@ -294,16 +293,12 @@ public class Formation {
     @Override
     public boolean equals(Object o) {
 	if (!(o instanceof Formation f)) return false;
-	return new EqualsBuilder()
-	    .append(location, f.location)
-	    .append(selected, f.selected)
-	    .isEquals();
+	return Objects.equals(location, f.location) &&
+	    Objects.equals(selected, f.selected);
     }
     @Override
     public int hashCode() {
-	return new HashCodeBuilder()
-	    .append(location).append(selected)
-	    .toHashCode();
+	return Objects.hash(location, selected);
     }
     @Override
     public String toString() {
@@ -315,7 +310,7 @@ public class Formation {
 	List<Dancer> selected = new ArrayList<>(this.selected);
 	Collections.sort(selected, this.dancerComparator());
 	// build the result string
-	return new ToStringBuilder(this, SdrToString.STYLE)
+	return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
 	    .append("location", location)
 	    .append("selected", selected)
 	    .toString();

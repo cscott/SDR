@@ -10,9 +10,9 @@ import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
 import net.cscott.sdr.util.Bezier.Bezier2D;
+import net.cscott.sdr.util.ToStringBuilder;
+import net.cscott.sdr.util.ToStringStyle;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 
 /** A {@link DancerPath} is the result of evaluating a call for a specific
  * dancer in a formation.  Unlike a {@link net.cscott.sdr.calls.ast.Prim},

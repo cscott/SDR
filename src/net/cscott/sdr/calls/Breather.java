@@ -11,16 +11,14 @@ import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.util.Box;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
-import net.cscott.sdr.util.SdrToString;
+import net.cscott.sdr.util.ToStringBuilder;
+import net.cscott.sdr.util.ToStringStyle;
 import net.cscott.sdr.util.Tools.ListMultiMap;
 import static net.cscott.sdr.util.Tools.foreach; // list comprehension
 import static net.cscott.sdr.util.Tools.l;//list constructor
 import static net.cscott.sdr.util.Tools.m;//map constructor
 import static net.cscott.sdr.util.Tools.mml;//listmultimap constructor
 import static net.cscott.sdr.util.Tools.p;//pair constructor
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 
 import EDU.Washington.grad.gjb.cassowary.CL;
 import EDU.Washington.grad.gjb.cassowary.ClBooleanVariable;
@@ -205,7 +203,7 @@ public class Breather {
         }
         @Override
         public String toString() {
-            return new ToStringBuilder(this, SdrToString.STYLE)
+            return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
             .append("input", input)
             .append("output", output)
             .toString();
@@ -740,7 +738,7 @@ public class Breather {
             }
         }
         public String toString() {
-            return new ToStringBuilder(this, SdrToString.STYLE)
+            return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("bounds", bounds)
                 .append("bits", bits)
                 .toString();

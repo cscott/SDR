@@ -7,12 +7,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import net.cscott.jdoctest.Doctests;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
-import org.apache.commons.lang.builder.*;
+import net.cscott.sdr.util.ToStringBuilder;
+import net.cscott.sdr.util.ToStringStyle;
 
 /** Position objects represent the position and orientation of a dancer.
  *  The (0,0) coordinate represents the center of the square (or formation),
@@ -559,26 +561,16 @@ public class Position implements Comparable<Position> {
     @Override
     public boolean equals(Object o) {
 	if (!(o instanceof Position p)) return false;
-	return new EqualsBuilder()
-	    .append(x, p.x)
-	    .append(y, p.y)
-	    .append(facing, p.facing)
-	    .append(_flags, p._flags)
-	    .isEquals();
+	return equalsIgnoringFlags(p) && Objects.equals(_flags, p._flags);
     }
     public boolean equalsIgnoringFlags(Position p) {
-        return new EqualsBuilder()
-	    .append(x, p.x)
-	    .append(y, p.y)
-	    .append(facing, p.facing)
-	    .isEquals();
+        return Objects.equals(x, p.x) && Objects.equals(y, p.y) &&
+            Objects.equals(facing, p.facing);
     }
     @Override
     public int hashCode() {
         if (hashCode==0)
-            hashCode = new HashCodeBuilder()
-	    .append(x).append(y).append(facing).append(_flags)
-            .toHashCode();
+            hashCode = Objects.hash(x, y, facing, _flags);
         return hashCode;
     }
     private transient int hashCode = 0;

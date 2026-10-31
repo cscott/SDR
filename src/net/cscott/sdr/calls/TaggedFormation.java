@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import net.cscott.jdoctest.Doctests;
@@ -13,12 +14,10 @@ import net.cscott.jutil.Factories;
 import net.cscott.jutil.GenericMultiMap;
 import net.cscott.jutil.MultiMap;
 import net.cscott.jutil.UnmodifiableMultiMap;
-import net.cscott.sdr.util.SdrToString;
+import net.cscott.sdr.util.ToStringBuilder;
+import net.cscott.sdr.util.ToStringStyle;
 import net.cscott.sdr.util.Tools;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 /** A {@link TaggedFormation} is a set of dancers and positions for them.
  * Certain dancers in the formation can be selected. 
@@ -135,17 +134,12 @@ public class TaggedFormation extends Formation {
     // utility functions.
     public boolean equals(Object o) {
 	if (!(o instanceof TaggedFormation f)) return false;
-	return new EqualsBuilder()
-            .appendSuper(super.equals(o))
-	    .append(tags, f.tags)
-            .isEquals();
+	return super.equals(o) && Objects.equals(tags, f.tags);
     }
     private transient int hashCode = 0;
     public int hashCode() {
         if (this.hashCode==0)
-            this.hashCode = new HashCodeBuilder()
-            .appendSuper(super.hashCode()).append(tags)
-            .toHashCode();
+            this.hashCode = Objects.hash(super.hashCode(), tags);
         return this.hashCode;
     }
     public String toString() {
@@ -163,7 +157,7 @@ public class TaggedFormation extends Formation {
 		sb.append(tags.getValues(d));
 	}
 	sb.append("}");
-	return new ToStringBuilder(this, SdrToString.STYLE)
+	return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
 	    .appendSuper(super.toString())
 	    .append("tags", sb.toString())
             .toString();

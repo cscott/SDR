@@ -25,5 +25,4 @@ package-lists/*/package-list:
  javadoc package lists for linking to the docs of jars in lib/, made with
   for j in JARS; do unzip -Z1 $j; done | grep '\.class$' | grep -v '^META-INF' \
     | sed 's#/[^/]*$##' | grep / | tr / . | sort -u
- from lib/commons-lang-2.4.jar, lib/sphinx/sphinx4.jar, lib/jme/jme*.jar
- and lib/jutil.jar.
+ from lib/sphinx/sphinx4.jar, lib/jme/jme*.jar and lib/jutil.jar.

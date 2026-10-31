@@ -1,7 +1,6 @@
 package net.cscott.sdr.util;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import java.util.Objects;
 
 /** An interval between two {@link Fraction}s.  It is open or closed
  * as you see fit.  Intervals are ordered first by their start,
@@ -30,15 +29,11 @@ public class Interval implements Comparable<Interval> {
     }
     public boolean equals(Object o) {
         if (!(o instanceof Interval i)) return false;
-        return new EqualsBuilder()
-            .append(this.start, i.start)
-            .append(this.end, i.end)
-            .isEquals();
+        return Objects.equals(this.start, i.start) &&
+            Objects.equals(this.end, i.end);
     }
     public int hashCode() {
-        return new HashCodeBuilder()
-            .append(start).append(end)
-            .toHashCode();
+        return Objects.hash(start, end);
     }
     public String toString() {
         return "["+start.toProperString()+","+end.toProperString()+"]";

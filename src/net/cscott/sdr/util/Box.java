@@ -1,9 +1,8 @@
 package net.cscott.sdr.util;
 
-import net.cscott.jdoctest.Doctests;
+import java.util.Objects;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import net.cscott.jdoctest.Doctests;
 
 /** An orthogonal box, with sides parallel to the x and y axes. */
 @Doctests
@@ -233,15 +232,10 @@ public class Box {
 
     public boolean equals(Object o) {
         if (!(o instanceof Box b)) return false;
-        return new EqualsBuilder()
-            .append(this.ll, b.ll)
-            .append(this.ur, b.ur)
-            .isEquals();
+        return Objects.equals(this.ll, b.ll) && Objects.equals(this.ur, b.ur);
     }
     public int hashCode() {
-        return new HashCodeBuilder()
-            .append(ll).append(ur)
-            .toHashCode();
+        return Objects.hash(ll, ur);
     }
     public String toString() {
         return "("+ll+";"+ur+")";

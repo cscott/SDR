@@ -62,7 +62,7 @@ import net.cscott.jdoctest.Doctests;
 @lexer::header {
 package net.cscott.sdr.calls.parser;
 
-import static org.apache.commons.lang.StringEscapeUtils.unescapeJava;
+import static net.cscott.sdr.util.StringEscapeUtils.unescapeJava;
 }
 @lexer::members {
     public AstLexer(String s) {

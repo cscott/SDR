@@ -1,9 +1,6 @@
 package net.cscott.sdr.util;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import java.util.Objects;
 
 /** A 2D point, where x and y coordinate are {@link Fraction}s. */
 public class Point {
@@ -31,15 +28,10 @@ public class Point {
     }
     public boolean equals(Object o) {
         if (!(o instanceof Point p)) return false;
-        return new EqualsBuilder()
-            .append(this.x, p.x)
-            .append(this.y, p.y)
-            .isEquals();
+        return Objects.equals(this.x, p.x) && Objects.equals(this.y, p.y);
     }
     public int hashCode() {
-        return new HashCodeBuilder()
-            .append(x).append(y)
-            .toHashCode();
+        return Objects.hash(x, y);
     }
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)

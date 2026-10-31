@@ -31,9 +31,9 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
 import net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.util.Fraction;
 import net.cscott.sdr.util.Point;
-import net.cscott.sdr.util.SdrToString;
+import net.cscott.sdr.util.ToStringBuilder;
+import net.cscott.sdr.util.ToStringStyle;
 
-import org.apache.commons.lang.builder.*;
 
 /**
  * {@link GeneralFormationMatcher} produces a {@link FormationMatch}
@@ -543,7 +543,7 @@ public class GeneralFormationMatcher {
         }
         @Override
         public String toString() {
-            return new ToStringBuilder(this, SdrToString.STYLE)
+            return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("goal", gi)
                 .append("dancer", dancer)
                 .append("transform", goal2input)
@@ -598,7 +598,7 @@ public class GeneralFormationMatcher {
         }
         @Override
         public String toString() {
-            return new ToStringBuilder(this, SdrToString.STYLE)
+            return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("goalDancers", goalDancers)
                 .append("goalPositions", goalPositions)
                 .append("goal", goal)
@@ -637,7 +637,7 @@ public class GeneralFormationMatcher {
         }
         @Override
         public String toString() {
-            return new ToStringBuilder(this, SdrToString.STYLE)
+            return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("matches", matches)
                 .append("numInput", numInput)
                 .append("selected", sel)

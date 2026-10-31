@@ -304,8 +304,6 @@ window['JAVADOC_BASE'] = '{@docRoot}';
                  generated from the jars in lib/; see lib/dev/README.
                  The archive.org links are dated to the last commit before
                  the move to JDK 21. -->
-            <link href="https://web.archive.org/web/20141230000000/http://commons.apache.org/proper/commons-lang/javadocs/api-2.4/"
-                  offline="true" packagelistLoc="lib/dev/package-lists/commons-lang"/>
             <link href="https://web.archive.org/web/20141230000000/http://cmusphinx.sourceforge.net/sphinx4/javadoc/"
                   offline="true" packagelistLoc="lib/dev/package-lists/sphinx4"/>
             <link href="https://web.archive.org/web/20141230000000/http://www.jmonkeyengine.com/doc/"
@@ -762,7 +760,7 @@ window['JAVADOC_BASE'] = '{@docRoot}';
       </copy>
       <copy todir="war/WEB-INF/lib" flatten="true">
 	<fileset dir="${lib_dir}"
-		 includes="antlr-runtime-*.jar commons-lang-*.jar jutil.jar"/>
+		 includes="antlr-runtime-*.jar jutil.jar"/>
 	<file file="${gwt.servlet.jar}"/>
       </copy>
       <javac srcdir="${src_dir}" destdir="war/WEB-INF/classes"

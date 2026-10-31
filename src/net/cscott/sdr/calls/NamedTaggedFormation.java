@@ -7,9 +7,9 @@ import java.util.Set;
 
 import net.cscott.jdoctest.Doctests;
 import net.cscott.jutil.MultiMap;
-import net.cscott.sdr.util.SdrToString;
+import net.cscott.sdr.util.ToStringBuilder;
+import net.cscott.sdr.util.ToStringStyle;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Associates a name with a canonical
@@ -55,7 +55,8 @@ public class NamedTaggedFormation extends TaggedFormation {
     public String getName() { return this.name; }
     @Override
     public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder(this, SdrToString.STYLE)
+        ToStringBuilder tsb =
+            new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
 	    .append("name", getName());
         if (this.normalCouples != null)
             tsb = tsb.append("normalCouples", this.normalCouples);
