@@ -10,7 +10,8 @@ import net.cscott.sdr.calls.TaggedFormation.Tag;
 import static net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;
 import net.cscott.sdr.util.Fraction;
 
-/** Compiled version of {@link FormationListSlow}. */
+/** Compiled version of {@link FormationListSlow}.  Package-private on
+ * purpose, like {@link FormationListSlow}: use {@link FormationList}. */
 @Doctests
 abstract class FormationListFast {
     /** SINGLE DANCER formation.

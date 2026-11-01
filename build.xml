@@ -500,6 +500,10 @@ window['JAVADOC_BASE'] = '{@docRoot}';
 	    depends="compile.base">
       <java classname="net.cscott.sdr.PMSD" fork="true" failonerror="true"
 	    output="resources/net/cscott/sdr/tests/index~" >
+	<!-- see FEATURE_ENHANCED_JAVA_ACCESS in PMSD.java -->
+	<jvmarg value="--add-opens=java.base/java.lang=ALL-UNNAMED" />
+	<jvmarg value="--add-opens=java.base/java.io=ALL-UNNAMED" />
+	<jvmarg value="--add-opens=java.base/java.util=ALL-UNNAMED" />
 	<arg value="resources/net/cscott/sdr/tests/index" />
 	<classpath>
 	  <path refid="classpath.path"/>

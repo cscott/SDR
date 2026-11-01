@@ -47,6 +47,12 @@ import static net.cscott.sdr.util.StringEscapeUtils.escapeJava;
  * should appear on the top-level {@link FormationList} class.  This class
  * may have doctests for its helper functions, but not on the formations
  * themselves.
+ * <p>
+ * This class and {@link FormationListFast} are package-private on purpose:
+ * code outside this package should only use {@link FormationList}, and
+ * should never name either of them.  Don't make them public.  (PMSD uses
+ * Rhino's enhanced Java access to read the {@link FormationList} fields
+ * that they declare.)
  */
 @Doctests
 abstract class FormationListSlow {
@@ -1077,7 +1083,8 @@ abstract class FormationListSlow {
         pw.println("import static net.cscott.sdr.calls.TaggedFormation.TaggedDancerInfo;");
         pw.println("import net.cscott.sdr.util.Fraction;");
         pw.println();
-        pw.println("/** Compiled version of {@link FormationListSlow}. */");
+        pw.println("/** Compiled version of {@link FormationListSlow}.  Package-private on");
+        pw.println(" * purpose, like {@link FormationListSlow}: use {@link FormationList}. */");
         pw.println("@Doctests");
         pw.println("abstract class FormationListFast {");
     }

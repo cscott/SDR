@@ -837,8 +837,16 @@ public class PMSD {
         // enable some extra features
         public boolean hasFeature(Context cx, int featureIndex) {
             return switch (featureIndex) {
+            // Without enhanced access, Rhino can't read public fields
+            // inherited from a package-private class, such as
+            // FormationList.RH_TIDAL_LINE (declared in FormationListFast).
+            // Rhino then makes every member of each class it wraps
+            // accessible, so the java.base packages of the classes we
+            // wrap must be opened: run-pmsd.sh and build.xml pass
+            // --add-opens for java.lang, java.io and java.util.
             case Context.FEATURE_RESERVED_KEYWORD_AS_IDENTIFIER,
-                 Context.FEATURE_LOCATION_INFORMATION_IN_ERROR -> true;
+                 Context.FEATURE_LOCATION_INFORMATION_IN_ERROR,
+                 Context.FEATURE_ENHANCED_JAVA_ACCESS -> true;
             default -> super.hasFeature(cx, featureIndex);
             };
         }
