@@ -169,8 +169,8 @@ public abstract class BasicList {
 	    mirrorShoulderPass = true;
             // Mirror the current formation.
 	    // (any existing collisions should resolve 'mirror')
-            Formation nf = ds.currentFormation().mirror(true);
-            DanceState nds = ds.cloneAndClear(nf);
+            DanceState nds =
+                ds.cloneAndClearWithTransform((f, undo) -> f.mirror(true));
             // do the call in the mirrored formation
             new Apply(this.comp).evaluator(nds).evaluateAll(nds);
             // now re-mirror the resulting paths.

@@ -1,7 +1,9 @@
 package net.cscott.sdr.calls;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -43,9 +45,29 @@ public class DanceState {
      *  If a {@link java.util.concurrent.ConcurrentMap} is used, then the
      *  environment can be updated asynchronously. */
     private final Map<String,String> properties;
+    /** Where this dance state sits in its parent's formation, or
+     *  {@code null} at the top level; see {@link #atTopLevel()}. */
+    private final Frame frame;
+    /** One level of nesting: either the position of our meta dancer in
+     *  the parent's meta formation, or the transform a concept applied to
+     *  the parent's formation to get ours.  The other one is {@code null}. */
+    private record Frame(Position placement,
+                         Transform transform, Frame parent) { }
+    /** A change a concept makes to the formation; see
+     *  {@link #cloneAndClearWithTransform(Transform)}. */
+    @FunctionalInterface
+    public interface Transform {
+        /** Apply this transform to {@code f}, or if {@code undo} is true,
+         *  undo it. */
+        Formation apply(Formation f, boolean undo);
+    }
 
     public DanceState(DanceProgram dance, Formation f,
                       Map<String,String> properties) {
+        this(dance, f, properties, null);
+    }
+    private DanceState(DanceProgram dance, Formation f,
+                       Map<String,String> properties, Frame frame) {
         this.dance = dance;
         this.formations = new TreeMap<>();
         this.formations.put(Fraction.ZERO, f);
@@ -58,6 +80,7 @@ public class DanceState {
         // xxx: initialize actions?
         this.designatedStack = new Stack<>();
         this.properties = properties;
+        this.frame = frame;
     }
     // convenience constructor.
     public DanceState(DanceProgram dance, Formation f) {
@@ -109,11 +132,159 @@ public class DanceState {
      * @return a new clean DanceState.
      */
     public DanceState cloneAndClear(Formation formation) {
+        return cloneAndClear(formation, this.frame);
+    }
+
+    /**
+     * Similar to {@link #cloneAndClear(Formation)}, but the result is nested
+     * one level down: {@code formation} is a part of our current formation,
+     * placed (and rotated) where {@code placement} says.  This is used when
+     * we match a meta formation, so that {@link #atTopLevel()} can find out
+     * which way the dancers in the part face in the whole formation.
+     *
+     * @param formation
+     *            what {@code result.currentFormation()} should return.
+     * @param placement
+     *            the position of the meta dancer standing for
+     *            {@code formation} in the meta formation.
+     * @return a new clean DanceState.
+     */
+    public DanceState cloneAndClear(Formation formation, Position placement) {
+        return cloneAndClear(formation, new Frame(placement, null, this.frame));
+    }
+
+    /**
+     * Similar to {@link #cloneAndClear()}, for concepts (like "mirror")
+     * which transform the formation before applying the subcall: the
+     * current formation of the result is {@code transform} applied to ours.
+     * {@link #atTopLevel()} then applies {@code transform} to the top level
+     * formation, too, so that facing directions inside the concept work as
+     * they would if the concept had been applied to the whole set.
+     * On the way up, {@link #atTopLevel()} undoes the transform, to find
+     * where our dancers are in the parent's formation.  A transform which
+     * is its own inverse (as mirroring is) can ignore {@code undo}.
+     *
+     * @param transform
+     *            gives {@code result.currentFormation()} from our current
+     *            formation.
+     * @return a new clean DanceState.
+     */
+    public DanceState cloneAndClearWithTransform(Transform transform) {
+        return cloneAndClear(transform.apply(currentFormation(), false),
+                             new Frame(null, transform, this.frame));
+    }
+
+    private DanceState cloneAndClear(Formation formation, Frame frame) {
         // XXX: should revisit this?
-        DanceState nds = new DanceState(dance, formation, properties);
+        DanceState nds = new DanceState(dance, formation, properties, frame);
         for (Set<Dancer> designated : this.designatedStack)
             nds.pushDesignated(designated);
         return nds;
+    }
+
+    /**
+     * Return a new clean dance state, at the top level, whose current
+     * formation holds our dancers as they are in the top level formation:
+     * facing the same way, and on the same side of each axis.  We don't
+     * breathe the parts back together, so each dancer is placed at -1, 0,
+     * or 1 on each axis.  That is enough to say which way they face, and
+     * whether that is in or out, but not where they stand: use this for
+     * facing direction selectors and patterns (in/out, north/south/east/west)
+     * and not for formation or position ones.  The dancers keep their tags,
+     * and the designated dancers stay designated.
+     * @doc.test
+     *  Split a squared set into couples; the side couples are turned a
+     *  quarter, and couple #4's part straddles the x axis:
+     *  js> f = Formation.SQUARED_SET; undefined
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined
+     *  js> fm = Matcher.valueOf("COUPLE").match(f); undefined
+     *  js> md = Array.from(fm.meta.dancers()).find(md =>
+     *    >   fm.matches.get(md).dancers().contains(StandardDancer.COUPLE_4_BOY)); undefined
+     *  js> fm.meta.location(md)
+     *  -2,0,e
+     *  js> sub = fm.matches.get(md); sub.toStringDiagram()
+     *  4B^  4G^
+     *  js> nds = ds.cloneAndClear(sub, fm.meta.location(md)); undefined
+     *  js> tf = nds.atTopLevel().currentFormation(); undefined
+     *  js> [StandardDancer.COUPLE_4_BOY, StandardDancer.COUPLE_4_GIRL].map(
+     *    >   d => d+": "+tf.location(d)+" (really "+f.location(d)+")").join("\n")
+     *  COUPLE 4 BOY: -1,1,e (really -3,1,e)
+     *  COUPLE 4 GIRL: -1,-1,e (really -3,-1,e)
+     * @doc.test
+     *  Under "mirror", we see the mirror image of the top level:
+     *  js> f = Formation.SQUARED_SET; undefined
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined
+     *  js> mds = ds.cloneAndClearWithTransform((f, undo) => f.mirror(true)); undefined
+     *  js> mf = mds.currentFormation(); mf.toStringDiagram()
+     *       3Bv  3Gv
+     *  
+     *  2G>            4B<
+     *  
+     *  2B>            4G<
+     *  
+     *       1G^  1B^
+     *  js> fm = Matcher.valueOf("COUPLE").match(mf); undefined
+     *  js> md = Array.from(fm.meta.dancers()).find(md =>
+     *    >   fm.matches.get(md).dancers().contains(StandardDancer.COUPLE_4_BOY)); undefined
+     *  js> nds = mds.cloneAndClear(fm.matches.get(md), fm.meta.location(md)); undefined
+     *  js> tf = nds.atTopLevel().currentFormation(); undefined
+     *  js> [StandardDancer.COUPLE_4_BOY, StandardDancer.COUPLE_4_GIRL].map(
+     *    >   d => d+": "+tf.location(d)+" (mirrored "+mf.location(d)+")").join("\n")
+     *  COUPLE 4 BOY: 1,1,w (mirrored 3,1,w,[PASS_LEFT])
+     *  COUPLE 4 GIRL: 1,-1,w (mirrored 3,-1,w,[PASS_LEFT])
+     *  js> // "mirror mirror" undoes itself
+     *  js> mmds = mds.cloneAndClearWithTransform((f, undo) => f.mirror(true)); undefined
+     *  js> tf = mmds.atTopLevel().currentFormation(); undefined
+     *  js> [StandardDancer.COUPLE_4_BOY, StandardDancer.COUPLE_4_GIRL].map(
+     *    >   d => d+": "+tf.location(d)).join("\n")
+     *  COUPLE 4 BOY: -1,1,e
+     *  COUPLE 4 GIRL: -1,-1,e
+     */
+    public DanceState atTopLevel() {
+        Formation f = currentFormation();
+        Map<Dancer,Position> m = new LinkedHashMap<>();
+        for (Dancer d : f.dancers()) {
+            Position p = f.location(d);
+            m.put(d, new Position(p.x.compareTo(Fraction.ZERO),
+                                  p.y.compareTo(Fraction.ZERO), p.facing));
+        }
+        f = new Formation(m);
+        // walk up to the top level, and then apply the transforms we found
+        // on the way back down.
+        Deque<Transform> transforms = new ArrayDeque<>();
+        boolean lost = false;
+        // XXX "rewind" may want a transform, or to stop partway up.
+        for (Frame fr = this.frame; fr != null; fr = fr.parent()) {
+            if (fr.transform() != null) {
+                f = fr.transform().apply(f, true);
+                transforms.push(fr.transform());
+                continue;
+            }
+            Position place = fr.placement();
+            ExactRotation rot = (ExactRotation) place.facing;
+            // A part off an axis is all on one side of it.  A part on an
+            // axis straddles it, so there we keep the side we had in the
+            // part.  If the part is turned by an eighth we can't tell which
+            // side we're on any more, so we put the dancers at the origin.
+            lost |= rot.amount.multiply(Fraction.FOUR).getDenominator() != 1;
+            int px = place.x.compareTo(Fraction.ZERO);
+            int py = place.y.compareTo(Fraction.ZERO);
+            m = new LinkedHashMap<>();
+            for (Dancer d : f.dancers()) {
+                Position r = f.location(d).rotateAroundOrigin(rot);
+                int x = lost ? 0 : px != 0 ? px : r.x.compareTo(Fraction.ZERO);
+                int y = lost ? 0 : py != 0 ? py : r.y.compareTo(Fraction.ZERO);
+                m.put(d, new Position(x, y, r.facing));
+            }
+            f = new Formation(m);
+        }
+        for (Transform t : transforms)
+            f = t.apply(f, false);
+        // keep the tags
+        TaggedFormation tf = TaggedFormation.coerce(currentFormation());
+        for (Dancer d : tf.dancers())
+            tf = tf.move(d, f.location(d));
+        return cloneAndClear(tf, (Frame) null);
     }
 
     /** Add the set of designated dancers to the stack stored in the

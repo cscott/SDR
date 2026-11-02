@@ -556,7 +556,8 @@ public abstract class Evaluator {
             for (Dancer metaDancer : metaDancers) {
                 Formation sub = this.parts.get(metaDancer);
                 Evaluator e = emap.get(metaDancer);
-                DanceState nds = ds.cloneAndClear(sub);
+                DanceState nds =
+                    ds.cloneAndClear(sub, this.meta.location(metaDancer));
                 if (e != null)
                     e.evaluateAll(nds);
                 endTime = Fraction.max(endTime, nds.currentTime());

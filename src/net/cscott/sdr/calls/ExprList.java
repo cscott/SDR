@@ -157,6 +157,59 @@ public class ExprList {
     };
     static { exprGenericFuncs.put(_IF.getName(), _IF); }
 
+    /**
+     * Evaluate the argument as if we were at the top level, using
+     * {@link DanceState#atTopLevel()}.  This is only good for facing
+     * direction selectors and patterns (in/out, north/south/east/west),
+     * not for formation or position ones.
+     * @doc.test
+     *  In parallel right-hand waves, each boy is facing along the axis of
+     *  his miniwave, so he is neither in nor out there; in the whole
+     *  formation he is:
+     *  js> f = FormationList.PARALLEL_RH_WAVES.mapStd(
+     *    >   [StandardDancer.COUPLE_1_BOY, StandardDancer.COUPLE_1_GIRL,
+     *    >    StandardDancer.COUPLE_2_BOY, StandardDancer.COUPLE_2_GIRL,
+     *    >    StandardDancer.COUPLE_3_BOY, StandardDancer.COUPLE_3_GIRL,
+     *    >    StandardDancer.COUPLE_4_BOY, StandardDancer.COUPLE_4_GIRL]); undefined
+     *  js> f.toStringDiagram()
+     *  1B^  1Gv  2B^  2Gv
+     *  
+     *  3B^  3Gv  4B^  4Gv
+     *  js> ds = new DanceState(new DanceProgram(Program.PLUS), f); undefined
+     *  js> local = net.cscott.sdr.calls.ast.AstNode.valueOf(
+     *    >   "(Expr _inout pattern 'BOY)");
+     *  (Expr _inout pattern 'BOY)
+     *  js> top = net.cscott.sdr.calls.ast.AstNode.valueOf(
+     *    >   "(Expr _at top level (Expr _inout pattern 'BOY))");
+     *  (Expr _at top level (Expr _inout pattern 'BOY))
+     *  js> fm = Matcher.valueOf("RH MINIWAVE").match(f); undefined
+     *  js> Array.from(f.sortedDancers()).filter(d => d.isBoy()).map(d => {
+     *    >   let md = Array.from(fm.meta.dancers()).find(
+     *    >     md => fm.matches.get(md).dancers().contains(d));
+     *    >   let nds = ds.cloneAndClear(fm.matches.get(md),
+     *    >                              fm.meta.location(md));
+     *    >   return d+": "+local.evaluate(java.lang.String, nds)+" "+
+     *    >          top.evaluate(java.lang.String, nds);
+     *    > }).join("\n")
+     *  COUPLE 1 BOY: x o
+     *  COUPLE 2 BOY: x o
+     *  COUPLE 3 BOY: x i
+     *  COUPLE 4 BOY: x i
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static final ExprFunc _AT_TOP_LEVEL = new ExprFunc() {
+        @Override
+        public String getName() { return "_at top level"; }
+        @Override
+        public Object evaluate(Class type, DanceState ds, List args)
+            throws EvaluationException {
+            if (args.size() != 1)
+                throw new EvaluationException("needs 1 argument");
+            return ((Expr) args.get(0)).evaluate(type, ds.atTopLevel());
+        }
+    };
+    static { exprGenericFuncs.put(_AT_TOP_LEVEL.getName(), _AT_TOP_LEVEL); }
+
     // function application
     // note that _curry can be used to make a function-of-one-argument
     // (actually, a function of N arguments, where N is the number of
